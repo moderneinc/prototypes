@@ -4,6 +4,17 @@ How strings read in the Construct system. Tone principles extracted from the art
 
 Voice is in scope because it's how the visual layer *speaks*. What commands do, what flags exist, and which surfaces emit which strings are out of scope (those are behavioral / IA decisions for a later phase).
 
+## Provenance
+
+The voice rules have two origins, and it matters to know which is which.
+
+**Extracted from the artifacts.** The tone principles (direct address, action-oriented imperatives, concrete over abstract, no-blame framing, named things over jargon) are grounded in both source artifacts. Annie and Jayd both wrote this way consistently across their mock-ups. The rules name what was already there.
+
+**Synthesized from observed patterns.** The grammar conventions table — ALL-CAPS section headers, gerund action verbs for transient state, past-participle for completed sub-tasks, specific punctuation rules, number-leading counts, recovery action verb list — was not written down in any artifact. It was codified by naming recurring patterns that both authors used without stating as rules. The original CLI had an implicit voice; this document makes it explicit.
+
+The distinction matters because synthesized conventions carry more revision risk than extracted ones. If product or engineering observes that the grammar conventions don't match how the CLI is actually evolving, the conventions should be revised — they were never mandated by the source material, only inferred from it.
+
+
 ## Tone principles
 
 ### 1. Direct and second-person
