@@ -1,7 +1,6 @@
-import { Heading } from "@/components/Heading";
+import { Section } from "@/components/Section";
 import { Body } from "@/components/Body";
 import { Card } from "@/components/Card";
-import { Link } from "@/components/Link";
 import { loadCanonical, resolveColorHex, type GlyphToken } from "@/lib/tokens";
 
 function GlyphRow({ name, token }: { name: string; token: GlyphToken }) {
@@ -10,14 +9,7 @@ function GlyphRow({ name, token }: { name: string; token: GlyphToken }) {
     <Card>
       <div className="flex items-start gap-4">
         <div className="flex w-24 flex-shrink-0 flex-col items-center gap-1">
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "2rem",
-              color: hex,
-              lineHeight: 1,
-            }}
-          >
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: "2rem", color: hex, lineHeight: 1 }}>
             {token.$value.char}
           </span>
           <code style={{ fontFamily: "var(--font-mono)", color: "var(--color-text-metadata)", fontSize: "0.75rem" }}>
@@ -63,28 +55,24 @@ function GlyphRow({ name, token }: { name: string; token: GlyphToken }) {
   );
 }
 
-export default function GlyphsPage() {
+export function TokensGlyphs() {
   const g = loadCanonical().glyph;
   const entries = Object.entries(g).filter(
     ([k, v]) => !k.startsWith("$") && typeof v === "object" && v !== null && (v as GlyphToken).$type === "terminal.glyph"
   ) as [string, GlyphToken][];
   return (
-    <main className="space-y-10">
-      <header className="space-y-2">
-        <Link href="/">← Home</Link>
-        <Heading as="h1" className="text-2xl">Glyphs</Heading>
-        {typeof g.$description === "string" && <Body role="supporting">{g.$description}</Body>}
-        <Body role="metadata">
-          Glyphs are stored as the terminal-native <code style={{ fontFamily: "var(--font-mono)" }}>terminal.glyph</code> type
-          with <code style={{ fontFamily: "var(--font-mono)" }}>{`{char, asciiFallback, role, color}`}</code>.
-          They flatten to a plain string only in the projected DTCG file.
-        </Body>
-      </header>
-      <section className="space-y-3">
+    <Section id="tokens-glyphs" title="Glyphs">
+      {typeof g.$description === "string" && <Body role="supporting">{g.$description}</Body>}
+      <Body role="metadata">
+        Glyphs are stored as the terminal-native <code style={{ fontFamily: "var(--font-mono)" }}>terminal.glyph</code>{" "}
+        type with <code style={{ fontFamily: "var(--font-mono)" }}>{`{char, asciiFallback, role, color}`}</code>.
+        They flatten to a plain string only in the projected DTCG file.
+      </Body>
+      <div className="space-y-3">
         {entries.map(([k, v]) => (
           <GlyphRow key={k} name={`glyph.${k}`} token={v} />
         ))}
-      </section>
-    </main>
+      </div>
+    </Section>
   );
 }

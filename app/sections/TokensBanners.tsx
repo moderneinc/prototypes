@@ -1,24 +1,19 @@
+import { Section } from "@/components/Section";
 import { Heading } from "@/components/Heading";
 import { Body } from "@/components/Body";
 import { Card } from "@/components/Card";
-import { Link } from "@/components/Link";
 import { Banner, type BannerVariant } from "@/components/Banner";
 import { loadCanonical } from "@/lib/tokens";
 
 const VARIANTS: BannerVariant[] = ["success", "partial_success", "success_with_warnings", "failure"];
 
-export default function BannersPage() {
+export function TokensBanners() {
   const b = loadCanonical().banner;
   return (
-    <main className="space-y-10">
-      <header className="space-y-2">
-        <Link href="/">← Home</Link>
-        <Heading as="h1" className="text-2xl">Banners</Heading>
-        {b.$description && <Body role="supporting">{b.$description}</Body>}
-      </header>
-
-      <section className="space-y-3">
-        <Heading as="h2" className="text-lg">Start banner</Heading>
+    <Section id="tokens-banners" title="Banners">
+      {b.$description && <Body role="supporting">{b.$description}</Body>}
+      <div className="space-y-3">
+        <Heading as="h3" className="text-base">Start banner</Heading>
         <Card>
           <dl className="grid grid-cols-[8rem_1fr] gap-x-4 gap-y-1 text-sm">
             <dt><Body role="supporting" as="span">rich</Body></dt>
@@ -36,10 +31,9 @@ export default function BannersPage() {
             </Body>
           )}
         </Card>
-      </section>
-
-      <section className="space-y-3">
-        <Heading as="h2" className="text-lg">Close banner — shape</Heading>
+      </div>
+      <div className="space-y-3">
+        <Heading as="h3" className="text-base">Close banner — shape</Heading>
         <Card>
           <dl className="grid grid-cols-[10rem_1fr] gap-x-4 gap-y-1 text-sm">
             <dt><Body role="supporting" as="span">$shape</Body></dt>
@@ -52,10 +46,9 @@ export default function BannersPage() {
             <dd><Body role="primary" as="span">{String(b.close.noGlyph)}</Body></dd>
           </dl>
         </Card>
-      </section>
-
-      <section className="space-y-3">
-        <Heading as="h2" className="text-lg">Close banner — variants</Heading>
+      </div>
+      <div className="space-y-3">
+        <Heading as="h3" className="text-base">Close banner — variants</Heading>
         {VARIANTS.map((v) => {
           const variant = b.close.variants[v];
           if (!variant) return null;
@@ -83,7 +76,7 @@ export default function BannersPage() {
             </Card>
           );
         })}
-      </section>
-    </main>
+      </div>
+    </Section>
   );
 }

@@ -1,20 +1,15 @@
-import { Heading } from "@/components/Heading";
+import { Section } from "@/components/Section";
 import { Body } from "@/components/Body";
 import { Card } from "@/components/Card";
-import { Link } from "@/components/Link";
 import { loadVoice } from "@/lib/markdown";
 
-export default function VoicePage() {
+export function Voice() {
   const body = loadVoice();
   return (
-    <main className="space-y-6">
-      <header className="space-y-2">
-        <Link href="/">← Home</Link>
-        <Heading as="h1" className="text-2xl">Voice</Heading>
-        <Body role="metadata">
-          Source: <code style={{ fontFamily: "var(--font-mono)" }}>design-system/voice.md</code>
-        </Body>
-      </header>
+    <Section id="voice" title="Voice">
+      <Body role="metadata">
+        Source: <code style={{ fontFamily: "var(--font-mono)" }}>design-system/voice.md</code>
+      </Body>
       <Card>
         <pre
           style={{
@@ -28,6 +23,6 @@ export default function VoicePage() {
           {body}
         </pre>
       </Card>
-    </main>
+    </Section>
   );
 }

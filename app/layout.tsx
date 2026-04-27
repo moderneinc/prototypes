@@ -12,11 +12,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // The body wrapper is intentionally unconstrained — the homepage hosts a
+  // fixed-position SideNav and reserves its own column. Standalone routes
+  // (/patterns/[slug], /examples/[slug]) wrap their main content in their
+  // own `mx-auto max-w-3xl` container.
   return (
     <html lang="en">
-      <body>
-        <div className="mx-auto max-w-5xl px-6 py-10">{children}</div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

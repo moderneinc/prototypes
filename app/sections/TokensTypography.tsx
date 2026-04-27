@@ -1,15 +1,14 @@
+import { Section } from "@/components/Section";
 import { Heading } from "@/components/Heading";
 import { Body } from "@/components/Body";
 import { Card } from "@/components/Card";
-import { Link } from "@/components/Link";
 import { loadCanonical, type TypographyToken, type FontStackToken } from "@/lib/tokens";
 
 const SAMPLE = "The terminal speaks in plain sentences.";
 
 function TypeRow({ name, token }: { name: string; token: TypographyToken }) {
   const v = token.$value;
-  const sample =
-    v.case === "ALL CAPS" ? SAMPLE.toUpperCase() : SAMPLE;
+  const sample = v.case === "ALL CAPS" ? SAMPLE.toUpperCase() : SAMPLE;
   return (
     <Card>
       <div className="space-y-3">
@@ -73,7 +72,7 @@ function TypeRow({ name, token }: { name: string; token: TypographyToken }) {
   );
 }
 
-export default function TypographyPage() {
+export function TokensTypography() {
   const t = loadCanonical().typography;
   const roles: { key: "section_header" | "primary" | "supporting" | "metadata"; label: string }[] = [
     { key: "section_header", label: "section_header" },
@@ -83,26 +82,22 @@ export default function TypographyPage() {
   ];
   const mono = t.monospace as FontStackToken;
   return (
-    <main className="space-y-10">
-      <header className="space-y-2">
-        <Link href="/">← Home</Link>
-        <Heading as="h1" className="text-2xl">Typography</Heading>
-        {t.$description && <Body role="supporting">{t.$description}</Body>}
-      </header>
-      <section className="space-y-3">
+    <Section id="tokens-typography" title="Typography">
+      {t.$description && <Body role="supporting">{t.$description}</Body>}
+      <div className="space-y-3">
         {roles.map((r) => (
           <TypeRow key={r.key} name={`typography.${r.key}`} token={t[r.key]} />
         ))}
-      </section>
-      <section className="space-y-3">
-        <Heading as="h2" className="text-lg">Monospace stack</Heading>
+      </div>
+      <div className="space-y-3">
+        <Heading as="h3" className="text-base">Monospace stack</Heading>
         <Card>
           <code style={{ fontFamily: "var(--font-mono)", color: "var(--color-text-body)" }}>
             {mono.$value.join(", ")}
           </code>
           {mono.$description && <Body role="supporting" className="mt-2">{mono.$description}</Body>}
         </Card>
-      </section>
-    </main>
+      </div>
+    </Section>
   );
 }

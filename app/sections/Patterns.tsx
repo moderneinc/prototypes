@@ -1,23 +1,18 @@
-import { Heading } from "@/components/Heading";
+import { Section } from "@/components/Section";
 import { Body } from "@/components/Body";
 import { Card } from "@/components/Card";
 import { Link } from "@/components/Link";
 import { listPatterns } from "@/lib/markdown";
 
-export default function PatternsPage() {
+export function Patterns() {
   const patterns = listPatterns();
   return (
-    <main className="space-y-8">
-      <header className="space-y-2">
-        <Link href="/">← Home</Link>
-        <Heading as="h1" className="text-2xl">Patterns</Heading>
-        <Body role="supporting">
-          Reconciled visual patterns sourced from{" "}
-          <code style={{ fontFamily: "var(--font-mono)" }}>design-system/patterns/</code>. Each
-          one combines tokens into a complete CLI surface.
-        </Body>
-      </header>
-      <section className="grid gap-3 sm:grid-cols-2">
+    <Section id="patterns" title="Patterns">
+      <Body role="supporting">
+        Reconciled visual patterns — each composes tokens into a complete CLI surface. Click
+        any pattern to read its full source markdown.
+      </Body>
+      <div className="grid gap-3 sm:grid-cols-2">
         {patterns.map((p) => (
           <Card key={p.slug}>
             <div className="space-y-1">
@@ -30,7 +25,7 @@ export default function PatternsPage() {
             </div>
           </Card>
         ))}
-      </section>
-    </main>
+      </div>
+    </Section>
   );
 }

@@ -32,11 +32,21 @@
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   background: var(--color-bg-page);
   color: var(--color-text-body);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Section anchors land below the mobile nav bar (sticky, ~52px) so a
+   deep-link from the drawer doesn't leave the heading hidden under it. */
+section[id] {
+  scroll-margin-top: 4rem;
 }
 
 a {

@@ -1,7 +1,7 @@
+import { Section } from "@/components/Section";
 import { Heading } from "@/components/Heading";
 import { Body } from "@/components/Body";
 import { Card } from "@/components/Card";
-import { Link } from "@/components/Link";
 import { loadCanonical, type SpacingToken, type SimpleSpacingValue, type CompoundSpacingValue } from "@/lib/tokens";
 
 function isCompound(v: SimpleSpacingValue | CompoundSpacingValue): v is CompoundSpacingValue {
@@ -9,14 +9,9 @@ function isCompound(v: SimpleSpacingValue | CompoundSpacingValue): v is Compound
 }
 
 function HorizontalDemo({ count }: { count: number }) {
-  // Render the indent as the actual number of monospace spaces, with a leading
-  // pipe so the user can see where the indent ends.
   const spaces = "\u00A0".repeat(count);
   return (
-    <pre
-      style={{ fontFamily: "var(--font-mono)", color: "var(--color-text-body)" }}
-      className="text-sm"
-    >
+    <pre style={{ fontFamily: "var(--font-mono)", color: "var(--color-text-body)" }} className="text-sm">
       <span style={{ color: "var(--color-text-metadata)" }}>|</span>
       {spaces}
       <span style={{ color: "var(--color-text-supporting)" }}>content</span>
@@ -26,19 +21,12 @@ function HorizontalDemo({ count }: { count: number }) {
 
 function VerticalDemo({ above, below }: { above: number; below: number }) {
   return (
-    <pre
-      style={{ fontFamily: "var(--font-mono)", color: "var(--color-text-body)" }}
-      className="text-sm leading-tight"
-    >
+    <pre style={{ fontFamily: "var(--font-mono)", color: "var(--color-text-body)" }} className="text-sm leading-tight">
       <span style={{ color: "var(--color-text-supporting)" }}>previous content</span>
-      {Array.from({ length: above }).map((_, i) => (
-        <span key={`a${i}`}>{"\n"}</span>
-      ))}
+      {Array.from({ length: above }).map((_, i) => (<span key={`a${i}`}>{"\n"}</span>))}
       {"\n"}
       <span>BANNER / NEXT</span>
-      {Array.from({ length: below }).map((_, i) => (
-        <span key={`b${i}`}>{"\n"}</span>
-      ))}
+      {Array.from({ length: below }).map((_, i) => (<span key={`b${i}`}>{"\n"}</span>))}
     </pre>
   );
 }
@@ -110,31 +98,27 @@ function SpacingRow({ name, token }: { name: string; token: SpacingToken }) {
   );
 }
 
-export default function SpacingPage() {
+export function TokensSpacing() {
   const s = loadCanonical().spacing;
   return (
-    <main className="space-y-10">
-      <header className="space-y-2">
-        <Link href="/">← Home</Link>
-        <Heading as="h1" className="text-2xl">Spacing</Heading>
-        {s.$description && <Body role="supporting">{s.$description}</Body>}
-        <Body role="metadata">
-          Stored as terminal-native semantic types (count + unit). Projection to canvas pixels
-          happens in <code style={{ fontFamily: "var(--font-mono)" }}>tokens/figma-map.json</code>.
-        </Body>
-      </header>
-      <section className="space-y-3">
-        <Heading as="h2" className="text-lg">Indent (horizontal)</Heading>
+    <Section id="tokens-spacing" title="Spacing">
+      {s.$description && <Body role="supporting">{s.$description}</Body>}
+      <Body role="metadata">
+        Stored as terminal-native semantic types (count + unit). Projection to canvas pixels
+        happens in <code style={{ fontFamily: "var(--font-mono)" }}>tokens/figma-map.json</code>.
+      </Body>
+      <div className="space-y-3">
+        <Heading as="h3" className="text-base">Indent (horizontal)</Heading>
         {Object.entries(s.indent).map(([k, v]) => (
           <SpacingRow key={k} name={`spacing.indent.${k}`} token={v} />
         ))}
-      </section>
-      <section className="space-y-3">
-        <Heading as="h2" className="text-lg">Vertical</Heading>
+      </div>
+      <div className="space-y-3">
+        <Heading as="h3" className="text-base">Vertical</Heading>
         {Object.entries(s.vertical).map(([k, v]) => (
           <SpacingRow key={k} name={`spacing.vertical.${k}`} token={v} />
         ))}
-      </section>
-    </main>
+      </div>
+    </Section>
   );
 }
