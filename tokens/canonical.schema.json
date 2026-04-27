@@ -1,0 +1,259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://construct.moderne.io/tokens/canonical.schema.json",
+  "title": "Construct canonical tokens",
+  "description": "Canonical, normalized projection of design-system/tokens.json. Preserves all semantic provenance (role, evidence, applies_to, etc.). Consumed by interpreters and by the Next.js documentation surface.",
+  "type": "object",
+  "required": [
+    "$meta",
+    "color",
+    "typography",
+    "spacing",
+    "glyph",
+    "banner",
+    "link",
+    "machine_readable"
+  ],
+  "properties": {
+    "$meta": {
+      "type": "object",
+      "required": [
+        "name",
+        "version",
+        "phase"
+      ],
+      "additionalProperties": true
+    },
+    "color": {
+      "type": "object",
+      "patternProperties": {
+        "^(?!\\$)[a-z_]+$": {
+          "type": "object",
+          "patternProperties": {
+            "^(?!\\$)[a-z_]+$": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "$type",
+                    "$value"
+                  ],
+                  "properties": {
+                    "$type": {
+                      "const": "color"
+                    },
+                    "$value": {
+                      "type": "string",
+                      "pattern": "^#[0-9a-fA-F]{6}$"
+                    }
+                  },
+                  "additionalProperties": true
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "$kind"
+                  ],
+                  "properties": {
+                    "$kind": {
+                      "const": "descriptive"
+                    }
+                  },
+                  "additionalProperties": true
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "typography": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "spacing": {
+      "type": "object",
+      "patternProperties": {
+        "^(?!\\$)[a-z_]+$": {
+          "type": "object",
+          "patternProperties": {
+            "^(?!\\$)[a-z_]+$": {
+              "type": "object",
+              "required": [
+                "$type",
+                "$value"
+              ],
+              "properties": {
+                "$type": {
+                  "const": "terminal.spacing"
+                },
+                "$value": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "count",
+                        "unit",
+                        "axis",
+                        "context"
+                      ],
+                      "properties": {
+                        "count": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "enum": [
+                            "space",
+                            "blank_line",
+                            "unknown"
+                          ]
+                        },
+                        "axis": {
+                          "enum": [
+                            "horizontal",
+                            "vertical",
+                            "unknown"
+                          ]
+                        },
+                        "context": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "above",
+                        "below",
+                        "axis",
+                        "context"
+                      ],
+                      "properties": {
+                        "above": {
+                          "type": "object",
+                          "required": [
+                            "count",
+                            "unit"
+                          ],
+                          "properties": {
+                            "count": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "unit": {
+                              "enum": [
+                                "space",
+                                "blank_line"
+                              ]
+                            }
+                          },
+                          "additionalProperties": false
+                        },
+                        "below": {
+                          "type": "object",
+                          "required": [
+                            "count",
+                            "unit"
+                          ],
+                          "properties": {
+                            "count": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "unit": {
+                              "enum": [
+                                "space",
+                                "blank_line"
+                              ]
+                            }
+                          },
+                          "additionalProperties": false
+                        },
+                        "axis": {
+                          "enum": [
+                            "vertical"
+                          ]
+                        },
+                        "context": {
+                          "type": "string"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "glyph": {
+      "type": "object",
+      "patternProperties": {
+        "^(?!\\$)[a-z_]+$": {
+          "type": "object",
+          "required": [
+            "$type",
+            "$value"
+          ],
+          "properties": {
+            "$type": {
+              "const": "terminal.glyph"
+            },
+            "$value": {
+              "type": "object",
+              "required": [
+                "char",
+                "asciiFallback",
+                "role"
+              ],
+              "properties": {
+                "char": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "asciiFallback": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "role": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "banner": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "machine_readable": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

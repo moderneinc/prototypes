@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/*
+ * Token-derived CSS custom properties.
+ *
+ * Authoring source: design-system/tokens.json → tokens/canonical.json.
+ * These are mirrored here so Tailwind utilities and component classes can
+ * reference them via `var(--token)` without re-deriving values. Edit
+ * tokens.json and run `npm run tokens:build` — then update this file to
+ * reflect any changed primitives.
+ */
+:root {
+  /* color.background */
+  --color-bg-page: #0F172A;
+  --color-bg-terminal: #020617;
+  --color-bg-panel: #334155;
+
+  /* color.text */
+  --color-text-primary: #f8fafc;
+  --color-text-body: #e2e8f0;
+  --color-text-supporting: #94a3b8;
+  --color-text-metadata: #64748b;
+
+  /* color.semantic */
+  --color-info: #67e8f9;
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+  --color-warning: #fbbf24;
+
+  /* typography.monospace stack — authoritative monospace for terminal output */
+  --font-mono: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+html, body {
+  background: var(--color-bg-page);
+  color: var(--color-text-body);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-info);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
