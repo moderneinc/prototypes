@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLI Help Text: Quick Wins Journey Map</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0F172A; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  .mono { font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px; }
+  h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .subtitle { font-size: 14px; color: #94a3b8; }
+  .meta { font-size: 12px; color: #64748b; margin-top: 4px; }
+​
+  .stats { display: flex; gap: 16px; padding: 16px; background: #1e293b50; border: 1px solid #334155; border-radius: 12px; margin: 24px 0; flex-wrap: wrap; align-items: center; font-size: 12px; }
+  .stats .sep { color: #334155; }
+​
+  .tabs { display: flex; gap: 4px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 8px; }
+  .tab { padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 500; white-space: nowrap; cursor: pointer; border: 1px solid transparent; background: transparent; color: #64748b; transition: all 0.15s; }
+  .tab:hover { color: #94a3b8; background: #1e293b; }
+  .tab:focus-visible { outline: 2px solid #67e8f9; outline-offset: 2px; }
+  .nav button:focus-visible { outline: 2px solid #67e8f9; outline-offset: 2px; }
+  .tab.active-help { background: #0e3a5c; color: #67e8f9; border-color: #1e6091; }
+  .tab.active-rewrite { background: #052e16; color: #4ade80; border-color: #166534; }
+  .tab.active-bug { background: #450a0a; color: #f87171; border-color: #991b1b; }
+​
+  .step-container { background: #1e293b30; border: 1px solid #334155; border-radius: 12px; padding: 24px; }
+  .step-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-right: 8px; }
+  .badge-help { background: #0e3a5c; color: #67e8f9; border: 1px solid #1e6091; }
+  .badge-rewrite { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+  .badge-bug { background: #450a0a; color: #f87171; border: 1px solid #991b1b; }
+  .step-title { font-size: 18px; font-weight: 700; color: #fff; display: inline; }
+  .step-subtitle { font-size: 13px; color: #94a3b8; margin: 4px 0 16px; }
+​
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+​
+  .terminal { background: #020617; border: 1px solid #334155; border-radius: 8px; overflow: hidden; }
+  .terminal-bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: #0f172a; border-bottom: 1px solid #334155; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ef4444aa; }
+  .dot-y { background: #eab308aa; }
+  .dot-g { background: #22c55eaa; }
+  .terminal-label { font-size: 11px; color: #64748b; margin-left: 8px; }
+  .terminal-body { padding: 16px; font-size: 11px; line-height: 1.6; overflow: auto; }
+  .terminal-body pre { margin: 0; white-space: pre-wrap; color: #94a3b8; }
+​
+  /* Colored terminal classes */
+  .t-bold { font-weight: 700; color: #f8fafc; }
+  .t-header { font-weight: 700; color: #f8fafc; letter-spacing: 0.02em; }
+  .t-cyan { color: #67e8f9; }
+  .t-green { color: #4ade80; }
+  .t-red { color: #f87171; }
+  .t-yellow { color: #fbbf24; }
+  .t-white { color: #e2e8f0; }
+  .t-dim { color: #94a3b8; }
+  .t-gray { color: #64748b; }
+  .colored-line { line-height: 1.6; }
+​
+  .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+  .nav button { padding: 8px 16px; border-radius: 8px; font-size: 13px; background: transparent; border: none; color: #cbd5e1; cursor: pointer; }
+  .nav button:disabled { color: #334155; cursor: not-allowed; }
+  .nav-count { font-size: 12px; color: #64748b; }
+​
+  .paths-table { margin-top: 32px; background: #1e293b30; border: 1px solid #334155; border-radius: 12px; padding: 24px; }
+  .paths-table h2 { font-size: 13px; font-weight: 600; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; }
+  table { width: 100%; font-size: 12px; border-collapse: collapse; }
+  th { text-align: left; padding: 8px 12px; color: #64748b; font-weight: 500; border-bottom: 1px solid #334155; }
+  td { padding: 8px 12px; border-bottom: 1px solid #1e293b; }
+  .td-correct { color: #4ade80; }
+  .td-wrong { color: #f8717160; text-decoration: line-through; }
+  .td-verify { color: #67e8f9; }
+  .td-na { color: #334155; }
+​
+  .footer { margin-top: 32px; text-align: center; font-size: 11px; color: #475569; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>CLI Help Text: Quick Wins Journey Map</h1>
+  <p class="subtitle">No architecture changes. No new commands. Just better strings — following GitHub's Primer CLI Design Guidelines.</p>
+  <p class="meta">Verified against Moderne CLI 4.1.6 + cli-reference.md — April 2026</p>
+​
+  <div class="stats">
+    <span style="color:#f87171">● 1 bug to fix</span>
+    <span class="sep">|</span>
+    <span style="color:#67e8f9">● 2 help text redesigns</span>
+    <span class="sep">|</span>
+    <span style="color:#4ade80">● 4 -h rewrites</span>
+    <span class="sep">|</span>
+    <span style="color:#fbbf24">⚡ All string changes only</span>
+  </div>
+​
+  <div class="tabs" id="tabs"></div>
+​
+  <div class="step-container" id="step-container"></div>
+​
+  <div class="nav">
+    <button id="prev-btn" onclick="navigate(-1)">← Previous</button>
+    <span class="nav-count" id="nav-count"></span>
+    <button id="next-btn" onclick="navigate(1)">Next →</button>
+  </div>
+​
+  <div class="paths-table">
+    <h2>Verified Command Paths</h2>
+    <table>
+      <thead><tr><th>Step</th><th>Correct Command</th><th>Wrong/Old</th><th>Verify</th></tr></thead>
+      <tbody>
+        <tr><td>Trust store</td><td class="td-correct mono">mod config http trust-store edit file</td><td class="td-wrong mono">mod config java trust-store edit</td><td class="td-verify mono">...trust-store show</td></tr>
+        <tr><td>Recipe repo</td><td class="td-correct mono">...recipes artifacts artifactory add</td><td class="td-wrong mono">...artifactory edit (deprecated)</td><td class="td-verify mono">...artifacts show</td></tr>
+        <tr><td>LST repo</td><td class="td-correct mono">...lsts artifacts artifactory add</td><td class="td-wrong mono">...artifactory edit (deprecated)</td><td class="td-verify mono">...artifacts show</td></tr>
+        <tr><td>Maven settings</td><td class="td-correct mono">mod config build maven settings edit</td><td class="td-na">—</td><td class="td-verify mono">...settings show</td></tr>
+      </tbody>
+    </table>
+  </div>
+​
+  <div class="footer">Prepared by Annie Rimbach, UX | April 2026 | Primer CLI Design Guidelines applied | No architecture changes required</div>
+</div>
+​
+<script>
+const steps = [
+  {
+    id: "first-run", command: "mod", phase: "help", title: "First Run: mod",
+    subtitle: "User installs CLI and runs mod with no arguments",
+    current: `$ mod
+Moderne CLI 4.1.6
+Usage:  mod [-h] [--version] [COMMAND]
+  Powering software engineering at agent scale.
+Options:
+  -h, --help      Display this help message.
+      --version   Display version info.
+Workflow:
+  config   Configure the CLI.
+  git      Multi-repository git operations.
+  build    Generate LST artifacts.
+  run      Run an OpenRewrite recipe locally.
+  study    Produce studies from recipe data tables.
+  search   Search repositories.
+  publish  Publish LST artifacts.
+Operations:
+  audit    (INCUBATING) Audit recent activity.
+  batch    Add batch changes.
+  clean    Clean build and run artifacts.
+  exec     Execute a shell command.
+  list     List repositories.
+  log      Manage a log aggregate.
+  monitor  (INCUBATING) Launch HTTP server.
+  ...`,
+    proposed: [
+      {t:"dim", v:"$ "}, {t:"white", v:"mod\n"},
+      {t:"bold", v:"Moderne CLI 4.1.6\n"},
+      {t:"dim", v:"Powering software engineering at agent scale.\n\n"},
+      {t:"header", v:"USAGE\n"},
+      {t:"cyan", v:"  mod"}, {t:"dim", v:" <command> <subcommand> [flags]\n\n"},
+      {t:"header", v:"GET STARTED\n"},
+      {t:"green", v:"  1. "}, {t:"cyan", v:"mod config moderne edit"}, {t:"dim", v:" <tenant-url>\n"},
+      {t:"dim", v:"     \u2514 Connect to your Moderne tenant.\n"},
+      {t:"green", v:"  2. "}, {t:"cyan", v:"mod config moderne login\n"},
+      {t:"dim", v:"     \u2514 Authenticate with your account.\n\n"},
+      {t:"header", v:"CONFIGURE YOUR ENVIRONMENT\n"},
+      {t:"dim", v:"  Get these values from your platform team or admin:\n\n"},
+      {t:"green", v:"  3. "}, {t:"cyan", v:"mod config http trust-store edit\n"},
+      {t:"dim", v:"     \u2514 SSL trust store for HTTPS connections.\n"},
+      {t:"green", v:"  4. "}, {t:"cyan", v:"mod config recipes artifacts artifactory add\n"},
+      {t:"dim", v:"     \u2514 Recipe artifact repository.\n"},
+      {t:"green", v:"  5. "}, {t:"cyan", v:"mod config lsts artifacts artifactory add\n"},
+      {t:"dim", v:"     \u2514 LST artifact repository.\n"},
+      {t:"green", v:"  6. "}, {t:"cyan", v:"mod config build maven settings edit\n"},
+      {t:"dim", v:"     \u2514 Maven settings file.\n\n"},
+      {t:"header", v:"RUN RECIPES\n"},
+      {t:"green", v:"  7. "}, {t:"cyan", v:"mod config recipes moderne sync\n"},
+      {t:"dim", v:"     \u2514 Download recipes from Moderne.\n"},
+      {t:"green", v:"  8. "}, {t:"cyan", v:"mod build .\n"},
+      {t:"dim", v:"     \u2514 Build LSTs for your project.\n"},
+      {t:"green", v:"  9. "}, {t:"cyan", v:"mod run ."}, {t:"dim", v:" --recipe <recipe-name>\n"},
+      {t:"dim", v:"     \u2514 Run a recipe.\n\n"},
+      {t:"header", v:"FLAGS\n"},
+      {t:"white", v:"  -h, --help"}, {t:"dim", v:"  \u2014  Show help for a command.\n"},
+      {t:"white", v:"  --version"}, {t:"dim", v:"   \u2014  Show version.\n\n"},
+      {t:"header", v:"LEARN MORE\n"},
+      {t:"dim", v:"  Setup guide: "}, {t:"cyan", v:"https://docs.moderne.io/cli/getting-started\n"},
+      {t:"dim", v:"  Run '"}, {t:"cyan", v:"mod <command> -h"}, {t:"dim", v:"' for help on a specific command."},
+    ]
+  },
+  {
+    id: "config-list", command: "mod config -h", phase: "help", title: "mod config -h",
+    subtitle: "User tries to figure out config commands",
+    current: `$ mod config -h
+Usage:
+Global configuration options that are required
+  by some CLI commands.
+mod config [-h] [COMMAND]
+​
+Commands:
+  agent-tools  Manage Moderne agent tools.
+  build        Configures bu...
+Collapse
