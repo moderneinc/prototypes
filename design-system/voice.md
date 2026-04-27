@@ -14,6 +14,7 @@ The voice rules have two origins, and it matters to know which is which.
 
 The distinction matters because synthesized conventions carry more revision risk than extracted ones. If product or engineering observes that the grammar conventions don't match how the CLI is actually evolving, the conventions should be revised — they were never mandated by the source material, only inferred from it.
 
+
 ## Tone principles
 
 ### 1. Direct and second-person
