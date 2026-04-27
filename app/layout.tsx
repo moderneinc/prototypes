@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Construct — visual playground",
+  title: "Construct — CLI design system",
   description:
     "Production-first, AI-native playground for the Moderne CLI design system. Tokens live in code; Figma is one of many downstream consumers.",
 };
@@ -18,7 +18,10 @@ export default function RootLayout({
   // own `mx-auto max-w-3xl` container.
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <a href="#main-content" className="skip-link">Skip to main content</a>
+        {children}
+      </body>
     </html>
   );
 }

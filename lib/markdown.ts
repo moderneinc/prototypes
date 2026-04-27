@@ -39,3 +39,28 @@ export function loadPattern(slug: string): PatternFile {
 export function loadVoice(): string {
   return fs.readFileSync(VOICE_FILE, "utf-8");
 }
+
+// ---------------------------------------------------------------------------
+// Design-system reference documents (reconciliation.md, gaps.md, etc.)
+// ---------------------------------------------------------------------------
+
+const DOCS_DIR = path.join(process.cwd(), "design-system");
+
+const AVAILABLE_DOCS: Record<string, { file: string; title: string }> = {
+  reconciliation: { file: "reconciliation.md", title: "Reconciliation" },
+  gaps: { file: "gaps.md", title: "Gaps" },
+  rationale: { file: "rationale.md", title: "Rationale" },
+  "intended-direction": { file: "intended-direction.md", title: "Intended direction" },
+  voice: { file: "voice.md", title: "Voice" },
+};
+
+export function listDocs(): { slug: string; title: string }[] {
+  return Object.entries(AVAILABLE_DOCS).map(([slug, { title }]) => ({ slug, title }));
+}
+
+export function loadDoc(slug: string): { slug: string; title: string; body: string } {
+  const entry = AVAILABLE_DOCS[slug];
+  if (!entry) throw new Error(`Unknown doc slug: ${slug}`);
+  const body = fs.readFileSync(path.join(DOCS_DIR, entry.file), "utf-8");
+  return { slug, title: entry.title, body };
+}

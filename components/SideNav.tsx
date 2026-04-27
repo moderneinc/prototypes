@@ -7,90 +7,56 @@
  * Mobile (< md): collapses behind a hamburger button at the top of the
  * page; opening the drawer covers the viewport.
  *
- * Scroll-spy: when the page hosts the long-scroll content (i.e. on `/`),
- * an IntersectionObserver watches every section anchor and the active
- * link is the section nearest the top of the viewport. When the page
- * does not contain the section anchors (e.g. /patterns/[slug],
- * /examples/[slug]), the SideNav still renders — links just deep-link
- * back to `/#…`. No scroll-spy applies on those pages, by design: the
- * goal is no dead-end pages, not active highlighting everywhere.
+ * Active state: uses usePathname() from next/navigation. "/" matches exact
+ * only; all other routes match by startsWith so sub-routes also highlight
+ * the parent nav item.
  *
  * Hand-rolled — no dependency on a UI library.
  */
 import * as React from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
-export type NavItem = { href: string; label: string; indent?: boolean };
+export type NavItem = { href: string; label: string };
 
 export const NAV_ITEMS: NavItem[] = [
-  { href: "#intro", label: "Intro" },
-  { href: "#approach", label: "Approach" },
-  { href: "#tokens", label: "Tokens" },
-  { href: "#tokens-color", label: "Color", indent: true },
-  { href: "#tokens-typography", label: "Typography", indent: true },
-  { href: "#tokens-spacing", label: "Spacing", indent: true },
-  { href: "#tokens-glyphs", label: "Glyphs", indent: true },
-  { href: "#tokens-banners", label: "Banners", indent: true },
-  { href: "#tokens-links", label: "Links", indent: true },
-  { href: "#patterns", label: "Patterns" },
-  { href: "#voice", label: "Voice" },
-  { href: "#examples", label: "Examples" },
+  { href: "/", label: "Intro" },
+  { href: "/tokens", label: "Tokens" },
+  { href: "/patterns", label: "Patterns" },
+  { href: "/voice", label: "Voice" },
+  { href: "/approach", label: "System Design" },
 ];
 
-/**
- * If `homeBase` is true, anchor hrefs stay as-is (`#intro`). Otherwise
- * they are rewritten to `/#intro` so they navigate back to the long-scroll
- * page from a standalone route.
- */
-export function SideNav({ homeBase = true }: { homeBase?: boolean }) {
-  const [active, setActive] = React.useState<string>(NAV_ITEMS[0].href);
+export function SideNav() {
+  const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    if (!homeBase) return;
-    const ids = NAV_ITEMS.map((i) => i.href.replace("#", ""));
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
-    if (elements.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Pick the entry that is currently most prominently in view —
-        // intersecting and closest to the top of the viewport.
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible.length > 0) {
-          setActive(`#${visible[0].target.id}`);
-        }
-      },
-      { rootMargin: "-10% 0px -70% 0px", threshold: 0 }
-    );
-
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [homeBase]);
-
-  const linkHref = (href: string) => (homeBase ? href : `/${href}`);
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
 
   const renderList = (onNavigate?: () => void) => (
-    <ul className="space-y-1 text-sm">
+    <ul className="space-y-1">
       {NAV_ITEMS.map((item) => {
-        const isActive = homeBase && active === item.href;
+        const active = isActive(item.href);
         return (
-          <li key={item.href} className={item.indent ? "pl-4" : ""}>
-            <a
-              href={linkHref(item.href)}
+          <li key={item.href}>
+            <Link
+              href={item.href}
               onClick={onNavigate}
               className="block rounded px-2 py-1 transition-colors"
               style={{
-                color: isActive ? "var(--color-info)" : "var(--color-text-supporting)",
-                fontFamily: "var(--font-mono)",
-                background: isActive ? "rgba(103, 232, 249, 0.06)" : "transparent",
+                fontSize: "0.875rem",
+                fontWeight: 500,
+                fontFamily: "var(--font-sans)",
+                color: active ? "var(--color-info)" : "var(--color-text-body)",
+                background: active ? "rgba(8, 145, 178, 0.08)" : "transparent",
+                textDecoration: "none",
               }}
             >
               {item.label}
-            </a>
+            </Link>
           </li>
         );
       })}
@@ -106,15 +72,17 @@ export function SideNav({ homeBase = true }: { homeBase?: boolean }) {
         aria-label="Section navigation"
       >
         <div className="mb-6">
-          <a
-            href={homeBase ? "#intro" : "/"}
-            className="block font-bold uppercase tracking-[0.02em]"
-            style={{ color: "var(--color-text-primary)" }}
-          >
-            Construct
-          </a>
-          <div style={{ color: "var(--color-text-metadata)", fontSize: "0.75rem", fontFamily: "var(--font-mono)" }}>
-            visual playground
+          <Link href="/" style={{ textDecoration: "none", display: "block" }}>
+            <div style={{ fontFamily: "var(--font-mono)", lineHeight: 1.4 }}>
+              <div style={{ fontSize: "0.6875rem", color: "var(--color-text-metadata)", letterSpacing: "0.04em", marginBottom: "0.125rem" }}>moderne /</div>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
+                <span style={{ color: "var(--color-info)", fontSize: "0.75rem" }}>◆</span>
+                <span style={{ fontSize: "1rem", fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "0.04em" }}>construct</span>
+              </div>
+            </div>
+          </Link>
+          <div style={{ color: "var(--color-text-body)", fontSize: "0.75rem", fontFamily: "var(--font-sans)", marginTop: "0.375rem", paddingLeft: "0.125rem" }}>
+            CLI design system
           </div>
         </div>
         {renderList()}
@@ -125,13 +93,12 @@ export function SideNav({ homeBase = true }: { homeBase?: boolean }) {
         className="sticky top-0 z-30 flex items-center justify-between border-b px-4 py-3 md:hidden"
         style={{ borderColor: "var(--color-bg-panel)", background: "var(--color-bg-page)" }}
       >
-        <a
-          href={homeBase ? "#intro" : "/"}
-          className="font-bold uppercase tracking-[0.02em]"
-          style={{ color: "var(--color-text-primary)" }}
-        >
-          Construct
-        </a>
+        <Link href="/" style={{ textDecoration: "none" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontFamily: "var(--font-mono)" }}>
+            <span style={{ color: "var(--color-info)", fontSize: "0.75rem" }}>◆</span>
+            <span style={{ fontSize: "0.9375rem", fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "0.04em" }}>construct</span>
+          </div>
+        </Link>
         <button
           type="button"
           aria-label={open ? "Close navigation" : "Open navigation"}
@@ -155,12 +122,10 @@ export function SideNav({ homeBase = true }: { homeBase?: boolean }) {
           style={{ background: "var(--color-bg-page)" }}
         >
           <div className="mb-4 flex items-center justify-between">
-            <span
-              className="font-bold uppercase tracking-[0.02em]"
-              style={{ color: "var(--color-text-primary)" }}
-            >
-              Construct
-            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontFamily: "var(--font-mono)" }}>
+              <span style={{ color: "var(--color-info)", fontSize: "0.75rem" }}>◆</span>
+              <span style={{ fontSize: "0.9375rem", fontWeight: 700, color: "var(--color-text-primary)", letterSpacing: "0.04em" }}>construct</span>
+            </div>
             <button
               type="button"
               aria-label="Close navigation"
