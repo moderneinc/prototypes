@@ -56,12 +56,21 @@ would discard:
 
 ## Interpreters
 
-`lib/interpreters/figma.mjs` is functional. `lib/interpreters/cli.mjs` is a
-stub — its eventual job is documented inside the file.
+`lib/interpreters/figma.mjs` is functional (build-time DTCG projection).
+`lib/interpreters/figma-plugin/` is functional (runtime Figma plugin) —
+reads canonical, writes/updates components, styles, and frames in the open
+Figma file. Idempotent against canonical: each generated node carries a
+stable `construct.key` in pluginData, re-runs reconcile in place, and any
+node whose key disappears from canonical moves to a `Construct / _orphans`
+page rather than being deleted. Build with `npm run figma-plugin:rebuild`;
+install via Figma → Plugins → Development → Import plugin from manifest.
+`lib/interpreters/cli.mjs` is a stub — its eventual job is documented
+inside the file.
 
-The interpreters are `.mjs` rather than `.ts` so the build script can import
-them without TypeScript compilation. They are build-time-only; the app reads
-canonical directly.
+The build-time interpreters are `.mjs` rather than `.ts` so the build script
+can import them without TypeScript compilation. The Figma plugin is plain JS
+because the Figma sandbox doesn't run TypeScript directly. The Next.js app
+reads canonical directly and never invokes any interpreter at runtime.
 
 ## Components
 
@@ -84,3 +93,10 @@ they read. No component library; build new surfaces from these primitives.
 Figma Code Connect is the next phase — components have stable named exports
 in preparation. The CLI interpreter is a stub. Behavioral / API tokens are
 deliberately out of scope (see `design-system/gaps.md` Part B).
+
+The Figma plugin ships templates (full-screen frames) but each template
+carries `construct.review = "after-first-designer-use"` in pluginData. The
+open question is whether templates belong in the plugin (system generates)
+or downstream of it (designer composes from organisms). The orphan/manifest
+mechanism makes either decision reversible — revisit after first designer
+session.

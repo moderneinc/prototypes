@@ -369,6 +369,45 @@ These are catalogued *cleanly* — they should be reusable as the agenda for the
 
 **Why out of scope.** The brief is explicit. Where the audit might be wrong about a specific surface, this design system has used the audit as the best available evidence and noted any disagreements only in passing within `rationale.md`. No audit edit is proposed.
 
+### B-34 — Consolidate the authoring source path under `canonical.json`
+
+**Source.** Internal architecture review during Figma plugin shipping.
+
+**Why open.** The build pipeline currently authors at `design-system/tokens.json` and projects to `tokens/canonical.json`. The architecture diagram (Approach page) and README both refer to "canonical" as the noun for the source of truth, but the *authoring* file is still named `tokens.json`. The plugin reads from the projected `tokens/canonical.json`, so the runtime is correct — but new readers of the repo see two different filenames for the same conceptual thing.
+
+**What to decide.** Either (a) rename `design-system/tokens.json` → `design-system/canonical.json` (clean, one-line script update), or (b) consolidate `tokens.json` + the pattern markdown files in `design-system/patterns/` + voice rules into a single `design-system/canonical.json` that bundles every interpretable input the plugin and other interpreters might need (more correct architecturally; a real refactor). The first is hours; the second is days. Either preserves the projected `tokens/canonical.json` as the canonical-for-consumption file.
+
+**Why out of scope here.** Not blocking the plugin or the design system's correctness. The plugin reads the right file. The naming inconsistency is a discoverability and pedagogy issue, not a runtime one.
+
+### B-36 — Should canonical's provenance schema distinguish evidence tiers structurally?
+
+**Source.** Surfaced while assembling the `valid_colors` evidence table during Figma plugin shipping (see `lib/interpreters/figma-plugin/README.md`).
+
+**Why open.** Canonical currently treats every `evidence` field as a flat array of free-text strings. Constructing the table revealed at least three real tiers in use today, plus the existing `extrapolated` flag:
+
+1. **Audited.** Evidence cites an audit ID (`audit ERR-002`, `audit ACT-001`, `audit BAN-002`, etc.). Strongest provenance — the audit is the authoritative read of the existing CLI.
+2. **Cited.** Evidence cites a specific named source artifact (`context/error-states-ui-uplift.pdf — ⚠ in mod search frame`). Strong but not audited.
+3. **Conventional.** Evidence cites a source artifact at the section level only (`context/cli-help-text-rewrites.pdf — EXAMPLES blocks`), where the design choice follows convention rather than a specific surfaced pattern. Looser provenance — `hint_marker`, `child_connector`, `shell_prompt` are the three current examples.
+4. **Extrapolated** (already structurally captured via `extrapolated: true`). Weakest — design called it without grounded evidence.
+
+**What to decide.** Either (a) keep the uniform `evidence: string[]` schema and rely on readers (and downstream interpreters / LLMs) to parse the prose for provenance signals, or (b) introduce structured tiers, e.g. `evidence: { audit: ["ERR-002"], cited: [...], conventional: [...] }` or a per-entry `tier: "audited" | "cited" | "conventional" | "extrapolated"`. Option (a) is what's shipped; option (b) makes provenance machine-checkable (e.g. "warn if any token relies only on conventional + extrapolated evidence").
+
+**Why out of scope here.** The current schema works for the Figma plugin and for the playground; this is a forward-looking question about how rigorously canonical should encode its own confidence levels. The valid_colors evidence table is the artifact that surfaced it — not a problem to solve, but a question worth flagging now while it's clear in context.
+
+### B-35 — Designer-handoff protocol around the Figma plugin
+
+**Source.** Plugin ship review — first designer install pending.
+
+**Why open.** The plugin works (idempotent, orphan-aware, property-level updates), but the *human protocol around it* doesn't exist yet. Specifically:
+
+- **The orphans page.** When canonical evolves and the plugin moves a node to `Construct / _orphans`, what's the designer's expected action? Confirm and delete? Reincorporate as a custom variant? Flag back to the system owner? No documented workflow.
+- **The `construct.review = "after-first-designer-use"` flag.** Templates carry this pluginData. Where do designers see it? How do they raise the question "this template should/shouldn't be in the plugin"? No surfaced UI, no triage queue, no rubric.
+- **Re-runs after a designer has made local edits.** The plugin does property-level updates on existing nodes. If a designer overrode a fill or padding on a main component (not an instance), the next sync will overwrite that change without warning. No documented "do this on instances, not main components" guardrail in any designer-facing place.
+
+**What to do.** Write a short designer-handoff doc — `design-system/figma-handoff.md` or similar — covering: where the orphans page lives, what to do when something appears there, what `construct.review` means and where to flag concerns, and the override hierarchy (instance ✓, main component ✗). Then validate it with the first designer who installs the plugin and incorporate their corrections.
+
+**Why out of scope here.** Requires a real designer to test against. Authoring the doc in advance produces theoretical guidance; pairing on it after a real install produces grounded guidance.
+
 ---
 
 ## How to read this file
