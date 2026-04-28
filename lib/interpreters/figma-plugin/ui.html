@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root {
+      --bg: #0F172A;
+      --panel: #334155;
+      --text: #e2e8f0;
+      --primary: #f8fafc;
+      --supporting: #94a3b8;
+      --info: #67e8f9;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --metadata: #64748b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 12px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.04em;
+    }
+    .meta {
+      color: var(--supporting);
+      margin-bottom: 12px;
+      font-size: 11px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--info);
+      color: var(--bg);
+      border: 0;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    button:hover { filter: brightness(1.1); }
+    button:disabled { opacity: 0.5; cursor: wait; }
+    button.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--panel);
+    }
+    .log {
+      margin-top: 12px;
+      padding: 8px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--panel);
+      border-radius: 4px;
+      max-height: 280px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 11px;
+    }
+    .log .ok { color: var(--success); }
+    .log .warn { color: var(--warning); }
+    .log .err { color: var(--danger); }
+    .log .dim { color: var(--metadata); }
+    .summary {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--panel);
+      color: var(--supporting);
+    }
+  </style>
+</head>
+<body>
+  <h1>◆ CONSTRUCT</h1>
+  <div class="meta">CLI design system — Figma interpreter</div>
+  <button id="sync">Sync from canonical</button>
+  <button id="dryrun" class="secondary">Dry run (preview only)</button>
+  <div class="log" id="log"><span class="dim">Ready. Click Sync to write canonical to this file.</span></div>
+
+  <script>
+    const log = document.getElementById('log');
+    const btnSync = document.getElementById('sync');
+    const btnDry = document.getElementById('dryrun');
+
+    function append(line, cls) {
+      const span = document.createElement('span');
+      if (cls) span.className = cls;
+      span.textContent = line + '\n';
+      log.appendChild(span);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    btnSync.onclick = () => {
+      log.innerHTML = '';
+      btnSync.disabled = true;
+      btnDry.disabled = true;
+      parent.postMessage({ pluginMessage: { type: 'sync', dryRun: false } }, '*');
+    };
+    btnDry.onclick = () => {
+      log.innerHTML = '';
+      btnSync.disabled = true;
+      btnDry.disabled = true;
+      parent.postMessage({ pluginMessage: { type: 'sync', dryRun: true } }, '*');
+    };
+
+    onmessage = (e) => {
+      const msg = e.data.pluginMessage;
+      if (!msg) return;
+      if (msg.type === 'log') append(msg.line, msg.cls);
+      if (msg.type === 'done') {
+        btnSync.disabled = false;
+        btnDry.disabled = false;
+        if (msg.summary) {
+          const s = msg.summary;
+          const div = document.createElement('div');
+          div.className = 'summary';
+          div.innerHTML = `<strong>Sync complete.</strong>\n` +
+            `  ${s.created} created\n` +
+            `  ${s.updated} updated\n` +
+            `  ${s.adopted} adopted\n` +
+            `  ${s.orphaned} orphaned\n` +
+            `  ${s.unchanged} unchanged`;
+          log.appendChild(div);
+          log.scrollTop = log.scrollHeight;
+        }
+      }
+    };
+  </script>
+</body>
+</html>

@@ -228,6 +228,7 @@ function normalizeGlyphs(node) {
         asciiFallback: g.ascii_fallback,
         role: key,
         color: extractColorReference(g.color_default),
+        validColors: g.valid_colors,
       },
       color_description: g.color_default,
       role: g.role,
@@ -445,12 +446,16 @@ const schema = {
             $type: { const: "terminal.glyph" },
             $value: {
               type: "object",
-              required: ["char", "asciiFallback", "role"],
+              required: ["char", "asciiFallback", "role", "validColors"],
               properties: {
                 char: { type: "string", minLength: 1 },
                 asciiFallback: { type: "string", minLength: 1 },
                 role: { type: "string" },
                 color: { type: "string" },
+                validColors: {
+                  type: "array",
+                  items: { type: "string", pattern: "^(text|semantic|background)\\.[a-z_]+$" },
+                },
               },
               additionalProperties: false,
             },

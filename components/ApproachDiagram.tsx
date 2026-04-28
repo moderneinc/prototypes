@@ -100,7 +100,8 @@ export function ApproachDiagram() {
         {/* Figma */}
         <div style={box}>
           <div style={label}>Figma</div>
-          <div style={sub}>via DTCG + Tokens Studio</div>
+          <div style={sub}>plugin: writes variables, styles, components</div>
+          <div style={{ ...sub, marginTop: "0.125rem" }}>plus DTCG + Tokens Studio for export</div>
           <div
             style={{
               marginTop: "0.625rem",
@@ -108,8 +109,8 @@ export function ApproachDiagram() {
               borderTop: "1px solid var(--color-bg-panel)",
             }}
           >
-            <div style={{ ...sub, color: "var(--color-info)", fontStyle: "italic" }}>
-              ↕ Code Connect
+            <div style={{ ...sub, color: "var(--color-text-supporting)", fontStyle: "italic" }}>
+              ↕ Code Connect (future)
             </div>
             <div style={{ ...sub, marginTop: "0.25rem" }}>React components</div>
             <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", color: "var(--color-text-metadata)", marginTop: "0.125rem" }}>
