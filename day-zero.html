@@ -715,6 +715,305 @@ body {
 }
 
 /* ================================================
+   SEARCH DROPDOWN
+   ================================================ */
+.search-dropdown {
+  position: absolute;
+  z-index: 200;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  width: 520px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  top: 56px;
+  right: 120px;
+}
+
+.search-dd-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.search-dd-input span {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-medium);
+}
+
+.search-dd-cursor {
+  display: inline-block;
+  width: 1.5px;
+  height: 16px;
+  background: var(--surface-primary-filled);
+  animation: cursor-blink 1s step-end infinite;
+}
+
+@keyframes cursor-blink { 50% { opacity: 0; } }
+
+.search-dd-section {
+  padding: var(--space-2) 0;
+}
+
+.search-dd-label {
+  font-size: var(--brand-font-size-100);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--space-1) var(--space-4) var(--space-2);
+}
+
+.search-dd-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.search-dd-item:hover,
+.search-dd-item.active {
+  background: var(--surface-primary-hover);
+}
+
+.search-dd-item.active {
+  border-left: 2px solid var(--surface-primary-filled);
+}
+
+.search-dd-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  background: var(--surface-primary-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.search-dd-name {
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-primary);
+}
+
+.search-dd-meta {
+  font-size: var(--brand-font-size-200);
+  color: var(--text-tertiary);
+  margin-top: 1px;
+}
+
+.search-dd-badge {
+  font-size: 9px;
+  font-weight: var(--brand-font-weight-semibold);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  margin-left: var(--space-2);
+}
+
+.search-dd-badge.popular {
+  background: var(--surface-warning);
+  color: var(--brand-orange-800);
+}
+
+.search-dd-badge.repos {
+  background: var(--surface-secondary);
+  color: var(--text-tertiary);
+}
+
+/* ================================================
+   "WHY DID THIS CHANGE?" POPOVER
+   ================================================ */
+.diff-actions-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.diff-more-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--icon-tertiary);
+  transition: all var(--transition-fast);
+  margin-left: auto;
+}
+
+.diff-more-btn:hover {
+  background: var(--surface-secondary);
+  color: var(--icon-secondary);
+}
+
+.why-popover {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: var(--space-1);
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  width: 320px;
+  box-shadow: var(--shadow-lg);
+  z-index: 50;
+}
+
+.why-popover-title {
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.why-popover-content {
+  font-size: var(--brand-font-size-200);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.why-badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-information);
+  color: var(--text-information);
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+/* ================================================
+   COMMIT DIALOG
+   ================================================ */
+.commit-dialog-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.commit-dialog {
+  background: var(--surface-primary);
+  border-radius: var(--radius-2xl);
+  width: 480px;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+.commit-dialog-header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.commit-dialog-title {
+  font-size: var(--brand-font-size-500);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--content-heading);
+}
+
+.commit-dialog-subtitle {
+  font-size: var(--brand-font-size-200);
+  color: var(--text-tertiary);
+  margin-top: var(--space-1);
+}
+
+.commit-dialog-body {
+  padding: var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.commit-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.commit-field-label {
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-primary);
+}
+
+.commit-field-input {
+  height: 36px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 0 var(--space-3);
+  font-size: var(--brand-font-size-300);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--surface-primary);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.commit-field-input:focus {
+  border-color: var(--border-focus);
+}
+
+.commit-field-input.mono {
+  font-family: var(--font-code);
+  font-size: var(--brand-font-size-200);
+}
+
+.commit-field-textarea {
+  height: 64px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--brand-font-size-300);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--surface-primary);
+  outline: none;
+  resize: none;
+  transition: border-color var(--transition-fast);
+}
+
+.commit-field-textarea:focus {
+  border-color: var(--border-focus);
+}
+
+.commit-field-select {
+  height: 36px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 0 var(--space-3);
+  font-size: var(--brand-font-size-300);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--surface-primary);
+  outline: none;
+  appearance: auto;
+}
+
+.commit-dialog-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  background: var(--surface-secondary);
+}
+
+/* ================================================
    DATA TABLE (shared pattern for Repos & Activity)
    ================================================ */
 .data-table {
@@ -1809,7 +2108,7 @@ function MarketplacePage() {
         <div className="page-subtitle">Browse and search recipes to transform your code</div>
       </div>
       <div className="marketplace-banner">
-        <p>Access <strong>3,105 recipes</strong> to search, analyze, and transform code across <strong>47 projects</strong></p>
+        <p>Access <strong>5,000+ recipes</strong> to search, analyze, and transform code across <strong>47 projects</strong></p>
       </div>
       <div className="marketplace-layout">
         <div className="marketplace-sidebar">
@@ -1842,6 +2141,78 @@ function MarketplacePage() {
             </div>
           `)}
         </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// PAGE: MARKETPLACE WITH SEARCH RESULTS
+// ============================================================
+const searchResults = [
+  { name: 'Migrate to Spring Boot 3.x', meta: 'Spring \u00B7 by OpenRewrite \u00B7 v2.11.0', popular: true, active: true },
+  { name: 'Spring Boot 3.x best practices', meta: 'Spring \u00B7 by OpenRewrite \u00B7 v1.4.2' },
+  { name: 'Spring Boot properties migration', meta: 'Spring \u00B7 by OpenRewrite \u00B7 v2.8.0' },
+  { name: 'Upgrade Spring Security to 6.x', meta: 'Security \u00B7 by OpenRewrite \u00B7 v1.2.0' },
+];
+
+function MarketplaceSearchPage() {
+  return html`
+    <div className="content-area">
+      <div className="page-header">
+        <div className="page-title">Marketplace</div>
+        <div className="page-subtitle">Browse and search recipes to transform your code</div>
+      </div>
+      <div className="marketplace-banner">
+        <p>Access <strong>5,000+ recipes</strong> to search, analyze, and transform code across <strong>47 projects</strong></p>
+      </div>
+      <div className="marketplace-layout">
+        <div className="marketplace-sidebar">
+          <div className="marketplace-sidebar-search">
+            ${icons.search(14)}
+            <input type="text" placeholder="Search" readOnly />
+          </div>
+          <div>
+            <div className="sidebar-section-label" style=${{ marginBottom: '8px' }}>Categories</div>
+            <div className="sidebar-category-list">
+              ${sidebarCategories.slice(0, 8).map((cat, i) => html`
+                <div key=${i} className="sidebar-category-link">${cat}</div>
+              `)}
+            </div>
+          </div>
+        </div>
+        <div className="category-grid">
+          ${categories.slice(0, 6).map((cat, i) => html`
+            <div key=${i} className="category-card" style=${{ opacity: 0.4 }}>
+              <div className="category-card-icon">${cat.icon}</div>
+              <div>
+                <div className="category-card-name">${cat.name}</div>
+                <div className="category-card-count">${cat.count} recipes</div>
+              </div>
+            </div>
+          `)}
+        </div>
+      </div>
+    </div>
+    <!-- Search dropdown overlay -->
+    <div className="search-dropdown">
+      <div className="search-dd-input">
+        ${icons.search(16)}
+        <span>Spring Boot 3</span>
+        <span className="search-dd-cursor"></span>
+      </div>
+      <div className="search-dd-section">
+        <div className="search-dd-label">Recipes</div>
+        ${searchResults.map((item, i) => html`
+          <div key=${i} className=${'search-dd-item' + (item.active ? ' active' : '')}>
+            <div className="search-dd-icon">${icons.fileCode(16)}</div>
+            <div style=${{ flex: 1 }}>
+              <div className="search-dd-name">${item.name}</div>
+              <div className="search-dd-meta">${item.meta}</div>
+            </div>
+            ${item.popular ? html`<span className="search-dd-badge popular">Popular</span>` : null}
+          </div>
+        `)}
       </div>
     </div>
   `;
@@ -2038,9 +2409,13 @@ const diffLines = [
   { type: 'context', num: '23', content: '    public ResponseEntity<?> proxy(HttpServletRequest request) {' },
 ];
 
-function ResultsPage({ showCommit }) {
+function ResultsPage({ mode }) {
+  // mode: 'review' = step 6 (reviewing diffs), 'commit' = step 7 (commit dialog)
+  const showWhyPopover = mode === 'review';
+  const showCommitDialog = mode === 'commit';
+
   return html`
-    <div style=${{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div style=${{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}>
       <!-- Results page header -->
       <div style=${{ padding: 'var(--space-4) var(--space-6)', borderBottom: '1px solid var(--border-primary)' }}>
         <div style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-1)' }}>Acme Corp</div>
@@ -2124,6 +2499,17 @@ function ResultsPage({ showCommit }) {
               ${icons.github(16)}
               <span>api-gateway</span>
               <span className="diff-file-path">src/main/java/com/acme/gateway/ApiGatewayApplication.java</span>
+              <div className="diff-actions-menu">
+                <button className="diff-more-btn" title="More actions">\u22EF</button>
+                ${showWhyPopover ? html`
+                  <div className="why-popover">
+                    <div className="why-popover-title">${icons.sparkles(14)} Why did this change? <span className="why-badge">AI</span></div>
+                    <div className="why-popover-content">
+                      The <strong>javax.servlet</strong> package was moved to <strong>jakarta.servlet</strong> as part of the Jakarta EE migration. Spring Boot 3.x requires Jakarta EE 9+, so all javax.servlet imports must be updated to their jakarta equivalents.
+                    </div>
+                  </div>
+                ` : null}
+              </div>
             </div>
             <div className="diff-content">
               ${diffLines.map((line, i) => html`
@@ -2139,16 +2525,48 @@ function ResultsPage({ showCommit }) {
 
       <!-- Bottom action panel -->
       <div className="results-action-panel results-actions">
-        ${showCommit ? html`
-          <button className="btn btn-primary pulse commit-btn">${icons.gitPullRequest(14, '#fff')} Commit selected results</button>
-          <span style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)' }}>46 repositories selected</span>
-        ` : html`
-          <button className="btn commit-btn">${icons.gitPullRequest(14)} Commit selected results</button>
-          <button className="btn btn-primary pulse">${icons.download(14, '#fff')} Download CSV</button>
-          <button className="btn">${icons.download(14)} Download patch</button>
-          <span style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)' }}>46 repositories selected</span>
-        `}
+        <button className=${'btn' + (showCommitDialog ? ' btn-primary pulse' : '') + ' commit-btn'}>${icons.gitPullRequest(14, showCommitDialog ? '#fff' : 'currentColor')} Commit selected results</button>
+        <button className="btn">${icons.download(14)} Download CSV</button>
+        <button className="btn">${icons.download(14)} Download patch</button>
+        <span style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)' }}>46 repositories selected</span>
       </div>
+
+      <!-- Commit dialog overlay -->
+      ${showCommitDialog ? html`
+        <div className="commit-dialog-overlay">
+          <div className="commit-dialog">
+            <div className="commit-dialog-header">
+              <div className="commit-dialog-title">Commit changes</div>
+              <div className="commit-dialog-subtitle">Create pull requests for 46 selected repositories</div>
+            </div>
+            <div className="commit-dialog-body">
+              <div className="commit-field">
+                <label className="commit-field-label">Branch name</label>
+                <input className="commit-field-input mono" type="text" value="moderne/spring-boot-3-migration" readOnly />
+              </div>
+              <div className="commit-field">
+                <label className="commit-field-label">Commit message</label>
+                <textarea className="commit-field-textarea" readOnly>Migrate to Spring Boot 3.x
+
+Apply automated migration from javax to jakarta namespace,
+update deprecated APIs and Spring Security configuration.</textarea>
+              </div>
+              <div className="commit-field">
+                <label className="commit-field-label">Commit strategy</label>
+                <select className="commit-field-select">
+                  <option>Pull request (recommended)</option>
+                  <option>Direct commit</option>
+                  <option>Fork and pull request</option>
+                </select>
+              </div>
+            </div>
+            <div className="commit-dialog-footer">
+              <button className="btn">Cancel</button>
+              <button className="btn btn-primary">${icons.gitPullRequest(14, '#fff')} Create 46 pull requests</button>
+            </div>
+          </div>
+        </div>
+      ` : null}
     </div>
   `;
 }
@@ -2209,8 +2627,8 @@ const tourSteps = [
   },
   {
     target: '.search-input',
-    title: 'Search for what you need',
-    content: 'Hit <strong>\u2318K</strong> or click the search bar. Type what you\'re trying to do: "Spring Boot 3", "log4j", or "unused imports".<br><br>You don\'t need to browse the categories below \u2014 <strong>search is the fastest way to find the right recipe</strong>.',
+    title: 'Search for a recipe',
+    content: 'Hit <strong>\u2318K</strong> or click the search bar and type what you want to do \u2014 like <strong>"Spring Boot 3"</strong>.<br><br>Results appear instantly. Click a result to see its details. <strong>Search is the fastest way to find what you need</strong> across 5,000+ recipes.',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
@@ -2231,17 +2649,16 @@ const tourSteps = [
     disableBeacon: true,
   },
   {
-    target: '.results-actions',
-    title: 'Capture your first result',
-    content: 'You can take something away right now:<br><br>\u2022 <strong>Download CSV</strong> \u2014 a spreadsheet of every change<br>\u2022 <strong>Download patch</strong> \u2014 a Git-compatible diff file<br>\u2022 <strong>Commit</strong> \u2014 create PRs for selected repos<br><br>Try one to see the data Moderne generates.',
-    placement: 'top',
+    target: '.diff-placeholder',
+    title: 'Review the exact changes',
+    content: 'Click any repository to see the <strong>file-by-file diff</strong> of what the recipe would change.<br><br>Use the <strong>\u22EF menu</strong> and select <strong>"Why did this change?"</strong> to get an AI-powered explanation of each modification.',
+    placement: 'left',
     disableBeacon: true,
-    spotlightClicks: true,
   },
   {
     target: '.commit-btn',
-    title: 'When you\'re ready, commit to create PRs',
-    content: 'Click <strong>Commit</strong> to create a pull request in each selected repo. Your team reviews and merges them through your normal process.<br><br>You can <strong>uncheck repos</strong> you want to skip. Only checked repos get PRs.<br><br>That\'s the full workflow \u2014 you\'re all set!',
+    title: 'Commit to create pull requests',
+    content: 'Click <strong>Commit</strong> to open the commit dialog. You can customize the <strong>branch name</strong>, <strong>commit message</strong>, and choose a <strong>commit strategy</strong> (pull request, direct commit, or fork).<br><br>You can <strong>uncheck repos</strong> you want to skip. Only selected repos get PRs.<br><br>That\'s the full workflow \u2014 you\'re all set!',
     placement: 'top',
     disableBeacon: true,
   },
@@ -2253,10 +2670,10 @@ const tourSteps = [
 const stepToView = {
   0: 'empty',
   1: 'repos',
-  2: 'marketplace',
+  2: 'marketplace-search',
   3: 'recipe',
   4: 'activity',
-  5: 'results',
+  5: 'results-review',
   6: 'results-commit',
 };
 
@@ -2341,17 +2758,20 @@ function App() {
     case 'marketplace':
       pageContent = html`<${MarketplacePage} />`;
       break;
+    case 'marketplace-search':
+      pageContent = html`<${MarketplaceSearchPage} />`;
+      break;
     case 'recipe':
       pageContent = html`<${RecipeDetailPage} />`;
       break;
     case 'activity':
       pageContent = html`<${ActivityPage} />`;
       break;
-    case 'results':
-      pageContent = html`<${ResultsPage} showCommit=${false} />`;
+    case 'results-review':
+      pageContent = html`<${ResultsPage} mode="review" />`;
       break;
     case 'results-commit':
-      pageContent = html`<${ResultsPage} showCommit=${true} />`;
+      pageContent = html`<${ResultsPage} mode="commit" />`;
       break;
     default:
       pageContent = html`<${EmptyState} />`;
@@ -2423,7 +2843,7 @@ function App() {
                 { num: 3, label: 'Search', sub: 'Find a recipe' },
                 { num: 4, label: 'Run', sub: 'Dry run it' },
                 { num: 5, label: 'Review', sub: 'See the diff' },
-                { num: 6, label: 'Export', sub: 'Save results' },
+                { num: 6, label: 'Review', sub: 'See changes' },
                 { num: 7, label: 'Commit', sub: 'Create PRs' },
               ].map((s, i) => html`
                 <div key=${i} className="rm-step">
