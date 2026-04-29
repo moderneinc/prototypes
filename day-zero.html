@@ -227,7 +227,7 @@ body {
    ================================================ */
 .app-shell {
   display: grid;
-  grid-template-columns: 82px 1fr;
+  grid-template-columns: 90px 1fr;
   grid-template-areas: "nav content";
   width: 100%;
   height: 100%;
@@ -235,19 +235,19 @@ body {
 }
 
 /* ================================================
-   LEFT NAVIGATION RAIL (82px)
+   LEFT NAVIGATION RAIL (90px) — matches Figma Neo spec
    ================================================ */
 .left-nav {
   grid-area: nav;
-  width: 82px;
+  width: 90px;
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px 8px 24px;
+  justify-content: space-between;
+  padding: 4px 4px 16px;
   gap: 0;
-  background: var(--surface-primary);
-  border-right: 1px solid var(--border-secondary);
+  background: var(--surface-page);
   position: fixed;
   top: 0;
   left: 0;
@@ -255,23 +255,30 @@ body {
   overflow: hidden;
 }
 
+.left-nav-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .nav-logo {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 8px 4px;
-  margin-bottom: 8px;
+  width: 100%;
   cursor: pointer;
 }
 
 .nav-item {
-  width: 66px;
-  padding: 8px 0 6px;
+  width: 100%;
+  padding: 8px 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  border-radius: var(--radius-lg);
+  border-radius: 4px;
   cursor: pointer;
   position: relative;
   transition: background var(--transition-fast);
@@ -283,47 +290,82 @@ body {
 }
 
 .nav-item.active {
-  background: #3776F01A;
+  background: transparent;
+}
+
+.nav-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all var(--transition-fast);
+}
+
+.nav-item.active .nav-icon-container {
+  background: #f2f3ff;
+  border: 1px solid #dce0ff;
 }
 
 .nav-item svg {
-  width: 22px;
-  height: 22px;
-  min-width: 22px;
-  color: #1C1B1F;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  color: #1f2937;
   flex-shrink: 0;
 }
 
 .nav-item.active svg {
-  color: #1C1B1F;
+  color: #1e2ec2;
 }
 
 .nav-label {
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: var(--brand-font-weight-regular);
-  line-height: 16px;
-  color: #1C1B1F;
+  line-height: 1;
+  color: #1f2937;
   text-align: center;
   white-space: normal;
 }
 
 .nav-item.active .nav-label {
-  font-weight: var(--brand-font-weight-semibold);
-  color: #1C1B1F;
+  font-weight: var(--brand-font-weight-regular);
+  color: #1e2ec2;
 }
 
 .nav-badge {
-  position: absolute;
-  top: 2px;
-  right: 0;
-  font-size: 11px;
-  padding: 0 8px;
-  border-radius: 50px;
+  font-size: 12px;
+  padding: 0 6px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
   background: var(--brand-digital-blue-300);
   color: white;
   font-weight: var(--brand-font-weight-medium);
-  line-height: 1.5;
+  line-height: 1;
+  text-align: center;
+}
+
+.nav-customer-logo {
+  width: 60px;
+  height: 60px;
+  background: var(--brand-digital-blue-800);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.nav-customer-logo span {
+  font-size: 10px;
+  font-weight: var(--brand-font-weight-medium);
+  color: white;
+  line-height: 1;
   text-align: center;
 }
 
@@ -2026,14 +2068,22 @@ const navItems = [
 function LeftNavigation({ activeItem }) {
   return html`
     <nav className="left-nav">
-      <div className="nav-logo" dangerouslySetInnerHTML=${{ __html: '<svg width="22" height="22" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834"/></svg>' }}></div>
-      ${navItems.map(item => html`
-        <div key=${item.id} className=${'nav-item' + (activeItem === item.id ? ' active' : '')}>
-          ${icons[item.icon](22)}
-          <span className="nav-label">${item.label}</span>
-          ${item.badge ? html`<span className="nav-badge">${item.badge}</span>` : null}
-        </div>
-      `)}
+      <div className="left-nav-top">
+        <div className="nav-logo" dangerouslySetInnerHTML=${{ __html: '<svg width="24" height="24" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834"/></svg>' }}></div>
+        ${navItems.map(item => html`
+          <div key=${item.id} className=${'nav-item' + (activeItem === item.id ? ' active' : '')}>
+            <div className="nav-icon-container">
+              ${icons[item.icon](24)}
+            </div>
+            <span className="nav-label">${item.label}</span>
+            ${item.badge ? html`<span className="nav-badge">${item.badge}</span>` : null}
+          </div>
+        `)}
+      </div>
+      <div className="nav-customer-logo">
+        <span>Acme</span>
+        <span>Corp</span>
+      </div>
     </nav>
   `;
 }
