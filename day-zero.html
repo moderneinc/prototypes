@@ -647,6 +647,71 @@ body {
   flex-shrink: 0;
 }
 
+.help-menu-wrapper {
+  position: relative;
+}
+
+.help-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 260px;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.help-menu-section {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.help-menu-section:last-child {
+  border-bottom: none;
+}
+
+.help-menu-label {
+  font-size: var(--brand-font-size-100);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--space-1) var(--space-4);
+  margin-bottom: var(--space-1);
+}
+
+.help-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.help-menu-item:hover {
+  background: var(--surface-primary-hover);
+}
+
+.help-menu-item svg {
+  flex-shrink: 0;
+  color: var(--icon-secondary);
+}
+
+.help-menu-item.highlight {
+  color: var(--brand-digital-blue-600);
+  font-weight: var(--brand-font-weight-medium);
+}
+
+.help-menu-item.highlight svg {
+  color: var(--brand-digital-blue-600);
+}
+
 /* ================================================
    CONTENT AREA — white card on page bg
    ================================================ */
@@ -2080,6 +2145,11 @@ const icons = {
 
   x: (s) => html`<${Icon} size=${s || 18}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></${Icon}>`,
 
+  bookOpen: (s) => html`<${Icon} size=${s || 16}><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></${Icon}>`,
+  externalLink: (s) => html`<${Icon} size=${s || 16}><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></${Icon}>`,
+  messageCircle: (s) => html`<${Icon} size=${s || 16}><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></${Icon}>`,
+  mail: (s) => html`<${Icon} size=${s || 16}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></${Icon}>`,
+
   // Action icons
   playCircle: (s, c) => html`<${Icon} size=${s || 16} stroke=${c || 'currentColor'}><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></${Icon}>`,
 
@@ -2144,8 +2214,9 @@ function LeftNavigation({ activeItem }) {
 // ============================================================
 // GLOBAL NAVIGATION BAR
 // ============================================================
-function GlobalNavBar({ orgSelected, orgName, showOrgDropdown, onOrgClick, onOrgSelect, onOrgClose, onSearchClick, onSearchClose, showSearchDropdown, searchQuery, onSearchQueryChange, onSearchResultClick }) {
+function GlobalNavBar({ orgSelected, orgName, showOrgDropdown, onOrgClick, onOrgSelect, onOrgClose, onSearchClick, onSearchClose, showSearchDropdown, searchQuery, onSearchQueryChange, onSearchResultClick, onStartTour }) {
   const searchInputRef = useRef(null);
+  const [showHelpMenu, setShowHelpMenu] = useState(false);
 
   useEffect(() => {
     if (showSearchDropdown && searchInputRef.current) {
@@ -2244,7 +2315,36 @@ function GlobalNavBar({ orgSelected, orgName, showOrgDropdown, onOrgClick, onOrg
       ` : null}
       <div className="nav-actions">
         <button className="nav-action-btn">${icons.settings(18)}</button>
-        <button className="nav-action-btn">${icons.circleHelp(18)}</button>
+        <div className="help-menu-wrapper">
+          <button className="nav-action-btn" onClick=${() => setShowHelpMenu((prev) => !prev)}>${icons.circleHelp(18)}</button>
+          ${showHelpMenu ? html`
+            <div className="help-menu">
+              <div className="help-menu-section">
+                <div className="help-menu-item highlight" onClick=${() => { setShowHelpMenu(false); onStartTour(); }}>
+                  ${icons.playCircle(16)} Getting started tour
+                </div>
+              </div>
+              <div className="help-menu-section">
+                <div className="help-menu-label">Resources</div>
+                <div className="help-menu-item">
+                  ${icons.bookOpen(16)} Documentation ${icons.externalLink(12)}
+                </div>
+                <div className="help-menu-item">
+                  ${icons.fileCode(16)} Changelog ${icons.externalLink(12)}
+                </div>
+                <div className="help-menu-item">
+                  ${icons.messageCircle(16)} Feedback
+                </div>
+              </div>
+              <div className="help-menu-section">
+                <div className="help-menu-label">Need more help?</div>
+                <div className="help-menu-item">
+                  ${icons.mail(16)} support@moderne.io
+                </div>
+              </div>
+            </div>
+          ` : null}
+        </div>
         <button className="nav-action-btn"><div className="avatar">A</div></button>
       </div>
     </div>
@@ -3121,6 +3221,7 @@ function App() {
           searchQuery=${searchQuery}
           onSearchQueryChange=${handleSearchQueryChange}
           onSearchResultClick=${handleSearchResultClick}
+          onStartTour=${handleStartTour}
         />
         <div className="content-wrapper" style=${runTour ? { paddingBottom: '36px' } : {}}>
           ${pageContent}
