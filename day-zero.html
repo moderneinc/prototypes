@@ -771,32 +771,29 @@ body {
    MARKETPLACE PAGE
    ================================================ */
 .marketplace-banner {
-  padding: var(--space-5) var(--space-6);
-  background: var(--surface-information);
-  border-radius: var(--radius-xl);
-  margin-bottom: var(--space-6);
-}
-
-.marketplace-banner p {
   font-size: var(--brand-font-size-300);
-  color: var(--text-information);
+  color: var(--text-secondary);
   line-height: 1.5;
+  margin: 0;
 }
 
 .marketplace-banner strong {
   font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
 }
 
 .marketplace-layout {
   display: grid;
   grid-template-columns: 224px 1fr;
-  gap: var(--space-6);
+  gap: var(--space-5);
+  margin-top: var(--space-3);
 }
 
 .marketplace-sidebar {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
+  align-items: flex-start;
 }
 
 .marketplace-sidebar-search {
@@ -830,24 +827,23 @@ body {
 
 .sidebar-section-label {
   font-family: var(--font-body);
-  font-size: var(--brand-font-size-400);
+  font-size: var(--brand-font-size-300);
   font-weight: var(--brand-font-weight-semibold);
-  color: var(--brand-grey-900);
-  text-transform: none;
-  letter-spacing: 0;
+  color: var(--text-primary);
 }
 
 .sidebar-category-list {
   display: flex;
   flex-direction: column;
   gap: 1px;
+  width: 100%;
 }
 
 .sidebar-category-link {
   font-family: var(--font-body);
   font-size: var(--brand-font-size-300);
   font-weight: var(--brand-font-weight-regular);
-  color: var(--brand-grey-700);
+  color: var(--text-secondary);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -855,18 +851,19 @@ body {
 }
 
 .sidebar-category-link:hover {
-  background: var(--brand-grey-100);
+  background: var(--surface-primary-hover);
 }
 
 .sidebar-category-link.active {
-  background: var(--brand-grey-200);
-  color: var(--brand-grey-900);
+  background: var(--surface-primary-pressed);
+  color: var(--text-primary);
   font-weight: var(--brand-font-weight-medium);
 }
 
 .category-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, 160px);
+  grid-auto-rows: min-content;
   gap: var(--space-4);
 }
 
@@ -888,14 +885,14 @@ body {
 }
 
 .category-card-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-lg);
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
   background: var(--surface-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .category-card-name {
@@ -2005,6 +2002,10 @@ body {
   width: 16px;
   border-radius: 3px;
 }
+
+.joyride-tooltip__dot.done {
+  background: var(--surface-primary-filled);
+}
 </style>
 
 <script type="importmap">
@@ -2075,6 +2076,7 @@ const icons = {
   circleHelp: (s) => html`<${Icon} size=${s || 18}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></${Icon}>`,
 
   chevronDown: (s) => html`<${Icon} size=${s || 16} strokeWidth=${2}><path d="M6 9l6 6 6-6"/></${Icon}>`,
+  chevronRight: (s) => html`<${Icon} size=${s || 16} strokeWidth=${2}><path d="M9 18l6-6-6-6"/></${Icon}>`,
 
   x: (s) => html`<${Icon} size=${s || 18}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></${Icon}>`,
 
@@ -2253,28 +2255,25 @@ function GlobalNavBar({ orgSelected, orgName, showOrgDropdown, onOrgClick, onOrg
 // PAGE: MARKETPLACE
 // ============================================================
 const categories = [
-  { icon: '\u2615', name: 'Java', count: '1,715', desc: 'Basic building blocks for Java code transformation.' },
-  { icon: '\ud83c\udf31', name: 'Spring', count: '892', desc: 'Spring Boot, Security, and Cloud migrations.' },
-  { icon: '\ud83d\udee1\ufe0f', name: 'Security', count: '423', desc: 'Vulnerability fixes and security hardening.' },
+  { icon: '\u2615', name: 'Java', count: '1,294', desc: 'Basic building blocks for transforming Java...' },
+  { icon: '\ud83e\udde9', name: 'Picnic', count: '905', desc: 'Picnic recipes, and more recipes.' },
+  { icon: 'C#', name: 'C#', count: '574', desc: 'Recipes for C# codebases.' },
+  { icon: 'JS', name: 'JavaScript Codemods', count: '456', desc: 'Recipes that run JavaScript codemods.' },
   { icon: '\ud83d\udd27', name: 'Static analysis', count: '342', desc: 'Code quality and best practices.' },
-  { icon: '\ud83d\udce6', name: 'Maven', count: '298', desc: 'Dependency management and build updates.' },
-  { icon: '\ud83e\udde9', name: 'Testing', count: '256', desc: 'JUnit 5, Mockito, and test framework migrations.' },
-  { icon: '\ud83c\udf0d', name: 'Jakarta EE', count: '187', desc: 'Java EE to Jakarta EE namespace migration.' },
-  { icon: 'K', name: 'Kotlin', count: '164', desc: 'Kotlin idioms and version upgrades.' },
-  { icon: '\u26a1', name: 'Quarkus', count: '151', desc: 'Quarkus framework recipes.' },
+  { icon: '\ud83c\udf31', name: 'Spring', count: '298', desc: 'Spring Boot, Security, and Cloud migrations.' },
+  { icon: '\u26a1', name: 'Quarkus', count: '266', desc: 'Quarkus framework recipes.' },
+  { icon: '\ud83c\udf0d', name: 'Apache', count: '201', desc: 'Apache framework migrations.' },
+  { icon: '\ud83d\udee1\ufe0f', name: 'Security', count: '187', desc: 'Vulnerability fixes and security hardening.' },
 ];
 
-const sidebarCategories = ['Java', 'Spring', 'Security', 'Static analysis', 'Maven', 'Testing', 'Jakarta EE', 'Kotlin', 'Quarkus', 'Gradle', 'Micronaut', 'Apache', 'Logging', 'Hibernate', 'Guava'];
+const sidebarCategories = ['Apache', 'C#', 'Java', 'JavaScript Codemods', 'Picnic', 'Quarkus', 'Security', 'Spring', 'Static analysis'];
 
 function MarketplacePage() {
   return html`
     <div className="content-area">
       <div className="page-header">
         <div className="page-title">Marketplace</div>
-        <div className="page-subtitle">Browse and search recipes to transform your code</div>
-      </div>
-      <div className="marketplace-banner">
-        <p>Access <strong>5,000+ recipes</strong> to search, analyze, and transform code across <strong>47 projects</strong></p>
+        <div className="marketplace-banner">Access <strong>4,958 recipes</strong> to search, analyze, and transform code across <strong>36,871 projects</strong></div>
       </div>
       <div className="marketplace-layout">
         <div className="marketplace-sidebar">
@@ -2283,14 +2282,17 @@ function MarketplacePage() {
             <input type="text" placeholder="Search" readOnly />
           </div>
           <div>
-            <div className="sidebar-section-label" style=${{ marginBottom: '8px' }}>Sort by</div>
-            <div className="sidebar-category-link active">Alphabetical</div>
+            <div className="sidebar-section-label">Sort by:</div>
+            <div className="sidebar-category-list">
+              <div className="sidebar-category-link active">Total recipe count</div>
+              <div className="sidebar-category-link">Alphabetical</div>
+            </div>
           </div>
           <div>
-            <div className="sidebar-section-label" style=${{ marginBottom: '8px' }}>Categories</div>
+            <div className="sidebar-section-label">Categories:</div>
             <div className="sidebar-category-list">
               ${sidebarCategories.map((cat, i) => html`
-                <div key=${i} className=${'sidebar-category-link' + (i === 0 ? ' active' : '')}>${cat}</div>
+                <div key=${i} className="sidebar-category-link">${cat}</div>
               `)}
             </div>
           </div>
@@ -2299,11 +2301,9 @@ function MarketplacePage() {
           ${categories.map((cat, i) => html`
             <div key=${i} className="category-card">
               <div className="category-card-icon">${cat.icon}</div>
-              <div>
-                <div className="category-card-name">${cat.name}</div>
-                <div className="category-card-count">${cat.count} recipes</div>
-              </div>
-              ${cat.desc ? html`<div className="category-card-desc">${cat.desc}</div>` : null}
+              <div className="category-card-name">${cat.name}</div>
+              <div className="category-card-count">${cat.count} recipes</div>
+              <div className="category-card-desc">${cat.desc}</div>
             </div>
           `)}
         </div>
@@ -2747,9 +2747,10 @@ function EmptyState() {
 function CustomTooltip({ continuous, index, step, backProps, closeProps, primaryProps, skipProps, tooltipProps, size }) {
   const isLast = index === size - 1;
   const requiresAction = step.data?.requiresAction;
+  const hl = getHighLevelStep(index);
   return html`
     <div ...${tooltipProps} className="joyride-tooltip">
-      <div className="joyride-tooltip__step">STEP ${index + 1} OF ${size}</div>
+      <div className="joyride-tooltip__step">STEP ${hl.number} OF ${hl.total}: ${hl.label}</div>
       ${step.title ? html`<div className="joyride-tooltip__title">${step.title}</div>` : null}
       <div className="joyride-tooltip__content" dangerouslySetInnerHTML=${{ __html: step.content }}></div>
       <div className="joyride-tooltip__footer">
@@ -2758,8 +2759,8 @@ function CustomTooltip({ continuous, index, step, backProps, closeProps, primary
         `}
         <button ...${skipProps} className="joyride-tooltip__btn-skip">${isLast ? 'Restart tour' : 'Skip tour'}</button>
         <div className="joyride-tooltip__dots">
-          ${Array.from({ length: size }, (_, i) => html`
-            <div key=${i} className=${'joyride-tooltip__dot' + (i === index ? ' active' : '')}></div>
+          ${Array.from({ length: hl.total }, (_, i) => html`
+            <div key=${i} className=${'joyride-tooltip__dot' + (i + 1 === hl.number ? ' active' : '') + (i + 1 < hl.number ? ' done' : '')}></div>
           `)}
         </div>
       </div>
@@ -2858,11 +2859,31 @@ const tourSteps = [
 ];
 
 // ============================================================
+// HIGH-LEVEL STEP MAPPING (docs-aligned)
+// ============================================================
+const highLevelSteps = [
+  { label: 'Select your organization', range: [0, 1] },
+  { label: 'Find a recipe', range: [2, 4] },
+  { label: 'Run the recipe', range: [5, 5] },
+  { label: 'Review and commit', range: [6, 9] },
+];
+
+function getHighLevelStep(stepIndex) {
+  for (let i = 0; i < highLevelSteps.length; i++) {
+    const [start, end] = highLevelSteps[i].range;
+    if (stepIndex >= start && stepIndex <= end) {
+      return { number: i + 1, total: highLevelSteps.length, label: highLevelSteps[i].label };
+    }
+  }
+  return { number: 1, total: highLevelSteps.length, label: highLevelSteps[0].label };
+}
+
+// ============================================================
 // VIEW-to-STEP MAPPING
 // ============================================================
 const stepToView = {
-  0: 'empty',
-  1: 'empty',
+  0: 'marketplace',
+  1: 'marketplace',
   2: 'marketplace',
   3: 'marketplace',
   4: 'marketplace',
@@ -2893,7 +2914,7 @@ function App() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [runTour, setRunTour] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
-  const [currentView, setCurrentView] = useState('empty');
+  const [currentView, setCurrentView] = useState('marketplace');
   const [orgSelected, setOrgSelected] = useState(false);
   const [orgName, setOrgName] = useState('');
   const [showOrgDropdown, setShowOrgDropdown] = useState(false);
@@ -2904,7 +2925,7 @@ function App() {
 
   const handleStartTour = useCallback(() => {
     setShowWelcome(false);
-    setCurrentView('empty');
+    setCurrentView('marketplace');
     setOrgSelected(false);
     setOrgName('');
     setShowOrgDropdown(false);
@@ -2959,6 +2980,10 @@ function App() {
       const step = tourSteps[index];
       if (step?.data?.requiresAction) return; // handled by click handlers
       const nextIndex = index + (action === 'prev' ? -1 : 1);
+      if (nextIndex >= tourSteps.length) {
+        setRunTour(false);
+        return;
+      }
       if (nextIndex >= 0 && nextIndex < tourSteps.length) {
         const nextView = stepToView[nextIndex];
         if (nextView) {
@@ -3103,10 +3128,10 @@ function App() {
         ${runTour ? html`
           <div className="tour-progress">
             ${icons.info(12, 'var(--surface-primary-filled)')}
-            <span>Getting started: ${stepIndex + 1} of 10</span>
+            <span>Step ${getHighLevelStep(stepIndex).number} of ${highLevelSteps.length}: ${getHighLevelStep(stepIndex).label}</span>
             <div className="progress-dots">
-              ${Array.from({ length: 10 }, (_, i) => html`
-                <div key=${i} className=${'progress-dot' + (i < stepIndex ? ' done' : '') + (i === stepIndex ? ' current' : '')}></div>
+              ${Array.from({ length: highLevelSteps.length }, (_, i) => html`
+                <div key=${i} className=${'progress-dot' + (i + 1 < getHighLevelStep(stepIndex).number ? ' done' : '') + (i + 1 === getHighLevelStep(stepIndex).number ? ' current' : '')}></div>
               `)}
             </div>
             <button className="progress-dismiss" onClick=${() => { setRunTour(false); setCurrentView('marketplace'); setOrgSelected(true); setOrgName((prev) => prev || 'Default'); setShowOrgDropdown(false); setShowSearchDropdown(false); }}>Dismiss</button>
