@@ -422,6 +422,149 @@ body {
   font-weight: var(--brand-font-weight-medium);
 }
 
+.org-selector-wrapper {
+  position: relative;
+}
+
+.org-dropdown {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  max-height: 500px;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(31, 41, 55, 0.1);
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.org-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-primary);
+  flex-shrink: 0;
+}
+
+.org-dropdown-header input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+}
+
+.org-dropdown-header input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.org-dropdown-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px;
+}
+
+.org-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-secondary);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.org-dropdown-item:hover {
+  color: var(--brand-purple-600);
+}
+
+.org-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.org-dropdown-name {
+  font-weight: var(--brand-font-weight-regular);
+}
+
+.org-dropdown-count {
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+
+/* Shared overlay footer */
+.overlay-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  border-top: 1px solid var(--border-primary);
+  font-size: 14px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.overlay-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.overlay-footer-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.overlay-footer-right {
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+.overlay-footer kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 5px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: var(--font-body);
+  color: var(--text-secondary);
+}
+
+.overlay-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.overlay-close:hover {
+  color: var(--text-primary);
+}
+
 .nav-spacer {
   flex: 1;
 }
@@ -776,183 +919,129 @@ body {
    SEARCH DROPDOWN
    ================================================ */
 .search-dropdown {
-  position: absolute;
-  z-index: 200;
+  position: fixed;
+  z-index: 10001;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: var(--surface-primary);
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-xl);
-  width: 520px;
-  box-shadow: var(--shadow-lg);
+  border-radius: 12px;
+  width: 600px;
+  max-height: 500px;
+  box-shadow: 0 8px 15px rgba(31, 41, 55, 0.1);
   overflow: hidden;
-  top: 56px;
-  right: 120px;
+  display: flex;
+  flex-direction: column;
 }
 
-.search-dd-input {
+.search-dd-header {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
+  gap: 16px;
+  padding: 16px 24px;
   border-bottom: 1px solid var(--border-primary);
+  flex-shrink: 0;
 }
 
-.search-dd-input span {
-  font-size: var(--brand-font-size-300);
+.search-dd-input-field {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  font-family: var(--font-body);
   color: var(--text-primary);
-  font-weight: var(--brand-font-weight-medium);
 }
 
-.search-dd-cursor {
-  display: inline-block;
-  width: 1.5px;
-  height: 16px;
-  background: var(--surface-primary-filled);
-  animation: cursor-blink 1s step-end infinite;
+.search-dd-input-field::placeholder {
+  color: var(--text-tertiary);
 }
 
-@keyframes cursor-blink { 50% { opacity: 0; } }
+.search-dd-clear {
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: var(--font-body);
+  white-space: nowrap;
+}
 
-.search-dd-section {
-  padding: var(--space-2) 0;
+.search-dd-clear:hover {
+  color: var(--text-primary);
+}
+
+.search-dd-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 24px 16px;
 }
 
 .search-dd-label {
-  font-size: var(--brand-font-size-100);
+  font-size: 16px;
   font-weight: var(--brand-font-weight-semibold);
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: var(--space-1) var(--space-4) var(--space-2);
+  color: var(--text-primary);
+  margin-bottom: 8px;
 }
 
 .search-dd-item {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-4);
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-secondary);
   cursor: pointer;
   transition: background var(--transition-fast);
 }
 
-.search-dd-item:hover,
-.search-dd-item.active {
-  background: var(--surface-primary-hover);
+.search-dd-item:last-child {
+  border-bottom: none;
 }
 
-.search-dd-item.active {
-  border-left: 2px solid var(--surface-primary-filled);
+.search-dd-item:hover {
+  background: var(--surface-primary-hover);
+  margin: 0 -24px;
+  padding: 12px 24px;
 }
 
 .search-dd-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-md);
-  background: var(--surface-primary-hover);
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-.search-dd-name {
-  font-size: var(--brand-font-size-300);
-  font-weight: var(--brand-font-weight-medium);
-  color: var(--text-primary);
-}
-
-.search-dd-meta {
-  font-size: var(--brand-font-size-200);
-  color: var(--text-tertiary);
-  margin-top: 1px;
-}
-
-.search-dd-badge {
-  font-size: 9px;
-  font-weight: var(--brand-font-weight-semibold);
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  margin-left: var(--space-2);
-}
-
-.search-dd-badge.popular {
-  background: var(--surface-warning);
-  color: var(--brand-orange-800);
-}
-
-.search-dd-badge.repos {
-  background: var(--surface-secondary);
-  color: var(--text-tertiary);
-}
-
-/* ================================================
-   "WHY DID THIS CHANGE?" POPOVER
-   ================================================ */
-.diff-actions-menu {
-  position: relative;
-  display: inline-flex;
-}
-
-.diff-more-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: var(--radius-md);
-  border: none;
-  background: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--icon-tertiary);
-  transition: all var(--transition-fast);
-  margin-left: auto;
-}
-
-.diff-more-btn:hover {
-  background: var(--surface-secondary);
   color: var(--icon-secondary);
 }
 
-.why-popover {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: var(--space-1);
-  background: var(--surface-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-xl);
-  padding: var(--space-4);
-  width: 320px;
-  box-shadow: var(--shadow-lg);
-  z-index: 50;
+.search-dd-name {
+  font-size: 14px;
+  color: var(--text-primary);
 }
 
-.why-popover-title {
-  font-family: var(--font-heading);
-  font-size: var(--brand-font-size-300);
-  font-weight: var(--brand-font-weight-semibold);
-  line-height: var(--brand-line-height-300);
-  color: var(--content-heading);
-  margin-bottom: var(--space-2);
+.search-dd-shortcuts {
+  margin-left: auto;
   display: flex;
+  gap: 4px;
+}
+
+.search-dd-shortcuts kbd {
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-}
-
-.why-popover-content {
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 5px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  font-size: 11px;
   font-family: var(--font-body);
-  font-size: var(--brand-font-size-300);
-  color: var(--content-body);
-  line-height: var(--brand-line-height-300);
+  color: var(--text-tertiary);
 }
 
-.why-badge {
-  font-size: 9px;
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-information);
-  color: var(--text-information);
-  font-weight: var(--brand-font-weight-semibold);
-}
 
 /* ================================================
    COMMIT DIALOG
@@ -1398,76 +1487,113 @@ body {
 
 .results-split {
   display: grid;
-  grid-template-columns: 420px 1fr;
+  grid-template-columns: 280px 1fr;
   height: calc(100% - 120px);
   min-height: 400px;
+  position: relative;
 }
 
 .results-left {
   border-right: 1px solid var(--border-primary);
   overflow-y: auto;
-  padding: var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
 }
 
-.results-right {
+.results-left-header {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-primary);
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.results-left-header span {
+  color: var(--text-tertiary);
+  font-weight: var(--brand-font-weight-regular);
+}
+
+.results-center {
   overflow-y: auto;
   padding: var(--space-5);
   background: var(--surface-secondary);
 }
 
-.results-summary-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-2);
+.results-recipe-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  background: var(--surface-primary);
+  border-left: 1px solid var(--border-primary);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
 }
 
-.summary-stat {
-  padding: var(--space-3);
-  border-radius: var(--radius-lg);
-  background: var(--surface-secondary);
+.recipe-drawer-header {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-primary);
 }
 
-.summary-stat-value {
-  font-size: var(--brand-font-size-500);
+.recipe-drawer-title {
+  font-size: var(--brand-font-size-300);
   font-weight: var(--brand-font-weight-semibold);
   color: var(--text-primary);
 }
 
-.summary-stat-label {
-  font-size: var(--brand-font-size-200);
-  color: var(--text-tertiary);
+.recipe-drawer-list {
+  padding: var(--space-2) 0;
+}
+
+.recipe-drawer-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  border-left: 2px solid transparent;
+}
+
+.recipe-drawer-item:hover {
+  background: var(--surface-primary-hover);
+}
+
+.recipe-drawer-item.active {
+  background: var(--surface-primary-hover);
+  border-left-color: var(--surface-primary-filled);
+}
+
+.recipe-drawer-icon {
+  color: var(--icon-secondary);
+  flex-shrink: 0;
   margin-top: 2px;
 }
 
-.results-filter-tabs {
-  display: flex;
-  gap: var(--space-1);
-  background: var(--surface-secondary);
-  padding: 2px;
-  border-radius: var(--radius-lg);
-  width: fit-content;
+.recipe-drawer-info {
+  min-width: 0;
 }
 
-.results-filter-tab {
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-md);
+.recipe-drawer-name {
   font-size: var(--brand-font-size-200);
   font-weight: var(--brand-font-weight-medium);
-  color: var(--text-secondary);
-  cursor: pointer;
-  background: none;
-  border: none;
-  font-family: var(--font-body);
-  transition: all var(--transition-fast);
+  color: var(--text-primary);
 }
 
-.results-filter-tab.active {
-  background: var(--surface-primary);
-  color: var(--text-primary);
-  box-shadow: var(--shadow-xs);
+.recipe-drawer-id {
+  font-size: 11px;
+  font-family: var(--font-code);
+  color: var(--text-tertiary);
+  word-break: break-all;
+  margin-top: 2px;
 }
 
 .results-tree {
@@ -1480,11 +1606,11 @@ body {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
   cursor: pointer;
   transition: background var(--transition-fast);
   font-size: var(--brand-font-size-200);
+  border-bottom: 1px solid var(--border-secondary);
 }
 
 .results-tree-item:hover {
@@ -1639,86 +1765,6 @@ body {
   gap: var(--space-3);
 }
 
-/* ================================================
-   ORG DROPDOWN
-   ================================================ */
-.org-dropdown {
-  position: absolute;
-  z-index: 100;
-  background: var(--surface-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-xl);
-  width: 360px;
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
-  top: 56px;
-  left: var(--space-5);
-}
-
-.org-dd-search {
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border-primary);
-}
-
-.org-dd-search input {
-  width: 100%;
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-lg);
-  padding: var(--space-2) var(--space-3);
-  font-size: var(--brand-font-size-300);
-  font-family: var(--font-body);
-  outline: none;
-}
-
-.org-dd-search input::placeholder {
-  color: var(--content-placeholder);
-}
-
-.org-dd-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--brand-font-size-300);
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: background var(--transition-fast);
-}
-
-.org-dd-item:hover {
-  background: var(--surface-secondary);
-}
-
-.org-dd-item.active {
-  background: var(--surface-primary-hover);
-}
-
-.org-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--brand-font-size-200);
-  font-weight: var(--brand-font-weight-semibold);
-  color: var(--text-on-primary);
-  flex-shrink: 0;
-}
-
-.org-dd-meta {
-  flex: 1;
-}
-
-.org-dd-name {
-  font-weight: var(--brand-font-weight-medium);
-}
-
-.org-dd-repos {
-  font-size: var(--brand-font-size-200);
-  color: var(--text-tertiary);
-  margin-top: 1px;
-}
 
 /* ================================================
    WELCOME MODAL
@@ -1978,7 +2024,7 @@ body {
 <div id="root"></div>
 
 <script type="module">
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import Joyride from 'react-joyride';
 import htm from 'htm';
@@ -2029,6 +2075,8 @@ const icons = {
   circleHelp: (s) => html`<${Icon} size=${s || 18}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></${Icon}>`,
 
   chevronDown: (s) => html`<${Icon} size=${s || 16} strokeWidth=${2}><path d="M6 9l6 6 6-6"/></${Icon}>`,
+
+  x: (s) => html`<${Icon} size=${s || 18}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></${Icon}>`,
 
   // Action icons
   playCircle: (s, c) => html`<${Icon} size=${s || 16} stroke=${c || 'currentColor'}><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></${Icon}>`,
@@ -2094,13 +2142,59 @@ function LeftNavigation({ activeItem }) {
 // ============================================================
 // GLOBAL NAVIGATION BAR
 // ============================================================
-function GlobalNavBar({ orgSelected, onOrgClick, onSearchClick }) {
+function GlobalNavBar({ orgSelected, orgName, showOrgDropdown, onOrgClick, onOrgSelect, onOrgClose, onSearchClick, onSearchClose, showSearchDropdown, searchQuery, onSearchQueryChange, onSearchResultClick }) {
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    if (showSearchDropdown && searchInputRef.current) {
+      setTimeout(() => searchInputRef.current?.focus(), 200);
+    }
+  }, [showSearchDropdown]);
+
   return html`
     <div className="global-nav">
-      <div className=${'org-selector' + (orgSelected ? ' selected' : '')} onClick=${onOrgClick}>
-        ${icons.users(18)}
-        <span>${orgSelected ? 'Acme Corp' : 'Select an organization'}</span>
-        ${icons.chevronDown(14)}
+      <div className="org-selector-wrapper">
+        <div className=${'org-selector' + (orgSelected ? ' selected' : '')} onClick=${onOrgClick}>
+          ${icons.users(18)}
+          <span>${orgSelected ? orgName : 'Select an organization'}</span>
+          ${icons.chevronDown(14)}
+        </div>
+        ${showOrgDropdown ? html`
+          <div className="org-dropdown">
+            <div className="org-dropdown-header">
+              ${icons.search(18)}
+              <input type="text" placeholder="Search organizations..." readOnly />
+              <button className="overlay-close" onClick=${onOrgClose}>
+                ${icons.x(18)}
+              </button>
+            </div>
+            <div className="org-dropdown-content">
+              <div className="org-dropdown-item org-dropdown-item-default" onClick=${() => onOrgSelect('Default')}>
+                <span className="org-dropdown-name">Default</span>
+                <span className="org-dropdown-count">(1)</span>
+              </div>
+              <div className="org-dropdown-item" onClick=${() => onOrgSelect('Moderne')}>
+                <span className="org-dropdown-name">Moderne</span>
+                <span className="org-dropdown-count">249</span>
+              </div>
+              <div className="org-dropdown-item" onClick=${() => onOrgSelect('Open Source')}>
+                <span className="org-dropdown-name">Open Source</span>
+                <span className="org-dropdown-count">40,929</span>
+              </div>
+              <div className="org-dropdown-item" onClick=${() => onOrgSelect('Acme Corp')}>
+                <span className="org-dropdown-name">Acme Corp</span>
+                <span className="org-dropdown-count">47</span>
+              </div>
+            </div>
+            <div className="overlay-footer">
+              <div className="overlay-footer-left">
+                <span className="overlay-footer-hint"><kbd>\u2191\u2193</kbd> Navigate</span>
+                <span className="overlay-footer-hint"><kbd>Enter</kbd> Select</span>
+                <span className="overlay-footer-hint"><kbd>Esc</kbd> Close</span>
+              </div>
+            </div>
+          </div>
+        ` : null}
       </div>
       <div className="nav-spacer" />
       <div className="search-input" onClick=${onSearchClick}>
@@ -2108,6 +2202,44 @@ function GlobalNavBar({ orgSelected, onOrgClick, onSearchClick }) {
         <span>Search recipes</span>
         <kbd>\u2318K</kbd>
       </div>
+      ${showSearchDropdown ? html`
+        <div className="search-dropdown">
+          <div className="search-dd-header">
+            ${icons.search(18)}
+            <input ref=${searchInputRef} className="search-dd-input-field" type="text" placeholder="Search recipes..." value=${searchQuery} onInput=${(e) => onSearchQueryChange(e.target.value)} />
+            ${searchQuery.length > 0 ? html`<button className="search-dd-clear" onClick=${() => onSearchQueryChange('')}>Clear</button>` : null}
+            <button className="overlay-close" onClick=${onSearchClose}>
+              ${icons.x(18)}
+            </button>
+          </div>
+          ${searchQuery.length >= 3 ? html`
+            <div className="search-dd-content">
+              <div className="search-dd-label">Recipes</div>
+              ${searchResults.map((item, i) => html`
+                <div key=${i} className=${'search-dd-item' + (item.target ? ' search-dd-result-target' : '')} onClick=${item.target ? onSearchResultClick : undefined}>
+                  <div className="search-dd-icon">${icons.fileCode(16)}</div>
+                  <div className="search-dd-name">${item.name}</div>
+                  <div className="search-dd-shortcuts">
+                    <kbd>\u2318</kbd><kbd>K</kbd>
+                  </div>
+                </div>
+              `)}
+            </div>
+          ` : html`
+            <div className="search-dd-content">
+              <div className="search-dd-label">Recipes</div>
+            </div>
+          `}
+          <div className="overlay-footer">
+            <div className="overlay-footer-left">
+              <span className="overlay-footer-hint"><kbd>\u2191\u2193</kbd> Navigate</span>
+              <span className="overlay-footer-hint"><kbd>Enter</kbd> Select</span>
+              <span className="overlay-footer-hint"><kbd>Esc</kbd> Close</span>
+            </div>
+            <div className="overlay-footer-right">Search syntax tips</div>
+          </div>
+        </div>
+      ` : null}
       <div className="nav-actions">
         <button className="nav-action-btn">${icons.settings(18)}</button>
         <button className="nav-action-btn">${icons.circleHelp(18)}</button>
@@ -2184,10 +2316,10 @@ function MarketplacePage() {
 // PAGE: MARKETPLACE WITH SEARCH RESULTS
 // ============================================================
 const searchResults = [
-  { name: 'Migrate to Spring Boot 3.x', meta: 'Spring \u00B7 by OpenRewrite \u00B7 v2.11.0', popular: true, active: true },
-  { name: 'Spring Boot 3.x best practices', meta: 'Spring \u00B7 by OpenRewrite \u00B7 v1.4.2' },
-  { name: 'Spring Boot properties migration', meta: 'Spring \u00B7 by OpenRewrite \u00B7 v2.8.0' },
-  { name: 'Upgrade Spring Security to 6.x', meta: 'Security \u00B7 by OpenRewrite \u00B7 v1.2.0' },
+  { name: 'Common static analysis', target: true },
+  { name: 'Simplify method chain' },
+  { name: 'Remove unused imports' },
+  { name: 'Code cleanup' },
 ];
 
 function MarketplaceSearchPage() {
@@ -2325,34 +2457,34 @@ function RecipeDetailPage({ onDryRunClick }) {
       <div className="breadcrumb">
         <a>Marketplace</a>
         <span className="breadcrumb-sep">\u203A</span>
-        <a>Spring</a>
+        <a>Static analysis</a>
         <span className="breadcrumb-sep">\u203A</span>
-        <span>Migrate to Spring Boot 3.x</span>
+        <span>Common static analysis</span>
       </div>
       <div className="recipe-header">
-        <div className="recipe-title">Migrate to Spring Boot 3.x</div>
-        <div className="recipe-meta">by OpenRewrite \u00B7 v2.11.0 \u00B7 Updated 3 days ago</div>
+        <div className="recipe-title">Common static analysis</div>
+        <div className="recipe-meta">by OpenRewrite \u00B7 v1.8.0 \u00B7 Updated 3 days ago</div>
       </div>
       <div className="recipe-card">
         <div className="recipe-card-body">
-          <div className="recipe-desc">This recipe will apply changes commonly needed when migrating to Spring Boot 3.x, including updating deprecated APIs, migrating from javax to jakarta namespace, and updating Spring Security configurations.</div>
-          <div className="recipe-org-message">Will run on <strong>Acme Corp</strong> / <strong>47 repositories</strong></div>
+          <div className="recipe-desc">This recipe will fix a significant amount of static analysis issues while also ensuring that your code continues to function as expected.</div>
+          <div className="recipe-org-message">Will run on <strong>Default</strong> / <strong>36,871 projects</strong></div>
           <div className="recipe-actions">
             <button className="btn btn-primary pulse dry-run-btn" onClick=${onDryRunClick}>${icons.playCircle(16, '#fff')} Dry run</button>
             <button className="btn">${icons.plus(14)} Add to builder</button>
           </div>
           <div className="recipe-section-title" style=${{ marginTop: 'var(--space-5)' }}>Recipe ID</div>
           <div className="recipe-id-block">
-            <span>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3</span>
+            <span>org.openrewrite.staticanalysis.CommonStaticAnalysis</span>
             <span style=${{ cursor: 'pointer', color: 'var(--icon-tertiary)' }}>${icons.copy(14)}</span>
           </div>
           <div style=${{ marginTop: 'var(--space-5)' }}>
             <div className="recipe-section-title">Tags</div>
             <div className="recipe-tags">
-              <span className="recipe-tag">Spring Boot</span>
-              <span className="recipe-tag">Migration</span>
+              <span className="recipe-tag">Static Analysis</span>
+              <span className="recipe-tag">Code Quality</span>
               <span className="recipe-tag">Java</span>
-              <span className="recipe-tag">Jakarta EE</span>
+              <span className="recipe-tag">Best Practices</span>
             </div>
           </div>
         </div>
@@ -2428,36 +2560,37 @@ const resultRepos = [
 ];
 
 const diffLines = [
-  { type: 'context', num: '14', content: 'import org.springframework.boot.SpringApplication;' },
-  { type: 'context', num: '15', content: 'import org.springframework.boot.autoconfigure.SpringBootApplication;' },
-  { type: 'removed', num: '16', content: 'import javax.servlet.http.HttpServletRequest;' },
-  { type: 'removed', num: '17', content: 'import javax.servlet.http.HttpServletResponse;' },
-  { type: 'added', num: '16', content: 'import jakarta.servlet.http.HttpServletRequest;' },
-  { type: 'added', num: '17', content: 'import jakarta.servlet.http.HttpServletResponse;' },
-  { type: 'context', num: '18', content: '' },
-  { type: 'context', num: '19', content: '@SpringBootApplication' },
-  { type: 'context', num: '20', content: 'public class ApiGatewayApplication {' },
-  { type: 'context', num: '21', content: '' },
-  { type: 'removed', num: '22', content: '    @RequestMapping(value = "/api/**")' },
-  { type: 'added', num: '22', content: '    @GetMapping(value = "/api/**")' },
-  { type: 'context', num: '23', content: '    public ResponseEntity<?> proxy(HttpServletRequest request) {' },
+  { type: 'context', num: '1', content: 'package com.acme.gateway;' },
+  { type: 'context', num: '2', content: '' },
+  { type: 'context', num: '3', content: 'import org.springframework.boot.SpringApplication;' },
+  { type: 'removed', num: '4', content: 'import java.util.List;' },
+  { type: 'removed', num: '5', content: 'import java.io.IOException;' },
+  { type: 'context', num: '4', content: 'import org.springframework.web.bind.annotation.*;' },
+  { type: 'context', num: '5', content: '' },
+  { type: 'context', num: '14', content: '    public ResponseEntity<?> handleRequest() {' },
+  { type: 'removed', num: '15', content: '        boolean isValid = (input != null) ? true : false;' },
+  { type: 'added', num: '15', content: '        boolean isValid = input != null;' },
+  { type: 'context', num: '16', content: '' },
+  { type: 'removed', num: '17', content: '        List<String> items = new ArrayList<String>();' },
+  { type: 'added', num: '17', content: '        List<String> items = new ArrayList<>();' },
+  { type: 'context', num: '18', content: '        return ResponseEntity.ok(items);' },
 ];
 
 function ResultsPage({ mode, onCommitClick }) {
-  // mode: 'review' = step 6 (reviewing diffs), 'commit' = step 7 (commit dialog)
-  const showWhyPopover = mode === 'review';
+  // mode: 'review' = step 6 (diff only), 'drawer' = steps 7-8 (diff + recipe drawer), 'commit' = step 9 (commit dialog)
+  const showRecipeDrawer = mode === 'drawer' || mode === 'commit';
   const showCommitDialog = mode === 'commit';
 
   return html`
     <div style=${{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}>
       <!-- Results page header -->
       <div style=${{ padding: 'var(--space-4) var(--space-6)', borderBottom: '1px solid var(--border-primary)' }}>
-        <div style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-1)' }}>Acme Corp</div>
+        <div style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-1)' }}>Default</div>
         <div style=${{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style=${{ fontSize: 'var(--brand-font-size-600)', fontWeight: 'var(--brand-font-weight-semibold)' }}>Migrate to Spring Boot 3.x</div>
+          <div style=${{ fontSize: 'var(--brand-font-size-600)', fontWeight: 'var(--brand-font-weight-semibold)' }}>Common static analysis</div>
           <span className="status-badge complete">Complete</span>
         </div>
-        <div style=${{ fontFamily: 'var(--font-code)', fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)', marginTop: 'var(--space-1)' }}>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3</div>
+        <div style=${{ fontFamily: 'var(--font-code)', fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)', marginTop: 'var(--space-1)' }}>org.openrewrite.staticanalysis.CommonStaticAnalysis</div>
       </div>
 
       <!-- Tabs -->
@@ -2474,41 +2607,11 @@ function ResultsPage({ mode, onCommitClick }) {
 
       <!-- Split view -->
       <div className="results-split">
-        <!-- Left panel: Summary -->
+        <!-- Left panel: Repo list -->
         <div className="results-left">
-          <div className="results-summary-grid">
-            <div className="summary-stat">
-              <div className="summary-stat-value">2 min ago</div>
-              <div className="summary-stat-label">Started</div>
-            </div>
-            <div className="summary-stat">
-              <div className="summary-stat-value">312</div>
-              <div className="summary-stat-label">Files changed</div>
-            </div>
-            <div className="summary-stat">
-              <div className="summary-stat-value">1m 47s</div>
-              <div className="summary-stat-label">Running time</div>
-            </div>
-            <div className="summary-stat">
-              <div className="summary-stat-value" style=${{ color: 'var(--brand-digital-blue-500)' }}>47</div>
-              <div className="summary-stat-label">Repos with results</div>
-            </div>
-            <div className="summary-stat">
-              <div className="summary-stat-value">8,431</div>
-              <div className="summary-stat-label">Files searched</div>
-            </div>
-            <div className="summary-stat">
-              <div className="summary-stat-value" style=${{ color: 'var(--text-success)' }}>~34 hrs</div>
-              <div className="summary-stat-label">Est. time savings</div>
-            </div>
+          <div className="results-left-header">
+            Repositories <span>47 results</span>
           </div>
-
-          <div className="results-filter-tabs">
-            <button className="results-filter-tab active">All (47)</button>
-            <button className="results-filter-tab">Success (46)</button>
-            <button className="results-filter-tab">Error (1)</button>
-          </div>
-
           <div className="results-tree">
             ${resultRepos.map((repo, i) => html`
               <div key=${i} className=${'results-tree-item' + (repo.selected ? ' selected' : '')}>
@@ -2526,24 +2629,13 @@ function ResultsPage({ mode, onCommitClick }) {
           </div>
         </div>
 
-        <!-- Right panel: Diff view -->
-        <div className="results-right">
+        <!-- Center panel: Diff view -->
+        <div className="results-center">
           <div className="diff-placeholder">
             <div className="diff-header">
               ${icons.github(16)}
               <span>api-gateway</span>
               <span className="diff-file-path">src/main/java/com/acme/gateway/ApiGatewayApplication.java</span>
-              <div className="diff-actions-menu">
-                <button className="diff-more-btn" title="More actions">\u22EF</button>
-                ${showWhyPopover ? html`
-                  <div className="why-popover">
-                    <div className="why-popover-title">${icons.sparkles(14)} Why did this change? <span className="why-badge">AI</span></div>
-                    <div className="why-popover-content">
-                      The <strong>javax.servlet</strong> package was moved to <strong>jakarta.servlet</strong> as part of the Jakarta EE migration. Spring Boot 3.x requires Jakarta EE 9+, so all javax.servlet imports must be updated to their jakarta equivalents.
-                    </div>
-                  </div>
-                ` : null}
-              </div>
             </div>
             <div className="diff-content">
               ${diffLines.map((line, i) => html`
@@ -2555,6 +2647,38 @@ function ResultsPage({ mode, onCommitClick }) {
             </div>
           </div>
         </div>
+
+        <!-- Right panel: Recipe drawer -->
+        ${showRecipeDrawer ? html`
+          <div className="results-recipe-drawer">
+            <div className="recipe-drawer-header">
+              <div className="recipe-drawer-title">Recipes that made changes</div>
+            </div>
+            <div className="recipe-drawer-list">
+              <div className="recipe-drawer-item active">
+                <div className="recipe-drawer-icon">${icons.fileCode(14)}</div>
+                <div className="recipe-drawer-info">
+                  <div className="recipe-drawer-name">RemoveUnusedImports</div>
+                  <div className="recipe-drawer-id">org.openrewrite.java.RemoveUnusedImports</div>
+                </div>
+              </div>
+              <div className="recipe-drawer-item">
+                <div className="recipe-drawer-icon">${icons.fileCode(14)}</div>
+                <div className="recipe-drawer-info">
+                  <div className="recipe-drawer-name">SimplifyBooleanReturn</div>
+                  <div className="recipe-drawer-id">org.openrewrite.staticanalysis.SimplifyBooleanReturn</div>
+                </div>
+              </div>
+              <div className="recipe-drawer-item">
+                <div className="recipe-drawer-icon">${icons.fileCode(14)}</div>
+                <div className="recipe-drawer-info">
+                  <div className="recipe-drawer-name">UseDiamondOperator</div>
+                  <div className="recipe-drawer-id">org.openrewrite.staticanalysis.UseDiamondOperator</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ` : null}
       </div>
 
       <!-- Bottom action panel -->
@@ -2576,14 +2700,14 @@ function ResultsPage({ mode, onCommitClick }) {
             <div className="commit-dialog-body">
               <div className="commit-field">
                 <label className="commit-field-label">Branch name</label>
-                <input className="commit-field-input mono" type="text" value="moderne/spring-boot-3-migration" readOnly />
+                <input className="commit-field-input mono" type="text" value="moderne/common-static-analysis" readOnly />
               </div>
               <div className="commit-field">
                 <label className="commit-field-label">Commit message</label>
-                <textarea className="commit-field-textarea" readOnly>Migrate to Spring Boot 3.x
+                <textarea className="commit-field-textarea" readOnly>Apply common static analysis fixes
 
-Apply automated migration from javax to jakarta namespace,
-update deprecated APIs and Spring Security configuration.</textarea>
+Remove unused imports, simplify boolean expressions,
+and apply diamond operator across the codebase.</textarea>
               </div>
               <div className="commit-field">
                 <label className="commit-field-label">Commit strategy</label>
@@ -2650,24 +2774,43 @@ const tourSteps = [
   {
     target: '.org-selector',
     title: 'First, select your organization',
-    content: 'Pick the organization your team belongs to. This determines which <strong>repositories</strong> and <strong>recipes</strong> are available to you.<br><br>Most users have one org \u2014 <strong>click it to continue.</strong>',
+    content: 'This determines which <strong>repositories</strong> and <strong>recipes</strong> are available to you.<br><br><strong>Click the selector</strong> to see available organizations.',
     placement: 'bottom-start',
     disableBeacon: true,
     spotlightClicks: true,
     data: { requiresAction: true },
   },
   {
-    target: '.org-selector',
-    title: '(Optional) Select what repositories to run against',
-    content: 'By default, recipes will run against the <strong>Default</strong> organization in Moderne. This organization is composed of a diverse set of open-source repositories that can help demonstrate the power of many recipes.<br><br>If you\'d prefer to run against a different group of repositories, click the <strong>Organization selector</strong> at the top of your screen and select the organization you\'d like.',
-    placement: 'bottom-start',
+    target: '.org-dropdown-item-default',
+    title: 'Choose the Default organization',
+    content: 'The <strong>Default</strong> organization contains a diverse set of open-source repositories that demonstrate the power of Moderne recipes.<br><br>You can always change your organization later using this selector.<br><br><strong>Click Default</strong> to continue.',
+    placement: 'right',
     disableBeacon: true,
     spotlightClicks: true,
+    data: { requiresAction: true },
   },
   {
     target: '.search-input',
     title: 'Search for a recipe',
-    content: 'Search is the fastest way to find what you need across 5,000+ recipes.<br><br><strong>Click the search bar</strong> to search for <strong>"Spring Boot 3"</strong>.',
+    content: 'There are over <strong>5,000 recipes</strong> available in the Moderne Platform.<br><br><strong>Click the search bar</strong> to find a recipe.',
+    placement: 'bottom',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.search-dd-input-field',
+    title: 'Search for a recipe',
+    content: 'Type <strong>common static</strong> to find the common static analysis recipe.',
+    placement: 'bottom',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.search-dd-result-target',
+    title: 'Select the recipe',
+    content: 'This recipe fixes a significant amount of static analysis issues while ensuring your code continues to work as expected.<br><br><strong>Click it</strong> to see the details.',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
@@ -2683,29 +2826,34 @@ const tourSteps = [
     data: { requiresAction: true },
   },
   {
-    target: '.activity-row-mine',
-    title: 'Your dry run is complete',
-    content: 'Activity is always in the sidebar \u2014 every run by you or your team shows up here.<br><br><strong>Click your run</strong> to see the exact diff for every file across all 47 repos.',
-    placement: 'bottom',
-    disableBeacon: true,
-    spotlightClicks: true,
-    data: { requiresAction: true },
-  },
-  {
     target: '.diff-placeholder',
     title: 'Review the exact changes',
-    content: 'Click any repository to see the <strong>file-by-file diff</strong> of what the recipe would change.<br><br>Use the <strong>\u22EF menu</strong> and select <strong>"Why did this change?"</strong> to get an AI-powered explanation of each modification.',
+    content: 'Click any repository to see the <strong>file-by-file diff</strong> of what the recipe would change.',
     placement: 'left',
+    disableBeacon: true,
+  },
+  {
+    target: '.results-recipe-drawer',
+    title: 'Why did this change?',
+    content: 'The drawer shows exactly which <strong>recipes triggered each change</strong>, so you always know why a line was modified.',
+    placement: 'left-start',
     disableBeacon: true,
   },
   {
     target: '.commit-btn',
     title: 'Commit to create pull requests',
-    content: 'You can customize the <strong>branch name</strong>, <strong>commit message</strong>, and choose a <strong>commit strategy</strong> (pull request, direct commit, or fork). You can <strong>uncheck repos</strong> you want to skip.<br><br><strong>Click Commit</strong> to open the commit dialog and finish the tour.',
+    content: 'You can customize the <strong>branch name</strong>, <strong>commit message</strong>, and choose a <strong>commit strategy</strong> (pull request, direct commit, or fork). You can <strong>uncheck repos</strong> you want to skip.<br><br><strong>Click Commit</strong> to open the commit dialog.',
     placement: 'top',
     disableBeacon: true,
     spotlightClicks: true,
     data: { requiresAction: true },
+  },
+  {
+    target: '.commit-dialog',
+    title: 'Customize and commit',
+    content: 'Customize the <strong>branch name</strong>, <strong>commit message</strong>, and <strong>commit strategy</strong>, then click <strong>Create pull requests</strong> to finish.',
+    placement: 'left',
+    disableBeacon: true,
   },
 ];
 
@@ -2714,12 +2862,15 @@ const tourSteps = [
 // ============================================================
 const stepToView = {
   0: 'empty',
-  1: 'marketplace',
-  2: 'marketplace-search',
-  3: 'recipe',
-  4: 'activity',
-  5: 'results-review',
-  6: 'results-commit',
+  1: 'empty',
+  2: 'marketplace',
+  3: 'marketplace',
+  4: 'marketplace',
+  5: 'recipe',
+  6: 'results-review',
+  7: 'results-drawer',
+  8: 'results-drawer',
+  9: 'results-commit',
 };
 
 const stepToSidebar = {
@@ -2727,9 +2878,12 @@ const stepToSidebar = {
   1: 'marketplace',
   2: 'marketplace',
   3: 'marketplace',
-  4: 'activity',
-  5: 'activity',
+  4: 'marketplace',
+  5: 'marketplace',
   6: 'activity',
+  7: 'activity',
+  8: 'activity',
+  9: 'activity',
 };
 
 // ============================================================
@@ -2741,6 +2895,10 @@ function App() {
   const [stepIndex, setStepIndex] = useState(0);
   const [currentView, setCurrentView] = useState('empty');
   const [orgSelected, setOrgSelected] = useState(false);
+  const [orgName, setOrgName] = useState('');
+  const [showOrgDropdown, setShowOrgDropdown] = useState(false);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const activeSidebar = runTour ? (stepToSidebar[stepIndex] || 'marketplace') : (orgSelected ? 'marketplace' : 'marketplace');
 
@@ -2748,6 +2906,10 @@ function App() {
     setShowWelcome(false);
     setCurrentView('empty');
     setOrgSelected(false);
+    setOrgName('');
+    setShowOrgDropdown(false);
+    setShowSearchDropdown(false);
+    setSearchQuery('');
     setStepIndex(0);
     setTimeout(() => setRunTour(true), 100);
   }, []);
@@ -2767,7 +2929,7 @@ function App() {
       if (nextView) {
         setCurrentView(nextView);
       }
-      if (nextIndex >= 1) {
+      if (nextIndex >= 2) {
         setOrgSelected(true);
       }
       return nextIndex;
@@ -2786,6 +2948,9 @@ function App() {
       setRunTour(false);
       setCurrentView('marketplace');
       setOrgSelected(true);
+      setOrgName((prev) => prev || 'Default');
+      setShowOrgDropdown(false);
+      setShowSearchDropdown(false);
       return;
     }
 
@@ -2799,7 +2964,7 @@ function App() {
         if (nextView) {
           setCurrentView(nextView);
         }
-        if (nextIndex >= 1) {
+        if (nextIndex >= 2) {
           setOrgSelected(true);
         }
         setStepIndex(nextIndex);
@@ -2809,40 +2974,80 @@ function App() {
 
   const handleOrgClick = useCallback(() => {
     if (runTour && stepIndex === 0) {
-      advanceTour();
+      setShowOrgDropdown(true);
+      // Advance to step 1 after dropdown renders
+      setTimeout(() => advanceTour(), 100);
       return;
     }
     if (!runTour) {
-      setOrgSelected(!orgSelected);
+      setShowOrgDropdown((prev) => !prev);
     }
-  }, [runTour, stepIndex, orgSelected, advanceTour]);
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleOrgSelect = useCallback((name) => {
+    setOrgName(name);
+    setOrgSelected(true);
+    setShowOrgDropdown(false);
+    if (runTour && stepIndex === 1) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleOrgClose = useCallback(() => {
+    setShowOrgDropdown(false);
+  }, []);
+
+  const handleSearchClose = useCallback(() => {
+    setShowSearchDropdown(false);
+    setSearchQuery('');
+  }, []);
 
   const handleSearchClick = useCallback(() => {
     if (runTour && stepIndex === 2) {
+      setShowSearchDropdown(true);
+      setTimeout(() => advanceTour(), 100);
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleSearchQueryChange = useCallback((value) => {
+    setSearchQuery(value);
+  }, []);
+
+  // Advance from step 3 → 4 once results are visible
+  useEffect(() => {
+    if (runTour && stepIndex === 3 && searchQuery.length >= 3) {
+      const timer = setTimeout(() => advanceTour(), 400);
+      return () => clearTimeout(timer);
+    }
+  }, [runTour, stepIndex, searchQuery, advanceTour]);
+
+  const handleSearchResultClick = useCallback(() => {
+    if (runTour && stepIndex === 4) {
+      setShowSearchDropdown(false);
       advanceTour();
     }
   }, [runTour, stepIndex, advanceTour]);
 
   const handleDryRunClick = useCallback(() => {
-    if (runTour && stepIndex === 3) {
+    if (runTour && stepIndex === 5) {
       advanceTour();
     }
   }, [runTour, stepIndex, advanceTour]);
 
   const handleActivityRowClick = useCallback(() => {
-    if (runTour && stepIndex === 4) {
-      advanceTour();
-    }
-  }, [runTour, stepIndex, advanceTour]);
-
-  const handleCommitClick = useCallback(() => {
     if (runTour && stepIndex === 6) {
       advanceTour();
     }
   }, [runTour, stepIndex, advanceTour]);
 
+  const handleCommitClick = useCallback(() => {
+    if (runTour && stepIndex === 8) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
   // Determine if the current view needs the content wrapper (white bg + rounded)
-  const isResultsView = currentView === 'results' || currentView === 'results-commit';
+  const isResultsView = currentView === 'results' || currentView === 'results-commit' || currentView === 'results-drawer';
 
   let pageContent;
   switch (currentView) {
@@ -2864,6 +3069,9 @@ function App() {
     case 'results-review':
       pageContent = html`<${ResultsPage} mode="review" onCommitClick=${handleCommitClick} />`;
       break;
+    case 'results-drawer':
+      pageContent = html`<${ResultsPage} mode="drawer" onCommitClick=${handleCommitClick} />`;
+      break;
     case 'results-commit':
       pageContent = html`<${ResultsPage} mode="commit" onCommitClick=${handleCommitClick} />`;
       break;
@@ -2877,22 +3085,31 @@ function App() {
       <div className="main-area">
         <${GlobalNavBar}
           orgSelected=${orgSelected}
+          orgName=${orgName}
+          showOrgDropdown=${showOrgDropdown}
           onOrgClick=${handleOrgClick}
+          onOrgSelect=${handleOrgSelect}
+          onOrgClose=${handleOrgClose}
           onSearchClick=${handleSearchClick}
+          onSearchClose=${handleSearchClose}
+          showSearchDropdown=${showSearchDropdown}
+          searchQuery=${searchQuery}
+          onSearchQueryChange=${handleSearchQueryChange}
+          onSearchResultClick=${handleSearchResultClick}
         />
-        <div className="content-wrapper">
+        <div className="content-wrapper" style=${runTour ? { paddingBottom: '36px' } : {}}>
           ${pageContent}
         </div>
         ${runTour ? html`
           <div className="tour-progress">
             ${icons.info(12, 'var(--surface-primary-filled)')}
-            <span>Getting started: ${stepIndex + 1} of 7</span>
+            <span>Getting started: ${stepIndex + 1} of 10</span>
             <div className="progress-dots">
-              ${Array.from({ length: 7 }, (_, i) => html`
+              ${Array.from({ length: 10 }, (_, i) => html`
                 <div key=${i} className=${'progress-dot' + (i < stepIndex ? ' done' : '') + (i === stepIndex ? ' current' : '')}></div>
               `)}
             </div>
-            <button className="progress-dismiss" onClick=${() => { setRunTour(false); setCurrentView('marketplace'); setOrgSelected(true); }}>Dismiss</button>
+            <button className="progress-dismiss" onClick=${() => { setRunTour(false); setCurrentView('marketplace'); setOrgSelected(true); setOrgName((prev) => prev || 'Default'); setShowOrgDropdown(false); setShowSearchDropdown(false); }}>Dismiss</button>
           </div>
         ` : null}
       </div>
@@ -2914,7 +3131,7 @@ function App() {
             overlayColor: 'rgba(0, 0, 0, 0.5)',
             primaryColor: '#2F42FF',
             spotlightShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)',
-            zIndex: 1000,
+            zIndex: 10010,
           },
           spotlight: {
             borderRadius: 8,
