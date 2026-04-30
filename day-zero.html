@@ -2094,7 +2094,7 @@ function LeftNavigation({ activeItem }) {
 // ============================================================
 // GLOBAL NAVIGATION BAR
 // ============================================================
-function GlobalNavBar({ orgSelected, onOrgClick }) {
+function GlobalNavBar({ orgSelected, onOrgClick, onSearchClick }) {
   return html`
     <div className="global-nav">
       <div className=${'org-selector' + (orgSelected ? ' selected' : '')} onClick=${onOrgClick}>
@@ -2103,7 +2103,7 @@ function GlobalNavBar({ orgSelected, onOrgClick }) {
         ${icons.chevronDown(14)}
       </div>
       <div className="nav-spacer" />
-      <div className="search-input">
+      <div className="search-input" onClick=${onSearchClick}>
         ${icons.search(16)}
         <span>Search recipes</span>
         <kbd>\u2318K</kbd>
@@ -2319,7 +2319,7 @@ function ReposPage() {
 // ============================================================
 // PAGE: RECIPE DETAIL
 // ============================================================
-function RecipeDetailPage() {
+function RecipeDetailPage({ onDryRunClick }) {
   return html`
     <div className="content-area">
       <div className="breadcrumb">
@@ -2338,7 +2338,7 @@ function RecipeDetailPage() {
           <div className="recipe-desc">This recipe will apply changes commonly needed when migrating to Spring Boot 3.x, including updating deprecated APIs, migrating from javax to jakarta namespace, and updating Spring Security configurations.</div>
           <div className="recipe-org-message">Will run on <strong>Acme Corp</strong> / <strong>47 repositories</strong></div>
           <div className="recipe-actions">
-            <button className="btn btn-primary pulse dry-run-btn">${icons.playCircle(16, '#fff')} Dry run</button>
+            <button className="btn btn-primary pulse dry-run-btn" onClick=${onDryRunClick}>${icons.playCircle(16, '#fff')} Dry run</button>
             <button className="btn">${icons.plus(14)} Add to builder</button>
           </div>
           <div className="recipe-section-title" style=${{ marginTop: 'var(--space-5)' }}>Recipe ID</div>
@@ -2372,7 +2372,7 @@ const activityRows = [
   { dot: 'recipe-run', name: 'Remove unused imports', type: 'Recipe Run', typeCls: 'recipe-run', org: 'Acme Corp', status: 'Complete', runBy: 'Marcus T.', time: '2 days ago' },
 ];
 
-function ActivityPage() {
+function ActivityPage({ onActivityRowClick }) {
   return html`
     <div className="content-area">
       <div className="page-header">
@@ -2393,7 +2393,7 @@ function ActivityPage() {
         </thead>
         <tbody>
           ${activityRows.map((row, i) => html`
-            <tr key=${i} className=${row.mine ? 'activity-row-mine' : ''}>
+            <tr key=${i} className=${row.mine ? 'activity-row-mine' : ''} onClick=${row.mine ? onActivityRowClick : undefined} style=${row.mine ? { cursor: 'pointer' } : undefined}>
               <td><span className=${'activity-dot ' + row.dot}></span></td>
               <td style=${{ fontWeight: 'var(--brand-font-weight-medium)', color: row.mine ? 'var(--surface-primary-filled)' : 'var(--text-primary)', cursor: 'pointer' }}>${row.name}</td>
               <td><span className=${'activity-type-badge ' + row.typeCls}>${row.type}</span></td>
@@ -2443,7 +2443,7 @@ const diffLines = [
   { type: 'context', num: '23', content: '    public ResponseEntity<?> proxy(HttpServletRequest request) {' },
 ];
 
-function ResultsPage({ mode }) {
+function ResultsPage({ mode, onCommitClick }) {
   // mode: 'review' = step 6 (reviewing diffs), 'commit' = step 7 (commit dialog)
   const showWhyPopover = mode === 'review';
   const showCommitDialog = mode === 'commit';
@@ -2559,7 +2559,7 @@ function ResultsPage({ mode }) {
 
       <!-- Bottom action panel -->
       <div className="results-action-panel results-actions">
-        <button className=${'btn' + (showCommitDialog ? ' btn-primary pulse' : '') + ' commit-btn'}>${icons.gitPullRequest(14, showCommitDialog ? '#fff' : 'currentColor')} Commit selected results</button>
+        <button className=${'btn' + (showCommitDialog ? ' btn-primary pulse' : '') + ' commit-btn'} onClick=${onCommitClick}>${icons.gitPullRequest(14, showCommitDialog ? '#fff' : 'currentColor')} Commit selected results</button>
         <button className="btn">${icons.download(14)} Download CSV</button>
         <button className="btn">${icons.download(14)} Download patch</button>
         <span style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)' }}>46 repositories selected</span>
@@ -2622,13 +2622,16 @@ function EmptyState() {
 // ============================================================
 function CustomTooltip({ continuous, index, step, backProps, closeProps, primaryProps, skipProps, tooltipProps, size }) {
   const isLast = index === size - 1;
+  const requiresAction = step.data?.requiresAction;
   return html`
     <div ...${tooltipProps} className="joyride-tooltip">
       <div className="joyride-tooltip__step">STEP ${index + 1} OF ${size}</div>
       ${step.title ? html`<div className="joyride-tooltip__title">${step.title}</div>` : null}
       <div className="joyride-tooltip__content" dangerouslySetInnerHTML=${{ __html: step.content }}></div>
       <div className="joyride-tooltip__footer">
-        <button ...${primaryProps} className="joyride-tooltip__btn-next">${isLast ? 'Got it!' : 'Next'}</button>
+        ${requiresAction ? null : html`
+          <button ...${primaryProps} className="joyride-tooltip__btn-next">${isLast ? 'Got it!' : 'Next'}</button>
+        `}
         <button ...${skipProps} className="joyride-tooltip__btn-skip">${isLast ? 'Restart tour' : 'Skip tour'}</button>
         <div className="joyride-tooltip__dots">
           ${Array.from({ length: size }, (_, i) => html`
@@ -2647,40 +2650,46 @@ const tourSteps = [
   {
     target: '.org-selector',
     title: 'First, select your organization',
-    content: 'Pick the organization your team belongs to. This determines which <strong>repositories</strong> and <strong>recipes</strong> are available to you.<br><br>Most users have one org \u2014 click it to continue.',
+    content: 'Pick the organization your team belongs to. This determines which <strong>repositories</strong> and <strong>recipes</strong> are available to you.<br><br>Most users have one org \u2014 <strong>click it to continue.</strong>',
+    placement: 'bottom-start',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.org-selector',
+    title: '(Optional) Select what repositories to run against',
+    content: 'By default, recipes will run against the <strong>Default</strong> organization in Moderne. This organization is composed of a diverse set of open-source repositories that can help demonstrate the power of many recipes.<br><br>If you\'d prefer to run against a different group of repositories, click the <strong>Organization selector</strong> at the top of your screen and select the organization you\'d like.',
     placement: 'bottom-start',
     disableBeacon: true,
     spotlightClicks: true,
   },
   {
-    target: '.data-table',
-    title: 'Check that your repos look right',
-    content: 'Your admin has already connected <strong>47 repositories</strong> to Acme Corp. These are the codebases Moderne can analyze and transform.<br><br>A green dot means the repo is synced and ready. You don\'t need to change anything here \u2014 just confirm these are the right repos.',
-    placement: 'right',
-    disableBeacon: true,
-  },
-  {
     target: '.search-input',
     title: 'Search for a recipe',
-    content: 'Hit <strong>\u2318K</strong> or click the search bar and type what you want to do \u2014 like <strong>"Spring Boot 3"</strong>.<br><br>Results appear instantly. Click a result to see its details. <strong>Search is the fastest way to find what you need</strong> across 5,000+ recipes.',
+    content: 'Search is the fastest way to find what you need across 5,000+ recipes.<br><br><strong>Click the search bar</strong> to search for <strong>"Spring Boot 3"</strong>.',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
+    data: { requiresAction: true },
   },
   {
     target: '.dry-run-btn',
     title: 'Dry run first \u2014 nothing changes until you say so',
-    content: 'Click <strong>Dry Run</strong> to preview the exact code changes across all 47 repos. You\'ll see a diff of every file.<br><br><strong>Nothing is modified until you review and approve.</strong> It\'s completely safe to experiment.',
+    content: '<strong>Nothing is modified until you review and approve.</strong> It\'s completely safe to experiment.<br><br><strong>Click Dry Run</strong> to preview the exact code changes across all 47 repos.',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
+    data: { requiresAction: true },
   },
   {
     target: '.activity-row-mine',
     title: 'Your dry run is complete',
-    content: 'Click your run to see the <strong>exact diff for every file</strong> across all 47 repos. This is where you review what the recipe would change.<br><br>Activity is always in the sidebar \u2014 every run by you or your team shows up here.',
+    content: 'Activity is always in the sidebar \u2014 every run by you or your team shows up here.<br><br><strong>Click your run</strong> to see the exact diff for every file across all 47 repos.',
     placement: 'bottom',
     disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
   },
   {
     target: '.diff-placeholder',
@@ -2692,9 +2701,11 @@ const tourSteps = [
   {
     target: '.commit-btn',
     title: 'Commit to create pull requests',
-    content: 'Click <strong>Commit</strong> to open the commit dialog. You can customize the <strong>branch name</strong>, <strong>commit message</strong>, and choose a <strong>commit strategy</strong> (pull request, direct commit, or fork).<br><br>You can <strong>uncheck repos</strong> you want to skip. Only selected repos get PRs.<br><br>That\'s the full workflow \u2014 you\'re all set!',
+    content: 'You can customize the <strong>branch name</strong>, <strong>commit message</strong>, and choose a <strong>commit strategy</strong> (pull request, direct commit, or fork). You can <strong>uncheck repos</strong> you want to skip.<br><br><strong>Click Commit</strong> to open the commit dialog and finish the tour.',
     placement: 'top',
     disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
   },
 ];
 
@@ -2703,7 +2714,7 @@ const tourSteps = [
 // ============================================================
 const stepToView = {
   0: 'empty',
-  1: 'repos',
+  1: 'marketplace',
   2: 'marketplace-search',
   3: 'recipe',
   4: 'activity',
@@ -2713,7 +2724,7 @@ const stepToView = {
 
 const stepToSidebar = {
   0: 'marketplace',
-  1: 'repos',
+  1: 'marketplace',
   2: 'marketplace',
   3: 'marketplace',
   4: 'activity',
@@ -2745,6 +2756,24 @@ function App() {
     setShowWelcome(false);
   }, []);
 
+  const advanceTour = useCallback(() => {
+    setStepIndex((prev) => {
+      const nextIndex = prev + 1;
+      if (nextIndex >= tourSteps.length) {
+        setRunTour(false);
+        return prev;
+      }
+      const nextView = stepToView[nextIndex];
+      if (nextView) {
+        setCurrentView(nextView);
+      }
+      if (nextIndex >= 1) {
+        setOrgSelected(true);
+      }
+      return nextIndex;
+    });
+  }, []);
+
   const handleJoyrideCallback = useCallback((data) => {
     const { action, index, status, type } = data;
 
@@ -2760,7 +2789,10 @@ function App() {
       return;
     }
 
+    // Only advance on "Next" button clicks for non-action steps
     if (type === 'step:after') {
+      const step = tourSteps[index];
+      if (step?.data?.requiresAction) return; // handled by click handlers
       const nextIndex = index + (action === 'prev' ? -1 : 1);
       if (nextIndex >= 0 && nextIndex < tourSteps.length) {
         const nextView = stepToView[nextIndex];
@@ -2776,10 +2808,38 @@ function App() {
   }, []);
 
   const handleOrgClick = useCallback(() => {
+    if (runTour && stepIndex === 0) {
+      advanceTour();
+      return;
+    }
     if (!runTour) {
       setOrgSelected(!orgSelected);
     }
-  }, [runTour, orgSelected]);
+  }, [runTour, stepIndex, orgSelected, advanceTour]);
+
+  const handleSearchClick = useCallback(() => {
+    if (runTour && stepIndex === 2) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleDryRunClick = useCallback(() => {
+    if (runTour && stepIndex === 3) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleActivityRowClick = useCallback(() => {
+    if (runTour && stepIndex === 4) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleCommitClick = useCallback(() => {
+    if (runTour && stepIndex === 6) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
 
   // Determine if the current view needs the content wrapper (white bg + rounded)
   const isResultsView = currentView === 'results' || currentView === 'results-commit';
@@ -2796,16 +2856,16 @@ function App() {
       pageContent = html`<${MarketplaceSearchPage} />`;
       break;
     case 'recipe':
-      pageContent = html`<${RecipeDetailPage} />`;
+      pageContent = html`<${RecipeDetailPage} onDryRunClick=${handleDryRunClick} />`;
       break;
     case 'activity':
-      pageContent = html`<${ActivityPage} />`;
+      pageContent = html`<${ActivityPage} onActivityRowClick=${handleActivityRowClick} />`;
       break;
     case 'results-review':
-      pageContent = html`<${ResultsPage} mode="review" />`;
+      pageContent = html`<${ResultsPage} mode="review" onCommitClick=${handleCommitClick} />`;
       break;
     case 'results-commit':
-      pageContent = html`<${ResultsPage} mode="commit" />`;
+      pageContent = html`<${ResultsPage} mode="commit" onCommitClick=${handleCommitClick} />`;
       break;
     default:
       pageContent = html`<${EmptyState} />`;
@@ -2818,6 +2878,7 @@ function App() {
         <${GlobalNavBar}
           orgSelected=${orgSelected}
           onOrgClick=${handleOrgClick}
+          onSearchClick=${handleSearchClick}
         />
         <div className="content-wrapper">
           ${pageContent}
