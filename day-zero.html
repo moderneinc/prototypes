@@ -1275,6 +1275,59 @@ body {
 }
 
 /* ================================================
+   COMMIT RESULTS PAGE
+   ================================================ */
+.commit-results-summary {
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4) var(--space-5);
+}
+
+.commit-results-summary-grid {
+  display: flex;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.commit-results-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.commit-results-stat-label {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-100);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.commit-results-stat-value {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.commit-results-progress-bar {
+  margin-top: var(--space-3);
+  height: 4px;
+  background: var(--border-primary);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.commit-results-progress-fill {
+  height: 100%;
+  background: var(--surface-primary-filled);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+/* ================================================
    DATA TABLE (shared pattern for Repos & Activity)
    ================================================ */
 .data-table {
@@ -2195,6 +2248,89 @@ body {
 .next-step-icon-builder {
   background: #FFF3E0;
 }
+
+/* Debug panel */
+.debug-panel {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: var(--font-code);
+  font-size: 11px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  max-height: 90vh;
+  overflow-y: auto;
+  min-width: 180px;
+}
+
+.debug-panel-title {
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.debug-panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.debug-panel button {
+  background: #2a2a40;
+  border: 1px solid #3a3a55;
+  color: #ccc;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-code);
+  font-size: 10px;
+  text-align: left;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+
+.debug-panel button:hover {
+  background: #3a3a60;
+  color: #fff;
+}
+
+.debug-panel button.debug-active {
+  background: #2F42FF;
+  border-color: #2F42FF;
+  color: #fff;
+}
+
+.debug-toggle {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  z-index: 99999;
+  background: #1a1a2e;
+  color: #888;
+  border: 1px solid #3a3a55;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: var(--font-code);
+  font-size: 10px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.debug-toggle:hover {
+  opacity: 1;
+  color: #fff;
+}
 </style>
 
 <script type="importmap">
@@ -2802,7 +2938,7 @@ const diffLines = [
   { type: 'context', num: '18', content: '        return ResponseEntity.ok(items);' },
 ];
 
-function ResultsPage({ mode, onCommitClick, onWhyClick, onCancelCommit }) {
+function ResultsPage({ mode, onCommitClick, onWhyClick, onCancelCommit, onCommitSubmit }) {
   // mode: 'review' = steps 6-7 (diff only), 'drawer' = steps 8-9 (diff + recipe drawer), 'commit' = step 10 (commit dialog)
   const showRecipeDrawer = mode === 'drawer' || mode === 'commit';
   const showCommitDialog = mode === 'commit';
@@ -2985,11 +3121,103 @@ and apply diamond operator across the codebase.</textarea>
             <div className="commit-dialog-footer">
               <button className="btn" style=${{ marginRight: 'auto' }}>See how to run GraphQL</button>
               <button className="btn" onClick=${onCancelCommit}>Cancel</button>
-              <button className="btn btn-primary">${icons.gitPullRequest(14, '#fff')} Commit</button>
+              <button className="btn btn-primary" onClick=${onCommitSubmit}>${icons.gitPullRequest(14, '#fff')} Commit</button>
             </div>
           </div>
         </div>
       ` : null}
+    </div>
+  `;
+}
+
+// ============================================================
+// PAGE: COMMIT RESULTS
+// ============================================================
+const commitResultRepos = [
+  { name: 'api-gateway', status: 'Completed', pr: '#142', prStatus: 'Open' },
+  { name: 'user-service', status: 'Completed', pr: '#89', prStatus: 'Open' },
+  { name: 'payment-processor', status: 'Completed', pr: '#203', prStatus: 'Open' },
+  { name: 'inventory-api', status: 'Completed', pr: '#67', prStatus: 'Open' },
+  { name: 'notification-engine', status: 'Completed', pr: '#31', prStatus: 'Open' },
+  { name: 'auth-service', status: 'Completed', pr: '#55', prStatus: 'Open' },
+];
+
+function CommitResultsPage() {
+  return html`
+    <div className="content-area">
+      <div className="page-header">
+        <div style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-1)' }}>
+          Recent Activity / Commit results
+        </div>
+        <div className="page-title">Commit results</div>
+      </div>
+
+      <!-- Summary -->
+      <div className="commit-results-summary">
+        <div className="commit-results-summary-grid">
+          <div className="commit-results-stat">
+            <div className="commit-results-stat-label">Status</div>
+            <div><span className="status-badge complete">Complete</span></div>
+          </div>
+          <div className="commit-results-stat">
+            <div className="commit-results-stat-label">Repositories</div>
+            <div className="commit-results-stat-value">46 of 46</div>
+          </div>
+          <div className="commit-results-stat">
+            <div className="commit-results-stat-label">Strategy</div>
+            <div className="commit-results-stat-value">Pull request</div>
+          </div>
+          <div className="commit-results-stat">
+            <div className="commit-results-stat-label">Committed</div>
+            <div className="commit-results-stat-value" style=${{ color: 'var(--text-success)' }}>46</div>
+          </div>
+          <div className="commit-results-stat">
+            <div className="commit-results-stat-label">Failed</div>
+            <div className="commit-results-stat-value">0</div>
+          </div>
+        </div>
+        <div className="commit-results-progress-bar">
+          <div className="commit-results-progress-fill" style=${{ width: '100%' }}></div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div className="results-tabs" style=${{ marginTop: 'var(--space-4)' }}>
+        <button className="results-tab">Summary</button>
+        <button className="results-tab active">Commits</button>
+        <button className="results-tab">Activity</button>
+        <div className="results-tab-actions">
+          <button className="btn btn-sm btn-ghost">${icons.check(12, 'currentColor')} Approve PRs</button>
+          <button className="btn btn-sm btn-ghost">${icons.gitPullRequest(14)} Merge PRs</button>
+        </div>
+      </div>
+
+      <!-- Results table -->
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th style=${{ width: '28px' }}></th>
+            <th>Repository</th>
+            <th>Status</th>
+            <th>Pull request</th>
+            <th>PR status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${commitResultRepos.map((repo, i) => html`
+            <tr key=${i}>
+              <td><span className="activity-dot recipe-run"></span></td>
+              <td style=${{ fontWeight: 'var(--brand-font-weight-medium)', color: 'var(--text-primary)' }}>${repo.name}</td>
+              <td><span className="status-badge complete">${repo.status}</span></td>
+              <td style=${{ color: 'var(--surface-primary-filled)', cursor: 'pointer' }}>${repo.pr}</td>
+              <td><span className="status-badge running">${repo.prStatus}</span></td>
+            </tr>
+          `)}
+          <tr>
+            <td colspan="5" style=${{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--brand-font-size-100)', color: 'var(--text-tertiary)' }}>+ 40 more repositories...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   `;
 }
@@ -3150,8 +3378,17 @@ const tourSteps = [
   {
     target: '.commit-dialog',
     title: 'Customize and commit',
-    content: 'Choose a <strong>commit strategy</strong>, set the <strong>branch name</strong> and <strong>commit title</strong>, and configure <strong>pull request options</strong>. When you\'re ready, click <strong>Commit</strong> to finish.',
+    content: 'Choose a <strong>commit strategy</strong>, set the <strong>branch name</strong> and <strong>commit title</strong>, and configure <strong>pull request options</strong>.<br><br><strong>Click Commit</strong> to create your pull requests.',
     placement: 'left',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.commit-results-summary',
+    title: 'Track your commit progress',
+    content: 'After committing, you land here. This page shows the <strong>status of each repository</strong> — whether the pull request was created, merged, or failed.',
+    placement: 'bottom',
     disableBeacon: true,
   },
   {
@@ -3171,7 +3408,7 @@ const highLevelSteps = [
   { label: 'Select your organization', range: [0, 1] },
   { label: 'Find a recipe', range: [2, 4] },
   { label: 'Run the recipe', range: [5, 5] },
-  { label: 'Review and commit', range: [6, 10] },
+  { label: 'Review and commit', range: [6, 11] },
 ];
 
 function getHighLevelStep(stepIndex) {
@@ -3199,7 +3436,7 @@ const stepToView = {
   8: 'results-drawer',
   9: 'results-drawer',
   10: 'results-commit',
-  11: 'marketplace',
+  11: 'commit-results',
 };
 
 const stepToSidebar = {
@@ -3214,7 +3451,7 @@ const stepToSidebar = {
   8: 'activity',
   9: 'activity',
   10: 'activity',
-  11: 'marketplace',
+  11: 'activity',
 };
 
 // ============================================================
@@ -3230,6 +3467,7 @@ function App() {
   const [showOrgDropdown, setShowOrgDropdown] = useState(false);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showDebug, setShowDebug] = useState(false);
 
   const activeSidebar = runTour ? (stepToSidebar[stepIndex] || 'marketplace') : (orgSelected ? 'marketplace' : 'marketplace');
 
@@ -3404,8 +3642,15 @@ function App() {
     setCurrentView('results-drawer');
   }, []);
 
+  const handleCommitSubmit = useCallback(() => {
+    if (runTour && stepIndex === 10) {
+      setCurrentView('commit-results');
+      setStepIndex(11);
+    }
+  }, [runTour, stepIndex]);
+
   // Determine if the current view needs the content wrapper (white bg + rounded)
-  const isResultsView = currentView === 'results' || currentView === 'results-commit' || currentView === 'results-drawer';
+  const isResultsView = currentView === 'results' || currentView === 'results-commit' || currentView === 'results-drawer' || currentView === 'commit-results';
 
   let pageContent;
   switch (currentView) {
@@ -3425,13 +3670,16 @@ function App() {
       pageContent = html`<${ActivityPage} onActivityRowClick=${handleActivityRowClick} />`;
       break;
     case 'results-review':
-      pageContent = html`<${ResultsPage} mode="review" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} />`;
+      pageContent = html`<${ResultsPage} mode="review" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} onCommitSubmit=${handleCommitSubmit} />`;
       break;
     case 'results-drawer':
-      pageContent = html`<${ResultsPage} mode="drawer" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} />`;
+      pageContent = html`<${ResultsPage} mode="drawer" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} onCommitSubmit=${handleCommitSubmit} />`;
       break;
     case 'results-commit':
-      pageContent = html`<${ResultsPage} mode="commit" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} />`;
+      pageContent = html`<${ResultsPage} mode="commit" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} onCommitSubmit=${handleCommitSubmit} />`;
+      break;
+    case 'commit-results':
+      pageContent = html`<${CommitResultsPage} />`;
       break;
     default:
       pageContent = html`<${EmptyState} />`;
@@ -3514,6 +3762,25 @@ function App() {
           </div>
         </div>
       ` : null}
+      ${showDebug ? html`
+        <div className="debug-panel">
+          <div className="debug-panel-title">Views</div>
+          <div className="debug-panel-section">
+            ${['marketplace', 'recipe', 'results-review', 'results-drawer', 'results-commit', 'commit-results'].map(v => html`
+              <button key=${v} className=${currentView === v ? 'debug-active' : ''} onClick=${() => { setCurrentView(v); setRunTour(false); setShowWelcome(false); setOrgSelected(true); setOrgName('Default'); setShowOrgDropdown(false); setShowSearchDropdown(false); }}>${v}</button>
+            `)}
+          </div>
+          <div className="debug-panel-title" style=${{ marginTop: '4px' }}>Tour steps</div>
+          <div className="debug-panel-section">
+            ${tourSteps.map((s, i) => html`
+              <button key=${i} className=${runTour && stepIndex === i ? 'debug-active' : ''} onClick=${() => { setShowWelcome(false); setOrgSelected(true); setOrgName('Default'); setShowOrgDropdown(false); setShowSearchDropdown(false); const v = stepToView[i]; if (v) setCurrentView(v); setStepIndex(i); setRunTour(true); }}>${i}: ${s.target.replace('.', '')}</button>
+            `)}
+          </div>
+          <button style=${{ marginTop: '4px', background: '#442', borderColor: '#663' }} onClick=${() => setShowDebug(false)}>Close</button>
+        </div>
+      ` : html`
+        <button className="debug-toggle" onClick=${() => setShowDebug(true)}>Debug</button>
+      `}
     </div>
   `;
 }
