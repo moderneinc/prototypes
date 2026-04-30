@@ -1121,37 +1121,42 @@ body {
 .commit-dialog {
   background: var(--surface-primary);
   border-radius: var(--radius-2xl);
-  width: 480px;
+  width: 560px;
+  max-height: 80vh;
   box-shadow: var(--shadow-xl);
   overflow: hidden;
-}
-
-.commit-dialog-header {
-  padding: var(--space-5) var(--space-6);
-  border-bottom: 1px solid var(--border-primary);
-}
-
-.commit-dialog-title {
-  font-family: var(--font-heading);
-  font-size: var(--brand-font-size-500);
-  font-weight: var(--brand-font-weight-semibold);
-  line-height: var(--brand-line-height-400);
-  color: var(--content-heading);
-}
-
-.commit-dialog-subtitle {
-  font-family: var(--font-body);
-  font-size: var(--brand-font-size-300);
-  line-height: var(--brand-line-height-300);
-  color: var(--content-caption);
-  margin-top: var(--space-1);
+  display: flex;
+  flex-direction: column;
 }
 
 .commit-dialog-body {
   padding: var(--space-5) var(--space-6);
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
+  overflow-y: auto;
+}
+
+.commit-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.commit-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.commit-section-header svg {
+  flex-shrink: 0;
 }
 
 .commit-field {
@@ -1166,6 +1171,13 @@ body {
   font-weight: var(--brand-font-weight-medium);
   line-height: var(--brand-line-height-200);
   color: var(--content-heading);
+}
+
+.commit-field-helper {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-100);
+  line-height: var(--brand-line-height-100);
+  color: var(--text-tertiary);
 }
 
 .commit-field-input {
@@ -1191,7 +1203,6 @@ body {
 }
 
 .commit-field-textarea {
-  height: 64px;
   border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
   padding: var(--space-2) var(--space-3);
@@ -1219,6 +1230,38 @@ body {
   background: var(--surface-primary);
   outline: none;
   appearance: auto;
+}
+
+.commit-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--surface-secondary);
+  border-radius: var(--radius-lg);
+}
+
+.commit-checkbox-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.commit-checkbox-item input[type="checkbox"] {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.commit-checkbox-item label {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  line-height: var(--brand-line-height-200);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.commit-checkbox-item .commit-field-helper {
+  margin-top: 1px;
 }
 
 .commit-dialog-footer {
@@ -2071,6 +2114,87 @@ body {
 .joyride-tooltip__dot.done {
   background: var(--surface-primary-filled);
 }
+
+/* Wide tooltip (step 6 review) */
+.joyride-tooltip--wide {
+  max-width: 520px !important;
+}
+
+/* Next steps tooltip */
+.joyride-tooltip--next-steps {
+  max-width: 420px !important;
+}
+
+.next-steps-content p {
+  margin: 0 0 var(--space-3) 0;
+}
+
+.next-steps-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.next-step-link {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-secondary);
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--transition-fast);
+}
+
+.next-step-link:hover {
+  background: var(--surface-tertiary);
+}
+
+.next-step-link > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.next-step-link strong {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--content-heading);
+  line-height: var(--brand-line-height-200);
+}
+
+.next-step-link > div > span {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  color: var(--content-caption);
+  line-height: var(--brand-line-height-200);
+}
+
+.next-step-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-digital-blue-100);
+}
+
+.next-step-icon-viz {
+  background: var(--brand-digital-blue-100);
+}
+
+.next-step-icon-dev {
+  background: #E8F5E9;
+}
+
+.next-step-icon-builder {
+  background: #FFF3E0;
+}
 </style>
 
 <script type="importmap">
@@ -2158,6 +2282,8 @@ const icons = {
   download: (s, c) => html`<${Icon} size=${s || 14} stroke=${c || 'currentColor'}><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></${Icon}>`,
 
   gitPullRequest: (s, c) => html`<${Icon} size=${s || 14} stroke=${c || 'currentColor'}><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></${Icon}>`,
+
+  gitCommit: (s, c) => html`<${Icon} size=${s || 14} stroke=${c || 'currentColor'}><circle cx="12" cy="12" r="3"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/></${Icon}>`,
 
   share: (s) => html`<${Icon} size=${s || 14}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></${Icon}>`,
 
@@ -2676,8 +2802,8 @@ const diffLines = [
   { type: 'context', num: '18', content: '        return ResponseEntity.ok(items);' },
 ];
 
-function ResultsPage({ mode, onCommitClick }) {
-  // mode: 'review' = step 6 (diff only), 'drawer' = steps 7-8 (diff + recipe drawer), 'commit' = step 9 (commit dialog)
+function ResultsPage({ mode, onCommitClick, onWhyClick, onCancelCommit }) {
+  // mode: 'review' = steps 6-7 (diff only), 'drawer' = steps 8-9 (diff + recipe drawer), 'commit' = step 10 (commit dialog)
   const showRecipeDrawer = mode === 'drawer' || mode === 'commit';
   const showCommitDialog = mode === 'commit';
 
@@ -2736,6 +2862,7 @@ function ResultsPage({ mode, onCommitClick }) {
               ${icons.github(16)}
               <span>api-gateway</span>
               <span className="diff-file-path">src/main/java/com/acme/gateway/ApiGatewayApplication.java</span>
+              ${!showRecipeDrawer ? html`<button className="btn btn-sm btn-ghost why-change-btn" onClick=${onWhyClick}>${icons.circleHelp(14)} Why did this change?</button>` : null}
             </div>
             <div className="diff-content">
               ${diffLines.map((line, i) => html`
@@ -2793,34 +2920,72 @@ function ResultsPage({ mode, onCommitClick }) {
       ${showCommitDialog ? html`
         <div className="commit-dialog-overlay">
           <div className="commit-dialog">
-            <div className="commit-dialog-header">
-              <div className="commit-dialog-title">Commit changes</div>
-              <div className="commit-dialog-subtitle">Create pull requests for 46 selected repositories</div>
-            </div>
             <div className="commit-dialog-body">
-              <div className="commit-field">
-                <label className="commit-field-label">Branch name</label>
-                <input className="commit-field-input mono" type="text" value="moderne/common-static-analysis" readOnly />
-              </div>
-              <div className="commit-field">
-                <label className="commit-field-label">Commit message</label>
-                <textarea className="commit-field-textarea" readOnly>Apply common static analysis fixes
-
-Remove unused imports, simplify boolean expressions,
-and apply diamond operator across the codebase.</textarea>
-              </div>
+              <!-- Commit strategy -->
               <div className="commit-field">
                 <label className="commit-field-label">Commit strategy</label>
                 <select className="commit-field-select">
-                  <option>Pull request (recommended)</option>
-                  <option>Direct commit</option>
-                  <option>Fork and pull request</option>
+                  <option>Create a pull request</option>
+                  <option>Commit directly</option>
+                  <option>Create a branch</option>
+                  <option>Create a fork</option>
+                  <option>Create a pull request from a fork</option>
+                  <option>No commit</option>
                 </select>
+              </div>
+
+              <!-- Commit options section -->
+              <div className="commit-section">
+                <div className="commit-section-header">${icons.gitCommit(14, 'var(--text-tertiary)')} Commit options</div>
+                <div className="commit-field">
+                  <label className="commit-field-label">Branch name</label>
+                  <input className="commit-field-input mono" type="text" value="feature/common-static-analysis" readOnly />
+                </div>
+                <div className="commit-field">
+                  <label className="commit-field-label">Commit title</label>
+                  <input className="commit-field-input" type="text" value="Common static analysis" readOnly />
+                </div>
+                <div className="commit-field">
+                  <label className="commit-field-label">Extended commit message</label>
+                  <textarea className="commit-field-textarea" rows="2" readOnly>Remove unused imports, simplify boolean expressions,
+and apply diamond operator across the codebase.</textarea>
+                </div>
+              </div>
+
+              <!-- Pull request options section -->
+              <div className="commit-section">
+                <div className="commit-section-header">${icons.gitPullRequest(14, 'var(--text-tertiary)')} Pull request options</div>
+                <div className="commit-field">
+                  <label className="commit-field-label">Pull request title</label>
+                  <input className="commit-field-input" type="text" placeholder="Common static analysis" readOnly />
+                  <span className="commit-field-helper">Leave blank to use the commit title.</span>
+                </div>
+                <div className="commit-field">
+                  <label className="commit-field-label">Customize pull request body</label>
+                  <textarea className="commit-field-textarea" rows="2" placeholder="Leave blank to use the extended commit message." readOnly></textarea>
+                </div>
+                <div className="commit-checkbox-group">
+                  <div className="commit-checkbox-item">
+                    <input type="checkbox" id="reopen-pr" checked readOnly />
+                    <div>
+                      <label htmlFor="reopen-pr">Can reopen closed pull request</label>
+                      <div className="commit-field-helper">If this pull request already exists and has been closed, it will be reopened.</div>
+                    </div>
+                  </div>
+                  <div className="commit-checkbox-item">
+                    <input type="checkbox" id="draft-pr" readOnly />
+                    <div>
+                      <label htmlFor="draft-pr">Create a draft pull request</label>
+                      <div className="commit-field-helper">Not supported by Bitbucket Cloud.</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="commit-dialog-footer">
-              <button className="btn">Cancel</button>
-              <button className="btn btn-primary">${icons.gitPullRequest(14, '#fff')} Create 46 pull requests</button>
+              <button className="btn" style=${{ marginRight: 'auto' }}>See how to run GraphQL</button>
+              <button className="btn" onClick=${onCancelCommit}>Cancel</button>
+              <button className="btn btn-primary">${icons.gitPullRequest(14, '#fff')} Commit</button>
             </div>
           </div>
         </div>
@@ -2847,9 +3012,30 @@ function EmptyState() {
 function CustomTooltip({ continuous, index, step, backProps, closeProps, primaryProps, skipProps, tooltipProps, size }) {
   const isLast = index === size - 1;
   const requiresAction = step.data?.requiresAction;
+  const isNextSteps = step.data?.isNextSteps;
   const hl = getHighLevelStep(index);
+
+  if (isNextSteps) {
+    return html`
+      <div ...${tooltipProps} className="joyride-tooltip joyride-tooltip--next-steps">
+        ${step.title ? html`<div className="joyride-tooltip__title">${step.title}</div>` : null}
+        <div className="joyride-tooltip__content" dangerouslySetInnerHTML=${{ __html: step.content }}></div>
+        <div className="joyride-tooltip__footer">
+          <button ...${primaryProps} className="joyride-tooltip__btn-next">Done</button>
+          <button ...${skipProps} className="joyride-tooltip__btn-skip">Restart tour</button>
+          <div className="joyride-tooltip__dots">
+            ${Array.from({ length: highLevelSteps.length }, (_, i) => html`
+              <div key=${i} className="joyride-tooltip__dot done"></div>
+            `)}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  const isWide = step.data?.wide;
   return html`
-    <div ...${tooltipProps} className="joyride-tooltip">
+    <div ...${tooltipProps} className=${'joyride-tooltip' + (isWide ? ' joyride-tooltip--wide' : '')}>
       <div className="joyride-tooltip__step">STEP ${hl.number} OF ${hl.total}: ${hl.label}</div>
       ${step.title ? html`<div className="joyride-tooltip__title">${step.title}</div>` : null}
       <div className="joyride-tooltip__content" dangerouslySetInnerHTML=${{ __html: step.content }}></div>
@@ -2874,8 +3060,8 @@ function CustomTooltip({ continuous, index, step, backProps, closeProps, primary
 const tourSteps = [
   {
     target: '.org-selector',
-    title: 'First, select your organization',
-    content: 'This determines which <strong>repositories</strong> and <strong>recipes</strong> are available to you.<br><br><strong>Click the selector</strong> to see available organizations.',
+    title: 'Select your organization',
+    content: 'In Moderne, an <strong>organization</strong> is a collection of related repositories. Choosing an organization makes it possible to take action on those repositories.<br><br>(You can see the repositories associated with each organization by clicking the <strong>Repositories</strong> tab in the side nav.)<br><br><strong>Click the selector</strong> to see available organizations.',
     placement: 'bottom-start',
     disableBeacon: true,
     spotlightClicks: true,
@@ -2884,7 +3070,7 @@ const tourSteps = [
   {
     target: '.org-dropdown-item-default',
     title: 'Choose the Default organization',
-    content: 'The <strong>Default</strong> organization contains a diverse set of open-source repositories that demonstrate the power of Moderne recipes.<br><br>You can always change your organization later using this selector.<br><br><strong>Click Default</strong> to continue.',
+    content: 'For now, choose the <strong>Default</strong> organization. This org contains a diverse set of open-source repositories that demonstrate the power of Moderne recipes.<br><br>You can always change your organization later using this selector.<br><br><strong>Click Default</strong> to continue.',
     placement: 'right',
     disableBeacon: true,
     spotlightClicks: true,
@@ -2893,7 +3079,7 @@ const tourSteps = [
   {
     target: '.search-input',
     title: 'Search for a recipe',
-    content: 'There are over <strong>5,000 recipes</strong> available in the Moderne Platform.<br><br><strong>Click the search bar</strong> to find a recipe.',
+    content: 'There are over <strong>5,000 recipes</strong> available in the Moderne Platform. The search bar is the quickest, most powerful way to find the recipe you are looking for.<br><br><strong>Click the search bar</strong> to find a recipe.',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
@@ -2901,8 +3087,8 @@ const tourSteps = [
   },
   {
     target: '.search-dd-input-field',
-    title: 'Search for a recipe',
-    content: 'Type <strong>common static</strong> to find the common static analysis recipe.',
+    title: 'Search for the recipe',
+    content: 'Let\'s start by running the <strong>common static analysis</strong> recipe. To do so, type <strong>common static</strong>.',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
@@ -2919,19 +3105,31 @@ const tourSteps = [
   },
   {
     target: '.dry-run-btn',
-    title: 'Dry run first \u2014 nothing changes until you say so',
-    content: '<strong>Nothing is modified until you review and approve.</strong> It\'s completely safe to experiment.<br><br><strong>Click Dry Run</strong> to preview the exact code changes across all 47 repos.',
+    title: 'Try a dry run first \u2014 nothing changes until you say so',
+    content: '<strong>Nothing is modified until you review and approve.</strong> It\'s completely safe to experiment.<br><br>You might be asked for additional GitHub permissions after you click this button.<br><br><strong>Click Dry Run</strong> to continue.',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
     data: { requiresAction: true },
   },
   {
-    target: '.diff-placeholder',
-    title: 'Review the exact changes',
-    content: 'Click any repository to see the <strong>file-by-file diff</strong> of what the recipe would change.',
-    placement: 'left',
+    target: '.content-wrapper',
+    title: 'Review the changes',
+    content: 'The recipe results page shows a summary of the recipe status, a list of all of the repositories where results were found, and a code block section that shows some of the changes that were made by the recipe. Click any repository to see the <strong>file-by-file diff</strong> of what the recipe would change.',
+    placement: 'bottom',
     disableBeacon: true,
+    disableOverlay: true,
+    floaterProps: { hideArrow: true },
+    data: { wide: true },
+  },
+  {
+    target: '.why-change-btn',
+    title: 'See why a line changed',
+    content: 'Want to know which recipe modified a specific line? <strong>Click "Why did this change?"</strong> to open the recipe drawer.',
+    placement: 'bottom',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
   },
   {
     target: '.results-recipe-drawer',
@@ -2952,9 +3150,17 @@ const tourSteps = [
   {
     target: '.commit-dialog',
     title: 'Customize and commit',
-    content: 'Customize the <strong>branch name</strong>, <strong>commit message</strong>, and <strong>commit strategy</strong>, then click <strong>Create pull requests</strong> to finish.',
+    content: 'Choose a <strong>commit strategy</strong>, set the <strong>branch name</strong> and <strong>commit title</strong>, and configure <strong>pull request options</strong>. When you\'re ready, click <strong>Commit</strong> to finish.',
     placement: 'left',
     disableBeacon: true,
+  },
+  {
+    target: '.content-wrapper',
+    title: 'You\'re all set!',
+    content: '<div class="next-steps-content"><p>You\'ve completed the getting started tour. Here are some next steps to explore:</p><div class="next-steps-links"><a href="https://docs.moderne.io/user-documentation/moderne-platform/getting-started/visualizations" target="_blank" class="next-step-link"><span class="next-step-icon next-step-icon-viz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F42FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><div><strong>Visualizations</strong><span>See interactive charts and graphs of your recipe results</span></div></a><a href="https://docs.moderne.io/user-documentation/moderne-platform/getting-started/dev-center" target="_blank" class="next-step-link"><span class="next-step-icon next-step-icon-dev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span><div><strong>DevCenter</strong><span>Your dashboard for tracking upgrades, migrations, and security fixes</span></div></a><a href="https://docs.moderne.io/user-documentation/moderne-platform/getting-started/recipe-builder" target="_blank" class="next-step-link"><span class="next-step-icon next-step-icon-builder"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E65100" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span><div><strong>Builder</strong><span>Create custom recipes by combining existing ones</span></div></a></div></div>',
+    placement: 'center',
+    disableBeacon: true,
+    data: { isNextSteps: true },
   },
 ];
 
@@ -2965,7 +3171,7 @@ const highLevelSteps = [
   { label: 'Select your organization', range: [0, 1] },
   { label: 'Find a recipe', range: [2, 4] },
   { label: 'Run the recipe', range: [5, 5] },
-  { label: 'Review and commit', range: [6, 9] },
+  { label: 'Review and commit', range: [6, 10] },
 ];
 
 function getHighLevelStep(stepIndex) {
@@ -2989,9 +3195,11 @@ const stepToView = {
   4: 'marketplace',
   5: 'recipe',
   6: 'results-review',
-  7: 'results-drawer',
+  7: 'results-review',
   8: 'results-drawer',
-  9: 'results-commit',
+  9: 'results-drawer',
+  10: 'results-commit',
+  11: 'marketplace',
 };
 
 const stepToSidebar = {
@@ -3005,6 +3213,8 @@ const stepToSidebar = {
   7: 'activity',
   8: 'activity',
   9: 'activity',
+  10: 'activity',
+  11: 'marketplace',
 };
 
 // ============================================================
@@ -3066,12 +3276,25 @@ function App() {
     }
 
     if (status === 'skipped') {
-      setRunTour(false);
-      setCurrentView('marketplace');
-      setOrgSelected(true);
-      setOrgName((prev) => prev || 'Default');
-      setShowOrgDropdown(false);
-      setShowSearchDropdown(false);
+      // If on last step, restart the tour
+      if (index === tourSteps.length - 1) {
+        setRunTour(false);
+        setCurrentView('marketplace');
+        setOrgSelected(false);
+        setOrgName('');
+        setShowOrgDropdown(false);
+        setShowSearchDropdown(false);
+        setSearchQuery('');
+        setStepIndex(0);
+        setTimeout(() => setRunTour(true), 100);
+      } else {
+        setRunTour(false);
+        setCurrentView('marketplace');
+        setOrgSelected(true);
+        setOrgName((prev) => prev || 'Default');
+        setShowOrgDropdown(false);
+        setShowSearchDropdown(false);
+      }
       return;
     }
 
@@ -3165,11 +3388,21 @@ function App() {
     }
   }, [runTour, stepIndex, advanceTour]);
 
-  const handleCommitClick = useCallback(() => {
-    if (runTour && stepIndex === 8) {
+  const handleWhyClick = useCallback(() => {
+    if (runTour && stepIndex === 7) {
       advanceTour();
     }
   }, [runTour, stepIndex, advanceTour]);
+
+  const handleCommitClick = useCallback(() => {
+    if (runTour && stepIndex === 9) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleCancelCommit = useCallback(() => {
+    setCurrentView('results-drawer');
+  }, []);
 
   // Determine if the current view needs the content wrapper (white bg + rounded)
   const isResultsView = currentView === 'results' || currentView === 'results-commit' || currentView === 'results-drawer';
@@ -3192,13 +3425,13 @@ function App() {
       pageContent = html`<${ActivityPage} onActivityRowClick=${handleActivityRowClick} />`;
       break;
     case 'results-review':
-      pageContent = html`<${ResultsPage} mode="review" onCommitClick=${handleCommitClick} />`;
+      pageContent = html`<${ResultsPage} mode="review" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} />`;
       break;
     case 'results-drawer':
-      pageContent = html`<${ResultsPage} mode="drawer" onCommitClick=${handleCommitClick} />`;
+      pageContent = html`<${ResultsPage} mode="drawer" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} />`;
       break;
     case 'results-commit':
-      pageContent = html`<${ResultsPage} mode="commit" onCommitClick=${handleCommitClick} />`;
+      pageContent = html`<${ResultsPage} mode="commit" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} />`;
       break;
     default:
       pageContent = html`<${EmptyState} />`;
@@ -3229,10 +3462,10 @@ function App() {
         ${runTour ? html`
           <div className="tour-progress">
             ${icons.info(12, 'var(--surface-primary-filled)')}
-            <span>Step ${getHighLevelStep(stepIndex).number} of ${highLevelSteps.length}: ${getHighLevelStep(stepIndex).label}</span>
+            <span>${stepIndex >= tourSteps.length - 1 ? 'Tour complete' : 'Step ' + getHighLevelStep(stepIndex).number + ' of ' + highLevelSteps.length + ': ' + getHighLevelStep(stepIndex).label}</span>
             <div className="progress-dots">
               ${Array.from({ length: highLevelSteps.length }, (_, i) => html`
-                <div key=${i} className=${'progress-dot' + (i + 1 < getHighLevelStep(stepIndex).number ? ' done' : '') + (i + 1 === getHighLevelStep(stepIndex).number ? ' current' : '')}></div>
+                <div key=${i} className=${'progress-dot' + (stepIndex >= tourSteps.length - 1 || i + 1 < getHighLevelStep(stepIndex).number ? ' done' : '') + (stepIndex < tourSteps.length - 1 && i + 1 === getHighLevelStep(stepIndex).number ? ' current' : '')}></div>
               `)}
             </div>
             <button className="progress-dismiss" onClick=${() => { setRunTour(false); setCurrentView('marketplace'); setOrgSelected(true); setOrgName((prev) => prev || 'Default'); setShowOrgDropdown(false); setShowSearchDropdown(false); }}>Dismiss</button>
