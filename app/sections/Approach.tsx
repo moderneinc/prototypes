@@ -64,8 +64,9 @@ export function Approach() {
         </Body>
         <Body role="supporting">
           Tokens, patterns, and voice rules live in the repo. The Figma plugin pushes them
-          into Figma as components. When you change a token value in Figma, Claude can read
-          the change and propose an update to the source files. The repo stays canonical;
+          into Figma as components. When you change a token value in Figma, Claude reads
+          the change and proposes an update to the source files. New patterns go through a
+          mirror/review/promote flow before becoming canonical. The repo stays the authority;
           Figma stays in sync.
         </Body>
       </div>
@@ -110,10 +111,10 @@ export function Approach() {
         </Body>
 
         <StepList steps={[
-          <span key="1">In terminal, rebuild the plugin: <code style={mono}>npm run figma-plugin:rebuild</code></span>,
-          <span key="2">In Figma desktop, run <strong>Plugins → Development → Construct</strong></span>,
+          <span key="1">In terminal: <code style={mono}>npm run figma-plugin:rebuild</code></span>,
+          <span key="2">In Figma desktop: <strong>Plugins → Development → Construct</strong></span>,
           <span key="3">The plugin shows a diff — what changed since last sync. Click <strong>Apply</strong>.</span>,
-          <span key="4">First time? Click <strong>Initialize</strong> instead. It creates all three pages.</span>,
+          <span key="4">First time? Click <strong>Initialize</strong> instead. It creates all four pages.</span>,
         ]} />
 
         <Body role="metadata">
@@ -132,8 +133,65 @@ export function Approach() {
           <span key="1">In Claude Code, say: <code style={mono}>pull from Figma</code></span>,
           <span key="2">Claude reads the live Figma file, compares it against canonical, and reports what changed.</span>,
           <span key="3">Review the diff. If it looks right, tell Claude to apply it.</span>,
-          <span key="4">Claude edits <code style={{ fontFamily: "var(--font-mono)" }}>tokens.json</code> and rebuilds. Push the change to Figma to close the loop.</span>,
+          <span key="4">Claude edits <code style={{ fontFamily: "var(--font-mono)" }}>tokens.json</code> and rebuilds. Push to Figma to close the loop.</span>,
         ]} />
+      </div>
+
+      {/* --- Propose: new patterns ----------------------------------------- */}
+      <div className="space-y-3">
+        <Heading as="h3" className="text-base">Propose: new patterns</Heading>
+        <Body role="supporting">
+          When someone builds a new screen — in Claude, in code, or anywhere — it goes through
+          a staging flow before becoming canonical.
+        </Body>
+
+        <StepList steps={[
+          <span key="1">Write a pattern <code style={{ fontFamily: "var(--font-mono)" }}>.md</code> file and save it to <code style={{ fontFamily: "var(--font-mono)" }}>design-system/mirror/</code></span>,
+          <span key="2">Rebuild and sync: <code style={mono}>npm run figma-plugin:rebuild</code> then run the plugin in Figma.</span>,
+          <span key="3">The proposed pattern appears on the <strong>Construct / Mirror</strong> page in Figma with a status badge and lint results.</span>,
+          <span key="4">Review the frame. Click <strong>Approve</strong> or <strong>Reject</strong> in the plugin UI — or do it in Claude.</span>,
+          <span key="5">To promote an approved pattern: <code style={mono}>mv design-system/mirror/name.md design-system/patterns/</code> then rebuild.</span>,
+        ]} />
+
+        <Body role="metadata">
+          Mirror frames are not components — they&rsquo;re review artifacts. They don&rsquo;t show up in the asset library or on the Patterns page until promoted.
+        </Body>
+      </div>
+
+      {/* --- Composition rules --------------------------------------------- */}
+      <div className="space-y-3">
+        <Heading as="h3" className="text-base">Composition rules</Heading>
+        <Body role="supporting">
+          25 lint rules enforce consistency across all screens. Claude reads them before generating anything new. The validator catches drift.
+        </Body>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Card>
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-text-supporting)", marginBottom: "0.375rem" }}>WHAT THE RULES COVER</div>
+            <CheckTable items={[
+              { label: "Glyph-color pairing (● must be red or white, never cyan)", ok: true },
+              { label: "Max 3 semantic colors per screen", ok: true },
+              { label: "Red is for failures only, cyan is for commands only", ok: true },
+              { label: "Section headers must be ALL CAPS", ok: true },
+              { label: "Close banner must match exit condition", ok: true },
+              { label: "Required elements per pattern (error needs WHAT WENT WRONG + TRY)", ok: true },
+            ]} />
+          </Card>
+          <Card>
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-text-supporting)", marginBottom: "0.375rem" }}>WHEN THEY RUN</div>
+            <CheckTable items={[
+              { label: "Build time: mirror items linted before baking into plugin", ok: true },
+              { label: "On demand: npm run lint:composition validates all patterns", ok: true },
+              { label: "Claude: reads composition.json before generating any screen", ok: true },
+              { label: "Mirror page: lint results shown as badges on each frame", ok: true },
+            ]} />
+          </Card>
+        </div>
+
+        <Body role="metadata">
+          If a pattern doesn&rsquo;t exist yet, Claude generates the screen AND a draft set of composition rules for it.
+          Both go through review.
+        </Body>
       </div>
 
       {/* --- What's pullable ----------------------------------------------- */}
@@ -155,7 +213,7 @@ export function Approach() {
           <Card>
             <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-text-metadata)", marginBottom: "0.5rem" }}>NOT PULLABLE</div>
             <CheckTable items={[
-              { label: "Adding new components", ok: false },
+              { label: "Adding new components (use the mirror flow instead)", ok: false },
               { label: "Adding or removing children inside a component", ok: false },
               { label: "Rearranging sections within a pattern", ok: false },
               { label: "Pattern prose and documentation", ok: false },
@@ -167,8 +225,26 @@ export function Approach() {
 
         <Body role="metadata">
           Rule of thumb: if you can change it with a property inspector (color, font, text content), it&rsquo;s pullable.
-          If it requires creating or deleting nodes, do it in code.
+          If it requires creating or deleting nodes, use the mirror flow or edit the code directly.
         </Body>
+      </div>
+
+      {/* --- Figma pages --------------------------------------------------- */}
+      <div className="space-y-3">
+        <Heading as="h3" className="text-base">Figma pages</Heading>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[
+            { page: "Construct / Tokens", desc: "Glyph component sets + text style swatches. One component per glyph with color variants." },
+            { page: "Construct / Components", desc: "Rows, sections, banners in three columns. Building blocks for patterns." },
+            { page: "Construct / Patterns", desc: "One frame per canonical pattern with the terminal preview. Generated from design-system/patterns/*.md." },
+            { page: "Construct / Mirror", desc: "Staging area for proposed patterns. Frames with lint badges. Approve or reject from the plugin UI." },
+          ].map((p) => (
+            <div key={p.page} style={{ background: "var(--color-bg-terminal)", border: "1px solid var(--color-bg-panel)", borderRadius: "0.25rem", padding: "0.5rem 0.75rem" }}>
+              <code style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--color-info)", display: "block" }}>{p.page}</code>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-metadata)", marginTop: "0.125rem" }}>{p.desc}</div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* --- Commands reference --------------------------------------------- */}
@@ -178,6 +254,7 @@ export function Approach() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
           {[
             { cmd: "npm run figma-plugin:rebuild", desc: "Rebuild plugin from canonical" },
+            { cmd: "npm run lint:composition", desc: "Validate patterns against composition rules" },
             { cmd: "npm run figma-pull:expected", desc: "Regenerate expected Figma state" },
             { cmd: "npm run tokens:build", desc: "Rebuild canonical from tokens.json" },
             { cmd: "npm run dev", desc: "Start the playground locally" },
@@ -189,11 +266,16 @@ export function Approach() {
           ))}
         </div>
 
-        <div style={{ background: "var(--color-bg-terminal)", border: "1px solid var(--color-bg-panel)", borderRadius: "0.25rem", padding: "0.5rem 0.75rem" }}>
-          <code style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--color-info)", display: "block" }}>pull from Figma</code>
-          <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-metadata)", marginTop: "0.125rem" }}>
-            Say this in Claude Code. Claude reads the Figma file via MCP, diffs against canonical, and proposes edits.
-          </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
+          {[
+            { cmd: "pull from Figma", desc: "Claude reads Figma via MCP, diffs against canonical, proposes edits" },
+            { cmd: "approve <name>", desc: "Claude promotes a mirror item to canonical patterns" },
+          ].map((r) => (
+            <div key={r.cmd} style={{ background: "var(--color-bg-terminal)", border: "1px solid var(--color-bg-panel)", borderRadius: "0.25rem", padding: "0.5rem 0.75rem" }}>
+              <code style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--color-warning)", display: "block" }}>{r.cmd}</code>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-metadata)", marginTop: "0.125rem" }}>Say this in Claude Code. {r.desc}.</div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -217,31 +299,39 @@ export function Approach() {
         >
 {`design-system/
 ├── tokens.json              ← edit tokens here
-├── patterns/*.md            ← edit patterns here
-└── voice.md, gaps.md        ← voice rules, known gaps
+├── patterns/*.md            ← canonical patterns (12)
+├── mirror/*.md              ← proposed patterns (staging)
+├── composition.json         ← 25 lint rules for screen consistency
+├── voice.md                 ← voice rules
+└── gaps.md                  ← known gaps and extrapolations
 
 tokens/
 ├── canonical.json           ← generated source of truth
 └── figma-expected.json      ← expected Figma state (for pull)
 
 lib/interpreters/figma-plugin/
-├── build.mjs                ← bakes canonical into code.js
-├── ui.html                  ← plugin UI (diff preview)
-└── src/builders/            ← tokens, rows, sections, banners, patterns
+├── build.mjs                ← bakes canonical + mirror into code.js
+├── ui.html                  ← plugin UI (diff, mirror approve/reject)
+└── src/builders/            ← tokens, rows, sections, banners, patterns, mirror
 
 scripts/
 ├── build-tokens.mjs         ← tokens.json → canonical.json
-└── figma-pull-expected.mjs  ← canonical → figma-expected.json`}
+├── figma-pull-expected.mjs  ← canonical → figma-expected.json
+└── validate-composition.mjs ← lint patterns against composition.json`}
         </pre>
       </div>
 
-      {/* --- Where to learn more ------------------------------------------- */}
+      {/* --- Reference ----------------------------------------------------- */}
       <div className="space-y-3">
         <Heading as="h3" className="text-base">Reference</Heading>
         <div className="space-y-1">
           <Body role="metadata">
             <code style={{ fontFamily: "var(--font-mono)" }}>canonical.json</code>
             {" "}— all tokens with role, evidence, and provenance.
+          </Body>
+          <Body role="metadata">
+            <code style={{ fontFamily: "var(--font-mono)" }}>composition.json</code>
+            {" "}— glyph-color rules, pattern shapes, semantic color constraints.
           </Body>
           <Body role="metadata">
             <code style={{ fontFamily: "var(--font-mono)" }}>AGENTS.md</code>

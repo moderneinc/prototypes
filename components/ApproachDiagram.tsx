@@ -103,7 +103,7 @@ export function ApproachDiagram() {
           <div style={{ ...sub, color: "var(--color-success)" }}>↓ push via plugin</div>
           <div style={{ ...sub, color: "var(--color-success)" }}>↑ pull via Claude + MCP</div>
           <div style={{ ...sub, marginTop: "0.375rem" }}>
-            Tokens, Components, Patterns pages
+            4 pages: Tokens, Components, Patterns, Mirror
           </div>
         </div>
 
