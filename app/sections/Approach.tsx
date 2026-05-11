@@ -237,7 +237,7 @@ export function Approach() {
       <div className="space-y-4">
         <Heading as="h3" className="text-base">Working in Figma</Heading>
         <Body role="primary">
-          The plugin produces five layers, all bound to canonical.
+          The plugin produces three layers — Tokens, Components, and Patterns — all bound to canonical.
         </Body>
 
         <FiveLayersVisual />
@@ -256,7 +256,7 @@ export function Approach() {
                 color: "var(--color-text-supporting)",
               }}
             >
-              ATOM
+              TOKEN
             </dt>
             <dd style={{ fontFamily: "var(--font-sans)", fontSize: "0.875rem", color: "var(--color-text-body)", margin: 0 }}>
               The smallest indivisible unit. A single glyph or text style bound to a canonical token.

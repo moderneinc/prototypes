@@ -5,7 +5,6 @@ import { TokensColor } from "@/app/sections/TokensColor";
 import { TokensTypography } from "@/app/sections/TokensTypography";
 import { TokensSpacing } from "@/app/sections/TokensSpacing";
 import { TokensGlyphs } from "@/app/sections/TokensGlyphs";
-import { TokensBanners } from "@/app/sections/TokensBanners";
 import { TokensLinks } from "@/app/sections/TokensLinks";
 
 const SUBSECTIONS = [
@@ -13,7 +12,6 @@ const SUBSECTIONS = [
   { href: "#tokens-typography", label: "Typography" },
   { href: "#tokens-spacing", label: "Spacing" },
   { href: "#tokens-glyphs", label: "Glyphs" },
-  { href: "#tokens-banners", label: "Banners" },
   { href: "#tokens-links", label: "Links" },
 ];
 
@@ -62,7 +60,6 @@ export default function TokensPage() {
         <TokensTypography />
         <TokensSpacing />
         <TokensGlyphs />
-        <TokensBanners />
         <TokensLinks />
       </Section>
     </PageLayout>
