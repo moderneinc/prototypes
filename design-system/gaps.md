@@ -438,18 +438,6 @@ These are catalogued *cleanly* — they should be reusable as the agenda for the
 
 **Why out of scope here.** Naming the rule is a canonical edit; rendering it correctly in moderne-ui is a moderne-ui change. This is the canonical half of the work. The moderne-ui half lives in the colleague's repo and is theirs to ship once the rule is in canonical. Independent of B-37 and B-38.
 
-### B-40 — Logo and ASCII art usage scope
-
-**Source.** External review recommendation (screenshot in `.context/attachments/Screenshot 2026-05-11 at 10.44.44 AM.png`):
-
-> We advocate for utilizing ASCII art exclusively during the initial onboarding or login sequence. For persistent usage and daily commands, we recommend shifting to structured, terminal-native UI patterns (like framing and typography). This hybrid approach preserves brand identity while ensuring functional resilience across diverse terminal emulators, font line-heights, and operating systems.
-
-**Why open.** Canonical references ASCII art in two narrow places — as a non-UTF-8 fallback for the start banner (`@-art logo`, BAN-001) and as the universal glyph fallback in NO_COLOR mode. Neither addresses *when ASCII art belongs as a brand element*. In practice, ASCII logos render unreliably across terminal emulators (line-height variance, font fallback, copy-paste artifacts) and the cost of rendering one badly is higher than the brand benefit of rendering one at all. Without a usage-scope rule, every persistent surface that considers adding ASCII art re-litigates the tradeoff.
-
-**What to decide.** Adopt the recommended scope. ASCII art and branded logos appear during **initial onboarding or login sequences only** — moments where the user expects and welcomes the visual statement, and where the surface is rendered once rather than continuously. Persistent and daily-use surfaces (help screens, error states, progress, banners during routine commands) carry brand identity through **structured terminal-native UI** — the established typography, framing, glyph, and color system — instead. This is a hybrid model, not an either-or: ASCII art for ceremony, structured UI for everything else.
-
-**Why out of scope here.** Adopting the rule is a small addition to canonical (likely under a new `brand` token group or as a `usage_scope` field on the existing banner section). The harder work is auditing the existing banner variants (start-banner ASCII, the four close-banners) to confirm each is correctly scoped — start banner is ceremony (keep); close banners may or may not qualify depending on whether they read as "ceremony at the end of a command" or "daily noise" (designer call). Defer until that audit happens.
-
 ---
 
 ## How to read this file
