@@ -44,14 +44,14 @@ const arrow: React.CSSProperties = {
 export function ApproachDiagram() {
   return (
     <div
-      aria-label="Construct three-layer token flow"
+      aria-label="Construct bidirectional token flow"
       style={{ display: "flex", flexDirection: "column", gap: 0 }}
     >
       {/* Layer 1 — Authoring */}
       <div style={{ display: "flex", justifyContent: "center" }}>
         <div style={{ ...box, textAlign: "center", minWidth: "16rem", maxWidth: "24rem", flex: 1 }}>
           <div style={label}>design-system/tokens.json</div>
-          <div style={sub}>authoring · human-edited</div>
+          <div style={sub}>authoring source</div>
         </div>
       </div>
 
@@ -98,24 +98,12 @@ export function ApproachDiagram() {
         }}
       >
         {/* Figma */}
-        <div style={box}>
+        <div style={{ ...box, borderColor: "var(--color-success)", background: "rgba(74,222,128,0.04)" }}>
           <div style={label}>Figma</div>
-          <div style={sub}>plugin: writes variables, styles, components</div>
-          <div style={{ ...sub, marginTop: "0.125rem" }}>plus DTCG + Tokens Studio for export</div>
-          <div
-            style={{
-              marginTop: "0.625rem",
-              paddingTop: "0.5rem",
-              borderTop: "1px solid var(--color-bg-panel)",
-            }}
-          >
-            <div style={{ ...sub, color: "var(--color-text-supporting)", fontStyle: "italic" }}>
-              ↕ Code Connect (future)
-            </div>
-            <div style={{ ...sub, marginTop: "0.25rem" }}>React components</div>
-            <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", color: "var(--color-text-metadata)", marginTop: "0.125rem" }}>
-              /components/*.tsx
-            </div>
+          <div style={{ ...sub, color: "var(--color-success)" }}>↓ push via plugin</div>
+          <div style={{ ...sub, color: "var(--color-success)" }}>↑ pull via Claude + MCP</div>
+          <div style={{ ...sub, marginTop: "0.375rem" }}>
+            Tokens, Components, Patterns pages
           </div>
         </div>
 
