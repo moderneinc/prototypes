@@ -408,6 +408,36 @@ These are catalogued *cleanly* — they should be reusable as the agenda for the
 
 **Why out of scope here.** Requires a real designer to test against. Authoring the doc in advance produces theoretical guidance; pairing on it after a real install produces grounded guidance.
 
+### B-37 — Inline command and banner phrase as first-class typography roles
+
+**Source.** Figma plugin atoms.js review — discovered while documenting the 6 generated text styles against the 4 canonical typography roles.
+
+**Why open.** Canonical's `typography` section defines four roles: `section_header`, `primary`, `supporting`, `metadata`. The Figma plugin ships *six* text styles — the four above plus `Inline command` (regular weight, `color.semantic.info`, for the cyan `mod` commands shown inline in help text) and `Banner phrase` (bold weight, larger size, letter-spacing 4%, for `MOD FAILED` / `MOD COMPLETE`). Both are observable patterns in `context/cli-help-text-rewrites.pdf` and `context/error-states-ui-uplift.pdf`, but neither has a canonical typography entry — they're implicit in prose and in the color tokens.
+
+**What to decide.** Either (a) add `typography.inline_command` and `typography.banner_phrase` as first-class roles in canonical (with applies_to, evidence, etc., to match the existing four), or (b) keep them as derived treatments — colored variants of `primary` (cyan `primary` = inline command) and weighted variants (bold `primary` at larger size = banner phrase) — and document them as compositions in voice/grammar rather than as their own roles. Option (a) is cleaner for the plugin and any future code generator; option (b) keeps the role list short and forces compositions to surface in prose where designers read them.
+
+**Why out of scope here.** The Figma plugin ships them today as text styles, so designers have what they need. The decision is whether to *name* them in canonical or keep them implicit. Not blocking; worth deciding before the next text-style consumer (docs site, embedded log viewer, etc.) is built.
+
+### B-38 — Sans-serif font for non-terminal Construct surfaces
+
+**Source.** Figma plugin atoms.js — chose Inter for the six generated text styles to match the playground site.
+
+**Why open.** Canonical's `typography.monospace` token specifies the terminal font stack (SF Mono → Fira Code → Menlo → Consolas → monospace), which applies to CLI output and to mockup chrome inside the `.terminal` frame on the journey map. It does *not* specify a sans-serif for non-CLI text on designer surfaces (Figma labels, the playground site body, future docs site headings, marketing). The playground site uses Inter via Tailwind's default font stack, and the Figma plugin matches Inter for its six text styles — but neither is grounded in a canonical decision.
+
+**What to decide.** Either (a) add `typography.sans_serif` as a canonical token with an explicit font stack (e.g. `Inter, system-ui, -apple-system, sans-serif`) and an `applies_to` field listing the designer surfaces, or (b) leave it unspecified and let each surface inherit its host product's font (playground site = Tailwind default, Figma = Figma default, docs site = whatever the docs framework provides). Option (a) buys consistency across Construct's designer surfaces; option (b) avoids opining on something that's downstream of the CLI itself.
+
+**Why out of scope here.** The CLI never displays sans-serif text. This is a designer-surface decision that doesn't change how the system reads CLI output. Independent of B-39 (which is about CLI content rendered on non-terminal surfaces).
+
+### B-39 — Typography rule for CLI content embedded in non-terminal surfaces
+
+**Source.** Moderne UI feedback — colleague flagged that error logs rendered in moderne-ui were displayed in a proportional font; requested monospace rendering. Screenshot in `.context/attachments/Screenshot 2026-05-04 at 11.07.15 AM.png`.
+
+**Why open.** Canonical's `typography.monospace` token currently only applies to *mockup chrome on the journey map outside the `.terminal` frame*. It does not address what happens when verbatim CLI/log output is embedded in a non-terminal surface — a web log viewer, an error panel in moderne-ui, a build dashboard, a docs page showing terminal output. In practice, every such surface needs to render the content in monospace to preserve timestamps, log levels, `└` tree connectors, ASCII glyphs, and any spatial alignment the CLI relies on. But canonical doesn't name this rule, so each surface re-decides it (and gets it wrong by default).
+
+**What to decide.** Add an `embedded_cli_output` entry to canonical's typography section (or a new `applies_to` field on `typography.monospace`) that names the rule: *any non-terminal surface that displays verbatim CLI/log output renders it in the `typography.monospace` font stack.* Evidence: the moderne-ui error log screenshot. Affected surfaces (initial): moderne-ui error display, devcenter log viewer, any future docs page rendering terminal output.
+
+**Why out of scope here.** Naming the rule is a canonical edit; rendering it correctly in moderne-ui is a moderne-ui change. This is the canonical half of the work. The moderne-ui half lives in the colleague's repo and is theirs to ship once the rule is in canonical. Independent of B-37 and B-38.
+
 ---
 
 ## How to read this file
