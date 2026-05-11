@@ -194,35 +194,42 @@ export function Approach() {
         </Body>
 
         <Heading as="h3" className="text-base">Why this direction</Heading>
-        <Body role="primary">
-          Most design systems lose meaning at the export step. A color becomes{" "}
-          <code style={{ fontFamily: "var(--font-mono)" }}>#f87171</code> and that&rsquo;s it —
-          why it exists, who reads it, where it appears, all gone. Every tool downstream
-          inherits that loss.
-        </Body>
-        <Body role="primary">
-          Canonical keeps the meaning. Each token records what it&rsquo;s for, what evidence
-          supports it, where it applies, and how conflicts were resolved. An LLM, a designer
-          in Figma, the CLI, or this site can each read what they need.
-        </Body>
-        <Body role="primary">
-          Terminal details stay terminal. Two spaces of indent stays two spaces of indent —
-          not sixteen pixels. The translation to canvas dimensions happens at the Figma
-          boundary, not in the source.
-        </Body>
+        <ul style={{ padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+          <li style={{ fontFamily: "var(--font-sans)", fontSize: "0.9375rem", color: "var(--color-text-body)", lineHeight: 1.55 }}>
+            <strong style={{ color: "var(--color-text-primary)" }}>Canonical as the source.</strong>{" "}
+            No more &ldquo;is the right color in{" "}
+            <code style={{ fontFamily: "var(--font-mono)" }}>tokens.ts</code> or in the Figma file?&rdquo; — there&rsquo;s one answer, and it&rsquo;s in code.
+          </li>
+          <li style={{ fontFamily: "var(--font-sans)", fontSize: "0.9375rem", color: "var(--color-text-body)", lineHeight: 1.55 }}>
+            <strong style={{ color: "var(--color-text-primary)" }}>Context survives the export.</strong>{" "}
+            A color isn&rsquo;t just{" "}
+            <code style={{ fontFamily: "var(--font-mono)" }}>#f87171</code> — it carries what it&rsquo;s for, where it applies, and the evidence behind it. Engineers, designers, and Claude all read the same file.
+          </li>
+          <li style={{ fontFamily: "var(--font-sans)", fontSize: "0.9375rem", color: "var(--color-text-body)", lineHeight: 1.55 }}>
+            <strong style={{ color: "var(--color-text-primary)" }}>Terminal semantics stay terminal.</strong>{" "}
+            Two spaces of indent is &ldquo;two spaces,&rdquo; not sixteen pixels. The CLI never round-trips through a design tool&rsquo;s mental model.
+          </li>
+        </ul>
 
         <Heading as="h3" className="text-base">The loop, end to end</Heading>
-        <Body role="primary">
-          Canonical is one file in the repo. It holds every token, every grammar rule, and
-          the evidence behind each one. Everything else that needs to know what the design
-          system says reads from this file.
-        </Body>
-        <Body role="primary">
-          Both directions are safe to run any time. Re-running the plugin updates components
-          in place; it never duplicates and never destroys. If a component disappears from
-          canonical, its Figma counterpart moves to a dedicated review page rather than
-          vanishing.
-        </Body>
+        <ul style={{ padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: "0.625rem" }}>
+          <li style={{ fontFamily: "var(--font-sans)", fontSize: "0.9375rem", color: "var(--color-text-body)", lineHeight: 1.55 }}>
+            <strong style={{ color: "var(--color-text-primary)" }}>One source, many consumers.</strong>{" "}
+            Canonical lives in the repo. Figma, the CLI, and this site all read from it.
+          </li>
+          <li style={{ fontFamily: "var(--font-sans)", fontSize: "0.9375rem", color: "var(--color-text-body)", lineHeight: 1.55 }}>
+            <strong style={{ color: "var(--color-text-primary)" }}>The plugin is idempotent.</strong>{" "}
+            Designers can iterate in Figma without their work being destroyed when canonical updates. Re-runs update in place — never duplicate, never destroy.
+          </li>
+          <li style={{ fontFamily: "var(--font-sans)", fontSize: "0.9375rem", color: "var(--color-text-body)", lineHeight: 1.55 }}>
+            <strong style={{ color: "var(--color-text-primary)" }}>AI-readability is built in.</strong>{" "}
+            Claude can build new CLI surfaces consistent with the system without an engineer hand-holding it through every token lookup.
+          </li>
+          <li style={{ fontFamily: "var(--font-sans)", fontSize: "0.9375rem", color: "var(--color-text-body)", lineHeight: 1.55 }}>
+            <strong style={{ color: "var(--color-text-primary)" }}>Code Connect is next.</strong>{" "}
+            Designers will see the actual React code in Dev Mode. Closes the loop architecturally; mostly a handoff benefit.
+          </li>
+        </ul>
       </div>
 
       <ApproachDiagram />
