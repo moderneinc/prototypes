@@ -26,6 +26,7 @@ import { loadCanonical, resolveColorHex } from "@/lib/tokens";
  * error) → primitives (inline reference) → canvas analogue (settings).
  */
 export const EXAMPLE_INDEX: { slug: string; title: string; render: () => React.ReactElement }[] = [
+  { slug: "start-banner", title: "Start banner", render: () => <StartBannerSurface /> },
   { slug: "help-top-level", title: "Top-level help", render: () => <HelpTopLevelSurface /> },
   { slug: "help-subcommand", title: "Subcommand help", render: () => <HelpSubcommandSurface /> },
   { slug: "help-command", title: "Leaf-command help", render: () => <HelpCommandSurface /> },
@@ -62,6 +63,67 @@ function renderWithPlaceholders(cmd: string, placeholders: string[], placeholder
 }
 
 /* ------------------------------------------------------------------ */
+/* Start banner — design-system/patterns/start-banner.md              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * StartBannerSurface — the first screen of an interactive session
+ * (`moderne start` or equivalent). Three-rule frame: top rule, product
+ * identifier with `///` prefix, middle rule, key/value session info
+ * rows, bottom rule, ready line, prompt. No ASCII art — product identity
+ * is carried by typography and framing.
+ */
+export function StartBannerSurface() {
+  const primaryHex = resolveColorHex("color.text.primary") ?? "#f8fafc";
+  const bodyHex = resolveColorHex("color.text.body") ?? "#e2e8f0";
+  const supportingHex = resolveColorHex("color.text.supporting") ?? "#94a3b8";
+  const metadataHex = resolveColorHex("color.text.metadata") ?? "#64748b";
+  const successHex = resolveColorHex("color.semantic.success") ?? "#4ade80";
+
+  const rule = "─".repeat(48);
+
+  const row = (label: string, value: React.ReactNode) => (
+    <>
+      {"  "}
+      <span style={{ color: supportingHex }}>{label.padEnd(11, " ")}</span>
+      {value}
+      {"\n"}
+    </>
+  );
+
+  return (
+    <CliSurface
+      caption={
+        <>
+          Pattern: <code>start-banner.md</code>. Tokens:{" "}
+          <code>banner.start</code> (three-rule frame; no ASCII art);{" "}
+          <code>typography.section_header</code> (product identifier);{" "}
+          <code>typography.supporting</code> (row labels);{" "}
+          <code>color.semantic.success</code> (Status: Authenticated);{" "}
+          <code>color.text.metadata</code> (rules, prompt);{" "}
+          <code>glyph.shell_prompt</code> (&gt;).
+        </>
+      }
+    >
+      <span style={{ color: metadataHex }}>{rule}</span>
+      {"\n"}
+      <span style={{ color: supportingHex }}>{"/// "}</span>
+      <span style={{ color: primaryHex, fontWeight: 700, letterSpacing: "0.02em" }}>MODERNE 4.2.0</span>
+      {"\n"}
+      <span style={{ color: metadataHex }}>{rule}</span>
+      {"\n"}
+      {row("User", <span style={{ color: bodyHex }}>dev@moderne.io</span>)}
+      {row("Status", <span style={{ color: successHex }}>Authenticated</span>)}
+      <span style={{ color: metadataHex }}>{rule}</span>
+      {"\n"}
+      <span style={{ color: bodyHex }}>Listening for commands...</span>
+      {"\n\n"}
+      <span style={{ color: metadataHex }}>&gt;</span>
+    </CliSurface>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Top-level help (`mod` no-arg) — covers help-top-level + onboarding  */
 /* ------------------------------------------------------------------ */
 
@@ -71,10 +133,9 @@ function renderWithPlaceholders(cmd: string, placeholders: string[], placeholder
  * also the canonical onboarding ladder (onboarding-sequence.md): both
  * patterns share this surface.
  *
- * Start banner stub: canonical.banner.start documents the shape ("UTF-8
- * box-drawing characters", centered, no color) and an asciiFallback
- * ("@-art logo") but contains no literal asset. The example renders a
- * stylized monospace stand-in, surfaced in the caption.
+ * No logo / ASCII art at the top — the subtitle line identifies the
+ * product. The structured start banner is a separate surface
+ * (StartBannerSurface) for interactive-session entry, not top-level help.
  */
 export function HelpTopLevelSurface() {
   const primaryHex = resolveColorHex("color.text.primary") ?? "#f8fafc";
@@ -103,7 +164,6 @@ export function HelpTopLevelSurface() {
       caption={
         <>
           Covers <code>help-top-level.md</code> and <code>onboarding-sequence.md</code>. Tokens:{" "}
-          <code>banner.start</code> (logo — stub, no canonical asset);{" "}
           <code>typography.section_header</code> (group headers);{" "}
           <code>color.semantic.success</code> (continuous step numbers 1–9, per applies_to);{" "}
           <code>color.semantic.info</code> (commands, links);{" "}
@@ -112,14 +172,6 @@ export function HelpTopLevelSurface() {
         </>
       }
     >
-      {/* Start-banner stub — see caption. */}
-      <span style={{ color: primaryHex, fontWeight: 700 }}>
-        {"   ╔═══════════════════════════╗\n"}
-        {"   ║   "}<span style={{ color: infoHex }}>m o d e r n e</span>{"   ║\n"}
-        {"   ║      "}<span style={{ color: supportingHex }}>v 4.2.0</span>{"      ║\n"}
-        {"   ╚═══════════════════════════╝\n"}
-      </span>
-      {"\n   "}
       <span style={{ color: bodyHex }}>Moderne CLI 4.2.0 — Run, study, and ship recipes.</span>
       {"\n\n"}
       <span style={{ color: primaryHex, fontWeight: 700 }}>USAGE</span>

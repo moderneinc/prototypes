@@ -15,6 +15,7 @@ const PATTERN_TO_EXAMPLE: Record<string, string> = {
   "onboarding-sequence": "help-top-level",
   "partial-success": "partial-success",
   progress: "progress",
+  "start-banner": "start-banner",
   success: "success",
 };
 
