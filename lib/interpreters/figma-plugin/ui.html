@@ -187,7 +187,12 @@
     <div class="status-line" id="result-status"></div>
     <hr>
     <div id="result-body"></div>
-    <button id="btn-done" class="secondary">Done</button>
+    <div id="mirror-section" style="display:none">
+      <hr>
+      <div style="font-size:11px;font-weight:700;color:var(--info);letter-spacing:0.06em;margin-bottom:6px;">MIRROR</div>
+      <div id="mirror-items"></div>
+    </div>
+    <button id="btn-done" class="secondary" style="margin-top:8px;">Done</button>
   </div>
 
   <script>
@@ -259,6 +264,7 @@
     parent.postMessage({ pluginMessage: { type: 'preview' } }, '*');
 
     var pendingDiff = null;
+    var previewMirrorMode = false;
 
     onmessage = function(e) {
       var msg = e.data.pluginMessage;
@@ -306,7 +312,13 @@
           bodyHtml = '<div style="color:var(--success);font-size:11px;margin:8px 0;">Already up to date — nothing to apply.</div>' + bodyHtml;
           document.getElementById('preview-body').innerHTML = bodyHtml;
           document.getElementById('preview-actions').innerHTML =
+            '<div id="preview-mirror-section" style="display:none"><hr>' +
+            '<div style="font-size:11px;font-weight:700;color:var(--info);letter-spacing:0.06em;margin-bottom:6px;">MIRROR</div>' +
+            '<div id="preview-mirror-items"></div></div>' +
             '<button class="secondary" style="margin-top:8px;" onclick="refreshPreview()">Refresh</button>';
+          // Check for mirror items even when up to date
+          previewMirrorMode = true;
+          parent.postMessage({ pluginMessage: { type: 'mirror-status' } }, '*');
         } else {
           document.getElementById('preview-body').innerHTML = bodyHtml;
           document.getElementById('preview-actions').innerHTML =
@@ -356,9 +368,57 @@
         }
         document.getElementById('result-body').innerHTML = bodyHtml;
         showPane('result');
+        // Check for mirror items to show approve/reject
+        parent.postMessage({ pluginMessage: { type: 'mirror-status' } }, '*');
+        return;
+      }
+
+      if (msg.type === 'mirror-status-result') {
+        // Route to preview pane or result pane depending on context
+        var mirrorEl = previewMirrorMode ? document.getElementById('preview-mirror-section') : document.getElementById('mirror-section');
+        var itemsEl = previewMirrorMode ? document.getElementById('preview-mirror-items') : document.getElementById('mirror-items');
+        previewMirrorMode = false;
+        if (!mirrorEl || !itemsEl) return;
+        if (!msg.items || msg.items.length === 0) {
+          mirrorEl.style.display = 'none';
+          return;
+        }
+        mirrorEl.style.display = 'block';
+        var html = '';
+        msg.items.forEach(function(item) {
+          var statusColor = item.status === 'approved' ? 'var(--success)' : item.status === 'rejected' ? 'var(--danger)' : 'var(--info)';
+          var statusLabel = item.status === 'approved' ? '✓ Approved' : item.status === 'rejected' ? '✗ Rejected' : 'Proposed';
+          html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--panel)">';
+          html += '<div>';
+          html += '<div style="font-size:11px;color:var(--text)">' + item.slug + '</div>';
+          html += '<div style="font-size:10px;color:' + statusColor + '">' + statusLabel + '</div>';
+          html += '</div>';
+          if (item.status === 'proposed') {
+            html += '<div style="display:flex;gap:4px">';
+            html += '<button onclick="approveMirror(\'' + item.slug + '\')" style="width:auto;padding:3px 10px;font-size:10px;background:var(--success);color:var(--bg);margin:0;border-radius:3px">Approve</button>';
+            html += '<button onclick="rejectMirror(\'' + item.slug + '\')" style="width:auto;padding:3px 10px;font-size:10px;background:transparent;color:var(--danger);border:1px solid var(--danger);margin:0;border-radius:3px">Reject</button>';
+            html += '</div>';
+          }
+          html += '</div>';
+        });
+        itemsEl.innerHTML = html;
+        return;
+      }
+
+      if (msg.type === 'approve-result' || msg.type === 'reject-result') {
+        // Refresh mirror status after action
+        parent.postMessage({ pluginMessage: { type: 'mirror-status' } }, '*');
         return;
       }
     };
+
+    function approveMirror(slug) {
+      parent.postMessage({ pluginMessage: { type: 'approve-mirror', slug: slug } }, '*');
+    }
+
+    function rejectMirror(slug) {
+      parent.postMessage({ pluginMessage: { type: 'reject-mirror', slug: slug } }, '*');
+    }
 
     function refreshPreview() {
       showPane('loading');
