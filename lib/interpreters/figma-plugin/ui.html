@@ -26,7 +26,7 @@
       line-height: 1.5;
     }
     h1 {
-      margin: 0 0 8px;
+      margin: 0 0 4px;
       font-size: 13px;
       font-weight: 700;
       color: var(--primary);
@@ -34,8 +34,13 @@
     }
     .meta {
       color: var(--supporting);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       font-size: 11px;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid var(--panel);
+      margin: 10px 0;
     }
     button {
       display: block;
@@ -49,7 +54,7 @@
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     button:hover { filter: brightness(1.1); }
     button:disabled { opacity: 0.5; cursor: wait; }
@@ -58,83 +63,314 @@
       color: var(--text);
       border: 1px solid var(--panel);
     }
+    button.ghost {
+      background: transparent;
+      color: var(--supporting);
+      border: none;
+      font-size: 11px;
+      padding: 4px 0;
+      margin-bottom: 0;
+      text-align: left;
+      width: auto;
+    }
+    .bucket-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      color: var(--supporting);
+      font-size: 11px;
+      margin: 6px 0 2px;
+      user-select: none;
+    }
+    .bucket-header:hover { color: var(--text); }
+    .bucket-header .count {
+      font-weight: 700;
+    }
+    .bucket-header .added { color: var(--success); }
+    .bucket-header .modified { color: var(--warning); }
+    .bucket-header .removed { color: var(--danger); }
+    .bucket-header .unchanged { color: var(--metadata); }
+    .entity-list {
+      list-style: none;
+      margin: 0;
+      padding: 0 0 0 12px;
+    }
+    .entity-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text);
+      padding: 1px 0;
+    }
+    .entity-list li .key { color: var(--metadata); flex: 1; }
+    .entity-list li .nav-btn {
+      background: none;
+      border: none;
+      color: var(--info);
+      font-family: inherit;
+      font-size: 11px;
+      cursor: pointer;
+      padding: 0 0 0 8px;
+      width: auto;
+      margin: 0;
+      display: inline;
+    }
+    .entity-list li .nav-btn:hover { text-decoration: underline; filter: none; }
+    .summary-row {
+      display: flex;
+      gap: 12px;
+      margin: 4px 0;
+      font-size: 11px;
+    }
+    .summary-row .added { color: var(--success); }
+    .summary-row .modified { color: var(--warning); }
+    .summary-row .removed { color: var(--danger); }
+    .summary-row .unchanged { color: var(--metadata); }
     .log {
-      margin-top: 12px;
-      padding: 8px;
+      margin-top: 8px;
+      padding: 6px 8px;
       background: rgba(0,0,0,0.3);
       border: 1px solid var(--panel);
       border-radius: 4px;
-      max-height: 280px;
+      max-height: 120px;
       overflow-y: auto;
       white-space: pre-wrap;
-      font-size: 11px;
+      font-size: 10px;
     }
     .log .ok { color: var(--success); }
     .log .warn { color: var(--warning); }
     .log .err { color: var(--danger); }
     .log .dim { color: var(--metadata); }
-    .summary {
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid var(--panel);
+    .pane { display: none; }
+    .pane.active { display: block; }
+    .status-line {
+      color: var(--success);
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+    .error-line {
+      color: var(--danger);
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+    .loading {
       color: var(--supporting);
+      font-size: 11px;
+      margin: 8px 0;
     }
   </style>
 </head>
 <body>
-  <h1>◆ CONSTRUCT</h1>
-  <div class="meta">CLI design system — Figma interpreter</div>
-  <button id="sync">Sync from canonical</button>
-  <button id="dryrun" class="secondary">Dry run (preview only)</button>
-  <div class="log" id="log"><span class="dim">Ready. Click Sync to write canonical to this file.</span></div>
+
+  <!-- PANE: loading -->
+  <div class="pane active" id="pane-loading">
+    <h1>◆ CONSTRUCT</h1>
+    <div class="meta">CLI design system — Figma interpreter</div>
+    <div class="loading">Checking sync state...</div>
+  </div>
+
+  <!-- PANE: preview -->
+  <div class="pane" id="pane-preview">
+    <h1>◆ CONSTRUCT</h1>
+    <div class="meta" id="preview-meta"></div>
+    <hr>
+    <div id="preview-body"></div>
+    <div id="preview-actions"></div>
+    <div class="log" id="log" style="display:none"></div>
+  </div>
+
+  <!-- PANE: result -->
+  <div class="pane" id="pane-result">
+    <h1>◆ CONSTRUCT</h1>
+    <div class="status-line" id="result-status"></div>
+    <hr>
+    <div id="result-body"></div>
+    <button id="btn-done" class="secondary">Done</button>
+  </div>
 
   <script>
-    const log = document.getElementById('log');
-    const btnSync = document.getElementById('sync');
-    const btnDry = document.getElementById('dryrun');
-
-    function append(line, cls) {
-      const span = document.createElement('span');
-      if (cls) span.className = cls;
-      span.textContent = line + '\n';
-      log.appendChild(span);
-      log.scrollTop = log.scrollHeight;
+    var panes = { loading: 'pane-loading', preview: 'pane-preview', result: 'pane-result' };
+    function showPane(name) {
+      Object.keys(panes).forEach(function(k) {
+        var el = document.getElementById(panes[k]);
+        el.className = 'pane' + (k === name ? ' active' : '');
+      });
     }
 
-    btnSync.onclick = () => {
-      log.innerHTML = '';
-      btnSync.disabled = true;
-      btnDry.disabled = true;
-      parent.postMessage({ pluginMessage: { type: 'sync', dryRun: false } }, '*');
-    };
-    btnDry.onclick = () => {
-      log.innerHTML = '';
-      btnSync.disabled = true;
-      btnDry.disabled = true;
-      parent.postMessage({ pluginMessage: { type: 'sync', dryRun: true } }, '*');
+    var logEl = document.getElementById('log');
+    function appendLog(line, cls) {
+      logEl.style.display = 'block';
+      var span = document.createElement('span');
+      if (cls) span.className = cls;
+      span.textContent = line + '\n';
+      logEl.appendChild(span);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function pluralize(n, word) {
+      return n + ' ' + word + (n === 1 ? '' : 's');
+    }
+
+    var BUCKET_LABELS = {
+      added:     { sigil: '+', cls: 'added',     label: 'Added' },
+      modified:  { sigil: '~', cls: 'modified',  label: 'Modified' },
+      removed:   { sigil: '-', cls: 'removed',   label: 'Removed' },
+      unchanged: { sigil: '·', cls: 'unchanged', label: 'Unchanged' },
     };
 
-    onmessage = (e) => {
-      const msg = e.data.pluginMessage;
+    function renderDiffBuckets(diff, withNav) {
+      var html = '';
+      var bucketOrder = ['added', 'modified', 'removed', 'unchanged'];
+      bucketOrder.forEach(function(bucket) {
+        var items = diff[bucket] || [];
+        var info = BUCKET_LABELS[bucket];
+        if (items.length === 0) return;
+        var collapsible = bucket === 'unchanged' && items.length > 3;
+        var listId = 'bucket-' + bucket;
+        html += '<div class="bucket-header" onclick="toggleBucket(\'' + listId + '\', this)">';
+        html += '<span class="' + info.cls + '">' + info.sigil + '</span>';
+        html += '<span class="count ' + info.cls + '">' + pluralize(items.length, info.label.toLowerCase()) + '</span>';
+        html += '</div>';
+        html += '<ul class="entity-list" id="' + listId + '"' + (collapsible ? ' style="display:none"' : '') + '>';
+        items.forEach(function(key) {
+          html += '<li><span class="key">' + key + '</span>';
+          if (withNav && (bucket === 'added' || bucket === 'modified')) {
+            html += '<button class="nav-btn" onclick="navigate(\'' + key + '\')">→ view</button>';
+          }
+          html += '</li>';
+        });
+        html += '</ul>';
+      });
+      return html;
+    }
+
+    function toggleBucket(id, header) {
+      var el = document.getElementById(id);
+      el.style.display = el.style.display === 'none' ? '' : 'none';
+    }
+
+    function navigate(key) {
+      parent.postMessage({ pluginMessage: { type: 'navigate', key: key } }, '*');
+    }
+
+    // Trigger preview immediately on load.
+    parent.postMessage({ pluginMessage: { type: 'preview' } }, '*');
+
+    var pendingDiff = null;
+
+    onmessage = function(e) {
+      var msg = e.data.pluginMessage;
       if (!msg) return;
-      if (msg.type === 'log') append(msg.line, msg.cls);
-      if (msg.type === 'done') {
-        btnSync.disabled = false;
-        btnDry.disabled = false;
-        if (msg.summary) {
-          const s = msg.summary;
-          const div = document.createElement('div');
-          div.className = 'summary';
-          div.innerHTML = `<strong>Sync complete.</strong>\n` +
-            `  ${s.created} created\n` +
-            `  ${s.updated} updated\n` +
-            `  ${s.adopted} adopted\n` +
-            `  ${s.orphaned} orphaned\n` +
-            `  ${s.unchanged} unchanged`;
-          log.appendChild(div);
-          log.scrollTop = log.scrollHeight;
+
+      if (msg.type === 'preview-result') {
+        if (msg.error) {
+          document.getElementById('preview-meta').textContent = 'Error reading sync state';
+          document.getElementById('preview-body').innerHTML = '<div class="error-line">' + msg.error + '</div>';
+          document.getElementById('preview-actions').innerHTML = '';
+          showPane('preview');
+          return;
         }
+
+        if (msg.firstSync) {
+          document.getElementById('preview-meta').textContent = 'No prior sync found for this file.';
+          document.getElementById('preview-body').innerHTML =
+            '<div style="color:var(--supporting);font-size:11px;margin:8px 0;">' +
+            pluralize(msg.total, 'entity') + ' will be created.' +
+            '</div>';
+          document.getElementById('preview-actions').innerHTML =
+            '<button id="btn-init">Initialize (' + msg.total + ' entities)</button>';
+          document.getElementById('btn-init').onclick = function() {
+            this.disabled = true;
+            logEl.innerHTML = '';
+            parent.postMessage({ pluginMessage: { type: 'apply', diff: null } }, '*');
+          };
+          pendingDiff = null;
+          showPane('preview');
+          return;
+        }
+
+        // Normal diff preview.
+        var diff = msg.diff;
+        pendingDiff = diff;
+        var m = msg.manifest;
+        var syncedDate = m.syncedAt ? m.syncedAt.slice(0, 10) : '—';
+        document.getElementById('preview-meta').textContent =
+          'Last sync: v' + (m.version || '?') + ' · ' + syncedDate + ' · ' + m.total + ' entities';
+
+        var changedCount = diff.added.length + diff.modified.length + diff.removed.length;
+        var bodyHtml = renderDiffBuckets(diff, false);
+
+        if (changedCount === 0) {
+          bodyHtml = '<div style="color:var(--success);font-size:11px;margin:8px 0;">Already up to date — nothing to apply.</div>' + bodyHtml;
+          document.getElementById('preview-body').innerHTML = bodyHtml;
+          document.getElementById('preview-actions').innerHTML =
+            '<button class="secondary" style="margin-top:8px;" onclick="refreshPreview()">Refresh</button>';
+        } else {
+          document.getElementById('preview-body').innerHTML = bodyHtml;
+          document.getElementById('preview-actions').innerHTML =
+            '<button id="btn-apply" style="margin-top:8px;">Apply ' + changedCount + ' change' + (changedCount === 1 ? '' : 's') + '</button>' +
+            '<button class="secondary" onclick="refreshPreview()">Cancel</button>';
+          document.getElementById('btn-apply').onclick = function() {
+            this.disabled = true;
+            var cancelBtn = document.querySelector('#preview-actions .secondary');
+            if (cancelBtn) cancelBtn.disabled = true;
+            logEl.innerHTML = '';
+            parent.postMessage({ pluginMessage: { type: 'apply', diff: pendingDiff } }, '*');
+          };
+        }
+        showPane('preview');
+        return;
       }
+
+      if (msg.type === 'log') {
+        appendLog(msg.line, msg.cls);
+        return;
+      }
+
+      if (msg.type === 'apply-result') {
+        if (msg.error) {
+          document.getElementById('result-status').textContent = 'Sync failed: ' + msg.error;
+          document.getElementById('result-status').className = 'error-line';
+          document.getElementById('result-body').innerHTML = '';
+          showPane('result');
+          return;
+        }
+
+        var s = msg.stats || {};
+        var total = (s.created || 0) + (s.updated || 0) + (s.adopted || 0);
+        document.getElementById('result-status').textContent =
+          'Sync complete — ' + total + ' processed';
+        document.getElementById('result-status').className = 'status-line';
+
+        var bodyHtml = '<div class="summary-row">';
+        if (s.created) bodyHtml += '<span class="added">+' + s.created + ' created</span>';
+        if (s.updated) bodyHtml += '<span class="modified">~' + s.updated + ' updated</span>';
+        if (s.adopted) bodyHtml += '<span class="unchanged">·' + s.adopted + ' adopted</span>';
+        if (s.orphaned) bodyHtml += '<span class="removed">-' + s.orphaned + ' orphaned</span>';
+        bodyHtml += '</div>';
+
+        if (msg.diff) {
+          bodyHtml += renderDiffBuckets(msg.diff, true);
+        }
+        document.getElementById('result-body').innerHTML = bodyHtml;
+        showPane('result');
+        return;
+      }
+    };
+
+    function refreshPreview() {
+      showPane('loading');
+      parent.postMessage({ pluginMessage: { type: 'preview' } }, '*');
+    }
+
+    document.getElementById('btn-done').onclick = function() {
+      // Reset back to preview state and re-run preview.
+      showPane('loading');
+      logEl.innerHTML = '';
+      logEl.style.display = 'none';
+      parent.postMessage({ pluginMessage: { type: 'preview' } }, '*');
     };
   </script>
 </body>

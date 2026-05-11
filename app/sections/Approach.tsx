@@ -52,9 +52,9 @@ const arrowStyle: React.CSSProperties = {
 function FiveLayersVisual() {
   const cardBase: React.CSSProperties = { ...cardChrome, flex: "1 1 8rem", minWidth: "8rem" };
   return (
-    <div className="flex flex-wrap items-stretch gap-3" aria-label="Five composition layers from atom to template">
+    <div className="flex flex-wrap items-stretch gap-3" aria-label="Five composition layers from token to pattern">
       <div style={cardBase}>
-        <div style={layerLabel}>ATOM</div>
+        <div style={layerLabel}>TOKEN</div>
         <div style={previewBox}>
           <span style={{ fontFamily: "var(--font-mono)", fontSize: "1.75rem", color: "var(--color-danger)", lineHeight: 1 }}>●</span>
         </div>
@@ -64,7 +64,7 @@ function FiveLayersVisual() {
       <div className="hidden lg:flex" style={arrowStyle}>→</div>
 
       <div style={cardBase}>
-        <div style={layerLabel}>MOLECULE</div>
+        <div style={layerLabel}>ROW</div>
         <div style={previewBox}>
           <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", whiteSpace: "nowrap" }}>
             <span style={{ color: "var(--color-warning)" }}>?</span>
@@ -77,7 +77,7 @@ function FiveLayersVisual() {
       <div className="hidden lg:flex" style={arrowStyle}>→</div>
 
       <div style={cardBase}>
-        <div style={layerLabel}>ORGANISM</div>
+        <div style={layerLabel}>SECTION</div>
         <div style={previewBox}>
           <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", whiteSpace: "nowrap" }}>
             <span style={{ color: "var(--color-danger)" }}>●</span>
@@ -102,7 +102,7 @@ function FiveLayersVisual() {
       <div className="hidden lg:flex" style={arrowStyle}>→</div>
 
       <div style={cardBase}>
-        <div style={layerLabel}>TEMPLATE</div>
+        <div style={layerLabel}>PATTERN</div>
         <div style={previewBox}>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.3125rem", width: "100%", padding: "0 0.375rem" }}>
             <div style={{ height: "6px", width: "70%", background: "var(--color-bg-panel)", borderRadius: "1px" }} />
@@ -272,10 +272,10 @@ export function Approach() {
                 color: "var(--color-text-supporting)",
               }}
             >
-              MOLECULE
+              ROW
             </dt>
             <dd style={{ fontFamily: "var(--font-sans)", fontSize: "0.875rem", color: "var(--color-text-body)", margin: 0 }}>
-              A small composed row built from atoms. One glyph, one text style, one job.
+              A small composed row. One glyph, one text style, one job.
             </dd>
           </div>
           <div>
@@ -288,10 +288,10 @@ export function Approach() {
                 color: "var(--color-text-supporting)",
               }}
             >
-              ORGANISM
+              SECTION
             </dt>
             <dd style={{ fontFamily: "var(--font-sans)", fontSize: "0.875rem", color: "var(--color-text-body)", margin: 0 }}>
-              A full section of a CLI surface. A header plus the molecules that fill it.
+              A full section of a CLI surface. A header plus the rows that fill it.
             </dd>
           </div>
           <div>
@@ -320,10 +320,10 @@ export function Approach() {
                 color: "var(--color-text-supporting)",
               }}
             >
-              TEMPLATE
+              PATTERN
             </dt>
             <dd style={{ fontFamily: "var(--font-sans)", fontSize: "0.875rem", color: "var(--color-text-body)", margin: 0 }}>
-              A pre-composed full screen. Organisms and banners arranged into a starting point a designer can adapt.
+              A pre-composed full screen. Sections and banners arranged into a starting point a designer can adapt.
             </dd>
           </div>
         </dl>
@@ -354,11 +354,11 @@ export function Approach() {
     ├── sync.js
     ├── footer.js
     └── builders/
-        ├── atoms.js
-        ├── molecules.js
-        ├── organisms.js
+        ├── tokens.js
+        ├── rows.js
+        ├── sections.js
         ├── banners.js
-        └── templates.js`}
+        └── patterns.js`}
         </pre>
 
         <Body role="primary">
