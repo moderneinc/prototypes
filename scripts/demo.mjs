@@ -99,24 +99,24 @@ A dedicated progress color would disambiguate "this is running" from "this is a 
   }
 
   if (scenario === "3") {
-    // Add TECHNICAL DETAILS section to error pattern preview
-    const errorPath = join(ROOT, "design-system/patterns/error.md");
-    const error = readFileSync(errorPath, "utf-8");
-    if (error.includes("TECHNICAL DETAILS")) {
-      console.log(`${YELLOW}error.md already has TECHNICAL DETAILS — already modified?${RESET}`);
+    // Add a LEARN MORE section to the success pattern preview
+    const successPath = join(ROOT, "design-system/patterns/success.md");
+    const success = readFileSync(successPath, "utf-8");
+    if (success.includes("LEARN MORE")) {
+      console.log(`${YELLOW}success.md already has LEARN MORE — already modified?${RESET}`);
     } else {
-      const marker = "MOD FAILED";
-      const addition = `● TECHNICAL DETAILS
-  java.lang.NullPointerException at com.moderne.cli.Build.run(Build.java:42)
+      const marker = "MOD SUCCEEDED";
+      const addition = `LEARN MORE
+  Docs: https://docs.moderne.io/cli/recipes
 
 `;
-      const updated = error.replace(marker, addition + marker);
-      writeFileSync(errorPath, updated);
+      const updated = success.replace(marker, addition + marker);
+      writeFileSync(successPath, updated);
       execSync("npm run figma-plugin:rebuild", { cwd: ROOT, stdio: "inherit" });
-      console.log(`${GREEN}✓ Added TECHNICAL DETAILS section to error pattern${RESET}`);
+      console.log(`${GREEN}✓ Added LEARN MORE section to success pattern${RESET}`);
       console.log(`\n${BOLD}Try it:${RESET}`);
       console.log(`  ${DIM}Open Figma → run plugin → Apply.${RESET}`);
-      console.log(`  ${DIM}The error pattern on the Patterns page now shows the stack trace section.${RESET}`);
+      console.log(`  ${DIM}The success pattern on the Patterns page now shows a LEARN MORE section.${RESET}`);
     }
   }
 
