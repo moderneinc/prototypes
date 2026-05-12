@@ -1,0 +1,94 @@
+1:"$Sreact.fragment"
+2:I[9766,[],""]
+3:I[8924,[],""]
+5:I[4431,[],"OutletBoundary"]
+7:I[5278,[],"AsyncMetadataOutlet"]
+9:I[4431,[],"ViewportBoundary"]
+b:I[4431,[],"MetadataBoundary"]
+c:"$Sreact.suspense"
+e:I[7150,[],""]
+:HL["/prototypes/construct/_next/static/css/6060288b52ae9cca.css","style"]
+0:{"P":null,"b":"VXLJ2zVMCDBZkPITwWI31","p":"/prototypes/construct","c":["","patterns","study-results"],"i":false,"f":[[["",{"children":["patterns",{"children":[["slug","study-results","d"],{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/prototypes/construct/_next/static/css/6060288b52ae9cca.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"children":[["$","a",null,{"href":"#main-content","className":"skip-link","children":"Skip to main content"}],["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]]}]}]]}],{"children":["patterns",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":[["slug","study-results","d"],["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L4",null,["$","$L5",null,{"children":["$L6",["$","$L7",null,{"promise":"$@8"}]]}]]}],{},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,[["$","$L9",null,{"children":"$La"}],null],["$","$Lb",null,{"children":["$","div",null,{"hidden":true,"children":["$","$c",null,{"fallback":null,"children":"$Ld"}]}]}]]}],false]],"m":"$undefined","G":["$e",[]],"s":false,"S":true}
+f:I[1510,["176","static/chunks/176-c4a8215ca4d82670.js","216","static/chunks/app/patterns/%5Bslug%5D/page-448037f6ee16a591.js"],"SideNav"]
+10:T1610,# Pattern — Study Results
+
+The visual treatment of `mod study --last-recipe-run` output — a per-repository breakdown of what a recipe changed, with status glyphs and a trailing forward-chain. A specialization of the `list.md` table form combined with the `success.md` forward-chain block.
+
+## When this pattern applies
+
+- `mod study --last-recipe-run` displays per-repo results from the most recent recipe execution.
+- The output is a human-readable table of repositories with change status and file-level summaries, followed by next-step actions.
+- Also applies to `mod study --recipe-run <id>` when targeting a specific past run.
+
+## What the user sees
+
+```
+STUDY: UpgradeDependencyVersion
+
+  ✓  org/service-a       3 files changed
+  ✓  org/service-b       1 file changed
+  ✓  org/service-c       7 files changed
+  ⚠  org/payments         0 files changed (no LST)
+  ✗  org/legacy-api       build failed
+
+  5 repositories — 3 modified, 1 skipped, 1 failed.
+
+WHAT TO DO NEXT
+  ▶ mod diff --last-recipe-run           — Review changes across all repos.
+  ▶ mod git commit --last-recipe-run     — Commit changes across repos.
+  ▶ mod git push --last-recipe-run       — Push to remotes.
+
+MOD SUCCEEDED in (1s)
+```
+
+## Visual anatomy
+
+| Element | Token | Notes |
+| --- | --- | --- |
+| `STUDY: <RecipeName>` header | `typography.section_header` | ALL CAPS prefix `STUDY:` followed by the recipe's short name in regular weight. |
+| Row glyph | `glyph.success_marker` (`✓`, green) / `glyph.warning_marker` (`⚠`, yellow) / `glyph.diff_failure` (`✗`, red) | Single character at column 0 within the indented row. Carries per-repo status. |
+| Repository name column | `typography.primary` | The repo's org/name path. Regular weight. This is the row's identifier. |
+| Change summary column | `typography.supporting` | Terse outcome per repo. For success: `N files changed`. For warnings: `0 files changed (cause)`. For failures: terse cause (`build failed`). |
+| Trailing summary | `typography.supporting` | One line below the table. Restates total count and per-status breakdown. |
+| `WHAT TO DO NEXT` | `typography.section_header` | ALL CAPS. Forward-chain block with multiple options. |
+| `▶ <command> — <gloss>` | `glyph.actionable_bullet` (`▶`, cyan) + `color.semantic.info` (command) + `typography.supporting` (em-dash + gloss) | Each row pairs a runnable command with a one-line description. The em-dash is U+2014. Columns aligned by the widest command. |
+| `MOD SUCCEEDED in (Xs)` | `banner.close.variants.success` | Green, bold, leading blank line. |
+
+## Spacing
+
+- `STUDY:` header to first row: zero blank lines.
+- Between rows: zero blank lines.
+- Last row to trailing summary: one blank line.
+- Trailing summary to `WHAT TO DO NEXT`: one blank line.
+- Within `WHAT TO DO NEXT`: rows stacked, no blank lines. Columns aligned by widest command across the block.
+- `WHAT TO DO NEXT` to close banner: one blank line.
+- All table content under the header is indented 2 spaces (`spacing.indent.section_content`).
+
+## Composition rules
+
+- This pattern combines the `list.md` table form (per-repo rows with status glyphs) with the `success.md` forward-chain block (`WHAT TO DO NEXT`).
+- **Row glyph mapping**: `✓` for repos where the recipe made changes, `⚠` for repos that were skipped or had no LST (non-fatal), `✗` for repos where the build or recipe application failed.
+- **Column alignment**: repo name and change summary are right-padded to the widest cell in each column, minimum two-space separator. No vertical rules.
+- The trailing summary follows the `list.md` convention: `N repositories — X modified, Y skipped, Z failed.` Omit categories with zero count except when it would leave fewer than two categories.
+- The `WHAT TO DO NEXT` block lists the logical workflow continuation after studying results. The commands reference `--last-recipe-run` because the study output is always in the context of a specific run.
+- The close banner is `MOD SUCCEEDED` because the study command itself succeeded (it read and displayed data). The per-repo failures are in the *recipe run* that was studied, not in the study command.
+- If all repositories failed in the studied run, the `WHAT TO DO NEXT` block is omitted (there are no changes to diff, commit, or push) and the close banner remains `MOD SUCCEEDED` — the study command still did its job.
+
+## Extrapolations
+
+- The column set (repo name, change summary) is extrapolated from what a study command would logically display. The design artifacts reference `mod study --last-recipe-run` in success.md's forward-chain but do not show the study output itself.
+- The `STUDY: <RecipeName>` header format is extrapolated. The CLI may use a different header shape (e.g. just the recipe name without the `STUDY:` prefix).
+- Whether the change summary should show file names (not just counts) is extrapolated as "no" for the default view. A `--verbose` flag could expand each row to list individual files.
+- The `mod diff --last-recipe-run` entry in `WHAT TO DO NEXT` is extrapolated. The actual diff command and flags may differ.
+
+## Out of scope (this pattern)
+
+- The diff view itself (`mod diff` output) — that would use a specialized diff pattern, not this one.
+- Whether `mod study` should support `--csv` / `--json` for machine-readable output — behavioral, uses `tokens.json $machine_readable` rules.
+- Per-file detail within each repository row — interaction design decision (expand inline vs. separate command).
+- The data-table variant of study (`mod study --data-table`) — may need its own pattern if the output shape differs significantly.
+4:[["$","$Lf",null,{}],["$","div",null,{"className":"md:ml-56 flex flex-col","children":["$","main",null,{"id":"main-content","children":["$","div",null,{"className":"mx-auto max-w-5xl px-6 md:px-10 py-6 md:py-10","children":["$","div",null,{"className":"space-y-6","children":[["$","header",null,{"className":"space-y-2","children":[["$","a",null,{"href":"/patterns","className":"","style":{"color":"var(--color-info)"},"children":"← Patterns"}],["$","h1",null,{"className":"font-bold uppercase tracking-[0.02em] text-2xl","style":{"color":"var(--color-text-primary)"},"children":[false,"Pattern — Study Results"]}],["$","p",null,{"className":"","style":{"color":"var(--color-text-metadata)"},"children":["Source: ",["$","code",null,{"style":{"fontFamily":"var(--font-mono)"},"children":["design-system/patterns/","study-results",".md"]}]]}]]}],["$","div",null,{"className":"rounded-md border p-5 ","style":{"background":"var(--color-bg-terminal)","borderColor":"var(--color-bg-panel)"},"children":["$","pre",null,{"style":{"fontFamily":"var(--font-mono)","color":"var(--color-text-body)","whiteSpace":"pre-wrap","fontSize":"0.875rem","lineHeight":1.6},"children":"$10"}]}]]}]}]}]}]]
+a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+6:null
+8:{"metadata":[["$","title","0",{"children":"Construct — CLI design system"}],["$","meta","1",{"name":"description","content":"Production-first, AI-native playground for the Moderne CLI design system. Tokens live in code; Figma is one of many downstream consumers."}]],"error":null,"digest":"$undefined"}
+d:"$8:metadata"

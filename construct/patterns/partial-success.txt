@@ -1,0 +1,81 @@
+1:"$Sreact.fragment"
+2:I[9766,[],""]
+3:I[8924,[],""]
+5:I[4431,[],"OutletBoundary"]
+7:I[5278,[],"AsyncMetadataOutlet"]
+9:I[4431,[],"ViewportBoundary"]
+b:I[4431,[],"MetadataBoundary"]
+c:"$Sreact.suspense"
+e:I[7150,[],""]
+:HL["/prototypes/construct/_next/static/css/6060288b52ae9cca.css","style"]
+0:{"P":null,"b":"VXLJ2zVMCDBZkPITwWI31","p":"/prototypes/construct","c":["","patterns","partial-success"],"i":false,"f":[[["",{"children":["patterns",{"children":[["slug","partial-success","d"],{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/prototypes/construct/_next/static/css/6060288b52ae9cca.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"children":[["$","a",null,{"href":"#main-content","className":"skip-link","children":"Skip to main content"}],["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]]}]}]]}],{"children":["patterns",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":[["slug","partial-success","d"],["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L4",null,["$","$L5",null,{"children":["$L6",["$","$L7",null,{"promise":"$@8"}]]}]]}],{},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,[["$","$L9",null,{"children":"$La"}],null],["$","$Lb",null,{"children":["$","div",null,{"hidden":true,"children":["$","$c",null,{"fallback":null,"children":"$Ld"}]}]}]]}],false]],"m":"$undefined","G":["$e",[]],"s":false,"S":true}
+f:I[1510,["176","static/chunks/176-c4a8215ca4d82670.js","216","static/chunks/app/patterns/%5Bslug%5D/page-448037f6ee16a591.js"],"SideNav"]
+10:T1142,# Pattern — Partial success
+
+The visual treatment of a command that completed but with incomplete results — some sub-tasks succeeded, some did not, the overall outcome is mixed. Exit code is `-2` per the current CLI.
+
+## When this pattern applies
+
+- A command finished without raising, but its result is *not* what the user asked for in full.
+- Examples (from the artifacts): `mod search` ran across 47 repositories but 47 of them lacked a search index, so 0 were actually searched.
+- Generally: any command that today is reachable through `MultiTaskCommand` or `Publish` and lands in the partial-success exit path.
+
+## What the user sees
+
+```
+PARTIAL SUCCESS:
+
+  ⚠ 0 repositories searched — all 47 skipped (no search index).
+
+  Run mod postbuild search index <path> to build indexes from
+  existing LSTs, then re-run this search.
+
+MOD PARTIALLY SUCCEEDED in (3s)
+```
+
+## Visual anatomy
+
+| Element | Token | Notes |
+| --- | --- | --- |
+| `PARTIAL SUCCESS:` preface | `color.semantic.warning` (yellow) + bold | Single line. Trailing colon. One blank line below. |
+| `⚠` lead glyph + count line | `glyph.warning_marker` (`⚠`, yellow) + `typography.primary` body | One line. **Leads with the failure count** (`0 of 47`, `12 of 47`) before the cause clause. The count is in body text color, not yellow — only the glyph is yellow. |
+| Recovery prose | `typography.primary` body + `color.semantic.info` for any inline command reference | One or two sentences. Names the concrete next step. Inline command references render in cyan. |
+| `MOD PARTIALLY SUCCEEDED in (Xs)` | `banner.close.variants.partial_success` | Yellow, bold, leading blank line. |
+
+## Spacing
+
+- Preface → `⚠` line: one blank line; the `⚠` line is indented `spacing.indent.section_content` (2 spaces).
+- `⚠` line → recovery prose: one blank line.
+- Recovery prose → close banner: one blank line.
+
+## Composition rules
+
+- Three-element shape: preface → `⚠` count + cause line → recovery prose → close banner. (Four if you count the close banner separately from the body.)
+- The `⚠` line **always leads with a count**: `0 of 47`, `12 of 47`. Numbers communicate the partial-ness at a glance.
+- The cause clause is in parentheses on the same line, terse: `(no search index)`, `(skipped — repo unavailable)`.
+- Recovery prose is one or two sentences. It names the concrete recovery command inline (in cyan) — not in a separate `▶` block. The visual difference from the full-template error is deliberate: partial success is not a failure to recover from with a list of options; it's a "here's what you'd do next" pointer.
+- The preface `PARTIAL SUCCESS:` is preserved verbatim from the current CLI (`BAN-004` partial variant) — only the body content is restructured.
+- The yellow-on-yellow boundary with `success-with-warnings` is accepted: same banner color, different banner phrase. Per D-03, color is a single token, the phrase disambiguates.
+
+## Worked examples
+
+**Derived** — Jayd's `cli-error-states-ui-uplift.pdf` `mod search` card is the source. The current CLI emits `⚠ No search index on 47 repositories (skipped)`; Jayd's proposal sharpens it to `⚠ 0 repositories searched — all 47 skipped (no search index). Run mod postbuild search index <path> to build indexes from existing LSTs, then re-run this search.` The example above renders that proposal.
+
+## Extrapolations
+
+- The single-`⚠`-line shape (vs. multi-row breakdown) is extrapolated for cases beyond `mod search`. For example, a `mod run` against 47 repos with 5 failures could be either:
+  - Single line: `⚠ 42 of 47 repositories modified — 5 skipped (build failed).`
+  - Or table form (see `list.md`).
+
+  The visual system favors the single-line form when the count fits on one line and the cause is uniform. When per-row variance matters (different repos failed for different reasons), the table form takes over. → flagged in `gaps.md` Part A.
+
+## Out of scope (this pattern)
+
+- Whether 0-of-N "partial success" should reclassify as outright failure — Jayd's card explicitly flags this as a product call. → `gaps.md` Part B.
+- Whether `--csv` / `--json` partial-success output should include the cause clause structurally — behavioral, not visual. → `gaps.md` Part B.
+- Whether commands should emit a per-row breakdown when partial-success applies (e.g. `mod run`) — author / framework decision. → `gaps.md` Part B.
+4:[["$","$Lf",null,{}],["$","div",null,{"className":"md:ml-56 flex flex-col","children":["$","main",null,{"id":"main-content","children":["$","div",null,{"className":"mx-auto max-w-5xl px-6 md:px-10 py-6 md:py-10","children":["$","div",null,{"className":"space-y-6","children":[["$","header",null,{"className":"space-y-2","children":[["$","a",null,{"href":"/patterns","className":"","style":{"color":"var(--color-info)"},"children":"← Patterns"}],["$","h1",null,{"className":"font-bold uppercase tracking-[0.02em] text-2xl","style":{"color":"var(--color-text-primary)"},"children":[false,"Pattern — Partial success"]}],["$","p",null,{"className":"","style":{"color":"var(--color-text-metadata)"},"children":["Source: ",["$","code",null,{"style":{"fontFamily":"var(--font-mono)"},"children":["design-system/patterns/","partial-success",".md"]}]]}]]}],["$","div",null,{"className":"rounded-md border p-5 ","style":{"background":"var(--color-bg-terminal)","borderColor":"var(--color-bg-panel)"},"children":["$","pre",null,{"style":{"fontFamily":"var(--font-mono)","color":"var(--color-text-body)","whiteSpace":"pre-wrap","fontSize":"0.875rem","lineHeight":1.6},"children":"$10"}]}]]}]}]}]}]]
+a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+6:null
+8:{"metadata":[["$","title","0",{"children":"Construct — CLI design system"}],["$","meta","1",{"name":"description","content":"Production-first, AI-native playground for the Moderne CLI design system. Tokens live in code; Figma is one of many downstream consumers."}]],"error":null,"digest":"$undefined"}
+d:"$8:metadata"

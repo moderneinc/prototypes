@@ -1,0 +1,107 @@
+1:"$Sreact.fragment"
+2:I[9766,[],""]
+3:I[8924,[],""]
+5:I[4431,[],"OutletBoundary"]
+7:I[5278,[],"AsyncMetadataOutlet"]
+9:I[4431,[],"ViewportBoundary"]
+b:I[4431,[],"MetadataBoundary"]
+c:"$Sreact.suspense"
+e:I[7150,[],""]
+:HL["/prototypes/construct/_next/static/css/6060288b52ae9cca.css","style"]
+0:{"P":null,"b":"VXLJ2zVMCDBZkPITwWI31","p":"/prototypes/construct","c":["","patterns","help-command"],"i":false,"f":[[["",{"children":["patterns",{"children":[["slug","help-command","d"],{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/prototypes/construct/_next/static/css/6060288b52ae9cca.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"children":[["$","a",null,{"href":"#main-content","className":"skip-link","children":"Skip to main content"}],["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]]}]}]]}],{"children":["patterns",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":[["slug","help-command","d"],["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L4",null,["$","$L5",null,{"children":["$L6",["$","$L7",null,{"promise":"$@8"}]]}]]}],{},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,[["$","$L9",null,{"children":"$La"}],null],["$","$Lb",null,{"children":["$","div",null,{"hidden":true,"children":["$","$c",null,{"fallback":null,"children":"$Ld"}]}]}]]}],false]],"m":"$undefined","G":["$e",[]],"s":false,"S":true}
+f:I[1510,["176","static/chunks/176-c4a8215ca4d82670.js","216","static/chunks/app/patterns/%5Bslug%5D/page-448037f6ee16a591.js"],"SideNav"]
+10:T1685,# Pattern — Leaf-command help
+
+The visual treatment of help for a command that does work — i.e., a command the user actually invokes to perform an action. Examples: `mod build -h`, `mod run -h`, `mod config http trust-store edit file -h`.
+
+## When this pattern applies
+
+- A command that runs logic itself (not pure delegation to subcommands).
+- The user wants to know what the command does, what flags it takes, and how to invoke it.
+
+## What the user sees
+
+```
+Configure the SSL trust store mod uses for HTTPS connections.
+
+Without it, commands fail with PKIX path building errors when
+connecting to your tenant or artifact repos.
+
+USAGE
+  mod config http trust-store edit file <path> [flags]
+
+  ? Hint: Common locations are /etc/ssl/certs/java/cacerts (Linux),
+    /Library/Java/.../cacerts (macOS), or whatever your platform team
+    distributes via MDM.
+
+FLAGS
+  --password <password>   Trust store password. Often changeit.
+
+  Authentication (pick one):
+    --token <token>       Use a CI-friendly token.
+    --user <user>         Use username + interactive password prompt.
+
+EXAMPLES
+  $ mod config http trust-store edit file /etc/pki/java/corp-truststore.jks \
+      --password ****
+
+  $ mod config http trust-store edit file /Library/Java/.../cacerts \
+      --token ****
+
+NEXT STEP
+  Verify the trust store loaded:
+    mod config http trust-store show
+
+LEARN MORE
+  Docs: https://docs.moderne.io/cli/config/http
+```
+
+## Visual anatomy
+
+| Element | Token | Notes |
+| --- | --- | --- |
+| One-line summary | `typography.supporting` | First line. Sentence-case, period. |
+| Consequence prose | `typography.supporting` | Two to three lines. Concrete: names the failure mode the user will hit if they skip this. |
+| `USAGE` | `typography.section_header` + `typography.primary` | Placeholder names (`<path>`) in `typography.supporting`. |
+| `? Hint:` block | `glyph.hint_marker` (`?`, yellow) + leading word `Hint:` (yellow) + `typography.primary` body | Sits inside the `USAGE` section, indented 2 more spaces than the usage line. Used for "where would I find this" anticipated questions. |
+| `FLAGS` | `typography.section_header` | `--flag-name` in `typography.primary`; description in `typography.supporting`; default-value cue (e.g. "Often `changeit`.") in `typography.primary` body color. |
+| Flag groupings | `typography.primary` (sub-header text) + 2-space additional indent for grouped flags | The "Authentication (pick one):" sub-header is sentence-case, body weight, no glyph. It marks an exclusive-choice subset within `FLAGS`. |
+| `EXAMPLES` | `typography.section_header` + `glyph.shell_prompt` (`$`, dim) + `color.semantic.info` for the command body | Each example begins with a dim `$ `. Continuation lines (after `\`) are indented 4 spaces from the prompt position. Sensitive values are masked (`****`) but not omitted. |
+| `NEXT STEP` | `typography.section_header` + `typography.supporting` (gloss) + `color.semantic.info` (verify command) | Verify-line pattern — the `show` partner of the configure verb. |
+| `LEARN MORE` | `color.semantic.info` link | Cyan; OSC-8 if supported. |
+
+## Spacing
+
+- Summary → consequence prose: no blank line.
+- Consequence prose → `USAGE`: one blank line.
+- `USAGE` → `? Hint:` (when present): one blank line.
+- Section to section: one blank line.
+- Within `FLAGS`: flag rows are stacked; a flag grouping (sub-header) is preceded by one blank line.
+- Within `EXAMPLES`: examples are separated by one blank line; continuation lines within an example have no blank line.
+- Within `NEXT STEP`: the gloss line and the runnable command are stacked with no blank line between them.
+
+## Composition rules
+
+- The summary + consequence prose pair is mandatory. The summary says what the command does; the consequence prose says what happens if the user doesn't run it. This pair is the "explanatory density" promise — see `rationale.md`.
+- `? Hint:` is optional but encouraged when the command's first argument is something the user is likely to need help locating (a file path, an artifact URL, a tenant URL).
+- `FLAGS` order: ungrouped flags first, then grouped sub-blocks. Within a sub-block, the most common choice goes first.
+- `EXAMPLES` always uses real values (real-shaped paths, real product names like `changeit`), not placeholder shapes like `<path>` or `<password>`. Placeholders go in `USAGE`; real values go in `EXAMPLES`.
+- `NEXT STEP` is the verify-line pattern when the command writes state (every `edit` / `add` has a `show` partner). When no verify partner exists, the block is omitted.
+- `LEARN MORE` is a docs URL and (when applicable) a pointer to a related help screen. It's the last block.
+
+## Worked examples
+
+**Derived** — Annie's `cli-help-text-rewrites.pdf` redesigns the leaf-command help for `mod config http trust-store edit file`, `mod config recipes artifacts artifactory add`, `mod config lsts artifacts artifactory add`, `mod config build maven settings edit`, and `mod config moderne edit`. The example above renders the trust-store edit screen in this system's tokens.
+
+**Extrapolated** — Leaf-command help for `mod build`, `mod study`, `mod run`, etc. (the action commands, not the configuration commands) is not redesigned in the artifacts. The pattern as defined here applies to them by extrapolation. → flagged in `gaps.md` Part A.
+
+## Out of scope (this pattern)
+
+- Whether the consequence-prose paragraph is mandatory in code (a per-command authoring rule) — author guidance, not visual.
+- Whether the verify-line `NEXT STEP` should be auto-generated from the `show` partner's existence — framework engineering. → `gaps.md` Part B.
+- Whether `EXAMPLES` should ever be machine-validated against real CLI behavior — testing concern. → `gaps.md` Part B.
+4:[["$","$Lf",null,{}],["$","div",null,{"className":"md:ml-56 flex flex-col","children":["$","main",null,{"id":"main-content","children":["$","div",null,{"className":"mx-auto max-w-5xl px-6 md:px-10 py-6 md:py-10","children":["$","div",null,{"className":"space-y-6","children":[["$","header",null,{"className":"space-y-2","children":[["$","a",null,{"href":"/patterns","className":"","style":{"color":"var(--color-info)"},"children":"← Patterns"}],["$","h1",null,{"className":"font-bold uppercase tracking-[0.02em] text-2xl","style":{"color":"var(--color-text-primary)"},"children":[false,"Pattern — Leaf-command help"]}],["$","p",null,{"className":"","style":{"color":"var(--color-text-metadata)"},"children":["Source: ",["$","code",null,{"style":{"fontFamily":"var(--font-mono)"},"children":["design-system/patterns/","help-command",".md"]}]]}]]}],["$","div",null,{"className":"rounded-md border p-5 ","style":{"background":"var(--color-bg-terminal)","borderColor":"var(--color-bg-panel)"},"children":["$","pre",null,{"style":{"fontFamily":"var(--font-mono)","color":"var(--color-text-body)","whiteSpace":"pre-wrap","fontSize":"0.875rem","lineHeight":1.6},"children":"$10"}]}]]}]}]}]}]]
+a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+6:null
+8:{"metadata":[["$","title","0",{"children":"Construct — CLI design system"}],["$","meta","1",{"name":"description","content":"Production-first, AI-native playground for the Moderne CLI design system. Tokens live in code; Figma is one of many downstream consumers."}]],"error":null,"digest":"$undefined"}
+d:"$8:metadata"

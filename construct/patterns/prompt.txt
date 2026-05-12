@@ -1,0 +1,79 @@
+1:"$Sreact.fragment"
+2:I[9766,[],""]
+3:I[8924,[],""]
+5:I[4431,[],"OutletBoundary"]
+7:I[5278,[],"AsyncMetadataOutlet"]
+9:I[4431,[],"ViewportBoundary"]
+b:I[4431,[],"MetadataBoundary"]
+c:"$Sreact.suspense"
+e:I[7150,[],""]
+:HL["/prototypes/construct/_next/static/css/6060288b52ae9cca.css","style"]
+0:{"P":null,"b":"VXLJ2zVMCDBZkPITwWI31","p":"/prototypes/construct","c":["","patterns","prompt"],"i":false,"f":[[["",{"children":["patterns",{"children":[["slug","prompt","d"],{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/prototypes/construct/_next/static/css/6060288b52ae9cca.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"children":[["$","a",null,{"href":"#main-content","className":"skip-link","children":"Skip to main content"}],["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]]}]}]]}],{"children":["patterns",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":[["slug","prompt","d"],["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L4",null,["$","$L5",null,{"children":["$L6",["$","$L7",null,{"promise":"$@8"}]]}]]}],{},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,[["$","$L9",null,{"children":"$La"}],null],["$","$Lb",null,{"children":["$","div",null,{"hidden":true,"children":["$","$c",null,{"fallback":null,"children":"$Ld"}]}]}]]}],false]],"m":"$undefined","G":["$e",[]],"s":false,"S":true}
+f:I[1510,["176","static/chunks/176-c4a8215ca4d82670.js","216","static/chunks/app/patterns/%5Bslug%5D/page-448037f6ee16a591.js"],"SideNav"]
+10:T111f,# Pattern — Prompt
+
+The visual treatment of an interactive confirmation prompt. The CLI pauses and waits for the user to type a response before continuing.
+
+## When this pattern applies
+
+- A command requires explicit user confirmation before performing a destructive or irreversible action.
+- The CLI blocks on stdin, waiting for a keypress or typed response.
+- Examples: `mod git push` asking to confirm push to N repositories, `mod config moderne login` confirming a credential overwrite, any `--confirm` gate.
+
+## What the user sees
+
+```
+? Do you want to push changes to 12 repositories? [Y/n]
+```
+
+### With context line
+
+```
+  This will push to 12 repositories on the main branch.
+  3 repositories have uncommitted changes that will NOT be included.
+
+? Push changes? [Y/n]
+```
+
+## Visual anatomy
+
+| Element | Token | Notes |
+| --- | --- | --- |
+| `?` glyph | `glyph.hint_marker` (`?`, yellow) | Single character at column 0. Yellow per `glyph_color_pairs`. Same glyph as inline hints, but here it marks a question rather than supplementary information. |
+| Prompt text | `typography.primary` | The question itself. Sentence case. Phrased as a yes/no question. |
+| `[Y/n]` default indicator | `typography.supporting` | Brackets with the default option capitalized. `[Y/n]` means yes is default; `[y/N]` means no is default. Always at the end of the prompt line, separated by one space. |
+| Context lines (optional) | `typography.supporting` | One to three lines of supporting detail above the prompt. Indented 2 spaces. Describe what will happen and any caveats. |
+
+## Spacing
+
+- Context lines (when present) to `?` prompt line: one blank line.
+- Between context lines: zero blank lines (they stack).
+- The prompt line is the last visible content before the cursor. No blank line after — the cursor sits at the end of the `[Y/n]` line waiting for input.
+
+## Composition rules
+
+- The `?` glyph is **always yellow**. It reuses `glyph.hint_marker` from the composition rules. In the prompt context it asks a question; in error context it gives a hint. The glyph is the same, the surrounding pattern disambiguates.
+- The prompt text is a **complete yes/no question**. It must be answerable with Y or N. Never open-ended ("What do you want to do?") and never a statement ("Pushing changes.").
+- The default indicator `[Y/n]` or `[y/N]` is **always present**. The capitalized letter is the default. When neither answer is safe to default, use `[y/n]` (both lowercase) — but this is discouraged; most prompts should have a safe default.
+- Context lines are **optional** and appear when the prompt alone does not convey enough information to make an informed decision. They name the scope (how many repos, which branch) and any exclusions or caveats.
+- No close banner. The prompt is mid-flow, not an exit point. The command that follows the prompt will produce its own success/failure/partial-success output.
+- No `●` section headers. The prompt is a single interaction beat, not a structured output frame.
+- Semantic colors used: `semantic.warning` (the `?` glyph only). Body text and supporting text use `text.primary` and `text.supporting` respectively. This is a one-semantic-color screen.
+
+## Extrapolations
+
+- The exact phrasing conventions ("Do you want to...", "Push changes?") are extrapolated. The design artifacts reference the `?` glyph and `[Y/n]` convention but do not show full prompt screens.
+- Whether context lines should use `⚠` glyphs for warnings (e.g. "3 repositories have uncommitted changes") is extrapolated as "no" — the context lines are informational, not warning rows. The `?` glyph on the prompt line carries the "pay attention" semantic.
+- Multi-choice prompts (e.g. `[1/2/3]`) are extrapolated as out of scope. The current CLI uses only yes/no confirmation. If multi-choice is needed, a separate pattern (`multi-prompt.md`) should be created.
+
+## Out of scope (this pattern)
+
+- Whether a command should prompt at all vs. requiring `--yes` / `--no-prompt` — product / safety decision per command.
+- The `--yes` flag that skips the prompt entirely — behavioral, not visual.
+- Free-text input prompts (e.g. "Enter your email:") — different interaction model, would need its own pattern if it exists in the CLI.
+- Progress output that follows after the user confirms — that transitions to `progress.md` and then `success.md` / `error.md`.
+4:[["$","$Lf",null,{}],["$","div",null,{"className":"md:ml-56 flex flex-col","children":["$","main",null,{"id":"main-content","children":["$","div",null,{"className":"mx-auto max-w-5xl px-6 md:px-10 py-6 md:py-10","children":["$","div",null,{"className":"space-y-6","children":[["$","header",null,{"className":"space-y-2","children":[["$","a",null,{"href":"/patterns","className":"","style":{"color":"var(--color-info)"},"children":"← Patterns"}],["$","h1",null,{"className":"font-bold uppercase tracking-[0.02em] text-2xl","style":{"color":"var(--color-text-primary)"},"children":[false,"Pattern — Prompt"]}],["$","p",null,{"className":"","style":{"color":"var(--color-text-metadata)"},"children":["Source: ",["$","code",null,{"style":{"fontFamily":"var(--font-mono)"},"children":["design-system/patterns/","prompt",".md"]}]]}]]}],["$","div",null,{"className":"rounded-md border p-5 ","style":{"background":"var(--color-bg-terminal)","borderColor":"var(--color-bg-panel)"},"children":["$","pre",null,{"style":{"fontFamily":"var(--font-mono)","color":"var(--color-text-body)","whiteSpace":"pre-wrap","fontSize":"0.875rem","lineHeight":1.6},"children":"$10"}]}]]}]}]}]}]]
+a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+6:null
+8:{"metadata":[["$","title","0",{"children":"Construct — CLI design system"}],["$","meta","1",{"name":"description","content":"Production-first, AI-native playground for the Moderne CLI design system. Tokens live in code; Figma is one of many downstream consumers."}]],"error":null,"digest":"$undefined"}
+d:"$8:metadata"
