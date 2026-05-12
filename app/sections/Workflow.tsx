@@ -218,7 +218,7 @@ export function Workflow() {
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 2</CopyCode>Claude creates a token gap proposal and rebuilds the plugin.</span>,
                 <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The proposal appears on <strong>Construct / Mirror</strong>.</span>,
                 <span key="2">Click <strong>Approve</strong> or <strong>Reject</strong> with feedback.</span>,
-                <span key="3">Say to Claude: <CopyCode variant="claude">check Figma for approvals</CopyCode></span>,
+                <span key="3">Say to Claude: <CopyCode variant="claude">check mirror</CopyCode></span>,
                 <span key="4">When done, say to Claude: <CopyCode variant="claude">end demo</CopyCode></span>,
               ]} />
             </TryIt>
@@ -302,8 +302,8 @@ export function Workflow() {
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 4</CopyCode>Claude creates a batch operation summary pattern and rebuilds.</span>,
                 <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The proposed pattern appears on <strong>Construct / Mirror</strong>.</span>,
                 <span key="2">Click <strong>Approve</strong> or <strong>Reject</strong> with feedback (e.g. &ldquo;needs per-repo failure details&rdquo;).</span>,
-                <span key="3">If rejected, say to Claude: <CopyCode variant="claude">check mirror for rejections</CopyCode>Claude reads the reason and revises.</span>,
-                <span key="4">If approved, say to Claude: <CopyCode variant="claude">check Figma for approvals</CopyCode>Claude promotes it to the Patterns page.</span>,
+                <span key="3">If rejected, say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude reads the reason and revises.</span>,
+                <span key="4">If approved, say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude promotes it to the Patterns page.</span>,
                 <span key="5">When done: <CopyCode variant="claude">end demo</CopyCode></span>,
               ]} />
               <Body role="supporting">
@@ -321,7 +321,7 @@ export function Workflow() {
               <StepList steps={[
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 4</CopyCode>Claude writes the pattern to mirror/ and rebuilds.</span>,
                 <span key="1">Open Figma → run plugin → <strong>Apply</strong>. The proposal appears on Mirror.</span>,
-                <span key="2">Approve or reject. Say to Claude: <CopyCode variant="claude">check Figma for approvals</CopyCode></span>,
+                <span key="2">Approve or reject. Say to Claude: <CopyCode variant="claude">check mirror</CopyCode></span>,
                 <span key="3">When done: <CopyCode variant="claude">end demo</CopyCode></span>,
               ]} />
             </TryIt>
@@ -339,8 +339,7 @@ export function Workflow() {
             { cmd: "status", desc: "Design system health report" },
             { cmd: "pull from Figma", desc: "Diff Figma → propose token edits" },
             { cmd: "approve <name>", desc: "Promote mirror item → canonical" },
-            { cmd: "check Figma for approvals", desc: "Read Figma approvals, promote them" },
-            { cmd: "check mirror for rejections", desc: "Read rejections, propose revisions" },
+            { cmd: "check mirror", desc: "Promote approvals, revise rejections, report status" },
             { cmd: "demo 1 / 2 / 3 / 4", desc: "Start a sandboxed demo scenario" },
             { cmd: "end demo", desc: "Clean up demo, restore everything" },
           ].map((r) => (

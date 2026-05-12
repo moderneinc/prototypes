@@ -32,8 +32,7 @@ When the user says any of these, **run the command directly** — don't tell the
 |---|---|
 | `status` | Run `npm run status` and report the output |
 | `pull from Figma` | Read Figma via MCP, diff against canonical, propose token edits. If approved, edit `tokens.json`, run `npm run figma-plugin:rebuild` |
-| `check Figma for approvals` | Read Figma via MCP, find `✓ APPROVED` mirror items, move their `.md` files from `mirror/` to `patterns/`, update `screens.json`, run `npm run figma-plugin:rebuild` |
-| `check mirror for rejections` | Read Figma via MCP, find `✗ REJECTED` items, read the reason, revise the `.md` file, run `npm run figma-plugin:rebuild` |
+| `check mirror` | Read Figma via MCP, check all mirror items: promote `✓ APPROVED` ones (move to `patterns/`, update `screens.json`), revise `✗ REJECTED` ones (read reason, rewrite `.md`), report `proposed` ones. Run `npm run figma-plugin:rebuild` after any changes. |
 | `approve <name>` | Move `design-system/mirror/<name>.md` to `design-system/patterns/`, update `screens.json`, run `npm run figma-plugin:rebuild` |
 | `demo 1` or `start demo 1` | Run `npm run demo:start -- 1`, then run `npm run figma-plugin:rebuild`, then tell the user to open Figma and Apply |
 | `demo 2` or `start demo 2` | Run `npm run demo:start -- 2`, then run `npm run figma-plugin:rebuild`, then tell the user to open Figma and Apply |

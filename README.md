@@ -39,7 +39,7 @@ After setup, you work in **Claude Code** and **Figma** only. No terminal. Say it
 
 ### 2. Create a new token
 
-- Tell Claude what you need → Claude writes a proposal to `mirror/` and rebuilds → open Figma → Apply → Approve or Reject → say `check Figma for approvals` to Claude
+- Tell Claude what you need → Claude writes a proposal to `mirror/` and rebuilds → open Figma → Apply → Approve or Reject → say `check mirror` to Claude
 
 ### 3. Edit a pattern's structure (not pullable)
 
@@ -47,7 +47,7 @@ After setup, you work in **Claude Code** and **Figma** only. No terminal. Say it
 
 ### 4. Create a new pattern
 
-- Describe the screen to Claude (or share a Figma screenshot) → Claude writes it to `mirror/` and rebuilds → open Figma → Apply → Approve or Reject → say `check Figma for approvals` to Claude
+- Describe the screen to Claude (or share a Figma screenshot) → Claude writes it to `mirror/` and rebuilds → open Figma → Apply → Approve or Reject → say `check mirror` to Claude
 
 ### Try the demos
 
@@ -136,8 +136,7 @@ Source documents:
 | `status` | Runs the health report and shows it |
 | `pull from Figma` | Reads Figma, diffs against canonical, proposes edits, rebuilds |
 | `approve <name>` | Promotes a mirror item to canonical, rebuilds |
-| `check Figma for approvals` | Reads Figma for approved items, promotes them, rebuilds |
-| `check mirror for rejections` | Reads rejection reasons, revises the pattern, rebuilds |
+| `check mirror` | Reads Figma — promotes approvals, revises rejections, reports status |
 | `demo 1` / `demo 2` / `demo 3` / `demo 4` | Sets up a sandboxed demo and rebuilds |
 | `end demo` | Restores everything to its committed state |
 
