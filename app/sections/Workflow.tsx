@@ -162,7 +162,7 @@ export function Workflow() {
       <div id="edit-pullable" style={{ borderTop: "1px solid var(--color-bg-panel)", paddingTop: "2rem", marginTop: "2rem" }}>
         <Heading as="h3" className="text-base">1. Edit an existing token or property</Heading>
         <Body role="supporting">Change a color, font size, glyph, banner phrase, or spacing value.</Body>
-        <FlowDiagram steps={["Change the value (in Figma or tell Claude)", "Claude syncs it", "Open Figma → run plugin → Apply", "Done"]} />
+        <FlowDiagram steps={["Change the value (in Figma or tell Claude)", "Claude syncs it", "Open Figma → Plugins → Development → Construct → Apply", "Done"]} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ marginTop: "0.75rem" }}>
           <Card>
@@ -247,13 +247,13 @@ export function Workflow() {
       <div id="edit-structural" style={{ borderTop: "1px solid var(--color-bg-panel)", paddingTop: "2rem", marginTop: "2rem" }}>
         <Heading as="h3" className="text-base">3. Edit a pattern&rsquo;s structure</Heading>
         <Body role="supporting">Add, remove, or reorder sections in an existing pattern.</Body>
-        <FlowDiagram steps={["Describe the change to Claude", "Claude edits the pattern and rebuilds", "Open Figma → Apply", "Done"]} />
+        <FlowDiagram steps={["Describe the change to Claude (or share a screenshot)", "Claude edits the pattern and rebuilds", "Open Figma → Plugins → Development → Construct → Apply", "Done"]} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3" style={{ marginTop: "0.75rem" }}>
           <Card>
             <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-info)", marginBottom: "0.375rem" }}>START IN FIGMA</div>
             <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.8125rem", color: "var(--color-text-body)", marginBottom: "0.5rem" }}>
-              You see something wrong with a pattern in Figma. Tell Claude what to change.
+              Describe the change to Claude and Claude will make it. Or: duplicate the component in Figma, edit it visually, and share a screenshot with Claude — Claude will update the pattern to match.
             </div>
             <TryIt id="try-3a">
               <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>SANDBOX — say this to Claude to set up</div>
@@ -294,20 +294,21 @@ export function Workflow() {
           <Card>
             <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-info)", marginBottom: "0.375rem" }}>START IN FIGMA</div>
             <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.8125rem", color: "var(--color-text-body)", marginBottom: "0.5rem" }}>
-              Design a screen in Figma, share a screenshot with Claude.
+              Design the screen in a separate Figma file or scratch page, then share a screenshot with Claude. Claude generates the pattern spec from your design and validates it against the composition rules.
             </div>
             <TryIt id="try-4a">
               <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>SANDBOX — say this to Claude to set up</div>
               <StepList steps={[
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 4</CopyCode>Claude creates a batch operation summary pattern and rebuilds.</span>,
                 <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The proposed pattern appears on <strong>Construct / Mirror</strong>.</span>,
-                <span key="2">Click <strong>Approve</strong> or <strong>Reject</strong> with feedback (e.g. &ldquo;needs per-repo failure details&rdquo;).</span>,
-                <span key="3">If rejected, say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude reads the reason and revises.</span>,
-                <span key="4">If approved, say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude promotes it to the Patterns page.</span>,
-                <span key="5">When done: <CopyCode variant="claude">end demo</CopyCode></span>,
+                <span key="2">Click <strong>Reject</strong> with: <code style={mono}>needs per-repo status rows showing which repos failed and why</code></span>,
+                <span key="3">Say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude reads the reason and revises the pattern with per-repo detail.</span>,
+                <span key="4">Open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong>. Review the revision. Click <strong>Approve</strong>.</span>,
+                <span key="5">Say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude promotes it.</span>,
+                <span key="6">When done: <CopyCode variant="claude">end demo</CopyCode></span>,
               ]} />
               <Body role="supporting">
-                In a real workflow, you&rsquo;d design the screen in a separate Figma file and share a screenshot with Claude.
+                Tip: if you want to provide a visual design instead of a text description, reject with <code style={mono}>design review needed</code> — Claude will ask you to share a screenshot.
               </Body>
             </TryIt>
           </Card>

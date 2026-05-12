@@ -41,7 +41,16 @@ When the user says any of these, **run the command directly** — don't tell the
 | `end demo` or `demo end` | Run `npm run demo:end` — restores everything to committed state |
 | `reset the <name> demo` | Restore a pattern to its mirror stub, run `npm run figma-plugin:rebuild` |
 
-**Important**: always run the commands yourself. The user should never need to open a terminal. The only things they do manually are: open Figma, run the plugin, and click Apply/Approve/Reject.
+**Important**: always run the commands yourself. The user should never need to open a terminal. The only things they do manually are: open Figma, run the plugin (Plugins → Development → Construct), and click Apply/Approve/Reject.
+
+## Special rejection reasons
+
+When checking mirror rejections, some reasons trigger special behavior:
+
+| Rejection reason contains | What Claude does |
+|---|---|
+| `design review needed` or `need a design` | Ask the user to share a screenshot or describe what they want visually. Don't auto-revise — wait for input. |
+| Any other reason | Read the reason, revise the pattern accordingly, rebuild. |
 
 ## Composition rules
 
