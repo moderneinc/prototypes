@@ -174,7 +174,7 @@ export function Workflow() {
               <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>SANDBOX — say this to Claude to set up</div>
               <StepList steps={[
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 1</CopyCode>Claude changes the success color from green to cyan and rebuilds the plugin.</span>,
-                <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. Notice the success color changed.</span>,
+                <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The diff shows which tokens changed with before/after values. After applying, navigate to the affected components (e.g. Construct / Components → banners) to see the change on the canvas. The plugin doesn&rsquo;t scroll to changed items automatically yet.</span>,
                 <span key="2">Now change it to something else in Figma (e.g. pick a different color on a banner).</span>,
                 <span key="3">Say to Claude: <CopyCode variant="claude">pull from Figma</CopyCode>Claude reads the diff and shows what changed. Tell Claude to apply it.</span>,
                 <span key="4">When done, say to Claude: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.Everything restores. Open Figma → Apply to sync back.</span>,
@@ -190,7 +190,7 @@ export function Workflow() {
               <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>SANDBOX — say this to Claude to set up</div>
               <StepList steps={[
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 1</CopyCode>Claude changes the success color and rebuilds.</span>,
-                <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The success color changes.</span>,
+                <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. Navigate to the affected components to see the change — the plugin applies it but doesn&rsquo;t scroll to it yet.</span>,
                 <span key="2">When done, say to Claude: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,
               ]} />
             </TryIt>
@@ -259,7 +259,7 @@ export function Workflow() {
               <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>SANDBOX — say this to Claude to set up</div>
               <StepList steps={[
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 3</CopyCode>Claude adds a TECHNICAL DETAILS section to the error pattern and rebuilds.</span>,
-                <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The error pattern now shows a stack trace section.</span>,
+                <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The diff shows which pattern changed. Navigate to <strong>Construct / Patterns</strong> to see the updated pattern — the plugin applies changes but doesn&rsquo;t scroll to them yet.</span>,
                 <span key="2">In a real workflow, you&rsquo;d say something like: <code style={mono}>Add a TECHNICAL DETAILS section to the error pattern</code></span>,
                 <span key="3">When done: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,
               ]} />
@@ -274,7 +274,7 @@ export function Workflow() {
               <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>SANDBOX — say this to Claude to set up</div>
               <StepList steps={[
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 3</CopyCode>Claude edits error.md and rebuilds.</span>,
-                <span key="1">Open Figma → run plugin → <strong>Apply</strong>. See the updated error pattern.</span>,
+                <span key="1">Open Figma → run plugin → <strong>Apply</strong>. Navigate to <strong>Construct / Patterns</strong> to see the change.</span>,
                 <span key="2">When done: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,
               ]} />
             </TryIt>
