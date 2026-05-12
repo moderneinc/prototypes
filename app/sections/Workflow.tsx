@@ -138,13 +138,19 @@ export function Workflow() {
 
         <StepList steps={[
           <span key="1">Clone the repo and install dependencies: <CopyCode>npm install</CopyCode>This installs git hooks that auto-rebuild the Figma plugin on every commit and pull.</span>,
-          <span key="2">Start the playground: <CopyCode>npm run dev</CopyCode> then open <strong>http://localhost:3000</strong></span>,
+          <span key="2">Start the playground: <CopyCode>npm run dev</CopyCode> then open <strong>http://localhost:3000</strong>. This also prints a status report showing pattern count, coverage, and anything in review.</span>,
           <span key="3">In Figma desktop, go to <strong>Plugins → Development → Import plugin from manifest</strong> and select <code style={{ fontFamily: "var(--font-mono)" }}>lib/interpreters/figma-plugin/manifest.json</code></span>,
           <span key="4">Run the plugin: <strong>Plugins → Development → Construct</strong> → click <strong>Initialize</strong>.</span>,
         ]} />
 
         <Body role="supporting">
-          After this, you never need to re-import or rebuild manually. Commits and pulls that touch design files auto-rebuild the plugin. Figma hot-reload picks up the change.
+          After this, you never need to re-import or rebuild manually. Commits and pulls auto-rebuild the plugin. The site auto-deploys on every merge to main.
+        </Body>
+
+        <Body role="supporting" as="div">
+          <strong style={{ color: "var(--color-text-primary)" }}>Every time you start working</strong>, run <code style={{ fontFamily: "var(--font-mono)" }}>npm run status</code> or just <code style={{ fontFamily: "var(--font-mono)" }}>npm run dev</code> — it shows what&rsquo;s canonical,
+          what&rsquo;s in review, and what needs attention. In Claude Code, say <code style={{ fontFamily: "var(--font-mono)" }}>status</code> or <code style={{ fontFamily: "var(--font-mono)" }}>check Figma for approvals</code> to
+          see if anyone approved or rejected something in Figma since you last looked.
         </Body>
       </div>
 
@@ -482,7 +488,8 @@ export function Workflow() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
           {[
             { cmd: "npm install", desc: "Install dependencies + set up git hooks" },
-            { cmd: "npm run dev", desc: "Start the playground locally" },
+            { cmd: "npm run status", desc: "Design system health: coverage, mirror, recent changes" },
+            { cmd: "npm run dev", desc: "Status report + start the playground" },
             { cmd: "npm run figma-plugin:rebuild", desc: "Rebuild plugin (usually automatic)" },
             { cmd: "npm run lint:composition", desc: "Validate patterns + detect screen gaps" },
             { cmd: "npm run tokens:build", desc: "Rebuild canonical from tokens.json" },
@@ -496,6 +503,7 @@ export function Workflow() {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
           {[
+            { cmd: "status", desc: "Run npm run status — design system health report" },
             { cmd: "pull from Figma", desc: "Diff Figma against canonical, propose edits" },
             { cmd: "approve <name>", desc: "Promote a mirror item to canonical" },
             { cmd: "check mirror for rejections", desc: "Read rejection reasons, propose revisions" },

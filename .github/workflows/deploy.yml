@@ -1,0 +1,48 @@
+name: Build & Deploy Construct Site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'design-system/**'
+      - 'tokens/**'
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'package.json'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build tokens + site
+        run: |
+          npm run tokens:build
+          npm run build
+
+      - name: Lint composition
+        run: npm run lint:composition
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/deploy-pages@v4

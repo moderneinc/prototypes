@@ -201,10 +201,14 @@ scripts/
 ├── build-tokens.mjs         ← tokens.json → canonical.json
 ├── figma-pull-expected.mjs  ← canonical → figma-expected.json
 ├── validate-composition.mjs ← lint + gap detection
+├── status.mjs               ← design system health report
 ├── setup-hooks.mjs          ← installs git hooks on npm install
 └── hooks/
     ├── pre-commit           ← auto-rebuild on commit
-    └── post-merge           ← auto-rebuild on pull`}
+    └── post-merge           ← auto-rebuild on pull
+
+.github/workflows/
+└── deploy.yml               ← auto-deploy site on merge to main`}
         </pre>
       </div>
 
