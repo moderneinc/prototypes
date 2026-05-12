@@ -9,9 +9,15 @@ Run the status report and check Figma for pending work:
 1. Run `npm run status` — shows pattern count, mirror items, coverage gaps, recent changes
 2. Read the Figma file via MCP: `get_figma_data(fileKey="twkYEkdg94dq5FQB6D9vDq", depth=2)`
 3. Check the Mirror page for:
-   - `✓ APPROVED` nodes → promote: move `.md` from `design-system/mirror/` to `design-system/patterns/`, update `screens.json`
-   - `✗ REJECTED` nodes → report the rejection reason from the node name, propose a revision
+   - `✓ APPROVED` nodes → promote: move `.md` from `design-system/mirror/` to `design-system/patterns/`, update `screens.json`, then `npm run figma-plugin:rebuild`
+   - `✗ REJECTED` nodes → report the rejection reason from the node name, propose a revision, write the revision to `design-system/mirror/<name>.md`, then `npm run figma-plugin:rebuild`
 4. Report a summary: what's canonical, what's in review, what needs attention
+
+## Why the rebuild step matters
+
+The Figma plugin **bakes mirror and pattern content into `code.js` at build time** (see `__MIRROR_ITEMS_PLACEHOLDER__` in `lib/interpreters/figma-plugin/src/header.js`). Editing a `.md` file is not enough — the plugin only sees changes after `npm run figma-plugin:rebuild` regenerates `code.js` with the new content + hashes. After rebuilding, reload the plugin in Figma and click Apply to re-render frames.
+
+The git pre-commit hook rebuilds automatically on commit, but live demos don't commit between steps, so the rebuild must be explicit.
 
 ## Figma file
 
@@ -20,14 +26,23 @@ Run the status report and check Figma for pending work:
 
 ## Key commands
 
-| Say this | What happens |
+When the user says any of these, **run the command directly** — don't tell them to run it in terminal. Execute it yourself.
+
+| Say this | What Claude does |
 |---|---|
-| `status` | Run `npm run status` — local design system health |
-| `pull from Figma` | Read Figma via MCP, diff against canonical, propose token edits |
-| `check Figma for approvals` | Read mirror items, promote approved ones |
-| `check mirror for rejections` | Read rejected items, propose revisions based on rejection reasons |
-| `approve <name>` | Move `design-system/mirror/<name>.md` to `design-system/patterns/` |
-| `reset the <name> demo` | Restore a pattern to its mirror stub for re-demo |
+| `status` | Run `npm run status` and report the output |
+| `pull from Figma` | Read Figma via MCP, diff against canonical, propose token edits. If approved, edit `tokens.json`, run `npm run figma-plugin:rebuild` |
+| `check Figma for approvals` | Read Figma via MCP, find `✓ APPROVED` mirror items, move their `.md` files from `mirror/` to `patterns/`, update `screens.json`, run `npm run figma-plugin:rebuild` |
+| `check mirror for rejections` | Read Figma via MCP, find `✗ REJECTED` items, read the reason, revise the `.md` file, run `npm run figma-plugin:rebuild` |
+| `approve <name>` | Move `design-system/mirror/<name>.md` to `design-system/patterns/`, update `screens.json`, run `npm run figma-plugin:rebuild` |
+| `demo 1` or `start demo 1` | Run `npm run demo:start -- 1`, then run `npm run figma-plugin:rebuild`, then tell the user to open Figma and Apply |
+| `demo 2` or `start demo 2` | Run `npm run demo:start -- 2`, then run `npm run figma-plugin:rebuild`, then tell the user to open Figma and Apply |
+| `demo 3` or `start demo 3` | Run `npm run demo:start -- 3`, then run `npm run figma-plugin:rebuild`, then tell the user to open Figma and Apply |
+| `demo 4` or `start demo 4` | Run `npm run demo:start -- 4`, then run `npm run figma-plugin:rebuild`, then tell the user to open Figma and Apply |
+| `end demo` or `demo end` | Run `npm run demo:end` — restores everything to committed state |
+| `reset the <name> demo` | Restore a pattern to its mirror stub, run `npm run figma-plugin:rebuild` |
+
+**Important**: always run the commands yourself. The user should never need to open a terminal. The only things they do manually are: open Figma, run the plugin, and click Apply/Approve/Reject.
 
 ## Composition rules
 
