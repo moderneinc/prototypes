@@ -1,0 +1,14 @@
+#!/bin/sh
+# Auto-rebuild Construct Figma plugin when design-system or token files
+# change on git pull/merge. Figma's "Hot reload plugin" picks up the
+# new code.js automatically — no re-import needed.
+
+changed=$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD 2>/dev/null)
+
+if echo "$changed" | grep -qE '^(design-system/|tokens/|lib/interpreters/figma-plugin/src/)'; then
+  echo ""
+  echo "◆ Construct design system changed — rebuilding Figma plugin..."
+  npm run figma-plugin:rebuild
+  echo "◆ Done. Figma hot-reload will pick it up."
+  echo ""
+fi
