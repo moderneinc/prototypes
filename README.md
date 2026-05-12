@@ -102,6 +102,8 @@ A plugin pushes canonical to Figma. Claude reads Figma via MCP and pulls changes
 
 30 machine-readable rules in `composition.json` enforce consistency: glyph-color pairing, semantic color limits, section ordering, required elements per pattern type. Claude reads them before generating anything. `npm run lint:composition` validates all patterns and detects screen coverage gaps.
 
+Rules evolve with the system. When Claude promotes a new pattern, it drafts a composition shape entry, compares against all existing rules for overlaps or conflicts, and shows the analysis before writing anything. The goal is consistency — not canonicalizing every experiment. Claude also runs periodic health checks to flag redundant or over-specific rules.
+
 ### Mirror: how new things enter the system
 
 New patterns and tokens don't go straight to canonical. They land on a staging page in Figma (Construct / Mirror) for review. Approve or reject from the Figma plugin or from Claude. Rejected items include a reason — Claude reads it and proposes a revision. The cycle repeats until approved.

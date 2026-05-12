@@ -127,6 +127,8 @@ export function Approach() {
               { label: "Claude reads composition.json before generating any screen", ok: true },
               { label: "Mirror page shows lint results as badges per frame", ok: true },
               { label: "Screen gaps auto-detected from screens.json", ok: true },
+              { label: "On promote: Claude drafts new rules, compares against existing, shows analysis before writing", ok: true },
+              { label: "Health check: Claude scans for redundant, conflicting, or over-specific rules", ok: true },
             ]} />
           </Card>
         </div>

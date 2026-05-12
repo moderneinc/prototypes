@@ -365,6 +365,49 @@
       "order": [],
       "semantic_colors": ["info"],
       "note": "Not a standalone screen — a text-level treatment used inside other patterns."
+    },
+    "config-confirmation": {
+      "required": ["✓ confirmation line"],
+      "optional": ["NEXT STEP (verify command)"],
+      "order": ["✓ confirmation", "NEXT STEP"],
+      "semantic_colors": ["success", "info"],
+      "no_close_banner": true
+    },
+    "auth-confirmation": {
+      "required": ["● action header(s)", "✓ authenticated line", "close banner (success)"],
+      "optional": ["NEXT STEP"],
+      "order": ["● action headers", "✓ authenticated", "NEXT STEP", "close banner"],
+      "semantic_colors": ["success", "info"]
+    },
+    "auth-error": {
+      "required": ["FAILURE preface", "● WHAT WENT WRONG (one-line body)", "● TRY (recovery actions)", "close banner (failure)"],
+      "optional": ["? Hint"],
+      "order": ["FAILURE preface", "WHAT WENT WRONG", "? Hint", "TRY", "close banner"],
+      "semantic_colors": ["danger", "warning", "info"],
+      "note": "Shares the error-full shape. Auth-specific TRY actions (re-login, manual token)."
+    },
+    "prompt": {
+      "required": ["? prompt line with [Y/n] or [<default>]"],
+      "optional": ["context lines above prompt", "! Error: re-prompt on invalid input"],
+      "order": ["context", "? prompt", "! re-prompt"],
+      "semantic_colors": ["warning"],
+      "no_close_banner": true,
+      "note": "Mid-flow interaction, not a terminal screen. Must be skippable via --yes/--no-prompt."
+    },
+    "run-history": {
+      "required": ["section header (ALL CAPS)", "status rows with ✓/⚠/✗"],
+      "optional": ["trailing summary", "empty-state with ▶ recovery"],
+      "order": ["header", "rows", "trailing summary"],
+      "semantic_colors": ["success", "warning", "danger"],
+      "no_close_banner": true,
+      "note": "Read-only query. Uses list pattern shape with per-row status glyphs."
+    },
+    "study-results": {
+      "required": ["section header", "per-repo rows with ✓/⚠/✗", "trailing summary"],
+      "optional": ["WHAT TO DO NEXT (forward-chain)", "close banner (success)"],
+      "order": ["header", "rows", "trailing summary", "WHAT TO DO NEXT", "close banner"],
+      "semantic_colors": ["success", "warning", "danger", "info"],
+      "note": "Combines list table form with success forward-chain. Max 4 semantic colors justified by mixed-status output."
     }
   }
 }

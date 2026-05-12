@@ -43,6 +43,36 @@ When the user says any of these, **run the command directly** — don't tell the
 
 **Important**: always run the commands yourself. The user should never need to open a terminal. The only things they do manually are: open Figma, run the plugin (Plugins → Development → Construct), and click Apply/Approve/Reject.
 
+## Promoting patterns — composition rules analysis
+
+When promoting an approved pattern (moving from mirror/ to patterns/), always:
+
+1. Move the `.md` file and update `screens.json`
+2. Read the pattern's `## Composition rules` section
+3. Draft a `pattern_shapes` entry for `composition.json` (required, optional, order, semantic_colors)
+4. Compare the draft against ALL existing rules and shapes:
+   - Are any new rules already covered by existing rules? → remove the duplicate
+   - Do any new rules conflict with existing rules? → flag for the user
+   - Can existing rules be generalized to cover the new pattern? → suggest
+   - Are there opportunities to combine or simplify? → suggest
+5. Show the analysis to the user:
+   - The draft pattern shape
+   - Any overlaps, conflicts, or simplification opportunities
+   - A recommendation
+6. Wait for the user to approve before writing to `composition.json`
+
+**Never auto-write composition rules.** Always show analysis first.
+
+## Composition health check
+
+When the user says `status` or asks about rule health, scan composition.json for:
+- Redundant rules (two rules that say the same thing differently)
+- Conflicting rules (two rules that contradict)
+- Over-specific rules (applies to only one pattern, could generalize)
+- Under-covered patterns (no pattern_shapes entry)
+
+Report findings as suggestions. Don't auto-change.
+
 ## Handling rejections
 
 When `check mirror` finds rejected items, **never auto-revise**. Always report the rejection reason and ask:
