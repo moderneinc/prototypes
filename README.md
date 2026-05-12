@@ -60,7 +60,16 @@ Build a new CLI screen. Goes through the mirror for review.
 
 ### Try the demos
 
-Each workflow has a sandboxed demo you can run without affecting the real design system:
+Set up a fresh sandbox so demos don't touch your main workspace:
+
+```bash
+git worktree add demo origin/main
+cd demo
+npm install
+npm run dev
+```
+
+Then run any demo:
 
 ```bash
 npm run demo:start -- 1    # Edit a token (changes success color)
@@ -68,6 +77,13 @@ npm run demo:start -- 2    # Create a token (writes a mirror proposal)
 npm run demo:start -- 3    # Edit a pattern (adds a section to error)
 npm run demo:start -- 4    # Create a pattern (writes to mirror)
 npm run demo:end           # Restore everything
+```
+
+When you're done, remove the sandbox:
+
+```bash
+cd ..
+git worktree remove demo
 ```
 
 Full step-by-step instructions are on the Workflow page of the site.

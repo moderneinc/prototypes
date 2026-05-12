@@ -124,6 +124,18 @@ export function Workflow() {
         <Body role="supporting">
           After this, you never rebuild manually. Commits and pulls auto-rebuild the plugin. The site auto-deploys on merge to main.
         </Body>
+
+        <div style={{ marginTop: "1rem", padding: "1rem 1.25rem", background: "var(--color-bg-terminal)", border: "1px solid var(--color-bg-panel)", borderRadius: "0.375rem" }}>
+          <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-warning)", marginBottom: "0.5rem" }}>WANT TO EXPERIMENT? SET UP A SANDBOX FIRST</div>
+          <Body role="supporting">
+            Create a fresh copy so demos and experiments don&rsquo;t touch your main workspace:
+          </Body>
+          <CopyCode>git worktree add demo origin/main && cd demo && npm install && npm run dev</CopyCode>
+          <Body role="supporting">
+            Run any demo from there. When done, clean up:
+          </Body>
+          <CopyCode>cd .. && git worktree remove demo</CopyCode>
+        </div>
       </div>
 
       {/* ── Workflows overview ──────────────────────────────────────────── */}
