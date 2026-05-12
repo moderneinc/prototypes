@@ -1,0 +1,14 @@
+#!/bin/sh
+# Auto-rebuild Figma plugin when committing design-system or token changes.
+# The rebuilt code.js is added to the commit so it's always in sync.
+
+staged=$(git diff --cached --name-only)
+
+if echo "$staged" | grep -qE '^(design-system/|tokens/|lib/interpreters/figma-plugin/src/)'; then
+  echo "◆ Design system files staged — rebuilding Figma plugin..."
+  npm run figma-plugin:rebuild 2>&1
+
+  # Add the rebuilt code.js to the commit
+  git add lib/interpreters/figma-plugin/code.js
+  echo "◆ code.js rebuilt and staged."
+fi

@@ -92,15 +92,14 @@ export function Workflow() {
         </Body>
 
         <StepList steps={[
-          <span key="1">Clone the repo and install dependencies: <CopyCode>npm install</CopyCode>This also installs the git hook that auto-rebuilds the Figma plugin when design files change.</span>,
-          <span key="2">Start the playground to see the design system: <CopyCode>npm run dev</CopyCode> then open <strong>http://localhost:3000</strong></span>,
-          <span key="3">Build the Figma plugin for the first time: <CopyCode>npm run figma-plugin:rebuild</CopyCode></span>,
-          <span key="4">In Figma desktop, go to <strong>Plugins → Development → Import plugin from manifest</strong> and select <code style={{ fontFamily: "var(--font-mono)" }}>lib/interpreters/figma-plugin/manifest.json</code></span>,
-          <span key="5">Run the plugin: <strong>Plugins → Development → Construct</strong> → click <strong>Initialize</strong>.</span>,
+          <span key="1">Clone the repo and install dependencies: <CopyCode>npm install</CopyCode>This installs git hooks that auto-rebuild the Figma plugin on every commit and pull. No manual rebuild needed after this.</span>,
+          <span key="2">Start the playground: <CopyCode>npm run dev</CopyCode> then open <strong>http://localhost:3000</strong></span>,
+          <span key="3">In Figma desktop, go to <strong>Plugins → Development → Import plugin from manifest</strong> and select <code style={{ fontFamily: "var(--font-mono)" }}>lib/interpreters/figma-plugin/manifest.json</code></span>,
+          <span key="4">Run the plugin: <strong>Plugins → Development → Construct</strong> → click <strong>Initialize</strong>.</span>,
         ]} />
 
         <Body role="metadata">
-          After this, you never need to re-import. The plugin auto-rebuilds on <code style={{ fontFamily: "var(--font-mono)" }}>git pull</code> and Figma&rsquo;s hot-reload picks up changes.
+          After this, you never need to re-import or rebuild manually. Commits and pulls that touch design files auto-rebuild the plugin. Figma hot-reload picks up the change.
         </Body>
       </div>
 
@@ -108,17 +107,17 @@ export function Workflow() {
       <div className="space-y-3">
         <Heading as="h3" className="text-base">Push: code → Figma</Heading>
         <Body role="supporting">
-          When tokens or patterns change in code, push the update to Figma.
+          When tokens or patterns change in code, the plugin rebuilds automatically on commit. Just open Figma and apply.
         </Body>
 
         <StepList steps={[
-          <span key="1">In terminal: <CopyCode>npm run figma-plugin:rebuild</CopyCode></span>,
+          <span key="1">Commit your changes. The pre-commit hook rebuilds the plugin automatically.</span>,
           <span key="2">In Figma: <strong>Plugins → Development → Construct</strong></span>,
           <span key="3">The plugin shows a diff — what changed since last sync. Click <strong>Apply</strong>.</span>,
         ]} />
 
         <Body role="metadata">
-          If you just did <code style={{ fontFamily: "var(--font-mono)" }}>git pull</code>, the rebuild already happened automatically. Just open the plugin and apply.
+          Pulling someone else&rsquo;s changes works the same way — the post-merge hook rebuilds on pull. Just open the plugin and apply.
         </Body>
       </div>
 
@@ -146,10 +145,10 @@ export function Workflow() {
 
         <StepList steps={[
           <span key="1">Write a pattern <code style={{ fontFamily: "var(--font-mono)" }}>.md</code> file and save it to <code style={{ fontFamily: "var(--font-mono)" }}>design-system/mirror/</code></span>,
-          <span key="2">Rebuild and sync: <CopyCode>npm run figma-plugin:rebuild</CopyCode> then run the plugin in Figma.</span>,
-          <span key="3">The proposed pattern appears on the <strong>Construct / Mirror</strong> page with a status badge and lint results.</span>,
+          <span key="2">Commit. The hook rebuilds the plugin automatically.</span>,
+          <span key="3">In Figma, run the plugin. The proposed pattern appears on <strong>Construct / Mirror</strong> with a status badge and lint results.</span>,
           <span key="4">Click <strong>Approve</strong> or <strong>Reject</strong> in the plugin UI — or say <code style={{ fontFamily: "var(--font-mono)" }}>approve name</code> in Claude.</span>,
-          <span key="5">To promote: <CopyCode>mv design-system/mirror/name.md design-system/patterns/</CopyCode> then rebuild.</span>,
+          <span key="5">To promote an approved pattern: <CopyCode>mv design-system/mirror/name.md design-system/patterns/</CopyCode> then commit.</span>,
         ]} />
 
         <Body role="metadata">
