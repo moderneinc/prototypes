@@ -7,6 +7,9 @@ Construct is a production-first design system for the Moderne CLI, built for hum
 ## Start here
 
 ```bash
+git clone https://github.com/moderneinc/prototypes.git
+cd prototypes
+git checkout jaydjackson/construct
 npm install
 npm run dev
 ```
