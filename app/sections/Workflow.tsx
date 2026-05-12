@@ -302,7 +302,7 @@ export function Workflow() {
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 4</CopyCode>Claude creates a batch operation summary pattern and rebuilds.</span>,
                 <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The proposed pattern appears on <strong>Construct / Mirror</strong>.</span>,
                 <span key="2">Click <strong>Reject</strong> with: <code style={mono}>needs per-repo status rows showing which repos failed and why</code></span>,
-                <span key="3">Say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude reads the reason and revises the pattern with per-repo detail.</span>,
+                <span key="3">Say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude reads the reason and asks: &ldquo;Do you want me to revise, or would you like to upload a screenshot?&rdquo; Tell Claude to revise.</span>,
                 <span key="4">Open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong>. Review the revision. Click <strong>Approve</strong>.</span>,
                 <span key="5">Say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude promotes it.</span>,
                 <span key="6">When done: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,

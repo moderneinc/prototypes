@@ -32,7 +32,7 @@ When the user says any of these, **run the command directly** — don't tell the
 |---|---|
 | `status` | Run `npm run status` and report the output |
 | `pull from Figma` | Read Figma via MCP, diff against canonical, propose token edits. If approved, edit `tokens.json`, run `npm run figma-plugin:rebuild` |
-| `check mirror` | Read Figma via MCP, check all mirror items: promote `✓ APPROVED` ones (move to `patterns/`, update `screens.json`), revise `✗ REJECTED` ones (read reason, rewrite `.md`), report `proposed` ones. Run `npm run figma-plugin:rebuild` after any changes. |
+| `check mirror` | Read Figma via MCP, check all mirror items: promote `✓ APPROVED` ones (move to `patterns/`, update `screens.json`), report `✗ REJECTED` ones with the reason. For rejections, **always ask**: "Do you want me to revise based on this feedback, or would you like to upload a screenshot of what you have in mind?" Do not auto-revise. Run `npm run figma-plugin:rebuild` after any changes. |
 | `approve <name>` | Move `design-system/mirror/<name>.md` to `design-system/patterns/`, update `screens.json`, run `npm run figma-plugin:rebuild` |
 | `demo 1` or `start demo 1` | Run `npm run demo:start -- 1`, then run `npm run figma-plugin:rebuild`, then tell the user to open Figma and Apply |
 | `demo 2` or `start demo 2` | Run `npm run demo:start -- 2`, then run `npm run figma-plugin:rebuild`, then tell the user to open Figma and Apply |
@@ -43,14 +43,13 @@ When the user says any of these, **run the command directly** — don't tell the
 
 **Important**: always run the commands yourself. The user should never need to open a terminal. The only things they do manually are: open Figma, run the plugin (Plugins → Development → Construct), and click Apply/Approve/Reject.
 
-## Special rejection reasons
+## Handling rejections
 
-When checking mirror rejections, some reasons trigger special behavior:
+When `check mirror` finds rejected items, **never auto-revise**. Always report the rejection reason and ask:
 
-| Rejection reason contains | What Claude does |
-|---|---|
-| `design review needed` or `need a design` | Ask the user to share a screenshot or describe what they want visually. Don't auto-revise — wait for input. |
-| Any other reason | Read the reason, revise the pattern accordingly, rebuild. |
+> "**[name]** was rejected: *[reason]*. Do you want me to revise based on this feedback, or would you like to upload a screenshot of what you have in mind?"
+
+Wait for the user's response before making changes. If they share a screenshot, use it as the basis for the revision. If they say revise, use the rejection reason.
 
 ## Composition rules
 
