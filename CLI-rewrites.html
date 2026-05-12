@@ -70,6 +70,7 @@
   <div class="section-tabs">
     <button class="section-tab active" onclick="showSection('commands')">-h Rewrites</button>
     <button class="section-tab" onclick="showSection('reference')">cli-reference.md Preamble</button>
+    <button class="section-tab" onclick="showSection('docs')">Bundled Docs Concept</button>
   </div>
 
   <!-- Commands section -->
@@ -143,6 +144,125 @@ mod git push . -u origin &lt;branch-name&gt;  # 6. Push to remote</div>
     </div>
   </div>
 
+  <!-- Bundled docs concept section -->
+  <div id="docs-section" style="display:none">
+    <div class="ref-section">
+      <h2>Bundled Docs Concept</h2>
+      <p class="sub">Markdown files that ship alongside the CLI binary. Agents and humans can reference these locally without network access. Installed to <span class="mono">~/.moderne/docs/</span> on first run.</p>
+
+      <div class="ref-label">TROUBLESHOOTING.md</div>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label mono">~/.moderne/docs/TROUBLESHOOTING.md</span></div>
+        <div class="terminal-body"><pre class="mono"># Moderne CLI Troubleshooting
+
+## Common Errors
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| PKIX path building failed | Missing trust store | `mod config http trust-store edit file &lt;path&gt;` |
+| No Moderne tenant configured | Step 1 not done | `mod config moderne edit &lt;url&gt;` |
+| No recipes available to run | Recipes not synced | `mod config recipes moderne sync` |
+| 401 Unauthorized | Bad Artifactory creds | Re-run `mod config recipes artifacts artifactory add` |
+| Could not resolve dependencies | Missing Maven settings | `mod config build maven settings edit &lt;path&gt;` |
+| Recipe not found | Stale catalog | `mod config recipes moderne sync` |
+
+## Diagnostic Commands
+
+```
+mod config moderne show          # Check tenant config
+mod config http trust-store show # Check SSL setup
+mod config recipes list          # List installed recipes
+mod config recipes search &lt;q&gt;   # Search recipes by name
+mod run-history                  # Show past recipe runs
+```
+
+## Escalation Contacts
+
+If the above doesn't resolve your issue:
+
+- **Platform team**: Check your org's internal wiki or Slack channel
+- **Moderne support**: https://docs.moderne.io/support
+- **Config contact**: See CONFIG-TEMPLATE.yaml for org-specific contacts</pre></div>
+      </div>
+
+      <div class="ref-label">SETUP-CHECKLIST.md</div>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label mono">~/.moderne/docs/SETUP-CHECKLIST.md</span></div>
+        <div class="terminal-body"><pre class="mono"># Moderne CLI Setup Checklist
+
+## Required
+
+- [ ] 1. Connect to tenant
+      `mod config moderne edit &lt;tenant-url&gt;`
+      Verify: `mod config moderne show`
+
+- [ ] 2. Log in
+      `mod config moderne login`
+      Verify: `mod config moderne show`
+
+- [ ] 7. Sync recipes
+      `mod config recipes moderne sync`
+      Verify: `mod config recipes list`
+
+## Conditional (ask your platform team)
+
+- [ ] 3. Trust store (if corporate proxy / internal CA)
+      `mod config http trust-store edit file &lt;path&gt;`
+
+- [ ] 4. Recipe repo (if internal Artifactory)
+      `mod config recipes artifacts artifactory add &lt;url&gt;`
+
+- [ ] 5. LST repo (if publishing LSTs)
+      `mod config lsts artifacts artifactory add &lt;url&gt;`
+
+- [ ] 6. Maven settings (if custom mirrors/proxies)
+      `mod config build maven settings edit &lt;path&gt;`
+
+## Verify Everything
+
+```
+mod config moderne show
+mod config http trust-store show
+mod config recipes list
+```</pre></div>
+      </div>
+
+      <div class="ref-label">CONFIG-TEMPLATE.yaml</div>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label mono">~/.moderne/docs/CONFIG-TEMPLATE.yaml</span></div>
+        <div class="terminal-body"><pre class="mono"># Moderne CLI Configuration Template
+# Copy this file and fill in your org's values.
+# Distribute to your team so they can set up the CLI quickly.
+
+tenant:
+  url: https://app.moderne.io          # Your Moderne tenant URL
+  # api: https://api.app.moderne.io    # Auto-detected from tenant URL
+
+trust_store:
+  # path: /etc/pki/java/cacerts        # Uncomment if behind corporate proxy
+  # password: changeit
+
+artifacts:
+  recipes:
+    # url: https://artifactory.corp.com/moderne-recipes
+    # auth: jfrog-api-token             # or user+password
+  lsts:
+    # url: https://artifactory.corp.com/moderne-lsts
+    # auth: jfrog-api-token
+
+maven:
+  # settings: ~/.m2/settings.xml        # Uncomment if custom mirrors
+
+# Team contacts for CLI support
+contacts:
+  platform_team: platform-eng@corp.com
+  security_team: security@corp.com
+  moderne_admin: admin@corp.com
+  slack_channel: "#moderne-help"</pre></div>
+      </div>
+    </div>
+  </div>
+
   <div class="footer">Prepared by Annie Rimbach, UX | April 2026 | Primer CLI Design Guidelines | No architecture changes required</div>
 </div>
 <script>
@@ -150,7 +270,7 @@ var colorMap = {bold:"t-bold",header:"t-header",cyan:"t-cyan",green:"t-green",re
 
 var steps = [
   // ─── Top-level ─────────────────────────────────────────────────────
-  { command: "mod", phase: "setup", title: "mod (top-level help)", subtitle: "The first thing users see. Guides setup order and shows all key commands.",
+  { command: "mod", phase: "setup", title: "mod (top-level help)", subtitle: "First run. Guides setup order and shows all key commands. (Future: this could become 'mod setup' as a dedicated subcommand.)",
     current: "$ mod\nModerne CLI 4.1.6\nUsage:  mod [-h] [--version] [COMMAND]\n  Powering software engineering at agent scale.\nOptions:\n  -h, --help      Display this help message.\n      --version   Display version info.\nWorkflow:\n  config   Configure the CLI.\n  git      Multi-repository git operations.\n  build    Generate LST artifacts.\n  run      Run an OpenRewrite recipe locally.\n  study    Produce studies from recipe data tables.\n  search   Search repositories.\n  publish  Publish LST artifacts.\nOperations:\n  audit    (INCUBATING) Audit recent activity.\n  batch    Add batch changes.\n  clean    Clean build and run artifacts.\n  exec     Execute a shell command.\n  list     List repositories.\n  log      Manage a log aggregate.\n  monitor  (INCUBATING) Launch HTTP server.\n  ...",
     proposed: [
       {t:"dim",v:"$ "},{t:"white",v:"mod\n"},{t:"bold",v:"Moderne CLI 4.1.6\n"},{t:"dim",v:"Powering software engineering at agent scale.\n\n"},
@@ -167,29 +287,57 @@ var steps = [
       {t:"green",v:"  7. "},{t:"cyan",v:"mod config recipes moderne sync\n"},{t:"dim",v:"     \u2514 Download recipes from Moderne.\n"},
       {t:"green",v:"  8. "},{t:"cyan",v:"mod build .\n"},{t:"dim",v:"     \u2514 Build LSTs for your project.\n"},
       {t:"green",v:"  9. "},{t:"cyan",v:"mod run ."},{t:"dim",v:" --recipe <recipe-name>\n"},{t:"dim",v:"     \u2514 Run a recipe.\n\n"},
+      {t:"header",v:"ALL COMMANDS\n"},
+      {t:"cyan",v:"  config    "},{t:"dim",v:"Configure the CLI and connections.\n"},
+      {t:"cyan",v:"  git       "},{t:"dim",v:"Multi-repo git operations.\n"},
+      {t:"cyan",v:"  build     "},{t:"dim",v:"Generate LST artifacts for recipes.\n"},
+      {t:"cyan",v:"  run       "},{t:"dim",v:"Run an OpenRewrite recipe locally.\n"},
+      {t:"cyan",v:"  publish   "},{t:"dim",v:"Publish LST artifacts to Moderne.\n"},
+      {t:"cyan",v:"  list      "},{t:"dim",v:"List available repositories.\n"},
+      {t:"cyan",v:"  exec      "},{t:"dim",v:"Run a shell command across repos.\n"},
+      {t:"cyan",v:"  search    "},{t:"dim",v:"Search repositories.\n"},
+      {t:"cyan",v:"  study     "},{t:"dim",v:"Produce studies from recipe data tables.\n"},
+      {t:"gray",v:"  audit     "},{t:"dim",v:"(incubating) Audit recent activity.\n"},
+      {t:"cyan",v:"  batch     "},{t:"dim",v:"Add batch changes.\n"},
+      {t:"cyan",v:"  clean     "},{t:"dim",v:"Clean build and run artifacts.\n"},
+      {t:"cyan",v:"  log       "},{t:"dim",v:"Manage a log aggregate.\n"},
+      {t:"gray",v:"  monitor   "},{t:"dim",v:"(incubating) Launch HTTP server.\n\n"},
+      {t:"dim",v:"  Run '"},{t:"cyan",v:"mod <command> -h"},{t:"dim",v:"' for details.\n\n"},
       {t:"header",v:"FLAGS\n"},{t:"white",v:"  -h, --help"},{t:"dim",v:"  \u2014  Show help for a command.\n"},{t:"white",v:"  --version"},{t:"dim",v:"   \u2014  Show version.\n\n"},
-      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Setup guide: "},{t:"cyan",v:"https://docs.moderne.io/cli/getting-started\n"},{t:"dim",v:"  Run '"},{t:"cyan",v:"mod <command> -h"},{t:"dim",v:"' for help on a specific command.\n\n"},
-      {t:"rule",v:"\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n"},
-      {t:"violet",v:"AGENT DETAILS\n\n"},
-      {t:"violet",v:"  Setup order:\n"},
-      {t:"dim",v:"    1. mod config moderne edit          Required.\n"},
-      {t:"dim",v:"    2. mod config moderne login         Required.\n"},
-      {t:"dim",v:"    3. mod config http trust-store edit  If corporate proxy.\n"},
-      {t:"dim",v:"    4. mod config recipes artifacts ...  If internal Artifactory.\n"},
-      {t:"dim",v:"    5. mod config lsts artifacts ...     If publishing LSTs.\n"},
-      {t:"dim",v:"    6. mod config build maven settings   If custom mirrors.\n"},
-      {t:"dim",v:"    7. mod config recipes moderne sync   Required.\n\n"},
-      {t:"violet",v:"  Diagnostics:\n"},
-      {t:"dim",v:"    mod config moderne show          Check tenant.\n"},
-      {t:"dim",v:"    mod config http trust-store show  Check SSL.\n"},
-      {t:"dim",v:"    mod config recipes list          List recipes.\n"},
-      {t:"dim",v:"    mod list                         List repos.\n\n"},
-      {t:"violet",v:"  Common errors:\n"},
-      {t:"red",v:"    PKIX path building failed\n"},{t:"dim",v:"      -> mod config http trust-store edit\n"},
-      {t:"red",v:"    No Moderne tenant configured\n"},{t:"dim",v:"      -> mod config moderne edit <host>\n"},
-      {t:"red",v:"    No recipes available\n"},{t:"dim",v:"      -> mod config recipes moderne sync\n"},
-      {t:"red",v:"    401 Unauthorized\n"},{t:"dim",v:"      -> mod config recipes artifacts artifactory add\n"},
-      {t:"red",v:"    Could not resolve dependencies\n"},{t:"dim",v:"      -> mod config build maven settings edit"}]},
+      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Setup guide: "},{t:"cyan",v:"https://docs.moderne.io/cli/getting-started\n"},{t:"dim",v:"  Run '"},{t:"cyan",v:"mod <command> -h"},{t:"dim",v:"' for help on a specific command.\n\n"}]},
+  // ─── Top-level (post-setup) ───────────────────────────────────────
+  { command: "mod (configured)", phase: "setup", title: "mod (post-setup)", subtitle: "What users see after setup is complete. Leads with workflow, not configuration.",
+    current: "$ mod\nModerne CLI 4.1.6\nUsage:  mod [-h] [--version] [COMMAND]\n  Powering software engineering at agent scale.\nOptions:\n  -h, --help      Display this help message.\n      --version   Display version info.\nWorkflow:\n  config   Configure the CLI.\n  git      Multi-repository git operations.\n  build    Generate LST artifacts.\n  run      Run an OpenRewrite recipe locally.\n  study    Produce studies from recipe data tables.\n  search   Search repositories.\n  publish  Publish LST artifacts.\nOperations:\n  audit    (INCUBATING) Audit recent activity.\n  batch    Add batch changes.\n  clean    Clean build and run artifacts.\n  exec     Execute a shell command.\n  list     List repositories.\n  log      Manage a log aggregate.\n  monitor  (INCUBATING) Launch HTTP server.\n  ...",
+    proposed: [
+      {t:"dim",v:"$ "},{t:"white",v:"mod\n"},{t:"bold",v:"Moderne CLI 4.1.6\n"},{t:"dim",v:"Powering software engineering at agent scale.\n\n"},
+      {t:"green",v:"\u2713 "},{t:"dim",v:"Connected to "},{t:"cyan",v:"app.moderne.io"},{t:"dim",v:" | 847 recipes synced | Trust store: system\n\n"},
+      {t:"header",v:"USAGE\n"},{t:"cyan",v:"  mod"},{t:"dim",v:" <command> <subcommand> [flags]\n\n"},
+      {t:"header",v:"WORKFLOW\n"},
+      {t:"cyan",v:"  build"},{t:"dim",v:" <path>                 Build LSTs for your repositories.\n"},
+      {t:"cyan",v:"  run"},{t:"dim",v:" <path> --recipe <name>   Run a recipe on pre-built LSTs.\n"},
+      {t:"cyan",v:"  git apply"},{t:"dim",v:" . --last-recipe-run  Apply recipe results to files.\n"},
+      {t:"cyan",v:"  git commit"},{t:"dim",v:" . -m \"<msg>\"        Commit across repos.\n"},
+      {t:"cyan",v:"  git push"},{t:"dim",v:" . -u origin <branch>   Push across repos.\n"},
+      {t:"cyan",v:"  publish"},{t:"dim",v:" <path>               Publish LST artifacts to Moderne.\n\n"},
+      {t:"header",v:"ALL COMMANDS\n"},
+      {t:"cyan",v:"  config    "},{t:"dim",v:"Configure the CLI and connections.\n"},
+      {t:"cyan",v:"  git       "},{t:"dim",v:"Multi-repo git operations.\n"},
+      {t:"cyan",v:"  build     "},{t:"dim",v:"Generate LST artifacts for recipes.\n"},
+      {t:"cyan",v:"  run       "},{t:"dim",v:"Run an OpenRewrite recipe locally.\n"},
+      {t:"cyan",v:"  publish   "},{t:"dim",v:"Publish LST artifacts to Moderne.\n"},
+      {t:"cyan",v:"  list      "},{t:"dim",v:"List available repositories.\n"},
+      {t:"cyan",v:"  exec      "},{t:"dim",v:"Run a shell command across repos.\n"},
+      {t:"cyan",v:"  search    "},{t:"dim",v:"Search repositories.\n"},
+      {t:"cyan",v:"  study     "},{t:"dim",v:"Produce studies from recipe data tables.\n"},
+      {t:"gray",v:"  audit     "},{t:"dim",v:"(incubating) Audit recent activity.\n"},
+      {t:"cyan",v:"  batch     "},{t:"dim",v:"Add batch changes.\n"},
+      {t:"cyan",v:"  clean     "},{t:"dim",v:"Clean build and run artifacts.\n"},
+      {t:"cyan",v:"  log       "},{t:"dim",v:"Manage a log aggregate.\n"},
+      {t:"gray",v:"  monitor   "},{t:"dim",v:"(incubating) Launch HTTP server.\n\n"},
+      {t:"dim",v:"  Run '"},{t:"cyan",v:"mod <command> -h"},{t:"dim",v:"' for details.\n\n"},
+      {t:"header",v:"FLAGS\n"},{t:"white",v:"  -h, --help"},{t:"dim",v:"  \u2014  Show help for a command.\n"},{t:"white",v:"  --version"},{t:"dim",v:"   \u2014  Show version.\n\n"},
+      {t:"header",v:"SETUP\n"},{t:"green",v:"  \u2713 "},{t:"dim",v:"Already configured. Run '"},{t:"cyan",v:"mod --setup"},{t:"dim",v:"' to review or change.\n\n"},
+      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Docs: "},{t:"cyan",v:"https://docs.moderne.io/cli/getting-started\n"},{t:"dim",v:"  Run '"},{t:"cyan",v:"mod <command> -h"},{t:"dim",v:"' for help on a specific command.\n\n"}]},
   // ─── Setup commands ────────────────────────────────────────────────
   { command: "mod config moderne edit -h", phase: "setup", title: "mod config moderne edit", subtitle: "Step 1: Connect to your Moderne tenant.",
     current: "$ mod config moderne edit -h\n\nConfigures the connection to Moderne.\nMust be configured before you can\n  install and run recipes.\nAll subsequent commands will use this\n  Moderne tenant.\n\nParameters:\n  <host>  The URL of the Moderne UI.\n\nOptions:\n  --api  The URL of the tenant API gateway.\n  --password  (DEPRECATED)\n  --skip-ssl  Skip SSL verification.\n  --token  (DEPRECATED)\n  --user  (DEPRECATED)",
@@ -202,13 +350,7 @@ var steps = [
       {t:"header",v:"FLAGS\n"},{t:"white",v:"  --api"},{t:"dim",v:"       \u2014  Tenant API URL (auto-detected).\n"},{t:"gray",v:"  --skip-ssl"},{t:"dim",v:"  \u2014  Skip SSL verification.\n\n"},
       {t:"header",v:"EXAMPLES\n"},{t:"dim",v:"  $ "},{t:"cyan",v:"mod config moderne edit https://app.moderne.io\n\n"},
       {t:"header",v:"NEXT STEP\n"},{t:"dim",v:"  Log in: "},{t:"cyan",v:"mod config moderne login\n\n"},
-      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config moderne show\n\n"},
-      {t:"rule",v:"\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n"},
-      {t:"violet",v:"AGENT DETAILS\n\n"},
-      {t:"violet",v:"  Prerequisites: "},{t:"dim",v:"None. This is step 1.\n"},
-      {t:"violet",v:"  Related errors:\n"},{t:"red",v:"    No Moderne tenant configured\n"},{t:"dim",v:"      -> mod config moderne edit <host>\n"},
-      {t:"violet",v:"  Verify: "},{t:"cyan",v:"mod config moderne show\n"},
-      {t:"violet",v:"  Next: "},{t:"cyan",v:"mod config moderne login"}]},
+      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config moderne show\n\n"}]},
   { command: "mod config moderne login -h", phase: "setup", title: "mod config moderne login", subtitle: "Step 2: Authenticate with Moderne.",
     current: "$ mod config moderne login -h\n\nLogs the CLI into Moderne\n\nThe default authorization mode is a\n  web-based browser flow. After login\n  and consent, a PAT will be created\n  and stored in the configuration.\n\nAlternatively, use --with-token to\n  pass in an existing token.\n\nOptions:\n  --expiration  Time to expiration\n    as ISO-8601 duration. Example:\n    P180D for 180 days.\n  --with-token  A Moderne personal\n    access token to use.",
     proposed: [
@@ -219,13 +361,7 @@ var steps = [
       {t:"yellow",v:"  ? Hint: "},{t:"white",v:"No browser available?\n"},{t:"dim",v:"  Use "},{t:"cyan",v:"--with-token"},{t:"dim",v:" for CI/headless.\n\n"},
       {t:"header",v:"EXAMPLES\n"},{t:"dim",v:"  Browser:  $ "},{t:"cyan",v:"mod config moderne login\n"},{t:"dim",v:"  CI/token: $ "},{t:"cyan",v:"echo $TOKEN | mod config moderne login --with-token\n\n"},
       {t:"header",v:"NEXT STEP\n"},{t:"dim",v:"  "},{t:"cyan",v:"mod config recipes moderne sync\n\n"},
-      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config moderne show\n\n"},
-      {t:"rule",v:"\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n"},
-      {t:"violet",v:"AGENT DETAILS\n\n"},
-      {t:"violet",v:"  Prerequisites: "},{t:"cyan",v:"mod config moderne edit\n"},
-      {t:"violet",v:"  Also syncs: "},{t:"dim",v:"license key\n"},
-      {t:"violet",v:"  Verify: "},{t:"cyan",v:"mod config moderne show\n"},
-      {t:"violet",v:"  Next: "},{t:"cyan",v:"mod config http trust-store edit"}]},
+      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config moderne show\n\n"}]},
   // ─── Enterprise config ─────────────────────────────────────────────
   { command: "...trust-store edit file -h", phase: "config", title: "Trust Store", subtitle: "SSL trust store for HTTPS connections.",
     current: "$ mod config http trust-store edit file -h\n\nConfigures truststore to point to a file.\nAll subsequent commands will use this truststore.\n\nParameters:\n  <file>     The absolute path to the truststore file.\n\nOptions:\n  --password=<password>\n             The password used to access the truststore.\n  --provider=<provider>\n             The provider of the truststore.\n  --type=<type>\n             The type of the truststore file.",
@@ -239,15 +375,7 @@ var steps = [
       {t:"header",v:"ARGUMENTS\n"},{t:"cyan",v:"  <path>"},{t:"dim",v:"  \u2014  Path to trust store file (.jks or .p12).\n\n"},
       {t:"header",v:"FLAGS\n"},{t:"white",v:"  --password"},{t:"dim",v:"  \u2014  Trust store password (often changeit).\n"},{t:"white",v:"  --type"},{t:"dim",v:"      \u2014  JKS or PKCS12 (default: JKS).\n\n"},
       {t:"header",v:"EXAMPLES\n"},{t:"dim",v:"  $ "},{t:"cyan",v:"mod config http trust-store edit file \\\n"},{t:"cyan",v:"      /etc/pki/java/corp-truststore.jks \\\n"},{t:"white",v:"      --password"},{t:"dim",v:" changeit\n\n"},
-      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config http trust-store show\n\n"},
-      {t:"rule",v:"\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n"},
-      {t:"violet",v:"AGENT DETAILS\n\n"},
-      {t:"violet",v:"  Related errors:\n"},{t:"red",v:"    PKIX path building failed\n"},{t:"red",v:"    unable to find valid certification path\n"},{t:"red",v:"    SSLHandshakeException\n"},
-      {t:"violet",v:"  Valid values: "},{t:"dim",v:"--type: JKS | PKCS12\n"},
-      {t:"violet",v:"  Prerequisites: "},{t:"cyan",v:"mod config moderne edit\n"},
-      {t:"violet",v:"  Run before: "},{t:"cyan",v:"mod build"},{t:"dim",v:", "},{t:"cyan",v:"mod run\n"},
-      {t:"violet",v:"  Verify: "},{t:"cyan",v:"mod config http trust-store show\n"},
-      {t:"violet",v:"  See also: "},{t:"cyan",v:"mod config http trust-store edit system"}]},
+      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config http trust-store show\n\n"}]},
   { command: "...artifacts artifactory add -h", phase: "config", title: "Recipe Repo", subtitle: "Recipe artifact repository (Artifactory).",
     current: "$ mod config recipes artifacts artifactory add -h\n\nConfigures the artifact repository to resolve\n  recipes from.\nAll subsequent recipe installation commands will\n  use this artifact repository.\n\nParameters:\n  <url>   The URL of the artifact repository.\n\nOptions:\n  --authorization    The authorization header value.\n  --jfrog-api-token  The JFrog API token to use.\n  --password         The password to authenticate.\n  --skip-ssl         Skip SSL verification.\n  --user             The user to authenticate with.",
     proposed: [
@@ -258,12 +386,7 @@ var steps = [
       {t:"header",v:"ARGUMENTS\n"},{t:"cyan",v:"  <url>"},{t:"dim",v:"  \u2014  Artifactory URL for recipe artifacts.\n\n"},
       {t:"header",v:"FLAGS\n"},{t:"white",v:"  Authentication"},{t:"dim",v:" (pick one):\n"},{t:"white",v:"    --user + --password"},{t:"dim",v:"  \u2014  Username and password.\n"},{t:"white",v:"    --jfrog-api-token"},{t:"dim",v:"    \u2014  JFrog API token.\n"},{t:"white",v:"    --authorization"},{t:"dim",v:"      \u2014  Bearer token.\n\n"},
       {t:"header",v:"EXAMPLES\n"},{t:"dim",v:"  $ "},{t:"cyan",v:"mod config recipes artifacts artifactory add \\\n"},{t:"cyan",v:"      https://artifactory.corp.com/moderne-recipes \\\n"},{t:"white",v:"      --user"},{t:"dim",v:" svc "},{t:"white",v:"--password"},{t:"dim",v:" ****\n\n"},
-      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config recipes artifacts show\n\n"},
-      {t:"rule",v:"\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n"},
-      {t:"violet",v:"AGENT DETAILS\n\n"},
-      {t:"violet",v:"  Related errors: "},{t:"red",v:"401 Unauthorized\n"},
-      {t:"violet",v:"  Prerequisites: "},{t:"cyan",v:"mod config moderne edit"},{t:"dim",v:", "},{t:"cyan",v:"mod config moderne login\n"},
-      {t:"violet",v:"  Verify: "},{t:"cyan",v:"mod config recipes artifacts show"}]},
+      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config recipes artifacts show\n\n"}]},
   { command: "...lsts artifacts add -h", phase: "config", title: "LST Repo", subtitle: "LST artifact repository (Artifactory).",
     current: "$ mod config lsts artifacts artifactory add -h\n\nConfigures the repository that LSTs will be\n  published to and downloaded from.\nMust be configured before you can run the\n  publish command.\n\nParameters:\n  <url>   The URL of the artifact repository.\n\nOptions:\n  --authorization --jfrog-api-token\n  --password --skip-ssl --user",
     proposed: [
@@ -273,12 +396,7 @@ var steps = [
       {t:"yellow",v:"  ! Note: "},{t:"dim",v:"The CLI needs both "},{t:"white",v:"read AND write"},{t:"dim",v:" access.\n\n"},
       {t:"header",v:"FLAGS\n"},{t:"white",v:"  Authentication"},{t:"dim",v:" (pick one):\n"},{t:"white",v:"    --user + --password"},{t:"dim",v:"  \u2014  Username and password.\n"},{t:"white",v:"    --jfrog-api-token"},{t:"dim",v:"    \u2014  JFrog API token.\n"},{t:"white",v:"    --authorization"},{t:"dim",v:"      \u2014  Bearer token.\n\n"},
       {t:"green",v:"  \u2713 Tip:"},{t:"dim",v:" Same credentials as recipe repo often work.\n\n"},
-      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config lsts artifacts show\n\n"},
-      {t:"rule",v:"\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n"},
-      {t:"violet",v:"AGENT DETAILS\n\n"},
-      {t:"violet",v:"  Prerequisites: "},{t:"cyan",v:"mod config moderne edit"},{t:"dim",v:", "},{t:"cyan",v:"login\n"},
-      {t:"violet",v:"  Needs: "},{t:"dim",v:"read + write access to repo\n"},
-      {t:"violet",v:"  Verify: "},{t:"cyan",v:"mod config lsts artifacts show"}]},
+      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config lsts artifacts show\n\n"}]},
   { command: "...maven settings edit -h", phase: "config", title: "Maven Settings", subtitle: "Maven settings.xml for dependency resolution.",
     current: "$ mod config build maven settings edit -h\n\nConfigure Maven settings.\nAllows you to specify the location of a Maven\n  settings.xml file.\n\nParameters:\n  <settingsXml>  The location of a settings.xml.\n\nOptions:\n  --local  Apply to repos in a directory.\n  --save   Apply to .moderne/moderne.yml.",
     proposed: [
@@ -287,12 +405,7 @@ var steps = [
       {t:"header",v:"USAGE\n"},{t:"cyan",v:"  mod config build maven settings edit"},{t:"dim",v:" <path> [flags]\n\n"},
       {t:"yellow",v:"  ? Hint: "},{t:"white",v:"Don't know where it is?"},{t:"dim",v:" Check:\n"},{t:"dim",v:"    Default  "},{t:"cyan",v:"~/.m2/settings.xml\n"},{t:"dim",v:"    Global   "},{t:"cyan",v:"$MAVEN_HOME/conf/settings.xml\n\n"},
       {t:"header",v:"EXAMPLES\n"},{t:"dim",v:"  $ "},{t:"cyan",v:"mod config build maven settings edit ~/.m2/settings.xml\n\n"},
-      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config build maven settings show\n\n"},
-      {t:"rule",v:"\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n"},
-      {t:"violet",v:"AGENT DETAILS\n\n"},
-      {t:"violet",v:"  Related errors: "},{t:"red",v:"Could not resolve dependencies\n"},
-      {t:"violet",v:"  Common paths: "},{t:"dim",v:"~/.m2/settings.xml, $MAVEN_HOME/conf/settings.xml\n"},
-      {t:"violet",v:"  Verify: "},{t:"cyan",v:"mod config build maven settings show"}]},
+      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  Verify: "},{t:"cyan",v:"mod config build maven settings show\n\n"}]},
   // ─── Recipes sync (step 7) ────────────────────────────────────────
   { command: "...recipes moderne sync -h", phase: "setup", title: "mod config recipes moderne sync", subtitle: "Step 7: Download recipes from Moderne.",
     current: "$ mod config recipes moderne sync -h\n\nSynchronizes the local CLI recipe\n  marketplace with Moderne.\n\nDestroys all recipes in the local\n  CLI marketplace and replaces them\n  with the latest recipes available\n  in Moderne.\n\nThe recipes defined by these artifacts\n  will then be available to run.",
@@ -303,14 +416,7 @@ var steps = [
       {t:"yellow",v:"  ! Note: "},{t:"dim",v:"Replaces current local recipes with latest.\n\n"},
       {t:"header",v:"EXAMPLES\n"},{t:"dim",v:"  $ "},{t:"cyan",v:"mod config recipes moderne sync\n\n"},
       {t:"header",v:"NEXT STEP\n"},{t:"dim",v:"  "},{t:"cyan",v:"mod config recipes list\n"},{t:"dim",v:"  "},{t:"cyan",v:"mod build .\n"},{t:"dim",v:"  "},{t:"cyan",v:"mod run . --recipe"},{t:"dim",v:" <name>\n\n"},
-      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  "},{t:"cyan",v:"mod config recipes list\n\n"},
-      {t:"rule",v:"\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n"},
-      {t:"violet",v:"AGENT DETAILS\n\n"},
-      {t:"violet",v:"  Prerequisites: "},{t:"cyan",v:"mod config moderne edit"},{t:"dim",v:", "},{t:"cyan",v:"mod config moderne login\n"},
-      {t:"violet",v:"  Behavior: "},{t:"dim",v:"Replaces catalog. Idempotent. 30s-3min.\n"},
-      {t:"violet",v:"  Related errors:\n"},{t:"red",v:"    No recipes available to run"},{t:"dim",v:" -> run this\n"},{t:"red",v:"    Recipe not found"},{t:"dim",v:" -> run this, retry\n"},
-      {t:"violet",v:"  Exit codes: "},{t:"dim",v:"0 = success, 1 = auth/network failure\n"},
-      {t:"violet",v:"  Verify: "},{t:"cyan",v:"mod config recipes list"}]},
+      {t:"header",v:"LEARN MORE\n"},{t:"dim",v:"  "},{t:"cyan",v:"mod config recipes list\n\n"}]},
 ];
 
 var currentStep = 0;
@@ -325,8 +431,9 @@ function showSection(section) {
   currentSection = section;
   document.getElementById('commands-section').style.display = section === 'commands' ? '' : 'none';
   document.getElementById('reference-section').style.display = section === 'reference' ? '' : 'none';
+  document.getElementById('docs-section').style.display = section === 'docs' ? '' : 'none';
   document.querySelectorAll('.section-tab').forEach(function(t,i){
-    t.classList.toggle('active', (i===0 && section==='commands') || (i===1 && section==='reference'));
+    t.classList.toggle('active', (i===0 && section==='commands') || (i===1 && section==='reference') || (i===2 && section==='docs'));
   });
 }
 
