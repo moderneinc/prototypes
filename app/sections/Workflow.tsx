@@ -83,6 +83,7 @@ function CheckTable({ items }: { items: { label: string; ok: boolean }[] }) {
 
 const NAV_CHIPS = [
   { href: "#getting-started", label: "Getting started" },
+  { href: "#how-it-flows", label: "How it flows" },
   { href: "#push", label: "Push" },
   { href: "#pull", label: "Pull" },
   { href: "#propose", label: "Propose" },
@@ -144,6 +145,98 @@ export function Workflow() {
 
         <Body role="supporting">
           After this, you never need to re-import or rebuild manually. Commits and pulls that touch design files auto-rebuild the plugin. Figma hot-reload picks up the change.
+        </Body>
+      </div>
+
+      {/* --- How it flows --------------------------------------------------- */}
+      <div className="space-y-4" id="how-it-flows" style={{ borderTop: "1px solid var(--color-bg-panel)", paddingTop: "2rem", marginTop: "2rem" }}>
+        <Heading as="h3" className="text-base">How it flows</Heading>
+
+        <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.9375rem", color: "var(--color-text-body)", lineHeight: 1.55 }}>
+          Three ideas, one system:
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <Card>
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-info)", marginBottom: "0.25rem" }}>CODE IS THE SOURCE OF TRUTH</div>
+            <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.875rem", color: "var(--color-text-body)" }}>
+              Tokens, patterns, and rules live in the repo. Everything else — Figma, the playground, the CLI — reads from it.
+            </div>
+          </Card>
+          <Card>
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-success)", marginBottom: "0.25rem" }}>FIGMA IS BIDIRECTIONAL</div>
+            <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.875rem", color: "var(--color-text-body)" }}>
+              Changes push from code to Figma automatically. Changes in Figma pull back to code through Claude.
+            </div>
+          </Card>
+          <Card>
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-warning)", marginBottom: "0.25rem" }}>ANYONE CAN CONTRIBUTE</div>
+            <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.875rem", color: "var(--color-text-body)" }}>
+              Approve in Figma or in Claude. Edit a token in Figma or in code. Propose a pattern from anywhere. Same outcome.
+            </div>
+          </Card>
+        </div>
+
+        {/* Flow diagram */}
+        <div
+          style={{
+            background: "var(--color-bg-terminal)",
+            border: "1px solid var(--color-bg-panel)",
+            borderRadius: "0.375rem",
+            padding: "1.25rem 1.5rem",
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.75rem",
+            lineHeight: 1.7,
+            color: "var(--color-text-supporting)",
+            overflowX: "auto",
+          }}
+        >
+          <div style={{ textAlign: "center", marginBottom: "0.75rem" }}>
+            <span style={{ color: "var(--color-text-primary)", fontWeight: 700 }}>THE LOOP</span>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.125rem" }}>
+            <div>
+              <span style={{ color: "var(--color-text-body)" }}>  Edit a token or pattern</span>
+              <span style={{ color: "var(--color-text-supporting)" }}> ─────────── in code, Figma, or Claude</span>
+            </div>
+            <div><span style={{ color: "var(--color-text-supporting)" }}>    │</span></div>
+            <div>
+              <span style={{ color: "var(--color-text-body)" }}>  Commit</span>
+              <span style={{ color: "var(--color-text-supporting)" }}> ──────────────────────── plugin rebuilds automatically</span>
+            </div>
+            <div><span style={{ color: "var(--color-text-supporting)" }}>    │</span></div>
+            <div>
+              <span style={{ color: "var(--color-text-body)" }}>  Open Figma → run plugin → Apply</span>
+              <span style={{ color: "var(--color-text-supporting)" }}> ── see what changed, one click</span>
+            </div>
+            <div><span style={{ color: "var(--color-text-supporting)" }}>    │</span></div>
+            <div>
+              <span style={{ color: "var(--color-text-body)" }}>  Done.</span>
+              <span style={{ color: "var(--color-text-supporting)" }}> ─────────────────────── code and Figma are in sync</span>
+            </div>
+          </div>
+          <div style={{ borderTop: "1px solid var(--color-bg-panel)", marginTop: "0.75rem", paddingTop: "0.75rem" }}>
+            <div style={{ color: "var(--color-text-primary)", fontWeight: 700, marginBottom: "0.375rem" }}>NEW PATTERN?</div>
+            <div>
+              <span style={{ color: "var(--color-text-body)" }}>  Write .md to mirror/</span>
+              <span style={{ color: "var(--color-text-supporting)" }}> ─────────── lands on Figma Mirror page</span>
+            </div>
+            <div><span style={{ color: "var(--color-text-supporting)" }}>    │</span></div>
+            <div>
+              <span style={{ color: "var(--color-text-body)" }}>  Review → Approve or Reject</span>
+              <span style={{ color: "var(--color-text-supporting)" }}> ────── in Figma or in Claude</span>
+            </div>
+            <div><span style={{ color: "var(--color-text-supporting)" }}>    │</span></div>
+            <div>
+              <span style={{ color: "var(--color-text-body)" }}>  Promote to patterns/</span>
+              <span style={{ color: "var(--color-text-supporting)" }}> ─────────── now it&rsquo;s canonical</span>
+            </div>
+          </div>
+        </div>
+
+        <Body role="supporting">
+          The sections below explain each step in detail. You don&rsquo;t need to read them all at once —
+          use the chips above to jump to what you need.
         </Body>
       </div>
 
