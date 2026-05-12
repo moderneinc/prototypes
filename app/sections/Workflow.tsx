@@ -293,8 +293,8 @@ export function Workflow() {
             <strong style={{ color: "var(--color-text-primary)" }}>Step by step:</strong>
           </Body>
           <StepList steps={[
-            <span key="1">Write a pattern <code style={mono}>.md</code> file using the <a href="https://github.com/jaydjj/Construct/blob/main/design-system/pattern-template.md" target="_blank" rel="noopener" style={{ color: "var(--color-info)", textDecoration: "underline" }}>pattern template</a> and save it to <code style={mono}>design-system/mirror/</code></span>,
-            <span key="2">Commit. The hook rebuilds the plugin automatically.</span>,
+            <span key="1">Write a pattern <code style={mono}>.md</code> file using the <a href="https://github.com/jaydjj/Construct/blob/main/design-system/pattern-template.md" target="_blank" rel="noopener" style={{ color: "var(--color-info)", textDecoration: "underline" }}>pattern template</a> and save it to <code style={mono}>design-system/mirror/</code>. The template is enforced — commits are blocked if required sections are missing.</span>,
+            <span key="2">Commit. The hook validates the template, then rebuilds the plugin automatically.</span>,
             <span key="3">Open Figma → run plugin → Apply. The proposed pattern appears on <strong>Construct / Mirror</strong> with a status badge and lint results.</span>,
             <span key="4">Review the frame, then approve or reject (see below).</span>,
           ]} />
