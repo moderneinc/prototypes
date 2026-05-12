@@ -43,7 +43,7 @@ if (action === "start") {
   if (scenario === "1") {
     // Change color.semantic.success from #4ade80 to #22d3ee
     const tokens = readFileSync(TOKENS, "utf-8");
-    const updated = tokens.replace('"$value": "#4ade80"', '"$value": "#22d3ee"');
+    const updated = tokens.replace('"value": "#4ade80"', '"value": "#22d3ee"');
     if (tokens === updated) {
       console.log(`${YELLOW}Could not find #4ade80 in tokens.json — already modified?${RESET}`);
     } else {
