@@ -111,7 +111,7 @@ export function Workflow() {
         <StepList steps={[
           <span key="1">Clone the repo and install: <CopyCode>npm install</CopyCode></span>,
           <span key="2">Start the playground: <CopyCode>npm run dev</CopyCode>Open <strong>http://localhost:3000</strong>.</span>,
-          <span key="3">Open the Figma file: <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)", textDecoration: "underline" }}>CLI Design System Experiment</a></span>,
+          <span key="3">Open the Figma file in the <strong>Figma desktop app</strong> (not the browser — the plugin won&rsquo;t work in browser): <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)", textDecoration: "underline" }}>CLI Design System Experiment</a></span>,
           <span key="4">In Figma desktop: <strong>Plugins → Development → Import plugin from manifest</strong> → select <code style={mono}>lib/interpreters/figma-plugin/manifest.json</code></span>,
           <span key="5">Run the plugin: <strong>Plugins → Development → Construct</strong> → click <strong>Initialize</strong></span>,
         ]} />

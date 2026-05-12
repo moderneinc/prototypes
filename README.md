@@ -18,6 +18,8 @@ Open **http://localhost:3000**. This is the Construct website — it has everyth
 
 The Figma file is at: [CLI Design System Experiment](https://www.figma.com/design/twkYEkdg94dq5FQB6D9vDq/CLI-Design-System-Experiment)
 
+> **Important:** The Construct plugin only works in the **Figma desktop app**. It will not appear in the browser version of Figma.
+
 ## What you'll find on the site
 
 | Page | What it covers |
