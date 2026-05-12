@@ -177,7 +177,7 @@ export function Workflow() {
                 <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. Notice the success color changed.</span>,
                 <span key="2">Now change it to something else in Figma (e.g. pick a different color on a banner).</span>,
                 <span key="3">Say to Claude: <CopyCode variant="claude">pull from Figma</CopyCode>Claude reads the diff and shows what changed. Tell Claude to apply it.</span>,
-                <span key="4">When done, say to Claude: <CopyCode variant="claude">end demo</CopyCode>Everything restores. Open Figma → Apply to sync back.</span>,
+                <span key="4">When done, say to Claude: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.Everything restores. Open Figma → Apply to sync back.</span>,
               ]} />
             </TryIt>
           </Card>
@@ -191,7 +191,7 @@ export function Workflow() {
               <StepList steps={[
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 1</CopyCode>Claude changes the success color and rebuilds.</span>,
                 <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The success color changes.</span>,
-                <span key="2">When done, say to Claude: <CopyCode variant="claude">end demo</CopyCode></span>,
+                <span key="2">When done, say to Claude: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,
               ]} />
             </TryIt>
           </Card>
@@ -219,7 +219,7 @@ export function Workflow() {
                 <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The proposal appears on <strong>Construct / Mirror</strong>.</span>,
                 <span key="2">Click <strong>Approve</strong> or <strong>Reject</strong> with feedback.</span>,
                 <span key="3">Say to Claude: <CopyCode variant="claude">check mirror</CopyCode></span>,
-                <span key="4">When done, say to Claude: <CopyCode variant="claude">end demo</CopyCode></span>,
+                <span key="4">When done, say to Claude: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,
               ]} />
             </TryIt>
           </Card>
@@ -234,7 +234,7 @@ export function Workflow() {
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 2</CopyCode>Claude writes a sample proposal to mirror/.</span>,
                 <span key="1">Open Figma → run plugin → <strong>Apply</strong>. The proposal appears on Mirror.</span>,
                 <span key="2">Say to Claude: <CopyCode variant="claude">approve token-semantic-progress</CopyCode></span>,
-                <span key="3">When done: <CopyCode variant="claude">end demo</CopyCode></span>,
+                <span key="3">When done: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,
               ]} />
             </TryIt>
           </Card>
@@ -261,7 +261,7 @@ export function Workflow() {
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 3</CopyCode>Claude adds a TECHNICAL DETAILS section to the error pattern and rebuilds.</span>,
                 <span key="1">Open Figma → run the plugin → <strong>Apply</strong>. The error pattern now shows a stack trace section.</span>,
                 <span key="2">In a real workflow, you&rsquo;d say something like: <code style={mono}>Add a TECHNICAL DETAILS section to the error pattern</code></span>,
-                <span key="3">When done: <CopyCode variant="claude">end demo</CopyCode></span>,
+                <span key="3">When done: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,
               ]} />
             </TryIt>
           </Card>
@@ -275,7 +275,7 @@ export function Workflow() {
               <StepList steps={[
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 3</CopyCode>Claude edits error.md and rebuilds.</span>,
                 <span key="1">Open Figma → run plugin → <strong>Apply</strong>. See the updated error pattern.</span>,
-                <span key="2">When done: <CopyCode variant="claude">end demo</CopyCode></span>,
+                <span key="2">When done: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,
               ]} />
             </TryIt>
           </Card>
@@ -305,7 +305,7 @@ export function Workflow() {
                 <span key="3">Say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude reads the reason and revises the pattern with per-repo detail.</span>,
                 <span key="4">Open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong>. Review the revision. Click <strong>Approve</strong>.</span>,
                 <span key="5">Say to Claude: <CopyCode variant="claude">check mirror</CopyCode>Claude promotes it.</span>,
-                <span key="6">When done: <CopyCode variant="claude">end demo</CopyCode></span>,
+                <span key="6">When done: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,
               ]} />
               <Body role="supporting">
                 Tip: if you want to provide a visual design instead of a text description, reject with <code style={mono}>design review needed</code> — Claude will ask you to share a screenshot.
@@ -323,7 +323,7 @@ export function Workflow() {
                 <span key="0">Say to Claude: <CopyCode variant="claude">demo 4</CopyCode>Claude writes the pattern to mirror/ and rebuilds.</span>,
                 <span key="1">Open Figma → run plugin → <strong>Apply</strong>. The proposal appears on Mirror.</span>,
                 <span key="2">Approve or reject. Say to Claude: <CopyCode variant="claude">check mirror</CopyCode></span>,
-                <span key="3">When done: <CopyCode variant="claude">end demo</CopyCode></span>,
+                <span key="3">When done: <CopyCode variant="claude">end demo</CopyCode>Then open Figma → <strong>Plugins → Development → Construct</strong> → <strong>Apply</strong> to clean up.</span>,
               ]} />
             </TryIt>
           </Card>

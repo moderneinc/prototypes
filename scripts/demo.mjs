@@ -198,7 +198,11 @@ MOD SUCCEEDED in (1m 12s)
   execSync("npm run figma-plugin:rebuild", { cwd: ROOT, stdio: "inherit" });
 
   console.log(`\n${GREEN}✓ Demo cleaned up. Design system is back to its committed state.${RESET}`);
-  console.log(`${DIM}Open Figma → run plugin → Apply to sync.${RESET}\n`);
+  console.log(`\n${YELLOW}${BOLD}Last step: sync Figma to remove demo artifacts${RESET}`);
+  console.log(`  ${DIM}1. Open the Figma file${RESET}`);
+  console.log(`  ${DIM}2. Go to${RESET} ${CYAN}Plugins → Development → Construct${RESET}`);
+  console.log(`  ${DIM}3. Click${RESET} ${CYAN}Apply${RESET} ${DIM}to clean up the Mirror page and any changed components${RESET}`);
+  console.log(`  ${DIM}4. Delete the${RESET} ${CYAN}Construct / _orphans${RESET} ${DIM}page if it appeared${RESET}\n`);
 
 } else {
   console.log(`\nUsage:`);
