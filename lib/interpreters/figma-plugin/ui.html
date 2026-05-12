@@ -389,14 +389,17 @@
           var statusColor = item.status === 'approved' ? 'var(--success)' : item.status === 'rejected' ? 'var(--danger)' : 'var(--info)';
           var statusLabel = item.status === 'approved' ? '✓ Approved' : item.status === 'rejected' ? '✗ Rejected' : 'Proposed';
           html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--panel)">';
-          html += '<div>';
+          html += '<div style="flex:1;min-width:0">';
           html += '<div style="font-size:11px;color:var(--text)">' + item.slug + '</div>';
           html += '<div style="font-size:10px;color:' + statusColor + '">' + statusLabel + '</div>';
+          if (item.reason) {
+            html += '<div style="font-size:10px;color:var(--supporting);margin-top:2px;font-style:italic">"' + item.reason + '"</div>';
+          }
           html += '</div>';
           if (item.status === 'proposed') {
             html += '<div style="display:flex;gap:4px">';
             html += '<button onclick="approveMirror(\'' + item.slug + '\')" style="width:auto;padding:3px 10px;font-size:10px;background:var(--success);color:var(--bg);margin:0;border-radius:3px">Approve</button>';
-            html += '<button onclick="rejectMirror(\'' + item.slug + '\')" style="width:auto;padding:3px 10px;font-size:10px;background:transparent;color:var(--danger);border:1px solid var(--danger);margin:0;border-radius:3px">Reject</button>';
+            html += '<button onclick="promptReject(\'' + item.slug + '\')" style="width:auto;padding:3px 10px;font-size:10px;background:transparent;color:var(--danger);border:1px solid var(--danger);margin:0;border-radius:3px">Reject</button>';
             html += '</div>';
           }
           html += '</div>';
@@ -416,8 +419,25 @@
       parent.postMessage({ pluginMessage: { type: 'approve-mirror', slug: slug } }, '*');
     }
 
-    function rejectMirror(slug) {
-      parent.postMessage({ pluginMessage: { type: 'reject-mirror', slug: slug } }, '*');
+    function promptReject(slug) {
+      var existing = document.getElementById('reject-form-' + slug);
+      if (existing) { existing.remove(); return; }
+      var row = event.target.closest('div[style*="border-bottom"]');
+      if (!row) return;
+      var form = document.createElement('div');
+      form.id = 'reject-form-' + slug;
+      form.style.cssText = 'margin-top:4px;display:flex;gap:4px;align-items:center';
+      form.innerHTML =
+        '<input id="reject-reason-' + slug + '" placeholder="Reason (required)" style="flex:1;background:var(--bg);border:1px solid var(--panel);color:var(--text);font-family:inherit;font-size:10px;padding:3px 6px;border-radius:3px;outline:none" />' +
+        '<button onclick="submitReject(\'' + slug + '\')" style="width:auto;padding:3px 8px;font-size:10px;background:var(--danger);color:var(--bg);margin:0;border-radius:3px;border:0;cursor:pointer">Send</button>';
+      row.appendChild(form);
+      document.getElementById('reject-reason-' + slug).focus();
+    }
+
+    function submitReject(slug) {
+      var reason = document.getElementById('reject-reason-' + slug).value.trim();
+      if (!reason) { document.getElementById('reject-reason-' + slug).style.borderColor = 'var(--danger)'; return; }
+      parent.postMessage({ pluginMessage: { type: 'reject-mirror', slug: slug, reason: reason } }, '*');
     }
 
     function refreshPreview() {

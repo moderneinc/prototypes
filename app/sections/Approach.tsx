@@ -48,7 +48,7 @@ export function Approach() {
           </li>
           <li style={{ fontFamily: "var(--font-sans)", fontSize: "0.9375rem", color: "var(--color-text-body)", lineHeight: 1.55 }}>
             <strong style={{ color: "var(--color-text-primary)" }}>Governed creativity.</strong>{" "}
-            25 composition rules enforce consistency. When Claude builds a new screen, it checks
+            28 composition rules enforce consistency. When Claude builds a new screen, it checks
             existing patterns first. If nothing matches, it generates the screen AND a draft set
             of rules — both go through review before becoming canonical.
           </li>
@@ -103,7 +103,7 @@ export function Approach() {
       <div className="space-y-3">
         <Heading as="h3" className="text-base">Composition rules</Heading>
         <Body role="supporting">
-          25 machine-readable rules in <code style={{ fontFamily: "var(--font-mono)" }}>composition.json</code> govern
+          28 machine-readable rules in <code style={{ fontFamily: "var(--font-mono)" }}>composition.json</code> govern
           how screens are built. They enforce glyph-color pairing, semantic color limits, section ordering, and
           required elements per pattern type.
         </Body>
@@ -183,7 +183,7 @@ export function Approach() {
 ├── patterns/*.md            ← canonical patterns (12)
 ├── mirror/*.md              ← proposed patterns (staging)
 ├── screens.json             ← screen manifest (gap detection)
-├── composition.json         ← 25 lint rules
+├── composition.json         ← 28 lint rules
 ├── pattern-template.md      ← blank template for new patterns
 ├── voice.md                 ← voice rules
 └── gaps.md                  ← known gaps

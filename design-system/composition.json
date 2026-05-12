@@ -257,7 +257,28 @@
       "id": "REUSE-01",
       "severity": "warning",
       "rule": "Check existing patterns before creating new ones",
-      "description": "Search the 11 canonical patterns for a match before composing a novel screen. Most new screens are variations of existing patterns.",
+      "description": "Search the canonical patterns for a match before composing a novel screen. Most new screens are variations of existing patterns.",
+      "applies_to": "all"
+    },
+    {
+      "id": "TOKEN-01",
+      "severity": "error",
+      "rule": "All colors must reference canonical tokens",
+      "description": "Every color used in a screen must trace to a token in canonical.json (color.semantic.*, color.text.*, color.background.*). Hardcoded hex values are not allowed unless explicitly flagged as a token gap proposal.",
+      "applies_to": "all"
+    },
+    {
+      "id": "TOKEN-02",
+      "severity": "error",
+      "rule": "All glyphs must reference canonical glyph tokens",
+      "description": "Every glyph character used in a screen must exist in canonical.json glyph.*. New glyph characters require a token gap proposal before use.",
+      "applies_to": "all"
+    },
+    {
+      "id": "TOKEN-03",
+      "severity": "warning",
+      "rule": "Token gap proposals go to the mirror",
+      "description": "If a screen needs a color, glyph, or typography token that doesn't exist, write a token-gap proposal to design-system/mirror/ describing the new token, its role, and evidence. It goes through the same review/approve/promote flow as pattern proposals.",
       "applies_to": "all"
     }
   ],
