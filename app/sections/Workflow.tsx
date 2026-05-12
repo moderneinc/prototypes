@@ -144,7 +144,7 @@ export function Workflow() {
         </Body>
 
         <StepList steps={[
-          <span key="1">Write a pattern <code style={{ fontFamily: "var(--font-mono)" }}>.md</code> file and save it to <code style={{ fontFamily: "var(--font-mono)" }}>design-system/mirror/</code></span>,
+          <span key="1">Write a pattern <code style={{ fontFamily: "var(--font-mono)" }}>.md</code> file using the <a href="https://github.com/jaydjj/Construct/blob/main/design-system/pattern-template.md" target="_blank" rel="noopener" style={{ color: "var(--color-info)", textDecoration: "underline" }}>pattern template</a> and save it to <code style={{ fontFamily: "var(--font-mono)" }}>design-system/mirror/</code></span>,
           <span key="2">Commit. The hook rebuilds the plugin automatically.</span>,
           <span key="3">In Figma, run the plugin. The proposed pattern appears on <strong>Construct / Mirror</strong> with a status badge and lint results.</span>,
           <span key="4">Click <strong>Approve</strong> or <strong>Reject</strong> in the plugin UI — or say <code style={{ fontFamily: "var(--font-mono)" }}>approve name</code> in Claude.</span>,
