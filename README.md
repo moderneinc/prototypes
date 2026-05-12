@@ -30,37 +30,28 @@ The Figma file is at: [CLI Design System Experiment](https://www.figma.com/desig
 
 ## Workflows
 
-There are four workflows depending on what you're changing. Each can start from Figma or from code.
+After setup, you work in **Claude Code** and **Figma** only. No terminal. Say it to Claude, Claude does it.
 
 ### 1. Edit an existing token (pullable)
 
-Change a color, font, glyph, or banner phrase.
-
-- **From Figma**: change the property → say `pull from Figma` in Claude Code → Claude updates `tokens.json` → commit
-- **From code**: edit `tokens.json` → commit → open Figma → run plugin → Apply
+- **From Figma**: change the property → say `pull from Figma` to Claude → Claude updates `tokens.json` and rebuilds → open Figma → Apply
+- **From Claude**: tell Claude what to change → Claude edits and rebuilds → open Figma → Apply
 
 ### 2. Create a new token
 
-Propose a token that doesn't exist yet. Goes through the mirror for review.
-
-- Write a token gap proposal to `design-system/mirror/` → commit → appears on Figma Mirror page → approve or reject → add to `tokens.json`
+- Tell Claude what you need → Claude writes a proposal to `mirror/` and rebuilds → open Figma → Apply → Approve or Reject → say `check Figma for approvals` to Claude
 
 ### 3. Edit a pattern's structure (not pullable)
 
-Add, remove, or reorder sections in an existing pattern.
-
-- **From Figma**: describe the change to Claude → Claude edits the `.md` file → commit → open Figma → Apply
-- **From code**: edit `design-system/patterns/<name>.md` → run `npm run lint:composition` → commit → Apply
+- Describe the change to Claude → Claude edits the pattern and rebuilds → open Figma → Apply
 
 ### 4. Create a new pattern
 
-Build a new CLI screen. Goes through the mirror for review.
-
-- Write a `.md` file using the [pattern template](design-system/pattern-template.md) → save to `design-system/mirror/` → commit → appears on Figma Mirror page with lint badge → approve or reject → promote to `patterns/`
+- Describe the screen to Claude (or share a Figma screenshot) → Claude writes it to `mirror/` and rebuilds → open Figma → Apply → Approve or Reject → say `check Figma for approvals` to Claude
 
 ### Try the demos
 
-Set up a fresh sandbox so demos don't touch your main workspace:
+Set up a sandbox so demos don't touch your main workspace:
 
 ```bash
 git worktree add demo origin/main
@@ -69,24 +60,24 @@ npm install
 npm run dev
 ```
 
-Then run any demo:
+Then say any of these **to Claude** (not in terminal):
 
-```bash
-npm run demo:start -- 1    # Edit a token (changes success color)
-npm run demo:start -- 2    # Create a token (writes a mirror proposal)
-npm run demo:start -- 3    # Edit a pattern (adds a section to error)
-npm run demo:start -- 4    # Create a pattern (writes to mirror)
-npm run demo:end           # Restore everything
-```
+| Say to Claude | What happens |
+|---|---|
+| `demo 1` | Changes the success color so you can test pull/push |
+| `demo 2` | Creates a token gap proposal on the Mirror page |
+| `demo 3` | Adds a section to the error pattern |
+| `demo 4` | Creates a new pattern on the Mirror page |
+| `end demo` | Restores everything to its original state |
 
-When you're done, remove the sandbox:
+When done with the sandbox:
 
 ```bash
 cd ..
 git worktree remove demo
 ```
 
-Full step-by-step instructions are on the Workflow page of the site.
+Full step-by-step walkthroughs are on the Workflow page of the site.
 
 ## System design
 
@@ -131,26 +122,24 @@ Source documents:
 
 ## Commands
 
+### One-time terminal (setup only)
+
 | Command | What it does |
 |---|---|
 | `npm install` | Install dependencies + set up git hooks |
 | `npm run dev` | Status report + start playground |
-| `npm run status` | Design system health report |
-| `npm run lint:composition` | Validate patterns + detect screen gaps |
-| `npm run figma-plugin:rebuild` | Rebuild Figma plugin (usually automatic) |
-| `npm run tokens:build` | Rebuild canonical from tokens.json |
-| `npm run demo:start -- 1\|2\|3\|4` | Start a sandboxed demo scenario |
-| `npm run demo:end` | Clean up demo changes |
 
-**Say in Claude Code:**
+### Say to Claude (daily workflow)
 
-| Command | What it does |
+| Say this | What Claude does |
 |---|---|
-| `status` | Design system health report |
-| `pull from Figma` | Diff Figma → propose token edits |
-| `approve <name>` | Promote mirror item → canonical |
-| `check Figma for approvals` | Read Figma approvals, promote them |
-| `check mirror for rejections` | Read rejections, propose revisions |
+| `status` | Runs the health report and shows it |
+| `pull from Figma` | Reads Figma, diffs against canonical, proposes edits, rebuilds |
+| `approve <name>` | Promotes a mirror item to canonical, rebuilds |
+| `check Figma for approvals` | Reads Figma for approved items, promotes them, rebuilds |
+| `check mirror for rejections` | Reads rejection reasons, revises the pattern, rebuilds |
+| `demo 1` / `demo 2` / `demo 3` / `demo 4` | Sets up a sandboxed demo and rebuilds |
+| `end demo` | Restores everything to its committed state |
 
 ## File structure
 
