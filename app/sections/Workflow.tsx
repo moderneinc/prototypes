@@ -1,22 +1,51 @@
 /**
  * Workflow — getting started + step-by-step instructions for every operation.
  */
+"use client";
 import * as React from "react";
 import { Section } from "@/components/Section";
 import { Body } from "@/components/Body";
 import { Heading } from "@/components/Heading";
 import { Card } from "@/components/Card";
 
-const mono: React.CSSProperties = {
-  fontFamily: "var(--font-mono)",
-  fontSize: "0.8125rem",
-  color: "var(--color-text-body)",
-  background: "var(--color-bg-terminal)",
-  padding: "0.5rem 0.75rem",
-  borderRadius: "0.25rem",
-  display: "block",
-  overflowX: "auto",
-};
+function CopyCode({ children }: { children: string }) {
+  const [copied, setCopied] = React.useState(false);
+  return (
+    <div style={{ position: "relative", marginTop: "0.25rem" }}>
+      <code style={{
+        fontFamily: "var(--font-mono)",
+        fontSize: "0.8125rem",
+        color: "var(--color-text-body)",
+        background: "var(--color-bg-terminal)",
+        padding: "0.5rem 0.75rem",
+        paddingRight: "3.5rem",
+        borderRadius: "0.25rem",
+        display: "block",
+        overflowX: "auto",
+      }}>{children}</code>
+      <button
+        onClick={() => { navigator.clipboard.writeText(children); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
+        style={{
+          position: "absolute",
+          top: "0.375rem",
+          right: "0.375rem",
+          background: "transparent",
+          border: "1px solid var(--color-bg-panel)",
+          borderRadius: "3px",
+          color: copied ? "var(--color-success)" : "var(--color-text-metadata)",
+          fontFamily: "var(--font-mono)",
+          fontSize: "0.625rem",
+          padding: "2px 6px",
+          cursor: "pointer",
+          width: "auto",
+          margin: 0,
+          display: "inline",
+          transition: "color 0.15s",
+        }}
+      >{copied ? "copied" : "copy"}</button>
+    </div>
+  );
+}
 
 const step: React.CSSProperties = {
   fontFamily: "var(--font-sans)",
@@ -63,9 +92,9 @@ export function Workflow() {
         </Body>
 
         <StepList steps={[
-          <span key="1">Clone the repo and install dependencies: <code style={mono}>npm install</code>This also installs the git hook that auto-rebuilds the Figma plugin when design files change.</span>,
-          <span key="2">Start the playground to see the design system: <code style={mono}>npm run dev</code> then open <strong>http://localhost:3000</strong></span>,
-          <span key="3">Build the Figma plugin for the first time: <code style={mono}>npm run figma-plugin:rebuild</code></span>,
+          <span key="1">Clone the repo and install dependencies: <CopyCode>npm install</CopyCode>This also installs the git hook that auto-rebuilds the Figma plugin when design files change.</span>,
+          <span key="2">Start the playground to see the design system: <CopyCode>npm run dev</CopyCode> then open <strong>http://localhost:3000</strong></span>,
+          <span key="3">Build the Figma plugin for the first time: <CopyCode>npm run figma-plugin:rebuild</CopyCode></span>,
           <span key="4">In Figma desktop, go to <strong>Plugins → Development → Import plugin from manifest</strong> and select <code style={{ fontFamily: "var(--font-mono)" }}>lib/interpreters/figma-plugin/manifest.json</code></span>,
           <span key="5">Run the plugin: <strong>Plugins → Development → Construct</strong> → click <strong>Initialize</strong>.</span>,
         ]} />
@@ -83,7 +112,7 @@ export function Workflow() {
         </Body>
 
         <StepList steps={[
-          <span key="1">In terminal: <code style={mono}>npm run figma-plugin:rebuild</code></span>,
+          <span key="1">In terminal: <CopyCode>npm run figma-plugin:rebuild</CopyCode></span>,
           <span key="2">In Figma: <strong>Plugins → Development → Construct</strong></span>,
           <span key="3">The plugin shows a diff — what changed since last sync. Click <strong>Apply</strong>.</span>,
         ]} />
@@ -101,7 +130,7 @@ export function Workflow() {
         </Body>
 
         <StepList steps={[
-          <span key="1">In Claude Code, say: <code style={mono}>pull from Figma</code></span>,
+          <span key="1">In Claude Code, say: <CopyCode>pull from Figma</CopyCode></span>,
           <span key="2">Claude reads the live Figma file, compares it against canonical, and reports what changed.</span>,
           <span key="3">Review the diff. If it looks right, tell Claude to apply it.</span>,
           <span key="4">Claude edits <code style={{ fontFamily: "var(--font-mono)" }}>tokens.json</code> and rebuilds. Push to Figma to close the loop.</span>,
@@ -117,10 +146,10 @@ export function Workflow() {
 
         <StepList steps={[
           <span key="1">Write a pattern <code style={{ fontFamily: "var(--font-mono)" }}>.md</code> file and save it to <code style={{ fontFamily: "var(--font-mono)" }}>design-system/mirror/</code></span>,
-          <span key="2">Rebuild and sync: <code style={mono}>npm run figma-plugin:rebuild</code> then run the plugin in Figma.</span>,
+          <span key="2">Rebuild and sync: <CopyCode>npm run figma-plugin:rebuild</CopyCode> then run the plugin in Figma.</span>,
           <span key="3">The proposed pattern appears on the <strong>Construct / Mirror</strong> page with a status badge and lint results.</span>,
           <span key="4">Click <strong>Approve</strong> or <strong>Reject</strong> in the plugin UI — or say <code style={{ fontFamily: "var(--font-mono)" }}>approve name</code> in Claude.</span>,
-          <span key="5">To promote: <code style={mono}>mv design-system/mirror/name.md design-system/patterns/</code> then rebuild.</span>,
+          <span key="5">To promote: <CopyCode>mv design-system/mirror/name.md design-system/patterns/</CopyCode> then rebuild.</span>,
         ]} />
 
         <Body role="metadata">
