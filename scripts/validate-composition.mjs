@@ -1,34 +1,32 @@
 #!/usr/bin/env node
-// Validates existing pattern files against composition.json rules.
+// Validates existing pattern files against composition.json rules AND
+// checks screens.json for pattern coverage gaps.
+//
 // Run: node scripts/validate-composition.mjs
 //
-// Checks each pattern's "What the user sees" code block for:
-// - Glyph-color pairing violations (via glyph presence + context)
-// - Section header formatting (ALL CAPS)
-// - Close banner presence/absence where expected
-// - Required elements per pattern_shapes
-// - Structural lint (spacing, indent)
+// Two passes:
+//   1. Lint: checks each pattern's preview against composition rules
+//   2. Coverage: compares screens.json against patterns/ — reports gaps
+//
+// Gaps are also written to design-system/mirror/ as NEEDS PATTERN stubs
+// so they appear on the Figma Mirror page on next sync.
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..");
 const PATTERNS_DIR = join(ROOT, "design-system/patterns");
+const MIRROR_DIR = join(ROOT, "design-system/mirror");
 const COMPOSITION_PATH = join(ROOT, "design-system/composition.json");
+const SCREENS_PATH = join(ROOT, "design-system/screens.json");
 
 const composition = JSON.parse(readFileSync(COMPOSITION_PATH, "utf-8"));
-
 const CLOSE_BANNER_PHRASES = Object.values(composition.close_banners.variants).map((v) => v.phrase);
 
 function extractPreview(content) {
   const match = content.match(/## What the user sees[\s\S]*?```[^\n]*\n([\s\S]*?)```/);
-  return match ? match[1] : "";
-}
-
-function extractCompositionRules(content) {
-  const match = content.match(/## Composition rules\n([\s\S]*?)(?:\n## |\n$)/);
   return match ? match[1] : "";
 }
 
@@ -44,6 +42,7 @@ function classify(slug) {
   if (slug === "onboarding-sequence") return ["onboarding-sequence"];
   if (slug === "start-banner") return ["start-banner"];
   if (slug === "inline-command-reference") return ["inline-command-reference"];
+  if (slug === "config-confirmation") return ["config-confirmation"];
   return [];
 }
 
@@ -57,7 +56,12 @@ function error(slug, ruleId, message) {
   results.push({ slug, ruleId, severity: "error", message });
 }
 
+// ========================================================================
+// PASS 1: Lint existing patterns against composition rules
+// ========================================================================
+
 const files = readdirSync(PATTERNS_DIR).filter((f) => f.endsWith(".md"));
+const patternSlugs = new Set(files.map((f) => basename(f, ".md")));
 
 for (const file of files) {
   const slug = basename(file, ".md");
@@ -66,18 +70,7 @@ for (const file of files) {
   const lines = preview.split("\n");
   const shapes = classify(slug);
 
-  // GLYPH-01: Check glyph-color pairing (we can check glyph presence but not color from markdown)
-  const glyphsPresent = new Set();
-  for (const line of lines) {
-    const t = line.trim();
-    for (const g of Object.keys(composition.glyph_color_pairs)) {
-      if (t.startsWith(g) || t.includes(" " + g + " ") || t.includes("  " + g)) {
-        glyphsPresent.add(g);
-      }
-    }
-  }
-
-  // HEADER-01: Section headers should be ALL CAPS
+  // HEADER-02: Unknown section headers
   for (const line of lines) {
     const t = line.trim();
     if (t.length >= 3 && /^[A-Z][A-Z\s()\/\-:]+$/.test(t) && !/^(MOD |FAILURE:|PARTIAL)/.test(t)) {
@@ -93,19 +86,18 @@ for (const file of files) {
     const spec = composition.pattern_shapes[shape];
     if (!spec) continue;
 
-    // Multi-tier patterns (e.g. error has tier 1 with banner + tier 2 without):
-    // only flag if this is the ONLY shape for this pattern.
     if (spec.no_close_banner && hasBanner && shapes.length === 1) {
       error(slug, "BANNER-03", `Pattern shape "${shape}" should not have a close banner, but one was found`);
     }
 
-    if (!spec.no_close_banner && spec.required.some((r) => r.includes("close banner")) && !hasBanner) {
+    if (!spec.no_close_banner && spec.required && spec.required.some((r) => r.includes("close banner")) && !hasBanner) {
       error(slug, "BANNER-01", `Pattern shape "${shape}" requires a close banner, but none was found`);
     }
 
-    // Required element checks (heuristic — check for key phrases)
+    // Required element checks
+    if (!spec.required) continue;
     for (const req of spec.required) {
-      if (req.includes("close banner")) continue; // handled above
+      if (req.includes("close banner")) continue;
       if (req.includes("WHAT WENT WRONG") && !lines.some((l) => l.includes("WHAT WENT WRONG"))) {
         error(slug, "ERROR-01", `Missing required element: ${req}`);
       }
@@ -156,22 +148,99 @@ for (const file of files) {
   }
 }
 
-// Report
-console.log(`\nValidating ${files.length} patterns against composition.json\n`);
+// ========================================================================
+// PASS 2: Coverage — compare screens.json against patterns/
+// ========================================================================
 
-const errors = results.filter((r) => r.severity === "error");
-const warnings = results.filter((r) => r.severity === "warning");
+let gaps = [];
+let covered = 0;
 
-if (errors.length === 0 && warnings.length === 0) {
-  console.log("✓ All patterns pass composition rules.\n");
-} else {
-  for (const r of errors) {
-    console.log(`  ✗ [${r.ruleId}] ${r.slug}: ${r.message}`);
+if (existsSync(SCREENS_PATH)) {
+  const screens = JSON.parse(readFileSync(SCREENS_PATH, "utf-8"));
+
+  for (const screen of screens.screens) {
+    if (screen.pattern && patternSlugs.has(screen.pattern)) {
+      covered++;
+    } else if (!screen.pattern) {
+      gaps.push(screen);
+    }
   }
-  for (const r of warnings) {
-    console.log(`  ? [${r.ruleId}] ${r.slug}: ${r.message}`);
+
+  // Generate mirror stubs for gaps
+  if (gaps.length > 0 && !existsSync(MIRROR_DIR)) {
+    mkdirSync(MIRROR_DIR, { recursive: true });
   }
-  console.log(`\n  ${errors.length} error(s), ${warnings.length} warning(s)\n`);
+
+  for (const gap of gaps) {
+    const slug = gap.output;
+    const mirrorPath = join(MIRROR_DIR, slug + ".md");
+
+    // Don't overwrite existing mirror items (someone may be working on them)
+    if (existsSync(mirrorPath)) continue;
+
+    const stub = [
+      `# Pattern — ${slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}`,
+      "",
+      `> **NEEDS PATTERN** — this screen exists in the CLI but has no canonical pattern yet.`,
+      "",
+      `## Source`,
+      "",
+      `- **Command:** \`${gap.command}\``,
+      `- **Output type:** ${gap.output}`,
+      `- **Notes:** ${gap.notes}`,
+      "",
+      `## What the user sees`,
+      "",
+      "```",
+      `(not yet defined — write the preview here)`,
+      "```",
+      "",
+      `## Composition rules`,
+      "",
+      `(not yet defined — write the rules here)`,
+      "",
+    ].join("\n");
+
+    writeFileSync(mirrorPath, stub);
+  }
 }
 
-if (errors.length > 0) process.exit(1);
+// ========================================================================
+// Report
+// ========================================================================
+
+console.log(`\n── Composition lint ──────────────────────────────`);
+console.log(`   ${files.length} patterns validated\n`);
+
+const errors_ = results.filter((r) => r.severity === "error");
+const warnings_ = results.filter((r) => r.severity === "warning");
+
+if (errors_.length === 0 && warnings_.length === 0) {
+  console.log("   ✓ All patterns pass composition rules.\n");
+} else {
+  for (const r of errors_) {
+    console.log(`   ✗ [${r.ruleId}] ${r.slug}: ${r.message}`);
+  }
+  for (const r of warnings_) {
+    console.log(`   ? [${r.ruleId}] ${r.slug}: ${r.message}`);
+  }
+  console.log(`\n   ${errors_.length} error(s), ${warnings_.length} warning(s)\n`);
+}
+
+if (existsSync(SCREENS_PATH)) {
+  const total = JSON.parse(readFileSync(SCREENS_PATH, "utf-8")).screens.length;
+  console.log(`── Screen coverage ──────────────────────────────`);
+  console.log(`   ${total} screens defined, ${covered} covered, ${gaps.length} gaps\n`);
+
+  if (gaps.length > 0) {
+    for (const gap of gaps) {
+      console.log(`   ⚠ NEEDS PATTERN: ${gap.output}`);
+      console.log(`     ${gap.command} — ${gap.notes}`);
+    }
+    console.log(`\n   ${gaps.length} mirror stub(s) written to design-system/mirror/\n`);
+  } else {
+    console.log("   ✓ All screens have patterns.\n");
+  }
+}
+
+if (errors_.length > 0) process.exit(1);

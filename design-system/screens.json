@@ -1,0 +1,121 @@
+{
+  "$meta": {
+    "description": "Every CLI screen that should have a pattern. The lint compares this against design-system/patterns/ and reports gaps. Uncovered screens become NEEDS PATTERN items on the Figma Mirror page."
+  },
+  "screens": [
+    {
+      "command": "mod",
+      "output": "help-top-level",
+      "pattern": "help-top-level",
+      "notes": "Top-level help with onboarding ladder"
+    },
+    {
+      "command": "mod <group> -h",
+      "output": "help-subcommand",
+      "pattern": "help-subcommand",
+      "notes": "Subcommand listing with triaged groups"
+    },
+    {
+      "command": "mod <command> -h",
+      "output": "help-command",
+      "pattern": "help-command",
+      "notes": "Leaf command help with summary, flags, examples"
+    },
+    {
+      "command": "mod build <path>",
+      "output": "success",
+      "pattern": "success",
+      "notes": "Success close with ✓ rows and WHAT TO DO NEXT"
+    },
+    {
+      "command": "mod build <path> (failure)",
+      "output": "error-full",
+      "pattern": "error",
+      "notes": "Full error template: WHAT WENT WRONG + TRY + MOD FAILED"
+    },
+    {
+      "command": "mod confg (typo)",
+      "output": "error-inline",
+      "pattern": "error",
+      "notes": "Inline error: ! Error + Did you mean + Available commands"
+    },
+    {
+      "command": "mod run <path> --recipe <name>",
+      "output": "progress",
+      "pattern": "progress",
+      "notes": "In-flight progress bar with action headers"
+    },
+    {
+      "command": "mod run (partial result)",
+      "output": "partial-success",
+      "pattern": "partial-success",
+      "notes": "⚠ count line + recovery prose + MOD PARTIALLY SUCCEEDED"
+    },
+    {
+      "command": "mod config recipes artifacts show",
+      "output": "list",
+      "pattern": "list",
+      "notes": "List/table output with optional row glyphs"
+    },
+    {
+      "command": "mod start",
+      "output": "start-banner",
+      "pattern": "start-banner",
+      "notes": "Session start frame: /// MODERNE + info rows + prompt"
+    },
+    {
+      "command": "(inline references in any output)",
+      "output": "inline-command-reference",
+      "pattern": "inline-command-reference",
+      "notes": "Cyan command/flag/path references within prose"
+    },
+    {
+      "command": "(onboarding steps in help-top-level)",
+      "output": "onboarding-sequence",
+      "pattern": "onboarding-sequence",
+      "notes": "Numbered setup ladder reusable beyond top-level help"
+    },
+    {
+      "command": "mod config http trust-store edit file <path>",
+      "output": "config-confirmation",
+      "pattern": "config-confirmation",
+      "notes": "✓ confirmation + optional NEXT STEP verify"
+    },
+    {
+      "command": "mod config moderne login",
+      "output": "auth-confirmation",
+      "pattern": null,
+      "notes": "Login/auth success — similar to config-confirmation but for auth flow"
+    },
+    {
+      "command": "mod config moderne login (failure)",
+      "output": "auth-error",
+      "pattern": null,
+      "notes": "Auth-specific error — may use error pattern or need its own treatment for browser handoff failures"
+    },
+    {
+      "command": "mod git commit --last-recipe-run",
+      "output": "batch-operation-summary",
+      "pattern": null,
+      "notes": "Multi-repo operation: per-repo status rows (✓/⚠/✗) + aggregate summary. May be a variant of success or its own pattern."
+    },
+    {
+      "command": "? Do you want to continue? [Y/n]",
+      "output": "prompt",
+      "pattern": null,
+      "notes": "Interactive prompt — extrapolated in gaps.md A-4 but no pattern file exists. Yellow ? glyph, [Y/n] convention."
+    },
+    {
+      "command": "mod study --last-recipe-run",
+      "output": "study-results",
+      "pattern": null,
+      "notes": "Recipe study output — likely a specialized list/table variant with per-repo change details"
+    },
+    {
+      "command": "mod log",
+      "output": "run-history",
+      "pattern": null,
+      "notes": "Run history — time-ordered list of past runs with status. Likely a list pattern variant."
+    }
+  ]
+}
