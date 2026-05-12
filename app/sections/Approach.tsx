@@ -103,9 +103,11 @@ export function Approach() {
       <div className="space-y-3">
         <Heading as="h3" className="text-base">Composition rules</Heading>
         <Body role="supporting">
-          30 machine-readable rules in <code style={{ fontFamily: "var(--font-mono)" }}>composition.json</code> govern
-          how screens are built. They enforce glyph-color pairing, semantic color limits, section ordering, and
-          required elements per pattern type.
+          <code style={{ fontFamily: "var(--font-mono)" }}>composition.json</code> is a living ruleset that evolves with
+          the system. It governs how screens are built — glyph-color pairing, semantic color limits, section
+          ordering, required elements per pattern type. When a new pattern is promoted, Claude drafts new rules,
+          compares them against everything that exists, and shows the analysis before anything changes. Rules
+          get combined when they overlap. Conflicts get flagged. The goal is consistency, not volume.
         </Body>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
