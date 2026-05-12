@@ -1,100 +1,171 @@
 # Construct
 
-The design system for the Moderne CLI.
+**Code is the source of truth. Figma is bidirectional. Anyone can contribute.**
 
-Construct documents the visual language, patterns, voice, and states of the Moderne CLI — how the CLI communicates with its users through help text, errors, progress, prompts, and output. It is the source of truth for how CLI surfaces should look and read.
+Construct is a production-first design system for the Moderne CLI, built for humans and AI agents working together. The repository is the authority. Tokens represent semantic intent, not hardcoded visual values. Figma, the CLI, documentation, and runtime interfaces all read from the same canonical source.
 
-## Status
-
-Early development. This repo is being built in phases:
-
-- **Phase 1 — Audit** (complete). A read-only audit of the current CLI's user-facing output surfaces. Artifacts live in `audit/`.
-- **Phase 2 — Reconciliation & extrapolation** (complete). The audit was reconciled against the design direction in `context/`, producing tokens, patterns, voice, rationale, and gaps in `design-system/`.
-- **Phase 3 — Visual playground** (this scaffold). A Next.js 15 app that renders the canonical tokens, patterns, and voice; one example surface is built deliberately as the spec Figma will mirror.
-- **Phase 4+** — Figma Code Connect, drift detection, and CLI runtime interpreter. Scoped later.
-
-## The three-layer token model
-
-This repo is **production-first** and **AI-native**: the source of truth is code, and the primary consumer is an AI agent. Provenance (role, evidence, applies_to, note, extrapolated, disambiguation) is preserved through the canonical layer so an agent can reason about *why* a token applies in a new context.
-
-```
-design-system/tokens.json         layer 1 — authoring (human-edited)
-        │
-        ▼
-tokens/canonical.json             layer 2 — canonical, with provenance
-tokens/canonical.schema.json      layer 2 — schema validated at build time
-        │
-        ▼
-tokens/dtcg.json                  layer 3 — projection for Tokens Studio / Figma
-tokens/figma-map.json             layer 3 — editable projection rules
-```
-
-**Edit layer 1 only.** The build script normalizes, validates, and projects.
-
-## How to run
-
-Install dependencies and start the dev server:
+## Start here
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open **http://localhost:3000**. This is the Construct website — it has everything: tokens, components, patterns, voice rules, workflow instructions, system architecture, and interactive demos you can try. Start there.
 
-The app reads `tokens/canonical.json` directly. If that file is missing or stale, regenerate it:
+The Figma file is at: [CLI Design System Experiment](https://www.figma.com/design/twkYEkdg94dq5FQB6D9vDq/CLI-Design-System-Experiment)
+
+## What you'll find on the site
+
+| Page | What it covers |
+|---|---|
+| **Intro** | What Construct is and why it exists |
+| **Workflow** | How to use the system — 4 scenarios with step-by-step walkthroughs and sandboxed demos |
+| **Tokens** | Colors, typography, spacing, glyphs, links — every canonical value |
+| **Components** | Rows, sections, banners — the building blocks |
+| **Patterns** | 17 canonical CLI screens (help, error, success, progress, etc.) |
+| **Voice** | Editorial conventions, tone, grammar rules |
+| **System Design** | Architecture, composition rules, mirror flow, file structure |
+| **How we got here** | The audit process that produced this system |
+
+## Workflows
+
+There are four workflows depending on what you're changing. Each can start from Figma or from code.
+
+### 1. Edit an existing token (pullable)
+
+Change a color, font, glyph, or banner phrase.
+
+- **From Figma**: change the property → say `pull from Figma` in Claude Code → Claude updates `tokens.json` → commit
+- **From code**: edit `tokens.json` → commit → open Figma → run plugin → Apply
+
+### 2. Create a new token
+
+Propose a token that doesn't exist yet. Goes through the mirror for review.
+
+- Write a token gap proposal to `design-system/mirror/` → commit → appears on Figma Mirror page → approve or reject → add to `tokens.json`
+
+### 3. Edit a pattern's structure (not pullable)
+
+Add, remove, or reorder sections in an existing pattern.
+
+- **From Figma**: describe the change to Claude → Claude edits the `.md` file → commit → open Figma → Apply
+- **From code**: edit `design-system/patterns/<name>.md` → run `npm run lint:composition` → commit → Apply
+
+### 4. Create a new pattern
+
+Build a new CLI screen. Goes through the mirror for review.
+
+- Write a `.md` file using the [pattern template](design-system/pattern-template.md) → save to `design-system/mirror/` → commit → appears on Figma Mirror page with lint badge → approve or reject → promote to `patterns/`
+
+### Try the demos
+
+Each workflow has a sandboxed demo you can run without affecting the real design system:
 
 ```bash
-npm run tokens:build
+npm run demo:start -- 1    # Edit a token (changes success color)
+npm run demo:start -- 2    # Create a token (writes a mirror proposal)
+npm run demo:start -- 3    # Edit a pattern (adds a section to error)
+npm run demo:start -- 4    # Create a pattern (writes to mirror)
+npm run demo:end           # Restore everything
 ```
 
-This runs `scripts/build-tokens.mjs`, which:
+Full step-by-step instructions are on the Workflow page of the site.
 
-1. Reads `design-system/tokens.json` (the authoring source).
-2. Normalizes into `tokens/canonical.json` and emits `tokens/canonical.schema.json`.
-3. Validates canonical against the schema (build fails on validation error).
-4. Calls `lib/interpreters/figma.mjs` to project canonical into `tokens/dtcg.json` and `tokens/figma-map.json`.
+## System design
 
-## How to edit tokens
+### Three layers
 
-1. Edit `design-system/tokens.json`. Keep the authoring shape — strings for spacing values like `"2 spaces"` or `"1 blank line above, 0 below"`, prose role descriptions, evidence arrays.
-2. Run `npm run tokens:build`. Fix any validation errors.
-3. Restart the dev server (or it will pick up the new canonical on the next request thanks to React server components).
-4. Spot-check the token reference pages — `/tokens/color`, `/tokens/typography`, `/tokens/spacing`, `/tokens/glyphs`, `/tokens/banners`, `/tokens/links`.
+Everything is organized into three layers — the same in code, in Figma, and on the site:
 
-## Routes
+- **Tokens** — colors, typography, spacing, glyphs, links
+- **Components** — rows, sections, banners (building blocks)
+- **Patterns** — full CLI screens composed from components
 
-- `/` — overview, links to all sections.
-- `/tokens/color` · `/tokens/typography` · `/tokens/spacing` · `/tokens/glyphs` · `/tokens/banners` · `/tokens/links` — token references. Each renders values *as the thing they control* and surfaces evidence/role/applies_to alongside.
-- `/patterns` and `/patterns/[slug]` — reconciled visual patterns from `design-system/patterns/`.
-- `/voice` — editorial conventions from `design-system/voice.md`.
-- `/examples` — one real example surface (settings panel). Future surfaces land here for Code Connect.
+### Bidirectional Figma
 
-## Components
+A plugin pushes canonical to Figma. Claude reads Figma via MCP and pulls changes back. Token-level edits flow in both directions. Structural changes go through the mirror/review flow.
 
-`components/*.tsx` — `Button`, `Card`, `Banner`, `Link`, `TextField`, `Heading`, `Body`. Primitives only, named exports, JSDoc headers citing the tokens they read. The next phase will set up Figma Code Connect against this directory; named exports are the Code Connect requirement.
+### Composition rules
 
-## Repository structure
+30 machine-readable rules in `composition.json` enforce consistency: glyph-color pairing, semantic color limits, section ordering, required elements per pattern type. Claude reads them before generating anything. `npm run lint:composition` validates all patterns and detects screen coverage gaps.
 
-- `audit/` — Read-only audit of the current CLI. Phase 1 output.
-- `context/` — Design direction artifacts authored prior to this repo. Historical inputs to Phase 2.
-- `design-system/` — The reconciled design system: tokens (authoring), patterns, voice, rationale, gaps. Phase 2 output.
-- `tokens/` — Canonical and projected tokens. Generated by `npm run tokens:build`.
-- `lib/interpreters/` — Build-time projectors. `figma.mjs` is functional; `cli.mjs` is a stub.
-- `scripts/build-tokens.mjs` — The build script.
-- `app/`, `components/`, `lib/` — The Next.js 15 playground.
-- `AGENTS.md` — Briefing for AI agents working in this repo.
+### Mirror: how new things enter the system
 
-## Scope
+New patterns and tokens don't go straight to canonical. They land on a staging page in Figma (Construct / Mirror) for review. Approve or reject from the Figma plugin or from Claude. Rejected items include a reason — Claude reads it and proposes a revision. The cycle repeats until approved.
 
-Construct covers the CLI's UI layer — what the user sees on screen. Behavioral / API tokens (exit codes, output contracts, framework heuristics) are deliberately out of scope; see `design-system/gaps.md` Part B for what is intentionally not tokenized.
+### Automation
 
-## Relationship to the CLI
+- **Git hooks**: pre-commit rebuilds the plugin and validates the pattern template. Post-merge rebuilds on pull.
+- **Status report**: `npm run status` (or `npm run dev`) shows pattern count, coverage, mirror items, and recent changes.
+- **Auto-deploy**: GitHub Action builds and deploys the site on every merge to main.
 
-Construct is a separate repository from the CLI. The CLI (`moderne-cli`) is never modified by work in this repo. Audits reference the CLI at a pinned commit; any findings are logged, not fixed. Changes to the CLI originate from product decisions, not from Construct.
+## How we got here
 
-## Contributing
+Construct was built by extracting what the Moderne CLI already ships. Two design artifacts were audited alongside the existing CLI in four passes, surfacing every color, glyph, banner, spacing rule, and grammar convention already in use.
 
-Active contributors: Jayd Jackson, Annie Rimbach (UX).
+That audit produced a canonical token set. Twenty categories were reconciled into nineteen named decisions, with each token carrying its provenance: which artifact it came from, what evidence supports it, and how conflicts were resolved. Gaps were named, not filled.
 
-Work happens on feature branches with PRs into `main`. Phase deliverables are reviewed before merge.
+Source documents:
+- `design-system/reconciliation.md` — audit categories A–T and decisions D-01–D-19
+- `design-system/gaps.md` — silences surfaced during the audit
+- `design-system/rationale.md` — rationale behind visual decisions
+- `design-system/intended-direction.md` — scope, philosophy, direction
+- `design-system/voice.md` — editorial conventions, tone, grammar
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `npm install` | Install dependencies + set up git hooks |
+| `npm run dev` | Status report + start playground |
+| `npm run status` | Design system health report |
+| `npm run lint:composition` | Validate patterns + detect screen gaps |
+| `npm run figma-plugin:rebuild` | Rebuild Figma plugin (usually automatic) |
+| `npm run tokens:build` | Rebuild canonical from tokens.json |
+| `npm run demo:start -- 1\|2\|3\|4` | Start a sandboxed demo scenario |
+| `npm run demo:end` | Clean up demo changes |
+
+**Say in Claude Code:**
+
+| Command | What it does |
+|---|---|
+| `status` | Design system health report |
+| `pull from Figma` | Diff Figma → propose token edits |
+| `approve <name>` | Promote mirror item → canonical |
+| `check Figma for approvals` | Read Figma approvals, promote them |
+| `check mirror for rejections` | Read rejections, propose revisions |
+
+## File structure
+
+```
+design-system/
+├── tokens.json              ← edit tokens here
+├── patterns/*.md            ← 17 canonical patterns
+├── mirror/*.md              ← proposed patterns (staging)
+├── screens.json             ← screen manifest (gap detection)
+├── composition.json         ← 30 lint rules
+├── pattern-template.md      ← template for new patterns
+├── voice.md                 ← voice rules
+└── gaps.md                  ← known gaps
+
+tokens/
+├── canonical.json           ← generated source of truth
+└── figma-expected.json      ← expected Figma state (for pull)
+
+lib/interpreters/figma-plugin/
+├── build.mjs                ← bakes canonical + mirror into code.js
+├── ui.html                  ← plugin UI (diff, approve/reject)
+└── src/builders/            ← tokens, rows, sections, banners, patterns, mirror
+
+scripts/
+├── build-tokens.mjs         ← tokens.json → canonical.json
+├── figma-pull-expected.mjs  ← canonical → figma-expected.json
+├── validate-composition.mjs ← lint + gap detection
+├── status.mjs               ← design system health report
+├── demo.mjs                 ← sandboxed demo scenarios
+├── setup-hooks.mjs          ← installs git hooks on npm install
+└── hooks/
+    ├── pre-commit           ← auto-rebuild + template enforcement
+    └── post-merge           ← auto-rebuild on pull
+```
