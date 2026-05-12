@@ -105,9 +105,7 @@ export function Approach() {
         <Body role="supporting">
           <code style={{ fontFamily: "var(--font-mono)" }}>composition.json</code> is a living ruleset that evolves with
           the system. It governs how screens are built — glyph-color pairing, semantic color limits, section
-          ordering, required elements per pattern type. When a new pattern is promoted, Claude drafts new rules,
-          compares them against everything that exists, and shows the analysis before anything changes. Rules
-          get combined when they overlap. Conflicts get flagged. The goal is consistency, not volume.
+          ordering, required elements per pattern type.
         </Body>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -129,11 +127,37 @@ export function Approach() {
               { label: "Claude reads composition.json before generating any screen", ok: true },
               { label: "Mirror page shows lint results as badges per frame", ok: true },
               { label: "Screen gaps auto-detected from screens.json", ok: true },
-              { label: "On promote: Claude drafts new rules, compares against existing, shows analysis before writing", ok: true },
-              { label: "Health check: Claude scans for redundant, conflicting, or over-specific rules", ok: true },
             ]} />
           </Card>
         </div>
+      </div>
+
+      {/* --- Rules evolution ------------------------------------------------ */}
+      <div className="space-y-3">
+        <Heading as="h3" className="text-base">Rules: how composition rules evolve</Heading>
+        <Body role="supporting">
+          Rules don&rsquo;t get added automatically. Every new rule goes through analysis and human review.
+          The goal is consistency, not volume.
+        </Body>
+
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+          {[
+            { label: "DRAFT", desc: "Claude generates rules from the new pattern's composition section", color: "var(--color-info)" },
+            { label: "COMPARE", desc: "Claude checks for overlaps, conflicts, and simplification opportunities against all existing rules", color: "var(--color-warning)" },
+            { label: "REVIEW", desc: "Claude shows the analysis — what's new, what's redundant, what can be combined", color: "var(--color-text-primary)" },
+            { label: "APPLY", desc: "Human approves. Rules are written to composition.json", color: "var(--color-success)" },
+          ].map((s) => (
+            <div key={s.label} style={{ background: "var(--color-bg-terminal)", border: "1px solid var(--color-bg-panel)", borderRadius: "0.25rem", padding: "0.5rem 0.75rem" }}>
+              <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.06em", color: s.color }}>{s.label}</div>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-supporting)", marginTop: "0.25rem" }}>{s.desc}</div>
+            </div>
+          ))}
+        </div>
+
+        <Body role="supporting">
+          Claude also runs periodic health checks — scanning for redundant rules, conflicting rules, and
+          rules that are too specific to one pattern and could be generalized.
+        </Body>
       </div>
 
       {/* --- Mirror flow --------------------------------------------------- */}
