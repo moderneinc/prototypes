@@ -184,6 +184,7 @@ export function Approach() {
 ├── mirror/*.md              ← proposed patterns (staging)
 ├── screens.json             ← screen manifest (gap detection)
 ├── composition.json         ← 25 lint rules
+├── pattern-template.md      ← blank template for new patterns
 ├── voice.md                 ← voice rules
 └── gaps.md                  ← known gaps
 
@@ -200,7 +201,10 @@ scripts/
 ├── build-tokens.mjs         ← tokens.json → canonical.json
 ├── figma-pull-expected.mjs  ← canonical → figma-expected.json
 ├── validate-composition.mjs ← lint + gap detection
-└── hooks/post-merge         ← auto-rebuild on git pull`}
+├── setup-hooks.mjs          ← installs git hooks on npm install
+└── hooks/
+    ├── pre-commit           ← auto-rebuild on commit
+    └── post-merge           ← auto-rebuild on pull`}
         </pre>
       </div>
 
@@ -219,6 +223,14 @@ scripts/
           <Body role="metadata">
             <code style={{ fontFamily: "var(--font-mono)" }}>screens.json</code>
             {" "}— screen manifest for gap detection.
+          </Body>
+          <Body role="metadata">
+            <code style={{ fontFamily: "var(--font-mono)" }}>pattern-template.md</code>
+            {" "}— blank template with example for writing new patterns.
+          </Body>
+          <Body role="metadata">
+            <code style={{ fontFamily: "var(--font-mono)" }}>AGENTS.md</code>
+            {" "}— repo conventions for Claude and other AI tools.
           </Body>
           <Body role="metadata">
             <code style={{ fontFamily: "var(--font-mono)" }}>figma-plugin/README.md</code>

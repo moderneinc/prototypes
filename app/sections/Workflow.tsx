@@ -132,7 +132,7 @@ export function Workflow() {
           <span key="1">In Claude Code, say: <CopyCode>pull from Figma</CopyCode></span>,
           <span key="2">Claude reads the live Figma file, compares it against canonical, and reports what changed.</span>,
           <span key="3">Review the diff. If it looks right, tell Claude to apply it.</span>,
-          <span key="4">Claude edits <code style={{ fontFamily: "var(--font-mono)" }}>tokens.json</code> and rebuilds. Push to Figma to close the loop.</span>,
+          <span key="4">Claude edits <code style={{ fontFamily: "var(--font-mono)" }}>tokens.json</code>. Commit to close the loop — the hook rebuilds the plugin, then open Figma and apply.</span>,
         ]} />
       </div>
 
