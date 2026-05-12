@@ -121,7 +121,8 @@ A dedicated progress color would disambiguate "this is running" from "this is a 
   }
 
   if (scenario === "4") {
-    // Write a new pattern to mirror
+    // Write a deliberately incomplete pattern to mirror — missing per-repo
+    // detail so the tester has a reason to reject it.
     const pattern = `# Pattern — Batch operation summary
 
 The visual treatment of a multi-repository operation — what the user sees after running a command that affects many repos at once, like \`mod git commit --last-recipe-run\`.
@@ -141,34 +142,28 @@ This pattern does **not** apply to:
 \`\`\`
 ● Committing changes across 47 repositories
 
-  ✓  org/service-a          committed (3 files)
-  ✓  org/service-b          committed (1 file)
-  ⚠  org/service-d          skipped — no changes
-  ✗  org/service-f          failed — permission denied
+✓ 42 repositories committed
+✓ 5 repositories unchanged
 
-  42 committed, 3 unchanged, 2 failed — 47 total
-
-WHAT TO DO NEXT
-  ▶ mod git push --last-recipe-run    — Push committed changes.
-  ▶ mod log                           — View full run history.
-
-MOD SUCCEEDED WITH WARNINGS in (1m 12s)
+MOD SUCCEEDED in (1m 12s)
 \`\`\`
 
 ## Composition rules
 
-- **Per-repo rows are required.** Aggregate counts alone are not enough.
-- **Rows grouped by status.** ✓ first, then ⚠, then ✗.
-- **Aggregate summary always present.** One line below the rows.
-- **Close banner uses worst outcome.** Any failure → success_with_warnings.
+- **Uses the success pattern shape.** Action header + ✓ result rows + close banner.
+- **No per-repo detail.** The summary is aggregate only.
 `;
     writeFileSync(join(MIRROR, "batch-operation-summary.md"), pattern);
     execSync("npm run figma-plugin:rebuild", { cwd: ROOT, stdio: "inherit" });
     console.log(`${GREEN}✓ Wrote new pattern: batch-operation-summary${RESET}`);
+    console.log(`${YELLOW}  This version is deliberately incomplete — it only shows aggregate${RESET}`);
+    console.log(`${YELLOW}  counts, no per-repo detail. Try rejecting it with:${RESET}`);
+    console.log(`${YELLOW}  "needs per-repo status rows showing which repos failed and why"${RESET}`);
     console.log(`\n${BOLD}Try it:${RESET}`);
     console.log(`  ${DIM}Open Figma → run plugin → Apply.${RESET}`);
-    console.log(`  ${DIM}The pattern appears on${RESET} ${CYAN}Construct / Mirror${RESET} ${DIM}with a lint badge.${RESET}`);
-    console.log(`  ${DIM}Approve or Reject it. If approved, say${RESET} ${CYAN}approve batch-operation-summary${RESET} ${DIM}in Claude.${RESET}`);
+    console.log(`  ${DIM}The pattern appears on${RESET} ${CYAN}Construct / Mirror${RESET}`);
+    console.log(`  ${DIM}Reject it with the reason above, then say${RESET} ${CYAN}check mirror for rejections${RESET} ${DIM}in Claude.${RESET}`);
+    console.log(`  ${DIM}Claude will revise it with per-repo rows. Approve the revision.${RESET}`);
   }
 
   console.log(`\n${DIM}When done, run:${RESET} ${CYAN}npm run demo:end${RESET}\n`);
