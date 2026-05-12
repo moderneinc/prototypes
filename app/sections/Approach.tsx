@@ -14,10 +14,10 @@ function CheckTable({ items }: { items: { label: string; ok: boolean }[] }) {
     <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.25rem 0.75rem", alignItems: "baseline" }}>
       {items.map((item) => (
         <React.Fragment key={item.label}>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem", color: item.ok ? "var(--color-success)" : "var(--color-text-metadata)" }}>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem", color: item.ok ? "var(--color-success)" : "var(--color-text-supporting)" }}>
             {item.ok ? "✓" : "✗"}
           </span>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem", color: item.ok ? "var(--color-text-body)" : "var(--color-text-metadata)" }}>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem", color: "var(--color-text-body)" }}>
             {item.label}
           </span>
         </React.Fragment>
@@ -149,12 +149,12 @@ export function Approach() {
           ].map((s) => (
             <div key={s.label} style={{ background: "var(--color-bg-terminal)", border: "1px solid var(--color-bg-panel)", borderRadius: "0.25rem", padding: "0.5rem 0.75rem" }}>
               <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.625rem", fontWeight: 700, letterSpacing: "0.06em", color: s.color }}>{s.label}</div>
-              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-metadata)", marginTop: "0.25rem" }}>{s.desc}</div>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-supporting)", marginTop: "0.25rem" }}>{s.desc}</div>
             </div>
           ))}
         </div>
 
-        <Body role="metadata">
+        <Body role="supporting">
           Gaps are detected automatically. Screens defined in <code style={{ fontFamily: "var(--font-mono)" }}>screens.json</code> that
           lack a pattern get NEEDS PATTERN stubs on the Mirror page.
         </Body>
@@ -212,27 +212,27 @@ scripts/
       <div className="space-y-3">
         <Heading as="h3" className="text-base">Reference</Heading>
         <div className="space-y-1">
-          <Body role="metadata">
+          <Body role="supporting">
             <code style={{ fontFamily: "var(--font-mono)" }}>canonical.json</code>
             {" "}— all tokens with role, evidence, and provenance.
           </Body>
-          <Body role="metadata">
+          <Body role="supporting">
             <code style={{ fontFamily: "var(--font-mono)" }}>composition.json</code>
             {" "}— glyph-color rules, pattern shapes, semantic color constraints.
           </Body>
-          <Body role="metadata">
+          <Body role="supporting">
             <code style={{ fontFamily: "var(--font-mono)" }}>screens.json</code>
             {" "}— screen manifest for gap detection.
           </Body>
-          <Body role="metadata">
+          <Body role="supporting">
             <code style={{ fontFamily: "var(--font-mono)" }}>pattern-template.md</code>
             {" "}— blank template with example for writing new patterns.
           </Body>
-          <Body role="metadata">
+          <Body role="supporting">
             <code style={{ fontFamily: "var(--font-mono)" }}>AGENTS.md</code>
             {" "}— repo conventions for Claude and other AI tools.
           </Body>
-          <Body role="metadata">
+          <Body role="supporting">
             <code style={{ fontFamily: "var(--font-mono)" }}>figma-plugin/README.md</code>
             {" "}— plugin install, diff model, idempotency details.
           </Body>

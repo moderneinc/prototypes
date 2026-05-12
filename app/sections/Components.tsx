@@ -164,7 +164,7 @@ export function Components() {
                   <code style={{ fontFamily: "var(--font-mono)", color: "var(--color-text-primary)", fontWeight: 700, fontSize: "0.8125rem" }}>
                     {spec.key}
                   </code>
-                  <Body role="metadata" as="span">{spec.description}</Body>
+                  <Body role="supporting" as="span">{spec.description}</Body>
                 </div>
                 <RowPreview spec={spec} />
               </div>

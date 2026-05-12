@@ -69,10 +69,10 @@ function CheckTable({ items }: { items: { label: string; ok: boolean }[] }) {
     <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "0.25rem 0.75rem", alignItems: "baseline" }}>
       {items.map((item) => (
         <React.Fragment key={item.label}>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem", color: item.ok ? "var(--color-success)" : "var(--color-text-metadata)" }}>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem", color: item.ok ? "var(--color-success)" : "var(--color-text-supporting)" }}>
             {item.ok ? "✓" : "✗"}
           </span>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem", color: item.ok ? "var(--color-text-body)" : "var(--color-text-metadata)" }}>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.8125rem", color: "var(--color-text-body)" }}>
             {item.label}
           </span>
         </React.Fragment>
@@ -142,7 +142,7 @@ export function Workflow() {
           <span key="4">Run the plugin: <strong>Plugins → Development → Construct</strong> → click <strong>Initialize</strong>.</span>,
         ]} />
 
-        <Body role="metadata">
+        <Body role="supporting">
           After this, you never need to re-import or rebuild manually. Commits and pulls that touch design files auto-rebuild the plugin. Figma hot-reload picks up the change.
         </Body>
       </div>
@@ -160,7 +160,7 @@ export function Workflow() {
           <span key="3">The plugin shows a diff — what changed since last sync. Click <strong>Apply</strong>.</span>,
         ]} />
 
-        <Body role="metadata">
+        <Body role="supporting">
           Pulling someone else&rsquo;s changes works the same way — the post-merge hook rebuilds on pull.
         </Body>
       </div>
@@ -191,7 +191,7 @@ export function Workflow() {
             ]} />
           </Card>
           <Card>
-            <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-text-metadata)", marginBottom: "0.5rem" }}>NOT PULLABLE</div>
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.06em", color: "var(--color-text-supporting)", marginBottom: "0.5rem" }}>NOT PULLABLE</div>
             <CheckTable items={[
               { label: "New components (use the propose flow)", ok: false },
               { label: "Adding or removing children", ok: false },
@@ -201,7 +201,7 @@ export function Workflow() {
           </Card>
         </div>
 
-        <Body role="metadata">
+        <Body role="supporting">
           Rule of thumb: if you can change it in the property inspector, it&rsquo;s pullable.
           If it requires creating or deleting nodes, use the propose flow.
         </Body>
@@ -221,7 +221,7 @@ export function Workflow() {
           <span key="4">Review the frame, then Approve or Reject (see below).</span>,
         ]} />
 
-        <Body role="metadata">
+        <Body role="supporting">
           Gaps are detected automatically. Run <code style={{ fontFamily: "var(--font-mono)" }}>npm run lint:composition</code> — screens in <code style={{ fontFamily: "var(--font-mono)" }}>screens.json</code> without a pattern get NEEDS PATTERN stubs on the Mirror page.
         </Body>
       </div>
@@ -291,7 +291,7 @@ export function Workflow() {
           ]} />
         </div>
 
-        <Body role="metadata">
+        <Body role="supporting">
           The cycle repeats: reject → Claude revises → re-review → approve or reject again.
           Anyone can also edit the <code style={{ fontFamily: "var(--font-mono)" }}>.md</code> file directly at any point.
         </Body>
@@ -324,7 +324,7 @@ export function Workflow() {
           </Card>
         </div>
 
-        <Body role="metadata">
+        <Body role="supporting">
           Composition rules enforce this: hardcoded hex values and unknown glyphs are lint errors unless explicitly flagged as token gap proposals.
           This prevents drift — every value traces back to canonical.
         </Body>
@@ -376,7 +376,7 @@ export function Workflow() {
           ].map((p) => (
             <div key={p.page} style={{ background: "var(--color-bg-terminal)", border: "1px solid var(--color-bg-panel)", borderRadius: "0.25rem", padding: "0.5rem 0.75rem" }}>
               <code style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--color-info)", display: "block" }}>{p.page}</code>
-              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-metadata)", marginTop: "0.125rem" }}>{p.desc}</div>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-supporting)", marginTop: "0.125rem" }}>{p.desc}</div>
             </div>
           ))}
         </div>
@@ -396,7 +396,7 @@ export function Workflow() {
           ].map((r) => (
             <div key={r.cmd} style={{ background: "var(--color-bg-terminal)", border: "1px solid var(--color-bg-panel)", borderRadius: "0.25rem", padding: "0.5rem 0.75rem" }}>
               <code style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--color-info)", display: "block" }}>{r.cmd}</code>
-              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-metadata)", marginTop: "0.125rem" }}>{r.desc}</div>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-supporting)", marginTop: "0.125rem" }}>{r.desc}</div>
             </div>
           ))}
         </div>
@@ -410,7 +410,7 @@ export function Workflow() {
           ].map((r) => (
             <div key={r.cmd} style={{ background: "var(--color-bg-terminal)", border: "1px solid var(--color-bg-panel)", borderRadius: "0.25rem", padding: "0.5rem 0.75rem" }}>
               <code style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--color-warning)", display: "block" }}>{r.cmd}</code>
-              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-metadata)", marginTop: "0.125rem" }}>Say in Claude Code. {r.desc}.</div>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: "0.75rem", color: "var(--color-text-supporting)", marginTop: "0.125rem" }}>Say in Claude Code. {r.desc}.</div>
             </div>
           ))}
         </div>
