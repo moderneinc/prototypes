@@ -27,6 +27,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/patterns", label: "Patterns" },
   { href: "/voice", label: "Voice" },
   { href: "/approach", label: "System Design" },
+  { href: "/how-we-got-here", label: "How we got here" },
 ];
 
 export function SideNav() {
