@@ -83,7 +83,7 @@ Wait for the user's response before making changes. If they share a screenshot, 
 
 ## Composition rules
 
-Read `design-system/composition.json` before generating any CLI screen. 30 rules covering glyph-color pairing, semantic color limits, section ordering, and token enforcement.
+Read `design-system/composition.json` before generating any CLI screen. Living ruleset covering glyph-color pairing, semantic color limits, section ordering, and token enforcement. Rules evolve — see "Promoting patterns" above.
 
 ## Build pipeline
 

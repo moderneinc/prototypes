@@ -100,9 +100,9 @@ A plugin pushes canonical to Figma. Claude reads Figma via MCP and pulls changes
 
 ### Composition rules
 
-30 machine-readable rules in `composition.json` enforce consistency: glyph-color pairing, semantic color limits, section ordering, required elements per pattern type. Claude reads them before generating anything. `npm run lint:composition` validates all patterns and detects screen coverage gaps.
+`composition.json` is a living ruleset that evolves with the system. It governs how screens are built — glyph-color pairing, semantic color limits, section ordering, required elements per pattern type. Claude reads the rules before generating anything. `npm run lint:composition` validates all patterns and detects screen coverage gaps.
 
-Rules evolve with the system. When Claude promotes a new pattern, it drafts a composition shape entry, compares against all existing rules for overlaps or conflicts, and shows the analysis before writing anything. The goal is consistency — not canonicalizing every experiment. Claude also runs periodic health checks to flag redundant or over-specific rules.
+When a new pattern is promoted, Claude drafts composition rules, compares them against everything that exists for overlaps or conflicts, and shows the analysis before writing anything. Rules get combined when they overlap. Conflicts get flagged. Claude also runs periodic health checks to flag redundant or over-specific rules. The goal is consistency, not volume.
 
 ### Mirror: how new things enter the system
 
@@ -155,7 +155,7 @@ design-system/
 ├── patterns/*.md            ← 17 canonical patterns
 ├── mirror/*.md              ← proposed patterns (staging)
 ├── screens.json             ← screen manifest (gap detection)
-├── composition.json         ← 30 lint rules
+├── composition.json         ← composition rules (living ruleset)
 ├── pattern-template.md      ← template for new patterns
 ├── voice.md                 ← voice rules
 └── gaps.md                  ← known gaps
