@@ -172,18 +172,16 @@ export function Workflow() {
               A designer changes a fill color on a banner component directly in Figma. Claude reads the change and updates the source files.
             </div>
             <TryIt id="try-1a">
+              <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>THIS IS A SANDBOX — changes are temporary</div>
               <StepList steps={[
-                <span key="1">Open the <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>Figma file</a>. Navigate to the component you want to change (e.g. <strong>Construct / Components</strong> → a banner).</span>,
-                <span key="2">Select the element and change the property (e.g. change the fill color).</span>,
+                <span key="0">Start the demo: <CopyCode>npm run demo:start -- 1</CopyCode>This changes the success color from green to cyan so you can see the diff.</span>,
+                <span key="1">Open the <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>Figma file</a>. Run the plugin → <strong>Apply</strong>. Notice the success color changed on banners and ✓ glyphs.</span>,
+                <span key="2">Now change it to something else in Figma (e.g. pick a different green on a banner component).</span>,
                 <span key="3">Open Claude Code in this repo. Say: <CopyCode>pull from Figma</CopyCode></span>,
-                <span key="4">Claude reads the Figma file, compares against canonical, and shows you what changed. Review the diff.</span>,
+                <span key="4">Claude shows the diff between your Figma change and the code. Review it.</span>,
                 <span key="5">Tell Claude to apply it. Claude edits <code style={mono}>tokens.json</code>.</span>,
-                <span key="6">Commit the change. The pre-commit hook rebuilds the plugin automatically.</span>,
-                <span key="7">Back in Figma: run the plugin → <strong>Apply</strong>. Both sides are now in sync.</span>,
+                <span key="6">When done experimenting, clean up: <CopyCode>npm run demo:end</CopyCode>This restores everything to its original state. Open Figma → Apply to sync back.</span>,
               ]} />
-              <Body role="supporting">
-                In a more mature setup, the commit would auto-create a PR for team review before merging.
-              </Body>
             </TryIt>
           </Card>
 
@@ -194,12 +192,12 @@ export function Workflow() {
               A developer updates a color value in tokens.json. The commit auto-rebuilds the plugin, and Figma picks it up.
             </div>
             <TryIt id="try-1b">
+              <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>THIS IS A SANDBOX — changes are temporary</div>
               <StepList steps={[
-                <span key="1">Open <code style={mono}>design-system/tokens.json</code> in your editor.</span>,
-                <span key="2">Find the token you want to change (e.g. <code style={mono}>color.semantic.success</code>) and update its <code style={mono}>$value</code>.</span>,
-                <span key="3">Commit the change. The pre-commit hook rebuilds the plugin and validates composition rules.</span>,
-                <span key="4">Open the <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>Figma file</a>. Run <strong>Plugins → Development → Construct</strong>.</span>,
-                <span key="5">The plugin shows the diff. Click <strong>Apply</strong>. Done.</span>,
+                <span key="0">Start the demo: <CopyCode>npm run demo:start -- 1</CopyCode>This changes <code style={mono}>color.semantic.success</code> from <code style={mono}>#4ade80</code> to <code style={mono}>#22d3ee</code> and rebuilds.</span>,
+                <span key="1">Open the <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>Figma file</a>. Run the plugin → <strong>Apply</strong>.</span>,
+                <span key="2">The success color on banners and ✓ glyphs changes from green to cyan.</span>,
+                <span key="3">When done: <CopyCode>npm run demo:end</CopyCode>Everything restores. Open Figma → Apply to sync back.</span>,
               ]} />
             </TryIt>
           </Card>
@@ -227,13 +225,13 @@ export function Workflow() {
               A designer is working on a screen and realizes they need a color that doesn&rsquo;t exist in the token set. They flag the gap through Claude.
             </div>
             <TryIt id="try-2a">
+              <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>THIS IS A SANDBOX — changes are temporary</div>
               <StepList steps={[
-                <span key="1">Open Claude Code. Describe the token you need: <CopyCode>I need a new semantic color for &quot;in progress&quot; state — something between info and warning</CopyCode></span>,
-                <span key="2">Claude writes a token gap proposal to <code style={mono}>design-system/mirror/</code> and commits.</span>,
-                <span key="3">Open the <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>Figma file</a>. Run the plugin → <strong>Apply</strong>. The proposal appears on <strong>Construct / Mirror</strong>.</span>,
-                <span key="4">Review the frame. Click <strong>Approve</strong> or <strong>Reject</strong> with feedback.</span>,
-                <span key="5">If approved, tell Claude: <CopyCode>check Figma for approvals</CopyCode></span>,
-                <span key="6">Claude adds the token to <code style={mono}>tokens.json</code>. Commit. The new token is now canonical.</span>,
+                <span key="0">Start the demo: <CopyCode>npm run demo:start -- 2</CopyCode>This creates a token gap proposal for a &ldquo;progress&rdquo; semantic color.</span>,
+                <span key="1">Open the <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>Figma file</a>. Run the plugin → <strong>Apply</strong>. The proposal appears on <strong>Construct / Mirror</strong> with a lint badge.</span>,
+                <span key="2">Review the frame. Click <strong>Approve</strong> or <strong>Reject</strong> with feedback.</span>,
+                <span key="3">If you approved, tell Claude: <CopyCode>check Figma for approvals</CopyCode></span>,
+                <span key="4">When done: <CopyCode>npm run demo:end</CopyCode>Cleans up the proposal and restores everything.</span>,
               ]} />
             </TryIt>
           </Card>
@@ -243,12 +241,13 @@ export function Workflow() {
               A developer knows they need a new token and writes the proposal directly.
             </div>
             <TryIt id="try-2b">
+              <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>THIS IS A SANDBOX — changes are temporary</div>
               <StepList steps={[
-                <span key="1">Write a token gap proposal <code style={mono}>.md</code> file describing the new token, its role, and why it&rsquo;s needed. Save to <code style={mono}>design-system/mirror/</code></span>,
-                <span key="2">Commit. The hook validates the template and rebuilds the plugin.</span>,
-                <span key="3">Open Figma → run plugin → <strong>Apply</strong>. The proposal appears on Mirror.</span>,
-                <span key="4">Wait for review (or approve it yourself in Claude: <code style={mono}>approve [name]</code>).</span>,
-                <span key="5">Once approved, add the token to <code style={mono}>tokens.json</code> and commit.</span>,
+                <span key="0">Start the demo: <CopyCode>npm run demo:start -- 2</CopyCode>This writes a sample token proposal to <code style={mono}>design-system/mirror/</code>.</span>,
+                <span key="1">Open the file in your editor to see the format: <code style={mono}>design-system/mirror/token-semantic-progress.md</code></span>,
+                <span key="2">Open Figma → run plugin → <strong>Apply</strong>. The proposal appears on Mirror.</span>,
+                <span key="3">Approve it yourself in Claude: <code style={mono}>approve token-semantic-progress</code></span>,
+                <span key="4">When done: <CopyCode>npm run demo:end</CopyCode></span>,
               ]} />
             </TryIt>
           </Card>
@@ -276,11 +275,12 @@ export function Workflow() {
               A designer sees that the error pattern needs a TECHNICAL DETAILS section. They can&rsquo;t add it in Figma — but they can describe the change and have Claude make it.
             </div>
             <TryIt id="try-3a">
+              <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>THIS IS A SANDBOX — changes are temporary</div>
               <StepList steps={[
-                <span key="1">Open Claude Code. Describe what you want to change: <CopyCode>Add a TECHNICAL DETAILS section to the error pattern, below TRY, in metadata color</CopyCode></span>,
-                <span key="2">Claude reads the composition rules, edits <code style={mono}>design-system/patterns/error.md</code>, and shows you the diff.</span>,
-                <span key="3">Review the change. If it looks right, tell Claude to commit.</span>,
-                <span key="4">Open the <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>Figma file</a>. Run the plugin → <strong>Apply</strong>. The pattern updates on the Patterns page.</span>,
+                <span key="0">Start the demo: <CopyCode>npm run demo:start -- 3</CopyCode>This adds a TECHNICAL DETAILS section to the error pattern.</span>,
+                <span key="1">Open the <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>Figma file</a>. Run the plugin → <strong>Apply</strong>. The error pattern on the Patterns page now shows a stack trace section.</span>,
+                <span key="2">In a real workflow, you&rsquo;d describe the change to Claude instead: <code style={mono}>Add a TECHNICAL DETAILS section to the error pattern</code></span>,
+                <span key="3">When done: <CopyCode>npm run demo:end</CopyCode>The error pattern restores to its original state.</span>,
               ]} />
             </TryIt>
           </Card>
@@ -290,11 +290,13 @@ export function Workflow() {
               A developer edits the pattern file directly.
             </div>
             <TryIt id="try-3b">
+              <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>THIS IS A SANDBOX — changes are temporary</div>
               <StepList steps={[
-                <span key="1">Open <code style={mono}>design-system/patterns/error.md</code> in your editor.</span>,
-                <span key="2">Edit the &ldquo;What the user sees&rdquo; code block and the composition rules.</span>,
-                <span key="3">Run <CopyCode>npm run lint:composition</CopyCode> to validate your changes against the rules.</span>,
-                <span key="4">Commit. Open Figma → <strong>Apply</strong>.</span>,
+                <span key="0">Start the demo: <CopyCode>npm run demo:start -- 3</CopyCode>This edits <code style={mono}>error.md</code> to add a TECHNICAL DETAILS section.</span>,
+                <span key="1">Open the file to see the change: <code style={mono}>design-system/patterns/error.md</code></span>,
+                <span key="2">Validate: <CopyCode>npm run lint:composition</CopyCode></span>,
+                <span key="3">Open Figma → run plugin → <strong>Apply</strong>. See the updated error pattern.</span>,
+                <span key="4">When done: <CopyCode>npm run demo:end</CopyCode></span>,
               ]} />
             </TryIt>
           </Card>
@@ -322,20 +324,17 @@ export function Workflow() {
               A designer mocks up a new CLI screen in a separate Figma file, then uses Claude to turn it into a pattern that follows the system&rsquo;s rules.
             </div>
             <TryIt id="try-4a">
+              <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>THIS IS A SANDBOX — changes are temporary</div>
               <StepList steps={[
-                <span key="1">Design the screen in Figma (can be in a separate file or on a scratch page — not on the Construct pages).</span>,
-                <span key="2">Take a screenshot or export it.</span>,
-                <span key="3">Open Claude Code. Share the screenshot and describe the screen: <CopyCode>Create a new pattern for this batch operation summary screen. It shows per-repo status with success/warning/failure rows.</CopyCode></span>,
-                <span key="4">Claude reads the composition rules, checks for existing patterns that might already cover this, and writes a <code style={mono}>.md</code> file to <code style={mono}>design-system/mirror/</code>. The template is enforced — Claude uses the required sections automatically.</span>,
-                <span key="5">Claude commits. The plugin rebuilds automatically.</span>,
-                <span key="6">Open the <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>Construct Figma file</a>. Run the plugin → <strong>Apply</strong>. The proposed pattern appears on <strong>Construct / Mirror</strong> with a lint badge.</span>,
-                <span key="7">Review the frame. Does it follow the system? Does the preview look right?</span>,
-                <span key="8">Click <strong>Approve</strong> to accept it, or <strong>Reject</strong> with feedback (e.g. &ldquo;needs per-repo failure details&rdquo;).</span>,
-                <span key="9">If rejected: tell Claude <code style={mono}>check mirror for rejections</code>. Claude reads the reason, revises the pattern, and commits. The Mirror page updates. Review again.</span>,
-                <span key="10">Once approved, tell Claude: <CopyCode>check Figma for approvals</CopyCode> Claude promotes the file to <code style={mono}>patterns/</code>. The pattern is now canonical and appears on the Patterns page.</span>,
+                <span key="0">Start the demo: <CopyCode>npm run demo:start -- 4</CopyCode>This creates a sample &ldquo;batch operation summary&rdquo; pattern on the Mirror page.</span>,
+                <span key="1">Open the <a href={FIGMA_URL} target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>Figma file</a>. Run the plugin → <strong>Apply</strong>. The proposed pattern appears on <strong>Construct / Mirror</strong> with a lint badge.</span>,
+                <span key="2">Review the frame. Click <strong>Approve</strong> to accept, or <strong>Reject</strong> with feedback (e.g. &ldquo;needs per-repo failure details&rdquo;).</span>,
+                <span key="3">If rejected: tell Claude <code style={mono}>check mirror for rejections</code>. Claude revises and the Mirror updates.</span>,
+                <span key="4">If approved: tell Claude <CopyCode>check Figma for approvals</CopyCode>Claude promotes it to the Patterns page.</span>,
+                <span key="5">When done experimenting: <CopyCode>npm run demo:end</CopyCode>Restores everything. The pattern is removed.</span>,
               ]} />
               <Body role="supporting">
-                In a more mature setup, Claude&rsquo;s commit would auto-create a GitHub PR so the whole team can review the pattern before it merges to main.
+                In a real workflow, you&rsquo;d design the screen in a separate Figma file, screenshot it, and share it with Claude to generate the pattern spec. In a more mature setup, Claude&rsquo;s commit would auto-create a GitHub PR for team review.
               </Body>
             </TryIt>
           </Card>
@@ -345,14 +344,13 @@ export function Workflow() {
               A developer writes the pattern spec directly and waits for design review in Figma.
             </div>
             <TryIt id="try-4b">
+              <div style={{ ...mono, fontSize: "0.6875rem", fontWeight: 700, color: "var(--color-warning)", marginBottom: "0.5rem" }}>THIS IS A SANDBOX — changes are temporary</div>
               <StepList steps={[
-                <span key="1">Copy the <a href="https://github.com/jaydjj/Construct/blob/main/design-system/pattern-template.md" target="_blank" rel="noopener" style={{ color: "var(--color-info)" }}>pattern template</a> to <code style={mono}>design-system/mirror/my-pattern.md</code></span>,
-                <span key="2">Fill in the sections: title, when it applies, the terminal preview, visual anatomy, and composition rules.</span>,
-                <span key="3">Commit. The hook validates the template (blocks if sections are missing) and rebuilds the plugin.</span>,
-                <span key="4">Open Figma → run plugin → <strong>Apply</strong>. The proposal appears on Mirror with a lint badge.</span>,
-                <span key="5">Share the Figma file with your team. Anyone can open the plugin and click <strong>Approve</strong> or <strong>Reject</strong>.</span>,
-                <span key="6">Check for feedback: <CopyCode>check mirror for rejections</CopyCode> or <CopyCode>check Figma for approvals</CopyCode></span>,
-                <span key="7">Once approved and promoted, the pattern is canonical. In a more mature setup, a GitHub PR would gate the merge.</span>,
+                <span key="0">Start the demo: <CopyCode>npm run demo:start -- 4</CopyCode>This writes a complete pattern to <code style={mono}>design-system/mirror/batch-operation-summary.md</code>.</span>,
+                <span key="1">Open the file to see the format and content.</span>,
+                <span key="2">Open Figma → run plugin → <strong>Apply</strong>. The proposal appears on Mirror.</span>,
+                <span key="3">Approve or Reject it. Check for feedback: <code style={mono}>check mirror for rejections</code> or <code style={mono}>check Figma for approvals</code></span>,
+                <span key="4">When done: <CopyCode>npm run demo:end</CopyCode></span>,
               ]} />
             </TryIt>
           </Card>
