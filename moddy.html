@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moddy — Trigrep search prototype</title>
+<style>
+  :root {
+    --grey-50: #edeeef;
+    --grey-100: #c6c9cd;
+    --grey-300: #838a93;
+    --grey-500: #46505e;
+    --grey-600: #404956;
+    --grey-700: #323943;
+    --grey-800: #272c34;
+    --grey-900: #1d2227;
+    --grey-25: #f7f7f8;
+    --bg: #ffffff;
+
+    --neo-red: #FF3232;
+    --roseate: #DB4197;
+    --violet: #461DDE;
+    --digital-blue: #2F42FF;
+    --digital-green: #3DDC84;
+
+    --highlight: #FFE9A8;
+    --highlight-text: #8a5d00;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--grey-700);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  .mono { font-family: 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace; }
+
+  .app { display: flex; flex-direction: column; height: 100vh; max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--grey-50);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--grey-500); font-weight: 600; letter-spacing: 0.02em; }
+  .brand-logo {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: conic-gradient(from 180deg, var(--neo-red), var(--roseate), var(--violet), var(--digital-blue), var(--digital-green), var(--neo-red));
+    position: relative;
+  }
+  .brand-logo::after {
+    content: ''; position: absolute; inset: 4px; background: var(--bg); border-radius: 5px;
+  }
+  .brand-name { color: var(--grey-800); }
+  .topbar-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent;
+    color: var(--grey-300); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:hover { background: var(--grey-25); color: var(--grey-600); }
+
+  /* Main content area */
+  .main { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; }
+
+  /* Greeter */
+  .greeter {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 32px 0 16px; gap: 28px;
+    max-width: 676px; width: 100%; margin: 0 auto;
+  }
+  .greeter-spinner {
+    width: 135px; height: 135px;
+    background: conic-gradient(from 0deg, var(--neo-red), var(--roseate), var(--violet), var(--digital-blue), var(--digital-green), var(--neo-red));
+    border-radius: 50%;
+    animation: spin 8s linear infinite;
+    position: relative;
+    filter: blur(0.5px);
+    opacity: 0.95;
+  }
+  .greeter-spinner::after {
+    content: ''; position: absolute; inset: 12px;
+    background: var(--bg); border-radius: 50%;
+  }
+  .greeter-spinner::before {
+    content: ''; position: absolute; inset: 30px;
+    background: conic-gradient(from 90deg, var(--violet), var(--digital-blue), var(--digital-green), var(--roseate), var(--neo-red), var(--violet));
+    border-radius: 50%;
+    animation: spin 4s linear infinite reverse;
+    z-index: 1;
+    opacity: 0.9;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .greeter-headline {
+    text-align: center;
+    font-size: 22px; font-weight: 500; color: var(--grey-800);
+    line-height: 1.3;
+  }
+  .greeter-sub {
+    text-align: center; font-size: 14px; color: var(--grey-300);
+    margin-top: -16px;
+  }
+  .suggestions {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    width: 100%;
+  }
+  @media (max-width: 720px) { .suggestions { grid-template-columns: 1fr; } }
+  .suggestion {
+    text-align: left; padding: 14px 16px;
+    border: 1px solid var(--grey-50); border-radius: 12px;
+    background: var(--bg); color: var(--grey-600);
+    font-size: 14px; cursor: pointer; transition: all 0.15s;
+    line-height: 1.45;
+  }
+  .suggestion:hover {
+    border-color: var(--grey-100); background: var(--grey-25);
+    color: var(--grey-700);
+  }
+  .suggestion:focus-visible { outline: 2px solid var(--digital-blue); outline-offset: 2px; }
+
+  /* Conversation */
+  .conversation {
+    flex: 1; overflow-y: auto;
+    padding: 24px 4px 24px;
+    display: flex; flex-direction: column; gap: 20px;
+    scrollbar-gutter: stable;
+  }
+  .conversation.hidden { display: none; }
+
+  .msg-user {
+    align-self: stretch;
+    display: flex; flex-direction: row; gap: 10px; align-items: flex-start;
+    background: var(--grey-50);
+    border-radius: 16px;
+    padding: 12px 14px;
+  }
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    background: var(--grey-100); color: var(--grey-700);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+  }
+  .msg-user-text { color: var(--grey-800); font-size: 15px; padding-top: 4px; }
+
+  .msg-moddy { display: flex; flex-direction: column; gap: 12px; color: var(--grey-600); font-size: 16px; }
+  .msg-moddy p { margin: 0; }
+  .msg-moddy .typing-cursor {
+    display: inline-block; width: 7px; height: 16px;
+    background: var(--grey-500); margin-left: 2px; vertical-align: text-bottom;
+    animation: blink 1s steps(2, start) infinite;
+  }
+  @keyframes blink { to { visibility: hidden; } }
+
+  /* Tool call card */
+  .toolcall {
+    border: 1px solid var(--grey-50); border-radius: 12px;
+    overflow: hidden;
+    background: var(--grey-25);
+  }
+  .toolcall-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    user-select: none;
+  }
+  .toolcall.open .toolcall-header { border-bottom-color: var(--grey-50); }
+  .toolcall-icon {
+    width: 18px; height: 18px; flex-shrink: 0;
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--violet), var(--digital-blue));
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 10px; font-weight: 700;
+  }
+  .toolcall-name { font-size: 13px; font-weight: 600; color: var(--grey-700); }
+  .toolcall-name .mono { color: var(--violet); font-weight: 600; }
+  .toolcall-meta { margin-left: auto; font-size: 12px; color: var(--grey-300); display: flex; align-items: center; gap: 8px; }
+  .toolcall-chev {
+    width: 14px; height: 14px; color: var(--grey-300);
+    transition: transform 0.15s;
+  }
+  .toolcall.open .toolcall-chev { transform: rotate(90deg); }
+  .toolcall-body { display: none; padding: 12px 14px 14px; }
+  .toolcall.open .toolcall-body { display: block; }
+
+  .toolcall-args {
+    font-size: 12px; line-height: 1.6;
+    background: #fff; border: 1px solid var(--grey-50);
+    border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;
+    color: var(--grey-600);
+  }
+  .toolcall-args .arg-key { color: var(--grey-300); }
+  .toolcall-args .arg-val { color: var(--digital-blue); }
+  .toolcall-args .arg-str { color: #b45309; }
+  .toolcall-cmd {
+    font-size: 12px; line-height: 1.5;
+    background: var(--grey-900); color: #e8e9eb;
+    border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;
+    overflow-x: auto; white-space: pre;
+  }
+
+  /* Trigrep results */
+  .results { display: flex; flex-direction: column; gap: 10px; }
+  .file-group {
+    border: 1px solid var(--grey-50); border-radius: 8px; background: #fff; overflow: hidden;
+  }
+  .file-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; background: var(--grey-25);
+    border-bottom: 1px solid var(--grey-50);
+    font-size: 12px;
+  }
+  .file-path { color: var(--grey-700); font-weight: 600; }
+  .file-count { color: var(--grey-300); font-size: 11px; margin-left: auto; }
+  .file-icon { width: 14px; height: 14px; color: var(--grey-300); flex-shrink: 0; }
+  .match-line {
+    display: grid; grid-template-columns: 44px 1fr;
+    padding: 4px 0;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .match-line:hover { background: var(--grey-25); }
+  .match-line .lineno {
+    text-align: right; color: var(--grey-300); padding-right: 12px;
+    border-right: 1px solid var(--grey-50);
+    user-select: none;
+  }
+  .match-line .code {
+    padding-left: 12px; color: var(--grey-700); white-space: pre; overflow-x: auto;
+  }
+  .match-line mark {
+    background: var(--highlight); color: var(--highlight-text);
+    padding: 0 1px; border-radius: 2px;
+  }
+
+  /* Followup actions */
+  .followup-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .followup {
+    border: 1px solid var(--grey-50); background: #fff;
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 13px; color: var(--grey-700); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .followup:hover { border-color: var(--violet); color: var(--violet); }
+
+  /* Loading state */
+  .moddy-thinking {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--grey-300); font-size: 14px;
+  }
+  .thinking-dots { display: inline-flex; gap: 4px; }
+  .thinking-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--grey-300);
+    animation: bob 1.2s ease-in-out infinite;
+  }
+  .thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bob {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40% { transform: translateY(-3px); opacity: 1; }
+  }
+
+  /* Prompt */
+  .prompt-wrap {
+    padding: 16px 0 24px;
+    background: linear-gradient(to bottom, transparent, var(--bg) 30%);
+  }
+  .prompt-gradient {
+    position: relative; padding: 1px; border-radius: 10px;
+    background: linear-gradient(60deg, var(--neo-red), var(--roseate), var(--violet), var(--digital-blue), var(--digital-green));
+    background-size: 300% 300%;
+    animation: gradient-shift 10s ease alternate infinite;
+    box-shadow: rgba(0,0,0,0.12) 0px 1px 8px 0px;
+  }
+  .prompt-gradient.disabled {
+    background: var(--grey-100);
+    animation: none;
+    transition: background 0.2s;
+  }
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .prompt-inner {
+    background: var(--bg); border-radius: 9px;
+    display: flex; align-items: flex-end; gap: 8px;
+    padding: 10px 12px 10px 18px;
+  }
+  .prompt-input {
+    flex: 1; border: none; outline: none; resize: none;
+    font-family: inherit; font-size: 15px; color: var(--grey-700);
+    background: transparent; padding: 8px 0;
+    max-height: 240px; line-height: 1.5;
+  }
+  .prompt-input::placeholder { color: var(--grey-300); opacity: 1; }
+  .send-btn {
+    width: 32px; height: 32px; border-radius: 50%; border: none;
+    background: var(--grey-700); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; transition: background 0.15s;
+  }
+  .send-btn:hover:not(:disabled) { background: var(--grey-800); }
+  .send-btn:disabled { background: var(--grey-100); color: var(--grey-300); cursor: not-allowed; }
+  .send-btn.stop { background: var(--neo-red); }
+
+  .prompt-hint { font-size: 11px; color: var(--grey-300); text-align: center; margin-top: 8px; }
+
+  /* Scrollbar */
+  .conversation::-webkit-scrollbar { width: 8px; }
+  .conversation::-webkit-scrollbar-thumb { background: var(--grey-50); border-radius: 4px; }
+  .conversation::-webkit-scrollbar-thumb:hover { background: var(--grey-100); }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-logo"></div>
+      <span>Moderne / <span class="brand-name">Moddy</span></span>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" title="New conversation" onclick="resetConversation()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Greeter -->
+    <div id="greeter" class="greeter">
+      <div class="greeter-spinner"></div>
+      <div class="greeter-headline">Hi Anne, let's work on your code!</div>
+      <div class="greeter-sub">Select a common prompt or type in your request.</div>
+      <div class="suggestions" id="suggestions"></div>
+    </div>
+
+    <!-- Conversation -->
+    <div id="conversation" class="conversation hidden"></div>
+
+    <!-- Prompt -->
+    <div class="prompt-wrap">
+      <div class="prompt-gradient" id="prompt-gradient">
+        <div class="prompt-inner">
+          <textarea
+            id="prompt-input"
+            class="prompt-input"
+            placeholder="How can I help you?"
+            rows="1"
+          ></textarea>
+          <button id="send-btn" class="send-btn" disabled onclick="handleSendClick()">
+            <svg id="send-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="prompt-hint">Enter to send · Shift+Enter for newline</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== Suggestions =====
+  const ALL_SUGGESTIONS = [
+    "Find where deprecated APIs are used",
+    "Search for hardcoded secrets",
+    "Check for outdated dependencies",
+    "Locate unused imports",
+    "Search for security vulnerabilities",
+    "Find unused dependencies",
+    "Upgrade to the latest Spring Boot version",
+    "Detect secrets in my codebase",
+    "Search for usage of Log4j",
+    "Identify deprecated API calls",
+    "Migrate JUnit 4 tests to JUnit 5",
+    "Scan for potential SQL injection risks",
+    "Find long methods that could be refactored"
+  ];
+
+  function pickRandom(arr, n) {
+    const copy = [...arr];
+    const out = [];
+    for (let i = 0; i < n && copy.length; i++) {
+      const idx = Math.floor(Math.random() * copy.length);
+      out.push(copy.splice(idx, 1)[0]);
+    }
+    return out;
+  }
+
+  function renderSuggestions() {
+    const el = document.getElementById('suggestions');
+    el.innerHTML = '';
+    // Bias toward search-oriented ones to encourage trigrep flow
+    const biased = [
+      "Search for usage of Log4j",
+      "Find where deprecated APIs are used",
+      "Detect secrets in my codebase",
+      "Locate unused imports"
+    ];
+    biased.forEach(s => {
+      const b = document.createElement('button');
+      b.className = 'suggestion';
+      b.textContent = s;
+      b.onclick = () => submitPrompt(s);
+      el.appendChild(b);
+    });
+  }
+  renderSuggestions();
+
+  // ===== Faked trigrep scenarios =====
+  const SCENARIOS = {
+    log4j: {
+      triggers: ['log4j'],
+      query: 'org.apache.log4j',
+      syntax: 'sourcegraph',
+      intro: "I'll run a trigrep search across your working set for Log4j usage. Trigrep is index-backed, so this scans the whole repo in well under a second.",
+      summary: "Found **15 matches across 6 files**. Most usages are in older modules; a couple are in your shared `logging` utility which means upgrading there would cover the bulk of callers.",
+      files: [
+        {
+          path: 'payments-service/src/main/java/com/acme/payments/PaymentProcessor.java',
+          matches: [
+            { line: 12, code: 'import org.apache.log4j.Logger;', hl: 'org.apache.log4j' },
+            { line: 23, code: '    private static final Logger log = Logger.getLogger(PaymentProcessor.class);', hl: 'Logger' }
+          ]
+        },
+        {
+          path: 'payments-service/src/main/java/com/acme/payments/RefundService.java',
+          matches: [
+            { line: 9,  code: 'import org.apache.log4j.Logger;', hl: 'org.apache.log4j' },
+            { line: 18, code: '    private static final Logger log = Logger.getLogger(RefundService.class);', hl: 'Logger' },
+            { line: 47, code: '            log.error("Refund failed for txn=" + txnId, e);', hl: 'log.error' }
+          ]
+        },
+        {
+          path: 'common-logging/src/main/java/com/acme/logging/LogConfig.java',
+          matches: [
+            { line: 5,  code: 'import org.apache.log4j.PropertyConfigurator;', hl: 'org.apache.log4j' },
+            { line: 6,  code: 'import org.apache.log4j.LogManager;', hl: 'org.apache.log4j' },
+            { line: 22, code: '        PropertyConfigurator.configure("log4j.properties");', hl: 'log4j.properties' }
+          ]
+        },
+        {
+          path: 'inventory-service/pom.xml',
+          matches: [
+            { line: 34, code: '    <groupId>log4j</groupId>', hl: 'log4j' },
+            { line: 35, code: '    <artifactId>log4j</artifactId>', hl: 'log4j' },
+            { line: 36, code: '    <version>1.2.17</version>', hl: '1.2.17' }
+          ]
+        },
+        {
+          path: 'inventory-service/src/main/java/com/acme/inventory/StockChecker.java',
+          matches: [
+            { line: 8,  code: 'import org.apache.log4j.Logger;', hl: 'org.apache.log4j' },
+            { line: 19, code: '    private static final Logger log = Logger.getLogger(StockChecker.class);', hl: 'Logger' }
+          ]
+        },
+        {
+          path: 'legacy-batch/src/main/resources/log4j.properties',
+          matches: [
+            { line: 1, code: 'log4j.rootLogger=INFO, console', hl: 'log4j' },
+            { line: 5, code: 'log4j.appender.console=org.apache.log4j.ConsoleAppender', hl: 'log4j' }
+          ]
+        }
+      ],
+      followups: [
+        { label: 'Migrate Log4j 1.x → SLF4J', value: 'Run a recipe to migrate Log4j 1.x to SLF4J across these files' },
+        { label: 'Show me the legacy-batch matches first', value: 'Show me only the legacy-batch matches' }
+      ]
+    },
+    deprecated: {
+      triggers: ['deprecated'],
+      query: '@Deprecated lang:java',
+      syntax: 'sourcegraph',
+      intro: "I'll trigrep for `@Deprecated` declarations in Java. To find call sites of those deprecated methods I'd want a recipe — trigrep finds patterns, but resolving \"who calls this deprecated method\" needs type info from the LST.",
+      summary: "Found **9 matches across 4 files**. Three of these are in `UserService` — that class accounts for most of the deprecation surface.",
+      files: [
+        {
+          path: 'user-service/src/main/java/com/acme/users/UserService.java',
+          matches: [
+            { line: 31, code: '    @Deprecated', hl: '@Deprecated' },
+            { line: 32, code: '    public User findUserById(long id) {', hl: 'findUserById' },
+            { line: 48, code: '    @Deprecated(since = "2.4", forRemoval = true)', hl: '@Deprecated' },
+            { line: 49, code: '    public void resetPasswordLegacy(String email) {', hl: 'resetPasswordLegacy' }
+          ]
+        },
+        {
+          path: 'admin-portal/src/main/java/com/acme/admin/AdminController.java',
+          matches: [
+            { line: 56, code: '        User u = userService.findUserById(userId); // TODO migrate', hl: 'findUserById' },
+            { line: 78, code: '        userService.resetPasswordLegacy(email);', hl: 'resetPasswordLegacy' }
+          ]
+        },
+        {
+          path: 'api-gateway/src/main/java/com/acme/gateway/AuthFilter.java',
+          matches: [
+            { line: 42, code: '        return userService.findUserById(claims.getSubject());', hl: 'findUserById' }
+          ]
+        },
+        {
+          path: 'reports-service/src/main/java/com/acme/reports/ReportBuilder.java',
+          matches: [
+            { line: 19, code: '    @Deprecated', hl: '@Deprecated' },
+            { line: 20, code: '    public Report buildLegacyMonthlyReport() {', hl: 'buildLegacyMonthlyReport' }
+          ]
+        }
+      ],
+      followups: [
+        { label: 'Find a recipe to remove these', value: 'Find a recipe that removes deprecated API usages' },
+        { label: 'Show only callers (not declarations)', value: 'Show only call sites, not the @Deprecated declarations themselves' }
+      ]
+    },
+    secrets: {
+      triggers: ['secret', 'hardcoded', 'credential', 'api key'],
+      query: '/(api[_-]?key|secret|password|token)\\s*=\\s*["\\\']/',
+      syntax: 'sourcegraph',
+      intro: "I'll trigrep with a regex for likely hardcoded secret patterns — API keys, passwords, and tokens assigned as string literals. **Heads up:** I'll flag the matches but redact the values themselves.",
+      summary: "Found **5 likely matches across 3 files**. The two in `application-dev.properties` look like real credentials — I'd recommend rotating them and moving to a secret store.",
+      files: [
+        {
+          path: 'payments-service/src/main/resources/application-dev.properties',
+          matches: [
+            { line: 14, code: 'stripe.api_key=sk_live_••••••••••••••••••••••••', hl: 'sk_live_' },
+            { line: 22, code: 'db.password=••••••••••••', hl: 'db.password' }
+          ]
+        },
+        {
+          path: 'inventory-service/src/test/java/com/acme/inventory/IntegrationTest.java',
+          matches: [
+            { line: 27, code: '    private static final String API_KEY = "test_••••••••";', hl: 'API_KEY' },
+            { line: 28, code: '    private static final String AUTH_TOKEN = "Bearer test_••••••••";', hl: 'AUTH_TOKEN' }
+          ]
+        },
+        {
+          path: 'scripts/deploy.sh',
+          matches: [
+            { line: 8, code: 'export GITHUB_TOKEN="ghp_••••••••••••••••••••"', hl: 'GITHUB_TOKEN' }
+          ]
+        }
+      ],
+      followups: [
+        { label: 'Open a recipe to externalize secrets', value: 'Find a recipe to externalize these secrets to environment variables' },
+        { label: 'Filter to non-test files only', value: 'Filter results to exclude src/test paths' }
+      ]
+    },
+    unusedImports: {
+      triggers: ['unused import'],
+      query: "struct:'import :[pkg];' lang:java",
+      syntax: 'sourcegraph',
+      intro: "I'll start with a structural trigrep for `import` statements, then cross-reference against the LST to find ones that aren't referenced in their file. Trigrep finds the candidates; the LST confirms which are unused.",
+      summary: "Found **9 unused imports across 3 files**. Top offenders are `OrderController.java` (4) and `WidgetMapper.java` (3).",
+      files: [
+        {
+          path: 'orders-service/src/main/java/com/acme/orders/OrderController.java',
+          matches: [
+            { line: 3, code: 'import java.util.Date;', hl: 'java.util.Date' },
+            { line: 7, code: 'import java.util.HashMap;', hl: 'java.util.HashMap' },
+            { line: 11, code: 'import org.springframework.beans.factory.annotation.Qualifier;', hl: 'Qualifier' },
+            { line: 14, code: 'import com.acme.common.LegacyUtils;', hl: 'LegacyUtils' }
+          ]
+        },
+        {
+          path: 'inventory-service/src/main/java/com/acme/inventory/WidgetMapper.java',
+          matches: [
+            { line: 5, code: 'import java.time.LocalDate;', hl: 'LocalDate' },
+            { line: 6, code: 'import java.util.Optional;', hl: 'Optional' },
+            { line: 9, code: 'import com.acme.inventory.dto.WidgetDto;', hl: 'WidgetDto' }
+          ]
+        },
+        {
+          path: 'user-service/src/main/java/com/acme/users/UserMapper.java',
+          matches: [
+            { line: 4, code: 'import java.util.Collections;', hl: 'Collections' },
+            { line: 7, code: 'import lombok.extern.slf4j.Slf4j;', hl: 'Slf4j' }
+          ]
+        }
+      ],
+      followups: [
+        { label: 'Run RemoveUnusedImports recipe', value: 'Run the RemoveUnusedImports recipe across all matches' },
+        { label: 'Group by module', value: 'Group these results by module instead of by file' }
+      ]
+    }
+  };
+
+  function pickScenario(text) {
+    const lower = text.toLowerCase();
+    for (const key of Object.keys(SCENARIOS)) {
+      if (SCENARIOS[key].triggers.some(t => lower.includes(t))) return SCENARIOS[key];
+    }
+    // Generic fallback — synthesize a trivial result
+    const term = extractGenericTerm(text);
+    return {
+      query: term,
+      syntax: 'sourcegraph',
+      intro: `I'll trigrep your working set for matches of \`${term}\`. The trigram index keeps this sub-second even on large repos.`,
+      summary: `Found **3 matches across 2 files** for \`${term}\`. This is a small enough surface that you could review them manually — want me to pull each into a diff view?`,
+      files: [
+        {
+          path: 'orders-service/src/main/java/com/acme/orders/OrderController.java',
+          matches: [
+            { line: 24, code: `    // usage of ${term} appears here`, hl: term },
+            { line: 67, code: `    handle${term.charAt(0).toUpperCase() + term.slice(1)}(input);`, hl: term }
+          ]
+        },
+        {
+          path: 'common/src/main/java/com/acme/common/Helpers.java',
+          matches: [
+            { line: 18, code: `    public static void apply${term.charAt(0).toUpperCase() + term.slice(1)}() { }`, hl: term }
+          ]
+        }
+      ],
+      followups: [
+        { label: 'Refine the search', value: `Narrow my last search for ${term} to only .java files` },
+        { label: 'Show file contents', value: 'Show the full file contents for the first result' }
+      ]
+    };
+  }
+
+  function extractGenericTerm(text) {
+    // Strip common verbs, return last non-trivial word
+    const cleaned = text.replace(/[^A-Za-z0-9_ ]/g, ' ').trim();
+    const words = cleaned.split(/\s+/).filter(w => w.length > 2 && !['for','find','where','show','search','usage','the','and','are','used','code'].includes(w.toLowerCase()));
+    return words[words.length - 1] || 'pattern';
+  }
+
+  // ===== Conversation state =====
+  let isBusy = false;
+  let abortStream = false;
+  const conversationEl = document.getElementById('conversation');
+  const greeterEl = document.getElementById('greeter');
+  const promptInput = document.getElementById('prompt-input');
+  const sendBtn = document.getElementById('send-btn');
+  const promptGradient = document.getElementById('prompt-gradient');
+
+  function showConversation() {
+    greeterEl.style.display = 'none';
+    conversationEl.classList.remove('hidden');
+  }
+
+  function resetConversation() {
+    abortStream = true;
+    conversationEl.innerHTML = '';
+    conversationEl.classList.add('hidden');
+    greeterEl.style.display = 'flex';
+    promptInput.value = '';
+    autoSize();
+    updateSendButton();
+    renderSuggestions();
+  }
+
+  function autoSize() {
+    promptInput.style.height = 'auto';
+    promptInput.style.height = Math.min(promptInput.scrollHeight, 240) + 'px';
+  }
+
+  function updateSendButton() {
+    if (isBusy) {
+      sendBtn.disabled = false;
+      sendBtn.classList.add('stop');
+      document.getElementById('send-icon').outerHTML = '<svg id="send-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+    } else {
+      sendBtn.classList.remove('stop');
+      const hasText = promptInput.value.trim().length > 0;
+      sendBtn.disabled = !hasText;
+      document.getElementById('send-icon').outerHTML = '<svg id="send-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+    }
+  }
+
+  promptInput.addEventListener('input', () => { autoSize(); updateSendButton(); });
+  promptInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!isBusy && promptInput.value.trim()) submitPrompt(promptInput.value.trim());
+      else if (isBusy) stopStreaming();
+    }
+  });
+
+  function handleSendClick() {
+    if (isBusy) stopStreaming();
+    else if (promptInput.value.trim()) submitPrompt(promptInput.value.trim());
+  }
+
+  function stopStreaming() { abortStream = true; }
+
+  function submitPrompt(text) {
+    showConversation();
+    appendUserMessage(text);
+    promptInput.value = '';
+    autoSize();
+    runModdyResponse(text);
+  }
+
+  function appendUserMessage(text) {
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-user';
+    wrap.innerHTML = `
+      <div class="avatar">A</div>
+      <div class="msg-user-text"></div>
+    `;
+    wrap.querySelector('.msg-user-text').textContent = text;
+    conversationEl.appendChild(wrap);
+    scrollToBottom();
+  }
+
+  function scrollToBottom() {
+    requestAnimationFrame(() => {
+      conversationEl.scrollTop = conversationEl.scrollHeight;
+    });
+  }
+
+  // ===== Moddy response (faked streaming) =====
+  async function runModdyResponse(userText) {
+    isBusy = true;
+    abortStream = false;
+    updateSendButton();
+    promptGradient.classList.add('disabled');
+
+    const moddyMsg = document.createElement('div');
+    moddyMsg.className = 'msg-moddy';
+    conversationEl.appendChild(moddyMsg);
+
+    // Step 1: thinking indicator
+    const thinking = document.createElement('div');
+    thinking.className = 'moddy-thinking';
+    thinking.innerHTML = `
+      <span class="thinking-dots"><span></span><span></span><span></span></span>
+      <span>Searching your codebase…</span>
+    `;
+    moddyMsg.appendChild(thinking);
+    scrollToBottom();
+    await wait(900);
+    if (abortStream) return finishStream(moddyMsg);
+
+    const scenario = pickScenario(userText);
+    thinking.remove();
+
+    // Step 2: stream intro paragraph
+    const introP = document.createElement('p');
+    moddyMsg.appendChild(introP);
+    await streamText(introP, scenario.intro);
+    if (abortStream) return finishStream(moddyMsg);
+    await wait(200);
+
+    // Step 3: tool call card
+    const totalMatches = scenario.files.reduce((s, f) => s + f.matches.length, 0);
+    const elapsedMs = 30 + Math.floor(Math.random() * 80);
+    const tc = document.createElement('div');
+    tc.className = 'toolcall open';
+    tc.innerHTML = `
+      <div class="toolcall-header" onclick="this.parentElement.classList.toggle('open')">
+        <div class="toolcall-icon">⌕</div>
+        <div class="toolcall-name"><span class="mono">trigrep_search</span></div>
+        <div class="toolcall-meta">
+          <span>${totalMatches} matches · ${scenario.files.length} files · ${elapsedMs}ms</span>
+          <svg class="toolcall-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+      <div class="toolcall-body">
+        <div class="toolcall-args mono">
+          <div><span class="arg-key">query:</span> <span class="arg-str">"${escapeHtml(scenario.query)}"</span></div>
+          <div><span class="arg-key">path:</span> <span class="arg-str">"working-set"</span></div>
+          <div><span class="arg-key">syntax:</span> <span class="arg-str">"${scenario.syntax || 'sourcegraph'}"</span></div>
+          <div><span class="arg-key">max:</span> <span class="arg-val">50</span></div>
+        </div>
+        <div class="toolcall-cmd mono">$ mod search working-set ${formatShellArg(scenario.query)}${scenario.syntax && scenario.syntax !== 'sourcegraph' ? ' --syntax ' + scenario.syntax : ''}</div>
+        <div class="results"></div>
+      </div>
+    `;
+    moddyMsg.appendChild(tc);
+    const resultsEl = tc.querySelector('.results');
+    scrollToBottom();
+    await wait(150);
+
+    // Step 4: stream file groups one at a time
+    for (const file of scenario.files) {
+      if (abortStream) return finishStream(moddyMsg);
+      const fg = document.createElement('div');
+      fg.className = 'file-group';
+      fg.innerHTML = `
+        <div class="file-header">
+          <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="file-path mono">${escapeHtml(file.path)}</span>
+          <span class="file-count">${file.matches.length} match${file.matches.length === 1 ? '' : 'es'}</span>
+        </div>
+      `;
+      file.matches.forEach(m => {
+        const row = document.createElement('div');
+        row.className = 'match-line';
+        row.innerHTML = `
+          <div class="lineno mono">${m.line}</div>
+          <div class="code mono">${highlightCode(m.code, m.hl)}</div>
+        `;
+        fg.appendChild(row);
+      });
+      resultsEl.appendChild(fg);
+      scrollToBottom();
+      await wait(180);
+    }
+
+    if (abortStream) return finishStream(moddyMsg);
+    await wait(250);
+
+    // Step 5: summary paragraph
+    const sumP = document.createElement('p');
+    moddyMsg.appendChild(sumP);
+    await streamText(sumP, scenario.summary);
+    if (abortStream) return finishStream(moddyMsg);
+
+    // Step 6: follow-up actions
+    if (scenario.followups && scenario.followups.length) {
+      await wait(150);
+      const fa = document.createElement('div');
+      fa.className = 'followup-actions';
+      scenario.followups.forEach(f => {
+        const btn = document.createElement('button');
+        btn.className = 'followup';
+        btn.textContent = f.label;
+        btn.onclick = () => submitPrompt(f.value);
+        fa.appendChild(btn);
+      });
+      moddyMsg.appendChild(fa);
+      scrollToBottom();
+    }
+
+    finishStream(moddyMsg);
+  }
+
+  function finishStream(moddyMsg) {
+    isBusy = false;
+    abortStream = false;
+    promptGradient.classList.remove('disabled');
+    updateSendButton();
+    // Remove any leftover cursor
+    moddyMsg.querySelectorAll('.typing-cursor').forEach(c => c.remove());
+    promptInput.focus();
+  }
+
+  async function streamText(el, text) {
+    // Render lightweight bold markdown (**text**)
+    const tokens = parseInlineMarkdown(text);
+    const cursor = document.createElement('span');
+    cursor.className = 'typing-cursor';
+    el.appendChild(cursor);
+
+    for (const tok of tokens) {
+      if (abortStream) { cursor.remove(); return; }
+      const node = tok.bold ? document.createElement('strong') : document.createTextNode('');
+      if (tok.bold) {
+        el.insertBefore(node, cursor);
+        await typeInto(node, tok.text);
+      } else {
+        // Type into a text node by progressively setting nodeValue
+        el.insertBefore(node, cursor);
+        await typeInto(node, tok.text);
+      }
+    }
+    cursor.remove();
+    scrollToBottom();
+  }
+
+  async function typeInto(node, text) {
+    // Type in small chunks for natural feel
+    const chunkSize = 3;
+    let i = 0;
+    while (i < text.length) {
+      if (abortStream) {
+        if (node.nodeType === Node.TEXT_NODE) node.nodeValue = text;
+        else node.textContent = text;
+        return;
+      }
+      i = Math.min(i + chunkSize, text.length);
+      const slice = text.slice(0, i);
+      if (node.nodeType === Node.TEXT_NODE) node.nodeValue = slice;
+      else node.textContent = slice;
+      scrollToBottom();
+      await wait(14);
+    }
+  }
+
+  function parseInlineMarkdown(text) {
+    const parts = [];
+    const re = /\*\*([^*]+)\*\*/g;
+    let last = 0; let m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) parts.push({ text: text.slice(last, m.index), bold: false });
+      parts.push({ text: m[1], bold: true });
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) parts.push({ text: text.slice(last), bold: false });
+    return parts;
+  }
+
+  function highlightCode(code, hl) {
+    if (!hl) return escapeHtml(code);
+    const esc = escapeHtml(code);
+    const escHl = escapeHtml(hl);
+    // Escape regex special chars in highlight string
+    const safe = escHl.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+    return esc.replace(new RegExp(safe, 'g'), m => `<mark>${m}</mark>`);
+  }
+
+  function formatShellArg(s) {
+    // Single-quote unless single-quotes appear, in which case use double quotes with escaping
+    if (s.includes("'")) return '"' + escapeHtml(s.replace(/"/g, '\\"')) + '"';
+    return "'" + escapeHtml(s) + "'";
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // Focus input on load
+  promptInput.focus();
+</script>
+</body>
+</html>
