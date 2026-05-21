@@ -852,7 +852,8 @@
     flex: 1; border: none; outline: none; resize: none;
     font-family: inherit; font-size: 15px; color: var(--grey-700);
     background: transparent; padding: 8px 0;
-    max-height: 240px; line-height: 1.5;
+    height: 24px; line-height: 1.5;
+    overflow-y: auto;
   }
   .prompt-input::placeholder { color: var(--grey-300); opacity: 1; }
   .send-btn {
@@ -1951,10 +1952,7 @@
     if (typeof closeDetail === 'function') closeDetail();
   }
 
-  function autoSize() {
-    promptInput.style.height = 'auto';
-    promptInput.style.height = Math.min(promptInput.scrollHeight, 240) + 'px';
-  }
+  function autoSize() { /* fixed input height — no-op */ }
 
   function updateSendButton() {
     const iconId = sendBtn.id === 'send-btn-2' ? 'send-icon-2' : 'send-icon';
