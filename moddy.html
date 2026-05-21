@@ -390,11 +390,12 @@
   .moderne-history-reopen:hover { background: var(--grey-25); }
   .moderne-history-reopen svg { width: 16px; height: 16px; }
 
-  /* Inner Moddy app: now sized to the page container, not the viewport */
+  /* Inner Moddy app — fixed width so the chat column doesn't expand/contract */
   .app {
     display: flex; flex-direction: column;
     height: 100%;
-    max-width: 900px;
+    width: 720px;
+    flex: 0 0 720px;
     margin: 0 auto;
     padding: 0 24px;
     min-height: 0;
@@ -453,11 +454,11 @@
   /* Main content area */
   .main { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; }
 
-  /* Greeter */
+  /* Greeter — fills .app's fixed width */
   .greeter {
     flex: 1; display: flex; flex-direction: column; align-items: center;
     padding: 56px 0 16px; gap: 20px;
-    max-width: 676px; width: 100%; margin: 0 auto;
+    width: 100%; margin: 0 auto;
   }
   /* Moderne M logo (from moderne-ui/public/moderne-icon.svg) — replaces the conic spinner */
   .greeter-logo {
@@ -867,6 +868,8 @@
   .send-btn.stop { background: var(--neo-red); }
 
   .prompt-hint { font-size: 11px; color: var(--grey-300); text-align: center; margin-top: 8px; }
+  /* Neo typography/body-secondary (#6b7280 = grey-500) */
+  .prompt-footnote { font-size: 11px; color: var(--grey-500); text-align: left; margin-top: 8px; }
 
   /* Org display inside the gradient prompt box — Moddy SaaS format (violet text) */
   .org-display {
@@ -1274,6 +1277,7 @@
             <span class="org-text">Organization: Open Source&nbsp;&nbsp;|&nbsp;&nbsp;Repositories: 25 repos</span>
           </div>
         </div>
+        <div class="prompt-footnote">Moddy v2 · Trigrep enabled</div>
       </div>
 
       <!-- Suggestions list -->
@@ -1298,7 +1302,7 @@
           </button>
         </div>
       </div>
-      <div class="prompt-hint">Enter to send · Shift+Enter for newline</div>
+      <div class="prompt-footnote">Moddy v2 · Trigrep enabled</div>
     </div>
 
     <!-- AI disclaimer (matches ModdyDisclaimer) -->
@@ -2413,6 +2417,10 @@
     document.querySelectorAll('.file-group.is-active').forEach(el => el.classList.remove('is-active'));
     fgEl.classList.add('is-active');
     activeFileGroup = fgEl;
+    // Auto-collapse history pane to make room for the detail sidebar
+    // (chat column is fixed-width and shouldn't shrink)
+    const hp = document.getElementById('historyPane');
+    if (hp && !hp.classList.contains('collapsed')) hp.classList.add('collapsed');
 
     // header
     const parts = file.path.split('/');
