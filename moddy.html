@@ -6,45 +6,432 @@
 <title>Moddy — Trigrep search prototype</title>
 <style>
   :root {
-    --grey-50: #edeeef;
-    --grey-100: #c6c9cd;
-    --grey-300: #838a93;
-    --grey-500: #46505e;
-    --grey-600: #404956;
-    --grey-700: #323943;
-    --grey-800: #272c34;
-    --grey-900: #1d2227;
-    --grey-25: #f7f7f8;
+    /* === Neo grey palette (from @moderneinc/neo-design colors.grey) === */
+    --grey-25: #f9fafb;   /* neo grey.50 */
+    --grey-50: #f3f4f6;   /* neo grey.100 — page bg */
+    --grey-100: #e5e7eb;  /* neo grey.200 */
+    --grey-200: #d1d5db;  /* neo grey.300 */
+    --grey-300: #9ca3af;  /* neo grey.400 — muted text */
+    --grey-500: #6b7280;  /* neo grey.500 */
+    --grey-600: #4b5563;  /* neo grey.600 */
+    --grey-700: #374151;  /* neo grey.700 — body text */
+    --grey-800: #1f2937;  /* neo grey.800 */
+    --grey-900: #111827;  /* neo grey.900 — strong text */
     --bg: #ffffff;
 
+    /* === Neo functional tokens === */
+    --neo-digital-blue-300: #8d99ff;  /* Beta badge bg */
+    --neo-digital-blue-500: #2f42ff;
+    --neo-red-50: #ffedef;            /* top-nav gradient glow */
+    --neo-red-500: #cb3446;
+
+    /* === Moderne brand colors (used in Moddy logo + prompt border — not Neo functional tokens) === */
     --neo-red: #FF3232;
     --roseate: #DB4197;
     --violet: #461DDE;
     --digital-blue: #2F42FF;
     --digital-green: #3DDC84;
 
+    /* === Code search-specific tokens (not Neo by design) === */
     --highlight: #FFE9A8;
     --highlight-text: #8a5d00;
+    --java-dot: #e76f00;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; }
   body {
-    background: var(--bg);
+    background: var(--grey-50);
     color: var(--grey-700);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.55;
+    overflow: hidden;
   }
-  .mono { font-family: 'SF Mono', 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace; }
+  .mono { font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; }
 
-  .app { display: flex; flex-direction: column; height: 100vh; max-width: 900px; margin: 0 auto; padding: 0 24px; }
+  /* ===== Moderne UI chrome (mimics moderne-ui/components/layout) ===== */
+  .moderne-shell {
+    background: var(--grey-50);
+    height: 100vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .moderne-grid {
+    display: grid;
+    grid-template-columns: 82px 1fr;
+    flex: 1;
+    overflow: hidden;
+    gap: 8px;
+  }
+  @media (max-width: 1199px) {
+    .moderne-grid { grid-template-columns: 1fr; }
+    .moderne-leftnav { display: none; }
+  }
 
-  /* Header */
+  /* Left navigation rail — Neo SideNav spec (node 4065:3425 / 14232:1485) */
+  .moderne-leftnav {
+    width: 82px;
+    background: var(--grey-50);
+    padding: 12px 0 8px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .moderne-leftnav-home {
+    width: 40px; height: 40px;
+    margin: 0 auto 12px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--grey-900);
+    transition: background 0.15s ease;
+  }
+  .moderne-leftnav-home:hover { background: var(--grey-100); }
+  .moderne-leftnav-home svg { width: 24px; height: 24px; }
+  .moderne-leftnav-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 6px;
+    display: flex; flex-direction: column; gap: 6px;
+    list-style: none;
+  }
+  .moderne-leftnav-list::-webkit-scrollbar { width: 0; }
+  /* Neo Navigation Item: icon sits inside its own rounded square, label below */
+  .moderne-leftnav-item {
+    border: none; background: transparent;
+    width: 100%;
+    padding: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--grey-900);
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: none;
+    position: relative;
+  }
+  .moderne-leftnav-icon-box {
+    width: 40px; height: 32px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--grey-900);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .moderne-leftnav-icon-box svg { width: 22px; height: 22px; }
+  .moderne-leftnav-item:hover .moderne-leftnav-icon-box { background: var(--grey-100); }
+  /* Selected: light gray pill behind the icon (per Moddy SaaS design) */
+  .moderne-leftnav-item.active .moderne-leftnav-icon-box {
+    background: var(--grey-100);
+    color: var(--grey-900);
+  }
+  .moderne-leftnav-item.active .moderne-leftnav-item-label {
+    color: var(--grey-900);
+    font-weight: 600;
+  }
+  .moderne-leftnav-item-label {
+    font-size: 11px;
+    color: var(--grey-900);
+    text-align: center;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  .moderne-leftnav-badge {
+    font-size: 9px;
+    line-height: 1;
+    font-weight: 600;
+    background: var(--neo-digital-blue-300);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 50px;
+    margin-top: 2px;
+  }
+  .moderne-leftnav-more {
+    margin: 0;
+    width: 100%;
+    color: var(--grey-900);
+  }
+  /* Customer branding placeholder at the bottom of the side nav (per Moddy SaaS design — gray square) */
+  .moderne-leftnav-branding {
+    margin: 12px auto 8px;
+    width: 38px; height: 38px;
+    background: var(--grey-100);
+    border-radius: 6px;
+  }
+
+  /* Right column = top nav + page */
+  .moderne-content-col {
+    display: flex; flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* Top navigation bar (65px height with red radial gradient glow) */
+  .moderne-topnav {
+    height: 65px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    background: var(--grey-50);
+  }
+  .moderne-topnav-glow { display: none; } /* Removed per Moddy SaaS design — gray bg only */
+  .moderne-topnav-brand {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    color: var(--grey-900);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+    flex-shrink: 0;
+  }
+  .moderne-topnav-brand:hover { background: var(--grey-100); }
+  .moderne-topnav-brand svg { width: 24px; height: 24px; }
+  .moderne-topnav-inner {
+    position: relative; z-index: 1;
+    height: 100%;
+    padding: 12px 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  /* Neo Top Nav — pill-shaped containers with subtle shadow (node 4618:185228) */
+  .moderne-org-selector {
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    padding: 7px 14px 7px 12px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--grey-900);
+    cursor: pointer;
+    font-weight: 500;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    min-width: 200px;
+  }
+  .moderne-org-selector:hover { border-color: var(--grey-200); }
+  .moderne-org-selector svg.chev { width: 14px; height: 14px; color: var(--grey-500); margin-left: auto; }
+  .moderne-org-selector .org-icon {
+    width: 18px; height: 18px;
+    color: var(--grey-700);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .moderne-org-selector .org-icon svg { width: 16px; height: 16px; }
+  .moderne-topnav-spacer { flex: 1; }
+  .moderne-global-search {
+    width: 360px;
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-radius: 999px;
+    padding: 7px 14px;
+    color: var(--grey-500);
+    font-size: 13px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  @media (max-width: 1180px) { .moderne-global-search { width: 240px; } }
+  @media (max-width: 1000px) { .moderne-global-search { display: none; } }
+  .moderne-global-search > svg.search-icon { width: 14px; height: 14px; color: var(--grey-500); flex-shrink: 0; }
+  .moderne-global-search .search-placeholder { flex: 1; color: var(--grey-500); }
+  .moderne-global-search .kbd-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 1px 5px;
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    border-radius: 4px;
+    color: var(--grey-500);
+    flex-shrink: 0;
+  }
+  .moderne-global-search > svg.chev { width: 12px; height: 12px; color: var(--grey-500); flex-shrink: 0; }
+  .moderne-topnav-actions { display: flex; gap: 8px; align-items: center; }
+  /* Neo NavIconButton — pill-shaped white container */
+  .moderne-topnav-action {
+    width: 36px; height: 36px;
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    border-radius: 999px;
+    color: var(--grey-700);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .moderne-topnav-action:hover { border-color: var(--grey-200); background: var(--grey-25); }
+  .moderne-topnav-action svg { width: 16px; height: 16px; }
+  .moderne-user-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #c5b3e8; /* lavender per Moddy SaaS design */
+    color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    margin-left: 0;
+    border: none;
+  }
+
+  /* Page content container (rounded white box; flex row holds history + chat + optional detail sidebar) */
+  .moderne-page {
+    flex: 1;
+    background: var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    min-height: 0;
+    position: relative;
+    display: flex;
+  }
+
+  /* History pane (Moddy SaaS frame 2:2086) */
+  .moderne-history {
+    width: 256px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--grey-50);
+    display: flex; flex-direction: column;
+    background: #fff;
+    transition: width 200ms ease, opacity 150ms ease;
+    overflow: hidden;
+  }
+  .moderne-history.collapsed { width: 0; opacity: 0; }
+  .moderne-history-head {
+    padding: 18px 16px 6px;
+    display: flex; flex-direction: column; gap: 6px;
+    flex-shrink: 0;
+  }
+  .moderne-history-newchat {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    border: none; background: transparent;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 14px; font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    text-align: left;
+  }
+  .moderne-history-newchat:hover { background: var(--grey-25); }
+  .moderne-history-newchat svg { width: 18px; height: 18px; color: var(--grey-700); flex-shrink: 0; }
+
+  .moderne-history-title {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 14px; font-weight: 500;
+    border-radius: 8px;
+  }
+  .moderne-history-title .history-icon {
+    width: 18px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--neo-digital-blue-500);
+    flex-shrink: 0;
+  }
+  .moderne-history-title .history-icon svg { width: 16px; height: 16px; }
+  .moderne-history-title-label { flex: 1; }
+  .moderne-history-collapse {
+    border: none; background: transparent;
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    color: var(--grey-500);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .moderne-history-collapse:hover { background: var(--grey-100); color: var(--grey-700); }
+  .moderne-history-collapse svg { width: 14px; height: 14px; }
+
+  .moderne-history-list {
+    flex: 1; overflow-y: auto;
+    padding: 0 8px 16px;
+  }
+  .moderne-history-list::-webkit-scrollbar { width: 6px; }
+  .moderne-history-list::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 3px; }
+  .moderne-history-section-label {
+    padding: 14px 12px 4px;
+    font-size: 12px; font-weight: 500;
+    color: var(--grey-500);
+  }
+  .moderne-history-item {
+    display: block; width: 100%;
+    text-align: left;
+    border: none; background: transparent;
+    padding: 7px 10px;
+    border-radius: 8px;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+  .moderne-history-item:hover { background: var(--grey-25); }
+  .moderne-history-item.active { background: var(--grey-100); }
+
+  /* Floating "open history" button shown when history pane is collapsed */
+  .moderne-history-reopen {
+    position: absolute;
+    top: 12px; left: 12px;
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    color: var(--grey-700);
+    cursor: pointer;
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 2;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .moderne-history.collapsed ~ .moderne-history-reopen { display: inline-flex; }
+  .moderne-history-reopen:hover { background: var(--grey-25); }
+  .moderne-history-reopen svg { width: 16px; height: 16px; }
+
+  /* Inner Moddy app: now sized to the page container, not the viewport */
+  .app {
+    display: flex; flex-direction: column;
+    height: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    min-height: 0;
+  }
+
+  /* State switcher (testing tool only) */
+  .state-switcher {
+    display: flex; gap: 4px;
+    background: var(--grey-25); border: 1px solid var(--grey-50);
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .state-switcher button {
+    border: none; background: transparent;
+    color: var(--grey-500);
+    font-family: inherit; font-size: 12px; font-weight: 500;
+    padding: 5px 12px; border-radius: 999px; cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .state-switcher button:hover { color: var(--grey-700); }
+  .state-switcher button.active {
+    background: #fff;
+    color: var(--violet);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  /* Page header / testing toolbar (state switcher + new conversation) */
   .topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 0;
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 0 14px;
     border-bottom: 1px solid var(--grey-50);
+  }
+  .topbar-test-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--grey-300);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-right: 4px;
   }
   .brand { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--grey-500); font-weight: 600; letter-spacing: 0.02em; }
   .brand-logo {
@@ -68,59 +455,58 @@
 
   /* Greeter */
   .greeter {
-    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 32px 0 16px; gap: 28px;
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    padding: 56px 0 16px; gap: 20px;
     max-width: 676px; width: 100%; margin: 0 auto;
   }
-  .greeter-spinner {
-    width: 135px; height: 135px;
-    background: conic-gradient(from 0deg, var(--neo-red), var(--roseate), var(--violet), var(--digital-blue), var(--digital-green), var(--neo-red));
-    border-radius: 50%;
-    animation: spin 8s linear infinite;
-    position: relative;
-    filter: blur(0.5px);
-    opacity: 0.95;
+  /* Moderne M logo (from moderne-ui/public/moderne-icon.svg) — replaces the conic spinner */
+  .greeter-logo {
+    width: 80px; height: 80px;
+    color: var(--violet);
+    display: inline-flex; align-items: center; justify-content: center;
   }
-  .greeter-spinner::after {
-    content: ''; position: absolute; inset: 12px;
-    background: var(--bg); border-radius: 50%;
-  }
-  .greeter-spinner::before {
-    content: ''; position: absolute; inset: 30px;
-    background: conic-gradient(from 90deg, var(--violet), var(--digital-blue), var(--digital-green), var(--roseate), var(--neo-red), var(--violet));
-    border-radius: 50%;
-    animation: spin 4s linear infinite reverse;
-    z-index: 1;
-    opacity: 0.9;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .greeter-logo svg { width: 100%; height: 100%; }
 
   .greeter-headline {
     text-align: center;
     font-size: 22px; font-weight: 500; color: var(--grey-800);
     line-height: 1.3;
   }
-  .greeter-sub {
-    text-align: center; font-size: 14px; color: var(--grey-300);
-    margin-top: -16px;
-  }
+  /* Suggestions — list rows with bottom dividers (matches production design) */
   .suggestions {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    display: flex; flex-direction: column;
     width: 100%;
+    margin-top: 12px;
   }
-  @media (max-width: 720px) { .suggestions { grid-template-columns: 1fr; } }
   .suggestion {
-    text-align: left; padding: 14px 16px;
-    border: 1px solid var(--grey-50); border-radius: 12px;
-    background: var(--bg); color: var(--grey-600);
-    font-size: 14px; cursor: pointer; transition: all 0.15s;
+    text-align: left;
+    padding: 14px 16px;
+    border: none;
+    border-bottom: 1px solid var(--grey-50);
+    background: transparent;
+    color: var(--grey-700);
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
     line-height: 1.45;
   }
   .suggestion:hover {
-    border-color: var(--grey-100); background: var(--grey-25);
-    color: var(--grey-700);
+    background: var(--grey-25);
+    color: var(--grey-900);
   }
-  .suggestion:focus-visible { outline: 2px solid var(--digital-blue); outline-offset: 2px; }
+  .suggestion:focus-visible { outline: 2px solid var(--digital-blue); outline-offset: -2px; }
+  .suggestion:last-child { border-bottom: none; }
+
+  /* Disclaimer at the bottom of the greeter */
+  .greeter-disclaimer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--grey-300);
+    padding: 20px 16px 16px;
+    line-height: 1.5;
+  }
+  .greeter-disclaimer svg { width: 12px; height: 12px; vertical-align: -1px; margin-right: 4px; color: var(--neo-digital-blue-500); }
 
   /* Conversation */
   .conversation {
@@ -148,12 +534,36 @@
 
   .msg-moddy { display: flex; flex-direction: column; gap: 12px; color: var(--grey-600); font-size: 16px; }
   .msg-moddy p { margin: 0; }
+  .msg-moddy .inline-code {
+    background: var(--grey-25); border: 1px solid var(--grey-50);
+    padding: 0 5px; border-radius: 4px;
+    font-size: 13px; color: var(--violet);
+  }
   .msg-moddy .typing-cursor {
     display: inline-block; width: 7px; height: 16px;
     background: var(--grey-500); margin-left: 2px; vertical-align: text-bottom;
     animation: blink 1s steps(2, start) infinite;
   }
   @keyframes blink { to { visibility: hidden; } }
+
+  /* Progressive load — each appearing section fades up gently */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg-moddy > p,
+  .msg-moddy > .show-steps,
+  .msg-moddy > .toolcall,
+  .msg-moddy > .scope-line,
+  .msg-moddy > .insight,
+  .msg-moddy > .modules-row,
+  .msg-moddy > .results,
+  .msg-moddy > .results > *,
+  .msg-moddy > .followup-actions,
+  .msg-moddy > .zero-card,
+  .msg-moddy > .scoping-options {
+    animation: fadeInUp 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 
   /* Tool call card */
   .toolcall {
@@ -186,6 +596,28 @@
   .toolcall.open .toolcall-chev { transform: rotate(90deg); }
   .toolcall-body { display: none; padding: 12px 14px 14px; }
   .toolcall.open .toolcall-body { display: block; }
+
+  /* "Show steps" link variant of the tool card */
+  .show-steps {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: none; background: transparent;
+    color: var(--grey-500);
+    font-family: inherit; font-size: 13px;
+    padding: 4px 0;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+  .show-steps:hover { color: var(--violet); }
+  .show-steps svg { width: 12px; height: 12px; transition: transform 0.15s ease; }
+  .show-steps.open svg { transform: rotate(90deg); }
+
+  /* Java/language indicator dot on file cards */
+  .lang-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--java-dot, #e76f00);
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(231, 111, 0, 0.15);
+  }
 
   .toolcall-args {
     font-size: 12px; line-height: 1.6;
@@ -237,15 +669,139 @@
     padding: 0 1px; border-radius: 2px;
   }
 
+  /* Scope line (compact metadata under tool call) */
+  .scope-line {
+    font-size: 12px; color: var(--grey-300);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  }
+  .scope-line .scope-sep { color: var(--grey-100); }
+
+  /* Insight callout — actionable one-liner */
+  .insight {
+    border-left: 3px solid var(--violet);
+    background: linear-gradient(90deg, rgba(70,29,222,0.06), rgba(70,29,222,0.0));
+    border-radius: 0 8px 8px 0;
+    padding: 12px 14px;
+    color: var(--grey-800);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .insight strong { color: var(--violet); font-weight: 600; }
+
+  /* Module grouping */
+  .modules-row {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    font-size: 14px; color: var(--grey-600);
+  }
+  .modules-label { font-weight: 600; color: var(--grey-800); margin-right: 4px; }
+  .module-chip {
+    border: 1px solid var(--grey-50); background: #fff;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px; color: var(--grey-600);
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .module-chip:hover { border-color: var(--violet); color: var(--violet); background: rgba(70,29,222,0.04); }
+  .module-chip .count {
+    background: var(--grey-50); color: var(--grey-500);
+    border-radius: 999px; padding: 0 6px; font-size: 11px;
+  }
+  .module-chip:hover .count { background: rgba(70,29,222,0.1); color: var(--violet); }
+
   /* Followup actions */
-  .followup-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .followup-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .followup-actions.stacked { flex-direction: column; align-items: flex-start; gap: 10px; }
   .followup {
     border: 1px solid var(--grey-50); background: #fff;
     border-radius: 8px; padding: 8px 12px;
     font-size: 13px; color: var(--grey-700); cursor: pointer;
     transition: all 0.15s;
+    font-family: inherit;
   }
   .followup:hover { border-color: var(--violet); color: var(--violet); }
+  .followup.primary {
+    background: linear-gradient(135deg, var(--violet), var(--digital-blue));
+    color: #fff; border-color: transparent;
+    padding: 10px 16px; font-size: 14px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 8px;
+    box-shadow: 0 2px 10px rgba(70,29,222,0.18);
+  }
+  .followup.primary:hover {
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(70,29,222,0.28);
+    transform: translateY(-1px);
+  }
+  .followup.primary svg { width: 14px; height: 14px; }
+  .followup.tertiary {
+    border: none; background: transparent;
+    padding: 6px 0; color: var(--grey-500);
+    font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .followup.tertiary:hover { color: var(--violet); background: transparent; }
+  .followup.tertiary svg { width: 12px; height: 12px; }
+
+  /* Zero-results diagnostic card */
+  .zero-card {
+    border: 1px solid var(--grey-50); background: var(--grey-25);
+    border-radius: 12px; padding: 14px 16px;
+  }
+  .zero-title {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 15px; color: var(--grey-800);
+    margin-bottom: 6px;
+  }
+  .zero-title svg { width: 16px; height: 16px; color: #b45309; }
+  .zero-body {
+    color: var(--grey-600); font-size: 14px; line-height: 1.55;
+    margin-bottom: 12px;
+  }
+  .zero-body code, .zero-body .mono {
+    background: #fff; border: 1px solid var(--grey-50);
+    padding: 0 5px; border-radius: 4px; font-size: 13px;
+    color: var(--violet);
+  }
+  .zero-suggestions { display: flex; flex-direction: column; gap: 8px; }
+  .zero-suggestion {
+    text-align: left; background: #fff; border: 1px solid var(--grey-50);
+    border-radius: 8px; padding: 10px 12px;
+    font-family: inherit; font-size: 13px; color: var(--grey-700);
+    cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .zero-suggestion:hover { border-color: var(--violet); color: var(--violet); }
+  .zero-suggestion .label { flex: 1; }
+  .zero-suggestion .hint { color: var(--grey-300); font-size: 12px; }
+  .zero-suggestion:hover .hint { color: var(--violet); }
+  .zero-suggestion svg { width: 14px; height: 14px; color: var(--grey-300); flex-shrink: 0; }
+  .zero-suggestion:hover svg { color: var(--violet); }
+
+  /* Scoping options (agent asks before searching) */
+  .scoping-options { display: flex; flex-direction: column; gap: 8px; }
+  .scoping-option {
+    text-align: left; background: #fff; border: 1px solid var(--grey-50);
+    border-radius: 10px; padding: 12px 14px;
+    font-family: inherit; cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .scoping-option:hover { border-color: var(--violet); background: rgba(70,29,222,0.03); }
+  .scoping-option .scoping-icon {
+    flex-shrink: 0; width: 22px; height: 22px;
+    border-radius: 6px; background: var(--grey-50);
+    color: var(--violet);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .scoping-option .scoping-icon svg { width: 12px; height: 12px; }
+  .scoping-option .body { flex: 1; }
+  .scoping-option strong { display: block; color: var(--grey-800); font-weight: 600; font-size: 14px; }
+  .scoping-option .body .mono {
+    background: var(--grey-50); padding: 0 5px; border-radius: 3px;
+    font-size: 11px; color: var(--violet);
+  }
+  .scoping-option .desc { color: var(--grey-500); font-size: 13px; margin-top: 4px; }
 
   /* Loading state */
   .moddy-thinking {
@@ -311,57 +867,493 @@
 
   .prompt-hint { font-size: 11px; color: var(--grey-300); text-align: center; margin-top: 8px; }
 
+  /* Org display inside the gradient prompt box — Moddy SaaS format (violet text) */
+  .org-display {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 0 16px 12px;
+    color: var(--neo-digital-blue-500);
+    font-size: 13px;
+    cursor: pointer;
+    background: var(--bg);
+    border-radius: 0 0 9px 9px;
+    line-height: 1.5;
+  }
+  .org-display svg {
+    width: 18px; height: 18px; flex-shrink: 0;
+    color: var(--grey-700);
+    margin-top: 2px;
+  }
+  .org-display .org-text { flex: 1; }
+  .prompt-gradient .prompt-inner { border-radius: 9px 9px 0 0; padding-bottom: 6px; }
+
+  /* "+ New Chat" button at the top of the page content (Moddy SaaS) */
+  .page-action-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 0 6px;
+  }
+  .new-chat-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    border-radius: 999px;
+    padding: 6px 14px 6px 10px;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .new-chat-btn:hover { border-color: var(--grey-200); background: var(--grey-25); }
+  .new-chat-btn svg { width: 16px; height: 16px; }
+
   /* Scrollbar */
   .conversation::-webkit-scrollbar { width: 8px; }
   .conversation::-webkit-scrollbar-thumb { background: var(--grey-50); border-radius: 4px; }
   .conversation::-webkit-scrollbar-thumb:hover { background: var(--grey-100); }
+
+  /* Detail sidebar lives alongside the .app inside the moderne-page */
+  /* .app already declared above; size it to fit the page box */
+  /* File cards — Recipe Results-inspired Card pattern with subtle elevation */
+  .file-group {
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  }
+  .file-group:hover {
+    border-color: var(--grey-100);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    transform: translateY(-1px);
+  }
+  .file-group.is-active {
+    border-color: var(--violet);
+    box-shadow: 0 0 0 2px rgba(70, 29, 222, 0.12), 0 2px 8px rgba(70, 29, 222, 0.08);
+    transform: translateY(-1px);
+  }
+  .file-group.is-active .file-header { background: rgba(70, 29, 222, 0.04); }
+
+  /* Detail sidebar — inspired by Recipe Results' right detail pane */
+  .detail-sidebar {
+    width: 0;
+    flex: 0 0 auto;
+    background: #fff;
+    border-left: 1px solid var(--grey-50);
+    overflow: hidden;
+    transition: width 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex; flex-direction: column;
+    box-shadow: rgba(0,0,0,0.05) -2px 0 12px 0;
+  }
+  .detail-sidebar.open {
+    /* Larger detail column, closer to Recipe Results' ~55% detail pane */
+    width: clamp(440px, 52%, 720px);
+  }
+  .detail-header {
+    padding: 14px 16px 0;
+    border-bottom: 1px solid var(--grey-50);
+    display: flex; flex-direction: column;
+    flex-shrink: 0;
+    background: #fff;
+  }
+  .detail-header-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding-bottom: 12px;
+  }
+  .detail-header .lang-dot { margin-top: 6px; }
+  .detail-meta { flex: 1; min-width: 0; }
+  .detail-name {
+    font-size: 14px; font-weight: 600;
+    color: var(--grey-800);
+    overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .detail-path {
+    font-size: 11px; color: var(--grey-300);
+    margin-top: 2px;
+    word-break: break-all;
+  }
+  .detail-badge {
+    background: var(--grey-25); border: 1px solid var(--grey-50);
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 11px; font-weight: 600;
+    color: var(--grey-600);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .detail-close {
+    border: none; background: transparent;
+    color: var(--grey-300);
+    width: 24px; height: 24px; border-radius: 6px;
+    cursor: pointer; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease;
+  }
+  .detail-close:hover { background: var(--grey-50); color: var(--grey-700); }
+  .detail-close svg { width: 14px; height: 14px; }
+
+  /* Detail-header action row — Recipe Results-style file actions */
+  .detail-actions {
+    display: flex; align-items: center; gap: 4px;
+    padding: 0 0 10px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .detail-actions::-webkit-scrollbar { display: none; }
+  .detail-action {
+    border: 1px solid var(--grey-50);
+    background: #fff;
+    color: var(--grey-600);
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-family: inherit;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .detail-action:hover {
+    border-color: var(--grey-200);
+    color: var(--grey-800);
+    background: var(--grey-25);
+  }
+  .detail-action svg { width: 13px; height: 13px; }
+  .detail-action-divider {
+    width: 1px; height: 18px; background: var(--grey-50);
+    margin: 0 2px;
+    flex-shrink: 0;
+  }
+
+  .detail-body {
+    flex: 1; min-height: 0; overflow: auto;
+    padding: 8px 0;
+    background: #fff;
+  }
+  .detail-body::-webkit-scrollbar { width: 8px; }
+  .detail-body::-webkit-scrollbar-thumb { background: var(--grey-50); border-radius: 4px; }
+  .detail-body::-webkit-scrollbar-thumb:hover { background: var(--grey-100); }
+
+  .detail-line {
+    display: grid; grid-template-columns: 52px 1fr;
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 12px; line-height: 1.6;
+    padding: 0 16px 0 0;
+  }
+  .detail-line .ln {
+    color: var(--grey-300);
+    text-align: right;
+    padding-right: 12px;
+    user-select: none;
+    border-right: 1px solid var(--grey-50);
+    margin-right: 14px;
+  }
+  .detail-line .code {
+    color: var(--grey-700);
+    white-space: pre;
+    overflow-x: visible;
+  }
+  .detail-line.is-match {
+    background: rgba(255, 233, 168, 0.18);
+    border-left: 2px solid var(--highlight);
+    padding-left: 0;
+  }
+  .detail-line.is-match .ln {
+    color: var(--highlight-text);
+    font-weight: 600;
+  }
+  .detail-line.is-current-match {
+    background: rgba(255, 233, 168, 0.42);
+    box-shadow: inset 0 0 0 1px rgba(138, 93, 0, 0.25);
+  }
+  .detail-line mark {
+    background: var(--highlight); color: var(--highlight-text);
+    padding: 0 1px; border-radius: 2px;
+  }
+  .detail-empty {
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--grey-300);
+    font-size: 13px;
+  }
 </style>
 </head>
 <body>
+<div class="moderne-shell">
+  <div class="moderne-grid">
+
+    <!-- =========================================================
+         Left navigation rail (mimics moderne-ui LeftNavigation)
+         ========================================================= -->
+    <aside class="moderne-leftnav" aria-label="Primary navigation">
+      <ul class="moderne-leftnav-list">
+        <li>
+          <a href="#" class="moderne-leftnav-item active" title="AI assistant" aria-current="page">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Moddy</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" title="Holistic view of org health">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">DevCenter</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" title="Browse recipes">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Marketplace</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" title="Compose custom recipes">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17a3 3 0 0 0-3-3H3"/><path d="M21 14a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Builder</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" title="Repositories">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20a1 1 0 0 1-1-1V5c0-1.1.9-2 2-2h4a2 2 0 0 1 2 2v14a1 1 0 0 1-1 1z"/><path d="M9 7H5a2 2 0 0 0-2 2v9c0 1.1.9 2 2 2h4"/><path d="M15 20h4a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-4"/><circle cx="12" cy="13" r="1"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Repositories</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" title="Batch Changes">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18 9 4.5a1 1 0 0 1 0 1.79l-9 4.5a2 2 0 0 1-1.66 0l-9-4.5a1 1 0 0 1 0-1.79l9-4.5a2 2 0 0 1 1.66 0z"/><path d="m22 12.21-9.83 4.91a2 2 0 0 1-1.66 0L1 12.21"/><path d="m22 17-9.83 4.91a2 2 0 0 1-1.66 0L1 17"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Batch Changes</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" title="Deploy">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Deploy</span>
+          </a>
+        </li>
+        <li>
+          <button class="moderne-leftnav-item moderne-leftnav-more" title="More">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">More</span>
+          </button>
+        </li>
+      </ul>
+      <div class="moderne-leftnav-branding" title="Customer logo"></div>
+    </aside>
+
+    <!-- =========================================================
+         Right column: top nav + scrollable page container
+         ========================================================= -->
+    <div class="moderne-content-col">
+
+      <!-- Global top navigation bar (Moddy SaaS design) -->
+      <header class="moderne-topnav">
+        <div class="moderne-topnav-inner">
+          <button class="moderne-topnav-brand" title="Moderne home" aria-label="Moderne">
+            <!-- moderne-icon.svg from moderne-ui/public/moderne-icon.svg -->
+            <svg viewBox="0 0 24 24" fill="none"><defs><clipPath id="topnav-brand-clip"><path fill="#fff" d="M1 1h21.32v21.64H1z"/></clipPath></defs><g fill="currentColor" clip-path="url(#topnav-brand-clip)"><path d="M21.68 1.36a.51.51 0 0 0-.57.12l-9 9.14c-.59-5.23-4.97-9.3-10.27-9.3-.14 0-.27.06-.37.16s-.15.23-.15.38v19.97c0 .03 0 .05.01.08 0 .03.01.05.02.08v.02c0 .02.02.03.02.04.01.02.03.05.04.07s.03.04.05.06.04.04.06.05c.02.02.04.03.07.04.01 0 .03.02.04.03h.02c.06.02.12.04.18.04h19.63c.29 0 .52-.24.52-.53V1.85a.54.54 0 0 0-.32-.49zm-.73 1.77v8.16h-8.03zm0 13.14h-8.77v-3.92h8.77zM2.37 20.51v-8.16h8.03l-4.02 4.08-4.02 4.08zm0-18.11c4.71.27 8.49 4.11 8.76 8.89H2.37zm4.75 14.78 4.02-4.08v8.16H3.1zm5.06 4.08v-3.92h8.77v3.92z"/></g></svg>
+          </button>
+          <button class="moderne-org-selector" title="Switch organization">
+            <span class="org-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
+            <span>Open Source</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="moderne-topnav-spacer"></div>
+          <div class="moderne-global-search">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="search-placeholder">Search recipe</span>
+            <span class="kbd-hint">⌘K</span>
+          </div>
+          <div class="moderne-topnav-actions">
+            <button class="moderne-topnav-action" title="Help">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </button>
+            <button class="moderne-topnav-action" title="Settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+            <button class="moderne-user-avatar" title="Anne Rimbach"></button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page content container (rounded white scrollable box) -->
+      <main class="moderne-page">
+
+<!-- Chat history pane (Moddy SaaS frame 2:2086) -->
+<aside class="moderne-history" id="historyPane" aria-label="Chat history">
+  <div class="moderne-history-head">
+    <button class="moderne-history-newchat" onclick="resetConversation()" title="New chat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      New Chat
+    </button>
+    <div class="moderne-history-title">
+      <span class="history-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+      </span>
+      <span class="moderne-history-title-label">History</span>
+      <button class="moderne-history-collapse" onclick="toggleHistory()" title="Collapse history" aria-label="Collapse history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="moderne-history-list">
+    <div class="moderne-history-section-label">Today</div>
+    <button class="moderne-history-item active" onclick="loadHistoryItem(this, 'Find occurrences of the text app')">Find occurrences of the text "app"</button>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'Am I exposed to Log4j vulnerabilities?')">Am I exposed to Log4j vulnerabilities?</button>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'How am I using Apache Commons?')">How am I using Apache Commons?</button>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'What secrets do I have in my code?')">What secrets do I have in my code?</button>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'Upgrade Spring Boot')">Upgrade Spring Boot</button>
+    <div class="moderne-history-section-label">Yesterday</div>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'Which services use the deprecated PaymentGateway?')">Which services use the deprecated PaymentGateway?</button>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'Find unused imports')">Find unused imports across the working set</button>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'Show me classes extending AbstractController')">Show me classes extending AbstractController</button>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'Migrate JUnit 4 tests to JUnit 5')">Migrate JUnit 4 tests to JUnit 5</button>
+    <div class="moderne-history-section-label">Last 7 days</div>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'Find string concatenation inside log statements')">Find string concatenation inside log statements</button>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'Where do we handle null user IDs?')">Where do we handle null user IDs?</button>
+    <button class="moderne-history-item" onclick="loadHistoryItem(this, 'Identify deprecated API calls')">Identify deprecated API calls in payments-service</button>
+  </div>
+</aside>
+<button class="moderne-history-reopen" onclick="toggleHistory()" title="Open history" aria-label="Open history">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+</button>
+
 <div class="app">
   <div class="topbar">
-    <div class="brand">
-      <div class="brand-logo"></div>
-      <span>Moderne / <span class="brand-name">Moddy</span></span>
-    </div>
-    <div class="topbar-actions">
-      <button class="icon-btn" title="New conversation" onclick="resetConversation()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-      </button>
+    <span class="topbar-test-label">Prototype states</span>
+    <div class="state-switcher" role="tablist" aria-label="Prototype states">
+      <button data-state="empty" class="active" onclick="goToState('empty')">Empty</button>
+      <button data-state="results" onclick="goToState('results')">Results</button>
+      <button data-state="zero" onclick="goToState('zero')">Zero results</button>
+      <button data-state="scoping" onclick="goToState('scoping')">Scoping</button>
     </div>
   </div>
 
   <div class="main">
     <!-- Greeter -->
     <div id="greeter" class="greeter">
-      <div class="greeter-spinner"></div>
-      <div class="greeter-headline">Hi Anne, let's work on your code!</div>
-      <div class="greeter-sub">Select a common prompt or type in your request.</div>
+      <div class="greeter-logo" aria-hidden="true">
+        <!-- moderne-icon.svg from moderne-ui/public/moderne-icon.svg -->
+        <svg viewBox="0 0 24 24" fill="none"><defs><clipPath id="greeter-logo-clip"><path fill="#fff" d="M1 1h21.32v21.64H1z"/></clipPath></defs><g fill="currentColor" clip-path="url(#greeter-logo-clip)"><path d="M21.68 1.36a.51.51 0 0 0-.57.12l-9 9.14c-.59-5.23-4.97-9.3-10.27-9.3-.14 0-.27.06-.37.16s-.15.23-.15.38v19.97c0 .03 0 .05.01.08 0 .03.01.05.02.08v.02c0 .02.02.03.02.04.01.02.03.05.04.07s.03.04.05.06.04.04.06.05c.02.02.04.03.07.04.01 0 .03.02.04.03h.02c.06.02.12.04.18.04h19.63c.29 0 .52-.24.52-.53V1.85a.54.54 0 0 0-.32-.49zm-.73 1.77v8.16h-8.03zm0 13.14h-8.77v-3.92h8.77zM2.37 20.51v-8.16h8.03l-4.02 4.08-4.02 4.08zm0-18.11c4.71.27 8.49 4.11 8.76 8.89H2.37zm4.75 14.78 4.02-4.08v8.16H3.1zm5.06 4.08v-3.92h8.77v3.92z"/></g></svg>
+      </div>
+      <div class="greeter-headline">Hi Anne, Let's work on your code!</div>
+
+      <!-- Prompt input moves INTO the greeter (matches production ModdyGreeter / ModdyPrompt layout) -->
+      <div class="prompt-wrap" style="padding: 0; background: none; width: 100%;">
+        <div class="prompt-gradient" id="prompt-gradient">
+          <div class="prompt-inner">
+            <textarea
+              id="prompt-input"
+              class="prompt-input"
+              placeholder="How can I help you?"
+              rows="1"
+            ></textarea>
+            <button id="send-btn" class="send-btn" disabled onclick="handleSendClick()">
+              <svg id="send-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            </button>
+          </div>
+          <!-- ModdyOrganizationDisplay equivalent — Moddy SaaS format -->
+          <div class="org-display">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span class="org-text">Organization: Open Source&nbsp;&nbsp;|&nbsp;&nbsp;Repositories: 25 repos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggestions list -->
       <div class="suggestions" id="suggestions"></div>
     </div>
 
     <!-- Conversation -->
     <div id="conversation" class="conversation hidden"></div>
 
-    <!-- Prompt -->
-    <div class="prompt-wrap">
-      <div class="prompt-gradient" id="prompt-gradient">
+    <!-- Conversation prompt (only shows when conversation is visible) -->
+    <div class="prompt-wrap" id="conversation-prompt-wrap" style="display:none;">
+      <div class="prompt-gradient" id="prompt-gradient-2">
         <div class="prompt-inner">
           <textarea
-            id="prompt-input"
+            id="prompt-input-2"
             class="prompt-input"
-            placeholder="How can I help you?"
+            placeholder="Ask about these results, refine your search, or start fresh"
             rows="1"
           ></textarea>
-          <button id="send-btn" class="send-btn" disabled onclick="handleSendClick()">
-            <svg id="send-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          <button id="send-btn-2" class="send-btn" disabled onclick="handleSendClick2()">
+            <svg id="send-icon-2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
           </button>
         </div>
       </div>
       <div class="prompt-hint">Enter to send · Shift+Enter for newline</div>
     </div>
+
+    <!-- AI disclaimer (matches ModdyDisclaimer) -->
+    <div class="greeter-disclaimer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      AI-generated. Review for clarity, accuracy, and sources before sharing.
+    </div>
   </div>
-</div>
+</div><!-- /.app -->
+
+        <aside class="detail-sidebar" id="detailSidebar" aria-hidden="true">
+          <div class="detail-header">
+            <div class="detail-header-row">
+              <span class="lang-dot"></span>
+              <div class="detail-meta">
+                <div class="detail-name mono" id="detailName"></div>
+                <div class="detail-path" id="detailPath"></div>
+              </div>
+              <span class="detail-badge" id="detailBadge"></span>
+              <button class="detail-close" onclick="closeDetail()" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="detail-actions">
+              <button class="detail-action" id="detailJumpPrev" title="Previous match">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                Prev
+              </button>
+              <button class="detail-action" id="detailJumpNext" title="Next match">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                Next
+              </button>
+              <span class="detail-action-divider"></span>
+              <button class="detail-action" title="Copy path">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy path
+              </button>
+              <button class="detail-action" title="Open on GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                Open
+              </button>
+              <span class="detail-action-divider"></span>
+              <button class="detail-action" title="Add to recipe context">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Pin
+              </button>
+            </div>
+          </div>
+          <div class="detail-body" id="detailBody"></div>
+        </aside>
+
+      </main><!-- /.moderne-page -->
+    </div><!-- /.moderne-content-col -->
+
+  </div><!-- /.moderne-grid -->
+</div><!-- /.moderne-shell -->
 
 <script>
   // ===== Suggestions =====
@@ -394,12 +1386,12 @@
   function renderSuggestions() {
     const el = document.getElementById('suggestions');
     el.innerHTML = '';
-    // Bias toward search-oriented ones to encourage trigrep flow
+    // Suggestions matched to Moddy SaaS Figma design
     const biased = [
-      "Search for usage of Log4j",
-      "Find where deprecated APIs are used",
-      "Detect secrets in my codebase",
-      "Locate unused imports"
+      "Am I exposed to Log4j vulnerabilities?",
+      "How am I using Apache Commons?",
+      "What secrets do I have in my code?",
+      "Upgrade Spring Boot"
     ];
     biased.forEach(s => {
       const b = document.createElement('button');
@@ -413,18 +1405,119 @@
 
   // ===== Faked trigrep scenarios =====
   const SCENARIOS = {
+    scopingAuth: {
+      triggers: ['how is authentication handled', 'authentication handled', 'how is auth', 'how does auth'],
+      mode: 'scoping',
+      intro: "That's a broad question — I can search more effectively if I know a bit more. A few angles:",
+      scopingOptions: [
+        {
+          title: 'Search Java code only',
+          mono: 'lang:java',
+          desc: 'Focuses on backend auth implementations and Spring Security configuration.',
+          icon: 'code',
+          value: 'Search authentication in Java code only'
+        },
+        {
+          title: 'Find Spring Security patterns',
+          mono: 'extends:WebSecurityConfigurerAdapter',
+          desc: 'Uses the LST extends: filter to find security configuration classes directly.',
+          icon: 'shield',
+          value: 'Find classes that extend WebSecurityConfigurerAdapter'
+        },
+        {
+          title: 'Search across all languages',
+          desc: 'Catches JS/TS frontend auth flows alongside backend Java.',
+          icon: 'globe',
+          value: 'Search authentication across all languages'
+        }
+      ],
+      tail: "Or tell me more about what you're looking for and I'll pick the right approach."
+    },
+    zeroReactiveKafka: {
+      triggers: ['reactivekafkaconsumer', 'reactive kafka consumer', 'find usages of reactive'],
+      mode: 'zero',
+      query: 'ReactiveKafkaConsumer',
+      syntax: 'sourcegraph',
+      intro: "I searched for `ReactiveKafkaConsumer` across your working set — checking class references, imports, and type usage.",
+      scope: "Searched 847 repositories in Default organization · 0 matches · 101ms",
+      zero: {
+        title: 'No matches found',
+        body: "Nothing in your working set references <span class='mono'>ReactiveKafkaConsumer</span>. The class may not be present, or the query may need adjusting. I can try a few different angles:",
+        suggestions: [
+          { label: "Search for <span class='mono'>KafkaConsumer</span> more broadly", hint: 'drop the prefix', icon: 'search', value: 'Search for KafkaConsumer instead' },
+          { label: "Check dependency declarations only (<span class='mono'>pom.xml</span>, <span class='mono'>build.gradle</span>)", hint: 'different surface', icon: 'file', value: 'Search for ReactiveKafkaConsumer only in build files' },
+          { label: 'Expand search to all 2,400 repositories', hint: 'widen scope', icon: 'repo', value: 'Expand the ReactiveKafkaConsumer search to all repos' }
+        ]
+      }
+    },
     log4j: {
-      triggers: ['log4j'],
+      triggers: ['log4j', 'log 4j', 'exposed'],
       query: 'org.apache.log4j',
       syntax: 'sourcegraph',
-      intro: "I'll run a trigrep search across your working set for Log4j usage. Trigrep is index-backed, so this scans the whole repo in well under a second.",
-      summary: "Found **15 matches across 6 files**. Most usages are in older modules; a couple are in your shared `logging` utility which means upgrading there would cover the bulk of callers.",
+      highlight: 'log4j',
+      intro: "I searched for `org.apache.log4j` across your working set to find direct code references — this catches import statements and direct API usage. Want me to also check dependency declarations in `pom.xml` and `build.gradle` files?",
+      scope: "Searched 847 repositories in Default organization · 15 matches · 6 files · 101ms",
+      insight: "Log4j is concentrated in <strong>4 older modules</strong> — upgrading your shared <strong>common-logging</strong> utility covers most callers.",
+      modules: [
+        { name: 'payments-service', count: 5 },
+        { name: 'common-logging', count: 3 },
+        { name: 'inventory-service', count: 5 },
+        { name: 'legacy-batch', count: 2 }
+      ],
       files: [
         {
           path: 'payments-service/src/main/java/com/acme/payments/PaymentProcessor.java',
           matches: [
             { line: 12, code: 'import org.apache.log4j.Logger;', hl: 'org.apache.log4j' },
             { line: 23, code: '    private static final Logger log = Logger.getLogger(PaymentProcessor.class);', hl: 'Logger' }
+          ],
+          content: [
+            'package com.acme.payments;',
+            '',
+            'import java.math.BigDecimal;',
+            'import java.util.UUID;',
+            'import javax.inject.Inject;',
+            '',
+            'import com.acme.payments.dto.PaymentRequest;',
+            'import com.acme.payments.dto.PaymentResult;',
+            'import com.acme.payments.gateway.StripeGateway;',
+            'import com.acme.common.tx.Transactional;',
+            '',
+            'import org.apache.log4j.Logger;',
+            '',
+            '/**',
+            ' * Charges credit cards via Stripe.',
+            ' * Used by checkout and subscription renewal flows.',
+            ' */',
+            'public class PaymentProcessor {',
+            '',
+            '    private final StripeGateway gateway;',
+            '    private final PaymentRepository repo;',
+            '',
+            '    private static final Logger log = Logger.getLogger(PaymentProcessor.class);',
+            '',
+            '    @Inject',
+            '    public PaymentProcessor(StripeGateway gateway, PaymentRepository repo) {',
+            '        this.gateway = gateway;',
+            '        this.repo = repo;',
+            '    }',
+            '',
+            '    @Transactional',
+            '    public PaymentResult charge(PaymentRequest req) {',
+            '        log.info("Processing charge for " + req.getCustomerId());',
+            '        try {',
+            '            return gateway.charge(req);',
+            '        } catch (RetryableError e) {',
+            '            log.warn("Retryable error, will retry", e);',
+            '            throw e;',
+            '        }',
+            '    }',
+            '',
+            '    public PaymentResult capture(UUID authId) {',
+            '        log.info("Capturing auth " + authId);',
+            '        return gateway.capture(authId);',
+            '    }',
+            '}'
           ]
         },
         {
@@ -433,6 +1526,59 @@
             { line: 9,  code: 'import org.apache.log4j.Logger;', hl: 'org.apache.log4j' },
             { line: 18, code: '    private static final Logger log = Logger.getLogger(RefundService.class);', hl: 'Logger' },
             { line: 47, code: '            log.error("Refund failed for txn=" + txnId, e);', hl: 'log.error' }
+          ],
+          content: [
+            'package com.acme.payments;',
+            '',
+            'import java.math.BigDecimal;',
+            'import java.util.UUID;',
+            'import javax.inject.Inject;',
+            '',
+            'import com.acme.payments.dto.RefundRequest;',
+            '',
+            'import org.apache.log4j.Logger;',
+            '',
+            '/**',
+            ' * Issues refunds against authorized payments.',
+            ' */',
+            'public class RefundService {',
+            '',
+            '    private final StripeGateway gateway;',
+            '',
+            '    private static final Logger log = Logger.getLogger(RefundService.class);',
+            '',
+            '    @Inject',
+            '    public RefundService(StripeGateway gateway) {',
+            '        this.gateway = gateway;',
+            '    }',
+            '',
+            '    public boolean refund(RefundRequest req) {',
+            '        log.info("Refund requested for txn=" + req.getTxnId());',
+            '        try {',
+            '            gateway.refund(req.getTxnId(), req.getAmount());',
+            '            return true;',
+            '        } catch (NotFoundError e) {',
+            '            log.warn("Transaction not found: " + req.getTxnId());',
+            '            return false;',
+            '        } catch (Exception e) {',
+            '            log.error("Refund failed for txn=" + req.getTxnId(), e);',
+            '            return false;',
+            '        }',
+            '    }',
+            '',
+            '    public boolean partialRefund(UUID txnId, BigDecimal amount) {',
+            '        if (amount.signum() <= 0) {',
+            '            throw new IllegalArgumentException("Amount must be positive");',
+            '        }',
+            '        try {',
+            '            gateway.refund(txnId, amount);',
+            '            return true;',
+            '        } catch (Exception e) {',
+            '            log.error("Refund failed for txn=" + txnId, e);',
+            '            return false;',
+            '        }',
+            '    }',
+            '}'
           ]
         },
         {
@@ -441,6 +1587,44 @@
             { line: 5,  code: 'import org.apache.log4j.PropertyConfigurator;', hl: 'org.apache.log4j' },
             { line: 6,  code: 'import org.apache.log4j.LogManager;', hl: 'org.apache.log4j' },
             { line: 22, code: '        PropertyConfigurator.configure("log4j.properties");', hl: 'log4j.properties' }
+          ],
+          content: [
+            'package com.acme.logging;',
+            '',
+            'import java.io.File;',
+            '',
+            'import org.apache.log4j.PropertyConfigurator;',
+            'import org.apache.log4j.LogManager;',
+            '',
+            'import javax.annotation.PostConstruct;',
+            '',
+            '/**',
+            ' * Wires Log4j configuration from properties files at startup.',
+            ' * Shared across all backend services.',
+            ' */',
+            'public class LogConfig {',
+            '',
+            '    private static final String DEFAULT_CONFIG = "log4j.properties";',
+            '',
+            '    @PostConstruct',
+            '    public void init() {',
+            '        File f = new File(System.getProperty("user.dir"), DEFAULT_CONFIG);',
+            '        if (f.exists()) {',
+            '            PropertyConfigurator.configure("log4j.properties");',
+            '        } else {',
+            '            LogManager.getRootLogger().info("Using default log4j config");',
+            '        }',
+            '    }',
+            '',
+            '    public void reload() {',
+            '        LogManager.resetConfiguration();',
+            '        init();',
+            '    }',
+            '',
+            '    public void shutdown() {',
+            '        LogManager.shutdown();',
+            '    }',
+            '}'
           ]
         },
         {
@@ -449,6 +1633,53 @@
             { line: 34, code: '    <groupId>log4j</groupId>', hl: 'log4j' },
             { line: 35, code: '    <artifactId>log4j</artifactId>', hl: 'log4j' },
             { line: 36, code: '    <version>1.2.17</version>', hl: '1.2.17' }
+          ],
+          content: [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<project xmlns="http://maven.apache.org/POM/4.0.0">',
+            '  <modelVersion>4.0.0</modelVersion>',
+            '',
+            '  <groupId>com.acme</groupId>',
+            '  <artifactId>inventory-service</artifactId>',
+            '  <version>2.3.1</version>',
+            '  <packaging>jar</packaging>',
+            '',
+            '  <parent>',
+            '    <groupId>com.acme</groupId>',
+            '    <artifactId>acme-parent</artifactId>',
+            '    <version>1.4.0</version>',
+            '  </parent>',
+            '',
+            '  <dependencies>',
+            '    <dependency>',
+            '      <groupId>org.springframework.boot</groupId>',
+            '      <artifactId>spring-boot-starter-web</artifactId>',
+            '    </dependency>',
+            '',
+            '    <dependency>',
+            '      <groupId>org.springframework.boot</groupId>',
+            '      <artifactId>spring-boot-starter-data-jpa</artifactId>',
+            '    </dependency>',
+            '',
+            '    <dependency>',
+            '      <groupId>com.acme</groupId>',
+            '      <artifactId>common-logging</artifactId>',
+            '    </dependency>',
+            '',
+            '    <!-- legacy logging — flagged for upgrade -->',
+            '    <dependency>',
+            '      <groupId>log4j</groupId>',
+            '      <artifactId>log4j</artifactId>',
+            '      <version>1.2.17</version>',
+            '    </dependency>',
+            '',
+            '    <dependency>',
+            '      <groupId>org.junit.jupiter</groupId>',
+            '      <artifactId>junit-jupiter</artifactId>',
+            '      <scope>test</scope>',
+            '    </dependency>',
+            '  </dependencies>',
+            '</project>'
           ]
         },
         {
@@ -456,6 +1687,43 @@
           matches: [
             { line: 8,  code: 'import org.apache.log4j.Logger;', hl: 'org.apache.log4j' },
             { line: 19, code: '    private static final Logger log = Logger.getLogger(StockChecker.class);', hl: 'Logger' }
+          ],
+          content: [
+            'package com.acme.inventory;',
+            '',
+            'import java.util.List;',
+            '',
+            'import com.acme.inventory.dto.StockLevel;',
+            'import com.acme.inventory.repo.StockRepository;',
+            '',
+            'import org.apache.log4j.Logger;',
+            '',
+            'import javax.inject.Inject;',
+            '',
+            '/**',
+            ' * Periodic check that re-orders are triggered when stock falls below',
+            ' * the minimum threshold per SKU.',
+            ' */',
+            'public class StockChecker {',
+            '',
+            '    private final StockRepository repo;',
+            '    private static final Logger log = Logger.getLogger(StockChecker.class);',
+            '',
+            '    @Inject',
+            '    public StockChecker(StockRepository repo) {',
+            '        this.repo = repo;',
+            '    }',
+            '',
+            '    public void run() {',
+            '        List<StockLevel> low = repo.findLowStock();',
+            '        for (StockLevel s : low) {',
+            '            log.info("Low stock: sku=" + s.getSku() + " qty=" + s.getQty());',
+            '            if (s.getQty() == 0) {',
+            '                log.warn("Out of stock: " + s.getSku());',
+            '            }',
+            '        }',
+            '    }',
+            '}'
           ]
         },
         {
@@ -463,12 +1731,25 @@
           matches: [
             { line: 1, code: 'log4j.rootLogger=INFO, console', hl: 'log4j' },
             { line: 5, code: 'log4j.appender.console=org.apache.log4j.ConsoleAppender', hl: 'log4j' }
+          ],
+          content: [
+            'log4j.rootLogger=INFO, console',
+            '',
+            'log4j.appender.console.layout=org.apache.log4j.PatternLayout',
+            'log4j.appender.console.layout.ConversionPattern=%d [%t] %-5p %c - %m%n',
+            'log4j.appender.console=org.apache.log4j.ConsoleAppender',
+            '',
+            '# Quieter logging for noisy frameworks',
+            'log4j.logger.org.hibernate=WARN',
+            'log4j.logger.org.springframework=WARN',
+            'log4j.logger.com.acme.batch=DEBUG'
           ]
         }
       ],
       followups: [
-        { label: 'Migrate Log4j 1.x → SLF4J', value: 'Run a recipe to migrate Log4j 1.x to SLF4J across these files' },
-        { label: 'Show me the legacy-batch matches first', value: 'Show me only the legacy-batch matches' }
+        { label: 'Run recipe: Migrate Log4j 1.x → SLF4J', value: 'Run a recipe to migrate Log4j 1.x to SLF4J across these files', kind: 'primary', icon: 'recipe' },
+        { label: 'Show legacy-batch matches first', value: 'Show me only the legacy-batch matches' },
+        { label: 'Narrow to Spring modules only', value: 'Narrow this search to repos that use Spring', kind: 'tertiary' }
       ]
     },
     deprecated: {
@@ -631,24 +1912,43 @@
   let abortStream = false;
   const conversationEl = document.getElementById('conversation');
   const greeterEl = document.getElementById('greeter');
-  const promptInput = document.getElementById('prompt-input');
-  const sendBtn = document.getElementById('send-btn');
-  const promptGradient = document.getElementById('prompt-gradient');
+  const conversationPromptWrap = document.getElementById('conversation-prompt-wrap');
+  // Active prompt input + send button, swapped depending on whether the greeter or conversation is showing
+  let promptInput = document.getElementById('prompt-input');
+  let sendBtn = document.getElementById('send-btn');
+  let promptGradient = document.getElementById('prompt-gradient');
 
   function showConversation() {
     greeterEl.style.display = 'none';
     conversationEl.classList.remove('hidden');
+    conversationPromptWrap.style.display = '';
+    // Swap to the bottom (conversation) prompt
+    promptInput = document.getElementById('prompt-input-2');
+    sendBtn = document.getElementById('send-btn-2');
+    promptGradient = document.getElementById('prompt-gradient-2');
+    bindActivePrompt();
+  }
+
+  function showGreeter() {
+    greeterEl.style.display = 'flex';
+    conversationEl.classList.add('hidden');
+    conversationPromptWrap.style.display = 'none';
+    // Swap back to the greeter prompt
+    promptInput = document.getElementById('prompt-input');
+    sendBtn = document.getElementById('send-btn');
+    promptGradient = document.getElementById('prompt-gradient');
+    bindActivePrompt();
   }
 
   function resetConversation() {
     abortStream = true;
     conversationEl.innerHTML = '';
-    conversationEl.classList.add('hidden');
-    greeterEl.style.display = 'flex';
+    showGreeter();
     promptInput.value = '';
     autoSize();
     updateSendButton();
     renderSuggestions();
+    if (typeof closeDetail === 'function') closeDetail();
   }
 
   function autoSize() {
@@ -657,35 +1957,41 @@
   }
 
   function updateSendButton() {
+    const iconId = sendBtn.id === 'send-btn-2' ? 'send-icon-2' : 'send-icon';
     if (isBusy) {
       sendBtn.disabled = false;
       sendBtn.classList.add('stop');
-      document.getElementById('send-icon').outerHTML = '<svg id="send-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+      document.getElementById(iconId).outerHTML = `<svg id="${iconId}" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
     } else {
       sendBtn.classList.remove('stop');
       const hasText = promptInput.value.trim().length > 0;
       sendBtn.disabled = !hasText;
-      document.getElementById('send-icon').outerHTML = '<svg id="send-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+      document.getElementById(iconId).outerHTML = `<svg id="${iconId}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>`;
     }
   }
 
-  promptInput.addEventListener('input', () => { autoSize(); updateSendButton(); });
-  promptInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      if (!isBusy && promptInput.value.trim()) submitPrompt(promptInput.value.trim());
-      else if (isBusy) stopStreaming();
-    }
-  });
+  function bindActivePrompt() {
+    promptInput.oninput = () => { autoSize(); updateSendButton(); };
+    promptInput.onkeydown = (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (!isBusy && promptInput.value.trim()) submitPrompt(promptInput.value.trim());
+        else if (isBusy) stopStreaming();
+      }
+    };
+  }
+  bindActivePrompt();
 
   function handleSendClick() {
     if (isBusy) stopStreaming();
     else if (promptInput.value.trim()) submitPrompt(promptInput.value.trim());
   }
+  function handleSendClick2() { handleSendClick(); }
 
   function stopStreaming() { abortStream = true; }
 
   function submitPrompt(text) {
+    if (typeof closeDetail === 'function') closeDetail();
     showConversation();
     appendUserMessage(text);
     promptInput.value = '';
@@ -721,40 +2027,100 @@
     const moddyMsg = document.createElement('div');
     moddyMsg.className = 'msg-moddy';
     conversationEl.appendChild(moddyMsg);
+    const scenario = pickScenario(userText);
 
-    // Step 1: thinking indicator
+    // --- Scoping mode: no search, agent asks first ---
+    if (scenario.mode === 'scoping') {
+      const thinking = document.createElement('div');
+      thinking.className = 'moddy-thinking';
+      thinking.innerHTML = `<span class="thinking-dots"><span></span><span></span><span></span></span><span>Thinking…</span>`;
+      moddyMsg.appendChild(thinking);
+      scrollToBottom();
+      await wait(900);
+      if (abortStream) return finishStream(moddyMsg);
+      thinking.remove();
+
+      const introP = document.createElement('p');
+      moddyMsg.appendChild(introP);
+      await streamText(introP, scenario.intro);
+      if (abortStream) return finishStream(moddyMsg);
+
+      await wait(280);
+      const opts = document.createElement('div');
+      opts.className = 'scoping-options';
+      scenario.scopingOptions.forEach(o => {
+        const btn = document.createElement('button');
+        btn.className = 'scoping-option';
+        btn.innerHTML = `
+          <span class="scoping-icon">${scopingIconSvg(o.icon)}</span>
+          <span class="body">
+            <strong>${escapeHtml(o.title)}${o.mono ? ` <span class="mono">${escapeHtml(o.mono)}</span>` : ''}</strong>
+            <span class="desc">${escapeHtml(o.desc)}</span>
+          </span>
+        `;
+        btn.onclick = () => submitPrompt(o.value);
+        opts.appendChild(btn);
+      });
+      moddyMsg.appendChild(opts);
+      scrollToBottom();
+
+      if (scenario.tail) {
+        await wait(280);
+        const tailP = document.createElement('p');
+        tailP.style.color = 'var(--grey-500)';
+        tailP.style.fontSize = '14px';
+        moddyMsg.appendChild(tailP);
+        await streamText(tailP, scenario.tail);
+      }
+
+      updatePromptPlaceholderForResults();
+      return finishStream(moddyMsg);
+    }
+
+    // --- Search mode (default and zero) ---
     const thinking = document.createElement('div');
     thinking.className = 'moddy-thinking';
-    thinking.innerHTML = `
-      <span class="thinking-dots"><span></span><span></span><span></span></span>
-      <span>Searching your codebase…</span>
-    `;
+    thinking.innerHTML = `<span class="thinking-dots"><span></span><span></span><span></span></span><span>Searching your codebase…</span>`;
     moddyMsg.appendChild(thinking);
     scrollToBottom();
-    await wait(900);
+    await wait(1100);
     if (abortStream) return finishStream(moddyMsg);
-
-    const scenario = pickScenario(userText);
     thinking.remove();
 
-    // Step 2: stream intro paragraph
+    // 1. Intro / query-transparency paragraph
     const introP = document.createElement('p');
     moddyMsg.appendChild(introP);
     await streamText(introP, scenario.intro);
     if (abortStream) return finishStream(moddyMsg);
-    await wait(200);
+    await wait(320);
 
-    // Step 3: tool call card
-    const totalMatches = scenario.files.reduce((s, f) => s + f.matches.length, 0);
+    // 2. Show steps toggle (collapsed tool card)
+    const isFileList = scenario.resultMode === 'file-list';
+    const isZero = scenario.mode === 'zero';
+    const totalMatches = isZero ? 0
+      : (isFileList ? scenario.files.length
+        : (scenario.files || []).reduce((s, f) => s + f.matches.length, 0));
+    const fileCount = isZero ? 0 : (scenario.files || []).length;
     const elapsedMs = 30 + Math.floor(Math.random() * 80);
+
+    const showStepsBtn = document.createElement('button');
+    showStepsBtn.className = 'show-steps';
+    showStepsBtn.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      <span class="show-steps-label">Show steps</span>
+    `;
     const tc = document.createElement('div');
-    tc.className = 'toolcall open';
+    tc.className = 'toolcall';
+    tc.style.display = 'none';
+    const metaLabel = isZero ? `0 matches · ${elapsedMs}ms`
+      : (isFileList ? `${totalMatches} files · ${elapsedMs}ms`
+        : `${totalMatches} matches · ${fileCount} files · ${elapsedMs}ms`);
     tc.innerHTML = `
       <div class="toolcall-header" onclick="this.parentElement.classList.toggle('open')">
         <div class="toolcall-icon">⌕</div>
         <div class="toolcall-name"><span class="mono">trigrep_search</span></div>
         <div class="toolcall-meta">
-          <span>${totalMatches} matches · ${scenario.files.length} files · ${elapsedMs}ms</span>
+          <span>${metaLabel}</span>
           <svg class="toolcall-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </div>
@@ -763,61 +2129,184 @@
           <div><span class="arg-key">query:</span> <span class="arg-str">"${escapeHtml(scenario.query)}"</span></div>
           <div><span class="arg-key">path:</span> <span class="arg-str">"working-set"</span></div>
           <div><span class="arg-key">syntax:</span> <span class="arg-str">"${scenario.syntax || 'sourcegraph'}"</span></div>
-          <div><span class="arg-key">max:</span> <span class="arg-val">50</span></div>
         </div>
         <div class="toolcall-cmd mono">$ mod search working-set ${formatShellArg(scenario.query)}${scenario.syntax && scenario.syntax !== 'sourcegraph' ? ' --syntax ' + scenario.syntax : ''}</div>
-        <div class="results"></div>
       </div>
     `;
+    showStepsBtn.onclick = () => {
+      const opened = showStepsBtn.classList.toggle('open');
+      showStepsBtn.querySelector('.show-steps-label').textContent = opened ? 'Hide steps' : 'Show steps';
+      tc.style.display = opened ? '' : 'none';
+      tc.classList.toggle('open', opened);
+    };
+    moddyMsg.appendChild(showStepsBtn);
     moddyMsg.appendChild(tc);
-    const resultsEl = tc.querySelector('.results');
     scrollToBottom();
-    await wait(150);
+    await wait(260);
 
-    // Step 4: stream file groups one at a time
-    for (const file of scenario.files) {
-      if (abortStream) return finishStream(moddyMsg);
-      const fg = document.createElement('div');
-      fg.className = 'file-group';
-      fg.innerHTML = `
-        <div class="file-header">
-          <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <span class="file-path mono">${escapeHtml(file.path)}</span>
-          <span class="file-count">${file.matches.length} match${file.matches.length === 1 ? '' : 'es'}</span>
-        </div>
-      `;
-      file.matches.forEach(m => {
-        const row = document.createElement('div');
-        row.className = 'match-line';
-        row.innerHTML = `
-          <div class="lineno mono">${m.line}</div>
-          <div class="code mono">${highlightCode(m.code, m.hl)}</div>
-        `;
-        fg.appendChild(row);
-      });
-      resultsEl.appendChild(fg);
+    // 3. Scope line
+    if (scenario.scope) {
+      const sl = document.createElement('div');
+      sl.className = 'scope-line';
+      sl.textContent = scenario.scope;
+      moddyMsg.appendChild(sl);
       scrollToBottom();
-      await wait(180);
+      await wait(260);
+    }
+
+    // --- Zero results: render the diagnostic card and bail ---
+    if (isZero) {
+      const z = scenario.zero;
+      const card = document.createElement('div');
+      card.className = 'zero-card';
+      card.innerHTML = `
+        <div class="zero-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          ${escapeHtml(z.title)}
+        </div>
+        <div class="zero-body">${z.body}</div>
+      `;
+      const suggList = document.createElement('div');
+      suggList.className = 'zero-suggestions';
+      z.suggestions.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'zero-suggestion';
+        btn.innerHTML = `
+          ${zeroIconSvg(s.icon)}
+          <span class="label">${s.label}</span>
+          <span class="hint">${escapeHtml(s.hint)}</span>
+        `;
+        btn.onclick = () => submitPrompt(s.value);
+        suggList.appendChild(btn);
+      });
+      card.appendChild(suggList);
+      moddyMsg.appendChild(card);
+      scrollToBottom();
+      updatePromptPlaceholderForResults();
+      return finishStream(moddyMsg);
+    }
+
+    // 4. Insight callout
+    if (scenario.insight) {
+      await wait(260);
+      const ins = document.createElement('div');
+      ins.className = 'insight';
+      ins.innerHTML = scenario.insight;
+      moddyMsg.appendChild(ins);
+      scrollToBottom();
+    }
+
+    // 5. Module grouping
+    if (scenario.modules && scenario.modules.length) {
+      await wait(220);
+      const mods = document.createElement('div');
+      mods.className = 'modules-row';
+      mods.innerHTML = `<span class="modules-label">${scenario.modules.length} modules affected</span>`;
+      scenario.modules.forEach((m, i) => {
+        if (i > 0) {
+          const sep = document.createElement('span');
+          sep.style.color = 'var(--grey-100)';
+          sep.textContent = '·';
+          mods.appendChild(sep);
+        }
+        const chip = document.createElement('button');
+        chip.className = 'module-chip';
+        chip.innerHTML = `<span>${escapeHtml(m.name)}</span><span class="count">${m.count}</span>`;
+        chip.onclick = () => submitPrompt(`Show only ${m.name} matches`);
+        mods.appendChild(chip);
+      });
+      moddyMsg.appendChild(mods);
+      scrollToBottom();
+    }
+
+    // 6. File result cards (stream in one at a time)
+    if (scenario.files && scenario.files.length) {
+      const resultsEl = document.createElement('div');
+      resultsEl.className = 'results';
+      moddyMsg.appendChild(resultsEl);
+      await wait(220);
+
+      if (isFileList) {
+        const list = document.createElement('div');
+        list.className = 'file-list';
+        resultsEl.appendChild(list);
+        for (const file of scenario.files) {
+          if (abortStream) return finishStream(moddyMsg);
+          const row = document.createElement('div');
+          row.className = 'file-row';
+          row.innerHTML = `
+            <span class="lang-dot"></span>
+            <span class="file-path mono">${escapeHtml(file.path)}</span>
+          `;
+          list.appendChild(row);
+          scrollToBottom();
+          await wait(110);
+        }
+      } else {
+        const fileHighlight = scenario.highlight || (scenario.files[0] && scenario.files[0].matches[0] && scenario.files[0].matches[0].hl) || '';
+        for (const file of scenario.files) {
+          if (abortStream) return finishStream(moddyMsg);
+          const fg = document.createElement('div');
+          fg.className = 'file-group';
+          fg.setAttribute('role', 'button');
+          fg.setAttribute('tabindex', '0');
+          fg.innerHTML = `
+            <div class="file-header">
+              <span class="lang-dot"></span>
+              <span class="file-path mono">${escapeHtml(file.path)}</span>
+              <span class="file-count">${file.matches.length} match${file.matches.length === 1 ? '' : 'es'}</span>
+            </div>
+          `;
+          file.matches.forEach(m => {
+            const row = document.createElement('div');
+            row.className = 'match-line';
+            const symbolBadge = m.symbol
+              ? `<span class="symbol-badge ${m.symbol.kind}">${escapeHtml(m.symbol.kind)}</span>`
+              : '';
+            row.innerHTML = `
+              <div class="lineno mono">${m.line}</div>
+              <div class="code mono">${symbolBadge}${highlightCode(m.code, m.hl)}</div>
+            `;
+            fg.appendChild(row);
+          });
+          fg.onclick = () => toggleDetail(fg, file, scenario.highlight || fileHighlight);
+          fg.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggleDetail(fg, file, scenario.highlight || fileHighlight);
+            }
+          };
+          resultsEl.appendChild(fg);
+          scrollToBottom();
+          await wait(280);
+        }
+      }
     }
 
     if (abortStream) return finishStream(moddyMsg);
-    await wait(250);
+    await wait(320);
 
-    // Step 5: summary paragraph
-    const sumP = document.createElement('p');
-    moddyMsg.appendChild(sumP);
-    await streamText(sumP, scenario.summary);
-    if (abortStream) return finishStream(moddyMsg);
-
-    // Step 6: follow-up actions
+    // 7. Follow-up actions
     if (scenario.followups && scenario.followups.length) {
-      await wait(150);
       const fa = document.createElement('div');
-      fa.className = 'followup-actions';
+      fa.className = 'followup-actions stacked';
       scenario.followups.forEach(f => {
         const btn = document.createElement('button');
-        btn.className = 'followup';
-        btn.textContent = f.label;
+        btn.className = 'followup' + (f.kind ? ' ' + f.kind : '');
+        if (f.kind === 'primary') {
+          btn.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 13 13 17 9 17"/></svg>
+            <span>${escapeHtml(f.label)}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="margin-left:2px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          `;
+        } else if (f.kind === 'tertiary') {
+          btn.innerHTML = `
+            <span>${escapeHtml(f.label)}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          `;
+        } else {
+          btn.textContent = f.label;
+        }
         btn.onclick = () => submitPrompt(f.value);
         fa.appendChild(btn);
       });
@@ -825,6 +2314,7 @@
       scrollToBottom();
     }
 
+    updatePromptPlaceholderForResults();
     finishStream(moddyMsg);
   }
 
@@ -833,13 +2323,11 @@
     abortStream = false;
     promptGradient.classList.remove('disabled');
     updateSendButton();
-    // Remove any leftover cursor
     moddyMsg.querySelectorAll('.typing-cursor').forEach(c => c.remove());
     promptInput.focus();
   }
 
   async function streamText(el, text) {
-    // Render lightweight bold markdown (**text**)
     const tokens = parseInlineMarkdown(text);
     const cursor = document.createElement('span');
     cursor.className = 'typing-cursor';
@@ -847,23 +2335,21 @@
 
     for (const tok of tokens) {
       if (abortStream) { cursor.remove(); return; }
-      const node = tok.bold ? document.createElement('strong') : document.createTextNode('');
-      if (tok.bold) {
-        el.insertBefore(node, cursor);
-        await typeInto(node, tok.text);
-      } else {
-        // Type into a text node by progressively setting nodeValue
-        el.insertBefore(node, cursor);
-        await typeInto(node, tok.text);
-      }
+      let node;
+      if (tok.bold) node = document.createElement('strong');
+      else if (tok.code) {
+        node = document.createElement('code');
+        node.className = 'inline-code mono';
+      } else node = document.createTextNode('');
+      el.insertBefore(node, cursor);
+      await typeInto(node, tok.text);
     }
     cursor.remove();
     scrollToBottom();
   }
 
   async function typeInto(node, text) {
-    // Type in small chunks for natural feel
-    const chunkSize = 3;
+    const chunkSize = 2;
     let i = 0;
     while (i < text.length) {
       if (abortStream) {
@@ -876,20 +2362,198 @@
       if (node.nodeType === Node.TEXT_NODE) node.nodeValue = slice;
       else node.textContent = slice;
       scrollToBottom();
-      await wait(14);
+      await wait(22);
     }
   }
 
+  function renderInline(el, text) {
+    const tokens = parseInlineMarkdown(text);
+    tokens.forEach(tok => {
+      if (tok.bold) {
+        const s = document.createElement('strong');
+        s.textContent = tok.text;
+        el.appendChild(s);
+      } else if (tok.code) {
+        const c = document.createElement('code');
+        c.className = 'inline-code mono';
+        c.textContent = tok.text;
+        el.appendChild(c);
+      } else {
+        el.appendChild(document.createTextNode(tok.text));
+      }
+    });
+  }
+
+  function updatePromptPlaceholderForResults() {
+    promptInput.placeholder = 'Ask about these results, refine your search, or start fresh';
+  }
+
+  // ===== History pane =====
+  function toggleHistory() {
+    document.getElementById('historyPane').classList.toggle('collapsed');
+  }
+  function loadHistoryItem(el, text) {
+    document.querySelectorAll('.moderne-history-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    if (text) submitPrompt(text);
+  }
+
+  // ===== Detail sidebar (file preview) =====
+  const detailSidebar = document.getElementById('detailSidebar');
+  let activeFileGroup = null;
+
+  function toggleDetail(fgEl, file, highlight) {
+    if (fgEl.classList.contains('is-active')) {
+      closeDetail();
+    } else {
+      openDetail(fgEl, file, highlight);
+    }
+  }
+
+  function openDetail(fgEl, file, highlight) {
+    // mark active card
+    document.querySelectorAll('.file-group.is-active').forEach(el => el.classList.remove('is-active'));
+    fgEl.classList.add('is-active');
+    activeFileGroup = fgEl;
+
+    // header
+    const parts = file.path.split('/');
+    const name = parts[parts.length - 1];
+    const dir = parts.slice(0, -1).join('/') + '/';
+    document.getElementById('detailName').textContent = name;
+    document.getElementById('detailPath').textContent = dir;
+    document.getElementById('detailBadge').textContent =
+      `${file.matches.length} match${file.matches.length === 1 ? '' : 'es'}`;
+
+    // body
+    const body = document.getElementById('detailBody');
+    body.innerHTML = '';
+    const lines = getFileLines(file);
+    if (!lines.length) {
+      body.innerHTML = '<div class="detail-empty">File preview unavailable.</div>';
+    } else {
+      const matchLines = new Set(file.matches.map(m => m.line));
+      const term = highlight || (file.matches[0] && file.matches[0].hl) || '';
+      lines.forEach((code, idx) => {
+        const lineNo = idx + 1;
+        const row = document.createElement('div');
+        row.className = 'detail-line' + (matchLines.has(lineNo) ? ' is-match' : '');
+        row.innerHTML = `
+          <span class="ln">${lineNo}</span>
+          <span class="code">${highlightCode(code, term)}</span>
+        `;
+        body.appendChild(row);
+      });
+    }
+
+    detailSidebar.classList.add('open');
+    detailSidebar.setAttribute('aria-hidden', 'false');
+
+    // Track current match index for Prev/Next navigation
+    detailMatchIndex = 0;
+
+    // Scroll detail body to first match (after the sidebar finishes expanding)
+    requestAnimationFrame(() => {
+      jumpToMatch(0, body);
+    });
+  }
+
+  let detailMatchIndex = 0;
+  function jumpToMatch(delta, body) {
+    body = body || document.getElementById('detailBody');
+    const matches = body.querySelectorAll('.detail-line.is-match');
+    if (!matches.length) return;
+    detailMatchIndex = (detailMatchIndex + delta + matches.length) % matches.length;
+    const target = matches[detailMatchIndex];
+    const offset = target.offsetTop - body.clientHeight / 3;
+    body.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+    matches.forEach(m => m.classList.remove('is-current-match'));
+    target.classList.add('is-current-match');
+  }
+  document.getElementById('detailJumpPrev').addEventListener('click', () => jumpToMatch(-1));
+  document.getElementById('detailJumpNext').addEventListener('click', () => jumpToMatch(1));
+
+  function closeDetail() {
+    detailSidebar.classList.remove('open');
+    detailSidebar.setAttribute('aria-hidden', 'true');
+    if (activeFileGroup) {
+      activeFileGroup.classList.remove('is-active');
+      activeFileGroup = null;
+    }
+  }
+
+  function getFileLines(file) {
+    if (file.content && file.content.length) return file.content;
+    // Synthesize a window around the matches for files without explicit content
+    if (!file.matches || !file.matches.length) return [];
+    const sorted = [...file.matches].sort((a, b) => a.line - b.line);
+    const maxLine = sorted[sorted.length - 1].line + 6;
+    const out = new Array(maxLine).fill(null).map((_, i) => {
+      const ln = i + 1;
+      const m = sorted.find(x => x.line === ln);
+      if (m) return m.code;
+      // Plausible filler — empty line, ellipsis, or a generic stub
+      const distToMatch = Math.min(...sorted.map(x => Math.abs(x.line - ln)));
+      if (distToMatch <= 1) return '';
+      if (distToMatch <= 3) return '    // ...';
+      return '';
+    });
+    return out;
+  }
+
+  function scopingIconSvg(name) {
+    const icons = {
+      code: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+      shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+      globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'
+    };
+    return icons[name] || icons.code;
+  }
+  function zeroIconSvg(name) {
+    const icons = {
+      search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+      file: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+      repo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>'
+    };
+    return icons[name] || icons.search;
+  }
+
+  // ===== State switcher (testing only) =====
+  function goToState(name) {
+    document.querySelectorAll('.state-switcher button').forEach(b => {
+      b.classList.toggle('active', b.dataset.state === name);
+    });
+    if (name === 'empty') {
+      resetConversation();
+      // Greeter prompt placeholder is hardcoded ("How can I help you?")
+      return;
+    }
+    // For other states: reset, then fire the canonical prompt
+    abortStream = true;
+    conversationEl.innerHTML = '';
+    showConversation();
+    const prompts = {
+      results: 'Am I exposed to Log4j vulnerabilities?',
+      zero: 'Find usages of ReactiveKafkaConsumer',
+      scoping: 'How is authentication handled?'
+    };
+    isBusy = false;
+    abortStream = false;
+    submitPrompt(prompts[name] || prompts.results);
+  }
+
   function parseInlineMarkdown(text) {
+    // Handles **bold** and `code`
     const parts = [];
-    const re = /\*\*([^*]+)\*\*/g;
+    const re = /\*\*([^*]+)\*\*|`([^`]+)`/g;
     let last = 0; let m;
     while ((m = re.exec(text)) !== null) {
-      if (m.index > last) parts.push({ text: text.slice(last, m.index), bold: false });
-      parts.push({ text: m[1], bold: true });
+      if (m.index > last) parts.push({ text: text.slice(last, m.index) });
+      if (m[1] !== undefined) parts.push({ text: m[1], bold: true });
+      else parts.push({ text: m[2], code: true });
       last = m.index + m[0].length;
     }
-    if (last < text.length) parts.push({ text: text.slice(last), bold: false });
+    if (last < text.length) parts.push({ text: text.slice(last) });
     return parts;
   }
 
