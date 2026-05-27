@@ -499,6 +499,61 @@
   }
   .prompt-card:hover .pc-cta { color: var(--violet); }
 
+  /* Role-labeled variant — colored banners across the top of each card
+     mark the target persona for stakeholder demos. Not part of the real product UI. */
+  .prompt-card-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+    border: 1px solid var(--grey-100);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.15s ease;
+  }
+  .prompt-card-cell .prompt-card {
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  /* When the card is inside a labeled cell, let the whole cell lift on hover
+     and stroke with the role's accent color. */
+  .prompt-card-cell:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  }
+  .prompt-card-cell:hover .prompt-card { transform: none; }
+  .prompt-card-cell.cell-security:hover { border-color: #b91c1c; }
+  .prompt-card-cell.cell-platform:hover { border-color: #1d4ed8; }
+  .prompt-card-cell.cell-devlead:hover  { border-color: #6d28d9; }
+  .prompt-card-cell.cell-devops:hover   { border-color: #0f766e; }
+  .prompt-card-cell.cell-security:hover .prompt-card { background: rgba(220, 38, 38, 0.04); }
+  .prompt-card-cell.cell-platform:hover .prompt-card { background: rgba(37, 99, 235, 0.04); }
+  .prompt-card-cell.cell-devlead:hover  .prompt-card { background: rgba(124, 58, 237, 0.04); }
+  .prompt-card-cell.cell-devops:hover   .prompt-card { background: rgba(13, 148, 136, 0.04); }
+  .prompt-card-cell:hover .prompt-card .pc-cta { color: inherit; }
+  .prompt-card-cell.cell-security:hover .prompt-card .pc-cta { color: #b91c1c; }
+  .prompt-card-cell.cell-platform:hover .prompt-card .pc-cta { color: #1d4ed8; }
+  .prompt-card-cell.cell-devlead:hover  .prompt-card .pc-cta { color: #6d28d9; }
+  .prompt-card-cell.cell-devops:hover   .prompt-card .pc-cta { color: #0f766e; }
+  .pc-role-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 12px 12px 0 0;
+    line-height: 1.4;
+  }
+  .pc-role-label.role-security { background: #fee2e2; color: #b91c1c; }
+  .pc-role-label.role-platform { background: #dbeafe; color: #1d4ed8; }
+  .pc-role-label.role-devlead  { background: #ede9fe; color: #6d28d9; }
+  .pc-role-label.role-devops   { background: #ccfbf1; color: #0f766e; }
+
   /* Greeter tour launcher — universal entry point for the first-recipe walkthrough */
   .greeter-tour-launch {
     margin-top: 4px;
@@ -1376,6 +1431,7 @@
             <span class="topbar-test-label">Prototype states</span>
             <div class="state-switcher" role="tablist" aria-label="Prototype states">
               <button data-state="first"      class="active" onclick="goToState('first')">First Contact</button>
+              <button data-state="first-role"               onclick="goToState('first-role')">First Contact — By Role</button>
               <button data-state="devcenter"                onclick="goToState('devcenter')">DevCenter help</button>
               <button data-state="run-recipe"               onclick="goToState('run-recipe')">Recipe help</button>
               <button data-state="recipe-run"               onclick="goToState('recipe-run')">Recipe Run</button>
@@ -1437,6 +1493,38 @@
                   <div><span class="pc-num">23 repos</span> use different logging frameworks — want to standardize?</div>
                   <span class="pc-cta">Compare frameworks →</span>
                 </button>
+              </div>
+
+              <!-- 2x2 grid — role-annotated variant (State 2) -->
+              <div class="prompt-grid" id="promptGridRoles" style="display:none;">
+                <div class="prompt-card-cell cell-security">
+                  <div class="pc-role-label role-security">Security</div>
+                  <button class="prompt-card" onclick="goToState('recipe-run')">
+                    <div><span class="pc-num">12 repos</span> have dependencies with known CVEs — want to see which ones?</div>
+                    <span class="pc-cta">Show the breakdown →</span>
+                  </button>
+                </div>
+                <div class="prompt-card-cell cell-platform">
+                  <div class="pc-role-label role-platform">Platform</div>
+                  <button class="prompt-card" onclick="goToState('recipe-run-springboot')">
+                    <div><span class="pc-num">34 repos</span> are still on Spring Boot 2.x — want to preview the 3.x migration?</div>
+                    <span class="pc-cta">Preview migration →</span>
+                  </button>
+                </div>
+                <div class="prompt-card-cell cell-devlead">
+                  <div class="pc-role-label role-devlead">Dev Lead</div>
+                  <button class="prompt-card" onclick="goToState('recipe-run-junit')">
+                    <div><span class="pc-num">7 repos</span> still on JUnit 4 — I can migrate those tests to JUnit 5</div>
+                    <span class="pc-cta">Run the migration →</span>
+                  </button>
+                </div>
+                <div class="prompt-card-cell cell-devops">
+                  <div class="pc-role-label role-devops">DevOps</div>
+                  <button class="prompt-card" onclick="goToState('recipe-run')">
+                    <div>Which repos have outdated <span class="pc-num">Gradle/Maven</span> wrapper versions?</div>
+                    <span class="pc-cta">Scan wrappers →</span>
+                  </button>
+                </div>
               </div>
 
               <button class="greeter-tour-launch" type="button" onclick="startTour('run-recipe')">
@@ -1613,6 +1701,7 @@
     // Map sub-states to canonical tab
     const tab = {
       'first': 'first',
+      'first-role': 'first-role',
       'devcenter': 'devcenter',
       'run-recipe': 'run-recipe',
       'recipe-run': 'recipe-run',
@@ -1627,8 +1716,8 @@
       b.classList.toggle('active', b.dataset.state === tab);
     });
 
-    if (name === 'first') {
-      showGreeter();
+    if (name === 'first' || name === 'first-role') {
+      showGreeter(name === 'first-role' ? 'roles' : 'default');
       cancelTour();
       return;
     }
@@ -1650,12 +1739,20 @@
     }, 30);
   }
 
-  function showGreeter() {
+  function showGreeter(variant) {
     clearNudges();
     greeterEl.style.display = 'flex';
     conversationEl.classList.add('hidden');
     conversationPromptWrap.style.display = 'none';
     convDisclaimer.style.display = 'none';
+
+    const defaultGrid = document.getElementById('promptGrid');
+    const rolesGrid = document.getElementById('promptGridRoles');
+    if (defaultGrid && rolesGrid) {
+      const showRoles = variant === 'roles';
+      defaultGrid.style.display = showRoles ? 'none' : '';
+      rolesGrid.style.display = showRoles ? '' : 'none';
+    }
   }
   function showConversation() {
     clearNudges();
