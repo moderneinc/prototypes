@@ -1730,16 +1730,7 @@
   </div><!-- /.moderne-grid -->
 </div><!-- /.moderne-shell -->
 
-<!-- Linear-walkthrough advancer — fixed bottom-right -->
-<button class="next-step-fab" id="nextStepFab" onclick="advanceStep()">
-  <span class="fab-label">
-    <span class="fab-kicker" id="fabKicker">Next step</span>
-    <span class="fab-text" id="fabText">Start the walkthrough</span>
-  </span>
-  <svg class="fab-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-  </svg>
-</button>
+<!-- Bottom-right restart affordance shown after the demo completes -->
 <button class="next-step-restart-fab" id="restartFab" onclick="restartWalkthrough()" style="display:none;">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
@@ -1756,9 +1747,6 @@
   const conversationEl = document.getElementById('conversation');
   const greeterEl = document.getElementById('greeter');
   const conversationPromptWrap = document.getElementById('conversation-prompt-wrap');
-  const fabBtn = document.getElementById('nextStepFab');
-  const fabKicker = document.getElementById('fabKicker');
-  const fabText = document.getElementById('fabText');
   const restartFab = document.getElementById('restartFab');
 
   let promptInput = document.getElementById('prompt-input');
@@ -1875,84 +1863,88 @@
     { label: 'inventory', count: 27, tag: 'inventory-service' }
   ];
 
-  // ===== Stepper =====
-  const STEPS = [
-    { kicker: 'Step 1',       text: 'Start with a prompt' },
-    { kicker: 'Next: Step 2', text: 'User asks a question' },
-    { kicker: 'Next: Step 3', text: 'Moddy shows derived query' },
-    { kicker: 'Next: Step 4', text: 'Render the rich results' },
-    { kicker: 'Next: Step 5', text: 'User refines the search' },
-    { kicker: 'Next: Step 6', text: 'Moddy re-runs with scope' },
-    { kicker: 'Next: Step 7', text: 'User asks Moddy to run it' },
-    { kicker: 'Next: Step 8', text: 'Moddy confirms the recipe run' },
-    { kicker: 'End',          text: 'Walkthrough complete' }
-  ];
-
+  // ===== Event-driven flow =====
+  // currentStep is the post-state after the most recent render finished:
+  //   0 = greeter (no flow yet)
+  //   4 = initial results visible, awaiting refinement
+  //   6 = scoped results visible, awaiting run
+  //   8 = confirmation card visible, end of demo
   let currentStep = 0;
   let isAdvancing = false;
   let activeFilters = new Set(STEP4_CHIPS.map(c => c.tag));
 
-  function setFabLabel() {
-    const cfg = STEPS[currentStep] || STEPS[STEPS.length - 1];
-    fabKicker.textContent = cfg.kicker;
-    fabText.textContent = cfg.text;
+  // Called by tile clicks AND by the input bar (Enter/send).
+  // The branch we take depends on currentStep.
+  async function onUserSubmit(text) {
+    if (isAdvancing) return;
+    if (currentStep === 0) return runInitialQuery(text || Q1);
+    if (currentStep === 4) return runScopedQuery(text || Q2);
+    if (currentStep === 6) return runConfirmation(text || Q3);
+    // currentStep === 8 (or mid-stream): ignore.
   }
 
-  async function advanceStep() {
-    if (isAdvancing) return;
-    if (currentStep >= STEPS.length - 1) return;
+  async function runInitialQuery(text) {
     isAdvancing = true;
-    fabBtn.disabled = true;
     try {
-      let next = currentStep + 1;
-      while (next != null && next <= STEPS.length - 1) {
-        const res = await renderStep(next);
-        currentStep = next;
-        setFabLabel();
-        next = (res && res.autoNext) ? next + 1 : null;
-      }
-      if (currentStep >= STEPS.length - 1) {
-        fabBtn.style.display = 'none';
-        restartFab.style.display = '';
-      }
+      showConversation();
+      appendUserMessage(text);
+      currentStep = 2;
+      await wait(400);
+      await renderDerivedQuery({ cmd: "mod search working-set 'org.apache.log4j' --syntax sourcegraph" });
+      currentStep = 3;
+      await wait(600);
+      await renderInitialResults();
+      currentStep = 4;
+      clearPromptInput();
+      setPromptPlaceholder('Refine the search, or tell Moddy to run a recipe');
     } finally {
       isAdvancing = false;
-      fabBtn.disabled = false;
     }
   }
 
-  async function renderStep(step) {
-    switch (step) {
-      case 1: return renderStep1();
-      case 2: return renderStep2();
-      case 3: return renderStep3();
-      case 4: return renderStep4();
-      case 5: return renderStep5();
-      case 6: return renderStep6();
-      case 7: return renderStep7();
-      case 8: return renderStep8();
+  async function runScopedQuery(text) {
+    isAdvancing = true;
+    try {
+      appendUserMessage(text);
+      currentStep = 5;
+      await wait(400);
+      await renderDerivedQuery({ cmd: "mod search working-set 'org.apache.log4j' repo:payments-service --syntax sourcegraph" }, /*newBubble*/ true);
+      await wait(600);
+      await renderScopedResults();
+      currentStep = 6;
+      clearPromptInput();
+      setPromptPlaceholder('Tell Moddy what to do next');
+    } finally {
+      isAdvancing = false;
     }
   }
 
-  function renderStep1() { /* greeter is pre-rendered */ }
-
-  async function renderStep2(promptOverride) {
-    showConversation();
-    appendUserMessage(promptOverride || Q1);
-    await wait(400);
-    return { autoNext: true };
+  async function runConfirmation(text) {
+    isAdvancing = true;
+    try {
+      appendUserMessage(text);
+      currentStep = 7;
+      await wait(400);
+      await renderConfirmation();
+      currentStep = 8;
+      clearPromptInput();
+      setPromptPlaceholder('Demo complete — restart from the bottom-right');
+      restartFab.style.display = '';
+    } finally {
+      isAdvancing = false;
+    }
   }
 
-  async function renderStep3() {
-    const moddy = newModdyMessage();
-    moddy.appendChild(buildDerivedQuery({
-      cmd: "mod search working-set 'org.apache.log4j' --syntax sourcegraph"
-    }));
+  // ----- Step renderers (now invoked directly, no stepper indirection) -----
+
+  async function renderDerivedQuery({ cmd }, newBubble = false) {
+    const moddy = newBubble || !lastModdyBubble() ? newModdyMessage() : lastModdyBubble();
+    moddy.appendChild(buildDerivedQuery({ cmd }));
     scrollToBottom();
   }
 
-  async function renderStep4() {
-    const moddy = getOrCreateModdyForStep(3);
+  async function renderInitialResults() {
+    const moddy = lastModdyBubble() || newModdyMessage();
     const blocks = [];
     blocks.push(buildScopeLine('187 matches across 42 files in 101ms · 847 repositories searched'));
     blocks.push(buildInsight('Log4j is concentrated in <strong>4 older modules</strong> — upgrading your shared logging utility covers most callers.'));
@@ -1969,10 +1961,10 @@
     blocks.push(results);
     blocks.push(buildOverflowRow({ shown: 4, total: 42, matches: 187, more: STEP4_MORE, container: results }));
     blocks.push(buildActionRow([
-      { kind: 'primary',   label: 'Run recipe: Migrate Log4j 1.x → SLF4J', icon: 'recipe' },
+      { kind: 'primary',   label: 'Run recipe: Migrate Log4j 1.x → SLF4J', icon: 'recipe', advance: () => onUserSubmit(Q2) },
       { kind: 'secondary', label: 'Export results to CSV', icon: 'export' },
       { kind: 'secondary', label: 'Open in TriGrep', icon: 'open' },
-      { kind: 'tertiary',  label: 'Refine search' }
+      { kind: 'tertiary',  label: 'Refine search', advance: () => onUserSubmit(Q2) }
     ]));
 
     for (const b of blocks) {
@@ -1983,20 +1975,8 @@
     applyFiltersToCards();
   }
 
-  async function renderStep5() {
-    appendUserMessage(Q2);
-    await wait(400);
-    return { autoNext: true };
-  }
-
-  async function renderStep6() {
-    const moddy = newModdyMessage();
-    moddy.appendChild(buildDerivedQuery({
-      cmd: "mod search working-set 'org.apache.log4j' repo:payments-service --syntax sourcegraph"
-    }));
-    scrollToBottom();
-    await wait(600);
-
+  async function renderScopedResults() {
+    const moddy = lastModdyBubble() || newModdyMessage();
     const blocks = [];
     blocks.push(buildScopeLine('31 matches across 8 files in 47ms · 1 repository searched'));
     blocks.push(buildInsight('All Log4j usage in <strong>payments-service</strong> flows through <strong>PaymentLogger</strong> — migrating that one class covers 80% of references.'));
@@ -2005,7 +1985,7 @@
     STEP6_FILES.forEach(f => results.appendChild(buildFileCard(f)));
     blocks.push(results);
     blocks.push(buildActionRow([
-      { kind: 'primary',   label: 'Run recipe: Migrate Log4j 1.x → SLF4J (payments-service only)', icon: 'recipe' },
+      { kind: 'primary',   label: 'Run recipe: Migrate Log4j 1.x → SLF4J (payments-service only)', icon: 'recipe', advance: () => onUserSubmit(Q3) },
       { kind: 'secondary', label: 'Export results to CSV', icon: 'export' },
       { kind: 'secondary', label: 'Open in TriGrep', icon: 'open' },
       { kind: 'tertiary',  label: 'Refine search' }
@@ -2018,16 +1998,15 @@
     }
   }
 
-  async function renderStep7() {
-    appendUserMessage(Q3);
-    await wait(400);
-    return { autoNext: true };
-  }
-
-  async function renderStep8() {
+  async function renderConfirmation() {
     const moddy = newModdyMessage();
     moddy.appendChild(buildConfirmationCard());
     scrollToBottom();
+  }
+
+  function lastModdyBubble() {
+    const all = conversationEl.querySelectorAll('.msg-moddy');
+    return all.length ? all[all.length - 1] : null;
   }
 
   // ===== Component builders =====
@@ -2219,6 +2198,7 @@
       btn.className = 'action-btn ' + (a.kind || '');
       const iconSvg = actionIcon(a.icon);
       btn.innerHTML = `${iconSvg}<span>${escapeHtml(a.label)}</span>${a.kind === 'tertiary' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>' : ''}`;
+      if (a.advance) btn.addEventListener('click', a.advance);
       row.appendChild(btn);
     });
     return row;
@@ -2244,11 +2224,37 @@
         <div><span class="conf-key">Using</span><span class="mono">--last-search</span> <span>to target only matched files</span></div>
       </div>
       <div class="conf-actions">
-        <button class="conf-btn primary">Confirm and run</button>
-        <button class="conf-btn cancel">Cancel</button>
+        <button class="conf-btn primary" data-conf="confirm">Confirm and run</button>
+        <button class="conf-btn cancel" data-conf="cancel">Cancel</button>
       </div>
     `;
+    card.querySelector('[data-conf="confirm"]').addEventListener('click', () => onConfirm(card));
+    card.querySelector('[data-conf="cancel"]').addEventListener('click', () => onCancel(card));
     return card;
+  }
+
+  function onConfirm(card) {
+    card.classList.add('is-confirmed');
+    card.innerHTML = `
+      <div class="conf-title" style="color: var(--digital-green);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--digital-green);"><polyline points="20 6 9 17 4 12"/></svg>
+        Recipe queued — running on 8 files
+      </div>
+      <div class="conf-body">
+        <div><span class="conf-key">Run ID</span><span class="mono">run_3f1c…a44</span></div>
+        <div><span class="conf-key">Track in</span><span>Batch Changes</span></div>
+      </div>
+    `;
+    card.style.borderColor = 'rgba(61, 220, 132, 0.55)';
+    card.style.background = '#ecfdf3';
+  }
+
+  function onCancel(card) {
+    card.remove();
+    // Hand control back to the previous step (scoped results).
+    currentStep = 6;
+    restartFab.style.display = 'none';
+    setPromptPlaceholder('Tell Moddy what to do next');
   }
 
   // ===== Filter logic =====
@@ -2291,7 +2297,7 @@
     promptInput.onkeydown = (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        advanceStep();
+        submitFromInput();
       }
     };
     updateSendButton();
@@ -2299,12 +2305,28 @@
 
   function updateSendButton() {
     if (!sendBtn) return;
-    const hasText = promptInput && promptInput.value.trim().length > 0;
-    sendBtn.disabled = !hasText;
+    // Always enabled — pressing send without text uses the demo's canonical prompt for the current step.
+    sendBtn.disabled = false;
   }
 
-  function handleSendClick()  { advanceStep(); }
-  function handleSendClick2() { advanceStep(); }
+  function submitFromInput() {
+    const typed = promptInput ? promptInput.value.trim() : '';
+    onUserSubmit(typed);
+  }
+
+  function clearPromptInput() {
+    if (promptInput) {
+      promptInput.value = '';
+      updateSendButton();
+    }
+  }
+
+  function setPromptPlaceholder(text) {
+    if (promptInput) promptInput.placeholder = text;
+  }
+
+  function handleSendClick()  { submitFromInput(); }
+  function handleSendClick2() { submitFromInput(); }
   window.handleSendClick = handleSendClick;
   window.handleSendClick2 = handleSendClick2;
 
@@ -2320,23 +2342,15 @@
   window.toggleHistory = toggleHistory;
   window.loadHistoryItem = loadHistoryItem;
   window.resetConversation = resetConversation;
-  window.advanceStep = advanceStep;
   window.restartWalkthrough = restartWalkthrough;
   window.closeDetail = closeDetail;
 
-  // Prompt tiles → jump directly into Step 2 with the tile's text.
+  // Prompt tiles → kick off the demo with the tile's text.
   document.querySelectorAll('#prompt-tiles .prompt-tile').forEach(tile => {
     tile.addEventListener('click', () => {
       if (currentStep !== 0) return;
       const text = tile.dataset.tilePrompt || tile.textContent.trim();
-      currentStep = 1;
-      showConversation();
-      appendUserMessage(text);
-      wait(400).then(() => {
-        currentStep = 2;
-        setFabLabel();
-        advanceStep();
-      });
+      onUserSubmit(text);
     });
   });
 
@@ -2344,9 +2358,8 @@
     conversationEl.innerHTML = '';
     activeFilters = new Set(STEP4_CHIPS.map(c => c.tag));
     currentStep = 0;
+    isAdvancing = false;
     showGreeter();
-    setFabLabel();
-    fabBtn.style.display = '';
     restartFab.style.display = 'none';
   }
 
@@ -2374,7 +2387,6 @@
   function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
 
   // ===== Init =====
-  setFabLabel();
   bindActivePrompt();
   if (promptInput) promptInput.focus();
 </script>
