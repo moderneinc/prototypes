@@ -1,0 +1,2511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moddy — LST-aware help & onboarding prototype</title>
+<style>
+  :root {
+    --grey-25: #f9fafb;
+    --grey-50: #f3f4f6;
+    --grey-100: #e5e7eb;
+    --grey-200: #d1d5db;
+    --grey-300: #9ca3af;
+    --grey-500: #6b7280;
+    --grey-600: #4b5563;
+    --grey-700: #374151;
+    --grey-800: #1f2937;
+    --grey-900: #111827;
+    --bg: #ffffff;
+
+    --neo-digital-blue-300: #8d99ff;
+    --neo-digital-blue-500: #2f42ff;
+    --neo-red-500: #cb3446;
+
+    --neo-red: #FF3232;
+    --roseate: #DB4197;
+    --violet: #461DDE;
+    --digital-blue: #2F42FF;
+    --digital-green: #3DDC84;
+
+    /* Accents per section of the triple-response */
+    --teal: #0d9488;
+    --teal-bg: #ecfdf5;
+    --info-blue: #2563eb;
+    --info-blue-bg: #eff6ff;
+    --purple-bg: #f3eefe;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--grey-50);
+    color: var(--grey-700);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    line-height: 1.55;
+    overflow: hidden;
+  }
+  .mono { font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; }
+
+  /* ===== Moderne UI chrome ===== */
+  .moderne-shell {
+    background: var(--grey-50);
+    height: 100vh;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .moderne-grid {
+    display: grid;
+    grid-template-columns: 82px 1fr;
+    flex: 1;
+    overflow: hidden;
+    gap: 8px;
+  }
+  @media (max-width: 1199px) {
+    .moderne-grid { grid-template-columns: 1fr; }
+    .moderne-leftnav { display: none; }
+  }
+
+  .moderne-leftnav {
+    width: 82px;
+    background: var(--grey-50);
+    padding: 12px 0 8px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .moderne-leftnav-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 6px;
+    display: flex; flex-direction: column; gap: 6px;
+    list-style: none;
+  }
+  .moderne-leftnav-list::-webkit-scrollbar { width: 0; }
+  .moderne-leftnav-item {
+    border: none; background: transparent;
+    width: 100%;
+    padding: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--grey-900);
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: none;
+    position: relative;
+  }
+  .moderne-leftnav-icon-box {
+    width: 40px; height: 32px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--grey-900);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .moderne-leftnav-icon-box svg { width: 22px; height: 22px; }
+  .moderne-leftnav-item:hover .moderne-leftnav-icon-box { background: var(--grey-100); }
+  .moderne-leftnav-item.active .moderne-leftnav-icon-box {
+    background: var(--grey-100);
+    color: var(--grey-900);
+  }
+  .moderne-leftnav-item.active .moderne-leftnav-item-label {
+    color: var(--grey-900);
+    font-weight: 600;
+  }
+  .moderne-leftnav-item-label {
+    font-size: 11px;
+    color: var(--grey-900);
+    text-align: center;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  .moderne-leftnav-more {
+    margin: 0;
+    width: 100%;
+    color: var(--grey-900);
+  }
+  .moderne-leftnav-branding {
+    margin: 12px auto 8px;
+    width: 38px; height: 38px;
+    background: var(--grey-100);
+    border-radius: 6px;
+  }
+
+  .moderne-content-col {
+    display: flex; flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .moderne-topnav {
+    height: 65px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    background: var(--grey-50);
+  }
+  .moderne-topnav-brand {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    color: var(--grey-900);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+    flex-shrink: 0;
+  }
+  .moderne-topnav-brand:hover { background: var(--grey-100); }
+  .moderne-topnav-brand svg { width: 24px; height: 24px; }
+  .moderne-topnav-inner {
+    position: relative; z-index: 1;
+    height: 100%;
+    padding: 12px 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .moderne-org-selector {
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    padding: 7px 14px 7px 12px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--grey-900);
+    cursor: pointer;
+    font-weight: 500;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    min-width: 200px;
+  }
+  .moderne-org-selector:hover { border-color: var(--grey-200); }
+  .moderne-org-selector svg.chev { width: 14px; height: 14px; color: var(--grey-500); margin-left: auto; }
+  .moderne-org-selector .org-icon {
+    width: 18px; height: 18px;
+    color: var(--grey-700);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .moderne-org-selector .org-icon svg { width: 16px; height: 16px; }
+  .moderne-topnav-spacer { flex: 1; }
+  .moderne-global-search {
+    width: 360px;
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-radius: 999px;
+    padding: 7px 14px;
+    color: var(--grey-500);
+    font-size: 13px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  @media (max-width: 1180px) { .moderne-global-search { width: 240px; } }
+  @media (max-width: 1000px) { .moderne-global-search { display: none; } }
+  .moderne-global-search > svg.search-icon { width: 14px; height: 14px; color: var(--grey-500); flex-shrink: 0; }
+  .moderne-global-search .search-placeholder { flex: 1; color: var(--grey-500); }
+  .moderne-global-search .kbd-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 1px 5px;
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    border-radius: 4px;
+    color: var(--grey-500);
+    flex-shrink: 0;
+  }
+  .moderne-topnav-actions { display: flex; gap: 8px; align-items: center; }
+  .moderne-topnav-action {
+    width: 36px; height: 36px;
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    border-radius: 999px;
+    color: var(--grey-700);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .moderne-topnav-action:hover { border-color: var(--grey-200); background: var(--grey-25); }
+  .moderne-topnav-action svg { width: 16px; height: 16px; }
+  .moderne-user-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #c5b3e8;
+    color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    margin-left: 0;
+    border: none;
+  }
+
+  .moderne-page {
+    flex: 1;
+    background: var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    min-height: 0;
+    position: relative;
+    display: flex;
+  }
+
+  /* History pane */
+  .moderne-history {
+    width: 256px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--grey-50);
+    display: flex; flex-direction: column;
+    background: #fff;
+    transition: width 200ms ease, opacity 150ms ease;
+    overflow: hidden;
+  }
+  .moderne-history.collapsed { width: 0; opacity: 0; }
+  .moderne-history-head {
+    padding: 18px 16px 6px;
+    display: flex; flex-direction: column; gap: 6px;
+    flex-shrink: 0;
+  }
+  .moderne-history-newchat {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    border: none; background: transparent;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 14px; font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    text-align: left;
+  }
+  .moderne-history-newchat:hover { background: var(--grey-25); }
+  .moderne-history-newchat svg { width: 18px; height: 18px; color: var(--grey-700); flex-shrink: 0; }
+  .moderne-history-title {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 14px; font-weight: 500;
+    border-radius: 8px;
+  }
+  .moderne-history-title .history-icon {
+    width: 18px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--neo-digital-blue-500);
+    flex-shrink: 0;
+  }
+  .moderne-history-title .history-icon svg { width: 16px; height: 16px; }
+  .moderne-history-title-label { flex: 1; }
+  .moderne-history-collapse {
+    border: none; background: transparent;
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    color: var(--grey-500);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .moderne-history-collapse:hover { background: var(--grey-100); color: var(--grey-700); }
+  .moderne-history-collapse svg { width: 14px; height: 14px; }
+
+  .moderne-history-list {
+    flex: 1; overflow-y: auto;
+    padding: 0 8px 16px;
+  }
+  .moderne-history-list::-webkit-scrollbar { width: 6px; }
+  .moderne-history-list::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 3px; }
+  .moderne-history-section-label {
+    padding: 14px 12px 4px;
+    font-size: 12px; font-weight: 500;
+    color: var(--grey-500);
+  }
+  .moderne-history-item {
+    display: block; width: 100%;
+    text-align: left;
+    border: none; background: transparent;
+    padding: 7px 10px;
+    border-radius: 8px;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+  .moderne-history-item:hover { background: var(--grey-25); }
+  .moderne-history-item.active { background: var(--grey-100); }
+
+  .moderne-history-reopen {
+    position: absolute;
+    top: 12px; left: 12px;
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    color: var(--grey-700);
+    cursor: pointer;
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 2;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .moderne-history.collapsed ~ .moderne-history-reopen { display: inline-flex; }
+  .moderne-history-reopen:hover { background: var(--grey-25); }
+  .moderne-history-reopen svg { width: 16px; height: 16px; }
+
+  /* Floating "new chat" button — shown when the history pane is collapsed,
+     paired with .moderne-history-reopen so the user keeps both affordances. */
+  .moderne-history-newchat-float {
+    position: absolute;
+    top: 12px; left: 52px;
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    color: var(--grey-700);
+    cursor: pointer;
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 2;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .moderne-history.collapsed ~ .moderne-history-newchat-float { display: inline-flex; }
+  .moderne-history-newchat-float:hover { background: var(--grey-25); }
+  .moderne-history-newchat-float svg { width: 16px; height: 16px; }
+
+  /* Chat column */
+  .app {
+    display: flex; flex-direction: column;
+    height: 100%;
+    width: 760px;
+    flex: 0 0 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+    min-height: 0;
+  }
+
+  .state-switcher {
+    display: flex; gap: 4px;
+    background: var(--grey-25); border: 1px solid var(--grey-50);
+    border-radius: 999px;
+    padding: 3px;
+  }
+  .state-switcher button {
+    border: none; background: transparent;
+    color: var(--grey-500);
+    font-family: inherit; font-size: 12px; font-weight: 500;
+    padding: 5px 12px; border-radius: 999px; cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .state-switcher button:hover { color: var(--grey-700); }
+  .state-switcher button.active {
+    background: #fff;
+    color: var(--violet);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .topbar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 0 14px;
+    border-bottom: 1px solid var(--grey-50);
+  }
+  .topbar-test-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--grey-300);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-right: 4px;
+  }
+
+  .main { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; }
+
+  /* Greeter — First Contact LST-aware empty state */
+  .greeter {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    padding: 56px 0 16px; gap: 20px;
+    width: 100%; margin: 0 auto;
+    overflow-y: auto;
+  }
+  .greeter-logo {
+    width: 72px; height: 72px;
+    color: var(--violet);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .greeter-logo svg { width: 100%; height: 100%; }
+
+  .greeter-headline {
+    text-align: center;
+    font-size: 22px; font-weight: 500; color: var(--grey-800);
+    line-height: 1.35;
+    max-width: 580px;
+  }
+
+  /* Context bar — what Moddy knows from LSTs */
+  .context-bar {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+    gap: 6px 0;
+    background: var(--grey-25);
+    border: 1px solid var(--grey-50);
+    border-radius: 999px;
+    padding: 8px 18px;
+    font-size: 12.5px;
+    color: var(--grey-600);
+  }
+  .context-bar .ctx-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0 12px;
+    border-right: 1px solid var(--grey-100);
+  }
+  .context-bar .ctx-item:last-child { border-right: none; }
+  .context-bar .ctx-num { font-weight: 600; color: var(--grey-900); }
+
+  /* 2x2 grid of LST-aware suggested prompts */
+  .prompt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .prompt-card {
+    text-align: left;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--grey-800);
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.2s ease, transform 0.2s ease, background 0.15s ease;
+    line-height: 1.5;
+    display: flex; flex-direction: column; gap: 6px;
+    min-height: 88px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  }
+  .prompt-card:hover {
+    border-color: var(--violet);
+    background: rgba(70,29,222,0.025);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(70,29,222,0.08);
+  }
+  .prompt-card .pc-num {
+    font-weight: 700;
+    color: var(--violet);
+  }
+  .prompt-card .pc-cta {
+    margin-top: auto;
+    font-size: 12px;
+    color: var(--grey-500);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .prompt-card:hover .pc-cta { color: var(--violet); }
+
+  /* Greeter tour launcher — universal entry point for the first-recipe walkthrough */
+  .greeter-tour-launch {
+    margin-top: 4px;
+    width: 100%;
+    display: flex; align-items: center; gap: 12px;
+    background: linear-gradient(135deg, rgba(70,29,222,0.06), rgba(47,66,255,0.04));
+    border: 1px solid rgba(70,29,222,0.2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .greeter-tour-launch:hover {
+    border-color: var(--violet);
+    background: linear-gradient(135deg, rgba(70,29,222,0.09), rgba(47,66,255,0.06));
+    box-shadow: 0 4px 14px rgba(70,29,222,0.12);
+    transform: translateY(-1px);
+  }
+  .greeter-tour-launch .gtl-icon {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--violet), var(--digital-blue));
+    color: #fff;
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .greeter-tour-launch .gtl-icon svg { width: 18px; height: 18px; }
+  .greeter-tour-launch .gtl-meta { flex: 1; min-width: 0; }
+  .greeter-tour-launch .gtl-title {
+    font-size: 14px; font-weight: 600; color: var(--grey-900);
+  }
+  .greeter-tour-launch .gtl-sub {
+    font-size: 12.5px; color: var(--grey-500); margin-top: 2px;
+  }
+  .greeter-tour-launch .gtl-arrow {
+    color: var(--violet);
+    width: 22px; height: 22px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .greeter-tour-launch .gtl-arrow svg { width: 18px; height: 18px; }
+
+  /* Greeter disclaimer */
+  .greeter-disclaimer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--grey-300);
+    padding: 20px 16px 16px;
+    line-height: 1.5;
+  }
+  .greeter-disclaimer svg { width: 12px; height: 12px; vertical-align: -1px; margin-right: 4px; color: var(--neo-digital-blue-500); }
+
+  /* Conversation */
+  .conversation {
+    flex: 1; overflow-y: auto;
+    padding: 24px 4px 24px;
+    display: flex; flex-direction: column; gap: 20px;
+    scrollbar-gutter: stable;
+  }
+  .conversation.hidden { display: none; }
+  .conversation::-webkit-scrollbar { width: 8px; }
+  .conversation::-webkit-scrollbar-thumb { background: var(--grey-50); border-radius: 4px; }
+  .conversation::-webkit-scrollbar-thumb:hover { background: var(--grey-100); }
+
+  /* User bubble — right-aligned, soft purple/blue tint per design spec */
+  .msg-user {
+    align-self: flex-end;
+    max-width: 80%;
+    background: var(--purple-bg);
+    border: 1px solid rgba(70, 29, 222, 0.12);
+    border-radius: 16px 16px 4px 16px;
+    padding: 10px 14px;
+  }
+  .msg-user-text { color: var(--grey-900); font-size: 15px; line-height: 1.5; }
+
+  .msg-moddy { display: flex; flex-direction: column; gap: 14px; color: var(--grey-700); font-size: 15px; }
+  .msg-moddy p { margin: 0; line-height: 1.6; }
+  /* No fade-in / progressive disclosure on Moddy message children — render immediately. */
+
+  /* Triple-response sections */
+  .resp-section {
+    border-left: 3px solid var(--grey-100);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 14px 14px;
+    background: var(--grey-25);
+  }
+  .resp-section.is-answer { border-left-color: var(--teal); background: var(--teal-bg); }
+  .resp-section.is-docs   { border-left-color: var(--info-blue); background: var(--info-blue-bg); }
+  .resp-section.is-tour   { border-left-color: var(--violet); background: var(--purple-bg); }
+  .resp-section-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .resp-section.is-answer .resp-section-label { color: var(--teal); }
+  .resp-section.is-docs   .resp-section-label { color: var(--info-blue); }
+  .resp-section.is-tour   .resp-section-label { color: var(--violet); }
+  .resp-section-label svg { width: 12px; height: 12px; }
+  .resp-section p { color: var(--grey-700); font-size: 14.5px; line-height: 1.55; }
+  .resp-section strong { color: var(--grey-900); }
+  .resp-section ol.steps {
+    margin: 8px 0 4px;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .resp-section ol.steps li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 30px;
+    color: var(--grey-700);
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+  .resp-section ol.steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid currentColor;
+    color: var(--teal);
+    font-size: 12px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+
+  /* Doc links */
+  .doc-list { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .doc-link {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid rgba(37, 99, 235, 0.12);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+  .doc-link:hover {
+    border-color: var(--info-blue);
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+    transform: translateY(-1px);
+  }
+  .doc-link .doc-icon {
+    flex-shrink: 0;
+    width: 30px; height: 30px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--info-blue-bg);
+    color: var(--info-blue);
+    border-radius: 7px;
+  }
+  .doc-link .doc-icon svg { width: 16px; height: 16px; }
+  .doc-link .doc-meta { flex: 1; min-width: 0; }
+  .doc-link .doc-title { font-size: 14px; font-weight: 600; color: var(--grey-900); }
+  .doc-link .doc-sub { font-size: 12px; color: var(--grey-500); margin-top: 1px; }
+  .doc-link .doc-chev { color: var(--grey-300); flex-shrink: 0; }
+  .doc-link:hover .doc-chev { color: var(--info-blue); }
+
+  /* Inline "Open DevCenter" CTA inside the Quick Answer */
+  .resp-section .resp-cta {
+    margin-top: 10px;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 3px rgba(13, 148, 136, 0.25);
+  }
+  .resp-section .resp-cta:hover { background: #0b7f74; box-shadow: 0 3px 10px rgba(13, 148, 136, 0.32); transform: translateY(-1px); }
+  .resp-section .resp-cta svg { width: 13px; height: 13px; }
+
+  /* Tour card */
+  .tour-card {
+    background: #fff;
+    border: 1px solid rgba(70, 29, 222, 0.18);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    margin-top: 4px;
+  }
+  .tour-card:hover {
+    border-color: var(--violet);
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(70,29,222,0.14);
+    transform: translateY(-1px);
+  }
+  .tour-card .tour-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--violet), var(--digital-blue));
+    color: #fff;
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .tour-card .tour-icon svg { width: 20px; height: 20px; }
+  .tour-card .tour-meta { flex: 1; min-width: 0; }
+  .tour-card .tour-title {
+    font-size: 15px; font-weight: 600; color: var(--grey-900);
+  }
+  .tour-card .tour-sub {
+    font-size: 12.5px; color: var(--grey-500); margin-top: 2px;
+  }
+  .tour-card .tour-arrow {
+    color: var(--violet);
+    width: 22px; height: 22px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .tour-card .tour-arrow svg { width: 18px; height: 18px; }
+
+  /* Data table card */
+  .data-card {
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  }
+  .data-card table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .data-card thead th {
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--grey-25);
+    border-bottom: 1px solid var(--grey-100);
+    color: var(--grey-600);
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .data-card tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--grey-50);
+    color: var(--grey-700);
+  }
+  .data-card tbody tr:last-child td { border-bottom: none; }
+  .data-card tbody tr:hover td { background: var(--grey-25); }
+  .data-card .repo-name { font-weight: 600; color: var(--grey-900); }
+  .data-card .repo-name .mono { font-size: 12.5px; }
+  .data-card td.num { text-align: center; font-weight: 600; color: var(--grey-900); }
+  .sev {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12.5px; font-weight: 500;
+  }
+  .sev .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .sev.crit  .dot { background: #dc2626; box-shadow: 0 0 0 2px rgba(220,38,38,0.18); }
+  .sev.high  .dot { background: #ea580c; box-shadow: 0 0 0 2px rgba(234,88,12,0.18); }
+  .sev.med   .dot { background: #ca8a04; box-shadow: 0 0 0 2px rgba(202,138,4,0.18); }
+  .sev.crit  { color: #b91c1c; }
+  .sev.high  { color: #c2410c; }
+  .sev.med   { color: #a16207; }
+
+  /* Action button row */
+  .actions-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .btn {
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    color: var(--grey-700);
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-family: inherit;
+    font-size: 13.5px; font-weight: 500;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.15s ease;
+  }
+  .btn:hover { border-color: var(--grey-300); color: var(--grey-900); background: var(--grey-25); }
+  .btn svg { width: 14px; height: 14px; }
+  .btn.primary {
+    background: linear-gradient(135deg, var(--violet), var(--digital-blue));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 2px 10px rgba(70,29,222,0.2);
+    font-weight: 600;
+  }
+  .btn.primary:hover {
+    color: #fff; background: linear-gradient(135deg, var(--violet), var(--digital-blue));
+    box-shadow: 0 4px 14px rgba(70,29,222,0.32);
+    transform: translateY(-1px);
+  }
+  .btn.tour {
+    border-color: rgba(70,29,222,0.25);
+    color: var(--violet);
+    background: var(--purple-bg);
+  }
+  .btn.tour:hover {
+    border-color: var(--violet);
+    color: var(--violet);
+    background: #ebe1fc;
+  }
+
+  /* Success card (recipe complete) */
+  .success-card {
+    background: linear-gradient(135deg, rgba(61,220,132,0.06), rgba(61,220,132,0.0));
+    border: 1px solid rgba(61,220,132,0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .success-card .sc-head {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; color: var(--grey-900); font-size: 15px;
+    margin-bottom: 8px;
+  }
+  .success-card .sc-head .sc-icon {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--digital-green); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .success-card .sc-head .sc-icon svg { width: 14px; height: 14px; }
+  .success-card ul { list-style: none; padding: 0; margin: 0 0 12px 32px; }
+  .success-card li {
+    color: var(--grey-700); font-size: 14px; line-height: 1.7;
+    position: relative; padding-left: 14px;
+  }
+  .success-card li::before {
+    content: '·';
+    position: absolute; left: 0; color: var(--grey-300); font-weight: bold;
+  }
+
+  /* Tour launch indicator (mid-conversation) */
+  .tour-launch {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--purple-bg);
+    border: 1px solid rgba(70,29,222,0.18);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .tour-launch .tl-pulse {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--violet); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(70,29,222,0.5); }
+    50% { box-shadow: 0 0 0 8px rgba(70,29,222,0); }
+  }
+  .tour-launch .tl-meta { flex: 1; }
+  .tour-launch .tl-title {
+    color: var(--grey-900); font-weight: 600; font-size: 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .tour-launch .tl-title svg { width: 14px; height: 14px; color: var(--violet); }
+  .tour-launch .tl-sub { color: var(--grey-600); font-size: 12.5px; margin-top: 2px; }
+
+  /* ===== Proactive nudge — pinned above the input, distinct from chat bubbles ===== */
+  .nudge {
+    margin: 0 0 12px;
+    background: linear-gradient(135deg, rgba(70,29,222,0.05), rgba(47,66,255,0.03));
+    border: 1px solid rgba(70,29,222,0.2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: 0 4px 14px rgba(70,29,222,0.06);
+    animation: nudgeSlideIn 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  @keyframes nudgeSlideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .nudge.exiting {
+    animation: nudgeSlideOut 200ms ease forwards;
+    pointer-events: none;
+  }
+  @keyframes nudgeSlideOut {
+    to { opacity: 0; transform: translateY(-6px); }
+  }
+  .nudge-row {
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .nudge-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--violet), var(--digital-blue));
+    color: #fff;
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .nudge-icon svg { width: 16px; height: 16px; }
+  /* Soft pulse to draw attention without being noisy */
+  .nudge-icon::after {
+    content: '';
+    position: absolute; inset: -2px;
+    border-radius: 10px;
+    border: 2px solid rgba(70,29,222,0.4);
+    animation: nudgePulse 2s ease-out infinite;
+  }
+  @keyframes nudgePulse {
+    0%   { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 0;   transform: scale(1.35); }
+  }
+  .nudge-meta { flex: 1; min-width: 0; }
+  .nudge-text {
+    color: var(--grey-800);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .nudge-text strong { color: var(--grey-900); font-weight: 600; }
+  .nudge-actions {
+    display: flex; gap: 6px; margin-top: 10px;
+    align-items: center;
+  }
+  .nudge-btn {
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    color: var(--grey-700);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: inherit;
+    font-size: 12.5px; font-weight: 500;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.15s ease;
+  }
+  .nudge-btn:hover { border-color: var(--grey-300); background: var(--grey-25); color: var(--grey-900); }
+  .nudge-btn.primary {
+    border-color: rgba(70,29,222,0.3);
+    background: var(--purple-bg);
+    color: var(--violet);
+  }
+  .nudge-btn.primary:hover { border-color: var(--violet); background: #ebe1fc; }
+  .nudge-btn svg { width: 12px; height: 12px; }
+  .nudge-close {
+    border: none; background: transparent;
+    color: var(--grey-300);
+    width: 24px; height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    align-self: flex-start;
+    transition: all 0.15s ease;
+  }
+  .nudge-close:hover { background: var(--grey-50); color: var(--grey-700); }
+  .nudge-close svg { width: 12px; height: 12px; }
+
+  /* Prompt input */
+  .prompt-wrap {
+    padding: 16px 0 24px;
+    background: linear-gradient(to bottom, transparent, var(--bg) 30%);
+  }
+  .prompt-gradient {
+    position: relative; padding: 1px; border-radius: 10px;
+    background: linear-gradient(60deg, var(--neo-red), var(--roseate), var(--violet), var(--digital-blue), var(--digital-green));
+    background-size: 300% 300%;
+    animation: gradient-shift 10s ease alternate infinite;
+    box-shadow: rgba(0,0,0,0.12) 0px 1px 8px 0px;
+  }
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .prompt-inner {
+    background: var(--bg); border-radius: 9px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px 10px 18px;
+  }
+  .prompt-input {
+    flex: 1; border: none; outline: none; resize: none;
+    font-family: inherit; font-size: 15px; color: var(--grey-700);
+    background: transparent; padding: 8px 0;
+    height: 24px; line-height: 1.5;
+    overflow-y: auto;
+  }
+  .prompt-input::placeholder { color: var(--grey-300); opacity: 1; }
+  .send-btn {
+    width: 32px; height: 32px; border-radius: 50%; border: none;
+    background: var(--grey-700); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; transition: background 0.15s;
+  }
+  .send-btn:hover:not(:disabled) { background: var(--grey-800); }
+  .send-btn:disabled { background: var(--grey-100); color: var(--grey-300); cursor: not-allowed; }
+
+  .org-display {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 0 16px 12px;
+    color: var(--grey-700);
+    font-size: 13px;
+    background: var(--bg);
+    border-radius: 0 0 9px 9px;
+    line-height: 1.5;
+  }
+  .org-display svg {
+    width: 18px; height: 18px; flex-shrink: 0;
+    color: var(--grey-700);
+    margin-top: 2px;
+  }
+  .org-display .org-text { flex: 1; }
+  .org-display .org-link {
+    color: var(--neo-digital-blue-500);
+    cursor: pointer;
+    border: none; background: transparent;
+    padding: 0; font: inherit;
+    text-decoration: none;
+    border-radius: 3px;
+  }
+  .org-display .org-link:hover { text-decoration: underline; }
+  .org-display .org-link:focus-visible { outline: 2px solid var(--neo-digital-blue-500); outline-offset: 2px; }
+  .org-display .org-static {
+    color: var(--grey-500);
+  }
+  .org-display .org-sep {
+    color: var(--grey-200);
+    margin: 0 8px;
+  }
+
+  /* Org switcher dropdown — anchored to the top-bar org selector */
+  .org-switcher {
+    position: fixed;
+    min-width: 260px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(15, 23, 42, 0.06);
+    z-index: 50;
+    padding: 6px;
+    display: none;
+  }
+  .org-switcher.open { display: block; }
+  .org-switcher-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--grey-500);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 8px 10px 4px;
+  }
+  .org-switcher-item {
+    width: 100%;
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    background: transparent; border: none;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 13.5px;
+    color: var(--grey-800);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease;
+  }
+  .org-switcher-item:hover { background: var(--grey-25); }
+  .org-switcher-item .osi-icon {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: var(--grey-50);
+    color: var(--grey-600);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .org-switcher-item .osi-icon svg { width: 12px; height: 12px; }
+  .org-switcher-item .osi-meta { flex: 1; min-width: 0; }
+  .org-switcher-item .osi-name { font-weight: 600; color: var(--grey-900); }
+  .org-switcher-item .osi-sub { font-size: 12px; color: var(--grey-500); }
+  .org-switcher-item .osi-check {
+    color: var(--violet);
+    width: 14px; height: 14px;
+    display: none;
+    flex-shrink: 0;
+  }
+  .org-switcher-item.is-current .osi-check { display: inline-flex; }
+  .org-switcher-item.is-current { background: rgba(70,29,222,0.04); }
+  .org-switcher-item.is-current .osi-name { color: var(--violet); }
+  .prompt-gradient .prompt-inner { border-radius: 9px 9px 0 0; padding-bottom: 6px; }
+
+  .prompt-footnote { font-size: 11px; color: var(--grey-500); text-align: left; margin-top: 8px; }
+
+  /* Thinking dots */
+  .moddy-thinking {
+    display: flex; align-items: center; gap: 10px;
+    color: var(--grey-300); font-size: 14px;
+  }
+  .thinking-dots { display: inline-flex; gap: 4px; }
+  .thinking-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--grey-300);
+    animation: bob 1.2s ease-in-out infinite;
+  }
+  .thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bob {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40% { transform: translateY(-3px); opacity: 1; }
+  }
+
+  /* ====== Tour overlay ====== */
+  .tour-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(1px);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+  }
+  .tour-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .tour-highlight {
+    position: fixed;
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 9999px rgba(15, 23, 42, 0.5),
+      0 0 0 3px rgba(141, 153, 255, 0.95),
+      0 0 0 8px rgba(70, 29, 222, 0.35);
+    z-index: 101;
+    pointer-events: none;
+    transition: all 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: tourGlow 1.8s ease-in-out infinite;
+  }
+  @keyframes tourGlow {
+    0%, 100% { box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.5), 0 0 0 3px rgba(141, 153, 255, 0.95), 0 0 0 8px rgba(70, 29, 222, 0.35); }
+    50%      { box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.5), 0 0 0 3px rgba(141, 153, 255, 0.95), 0 0 0 14px rgba(70, 29, 222, 0.18); }
+  }
+  .tour-tooltip {
+    position: fixed;
+    width: 340px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--grey-100);
+    box-shadow:
+      0 12px 32px rgba(15, 23, 42, 0.18),
+      0 2px 6px rgba(15, 23, 42, 0.06);
+    z-index: 102;
+    overflow: hidden;
+    transition: all 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tour-tooltip-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px 4px;
+  }
+  .tour-tooltip-step {
+    font-size: 11px; font-weight: 600;
+    color: var(--violet);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .tour-tooltip-step::before {
+    content: '';
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--violet), var(--digital-blue));
+  }
+  .tour-tooltip-close {
+    border: none; background: transparent;
+    color: var(--grey-300);
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .tour-tooltip-close:hover { background: var(--grey-50); color: var(--grey-700); }
+  .tour-tooltip-close svg { width: 12px; height: 12px; }
+  .tour-tooltip-body {
+    padding: 6px 14px 14px;
+  }
+  .tour-tooltip-title {
+    font-size: 15px; font-weight: 600; color: var(--grey-900);
+    margin-bottom: 6px;
+  }
+  .tour-tooltip-text {
+    font-size: 13.5px; color: var(--grey-600); line-height: 1.55;
+  }
+  .tour-tooltip-text strong { color: var(--grey-900); }
+  .tour-tooltip-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--grey-25);
+    border-top: 1px solid var(--grey-50);
+  }
+  .tour-tooltip-foot .tt-progress {
+    font-size: 12px; color: var(--grey-500);
+  }
+  .tour-tooltip-foot .tt-buttons { display: flex; gap: 6px; }
+  .tt-btn {
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    color: var(--grey-700);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-family: inherit;
+    font-size: 12.5px; font-weight: 500;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+    transition: all 0.15s ease;
+  }
+  .tt-btn:hover { border-color: var(--grey-300); background: var(--grey-25); }
+  .tt-btn.primary {
+    background: linear-gradient(135deg, var(--violet), var(--digital-blue));
+    color: #fff; border-color: transparent;
+  }
+  .tt-btn.primary:hover { color: #fff; transform: translateY(-1px); }
+  .tt-btn.ask-moddy {
+    color: var(--violet);
+    border-color: rgba(70,29,222,0.25);
+    background: var(--purple-bg);
+  }
+  .tt-btn.ask-moddy:hover { border-color: var(--violet); background: #ebe1fc; }
+  .tt-btn svg { width: 12px; height: 12px; }
+
+</style>
+</head>
+<body>
+<div class="moderne-shell">
+  <div class="moderne-grid">
+
+    <!-- Left navigation rail -->
+    <aside class="moderne-leftnav" aria-label="Primary navigation">
+      <ul class="moderne-leftnav-list">
+        <li>
+          <a href="#" class="moderne-leftnav-item active" id="nav-moddy" title="AI assistant" aria-current="page">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Moddy</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" id="nav-devcenter" title="DevCenter">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">DevCenter</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" id="nav-marketplace" title="Marketplace">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Marketplace</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" title="Builder">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 17a3 3 0 0 0-3-3H3"/><path d="M21 14a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Builder</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" id="nav-repos" title="Repositories">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20a1 1 0 0 1-1-1V5c0-1.1.9-2 2-2h4a2 2 0 0 1 2 2v14a1 1 0 0 1-1 1z"/><path d="M9 7H5a2 2 0 0 0-2 2v9c0 1.1.9 2 2 2h4"/><path d="M15 20h4a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-4"/><circle cx="12" cy="13" r="1"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Repositories</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" title="Batch Changes">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18 9 4.5a1 1 0 0 1 0 1.79l-9 4.5a2 2 0 0 1-1.66 0l-9-4.5a1 1 0 0 1 0-1.79l9-4.5a2 2 0 0 1 1.66 0z"/><path d="m22 12.21-9.83 4.91a2 2 0 0 1-1.66 0L1 12.21"/><path d="m22 17-9.83 4.91a2 2 0 0 1-1.66 0L1 17"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Batch Changes</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="moderne-leftnav-item" title="Deploy">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">Deploy</span>
+          </a>
+        </li>
+        <li>
+          <button class="moderne-leftnav-item moderne-leftnav-more" title="More">
+            <span class="moderne-leftnav-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+            </span>
+            <span class="moderne-leftnav-item-label">More</span>
+          </button>
+        </li>
+      </ul>
+      <div class="moderne-leftnav-branding" title="Customer logo"></div>
+    </aside>
+
+    <!-- Right column: top nav + page -->
+    <div class="moderne-content-col">
+
+      <header class="moderne-topnav">
+        <div class="moderne-topnav-inner">
+          <button class="moderne-topnav-brand" title="Moderne home" aria-label="Moderne">
+            <svg viewBox="0 0 24 24" fill="none"><defs><clipPath id="topnav-brand-clip"><path fill="#fff" d="M1 1h21.32v21.64H1z"/></clipPath></defs><g fill="currentColor" clip-path="url(#topnav-brand-clip)"><path d="M21.68 1.36a.51.51 0 0 0-.57.12l-9 9.14c-.59-5.23-4.97-9.3-10.27-9.3-.14 0-.27.06-.37.16s-.15.23-.15.38v19.97c0 .03 0 .05.01.08 0 .03.01.05.02.08v.02c0 .02.02.03.02.04.01.02.03.05.04.07s.03.04.05.06.04.04.06.05c.02.02.04.03.07.04.01 0 .03.02.04.03h.02c.06.02.12.04.18.04h19.63c.29 0 .52-.24.52-.53V1.85a.54.54 0 0 0-.32-.49zm-.73 1.77v8.16h-8.03zm0 13.14h-8.77v-3.92h8.77zM2.37 20.51v-8.16h8.03l-4.02 4.08-4.02 4.08zm0-18.11c4.71.27 8.49 4.11 8.76 8.89H2.37zm4.75 14.78 4.02-4.08v8.16H3.1zm5.06 4.08v-3.92h8.77v3.92z"/></g></svg>
+          </button>
+          <button class="moderne-org-selector" id="topnavOrgSelector" title="Switch organization" onclick="toggleOrgSwitcher(event)">
+            <span class="org-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </span>
+            <span>Open Source</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="moderne-topnav-spacer"></div>
+          <div class="moderne-global-search" id="topnav-search">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span class="search-placeholder">Search recipe</span>
+            <span class="kbd-hint">⌘K</span>
+          </div>
+          <div class="moderne-topnav-actions">
+            <button class="moderne-topnav-action" title="Help">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </button>
+            <button class="moderne-topnav-action" title="Settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+            <button class="moderne-user-avatar" title="Anne Rimbach">AR</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="moderne-page">
+
+        <!-- Chat history pane -->
+        <aside class="moderne-history" id="historyPane" aria-label="Chat history">
+          <div class="moderne-history-head">
+            <button class="moderne-history-newchat" onclick="goToState('first')" title="New chat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              New Chat
+            </button>
+            <div class="moderne-history-title">
+              <span class="history-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+              </span>
+              <span class="moderne-history-title-label">History</span>
+              <button class="moderne-history-collapse" onclick="toggleHistory()" title="Collapse history" aria-label="Collapse history">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="moderne-history-list">
+            <div class="moderne-history-section-label">Today</div>
+            <button class="moderne-history-item active" onclick="loadHistoryItem(this, 'recipe-run')">Show me repos with known CVEs</button>
+            <button class="moderne-history-item" onclick="loadHistoryItem(this, 'devcenter')">How do I use DevCenter?</button>
+            <button class="moderne-history-item" onclick="loadHistoryItem(this, 'run-recipe')">How do I run a recipe?</button>
+            <button class="moderne-history-item" onclick="loadHistoryItem(this, null)">Migrate JUnit 4 to JUnit 5</button>
+            <div class="moderne-history-section-label">Yesterday</div>
+            <button class="moderne-history-item" onclick="loadHistoryItem(this, null)">What frameworks are in my codebase?</button>
+            <button class="moderne-history-item" onclick="loadHistoryItem(this, null)">Run Spring Boot migration preview</button>
+            <button class="moderne-history-item" onclick="loadHistoryItem(this, 'midtour')">How do I switch organizations?</button>
+            <div class="moderne-history-section-label">Last 7 days</div>
+            <button class="moderne-history-item" onclick="loadHistoryItem(this, null)">Find deprecated API calls</button>
+            <button class="moderne-history-item" onclick="loadHistoryItem(this, null)">What recipes are available for Java?</button>
+            <button class="moderne-history-item" onclick="loadHistoryItem(this, null)">Show me the security dashboard</button>
+          </div>
+        </aside>
+        <button class="moderne-history-reopen" onclick="toggleHistory()" title="Open history" aria-label="Open history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="moderne-history-newchat-float" onclick="goToState('first')" title="New chat" aria-label="New chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        </button>
+
+        <div class="app">
+
+          <div class="topbar">
+            <span class="topbar-test-label">Prototype states</span>
+            <div class="state-switcher" role="tablist" aria-label="Prototype states">
+              <button data-state="first"      class="active" onclick="goToState('first')">First Contact</button>
+              <button data-state="devcenter"                onclick="goToState('devcenter')">DevCenter help</button>
+              <button data-state="run-recipe"               onclick="goToState('run-recipe')">Recipe help</button>
+              <button data-state="recipe-run"               onclick="goToState('recipe-run')">Recipe Run</button>
+              <button data-state="midtour"                  onclick="goToState('midtour')">Mid-Conversation Tour</button>
+              <button data-state="microtour"                onclick="goToState('microtour')">Micro-tour</button>
+            </div>
+          </div>
+
+          <div class="main">
+
+            <!-- ===== State 1: First Contact (greeter w/ LST context) ===== -->
+            <div id="greeter" class="greeter">
+              <div class="greeter-logo" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><defs><clipPath id="greeter-logo-clip"><path fill="#fff" d="M1 1h21.32v21.64H1z"/></clipPath></defs><g fill="currentColor" clip-path="url(#greeter-logo-clip)"><path d="M21.68 1.36a.51.51 0 0 0-.57.12l-9 9.14c-.59-5.23-4.97-9.3-10.27-9.3-.14 0-.27.06-.37.16s-.15.23-.15.38v19.97c0 .03 0 .05.01.08 0 .03.01.05.02.08v.02c0 .02.02.03.02.04.01.02.03.05.04.07s.03.04.05.06.04.04.06.05c.02.02.04.03.07.04.01 0 .03.02.04.03h.02c.06.02.12.04.18.04h19.63c.29 0 .52-.24.52-.53V1.85a.54.54 0 0 0-.32-.49zm-.73 1.77v8.16h-8.03zm0 13.14h-8.77v-3.92h8.77zM2.37 20.51v-8.16h8.03l-4.02 4.08-4.02 4.08zm0-18.11c4.71.27 8.49 4.11 8.76 8.89H2.37zm4.75 14.78 4.02-4.08v8.16H3.1zm5.06 4.08v-3.92h8.77v3.92z"/></g></svg>
+              </div>
+              <div class="greeter-headline">Hi Anne, I've analyzed your repositories. Here's what I found:</div>
+
+              <!-- Prompt input lives in the greeter -->
+              <div class="prompt-wrap" style="padding: 0; background: none; width: 100%;">
+                <div class="prompt-gradient" id="prompt-gradient">
+                  <div class="prompt-inner">
+                    <textarea
+                      id="prompt-input"
+                      class="prompt-input"
+                      placeholder="Ask Moddy anything about your code…"
+                      rows="1"
+                    ></textarea>
+                    <button id="send-btn" class="send-btn" disabled onclick="handleSendClick()">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                    </button>
+                  </div>
+                  <div class="org-display">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span class="org-text">
+                      <button type="button" class="org-link" onclick="toggleOrgSwitcher(event)">Organization: Open Source</button>
+                      <span class="org-sep">|</span>
+                      <span class="org-static">Repositories: 142 repos</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="prompt-footnote">Moddy v2 · Onboarding prototype · Trigrep Enabled</div>
+              </div>
+
+              <!-- 2x2 grid of LST-aware suggestions -->
+              <div class="prompt-grid" id="promptGrid">
+                <button class="prompt-card" onclick="goToState('recipe-run-springboot')">
+                  <div><span class="pc-num">34 repos</span> are still on Spring Boot 2.x — want to preview the 3.x migration?</div>
+                  <span class="pc-cta">Preview migration →</span>
+                </button>
+                <button class="prompt-card" onclick="goToState('recipe-run')">
+                  <div><span class="pc-num">12 repos</span> have dependencies with known CVEs — want to see which ones?</div>
+                  <span class="pc-cta">Show the breakdown →</span>
+                </button>
+                <button class="prompt-card" onclick="goToState('recipe-run-junit')">
+                  <div><span class="pc-num">7 repos</span> still on JUnit 4 — I can migrate those tests to JUnit 5</div>
+                  <span class="pc-cta">Run the migration →</span>
+                </button>
+                <button class="prompt-card" onclick="goToState('recipe-run-logging')">
+                  <div><span class="pc-num">23 repos</span> use different logging frameworks — want to standardize?</div>
+                  <span class="pc-cta">Compare frameworks →</span>
+                </button>
+              </div>
+
+              <button class="greeter-tour-launch" type="button" onclick="startTour('run-recipe')">
+                <span class="gtl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 11V6a2 2 0 0 0-4 0v8"/><path d="M14 10V4a2 2 0 0 1 4 0v10"/><path d="M10 10.5V6a2 2 0 0 0-4 0v7"/><path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 4.24-2.83L7 15"/></svg></span>
+                <span class="gtl-meta">
+                  <span class="gtl-title">New here? Walk me through my first recipe run</span>
+                  <span class="gtl-sub">4 steps · ~2 min · Works for any recipe — Spring Boot, JUnit, CVEs, anything in the catalog</span>
+                </span>
+                <span class="gtl-arrow">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </button>
+
+              <div class="greeter-disclaimer" style="padding-top: 28px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                AI-generated. Review for clarity, accuracy, and sources before sharing.
+              </div>
+            </div>
+
+            <!-- ===== Conversation (used by States 2, 3, 4) ===== -->
+            <div id="conversation" class="conversation hidden"></div>
+
+            <!-- Proactive nudge area — pinned above the chat input -->
+            <div id="nudgeArea" style="display:none;"></div>
+
+            <!-- Conversation prompt -->
+            <div class="prompt-wrap" id="conversation-prompt-wrap" style="display:none;">
+              <div class="prompt-gradient">
+                <div class="prompt-inner">
+                  <textarea
+                    id="prompt-input-2"
+                    class="prompt-input"
+                    placeholder="Ask a follow-up, or start a new chat"
+                    rows="1"
+                  ></textarea>
+                  <button id="send-btn-2" class="send-btn" disabled onclick="handleSendClick2()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="prompt-footnote">Moddy v2 · Onboarding prototype</div>
+            </div>
+
+            <div class="greeter-disclaimer" id="conv-disclaimer" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              AI-generated. Review for clarity, accuracy, and sources before sharing.
+            </div>
+
+          </div>
+        </div><!-- /.app -->
+
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- ====== Org switcher dropdown (anchored to top-bar org selector) ====== -->
+<div class="org-switcher" id="orgSwitcher" onclick="event.stopPropagation()">
+  <div class="org-switcher-label">Switch organization</div>
+  <button class="org-switcher-item is-current" onclick="pickOrg('Open Source', this)">
+    <span class="osi-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    </span>
+    <span class="osi-meta">
+      <span class="osi-name">Open Source</span>
+      <span class="osi-sub">142 repositories</span>
+    </span>
+    <span class="osi-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+  </button>
+  <button class="org-switcher-item" onclick="pickOrg('Payments Team', this)">
+    <span class="osi-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    </span>
+    <span class="osi-meta">
+      <span class="osi-name">Payments Team</span>
+      <span class="osi-sub">42 repositories</span>
+    </span>
+    <span class="osi-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+  </button>
+  <button class="org-switcher-item" onclick="pickOrg('Platform', this)">
+    <span class="osi-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </span>
+    <span class="osi-meta">
+      <span class="osi-name">Platform</span>
+      <span class="osi-sub">58 repositories</span>
+    </span>
+    <span class="osi-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+  </button>
+  <button class="org-switcher-item" onclick="pickOrg('Data Engineering', this)">
+    <span class="osi-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+    </span>
+    <span class="osi-meta">
+      <span class="osi-name">Data Engineering</span>
+      <span class="osi-sub">26 repositories</span>
+    </span>
+    <span class="osi-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+  </button>
+</div>
+
+<!-- ====== Tour overlay scaffolding ====== -->
+<div class="tour-overlay" id="tourOverlay" onclick="cancelTour()"></div>
+<div class="tour-highlight" id="tourHighlight" style="display:none;"></div>
+<div class="tour-tooltip" id="tourTooltip" style="display:none;" onclick="event.stopPropagation()">
+  <div class="tour-tooltip-head">
+    <span class="tour-tooltip-step" id="tourStepLabel">Step 1 of 3</span>
+    <button class="tour-tooltip-close" onclick="cancelTour()" aria-label="Close tour">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="tour-tooltip-body">
+    <div class="tour-tooltip-title" id="tourTitle">Title</div>
+    <div class="tour-tooltip-text" id="tourText">Body</div>
+  </div>
+  <div class="tour-tooltip-foot">
+    <span class="tt-progress" id="tourProgress">1 / 3</span>
+    <div class="tt-buttons">
+      <button class="tt-btn ask-moddy" onclick="askModdyFromTour()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+        Ask Moddy
+      </button>
+      <button class="tt-btn primary" id="tourNextBtn" onclick="nextTourStep()">
+        Next
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ===================================================================
+     Moddy help & onboarding prototype
+     Demonstrates LST-aware first contact, triple-response, and tours
+     =================================================================== */
+
+  const greeterEl = document.getElementById('greeter');
+  const conversationEl = document.getElementById('conversation');
+  const conversationPromptWrap = document.getElementById('conversation-prompt-wrap');
+  const convDisclaimer = document.getElementById('conv-disclaimer');
+  const promptInput = document.getElementById('prompt-input');
+  const sendBtn = document.getElementById('send-btn');
+  const promptInput2 = document.getElementById('prompt-input-2');
+  const sendBtn2 = document.getElementById('send-btn-2');
+
+  let abortStream = false;
+
+  // Lucide icon strings — keep these centralised so swap-outs are one-line edits.
+  const ICON = {
+    zap:        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>',
+    eye:        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.06 12.5C3.7 7.83 7.5 5 12 5s8.3 2.83 9.94 7.5C20.3 17.17 16.5 20 12 20S3.7 17.17 2.06 12.5z"/><circle cx="12" cy="12" r="3"/></svg>',
+    pointer:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 11V6a2 2 0 0 0-4 0v8"/><path d="M14 10V4a2 2 0 0 1 4 0v10"/><path d="M10 10.5V6a2 2 0 0 0-4 0v7"/><path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 4.24-2.83L7 15"/></svg>',
+    check:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    target:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+    play:       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>',
+    bookOpen:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>',
+    barChart:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>',
+    table:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>',
+    search:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+    gitMerge:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>',
+    lightbulb:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>',
+    x:          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+  };
+  // Compose icon + text for buttons; used by action-row renderer.
+  function iconLabel(name, text) {
+    return `${ICON[name] || ''}<span>${text}</span>`;
+  }
+
+  /* =================== State switching =================== */
+  function goToState(name) {
+    abortStream = true;
+    setTimeout(() => { abortStream = false; }, 30);
+
+    // Map sub-states to canonical tab
+    const tab = {
+      'first': 'first',
+      'devcenter': 'devcenter',
+      'run-recipe': 'run-recipe',
+      'recipe-run': 'recipe-run',
+      'recipe-run-springboot': 'recipe-run',
+      'recipe-run-junit': 'recipe-run',
+      'recipe-run-logging': 'recipe-run',
+      'midtour': 'midtour',
+      'microtour': 'microtour'
+    }[name] || 'first';
+
+    document.querySelectorAll('.state-switcher button').forEach(b => {
+      b.classList.toggle('active', b.dataset.state === tab);
+    });
+
+    if (name === 'first') {
+      showGreeter();
+      cancelTour();
+      return;
+    }
+
+    showConversation();
+    conversationEl.innerHTML = '';
+
+    // Render the chosen state. Each state appends a user message
+    // and then streams Moddy's response.
+    setTimeout(() => {
+      if (name === 'devcenter') renderDevCenter();
+      else if (name === 'run-recipe') renderRunRecipe();
+      else if (name === 'recipe-run') renderRecipeRun('cves');
+      else if (name === 'recipe-run-springboot') renderRecipeRun('spring');
+      else if (name === 'recipe-run-junit') renderRecipeRun('junit');
+      else if (name === 'recipe-run-logging') renderRecipeRun('logging');
+      else if (name === 'midtour') renderMidTour();
+      else if (name === 'microtour') renderMicroTour();
+    }, 30);
+  }
+
+  function showGreeter() {
+    clearNudges();
+    greeterEl.style.display = 'flex';
+    conversationEl.classList.add('hidden');
+    conversationPromptWrap.style.display = 'none';
+    convDisclaimer.style.display = 'none';
+  }
+  function showConversation() {
+    clearNudges();
+    greeterEl.style.display = 'none';
+    conversationEl.classList.remove('hidden');
+    conversationPromptWrap.style.display = 'block';
+    convDisclaimer.style.display = 'block';
+  }
+  function clearNudges() {
+    const area = document.getElementById('nudgeArea');
+    if (!area) return;
+    area.innerHTML = '';
+    area.style.display = 'none';
+  }
+
+  /* =================== Message builders =================== */
+  function appendUserMessage(text) {
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-user';
+    const body = document.createElement('div');
+    body.className = 'msg-user-text';
+    body.textContent = text;
+    wrap.appendChild(body);
+    conversationEl.appendChild(wrap);
+    scrollToBottom();
+    return wrap;
+  }
+
+  function appendModdyMessage() {
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-moddy';
+    conversationEl.appendChild(wrap);
+    return wrap;
+  }
+
+  function appendThinking() {
+    const t = document.createElement('div');
+    t.className = 'moddy-thinking';
+    t.innerHTML = `<span class="thinking-dots"><span></span><span></span><span></span></span><span>Thinking...</span>`;
+    conversationEl.appendChild(t);
+    scrollToBottom();
+    return t;
+  }
+
+  function scrollToBottom() {
+    conversationEl.scrollTop = conversationEl.scrollHeight;
+  }
+
+  // Used after rendering a full Moddy response so the user's question (and the
+  // top of the response) sit at the top of the viewport — chat scroll-to-bottom
+  // hides the Quick Answer in pre-built multi-section responses.
+  function scrollResponseToTop() {
+    const userMsg = conversationEl.querySelector('.msg-user');
+    if (!userMsg) return;
+    conversationEl.scrollTo({ top: Math.max(0, userMsg.offsetTop - 12), behavior: 'auto' });
+  }
+
+  /* =================== Streaming text =================== */
+  // Renders inline markdown (**bold**) immediately — no typing animation.
+  async function streamText(el, text) {
+    const tokens = parseInlineMarkdown(text);
+    for (const tok of tokens) {
+      let node;
+      if (tok.bold) {
+        node = document.createElement('strong');
+        node.textContent = tok.text;
+      } else {
+        node = document.createTextNode(tok.text);
+      }
+      el.appendChild(node);
+    }
+    scrollToBottom();
+  }
+
+  function parseInlineMarkdown(text) {
+    const parts = [];
+    const re = /\*\*([^*]+)\*\*/g;
+    let last = 0; let m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) parts.push({ text: text.slice(last, m.index) });
+      parts.push({ text: m[1], bold: true });
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) parts.push({ text: text.slice(last) });
+    return parts;
+  }
+
+  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  /* =================== State 2: DevCenter triple-response =================== */
+  async function renderDevCenter() {
+    appendUserMessage('How do I use DevCenter?');
+    const thinking = appendThinking();
+    await wait(700);
+    thinking.remove();
+
+    const moddy = appendModdyMessage();
+
+    // Section 1 — Quick Answer
+    const answer = document.createElement('div');
+    answer.className = 'resp-section is-answer';
+    answer.innerHTML = `
+      <div class="resp-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Quick answer
+      </div>
+      <p></p>
+      <button class="resp-cta" type="button">
+        Open DevCenter
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    `;
+    moddy.appendChild(answer);
+    await streamText(
+      answer.querySelector('p'),
+      "**DevCenter** is the mission-control dashboard of the Moderne Platform. It gives you a high-level view of all your repositories — tracking upgrade and migration progress, security vulnerabilities, and organizational ownership. DevCenters are created per organization. Your org already has one set up with change campaigns for **Spring Boot 3.5**, **Java 21**, and **JUnit 5**."
+    );
+
+    // Section 2 — Documentation
+    const docs = document.createElement('div');
+    docs.className = 'resp-section is-docs';
+    docs.innerHTML = `
+      <div class="resp-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Related docs
+      </div>
+      <div class="doc-list">
+        ${docLinkHtml(ICON.bookOpen, 'Understanding the Moderne DevCenter', 'docs.moderne.io', 'Overview of DevCenter components',
+          'https://docs.moderne.io/user-documentation/moderne-platform-v1/getting-started/dev-center')}
+        ${docLinkHtml(ICON.barChart, 'Generating visualizations', 'docs.moderne.io', 'Build charts and dashboards from recipe runs',
+          'https://docs.moderne.io/user-documentation/moderne-platform-v1/getting-started/visualizations')}
+        ${docLinkHtml(ICON.table, 'Utilizing data tables', 'docs.moderne.io', 'The data that powers DevCenter widgets',
+          'https://docs.moderne.io/user-documentation/moderne-platform-v1/getting-started/data-tables')}
+      </div>
+    `;
+    moddy.appendChild(docs);
+
+    // Section 3 — Interactive Tour
+    const tour = document.createElement('div');
+    tour.className = 'resp-section is-tour';
+    tour.innerHTML = `
+      <div class="resp-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        Interactive tour
+      </div>
+      <div class="tour-card" onclick="startTour('devcenter')">
+        <div class="tour-icon">${ICON.target}</div>
+        <div class="tour-meta">
+          <div class="tour-title">Take the DevCenter tour</div>
+          <div class="tour-sub">3 steps · ~90 sec · See your organizational ownership, change campaigns, and security overview</div>
+        </div>
+        <span class="tour-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </div>
+    `;
+    moddy.appendChild(tour);
+    scrollResponseToTop();
+  }
+
+  /* =================== State: "How do I run a recipe?" triple-response =================== */
+  async function renderRunRecipe() {
+    appendUserMessage('How do I run a recipe?');
+    const thinking = appendThinking();
+    await wait(700);
+    thinking.remove();
+
+    const moddy = appendModdyMessage();
+
+    // Section 1 — Quick Answer
+    const answer = document.createElement('div');
+    answer.className = 'resp-section is-answer';
+    answer.innerHTML = `
+      <div class="resp-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Quick answer
+      </div>
+      <p>Running a recipe in Moderne is five steps:</p>
+      <ol class="steps">
+        <li>Pick the <strong>organization</strong> that holds the repos you want to target.</li>
+        <li>Find the recipe in the catalog &mdash; or just ask me.</li>
+        <li>Fill in any configuration the recipe asks for.</li>
+        <li>Click <strong>Run</strong>.</li>
+        <li>Review the diff per repo, then commit directly or open PRs.</li>
+      </ol>
+      <button class="resp-cta" type="button">
+        Search for a recipe
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    `;
+    moddy.appendChild(answer);
+
+    // Section 2 — Documentation
+    const docs = document.createElement('div');
+    docs.className = 'resp-section is-docs';
+    docs.innerHTML = `
+      <div class="resp-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Related docs
+      </div>
+      <div class="doc-list">
+        ${docLinkHtml(ICON.bookOpen, 'Quickstart: Using the Moderne Platform', 'docs.moderne.io', 'Step-by-step walkthrough of running your first recipe',
+          'https://docs.moderne.io/user-documentation/moderne-platform-v1/getting-started/running-your-first-recipe')}
+        ${docLinkHtml(ICON.search, 'Moderne Recipe catalog search', 'docs.moderne.io', 'Find the right recipe to run',
+          'https://docs.moderne.io/user-documentation/moderne-platform-v1/how-to-guides/moderne-platform-search')}
+        ${docLinkHtml(ICON.gitMerge, 'Working with commits and PRs', 'docs.moderne.io', 'Apply recipe results to your code',
+          'https://docs.moderne.io/user-documentation/moderne-platform-v1/how-to-guides/track-commits')}
+      </div>
+    `;
+    moddy.appendChild(docs);
+
+    // Section 3 — Interactive Tour
+    const tour = document.createElement('div');
+    tour.className = 'resp-section is-tour';
+    tour.innerHTML = `
+      <div class="resp-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        Interactive tour
+      </div>
+      <div class="tour-card" onclick="startTour('run-recipe')">
+        <div class="tour-icon">${ICON.play}</div>
+        <div class="tour-meta">
+          <div class="tour-title">Take the recipe-run tour</div>
+          <div class="tour-sub">4 steps · ~2 min · End-to-end walkthrough — pick an org, find a recipe, run it, review results</div>
+        </div>
+        <span class="tour-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </div>
+    `;
+    moddy.appendChild(tour);
+    scrollResponseToTop();
+  }
+
+  function docLinkHtml(iconSvg, title, domain, sub, href) {
+    return `
+      <a class="doc-link" href="${href}" target="_blank" rel="noopener noreferrer">
+        <span class="doc-icon">${iconSvg}</span>
+        <span class="doc-meta">
+          <span class="doc-title">${title}</span>
+          <span class="doc-sub">${domain}${sub ? ` &middot; ${sub}` : ''}</span>
+        </span>
+        <span class="doc-chev">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </a>
+    `;
+  }
+
+  /* =================== State 3: Recipe Run =================== */
+  const RECIPE_RUN = {
+    cves: {
+      user: 'Show me the repos with known CVEs',
+      intro: "I searched for dependencies with known CVEs across your organization. Here's what I found:",
+      headers: ['Repository', 'Dependency', 'CVE', 'Severity'],
+      rows: [
+        { cells: ['payment-service', 'log4j-core 2.14.1',      'CVE-2021-44228'], sev: 'crit', sevLabel: 'Critical' },
+        { cells: ['payment-service', 'jackson-databind 2.9.8', 'CVE-2019-12086'], sev: 'crit', sevLabel: 'Critical' },
+        { cells: ['auth-gateway',    'commons-text 1.9',       'CVE-2022-42889'], sev: 'high', sevLabel: 'High' },
+        { cells: ['auth-gateway',    'spring-security 5.7.1',  'CVE-2022-31692'], sev: 'high', sevLabel: 'High' },
+        { cells: ['user-api',        'snakeyaml 1.30',         'CVE-2022-1471'],  sev: 'high', sevLabel: 'High' }
+      ],
+      actions: [
+        { icon: 'search',  label: 'Search for more', kind: 'btn' },
+        { icon: 'zap',     label: 'Run upgrade recipe on these', kind: 'primary', onClick: 'runCveFix()' },
+        { icon: 'pointer', label: 'Show me how searching works', kind: 'tour', onClick: "startTour('search')" }
+      ]
+    },
+    spring: {
+      user: '34 repos are still on Spring Boot 2.x — want to preview the 3.x migration?',
+      intro: "Here are the **34 repos** on Spring Boot 2.x, sorted by upgrade complexity. The recipe `UpgradeSpringBoot_3_2` can run on all of them in one pass:",
+      headers: ['Repository', 'Current', 'Complexity'],
+      rows: [
+        { cells: ['payment-service', '2.7.18'], sev: 'med',  sevLabel: 'Moderate' },
+        { cells: ['auth-gateway',    '2.7.12'], sev: 'med',  sevLabel: 'Moderate' },
+        { cells: ['user-api',        '2.5.14'], sev: 'high', sevLabel: 'Complex' },
+        { cells: ['order-service',   '2.6.15'], sev: 'med',  sevLabel: 'Moderate' },
+        { cells: ['legacy-billing',  '2.3.12'], sev: 'crit', sevLabel: 'Complex' }
+      ],
+      actions: [
+        { icon: 'zap',     label: 'Preview migration on all 34', kind: 'primary' },
+        { icon: 'eye',     label: 'Review per-repo details', kind: 'btn' },
+        { icon: 'pointer', label: 'Show me how searching works', kind: 'tour', onClick: "startTour('search')" }
+      ]
+    },
+    junit: {
+      user: '7 repos still on JUnit 4 — migrate to JUnit 5',
+      intro: "I'll run `JUnit4to5Migration` on these **7 repositories**. Most of the changes are mechanical — import swaps and annotation renames:",
+      headers: ['Repository', 'Test files', 'Est. changes'],
+      rows: [
+        { cells: ['reporting-api',   42], sev: 'med',  sevLabel: '~180 LOC' },
+        { cells: ['export-worker',   19], sev: 'med',  sevLabel: '~90 LOC' },
+        { cells: ['audit-log',       11], sev: 'high', sevLabel: '~45 LOC' },
+        { cells: ['metrics-shim',    8],  sev: 'high', sevLabel: '~30 LOC' }
+      ],
+      actions: [
+        { icon: 'zap',     label: 'Run JUnit 5 migration', kind: 'primary' },
+        { icon: 'eye',     label: 'Review test list', kind: 'btn' },
+        { icon: 'pointer', label: 'Show me how searching works', kind: 'tour', onClick: "startTour('search')" }
+      ]
+    },
+    logging: {
+      user: 'Standardize logging frameworks across the 23 repos',
+      intro: "Across **23 repositories** you're using three different logging frameworks. Here's the spread — standardizing on SLF4J would unify all of them:",
+      headers: ['Framework', 'Repos', 'Recommendation'],
+      rows: [
+        { cells: ['org.slf4j.Logger',       14], sev: 'med',  sevLabel: 'Keep' },
+        { cells: ['java.util.logging',      6],  sev: 'high', sevLabel: 'Migrate' },
+        { cells: ['org.apache.log4j (1.x)', 3],  sev: 'crit', sevLabel: 'Replace' }
+      ],
+      actions: [
+        { icon: 'zap',     label: 'Migrate everything to SLF4J', kind: 'primary' },
+        { icon: 'eye',     label: 'Compare frameworks', kind: 'btn' },
+        { icon: 'pointer', label: 'Show me how searching works', kind: 'tour', onClick: "startTour('search')" }
+      ]
+    }
+  };
+
+  async function renderRecipeRun(key) {
+    const data = RECIPE_RUN[key] || RECIPE_RUN.cves;
+    appendUserMessage(data.user);
+    const thinking = appendThinking();
+    await wait(700);
+    thinking.remove();
+
+    const moddy = appendModdyMessage();
+    const intro = document.createElement('p');
+    moddy.appendChild(intro);
+    await streamText(intro, data.intro);
+
+    // Data table
+    const table = document.createElement('div');
+    table.className = 'data-card';
+    const rowsHtml = data.rows.map(r => {
+      const cellsHtml = r.cells.map((c, i) => {
+        if (i === 0) return `<td class="repo-name"><span class="mono">${c}</span></td>`;
+        if (typeof c === 'number') return `<td class="num">${c}</td>`;
+        return `<td><span class="mono">${c}</span></td>`;
+      }).join('');
+      return `<tr>${cellsHtml}<td><span class="sev ${r.sev}"><span class="dot"></span>${r.sevLabel}</span></td></tr>`;
+    }).join('');
+    table.innerHTML = `
+      <table>
+        <thead><tr>${data.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    `;
+    moddy.appendChild(table);
+
+    // Action buttons
+    const actions = document.createElement('div');
+    actions.className = 'actions-row';
+    data.actions.forEach(a => {
+      const btn = document.createElement('button');
+      btn.className = 'btn' + (a.kind === 'primary' ? ' primary' : a.kind === 'tour' ? ' tour' : '');
+      btn.innerHTML = a.icon ? iconLabel(a.icon, a.label) : a.label;
+      if (a.onClick) btn.setAttribute('onclick', a.onClick);
+      actions.appendChild(btn);
+    });
+    moddy.appendChild(actions);
+    scrollResponseToTop();
+  }
+
+  // "Run upgrade recipe on these" -> follow-up Moddy messages
+  async function runCveFix() {
+    appendUserMessage('Run upgrade recipe on these');
+    const thinking = appendThinking();
+    await wait(700);
+    thinking.remove();
+
+    const moddy = appendModdyMessage();
+    const p = document.createElement('p');
+    moddy.appendChild(p);
+    await streamText(p, "Running the **dependency upgrade recipe** across `payment-service`, `auth-gateway`, and `user-api`…");
+
+    // Simulated success card
+    const moddy2 = appendModdyMessage();
+    const card = document.createElement('div');
+    card.className = 'success-card';
+    card.innerHTML = `
+      <div class="sc-head">
+        <span class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        Recipe complete
+      </div>
+      <ul>
+        <li>5 dependencies upgraded across 3 repos</li>
+        <li>2 critical CVEs resolved</li>
+        <li>3 high-severity CVEs resolved</li>
+        <li>12 files modified</li>
+      </ul>
+      <div class="actions-row">
+        <button class="btn">${iconLabel('eye', 'Review diffs')}</button>
+        <button class="btn primary">${iconLabel('check', 'Commit changes')}</button>
+        <button class="btn tour" onclick="startTour('diff-viewer')">${iconLabel('pointer', 'Show me the diff viewer')}</button>
+      </div>
+    `;
+    moddy2.appendChild(card);
+    scrollToBottom();
+  }
+
+  /* =================== State 4: Mid-conversation tour =================== */
+  async function renderMidTour() {
+    appendUserMessage('How do I run a recipe on just one team\'s repos?');
+    const thinking = appendThinking();
+    await wait(700);
+    thinking.remove();
+
+    const moddy = appendModdyMessage();
+    const p = document.createElement('p');
+    moddy.appendChild(p);
+    await streamText(
+      p,
+      "You can scope a recipe run using **organizations**. In Moderne, organizations define which repositories are grouped together. Select the organization that contains just that team's repos before running the recipe, and it will only target those. Your tenant has several organizations set up — *Payments Team*, *Platform*, and *Data Engineering*."
+    );
+
+    const actions = document.createElement('div');
+    actions.className = 'actions-row';
+    actions.innerHTML = `
+      <button class="btn primary">${iconLabel('zap', 'Run on &quot;Payments Team&quot;')}</button>
+      <button class="btn tour" onclick="launchOrgTour(this)">${iconLabel('pointer', 'Show me how organizations work')}</button>
+    `;
+    moddy.appendChild(actions);
+    scrollResponseToTop();
+  }
+
+  /* =================== State: contextual micro-tour (proactive nudge) =================== */
+  async function renderMicroTour() {
+    // Show the conversation surface with a brief recap of "what just happened"
+    // so the nudge has obvious context — the user just committed recipe changes.
+    const moddy = appendModdyMessage();
+    const card = document.createElement('div');
+    card.className = 'success-card';
+    card.innerHTML = `
+      <div class="sc-head">
+        <span class="sc-icon">${ICON.check}</span>
+        Changes committed
+      </div>
+      <ul>
+        <li>5 dependencies upgraded across 3 repos</li>
+        <li>12 files modified · 3 pull requests opened</li>
+      </ul>
+    `;
+    moddy.appendChild(card);
+    scrollResponseToTop();
+
+    // Give the success card a beat, then surface the first proactive nudge.
+    await wait(700);
+    showNudge('commit');
+  }
+
+  // === Nudge definitions ===
+  // Triggered by what just happened in the conversation, not by analytics —
+  // Moddy knows the commit happened because it was the agent that ran it.
+  const NUDGES = {
+    commit: {
+      text: "<strong>Your changes are now pull requests in each repo.</strong> You can track their merge status in <strong>DevCenter &rarr; Change Campaigns</strong>.",
+      actions: [
+        { icon: 'eye', label: 'Show me where', kind: 'primary', onClick: () => startTour('nudge-devcenter') },
+        { icon: 'x',   label: 'Dismiss',                       onClick: () => dismissNudge({ next: 'scope' }) }
+      ]
+    },
+    scope: {
+      text: "<strong>Tip:</strong> You can scope recipe runs to specific teams using <strong>organizations</strong> &mdash; try &ldquo;Run on Payments Team&rdquo; next time.",
+      actions: [
+        { icon: 'pointer', label: 'Quick tour', kind: 'primary', onClick: () => startTour('nudge-orgs') },
+        { icon: 'x',       label: 'Not now',                     onClick: () => dismissNudge({ next: null }) }
+      ]
+    }
+  };
+
+  function showNudge(key) {
+    const area = document.getElementById('nudgeArea');
+    if (!area) return;
+    const def = NUDGES[key];
+    if (!def) return;
+    area.style.display = 'block';
+    area.innerHTML = `
+      <div class="nudge" data-key="${key}">
+        <div class="nudge-row">
+          <span class="nudge-icon">${ICON.lightbulb}</span>
+          <div class="nudge-meta">
+            <div class="nudge-text">${def.text}</div>
+            <div class="nudge-actions"></div>
+          </div>
+          <button class="nudge-close" aria-label="Dismiss" title="Dismiss"
+                  onclick="dismissNudge({ next: ${key === 'commit' ? "'scope'" : 'null'} })">
+            ${ICON.x}
+          </button>
+        </div>
+      </div>
+    `;
+    const actionsRow = area.querySelector('.nudge-actions');
+    def.actions.forEach(a => {
+      const btn = document.createElement('button');
+      btn.className = 'nudge-btn' + (a.kind === 'primary' ? ' primary' : '');
+      btn.innerHTML = (a.icon ? ICON[a.icon] : '') + `<span>${a.label}</span>`;
+      btn.addEventListener('click', a.onClick);
+      actionsRow.appendChild(btn);
+    });
+  }
+
+  // Hide the current nudge with an exit animation, then optionally surface the next one.
+  async function dismissNudge(opts) {
+    const area = document.getElementById('nudgeArea');
+    if (!area) return;
+    const nudge = area.querySelector('.nudge');
+    if (nudge) {
+      nudge.classList.add('exiting');
+      await wait(220);
+    }
+    area.innerHTML = '';
+    area.style.display = 'none';
+    if (opts && opts.next) {
+      await wait(900); // simulated "a moment later"
+      showNudge(opts.next);
+    }
+  }
+
+  // Mid-tour click path: show launch indicator inline, then start tour
+  async function launchOrgTour(triggerBtn) {
+    // Inline "launching..." card
+    const moddyMsg = appendModdyMessage();
+    const launch = document.createElement('div');
+    launch.className = 'tour-launch';
+    launch.innerHTML = `
+      <span class="tl-pulse">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+      </span>
+      <div class="tl-meta">
+        <div class="tl-title">${ICON.pointer} Launching: "Organizations" tour</div>
+        <div class="tl-sub">2 steps · ~45 sec — See how to select an org and scope your recipe runs</div>
+      </div>
+    `;
+    moddyMsg.appendChild(launch);
+    scrollToBottom();
+    startTour('organizations');
+  }
+
+  /* =================== Tour overlay engine =================== */
+  const TOURS = {
+    devcenter: [
+      {
+        target: '#nav-devcenter',
+        title: 'Organizational ownership',
+        text: "DevCenter lives in the left nav. Open it to see how your <strong>89 Java repos</strong> map to teams — who owns what, and which orgs are responsible for each campaign.",
+        pos: 'right'
+      },
+      {
+        target: '#topnav-search',
+        title: 'Change campaigns',
+        text: "Across the top you'll see your active campaigns — <strong>Spring Boot 3.5</strong>, <strong>Java 21</strong>, and <strong>JUnit 5</strong> — with live progress bars pulled from your LSTs.",
+        pos: 'bottom'
+      },
+      {
+        target: '.moderne-history-newchat',
+        title: 'Security overview',
+        text: "The security panel rolls up CVE exposure across every repo in this org. You currently have <strong>12 repos</strong> with known CVEs — click any of them to jump straight to a fix.",
+        pos: 'right'
+      }
+    ],
+    'run-recipe': [
+      {
+        target: '.moderne-org-selector',
+        title: 'Step 1 — Pick the organization',
+        text: "Start by picking the organization that holds the repos you want to run on. Switching the org here scopes everything that follows — the catalog, search, and the run itself.",
+        pos: 'bottom'
+      },
+      {
+        target: '#topnav-search',
+        title: 'Step 2 — Search for a recipe',
+        text: "Press <strong>⌘K</strong> or use the search bar to find a recipe by name, category, or keyword. Try a recipe (<em>UpgradeSpringBoot_3_2</em>), a category (<em>security</em>), or a keyword (<em>CVE</em>) — or browse the full catalog under <strong>Marketplace</strong>.",
+        pos: 'bottom'
+      },
+      {
+        target: '.moderne-history-newchat',
+        title: 'Step 3 — Or let Moddy run it for you',
+        text: "Don't want to leave the chat? Tell Moddy what you want fixed and it will pick the recipe, set the scope, fill in the config, and kick off the run — all from here.",
+        pos: 'right'
+      },
+      {
+        target: '#nav-repos',
+        title: 'Step 4 — Review the results',
+        text: "Once the run finishes, results land per repository under <strong>Repositories</strong>. Review the diff, then commit directly or open PRs — whichever fits the team's workflow.",
+        pos: 'right'
+      }
+    ],
+    search: [
+      {
+        target: '#topnav-search',
+        title: 'Search across your codebase',
+        text: "The search bar runs trigrep queries across all <strong>142 repos</strong> in this org. Try a class name, an import, or a regex — results stream back in milliseconds.",
+        pos: 'bottom'
+      },
+      {
+        target: '#nav-repos',
+        title: 'Scope your search',
+        text: "Open <strong>Repositories</strong> to narrow the search to a subset — by language, framework, or any group you've defined.",
+        pos: 'right'
+      },
+      {
+        target: '.moderne-history-newchat',
+        title: 'Or ask Moddy directly',
+        text: "Describe what you're looking for in plain English. Moddy will pick the right query, scope it correctly, and turn the results into a runnable recipe.",
+        pos: 'right'
+      }
+    ],
+    'nudge-devcenter': [
+      {
+        target: '#nav-devcenter',
+        title: 'DevCenter &rarr; Change Campaigns',
+        text: "Open <strong>DevCenter</strong> here, then scroll to the <strong>Change Campaigns</strong> section to see the merge status of the PRs you just opened.",
+        pos: 'right'
+      }
+    ],
+    'nudge-orgs': [
+      {
+        target: '.moderne-org-selector',
+        title: 'Pick the organization to scope to',
+        text: "Switch the organization in the top bar (e.g. <strong>Payments Team</strong>) and any recipe you run from there will only target that team's repos &mdash; no checkbox-picking required.",
+        pos: 'bottom'
+      }
+    ],
+    organizations: [
+      {
+        target: '.moderne-org-selector',
+        title: 'Pick the organization',
+        text: "Click the org dropdown in the top bar to switch between <strong>Payments Team</strong>, <strong>Platform</strong>, and <strong>Data Engineering</strong>. The org you pick scopes every action below it.",
+        pos: 'bottom'
+      },
+      {
+        target: '#nav-repos',
+        title: 'Recipe runs follow the org',
+        text: "Once you've selected the org, running a recipe from <strong>Repositories</strong> only targets that org's repos. No checkbox-picking needed.",
+        pos: 'right'
+      }
+    ],
+    'diff-viewer': [
+      {
+        target: '#nav-repos',
+        title: 'Diffs land per repository',
+        text: "Recipe results are grouped by repo. Open <strong>Repositories</strong> and you'll see the 7 upgraded files surfaced under each affected repo.",
+        pos: 'right'
+      },
+      {
+        target: '.moderne-history-newchat',
+        title: 'Ask Moddy to review',
+        text: "Drop the diff into a new chat and Moddy can summarize the changes, flag risky lines, and draft a PR description.",
+        pos: 'right'
+      }
+    ]
+  };
+
+  let currentTour = null;
+  let currentTourName = null;
+  let tourStep = 0;
+
+  function startTour(name) {
+    if (!TOURS[name]) return;
+    currentTour = TOURS[name];
+    currentTourName = name;
+    tourStep = 0;
+    document.getElementById('tourOverlay').classList.add('active');
+    document.getElementById('tourHighlight').style.display = 'block';
+    document.getElementById('tourTooltip').style.display = 'block';
+    renderTourStep();
+    // Reposition on resize
+    window.addEventListener('resize', renderTourStep);
+  }
+
+  function renderTourStep() {
+    if (!currentTour) return;
+    const step = currentTour[tourStep];
+    const target = document.querySelector(step.target);
+    const highlight = document.getElementById('tourHighlight');
+    const tooltip = document.getElementById('tourTooltip');
+
+    if (target) {
+      const rect = target.getBoundingClientRect();
+      const pad = 6;
+      highlight.style.top = (rect.top - pad) + 'px';
+      highlight.style.left = (rect.left - pad) + 'px';
+      highlight.style.width = (rect.width + pad * 2) + 'px';
+      highlight.style.height = (rect.height + pad * 2) + 'px';
+
+      // Position tooltip
+      const tooltipW = 340;
+      const tooltipH = tooltip.offsetHeight || 180;
+      let top, left;
+      if (step.pos === 'right') {
+        top = rect.top + rect.height / 2 - tooltipH / 2;
+        left = rect.right + 24;
+      } else if (step.pos === 'bottom') {
+        top = rect.bottom + 18;
+        left = rect.left + rect.width / 2 - tooltipW / 2;
+      } else if (step.pos === 'left') {
+        top = rect.top + rect.height / 2 - tooltipH / 2;
+        left = rect.left - tooltipW - 24;
+      } else {
+        top = rect.bottom + 18;
+        left = rect.left;
+      }
+      // Clamp to viewport
+      top = Math.max(16, Math.min(window.innerHeight - tooltipH - 16, top));
+      left = Math.max(16, Math.min(window.innerWidth - tooltipW - 16, left));
+      tooltip.style.top = top + 'px';
+      tooltip.style.left = left + 'px';
+    }
+
+    document.getElementById('tourStepLabel').textContent = `Step ${tourStep + 1} of ${currentTour.length}`;
+    document.getElementById('tourProgress').textContent = `${tourStep + 1} / ${currentTour.length}`;
+    document.getElementById('tourTitle').textContent = step.title;
+    document.getElementById('tourText').innerHTML = step.text;
+
+    const nextBtn = document.getElementById('tourNextBtn');
+    if (tourStep === currentTour.length - 1) {
+      nextBtn.innerHTML = `Done — back to Moddy <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+    } else {
+      nextBtn.innerHTML = `Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+    }
+  }
+
+  function nextTourStep() {
+    if (!currentTour) return;
+    if (tourStep < currentTour.length - 1) {
+      tourStep++;
+      renderTourStep();
+    } else {
+      cancelTour();
+    }
+  }
+
+  function cancelTour() {
+    // Capture the closing tour's name before resetting, so we can drive
+    // nudge auto-dismiss / progression based on which tour just ended.
+    const closingName = currentTourName;
+    currentTour = null;
+    currentTourName = null;
+    document.getElementById('tourOverlay').classList.remove('active');
+    document.getElementById('tourHighlight').style.display = 'none';
+    document.getElementById('tourTooltip').style.display = 'none';
+    window.removeEventListener('resize', renderTourStep);
+
+    // Nudge-triggered micro-tours auto-dismiss the nudge on close.
+    if (closingName === 'nudge-devcenter') dismissNudge({ next: 'scope' });
+    else if (closingName === 'nudge-orgs') dismissNudge({ next: null });
+  }
+
+  function askModdyFromTour() {
+    cancelTour();
+    // Pretend the user is going back to Moddy from a tour step
+    if (greeterEl.style.display === 'none') {
+      // Already in conversation — focus follow-up input
+      promptInput2.focus();
+    } else {
+      promptInput.focus();
+    }
+  }
+
+  /* =================== Org switcher dropdown =================== */
+  function toggleOrgSwitcher(e) {
+    if (e) e.stopPropagation();
+    const drop = document.getElementById('orgSwitcher');
+    const anchor = document.getElementById('topnavOrgSelector');
+    if (!drop || !anchor) return;
+    if (drop.classList.contains('open')) {
+      drop.classList.remove('open');
+      return;
+    }
+    const rect = anchor.getBoundingClientRect();
+    drop.style.top = (rect.bottom + 6) + 'px';
+    drop.style.left = rect.left + 'px';
+    drop.classList.add('open');
+  }
+  function pickOrg(name, el) {
+    // Move the checkmark to the picked item — keeps the prototype feeling real.
+    document.querySelectorAll('.org-switcher-item').forEach(i => i.classList.remove('is-current'));
+    el.classList.add('is-current');
+    document.getElementById('orgSwitcher').classList.remove('open');
+  }
+  document.addEventListener('click', (e) => {
+    const drop = document.getElementById('orgSwitcher');
+    if (!drop || !drop.classList.contains('open')) return;
+    if (e.target.closest('#orgSwitcher')) return;
+    if (e.target.closest('#topnavOrgSelector')) return;
+    if (e.target.closest('.org-link')) return;
+    drop.classList.remove('open');
+  });
+
+  /* =================== History pane =================== */
+  function toggleHistory() {
+    document.getElementById('historyPane').classList.toggle('collapsed');
+  }
+  function loadHistoryItem(el, stateName) {
+    document.querySelectorAll('.moderne-history-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    if (stateName) goToState(stateName);
+  }
+
+  /* =================== Prompt input plumbing =================== */
+  function updateSendButton() {
+    sendBtn.disabled = !promptInput.value.trim();
+  }
+  function updateSendButton2() {
+    sendBtn2.disabled = !promptInput2.value.trim();
+  }
+  promptInput.addEventListener('input', updateSendButton);
+  promptInput2.addEventListener('input', updateSendButton2);
+
+  function handleSendClick() {
+    const text = promptInput.value.trim();
+    if (!text) return;
+    // Route obvious questions to canned states; otherwise just open a generic recipe-run
+    const t = text.toLowerCase();
+    if (t.includes('devcenter')) goToState('devcenter');
+    else if (t.includes('how') && t.includes('run') && t.includes('recipe')) goToState('run-recipe');
+    else if (t.includes('cve') || t.includes('vuln')) goToState('recipe-run');
+    else if (t.includes('organization') || t.includes(' org ') || t.includes('team') || t.includes('group')) goToState('midtour');
+    else if (t.includes('spring')) goToState('recipe-run-springboot');
+    else if (t.includes('junit')) goToState('recipe-run-junit');
+    else if (t.includes('log')) goToState('recipe-run-logging');
+    else goToState('recipe-run');
+    promptInput.value = '';
+    updateSendButton();
+  }
+  function handleSendClick2() {
+    const text = promptInput2.value.trim();
+    if (!text) return;
+    const t = text.toLowerCase();
+    if (t.includes('devcenter')) goToState('devcenter');
+    else if (t.includes('how') && t.includes('run') && t.includes('recipe')) goToState('run-recipe');
+    else if (t.includes('organization') || t.includes(' org ') || t.includes('team') || t.includes('group')) goToState('midtour');
+    else goToState('recipe-run');
+    promptInput2.value = '';
+    updateSendButton2();
+  }
+
+  promptInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendClick(); }
+  });
+  promptInput2.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendClick2(); }
+  });
+
+  // ESC closes any open tour
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') cancelTour();
+  });
+
+  // Boot
+  promptInput.focus();
+</script>
+</body>
+</html>
