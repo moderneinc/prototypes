@@ -1720,12 +1720,11 @@ function enterPhase2() {
   }, 320);
 }
 
-// "Refine search" in Phase 2 → coordinated update of both chat and TriGrep panes.
-// Demonstrates the cross-panel sync that's the whole point of the split view.
+// "Refine search" → coordinated update of chat (always) + TriGrep search pane
+// (when present). In Phase 1 only the chat updates; in Phase 2 both panes sync.
 let refinementApplied = false;
 function refineSearch() {
   if (refinementApplied) return;
-  if (!document.body.classList.contains('phase-2')) return;
   refinementApplied = true;
 
   // 1. Conversation: user msg + Moddy response with new derived query + scope + brief text.
