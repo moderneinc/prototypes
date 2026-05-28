@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moddy × Trigrep — Split Panel</title>
+<style>
+  :root {
+    /* Neo grey palette */
+    --grey-25:  #f9fafb;
+    --grey-50:  #f3f4f6;
+    --grey-100: #e5e7eb;
+    --grey-200: #d1d5db;
+    --grey-300: #9ca3af;
+    --grey-500: #6b7280;
+    --grey-600: #4b5563;
+    --grey-700: #374151;
+    --grey-800: #1f2937;
+    --grey-900: #111827;
+    --bg: #ffffff;
+
+    /* Neo functional tokens */
+    --neo-digital-blue-300: #8d99ff;
+    --neo-digital-blue-500: #2f42ff;
+    --neo-red-500: #cb3446;
+    --neo-green-500: #16a34a;
+    --neo-green-50:  #ecfdf5;
+    --neo-red-50:    #fef2f2;
+
+    /* Moderne brand */
+    --neo-red: #FF3232;
+    --roseate: #DB4197;
+    --violet: #461DDE;
+    --digital-blue: #2F42FF;
+    --digital-green: #3DDC84;
+
+    /* Code search tokens */
+    --highlight: #fbbf24;
+    --highlight-bg: #fef3c7;
+    --highlight-text: #78350f;
+    --java-dot: #e76f00;
+    --code-bg: #0d1117;
+
+    /* Neo code-card tokens */
+    --code-near-black: #0A0F1E;
+    --code-cb: #7B9FFF;
+    --code-cs: #A0A4C0;
+    --code-cd: rgba(255,255,255,0.25);
+    --code-slate-mid: #636687;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--grey-50);
+    color: var(--grey-700);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    line-height: 1.55;
+    overflow: hidden;
+  }
+  .mono { font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; }
+
+  /* ===== Shell ===== */
+  .shell { height: 100vh; display: flex; flex-direction: column; }
+  .grid {
+    display: grid;
+    grid-template-columns: 82px 1fr;
+    flex: 1;
+    overflow: hidden;
+    gap: 8px;
+  }
+
+  /* ===== Left nav rail ===== */
+  .leftnav {
+    width: 82px;
+    background: var(--grey-50);
+    padding: 12px 0 8px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .leftnav-home {
+    width: 40px; height: 40px;
+    margin: 0 auto 12px;
+    border-radius: 8px;
+    background: transparent; border: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--grey-900);
+    transition: background 0.15s ease;
+  }
+  .leftnav-home:hover { background: var(--grey-100); }
+  .leftnav-home svg { width: 24px; height: 24px; }
+  .leftnav-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 6px;
+    display: flex; flex-direction: column; gap: 4px;
+    list-style: none;
+  }
+  .leftnav-list::-webkit-scrollbar { width: 0; }
+  .leftnav-item {
+    border: none; background: transparent;
+    width: 100%;
+    padding: 4px 0;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--grey-900);
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: none;
+  }
+  .leftnav-icon-box {
+    width: 40px; height: 32px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--grey-900);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .leftnav-icon-box svg { width: 22px; height: 22px; }
+  .leftnav-item:hover .leftnav-icon-box { background: var(--grey-100); }
+  .leftnav-item.active .leftnav-icon-box {
+    background: var(--grey-100);
+    color: var(--grey-900);
+  }
+  .leftnav-item.active .leftnav-item-label { font-weight: 600; }
+  .leftnav-item-label {
+    font-size: 10.5px;
+    color: var(--grey-900);
+    text-align: center;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  .leftnav-branding {
+    margin: 12px auto 8px;
+    width: 38px; height: 38px;
+    background: var(--grey-100);
+    border-radius: 6px;
+  }
+
+  /* ===== Content column ===== */
+  .content-col {
+    display: flex; flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* Top nav */
+  .topnav {
+    height: 65px;
+    flex-shrink: 0;
+    width: 100%;
+    background: var(--grey-50);
+  }
+  .topnav-inner {
+    height: 100%;
+    padding: 12px 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .topnav-brand {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    color: var(--grey-900);
+    cursor: pointer;
+    background: transparent; border: none;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+    flex-shrink: 0;
+  }
+  .topnav-brand:hover { background: var(--grey-100); }
+  .topnav-brand svg { width: 24px; height: 24px; }
+  .org-selector {
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    padding: 7px 14px 7px 12px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--grey-900);
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    min-width: 200px;
+  }
+  .org-selector svg.chev { width: 14px; height: 14px; color: var(--grey-500); margin-left: auto; }
+  .org-icon { width: 18px; height: 18px; color: var(--grey-700); display: inline-flex; align-items: center; justify-content: center; }
+  .org-icon svg { width: 16px; height: 16px; }
+  .topnav-spacer { flex: 1; }
+  .global-search {
+    width: 360px;
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-radius: 999px;
+    padding: 7px 14px;
+    color: var(--grey-500);
+    font-size: 13px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .global-search svg.icon { width: 14px; height: 14px; color: var(--grey-500); }
+  .global-search .kbd-hint {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 1px 5px; background: var(--grey-50);
+    border: 1px solid var(--grey-100); border-radius: 4px;
+    color: var(--grey-500);
+  }
+  .topnav-actions { display: flex; gap: 8px; align-items: center; }
+  .topnav-action {
+    width: 36px; height: 36px;
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    border-radius: 999px;
+    color: var(--grey-700);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .topnav-action:hover { background: var(--grey-25); border-color: var(--grey-200); }
+  .topnav-action svg { width: 16px; height: 16px; }
+  .user-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #c5b3e8;
+    color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+  }
+
+  /* ===== Page (split container) ===== */
+  .page {
+    flex: 1;
+    background: var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 8px 8px 0;
+    min-height: 0;
+    display: flex;
+    position: relative;
+  }
+  .trigrep-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .moddy-panel {
+    width: 30%;
+    min-width: 320px;
+    flex-shrink: 0;
+    display: flex; flex-direction: column;
+    background: #fff;
+    border-left: 1px solid var(--grey-100);
+    transition: width 200ms ease;
+    overflow: hidden;
+  }
+  .moddy-panel.collapsed { width: 0 !important; min-width: 0; border-left-width: 0; }
+
+  /* Divider */
+  .divider {
+    width: 6px;
+    background: transparent;
+    cursor: col-resize;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+  }
+  .divider:hover, .divider.dragging { background: var(--grey-100); }
+  .divider-toggle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 22px; height: 38px;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    box-shadow: 0 1px 2px rgba(15,23,42,0.06);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--grey-500);
+    z-index: 2;
+  }
+  .divider-toggle:hover { color: var(--grey-900); border-color: var(--grey-200); }
+  .divider-toggle svg { width: 12px; height: 12px; }
+
+  /* Collapsed reopen tab */
+  .moddy-reopen {
+    position: absolute;
+    right: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    padding: 12px 6px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    display: none;
+    align-items: center; justify-content: center;
+    color: var(--grey-700);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    transform-origin: center;
+  }
+  .moddy-reopen.visible { display: inline-flex; }
+
+  /* ===== TriGrep left panel ===== */
+  .trigrep-head {
+    padding: 16px 24px 12px;
+    border-bottom: 1px solid var(--grey-50);
+    flex-shrink: 0;
+  }
+  .trigrep-search-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .trigrep-search-box {
+    flex: 1;
+    display: flex; align-items: center; gap: 8px;
+    background: #fff;
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 6px 10px 6px 12px;
+    min-height: 40px;
+  }
+  .trigrep-search-box:focus-within {
+    border-color: var(--neo-digital-blue-500);
+    box-shadow: 0 0 0 3px rgba(47, 66, 255, 0.12);
+  }
+  .trigrep-search-icon { width: 16px; height: 16px; color: var(--grey-500); flex-shrink: 0; }
+  .trigrep-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--grey-50);
+    color: var(--grey-700);
+    border: 1px solid var(--grey-100);
+    border-radius: 6px;
+    padding: 3px 4px 3px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+  }
+  .trigrep-chip strong { color: var(--grey-500); font-weight: 500; margin-right: 1px; }
+  .trigrep-chip-x {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: none; background: transparent;
+    color: var(--grey-500); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .trigrep-chip-x:hover { background: var(--grey-200); color: var(--grey-900); }
+  .trigrep-chip-x svg { width: 10px; height: 10px; }
+  .trigrep-query {
+    flex: 1; min-width: 80px;
+    border: none; outline: none; background: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--grey-900);
+  }
+  .btn-primary {
+    background: var(--neo-digital-blue-500);
+    color: #fff;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .btn-primary:hover { background: #1f30e6; }
+  .btn-secondary {
+    background: #fff;
+    color: var(--grey-900);
+    border: 1px solid var(--grey-200);
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { background: var(--grey-25); border-color: var(--grey-300); }
+  .btn-secondary svg { width: 14px; height: 14px; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--grey-700);
+    border: none;
+    padding: 8px 4px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-ghost:hover { color: var(--neo-digital-blue-500); }
+
+  .trigrep-meta-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 10px;
+    font-size: 12px; color: var(--grey-500);
+  }
+  .trigrep-meta-row a {
+    color: var(--grey-500);
+    text-decoration: none;
+    font-size: 12px;
+  }
+  .trigrep-meta-row a:hover { color: var(--neo-digital-blue-500); }
+  .trigrep-summary { color: var(--grey-700); font-weight: 500; }
+  .trigrep-summary .summary-count { color: var(--grey-900); font-weight: 600; }
+
+  /* TriGrep body: filters sidebar + results */
+  .trigrep-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .trigrep-filters {
+    width: 240px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--grey-50);
+    overflow-y: auto;
+    padding: 16px 12px 24px;
+  }
+  .trigrep-filters::-webkit-scrollbar { width: 6px; }
+  .trigrep-filters::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 3px; }
+  .filters-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 8px 8px;
+    font-size: 11px;
+    color: var(--grey-500);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  .filters-head .collapse-all {
+    color: var(--neo-digital-blue-500); cursor: pointer; text-transform: none; letter-spacing: 0; font-weight: 500;
+    font-size: 11.5px;
+  }
+  .filters-head .collapse-all:hover { text-decoration: underline; }
+  .filter-group {
+    margin-bottom: 16px;
+    border-top: 1px solid var(--grey-50);
+    padding-top: 12px;
+  }
+  .filter-group:first-of-type { border-top: none; padding-top: 4px; }
+  .filter-group-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 8px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 13px; font-weight: 600; color: var(--grey-900);
+  }
+  .filter-group-head:hover { background: var(--grey-25); }
+  .filter-group-head svg { width: 12px; height: 12px; color: var(--grey-500); transition: transform 0.2s ease; }
+  .filter-group.collapsed .filter-group-head svg { transform: rotate(-90deg); }
+  .filter-group.collapsed .filter-group-body { display: none; }
+  .filter-group-body { padding: 4px 0 2px; }
+  .topic-search {
+    display: block;
+    width: 100%;
+    margin: 6px 8px 8px;
+    width: calc(100% - 16px);
+    padding: 6px 10px;
+    border: 1px solid var(--grey-100);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--grey-700);
+    background: var(--grey-25);
+    outline: none;
+  }
+  .topic-search:focus { border-color: var(--neo-digital-blue-300); background: #fff; }
+  .filter-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--grey-700);
+    font-family: 'JetBrains Mono', monospace;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .filter-item:hover { background: var(--grey-25); color: var(--grey-900); }
+  .filter-item .count {
+    color: var(--grey-500);
+    font-size: 11.5px;
+  }
+  .filter-item.active {
+    background: rgba(47, 66, 255, 0.08);
+    color: var(--neo-digital-blue-500);
+    font-weight: 600;
+  }
+  .filter-item.active .count { color: var(--neo-digital-blue-500); }
+  .filter-item .lang-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: inline-block;
+  }
+  .filter-item-name { display: inline-flex; align-items: center; }
+
+  /* Results area */
+  .trigrep-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px 32px;
+    background: var(--grey-25);
+  }
+  .trigrep-results::-webkit-scrollbar { width: 8px; }
+  .trigrep-results::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 4px; }
+
+  /* Result card */
+  .result-card {
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+  }
+  .result-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--grey-50);
+    background: #fff;
+  }
+  .result-card-file {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--grey-900);
+    font-weight: 500;
+  }
+  .result-card-file .file-dot {
+    width: 8px; height: 8px;
+    background: var(--java-dot);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .result-card-file .file-module {
+    color: var(--grey-500);
+    font-weight: 400;
+    font-family: inherit;
+    font-size: 12.5px;
+    margin-left: 4px;
+  }
+  .result-card-actions { display: inline-flex; align-items: center; gap: 4px; }
+  .result-card-meta {
+    font-size: 11.5px;
+    color: var(--grey-500);
+    margin-right: 6px;
+  }
+  .icon-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: none; background: transparent;
+    color: var(--grey-500);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .icon-btn:hover { background: var(--grey-50); color: var(--grey-900); }
+  .icon-btn svg { width: 14px; height: 14px; }
+  .chevron-btn svg { transition: transform 0.2s ease; }
+  .result-card.collapsed .chevron-btn svg { transform: rotate(-90deg); }
+  .result-card.collapsed .result-card-body { display: none; }
+
+  /* Hunk label */
+  .hunk-label {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 14px;
+    background: #f6f8fa;
+    border-bottom: 1px solid var(--grey-50);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--grey-500);
+  }
+  .hunk-label .hunk-text { color: var(--grey-700); }
+  .hunk-label .icon-btn { width: 22px; height: 22px; }
+  .hunk-label .icon-btn svg { width: 12px; height: 12px; }
+
+  /* Code body */
+  .code-body {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--grey-900);
+    overflow-x: auto;
+    padding: 6px 0;
+  }
+  .code-line {
+    display: grid;
+    grid-template-columns: 44px 44px 28px 1fr;
+    align-items: center;
+    padding: 0;
+    min-height: 22px;
+  }
+  .code-line.simple {
+    grid-template-columns: 56px 1fr;
+  }
+  .code-ln {
+    color: var(--grey-300);
+    text-align: right;
+    padding: 0 8px 0 0;
+    user-select: none;
+    font-size: 11.5px;
+  }
+  .code-marker {
+    text-align: center;
+    color: var(--grey-300);
+    user-select: none;
+    font-weight: 600;
+  }
+  .code-text {
+    padding: 0 14px 0 6px;
+    white-space: pre;
+  }
+  .code-line.simple .code-text { padding-left: 14px; }
+  .code-line.removed {
+    background: #ffeef0;
+  }
+  .code-line.removed .code-marker { color: #cf222e; }
+  .code-line.added {
+    background: #e6ffec;
+  }
+  .code-line.added .code-marker { color: #1a7f37; }
+  .match {
+    background: var(--highlight-bg);
+    color: var(--highlight-text);
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+  .code-line.removed .match { background: #ffdce0; color: #82071e; }
+  .code-line.added .match { background: #aceebb; color: #0f5132; }
+
+  /* ===== Moddy panel ===== */
+  .moddy-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--grey-50);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .moddy-head-title {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 600; color: var(--grey-900);
+  }
+  .moddy-head-title .moddy-mark {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--violet);
+  }
+  .moddy-head-title .moddy-mark svg { width: 18px; height: 18px; }
+  .moddy-head-actions { display: inline-flex; gap: 4px; }
+
+  .moddy-conversation {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 18px 12px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .moddy-conversation::-webkit-scrollbar { width: 6px; }
+  .moddy-conversation::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 3px; }
+
+  .msg-user {
+    align-self: flex-end;
+    max-width: 88%;
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    border-radius: 14px 14px 4px 14px;
+    padding: 10px 14px;
+    color: var(--grey-900);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .msg-moddy {
+    display: flex; flex-direction: column; gap: 10px;
+    max-width: 100%;
+  }
+  .moddy-text {
+    color: var(--grey-700);
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .moddy-text code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--grey-50);
+    color: var(--grey-900);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .moddy-text strong { color: var(--grey-900); font-weight: 600; }
+  .moddy-insight {
+    border-left: 3px solid var(--violet);
+    padding: 8px 12px;
+    background: rgba(70, 29, 222, 0.04);
+    color: var(--grey-900);
+    font-size: 13.5px;
+    line-height: 1.5;
+    border-radius: 0 6px 6px 0;
+  }
+  .moddy-insight strong { color: var(--violet); }
+  .moddy-context-msg {
+    border: 1px solid var(--grey-100);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: var(--grey-25);
+    font-size: 13px;
+    color: var(--grey-700);
+    line-height: 1.5;
+  }
+  .moddy-context-msg .ctx-eyebrow {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10.5px; font-weight: 600;
+    color: var(--violet);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .moddy-context-msg .ctx-eyebrow svg { width: 11px; height: 11px; }
+
+  /* Derived query — Neo mini-code-card */
+  .derived-query {
+    background: var(--code-near-black);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .derived-query-head {
+    padding: 9px 12px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px;
+  }
+  .derived-query-head-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5px;
+    font-weight: 600;
+    color: var(--code-slate-mid);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .derived-query-cmd {
+    padding: 12px 14px;
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.6);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .derived-query-cmd .cb { color: var(--code-cb); }
+  .derived-query-cmd .cs { color: var(--code-cs); }
+  .derived-query-cmd .cd { color: var(--code-cd); }
+  .derived-query-copy {
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    color: var(--code-cs);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease;
+  }
+  .derived-query-copy:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .derived-query-copy svg { width: 11px; height: 11px; }
+  .derived-query-copy.copied {
+    background: rgba(61,220,132,0.18);
+    border-color: rgba(61,220,132,0.4);
+    color: var(--digital-green);
+  }
+
+  /* Action buttons stack */
+  .moddy-actions {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 4px;
+  }
+  .moddy-action {
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .moddy-action.primary {
+    background: var(--neo-digital-blue-500);
+    color: #fff;
+    border: 1px solid var(--neo-digital-blue-500);
+    font-weight: 600;
+  }
+  .moddy-action.primary:hover { background: #1f30e6; }
+  .moddy-action.secondary {
+    background: #fff;
+    color: var(--grey-900);
+    border: 1px solid var(--grey-200);
+  }
+  .moddy-action.secondary:hover { background: var(--grey-25); border-color: var(--grey-300); }
+  .moddy-action.ghost {
+    background: transparent;
+    color: var(--neo-digital-blue-500);
+    border: 1px solid transparent;
+    padding: 8px 14px;
+  }
+  .moddy-action.ghost:hover { background: rgba(47, 66, 255, 0.06); }
+  .moddy-action svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* Chat input */
+  .moddy-input-wrap {
+    border-top: 1px solid var(--grey-50);
+    padding: 14px 18px 12px;
+    flex-shrink: 0;
+    background: #fff;
+  }
+  .moddy-input {
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--grey-200);
+    border-radius: 12px;
+    padding: 8px 8px 8px 14px;
+    background: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .moddy-input:focus-within {
+    border-color: var(--neo-digital-blue-500);
+    box-shadow: 0 0 0 3px rgba(47,66,255,0.10);
+  }
+  .moddy-input input {
+    flex: 1;
+    border: none; outline: none; background: transparent;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--grey-900);
+  }
+  .moddy-input input::placeholder { color: var(--grey-500); }
+  .moddy-send {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--grey-900);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .moddy-send:hover { background: var(--grey-700); }
+  .moddy-send svg { width: 14px; height: 14px; }
+  .moddy-foot {
+    text-align: center;
+    color: var(--grey-500);
+    font-size: 11px;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="grid">
+    <!-- =================== LEFT NAV RAIL =================== -->
+    <nav class="leftnav" aria-label="Platform">
+      <button class="leftnav-home" title="Home">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 6 L6 26 M6 6 L16 16 L26 6 M26 6 L26 26"/>
+        </svg>
+      </button>
+      <ul class="leftnav-list">
+        <li><button class="leftnav-item" data-nav="moddy">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
+          <span class="leftnav-item-label">Moddy</span>
+        </button></li>
+        <li><button class="leftnav-item" data-nav="devcenter">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></span>
+          <span class="leftnav-item-label">DevCenter</span>
+        </button></li>
+        <li><button class="leftnav-item active" data-nav="trigrep">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+          <span class="leftnav-item-label">TriGrep</span>
+        </button></li>
+        <li><button class="leftnav-item" data-nav="artifacts">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
+          <span class="leftnav-item-label">Artifacts</span>
+        </button></li>
+        <li><button class="leftnav-item" data-nav="marketplace">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+          <span class="leftnav-item-label">Marketplace</span>
+        </button></li>
+        <li><button class="leftnav-item" data-nav="builder">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></span>
+          <span class="leftnav-item-label">Builder</span>
+        </button></li>
+        <li><button class="leftnav-item" data-nav="activity">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+          <span class="leftnav-item-label">Activity</span>
+        </button></li>
+        <li><button class="leftnav-item" data-nav="changelog">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span>
+          <span class="leftnav-item-label">Changelog</span>
+        </button></li>
+        <li><button class="leftnav-item" data-nav="recipe-queue">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
+          <span class="leftnav-item-label">Recipes</span>
+        </button></li>
+        <li><button class="leftnav-item" data-nav="repos">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+          <span class="leftnav-item-label">Repos</span>
+        </button></li>
+        <li><button class="leftnav-item" data-nav="deploy">
+          <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5 3 22l5.5-1.5L20.5 8.5a2.5 2.5 0 0 0-3.5-3.5L4.5 16.5z"/><path d="m15 5 4 4"/></svg></span>
+          <span class="leftnav-item-label">Deploy</span>
+        </button></li>
+      </ul>
+      <div class="leftnav-branding" title="Customer brand"></div>
+    </nav>
+
+    <!-- =================== CONTENT COLUMN =================== -->
+    <div class="content-col">
+      <!-- Top nav -->
+      <div class="topnav">
+        <div class="topnav-inner">
+          <button class="topnav-brand" title="Moderne">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 6 L6 26 M6 6 L16 16 L26 6 M26 6 L26 26"/>
+            </svg>
+          </button>
+          <button class="org-selector">
+            <span class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m22 21-3-3m1 0a3 3 0 1 0-6 0 3 3 0 0 0 6 0z"/></svg></span>
+            <span>Open Source</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="topnav-spacer"></div>
+          <div class="global-search">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span style="flex:1">Search recipe</span>
+            <span class="kbd-hint">⌘K</span>
+          </div>
+          <div class="topnav-actions">
+            <button class="topnav-action" title="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+            <button class="topnav-action" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+            <button class="user-avatar">A</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page (split container) -->
+      <div class="page" id="page">
+        <!-- LEFT: TriGrep panel -->
+        <section class="trigrep-panel" id="trigrep-panel" aria-label="TriGrep search">
+          <div class="trigrep-head">
+            <div class="trigrep-search-row">
+              <div class="trigrep-search-box">
+                <svg class="trigrep-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <span class="trigrep-chip" data-chip="lang"><strong>lang:</strong>java<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></span>
+                <span class="trigrep-chip" data-chip="file"><strong>file:</strong>src/main/**<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></span>
+                <input class="trigrep-query" value="org.apache.log4j" spellcheck="false">
+              </div>
+              <button class="btn-primary">Search</button>
+            </div>
+            <div class="trigrep-meta-row">
+              <div class="trigrep-summary"><span class="summary-count" id="summary-count">187</span> matches across <span class="summary-count" id="summary-files">42</span> files in <span class="mono">&lt;1ms</span></div>
+              <a href="#" onclick="event.preventDefault()">Search syntax tips ↗</a>
+            </div>
+          </div>
+
+          <div class="trigrep-body">
+            <!-- Filters sidebar -->
+            <aside class="trigrep-filters" aria-label="Filters">
+              <div class="filters-head">
+                <span>Filters</span>
+                <span class="collapse-all" id="collapse-all">Collapse all</span>
+              </div>
+
+              <div class="filter-group" data-group="lang">
+                <div class="filter-group-head">
+                  <span>By language</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="filter-group-body">
+                  <div class="filter-item" data-count="34"><span class="filter-item-name"><span class="lang-dot" style="background:#e76f00;"></span>Java</span><span class="count">34</span></div>
+                  <div class="filter-item" data-count="4"><span class="filter-item-name"><span class="lang-dot" style="background:#f7df1e;"></span>Javascript</span><span class="count">4</span></div>
+                  <div class="filter-item" data-count="3"><span class="filter-item-name"><span class="lang-dot" style="background:#3776ab;"></span>Python</span><span class="count">3</span></div>
+                  <div class="filter-item" data-count="2"><span class="filter-item-name"><span class="lang-dot" style="background:#083fa1;"></span>Markdown</span><span class="count">2</span></div>
+                  <div class="filter-item" data-count="1"><span class="filter-item-name"><span class="lang-dot" style="background:#6db33f;"></span>Spring</span><span class="count">1</span></div>
+                </div>
+              </div>
+
+              <div class="filter-group" data-group="meta">
+                <div class="filter-group-head">
+                  <span>By metadata</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="filter-group-body">
+                  <div class="filter-item" data-count="7"><span class="filter-item-name">important:true</span><span class="count">7</span></div>
+                  <div class="filter-item" data-count="4"><span class="filter-item-name">licence:MIT</span><span class="count">4</span></div>
+                  <div class="filter-item" data-count="3"><span class="filter-item-name">licence:Apache-2.0</span><span class="count">3</span></div>
+                  <div class="filter-item" data-count="2"><span class="filter-item-name">important:false</span><span class="count">2</span></div>
+                  <div class="filter-item" data-count="1"><span class="filter-item-name">licence:Commons</span><span class="count">1</span></div>
+                </div>
+              </div>
+
+              <div class="filter-group" data-group="topic">
+                <div class="filter-group-head">
+                  <span>By topic</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="filter-group-body">
+                  <input class="topic-search" placeholder="Search topics…" id="topic-search">
+                  <div class="filter-item" data-count="7"><span class="filter-item-name">documentation</span><span class="count">7</span></div>
+                  <div class="filter-item" data-count="7"><span class="filter-item-name">user-service</span><span class="count">7</span></div>
+                  <div class="filter-item" data-count="7"><span class="filter-item-name">frontend</span><span class="count">7</span></div>
+                  <div class="filter-item" data-count="4"><span class="filter-item-name">backend</span><span class="count">4</span></div>
+                  <div class="filter-item" data-count="1"><span class="filter-item-name">scripts</span><span class="count">1</span></div>
+                  <div class="filter-item" data-count="1"><span class="filter-item-name">microservices</span><span class="count">1</span></div>
+                </div>
+              </div>
+            </aside>
+
+            <!-- Results -->
+            <div class="trigrep-results" id="results">
+              <!-- Card 1: pom.xml diff -->
+              <article class="result-card" data-card>
+                <div class="result-card-head">
+                  <div class="result-card-file">
+                    <span class="file-dot" style="background:#cb3446;"></span>
+                    base/pom.xml
+                  </div>
+                  <div class="result-card-actions">
+                    <span class="result-card-meta">3 matches</span>
+                    <button class="icon-btn" title="More">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                    </button>
+                    <button class="icon-btn chevron-btn" title="Collapse">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="result-card-body">
+                  <div class="hunk-label">
+                    <span class="hunk-text">@@ -34,7 +34,7 @@</span>
+                    <button class="icon-btn" title="Copy hunk">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                  <div class="code-body">
+                    <div class="code-line"><span class="code-ln">34</span><span class="code-ln">34</span><span class="code-marker"></span><span class="code-text">  &lt;name&gt;Apache Sling Performance Test Utilities&lt;/name&gt;</span></div>
+                    <div class="code-line"><span class="code-ln">35</span><span class="code-ln">35</span><span class="code-marker"></span><span class="code-text">  </span></div>
+                    <div class="code-line"><span class="code-ln">36</span><span class="code-ln">36</span><span class="code-marker"></span><span class="code-text">  &lt;properties&gt;</span></div>
+                    <div class="code-line removed"><span class="code-ln">37</span><span class="code-ln"></span><span class="code-marker">−</span><span class="code-text">    &lt;junit.version&gt;4.8.2&lt;/junit.version&gt;</span></div>
+                    <div class="code-line added"><span class="code-ln"></span><span class="code-ln">37</span><span class="code-marker">+</span><span class="code-text">    &lt;junit.version&gt;4.13.1&lt;/junit.version&gt;</span></div>
+                    <div class="code-line"><span class="code-ln">38</span><span class="code-ln">38</span><span class="code-marker"></span><span class="code-text">  &lt;/properties&gt;</span></div>
+                    <div class="code-line"><span class="code-ln">39</span><span class="code-ln">39</span><span class="code-marker"></span><span class="code-text">  </span></div>
+                    <div class="code-line"><span class="code-ln">40</span><span class="code-ln">40</span><span class="code-marker"></span><span class="code-text">  &lt;scm&gt;</span></div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 2: PaymentLogger.java -->
+              <article class="result-card" data-card>
+                <div class="result-card-head">
+                  <div class="result-card-file">
+                    <span class="file-dot"></span>
+                    PaymentLogger.java
+                    <span class="file-module">— payments-service</span>
+                  </div>
+                  <div class="result-card-actions">
+                    <span class="result-card-meta">3 matches</span>
+                    <button class="icon-btn" title="More">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                    </button>
+                    <button class="icon-btn chevron-btn" title="Collapse">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="result-card-body">
+                  <div class="code-body">
+                    <div class="code-line simple"><span class="code-ln">14</span><span class="code-text">import <span class="match">org.apache.log4j</span>.Logger;</span></div>
+                    <div class="code-line simple"><span class="code-ln">15</span><span class="code-text">import <span class="match">org.apache.log4j</span>.Level;</span></div>
+                    <div class="code-line simple"><span class="code-ln">18</span><span class="code-text">private static final <span class="match">Logger</span> logger = <span class="match">Logger</span>.getLogger(PaymentLogger.class);</span></div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 3: LogConfig.java -->
+              <article class="result-card" data-card>
+                <div class="result-card-head">
+                  <div class="result-card-file">
+                    <span class="file-dot"></span>
+                    LogConfig.java
+                    <span class="file-module">— common-logging</span>
+                  </div>
+                  <div class="result-card-actions">
+                    <span class="result-card-meta">2 matches</span>
+                    <button class="icon-btn" title="More">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                    </button>
+                    <button class="icon-btn chevron-btn" title="Collapse">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="result-card-body">
+                  <div class="code-body">
+                    <div class="code-line simple"><span class="code-ln">7</span><span class="code-text">import <span class="match">org.apache.log4j</span>.PropertyConfigurator;</span></div>
+                    <div class="code-line simple"><span class="code-ln">23</span><span class="code-text">PropertyConfigurator.configure("<span class="match">log4j</span>.properties");</span></div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 4: StockAudit.java -->
+              <article class="result-card" data-card>
+                <div class="result-card-head">
+                  <div class="result-card-file">
+                    <span class="file-dot"></span>
+                    StockAudit.java
+                    <span class="file-module">— inventory-service</span>
+                  </div>
+                  <div class="result-card-actions">
+                    <span class="result-card-meta">3 matches</span>
+                    <button class="icon-btn" title="More">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                    </button>
+                    <button class="icon-btn chevron-btn" title="Collapse">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="result-card-body">
+                  <div class="code-body">
+                    <div class="code-line simple"><span class="code-ln">3</span><span class="code-text">import <span class="match">org.apache.log4j</span>.Logger;</span></div>
+                    <div class="code-line simple"><span class="code-ln">4</span><span class="code-text">import <span class="match">org.apache.log4j</span>.PatternLayout;</span></div>
+                    <div class="code-line simple"><span class="code-ln">12</span><span class="code-text"><span class="match">Logger</span> auditLog = <span class="match">Logger</span>.getLogger("stock.audit");</span></div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 5: BatchRunner.java -->
+              <article class="result-card" data-card>
+                <div class="result-card-head">
+                  <div class="result-card-file">
+                    <span class="file-dot"></span>
+                    BatchRunner.java
+                    <span class="file-module">— legacy-batch</span>
+                  </div>
+                  <div class="result-card-actions">
+                    <span class="result-card-meta">2 matches</span>
+                    <button class="icon-btn" title="More">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                    </button>
+                    <button class="icon-btn chevron-btn" title="Collapse">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="result-card-body">
+                  <div class="code-body">
+                    <div class="code-line simple"><span class="code-ln">5</span><span class="code-text">import <span class="match">org.apache.log4j</span>.Logger;</span></div>
+                    <div class="code-line simple"><span class="code-ln">11</span><span class="code-text">private static final <span class="match">Logger</span> log = <span class="match">Logger</span>.getLogger(BatchRunner.class);</span></div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Hint that more cards exist below the fold -->
+              <article class="result-card" data-card style="opacity:0.55;">
+                <div class="result-card-head">
+                  <div class="result-card-file">
+                    <span class="file-dot"></span>
+                    AuditTrail.java
+                    <span class="file-module">— audit-service</span>
+                  </div>
+                  <div class="result-card-actions">
+                    <span class="result-card-meta">2 matches</span>
+                    <button class="icon-btn chevron-btn collapsed" title="Expand">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- DIVIDER -->
+        <div class="divider" id="divider">
+          <button class="divider-toggle" id="divider-toggle" title="Collapse Moddy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <!-- RIGHT: Moddy panel -->
+        <aside class="moddy-panel" id="moddy-panel" aria-label="Moddy chat">
+          <div class="moddy-head">
+            <div class="moddy-head-title">
+              <span class="moddy-mark">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 6 L6 26 M6 6 L16 16 L26 6 M26 6 L26 26"/>
+                </svg>
+              </span>
+              Moddy
+            </div>
+            <div class="moddy-head-actions">
+              <button class="icon-btn" title="New chat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+              <button class="icon-btn" title="History">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="moddy-conversation" id="conversation">
+            <div class="msg-user">Am I exposed to Log4j vulnerabilities?</div>
+
+            <div class="msg-moddy">
+              <div class="derived-query">
+                <div class="derived-query-head">
+                  <span class="derived-query-head-title">Searched for · Trigrep</span>
+                  <button class="derived-query-copy" title="Copy command" aria-label="Copy command">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                </div>
+                <div class="derived-query-cmd"><span class="cd">$ </span><span class="cb">mod search</span> working-set <span class="cs">'org.apache.log4j'</span> <span class="cb">--syntax</span> sourcegraph</div>
+              </div>
+
+              <div class="moddy-text">I searched for <code>org.apache.log4j</code> across your working set to find direct code references. This catches import statements and direct API usage.</div>
+
+              <div class="moddy-insight"><strong>Log4j</strong> is concentrated in <strong>4 older modules</strong> — upgrading your shared logging utility covers most callers.</div>
+
+              <div class="moddy-context-msg">
+                <div class="ctx-eyebrow">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M14 10l7-7"/><path d="M9 21H3v-6"/><path d="M10 14l-7 7"/></svg>
+                  Cross-panel context
+                </div>
+                You're viewing <strong>187 matches</strong> for <code>org.apache.log4j</code> in the search panel. Want me to run a migration recipe on these results, or narrow the search first?
+              </div>
+
+              <div class="moddy-actions">
+                <button class="moddy-action primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  Run recipe: Migrate Log4j 1.x → SLF4J
+                </button>
+                <button class="moddy-action secondary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Export results to CSV
+                </button>
+                <button class="moddy-action ghost">
+                  Refine search →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="moddy-input-wrap">
+            <div class="moddy-input">
+              <input type="text" placeholder="Ask about these results or run a recipe" id="moddy-input-field">
+              <button class="moddy-send" title="Send">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+            <div class="moddy-foot">Moddy v2 · Trigrep enabled</div>
+          </div>
+        </aside>
+
+        <!-- Reopen tab (shown when Moddy collapsed) -->
+        <button class="moddy-reopen" id="moddy-reopen" title="Open Moddy">Moddy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  // ===== Filter group collapse / expand =====
+  document.querySelectorAll('.filter-group-head').forEach(head => {
+    head.addEventListener('click', () => {
+      head.parentElement.classList.toggle('collapsed');
+    });
+  });
+  const collapseAll = document.getElementById('collapse-all');
+  collapseAll.addEventListener('click', () => {
+    const groups = document.querySelectorAll('.filter-group');
+    const anyOpen = [...groups].some(g => !g.classList.contains('collapsed'));
+    groups.forEach(g => g.classList.toggle('collapsed', anyOpen));
+    collapseAll.textContent = anyOpen ? 'Expand all' : 'Collapse all';
+  });
+
+  // ===== Filter item toggle (updates summary) =====
+  const BASE_MATCHES = 187, BASE_FILES = 42;
+  const activeFilters = new Map(); // key -> count
+  const summaryCount = document.getElementById('summary-count');
+  const summaryFiles = document.getElementById('summary-files');
+  document.querySelectorAll('.filter-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const key = item.querySelector('.filter-item-name').textContent.trim();
+      const count = parseInt(item.dataset.count, 10) || 0;
+      if (activeFilters.has(key)) activeFilters.delete(key);
+      else activeFilters.set(key, count);
+      item.classList.toggle('active');
+      // Simulate filtering: when any active, show sum of active counts; else baseline
+      if (activeFilters.size === 0) {
+        summaryCount.textContent = BASE_MATCHES;
+        summaryFiles.textContent = BASE_FILES;
+      } else {
+        const total = [...activeFilters.values()].reduce((a,b)=>a+b, 0);
+        summaryCount.textContent = total;
+        // Rough files derivation: ceil(matches / 4.5)
+        summaryFiles.textContent = Math.max(1, Math.ceil(total / 4.5));
+      }
+    });
+  });
+
+  // ===== Filter chip removal =====
+  document.querySelectorAll('.trigrep-chip-x').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btn.closest('.trigrep-chip').remove();
+    });
+  });
+
+  // ===== Topic search filter =====
+  const topicSearch = document.getElementById('topic-search');
+  if (topicSearch) {
+    topicSearch.addEventListener('input', () => {
+      const q = topicSearch.value.toLowerCase().trim();
+      const group = topicSearch.closest('.filter-group-body');
+      group.querySelectorAll('.filter-item').forEach(item => {
+        const name = item.querySelector('.filter-item-name').textContent.toLowerCase();
+        item.style.display = (q === '' || name.includes(q)) ? '' : 'none';
+      });
+    });
+  }
+
+  // ===== Result card expand/collapse =====
+  document.querySelectorAll('.chevron-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.result-card');
+      if (!card) return;
+      card.classList.toggle('collapsed');
+    });
+  });
+
+  // ===== Derived query copy button =====
+  const copyBtn = document.querySelector('.derived-query-copy');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const text = "mod search working-set 'org.apache.log4j' --syntax sourcegraph";
+      try { navigator.clipboard.writeText(text); } catch (e) {}
+      const original = copyBtn.innerHTML;
+      copyBtn.classList.add('copied');
+      copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      setTimeout(() => {
+        copyBtn.classList.remove('copied');
+        copyBtn.innerHTML = original;
+      }, 1500);
+    });
+  }
+
+  // ===== Chat input — Enter clears (no real processing) =====
+  const inputField = document.getElementById('moddy-input-field');
+  inputField.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && inputField.value.trim()) {
+      const conv = document.getElementById('conversation');
+      const msg = document.createElement('div');
+      msg.className = 'msg-user';
+      msg.textContent = inputField.value.trim();
+      conv.appendChild(msg);
+      inputField.value = '';
+      conv.scrollTop = conv.scrollHeight;
+    }
+  });
+
+  // ===== Scroll conversation to bottom on load =====
+  const conv = document.getElementById('conversation');
+  conv.scrollTop = conv.scrollHeight;
+
+  // ===== Draggable divider =====
+  const page = document.getElementById('page');
+  const divider = document.getElementById('divider');
+  const moddyPanel = document.getElementById('moddy-panel');
+  const reopenTab = document.getElementById('moddy-reopen');
+  const toggleBtn = document.getElementById('divider-toggle');
+
+  let dragging = false;
+  let dragStartX = 0;
+  let startModdyWidth = 0;
+
+  divider.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.divider-toggle')) return; // don't drag when clicking toggle
+    if (moddyPanel.classList.contains('collapsed')) return;
+    dragging = true;
+    dragStartX = e.clientX;
+    startModdyWidth = moddyPanel.getBoundingClientRect().width;
+    divider.classList.add('dragging');
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'col-resize';
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - dragStartX;
+    const newWidth = startModdyWidth - dx;
+    const pageWidth = page.getBoundingClientRect().width;
+    const min = Math.max(320, pageWidth * 0.25);
+    const max = pageWidth * 0.5;
+    const clamped = Math.min(Math.max(newWidth, min), max);
+    // disable transition during drag to avoid stutter
+    moddyPanel.style.transition = 'none';
+    moddyPanel.style.width = clamped + 'px';
+  });
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    divider.classList.remove('dragging');
+    document.body.style.userSelect = '';
+    document.body.style.cursor = '';
+    // re-enable transition shortly after
+    setTimeout(() => { moddyPanel.style.transition = ''; }, 50);
+  });
+
+  // ===== Collapse / expand Moddy panel =====
+  function setModdyCollapsed(collapsed) {
+    if (collapsed) {
+      moddyPanel.dataset.lastWidth = moddyPanel.style.width || moddyPanel.getBoundingClientRect().width + 'px';
+      moddyPanel.style.width = '';
+      moddyPanel.classList.add('collapsed');
+      reopenTab.classList.add('visible');
+      toggleBtn.title = 'Open Moddy';
+      toggleBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+    } else {
+      moddyPanel.classList.remove('collapsed');
+      if (moddyPanel.dataset.lastWidth) moddyPanel.style.width = moddyPanel.dataset.lastWidth;
+      reopenTab.classList.remove('visible');
+      toggleBtn.title = 'Collapse Moddy';
+      toggleBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+    }
+  }
+  toggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setModdyCollapsed(!moddyPanel.classList.contains('collapsed'));
+  });
+  reopenTab.addEventListener('click', () => setModdyCollapsed(false));
+})();
+</script>
+</body>
+</html>

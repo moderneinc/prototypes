@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moddy × Trigrep — Combined</title>
+<style>
+  :root {
+    --grey-25:  #f9fafb;
+    --grey-50:  #f3f4f6;
+    --grey-100: #e5e7eb;
+    --grey-200: #d1d5db;
+    --grey-300: #9ca3af;
+    --grey-500: #6b7280;
+    --grey-600: #4b5563;
+    --grey-700: #374151;
+    --grey-800: #1f2937;
+    --grey-900: #111827;
+    --bg: #ffffff;
+
+    --neo-digital-blue-300: #8d99ff;
+    --neo-digital-blue-500: #2f42ff;
+    --neo-red-500: #cb3446;
+
+    --neo-red: #FF3232;
+    --roseate: #DB4197;
+    --violet: #461DDE;
+    --digital-blue: #2F42FF;
+    --digital-green: #3DDC84;
+
+    --highlight: #fbbf24;
+    --highlight-bg: #fef3c7;
+    --highlight-text: #78350f;
+    --java-dot: #e76f00;
+    --code-bg: #0d1117;
+
+    --code-near-black: #0A0F1E;
+    --code-cb: #7B9FFF;
+    --code-cs: #A0A4C0;
+    --code-cd: rgba(255,255,255,0.25);
+    --code-slate-mid: #636687;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--grey-50);
+    color: var(--grey-700);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    line-height: 1.55;
+    overflow: hidden;
+  }
+  .mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+
+  /* ===== Shell ===== */
+  .shell { height: 100vh; display: flex; flex-direction: column; }
+  .grid {
+    display: grid;
+    grid-template-columns: 82px 1fr;
+    flex: 1;
+    overflow: hidden;
+    gap: 8px;
+  }
+
+  /* ===== Left nav rail ===== */
+  .leftnav {
+    width: 82px;
+    background: var(--grey-50);
+    padding: 12px 0 8px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .leftnav-home {
+    width: 40px; height: 40px;
+    margin: 0 auto 12px;
+    border-radius: 8px;
+    background: transparent; border: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--grey-900);
+  }
+  .leftnav-home:hover { background: var(--grey-100); }
+  .leftnav-home svg { width: 24px; height: 24px; }
+  .leftnav-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 6px;
+    display: flex; flex-direction: column; gap: 4px;
+    list-style: none;
+  }
+  .leftnav-list::-webkit-scrollbar { width: 0; }
+  .leftnav-item {
+    border: none; background: transparent;
+    width: 100%;
+    padding: 4px 0;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    color: var(--grey-900);
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: none;
+  }
+  .leftnav-icon-box {
+    width: 40px; height: 32px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--grey-900);
+    transition: background 0.15s ease;
+  }
+  .leftnav-icon-box svg { width: 22px; height: 22px; }
+  .leftnav-item:hover .leftnav-icon-box { background: var(--grey-100); }
+  .leftnav-item.active .leftnav-icon-box { background: var(--grey-100); }
+  .leftnav-item.active .leftnav-item-label { font-weight: 600; }
+  .leftnav-item-label {
+    font-size: 10.5px;
+    color: var(--grey-900);
+    text-align: center; line-height: 1.2;
+    font-weight: 500;
+  }
+  .leftnav-branding {
+    margin: 12px auto 8px;
+    width: 38px; height: 38px;
+    background: var(--grey-100);
+    border-radius: 6px;
+  }
+
+  /* ===== Content column ===== */
+  .content-col {
+    display: flex; flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .topnav { height: 65px; flex-shrink: 0; background: var(--grey-50); }
+  .topnav-inner {
+    height: 100%;
+    padding: 12px 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .topnav-brand {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    color: var(--grey-900);
+    cursor: pointer;
+    background: transparent; border: none;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+  }
+  .topnav-brand:hover { background: var(--grey-100); }
+  .topnav-brand svg { width: 24px; height: 24px; }
+  .org-selector {
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    padding: 7px 14px 7px 12px;
+    border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: inherit; font-size: 13px;
+    color: var(--grey-900);
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    min-width: 200px;
+  }
+  .org-selector svg.chev { width: 14px; height: 14px; color: var(--grey-500); margin-left: auto; }
+  .org-icon { width: 18px; height: 18px; color: var(--grey-700); display: inline-flex; align-items: center; justify-content: center; }
+  .org-icon svg { width: 16px; height: 16px; }
+  .topnav-spacer { flex: 1; }
+  .global-search {
+    width: 360px;
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-radius: 999px;
+    padding: 7px 14px;
+    color: var(--grey-500);
+    font-size: 13px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .global-search svg.icon { width: 14px; height: 14px; color: var(--grey-500); }
+  .global-search .kbd-hint {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 1px 5px; background: var(--grey-50);
+    border: 1px solid var(--grey-100); border-radius: 4px;
+    color: var(--grey-500);
+  }
+  .topnav-actions { display: flex; gap: 8px; align-items: center; }
+  .topnav-action {
+    width: 36px; height: 36px;
+    border: 1px solid var(--grey-100);
+    background: #fff;
+    border-radius: 999px;
+    color: var(--grey-700);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+  .topnav-action:hover { background: var(--grey-25); border-color: var(--grey-200); }
+  .topnav-action svg { width: 16px; height: 16px; }
+  .user-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #c5b3e8; color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+  }
+
+  /* ===== Page (split container) — transitions between Phase 1 and Phase 2 ===== */
+  .page {
+    flex: 1;
+    background: var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 8px 8px 0;
+    min-height: 0;
+    display: flex;
+    position: relative;
+  }
+  /* TriGrep panel: collapsed to width 0 in Phase 1; expanded to flex 1 in Phase 2 */
+  .trigrep-panel {
+    width: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                flex-basis 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                flex-grow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  /* Divider hidden in Phase 1 */
+  .divider {
+    width: 0;
+    background: transparent;
+    cursor: col-resize;
+    position: relative;
+    flex-shrink: 0;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1), background 0.15s ease;
+  }
+  .divider:hover, .divider.dragging { background: var(--grey-100); }
+  .divider-toggle {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 22px; height: 38px;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    box-shadow: 0 1px 2px rgba(15,23,42,0.06);
+    display: none; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--grey-500);
+    z-index: 2;
+  }
+  .divider-toggle:hover { color: var(--grey-900); border-color: var(--grey-200); }
+  .divider-toggle svg { width: 12px; height: 12px; }
+
+  /* Moddy panel: full flex in Phase 1; 30% in Phase 2 */
+  .moddy-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex; flex-direction: column;
+    background: #fff;
+    overflow: hidden;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                flex-basis 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                flex-grow 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                border-left-width 300ms ease;
+    border-left: 0 solid var(--grey-100);
+  }
+  .moddy-panel.collapsed { width: 0 !important; min-width: 0; border-left-width: 0; flex: 0 0 0 !important; }
+
+  /* === Phase 2 active state === */
+  body.phase-2 .trigrep-panel {
+    width: auto;
+    flex: 1 1 auto;
+  }
+  body.phase-2 .divider {
+    width: 6px;
+  }
+  body.phase-2 .divider-toggle { display: inline-flex; }
+  body.phase-2 .moddy-panel {
+    flex: 0 0 30%;
+    border-left-width: 1px;
+  }
+
+  /* Reopen tab for Moddy when collapsed */
+  .moddy-reopen {
+    position: absolute;
+    right: 0; top: 50%;
+    transform: translateY(-50%);
+    padding: 12px 6px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    display: none;
+    align-items: center; justify-content: center;
+    color: var(--grey-700);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+  }
+  .moddy-reopen.visible { display: inline-flex; }
+
+  /* ===== Moddy chat container (lives inside .moddy-panel — flexes width with phase) ===== */
+  .chat-inner {
+    flex: 1;
+    display: flex; flex-direction: column;
+    min-height: 0;
+    width: 100%;
+    transition: max-width 300ms cubic-bezier(0.4, 0, 0.2, 1), padding 300ms ease;
+    margin: 0 auto;
+    /* Phase 1: centered, capped width */
+    max-width: 720px;
+    padding: 0 24px;
+  }
+  body.phase-2 .chat-inner {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  /* Moddy header (only shown in Phase 2) */
+  .moddy-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--grey-50);
+    display: none; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  body.phase-2 .moddy-head { display: flex; }
+  .back-to-chat {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; border: none;
+    padding: 4px 6px 4px 0;
+    color: var(--grey-500);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: color 0.15s ease;
+  }
+  .back-to-chat:hover { color: var(--neo-digital-blue-500); }
+  .back-to-chat svg { width: 14px; height: 14px; }
+  .moddy-head-actions { display: inline-flex; gap: 4px; }
+
+  /* Greeter — Phase 1 step 1 only */
+  .greeter {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 56px 0 16px; gap: 20px;
+    width: 100%;
+  }
+  .greeter.hidden { display: none; }
+  .greeter-logo {
+    width: 80px; height: 80px;
+    color: var(--violet);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .greeter-logo svg { width: 100%; height: 100%; }
+  .greeter-headline {
+    text-align: center;
+    font-size: 22px; font-weight: 500; color: var(--grey-800);
+    line-height: 1.3;
+  }
+  .suggestions {
+    display: flex; flex-direction: column;
+    width: 100%;
+    margin-top: 12px;
+  }
+  .suggestion {
+    text-align: left;
+    padding: 14px 16px;
+    border: none;
+    border-bottom: 1px solid var(--grey-50);
+    background: transparent;
+    color: var(--grey-700);
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+    line-height: 1.45;
+  }
+  .suggestion:hover { background: var(--grey-25); color: var(--grey-900); }
+  .suggestion:last-child { border-bottom: none; }
+  /* Subtle highlight on the one tile that advances the demo */
+  .suggestion.is-primed {
+    background: rgba(47, 66, 255, 0.04);
+    border-left: 2px solid var(--neo-digital-blue-500);
+    padding-left: 14px;
+    color: var(--grey-900);
+  }
+  .suggestion.is-primed:hover { background: rgba(47, 66, 255, 0.08); }
+  .greeter-disclaimer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--grey-600);
+    padding: 20px 16px 16px;
+    line-height: 1.5;
+  }
+  .greeter-disclaimer svg { width: 12px; height: 12px; vertical-align: -1px; margin-right: 4px; color: var(--neo-digital-blue-500); }
+
+  /* Conversation (shared between phases) */
+  .conversation {
+    flex: 1; overflow-y: auto;
+    padding: 24px 4px 24px;
+    display: flex; flex-direction: column; gap: 20px;
+    scrollbar-gutter: stable;
+  }
+  body.phase-2 .conversation { padding: 18px 18px 12px; gap: 14px; }
+  .conversation.hidden { display: none; }
+  .conversation::-webkit-scrollbar { width: 6px; }
+  .conversation::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 3px; }
+
+  /* User message — Phase 1 style (full-width grey bubble) */
+  .msg-user {
+    align-self: stretch;
+    display: flex; flex-direction: row; gap: 10px; align-items: flex-start;
+    background: var(--grey-50);
+    border-radius: 16px;
+    padding: 12px 14px;
+  }
+  body.phase-2 .msg-user {
+    align-self: flex-end;
+    max-width: 88%;
+    border-radius: 14px 14px 4px 14px;
+    padding: 10px 14px;
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+  }
+  body.phase-2 .msg-user .avatar { display: none; }
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    background: var(--grey-100); color: var(--grey-700);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+  }
+  .msg-user-text { color: var(--grey-800); font-size: 15px; padding-top: 4px; }
+  body.phase-2 .msg-user-text { padding-top: 0; font-size: 13.5px; color: var(--grey-900); line-height: 1.5; }
+
+  /* Moddy message */
+  .msg-moddy { display: flex; flex-direction: column; gap: 12px; color: var(--grey-600); font-size: 16px; }
+  body.phase-2 .msg-moddy { font-size: 13.5px; gap: 10px; }
+  .msg-moddy p { margin: 0; }
+  .msg-moddy .inline-code, .msg-moddy code {
+    background: var(--grey-25); border: 1px solid var(--grey-50);
+    padding: 0 5px; border-radius: 4px;
+    font-size: 13px; color: var(--violet);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  body.phase-2 .msg-moddy code { font-size: 12px; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeInUp 380ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+  /* Derived query — Neo mini-code-card */
+  .derived-query {
+    background: var(--code-near-black);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .derived-query-head {
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px;
+  }
+  .derived-query-head-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--code-slate-mid);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .derived-query-cmd {
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.6);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  /* In the narrow Moddy panel, wrap the command so it stays readable. */
+  body.phase-2 .derived-query-cmd {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: hidden;
+  }
+  .derived-query-cmd .cb { color: var(--code-cb); }
+  .derived-query-cmd .cs { color: var(--code-cs); }
+  .derived-query-cmd .cd { color: var(--code-cd); }
+  .derived-query-copy {
+    width: 24px; height: 24px;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    color: var(--code-cs);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease;
+  }
+  .derived-query-copy:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .derived-query-copy svg { width: 12px; height: 12px; }
+  .derived-query-copy.copied {
+    background: rgba(61,220,132,0.18);
+    border-color: rgba(61,220,132,0.4);
+    color: var(--digital-green);
+  }
+
+  /* Scope line */
+  .scope-line {
+    font-size: 12px; color: var(--grey-600);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  }
+  .scope-line .scope-sep { color: var(--grey-300); }
+
+  /* Module grouping */
+  .modules-row {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    font-size: 14px; color: var(--grey-600);
+  }
+  body.phase-2 .modules-row { font-size: 13px; }
+  .modules-label { font-weight: 600; color: var(--grey-800); margin-right: 4px; }
+  .module-chip {
+    border: 1px solid var(--grey-100); background: #fff;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px; color: var(--grey-700);
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .module-chip:hover { border-color: var(--violet); color: var(--violet); background: rgba(70,29,222,0.04); }
+  .module-chip .count {
+    background: var(--grey-50); color: var(--grey-500);
+    border-radius: 999px; padding: 0 6px; font-size: 11px;
+  }
+  .module-chip:hover .count { background: rgba(70,29,222,0.1); color: var(--violet); }
+  .modules-more {
+    background: none; border: none; padding: 0;
+    color: var(--violet); cursor: pointer;
+    font-family: inherit; font-size: 13px;
+    text-decoration: underline;
+  }
+
+  /* Inline file cards (Phase 1) */
+  .results { display: flex; flex-direction: column; gap: 10px; }
+  .file-group {
+    border: 1px solid var(--grey-100); border-radius: 8px;
+    background: #fff; overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    transition: border-color 0.15s ease, box-shadow 0.2s ease;
+  }
+  .file-group:hover {
+    border-color: var(--grey-200);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  }
+  .file-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; background: var(--grey-25);
+    border-bottom: 1px solid var(--grey-50);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .file-path { color: var(--grey-900); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .file-module { color: var(--grey-500); font-weight: 400; margin-left: 2px; }
+  .file-count {
+    color: var(--grey-500); font-size: 11px; margin-left: auto;
+    background: var(--grey-50);
+    border-radius: 999px;
+    padding: 1px 8px;
+  }
+  .file-chev {
+    width: 12px; height: 12px; color: var(--grey-500);
+    transition: transform 0.15s ease;
+  }
+  .file-group.collapsed .file-chev { transform: rotate(-90deg); }
+  .file-group.collapsed .file-body { display: none; }
+  .lang-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--java-dot);
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(231, 111, 0, 0.15);
+  }
+  .file-body { padding: 8px 0; }
+  .match-line {
+    display: grid; grid-template-columns: 56px 1fr;
+    padding: 3px 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .match-line:hover { background: var(--grey-25); }
+  .match-line .lineno {
+    text-align: right; color: var(--grey-300); padding-right: 12px;
+    user-select: none;
+  }
+  .match-line .code {
+    padding: 0 14px 0 12px; color: var(--grey-900); white-space: pre; overflow-x: auto;
+  }
+  .match-line mark {
+    background: var(--highlight-bg); color: var(--highlight-text);
+    padding: 0 2px; border-radius: 2px;
+  }
+
+  .overflow-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 4px 0;
+    font-size: 13px; color: var(--grey-600);
+  }
+  .overflow-row .more-link {
+    background: none; border: none; padding: 0;
+    color: var(--violet); cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+  }
+  .overflow-row .more-link:hover { text-decoration: underline; }
+
+  /* Followup action buttons (Phase 1 + Phase 2) */
+  .followup-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .followup-actions.stacked { flex-direction: column; align-items: stretch; gap: 8px; }
+  body.phase-2 .followup-actions { flex-direction: column; align-items: stretch; gap: 8px; }
+  .followup {
+    border: 1px solid var(--grey-200); background: #fff;
+    border-radius: 8px; padding: 9px 14px;
+    font-size: 13px; color: var(--grey-900); cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .followup:hover { border-color: var(--grey-300); background: var(--grey-25); }
+  body.phase-2 .followup { width: 100%; text-align: left; }
+  .followup.primary {
+    background: var(--neo-digital-blue-500);
+    color: #fff; border-color: var(--neo-digital-blue-500);
+    font-weight: 600;
+  }
+  .followup.primary:hover { background: #1f30e6; }
+  .followup.primary svg { width: 14px; height: 14px; }
+  .followup.tertiary {
+    border: none; background: transparent;
+    padding: 8px 6px; color: var(--neo-digital-blue-500);
+    font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .followup.tertiary:hover { background: rgba(47, 66, 255, 0.06); color: var(--neo-digital-blue-500); }
+  .followup svg { width: 14px; height: 14px; }
+
+  /* Chat input */
+  .prompt-wrap {
+    padding: 16px 0 24px;
+    background: linear-gradient(to bottom, transparent, var(--bg) 30%);
+    flex-shrink: 0;
+  }
+  body.phase-2 .prompt-wrap {
+    padding: 14px 18px 12px;
+    background: #fff;
+    border-top: 1px solid var(--grey-50);
+  }
+  .prompt-gradient {
+    position: relative; padding: 1px; border-radius: 10px;
+    background: linear-gradient(60deg, var(--neo-red), var(--roseate), var(--violet), var(--digital-blue), var(--digital-green));
+    background-size: 300% 300%;
+    animation: gradient-shift 10s ease alternate infinite;
+    box-shadow: rgba(0,0,0,0.12) 0px 1px 8px 0px;
+  }
+  body.phase-2 .prompt-gradient {
+    background: var(--grey-200);
+    animation: none;
+    box-shadow: none;
+  }
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .prompt-inner {
+    background: var(--bg); border-radius: 9px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px 10px 18px;
+  }
+  body.phase-2 .prompt-inner { padding: 6px 6px 6px 14px; }
+  .prompt-input {
+    flex: 1; border: none; outline: none; resize: none;
+    font-family: inherit; font-size: 15px; color: var(--grey-700);
+    background: transparent; padding: 8px 0;
+    height: 24px; line-height: 1.5;
+    overflow-y: auto;
+  }
+  body.phase-2 .prompt-input { font-size: 13.5px; padding: 6px 0; }
+  .prompt-input::placeholder { color: var(--grey-300); }
+  .send-btn {
+    width: 32px; height: 32px; border-radius: 50%; border: none;
+    background: var(--grey-900); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .send-btn:hover { background: var(--grey-700); }
+  .send-btn svg { width: 14px; height: 14px; }
+  body.phase-2 .send-btn { width: 30px; height: 30px; }
+  .prompt-footnote {
+    font-size: 11px; color: var(--grey-600);
+    text-align: left;
+    margin-top: 8px;
+    padding-left: 4px;
+  }
+  body.phase-2 .prompt-footnote { text-align: center; padding-left: 0; }
+
+  /* ===== TriGrep left panel ===== */
+  .trigrep-head {
+    padding: 16px 24px 12px;
+    border-bottom: 1px solid var(--grey-50);
+    flex-shrink: 0;
+  }
+  .trigrep-search-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .trigrep-search-box {
+    flex: 1;
+    display: flex; align-items: center; gap: 8px;
+    background: #fff;
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 6px 10px 6px 12px;
+    min-height: 40px;
+  }
+  .trigrep-search-box:focus-within {
+    border-color: var(--neo-digital-blue-500);
+    box-shadow: 0 0 0 3px rgba(47, 66, 255, 0.12);
+  }
+  .trigrep-search-icon { width: 16px; height: 16px; color: var(--grey-500); flex-shrink: 0; }
+  .trigrep-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--grey-50);
+    color: var(--grey-700);
+    border: 1px solid var(--grey-100);
+    border-radius: 6px;
+    padding: 3px 4px 3px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .trigrep-chip strong { color: var(--grey-500); font-weight: 500; margin-right: 1px; }
+  .trigrep-chip-x {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: none; background: transparent;
+    color: var(--grey-500); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .trigrep-chip-x:hover { background: var(--grey-200); color: var(--grey-900); }
+  .trigrep-chip-x svg { width: 10px; height: 10px; }
+  .trigrep-query {
+    flex: 1; min-width: 80px;
+    border: none; outline: none; background: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--grey-900);
+  }
+  .btn-search {
+    background: var(--neo-digital-blue-500);
+    color: #fff; border: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-search:hover { background: #1f30e6; }
+  .trigrep-meta-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 10px;
+    font-size: 12px; color: var(--grey-600);
+  }
+  .trigrep-meta-row a {
+    color: var(--grey-600); text-decoration: none; font-size: 12px;
+  }
+  .trigrep-meta-row a:hover { color: var(--neo-digital-blue-500); }
+  .trigrep-summary { color: var(--grey-700); font-weight: 500; }
+  .trigrep-summary .summary-count { color: var(--grey-900); font-weight: 600; }
+
+  .trigrep-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .trigrep-filters {
+    width: 240px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--grey-50);
+    overflow-y: auto;
+    padding: 16px 12px 24px;
+  }
+  .trigrep-filters::-webkit-scrollbar { width: 6px; }
+  .trigrep-filters::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 3px; }
+  .filters-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 8px 8px;
+    font-size: 11px;
+    color: var(--grey-500);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  .filters-head .collapse-all {
+    color: var(--neo-digital-blue-500); cursor: pointer;
+    text-transform: none; letter-spacing: 0; font-weight: 500;
+    font-size: 11.5px;
+  }
+  .filters-head .collapse-all:hover { text-decoration: underline; }
+  .filter-group {
+    margin-bottom: 16px;
+    border-top: 1px solid var(--grey-50);
+    padding-top: 12px;
+  }
+  .filter-group:first-of-type { border-top: none; padding-top: 4px; }
+  .filter-group-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 8px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 13px; font-weight: 600; color: var(--grey-900);
+  }
+  .filter-group-head:hover { background: var(--grey-25); }
+  .filter-group-head svg { width: 12px; height: 12px; color: var(--grey-500); transition: transform 0.2s ease; }
+  .filter-group.collapsed .filter-group-head svg { transform: rotate(-90deg); }
+  .filter-group.collapsed .filter-group-body { display: none; }
+  .filter-group-body { padding: 4px 0 2px; }
+  .topic-search {
+    width: calc(100% - 16px);
+    margin: 6px 8px 8px;
+    padding: 6px 10px;
+    border: 1px solid var(--grey-100);
+    border-radius: 6px;
+    font-family: inherit; font-size: 12px;
+    color: var(--grey-700);
+    background: var(--grey-25);
+    outline: none;
+  }
+  .topic-search:focus { border-color: var(--neo-digital-blue-300); background: #fff; }
+  .filter-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--grey-700);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .filter-item:hover { background: var(--grey-25); color: var(--grey-900); }
+  .filter-item .count { color: var(--grey-500); font-size: 11.5px; }
+  .filter-item.active {
+    background: rgba(47, 66, 255, 0.08);
+    color: var(--neo-digital-blue-500);
+    font-weight: 600;
+  }
+  .filter-item.active .count { color: var(--neo-digital-blue-500); }
+  .filter-item .lang-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: inline-block;
+    box-shadow: none;
+  }
+  .filter-item-name { display: inline-flex; align-items: center; }
+
+  .trigrep-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px 32px;
+    background: var(--grey-25);
+  }
+  .trigrep-results::-webkit-scrollbar { width: 8px; }
+  .trigrep-results::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 4px; }
+
+  .result-card {
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+  }
+  .result-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--grey-50);
+    background: #fff;
+  }
+  .result-card-file {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--grey-900);
+    font-weight: 500;
+  }
+  .result-card-file .file-dot {
+    width: 8px; height: 8px;
+    background: var(--java-dot);
+    border-radius: 50%;
+  }
+  .result-card-file .file-module {
+    color: var(--grey-500); font-weight: 400;
+    font-family: inherit;
+    font-size: 12.5px;
+    margin-left: 4px;
+  }
+  .result-card-actions { display: inline-flex; align-items: center; gap: 4px; }
+  .result-card-meta {
+    font-size: 11.5px; color: var(--grey-500); margin-right: 6px;
+  }
+  .icon-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: none; background: transparent;
+    color: var(--grey-500);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:hover { background: var(--grey-50); color: var(--grey-900); }
+  .icon-btn svg { width: 14px; height: 14px; }
+  .chevron-btn svg { transition: transform 0.2s ease; }
+  .result-card.collapsed .chevron-btn svg { transform: rotate(-90deg); }
+  .result-card.collapsed .result-card-body { display: none; }
+
+  .hunk-label {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 14px;
+    background: #f6f8fa;
+    border-bottom: 1px solid var(--grey-50);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--grey-500);
+  }
+  .hunk-label .hunk-text { color: var(--grey-700); }
+  .hunk-label .icon-btn { width: 22px; height: 22px; }
+  .hunk-label .icon-btn svg { width: 12px; height: 12px; }
+  .code-body {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--grey-900);
+    overflow-x: auto;
+    padding: 6px 0;
+  }
+  .code-line {
+    display: grid;
+    grid-template-columns: 44px 44px 28px 1fr;
+    align-items: center;
+    min-height: 22px;
+  }
+  .code-line.simple { grid-template-columns: 56px 1fr; }
+  .code-ln {
+    color: var(--grey-300); text-align: right;
+    padding: 0 8px 0 0; user-select: none; font-size: 11.5px;
+  }
+  .code-marker {
+    text-align: center; color: var(--grey-300);
+    user-select: none; font-weight: 600;
+  }
+  .code-text { padding: 0 14px 0 6px; white-space: pre; }
+  .code-line.simple .code-text { padding-left: 14px; }
+  .code-line.removed { background: #ffeef0; }
+  .code-line.removed .code-marker { color: #cf222e; }
+  .code-line.added { background: #e6ffec; }
+  .code-line.added .code-marker { color: #1a7f37; }
+  .match {
+    background: var(--highlight-bg); color: var(--highlight-text);
+    padding: 0 2px; border-radius: 2px;
+  }
+  .code-line.removed .match { background: #ffdce0; color: #82071e; }
+  .code-line.added .match { background: #aceebb; color: #0f5132; }
+
+  /* File detail drill-down */
+  .trigrep-body { transition: opacity 100ms ease; }
+  .trigrep-body.detail-mode > .trigrep-filters,
+  .trigrep-body.detail-mode > .trigrep-results { display: none; }
+  .trigrep-detail {
+    display: none;
+    flex: 1; flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    background: #fff;
+  }
+  .trigrep-body.detail-mode > .trigrep-detail { display: flex; }
+  .result-card-file.is-clickable { cursor: pointer; }
+  .result-card-file.is-clickable:hover { color: var(--neo-digital-blue-500); }
+
+  .detail-breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 24px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--grey-50);
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .detail-back {
+    background: none; border: none; padding: 2px 0;
+    color: var(--neo-digital-blue-500);
+    cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .detail-back:hover { text-decoration: underline; }
+  .detail-back svg { width: 12px; height: 12px; }
+  .detail-crumb-sep { color: var(--grey-300); }
+  .detail-crumb-current {
+    color: var(--grey-900); font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+  }
+  .detail-search-row {
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--grey-50);
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .detail-search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: #fff;
+    border: 1px solid var(--grey-200);
+    border-radius: 6px;
+    padding: 6px 12px;
+  }
+  .detail-search-box:focus-within {
+    border-color: var(--neo-digital-blue-500);
+    box-shadow: 0 0 0 3px rgba(47, 66, 255, 0.12);
+  }
+  .detail-search-box svg {
+    width: 14px; height: 14px;
+    color: var(--grey-500);
+    flex-shrink: 0;
+  }
+  .detail-search-box input {
+    flex: 1;
+    border: none; outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--grey-900);
+  }
+  .detail-search-box input::placeholder { color: var(--grey-500); }
+  .detail-search-box .kbd-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 1px 5px;
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    border-radius: 4px;
+    color: var(--grey-600);
+    flex-shrink: 0;
+  }
+
+  .detail-header {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--grey-50);
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .detail-header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .detail-file-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--grey-900);
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .detail-file-path .file-dot {
+    width: 8px; height: 8px; background: var(--java-dot); border-radius: 50%; flex-shrink: 0;
+  }
+  .detail-module {
+    color: var(--grey-600);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  .detail-code {
+    flex: 1;
+    overflow-y: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    background: #fff;
+    padding: 12px 0;
+  }
+  .detail-code::-webkit-scrollbar { width: 8px; }
+  .detail-code::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 4px; }
+  .detail-code .code-line {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    align-items: center;
+    min-height: 22px;
+  }
+  .detail-code .code-line.has-match { background: #fffbeb; }
+  .detail-code .code-ln {
+    text-align: right;
+    color: var(--grey-300);
+    padding: 0 12px 0 0;
+    user-select: none;
+    font-size: 11.5px;
+  }
+  .detail-code .code-text {
+    padding: 0 14px;
+    white-space: pre;
+    color: var(--grey-900);
+  }
+  .detail-code .kw { color: var(--neo-digital-blue-500); }
+  .detail-code .str { color: #b45309; }
+  .detail-code .ann { color: var(--violet); }
+  .detail-code .match {
+    background: var(--highlight-bg); color: var(--highlight-text);
+    padding: 0 2px; border-radius: 2px;
+  }
+
+  /* TriGrep empty state — shown when a new chat is started inside the split view */
+  .trigrep-empty {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px;
+    text-align: center;
+    padding: 40px 24px;
+    background: var(--grey-25);
+  }
+  .trigrep-empty-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--grey-300);
+    margin-bottom: 4px;
+  }
+  .trigrep-empty-icon svg { width: 24px; height: 24px; }
+  .trigrep-empty-title { font-size: 15px; font-weight: 600; color: var(--grey-700); }
+  .trigrep-empty-desc { font-size: 13px; color: var(--grey-600); max-width: 320px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="grid">
+    <!-- LEFT NAV RAIL -->
+    <nav class="leftnav" aria-label="Platform">
+      <button class="leftnav-home" title="Home">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 6 L6 26 M6 6 L16 16 L26 6 M26 6 L26 26"/>
+        </svg>
+      </button>
+      <ul class="leftnav-list" id="leftnav-list"></ul>
+      <div class="leftnav-branding"></div>
+    </nav>
+
+    <!-- CONTENT COLUMN -->
+    <div class="content-col">
+      <!-- TOP NAV -->
+      <div class="topnav">
+        <div class="topnav-inner">
+          <button class="topnav-brand" title="Moderne">
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 6 L6 26 M6 6 L16 16 L26 6 M26 6 L26 26"/>
+            </svg>
+          </button>
+          <button class="org-selector">
+            <span class="org-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+            <span>Open Source</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="topnav-spacer"></div>
+          <div class="global-search">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span style="flex:1">Search recipe</span>
+            <span class="kbd-hint">⌘K</span>
+          </div>
+          <div class="topnav-actions">
+            <button class="topnav-action" title="Help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+            <button class="topnav-action" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+            <button class="user-avatar">A</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE (split container, animates between phases) -->
+      <div class="page" id="page">
+        <!-- LEFT: TriGrep panel (only visible in Phase 2) -->
+        <section class="trigrep-panel" id="trigrep-panel" aria-label="TriGrep search" aria-hidden="true"></section>
+
+        <!-- DIVIDER -->
+        <div class="divider" id="divider">
+          <button class="divider-toggle" id="divider-toggle" title="Collapse Moddy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <!-- RIGHT: Moddy panel (full-width in Phase 1, ~30% in Phase 2) -->
+        <aside class="moddy-panel" id="moddy-panel" aria-label="Moddy chat">
+          <div class="moddy-head">
+            <button class="back-to-chat" id="back-to-chat" title="Back to chat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              Back to chat
+            </button>
+            <div class="moddy-head-actions">
+              <button class="icon-btn" title="New chat" id="new-chat-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="chat-inner" id="chat-inner">
+            <!-- Greeter (Phase 1 step 1) -->
+            <div class="greeter" id="greeter">
+              <div class="greeter-logo">
+                <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 6 L6 26 M6 6 L16 16 L26 6 M26 6 L26 26"/>
+                </svg>
+              </div>
+              <div class="greeter-headline">What do you want to find in your codebase?</div>
+              <div class="suggestions" id="suggestions">
+                <button class="suggestion is-primed" data-q="Am I exposed to Log4j vulnerabilities?">Am I exposed to Log4j vulnerabilities?</button>
+                <button class="suggestion">Find all public methods returning List in my working set</button>
+                <button class="suggestion">Which classes extend AbstractController?</button>
+                <button class="suggestion">Find string concatenation inside log statements</button>
+              </div>
+              <div class="greeter-disclaimer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Moddy can search code patterns, find security risks, and run automated migrations.
+              </div>
+            </div>
+
+            <!-- Conversation (Phase 1 + Phase 2) -->
+            <div class="conversation hidden" id="conversation"></div>
+
+            <!-- Input -->
+            <div class="prompt-wrap">
+              <div class="prompt-gradient">
+                <div class="prompt-inner">
+                  <input class="prompt-input" id="prompt-input" placeholder="Ask Moddy to search, refine, or run a recipe" autocomplete="off" spellcheck="false">
+                  <button class="send-btn" id="send-btn" title="Send">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="prompt-footnote">Moddy v2 · Trigrep enabled</div>
+            </div>
+          </div>
+        </aside>
+
+        <button class="moddy-reopen" id="moddy-reopen" title="Open Moddy">Moddy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================================================================
+// Left nav data
+// ===================================================================
+const NAV_ITEMS = [
+  { id: 'moddy', label: 'Moddy', svg: '<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>' },
+  { id: 'devcenter', label: 'DevCenter', svg: '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>' },
+  { id: 'trigrep', label: 'TriGrep', active: true, svg: '<circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>' },
+  { id: 'marketplace', label: 'Marketplace', svg: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>' },
+  { id: 'builder', label: 'Builder', svg: '<path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/>' },
+  { id: 'activity', label: 'Activity', svg: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>' },
+  { id: 'repos', label: 'Repos', svg: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>' },
+  { id: 'deploy', label: 'Deploy', svg: '<path d="M4.5 16.5 3 22l5.5-1.5L20.5 8.5a2.5 2.5 0 0 0-3.5-3.5L4.5 16.5z"/><path d="m15 5 4 4"/>' },
+];
+const navList = document.getElementById('leftnav-list');
+NAV_ITEMS.forEach(item => {
+  const li = document.createElement('li');
+  li.innerHTML = `<button class="leftnav-item ${item.active ? 'active' : ''}">
+    <span class="leftnav-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${item.svg}</svg></span>
+    <span class="leftnav-item-label">${item.label}</span>
+  </button>`;
+  navList.appendChild(li);
+});
+
+// ===================================================================
+// Hardcoded data
+// ===================================================================
+const SEARCH_CMD = "mod search working-set 'org.apache.log4j' --syntax sourcegraph";
+const TOTAL_MATCHES = 187;
+const TOTAL_FILES = 42;
+const SCOPE_LINE = `${TOTAL_MATCHES} matches across ${TOTAL_FILES} files in 101ms · 847 repositories searched`;
+const MODULES = [
+  { name: 'payments-service', count: 31 },
+  { name: 'common-logging', count: 28 },
+  { name: 'inventory-service', count: 27 },
+  { name: 'legacy-batch', count: 19 },
+];
+const MODULES_MORE = 8;
+const FILE_CARDS = [
+  {
+    file: 'PaymentLogger.java', module: 'payments-service', count: 3,
+    lines: [
+      { n: 14, code: 'import <m>org.apache.log4j</m>.Logger;' },
+      { n: 15, code: 'import <m>org.apache.log4j</m>.Level;' },
+      { n: 18, code: 'private static final Logger logger = <m>org.apache.log4j</m>.Logger.getLogger(PaymentLogger.class);' },
+    ]
+  },
+  {
+    file: 'LogConfig.java', module: 'common-logging', count: 2,
+    lines: [
+      { n: 7, code: 'import <m>org.apache.log4j</m>.PropertyConfigurator;' },
+      { n: 23, code: '<m>org.apache.log4j</m>.PropertyConfigurator.configure("log4j.properties");' },
+    ]
+  },
+  {
+    file: 'StockAudit.java', module: 'inventory-service', count: 3,
+    lines: [
+      { n: 3, code: 'import <m>org.apache.log4j</m>.Logger;' },
+      { n: 4, code: 'import <m>org.apache.log4j</m>.PatternLayout;' },
+      { n: 12, code: 'Logger auditLog = <m>org.apache.log4j</m>.Logger.getLogger("stock.audit");' },
+    ]
+  },
+  {
+    file: 'BatchRunner.java', module: 'legacy-batch', count: 2,
+    lines: [
+      { n: 5, code: 'import <m>org.apache.log4j</m>.Logger;' },
+      { n: 11, code: 'private static final Logger log = <m>org.apache.log4j</m>.Logger.getLogger(BatchRunner.class);' },
+    ]
+  },
+];
+// Full file content per file for the drill-down view. Click any result card's
+// file path → that file's detail view renders in the left panel.
+const FILE_DETAILS = {
+  'pom.xml': {
+    name: 'pom.xml',
+    path: 'base/pom.xml',
+    module: 'base',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '&lt;?xml version="1.0" encoding="UTF-8"?&gt;' },
+      { n: 2,  code: '&lt;project xmlns="http://maven.apache.org/POM/4.0.0"&gt;' },
+      { n: 3,  code: '    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;' },
+      { n: 4,  code: '    &lt;groupId&gt;org.apache.sling&lt;/groupId&gt;' },
+      { n: 5,  code: '    &lt;artifactId&gt;performance-test-utils&lt;/artifactId&gt;' },
+      { n: 6,  code: '    &lt;version&gt;1.0.0&lt;/version&gt;' },
+      { n: 7,  code: '' },
+      { n: 8,  code: '    &lt;name&gt;Apache Sling Performance Test Utilities&lt;/name&gt;' },
+      { n: 9,  code: '' },
+      { n: 10, code: '    &lt;properties&gt;' },
+      { n: 11, code: '        &lt;junit.version&gt;4.13.1&lt;/junit.version&gt;' },
+      { n: 12, code: '    &lt;/properties&gt;' },
+      { n: 13, code: '' },
+      { n: 14, code: '    &lt;dependencies&gt;' },
+      { n: 15, code: '        &lt;dependency&gt;' },
+      { n: 16, code: '            &lt;groupId&gt;<m>org.apache.log4j</m>&lt;/groupId&gt;', hasMatch: true },
+      { n: 17, code: '            &lt;artifactId&gt;<m>log4j</m>&lt;/artifactId&gt;', hasMatch: true },
+      { n: 18, code: '            &lt;version&gt;1.2.17&lt;/version&gt;' },
+      { n: 19, code: '        &lt;/dependency&gt;' },
+      { n: 20, code: '    &lt;/dependencies&gt;' },
+      { n: 21, code: '&lt;/project&gt;' },
+    ],
+  },
+  'PaymentLogger.java': {
+    name: 'PaymentLogger.java',
+    path: 'payments-service/src/main/java/com/acme/payments/PaymentLogger.java',
+    module: 'payments-service',
+    matchCount: 3,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.payments;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> java.time.LocalDateTime;' },
+      { n: 4,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Logger;', hasMatch: true },
+      { n: 5,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Level;', hasMatch: true },
+      { n: 6,  code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
+      { n: 7,  code: '' },
+      { n: 8,  code: '<span class="ann">@Component</span>' },
+      { n: 9,  code: '<span class="kw">public class</span> PaymentLogger {' },
+      { n: 10, code: '' },
+      { n: 11, code: '    <span class="kw">private static final</span> Logger logger = <m>org.apache.log4j</m>.Logger.getLogger(PaymentLogger.<span class="kw">class</span>);', hasMatch: true },
+      { n: 12, code: '' },
+      { n: 13, code: '    <span class="kw">public void</span> logTransaction(String txId, <span class="kw">double</span> amount) {' },
+      { n: 14, code: '        logger.info(<span class="str">"Processing payment "</span> + txId + <span class="str">": $"</span> + amount);' },
+      { n: 15, code: '    }' },
+      { n: 16, code: '' },
+      { n: 17, code: '    <span class="kw">public void</span> logFailure(String txId, Exception e) {' },
+      { n: 18, code: '        logger.log(Level.ERROR, <span class="str">"Payment failed: "</span> + txId, e);' },
+      { n: 19, code: '    }' },
+      { n: 20, code: '}' },
+    ],
+  },
+  'LogConfig.java': {
+    name: 'LogConfig.java',
+    path: 'common-logging/src/main/java/com/acme/logging/LogConfig.java',
+    module: 'common-logging',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.logging;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> java.io.File;' },
+      { n: 4,  code: '<span class="kw">import</span> java.io.IOException;' },
+      { n: 5,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.PropertyConfigurator;', hasMatch: true },
+      { n: 6,  code: '<span class="kw">import</span> org.springframework.context.annotation.Configuration;' },
+      { n: 7,  code: '' },
+      { n: 8,  code: '<span class="ann">@Configuration</span>' },
+      { n: 9,  code: '<span class="kw">public class</span> LogConfig {' },
+      { n: 10, code: '' },
+      { n: 11, code: '    <span class="kw">private static final</span> String CONFIG_PATH = <span class="str">"log4j.properties"</span>;' },
+      { n: 12, code: '' },
+      { n: 13, code: '    <span class="kw">public void</span> init() {' },
+      { n: 14, code: '        File configFile = <span class="kw">new</span> File(CONFIG_PATH);' },
+      { n: 15, code: '        <span class="kw">if</span> (configFile.exists()) {' },
+      { n: 16, code: '            <m>org.apache.log4j</m>.PropertyConfigurator.configure(CONFIG_PATH);', hasMatch: true },
+      { n: 17, code: '        }' },
+      { n: 18, code: '    }' },
+      { n: 19, code: '}' },
+    ],
+  },
+  'StockAudit.java': {
+    name: 'StockAudit.java',
+    path: 'inventory-service/src/main/java/com/acme/inventory/StockAudit.java',
+    module: 'inventory-service',
+    matchCount: 3,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.inventory;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Logger;', hasMatch: true },
+      { n: 4,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.PatternLayout;', hasMatch: true },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.stereotype.Service;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@Service</span>' },
+      { n: 8,  code: '<span class="kw">public class</span> StockAudit {' },
+      { n: 9,  code: '' },
+      { n: 10, code: '    <span class="kw">private static final</span> PatternLayout layout = <span class="kw">new</span> PatternLayout(<span class="str">"%d{ISO8601} %-5p %m%n"</span>);' },
+      { n: 11, code: '' },
+      { n: 12, code: '    Logger auditLog = <m>org.apache.log4j</m>.Logger.getLogger(<span class="str">"stock.audit"</span>);', hasMatch: true },
+      { n: 13, code: '' },
+      { n: 14, code: '    <span class="kw">public void</span> recordAdjustment(String sku, <span class="kw">int</span> delta) {' },
+      { n: 15, code: '        auditLog.info(<span class="str">"Stock adjustment: "</span> + sku + <span class="str">" delta="</span> + delta);' },
+      { n: 16, code: '    }' },
+      { n: 17, code: '' },
+      { n: 18, code: '    <span class="kw">public void</span> recordDiscrepancy(String sku, <span class="kw">int</span> expected, <span class="kw">int</span> actual) {' },
+      { n: 19, code: '        auditLog.warn(<span class="str">"Discrepancy on "</span> + sku + <span class="str">": expected="</span> + expected + <span class="str">" actual="</span> + actual);' },
+      { n: 20, code: '    }' },
+      { n: 21, code: '}' },
+    ],
+  },
+  'BatchRunner.java': {
+    name: 'BatchRunner.java',
+    path: 'legacy-batch/src/main/java/com/acme/batch/BatchRunner.java',
+    module: 'legacy-batch',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.batch;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> java.util.List;' },
+      { n: 4,  code: '<span class="kw">import</span> java.util.concurrent.ExecutorService;' },
+      { n: 5,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Logger;', hasMatch: true },
+      { n: 6,  code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
+      { n: 7,  code: '' },
+      { n: 8,  code: '<span class="ann">@Component</span>' },
+      { n: 9,  code: '<span class="kw">public class</span> BatchRunner {' },
+      { n: 10, code: '' },
+      { n: 11, code: '    <span class="kw">private static final</span> Logger log = <m>org.apache.log4j</m>.Logger.getLogger(BatchRunner.<span class="kw">class</span>);', hasMatch: true },
+      { n: 12, code: '    <span class="kw">private final</span> ExecutorService executor;' },
+      { n: 13, code: '' },
+      { n: 14, code: '    <span class="kw">public</span> BatchRunner(ExecutorService executor) {' },
+      { n: 15, code: '        <span class="kw">this</span>.executor = executor;' },
+      { n: 16, code: '    }' },
+      { n: 17, code: '' },
+      { n: 18, code: '    <span class="kw">public void</span> runAll(List&lt;Runnable&gt; tasks) {' },
+      { n: 19, code: '        log.info(<span class="str">"Starting batch of "</span> + tasks.size() + <span class="str">" tasks"</span>);' },
+      { n: 20, code: '        <span class="kw">for</span> (Runnable task : tasks) {' },
+      { n: 21, code: '            executor.submit(() -&gt; {' },
+      { n: 22, code: '                <span class="kw">try</span> {' },
+      { n: 23, code: '                    task.run();' },
+      { n: 24, code: '                } <span class="kw">catch</span> (Exception e) {' },
+      { n: 25, code: '                    log.error(<span class="str">"Task failed"</span>, e);' },
+      { n: 26, code: '                }' },
+      { n: 27, code: '            });' },
+      { n: 28, code: '        }' },
+      { n: 29, code: '        log.info(<span class="str">"All tasks submitted"</span>);' },
+      { n: 30, code: '    }' },
+      { n: 31, code: '}' },
+    ],
+  },
+};
+
+function fileKeyFromCardEl(el) {
+  const text = el.textContent;
+  for (const key of Object.keys(FILE_DETAILS)) {
+    if (text.includes(key)) return key;
+  }
+  return null;
+}
+
+// ===================================================================
+// DOM refs
+// ===================================================================
+const greeter = document.getElementById('greeter');
+const conversation = document.getElementById('conversation');
+const promptInput = document.getElementById('prompt-input');
+const sendBtn = document.getElementById('send-btn');
+const moddyPanel = document.getElementById('moddy-panel');
+const trigrepPanel = document.getElementById('trigrep-panel');
+const divider = document.getElementById('divider');
+const dividerToggle = document.getElementById('divider-toggle');
+const moddyReopen = document.getElementById('moddy-reopen');
+
+// ===================================================================
+// Suggestion tile click → only the primed tile advances the demo.
+// Other tiles are hoverable but inert (per interview spec).
+// ===================================================================
+document.querySelectorAll('.suggestion.is-primed').forEach(btn => {
+  btn.addEventListener('click', () => startFlow(btn.dataset.q));
+});
+
+// Send button / Enter in input → in Phase 1: also kick off the canned flow; in Phase 2: append user msg
+sendBtn.addEventListener('click', handleSend);
+promptInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSend();
+  }
+});
+function handleSend() {
+  const text = promptInput.value.trim();
+  if (!text) return;
+  promptInput.value = '';
+  if (!flowStarted) {
+    startFlow(text);
+  } else {
+    // Append user message; Phase 2 only — Moddy doesn't respond (prototype)
+    appendUserMessage(text);
+    conversation.scrollTop = conversation.scrollHeight;
+  }
+}
+
+// ===================================================================
+// Phase 1: streaming chat flow
+// ===================================================================
+let flowStarted = false;
+
+function startFlow(userText) {
+  if (flowStarted) return;
+  flowStarted = true;
+  greeter.classList.add('hidden');
+  conversation.classList.remove('hidden');
+
+  // Step 2: user message
+  appendUserMessage(userText);
+
+  // If we're already in the split view (e.g. user hit "+ new chat" and is
+  // running a fresh search), populate the TriGrep left panel in sync with
+  // the streaming chat so both panels reflect the same search session.
+  if (document.body.classList.contains('phase-2') && !phase2Built) {
+    trigrepPanel.innerHTML = buildTrigrepPanel();
+    trigrepPanel.setAttribute('aria-hidden', 'false');
+    phase2Built = true;
+    wireTrigrepInteractions();
+  }
+
+  // Build the Moddy response container
+  const moddy = document.createElement('div');
+  moddy.className = 'msg-moddy';
+  conversation.appendChild(moddy);
+
+  // Staggered streaming, 200ms between each. Derived query appears just before
+  // the action buttons (between "Showing 4 of 42…" and the actions).
+  let t = 200;
+  setTimeout(() => { moddy.appendChild(buildScopeLine()); scrollChat(); }, t);
+  t += 200;
+  setTimeout(() => { moddy.appendChild(buildModulesRow()); scrollChat(); }, t);
+  t += 200;
+  setTimeout(() => { moddy.appendChild(buildResultsBlock()); scrollChat(); }, t);
+  t += 200;
+  setTimeout(() => { moddy.appendChild(buildDerivedQuery()); scrollChat(); }, t);
+  t += 200;
+  setTimeout(() => { moddy.appendChild(buildActionButtons()); scrollChat(); }, t);
+}
+
+function appendUserMessage(text) {
+  const el = document.createElement('div');
+  el.className = 'msg-user fade-in';
+  el.innerHTML = `<div class="avatar">A</div><div class="msg-user-text"></div>`;
+  el.querySelector('.msg-user-text').textContent = text;
+  conversation.appendChild(el);
+}
+
+function scrollChat() { conversation.scrollTop = conversation.scrollHeight; }
+
+// ===================================================================
+// Component builders
+// ===================================================================
+function buildDerivedQuery() {
+  const wrap = document.createElement('div');
+  wrap.className = 'derived-query fade-in';
+  wrap.innerHTML = `
+    <div class="derived-query-head">
+      <span class="derived-query-head-title">Searched for · Trigrep</span>
+      <button class="derived-query-copy" title="Copy command" aria-label="Copy command">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+    </div>
+    <div class="derived-query-cmd"><span class="cd">$ </span><span class="cb">mod search</span> working-set <span class="cs">'org.apache.log4j'</span> <span class="cb">--syntax</span> sourcegraph</div>
+  `;
+  wrap.querySelector('.derived-query-copy').addEventListener('click', (e) => copyDerived(e.currentTarget));
+  return wrap;
+}
+
+function copyDerived(btn) {
+  try { navigator.clipboard.writeText(SEARCH_CMD); } catch (e) {}
+  const original = btn.innerHTML;
+  btn.classList.add('copied');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.innerHTML = original;
+  }, 1500);
+}
+
+function buildScopeLine() {
+  const el = document.createElement('div');
+  el.className = 'scope-line fade-in';
+  el.textContent = SCOPE_LINE;
+  return el;
+}
+
+function buildModulesRow() {
+  const el = document.createElement('div');
+  el.className = 'modules-row fade-in';
+  const chips = MODULES.map(m => `<button class="module-chip">${m.name}<span class="count">${m.count}</span></button>`).join('');
+  el.innerHTML = `<span class="modules-label">12 modules affected</span> ${chips} <button class="modules-more">and ${MODULES_MORE} more…</button>`;
+  return el;
+}
+
+function buildResultsBlock() {
+  const wrap = document.createElement('div');
+  wrap.className = 'results fade-in';
+  FILE_CARDS.forEach(card => wrap.appendChild(buildFileCard(card)));
+  // Overflow row
+  const overflow = document.createElement('div');
+  overflow.className = 'overflow-row';
+  overflow.innerHTML = `<span>Showing <strong>4 of ${TOTAL_FILES}</strong> files (${TOTAL_MATCHES} matches)</span><button class="more-link" id="show-more-btn">Show more results</button>`;
+  wrap.appendChild(overflow);
+  overflow.querySelector('.more-link').addEventListener('click', enterPhase2);
+  return wrap;
+}
+
+function buildFileCard(card) {
+  const el = document.createElement('div');
+  el.className = 'file-group fade-in';
+  const linesHtml = card.lines.map(l =>
+    `<div class="match-line"><span class="lineno">${l.n}</span><span class="code">${l.code.replace(/<m>/g, '<mark>').replace(/<\/m>/g, '</mark>')}</span></div>`
+  ).join('');
+  el.innerHTML = `
+    <div class="file-header">
+      <span class="lang-dot"></span>
+      <span class="file-path">${card.file}</span>
+      <span class="file-module">— ${card.module}</span>
+      <span class="file-count">${card.count} matches</span>
+      <svg class="file-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="file-body">${linesHtml}</div>
+  `;
+  el.querySelector('.file-header').addEventListener('click', () => el.classList.toggle('collapsed'));
+  return el;
+}
+
+function buildActionButtons() {
+  const wrap = document.createElement('div');
+  wrap.className = 'followup-actions fade-in';
+  wrap.innerHTML = `
+    <button class="followup primary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Run recipe: Migrate Log4j 1.x → SLF4J
+    </button>
+    <button class="followup">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export results to CSV
+    </button>
+    <button class="followup" id="open-trigrep-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Open in TriGrep
+    </button>
+    <button class="followup tertiary">Refine search →</button>
+  `;
+  wrap.querySelector('#open-trigrep-btn').addEventListener('click', enterPhase2);
+  return wrap;
+}
+
+// ===================================================================
+// Phase 2: transition + TriGrep panel build
+// ===================================================================
+let phase2Built = false;
+
+function enterPhase2() {
+  if (phase2Built) {
+    // Re-entry after "Back to chat" — just shift layout, conversation is preserved.
+    document.body.classList.add('phase-2');
+    promptInput.placeholder = 'Ask about these results or run a recipe';
+    setTimeout(() => { conversation.scrollTop = conversation.scrollHeight; }, 320);
+    return;
+  }
+  phase2Built = true;
+
+  // Build TriGrep left panel content
+  trigrepPanel.innerHTML = buildTrigrepPanel();
+  trigrepPanel.setAttribute('aria-hidden', 'false');
+
+  // Update input placeholder for Phase 2 context
+  promptInput.placeholder = 'Ask about these results or run a recipe';
+
+  // Trigger the layout shift
+  document.body.classList.add('phase-2');
+
+  // After transition, scroll chat to bottom
+  setTimeout(() => {
+    conversation.scrollTop = conversation.scrollHeight;
+    wireTrigrepInteractions();
+  }, 320);
+}
+
+// "Refine search" in Phase 2 → coordinated update of both chat and TriGrep panes.
+// Demonstrates the cross-panel sync that's the whole point of the split view.
+let refinementApplied = false;
+function refineSearch() {
+  if (refinementApplied) return;
+  if (!document.body.classList.contains('phase-2')) return;
+  refinementApplied = true;
+
+  // 1. Conversation: user msg + Moddy response with new derived query + scope + brief text.
+  appendUserMessage('Narrow to actual Logger calls (skip imports)');
+
+  const moddy = document.createElement('div');
+  moddy.className = 'msg-moddy fade-in';
+
+  const dq = document.createElement('div');
+  dq.className = 'derived-query';
+  dq.innerHTML = `
+    <div class="derived-query-head">
+      <span class="derived-query-head-title">Searched for · Trigrep</span>
+      <button class="derived-query-copy" title="Copy command" aria-label="Copy command">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+    </div>
+    <div class="derived-query-cmd"><span class="cd">$ </span><span class="cb">mod search</span> working-set <span class="cs">'Logger\\.\\w+\\('</span> <span class="cb">--type</span> call-site <span class="cb">--syntax</span> sourcegraph</div>
+  `;
+  dq.querySelector('.derived-query-copy').addEventListener('click', (e) => copyDerived(e.currentTarget));
+  moddy.appendChild(dq);
+
+  const scope = document.createElement('div');
+  scope.className = 'scope-line';
+  scope.textContent = '73 matches across 31 files in 89ms · 847 repositories searched';
+  moddy.appendChild(scope);
+
+  const text = document.createElement('div');
+  text.className = 'moddy-text';
+  text.innerHTML = `Filtered to actual <code>Logger</code> call sites (excluding import statements). These are the lines the recipe will rewrite — imports get cleaned up automatically.`;
+  moddy.appendChild(text);
+
+  conversation.appendChild(moddy);
+  conversation.scrollTop = conversation.scrollHeight;
+
+  // 2. TriGrep panel: add a chip, update summary count.
+  const searchBox = trigrepPanel.querySelector('.trigrep-search-box');
+  if (searchBox) {
+    const chip = document.createElement('span');
+    chip.className = 'trigrep-chip';
+    chip.dataset.chip = 'type';
+    chip.innerHTML = `<strong>type:</strong>call-site<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>`;
+    const queryInput = searchBox.querySelector('.trigrep-query');
+    searchBox.insertBefore(chip, queryInput);
+    chip.querySelector('.trigrep-chip-x').addEventListener('click', (e) => {
+      e.stopPropagation();
+      chip.remove();
+    });
+  }
+  const summaryCount = trigrepPanel.querySelector('#summary-count');
+  const summaryFiles = trigrepPanel.querySelector('#summary-files');
+  if (summaryCount) summaryCount.textContent = '73';
+  if (summaryFiles) summaryFiles.textContent = '31';
+
+  // 3. Visually retire the "Refine search" buttons so the user can't stack refinements.
+  document.querySelectorAll('.followup.tertiary').forEach(b => {
+    b.disabled = true;
+    b.style.opacity = '0.5';
+    b.style.cursor = 'default';
+  });
+}
+
+// Delegated handler — covers both the original Phase 1 action buttons and
+// the Phase 2 contextual action stack appended on transition.
+document.body.addEventListener('click', (e) => {
+  const btn = e.target.closest('.followup.tertiary');
+  if (btn && !btn.disabled) refineSearch();
+});
+
+function exitPhase2() {
+  document.body.classList.remove('phase-2');
+  // If Moddy was collapsed within the split view, un-collapse so the chat is visible at full width.
+  if (moddyPanel.classList.contains('collapsed')) setModdyCollapsed(false);
+  promptInput.placeholder = 'Ask Moddy to search, refine, or run a recipe';
+  setTimeout(() => { conversation.scrollTop = conversation.scrollHeight; }, 320);
+}
+document.getElementById('back-to-chat').addEventListener('click', exitPhase2);
+
+function buildTrigrepPanel() {
+  return `
+    <div class="trigrep-head">
+      <div class="trigrep-search-row">
+        <div class="trigrep-search-box">
+          <svg class="trigrep-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span class="trigrep-chip" data-chip="lang"><strong>lang:</strong>java<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></span>
+          <span class="trigrep-chip" data-chip="file"><strong>file:</strong>src/main/**<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></span>
+          <input class="trigrep-query" value="org.apache.log4j" spellcheck="false">
+        </div>
+        <button class="btn-search">Search</button>
+      </div>
+      <div class="trigrep-meta-row">
+        <div class="trigrep-summary"><span class="summary-count" id="summary-count">187</span> matches across <span class="summary-count" id="summary-files">42</span> files in <span class="mono">&lt;1ms</span></div>
+      </div>
+    </div>
+
+    <div class="trigrep-body">
+      <aside class="trigrep-filters" aria-label="Filters">
+        <div class="filters-head">
+          <span>Filters</span>
+          <span class="collapse-all" id="collapse-all">Collapse all</span>
+        </div>
+
+        <div class="filter-group" data-group="lang">
+          <div class="filter-group-head"><span>By language</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="filter-group-body">
+            <div class="filter-item" data-count="34"><span class="filter-item-name"><span class="lang-dot" style="background:#e76f00;box-shadow:none;"></span>Java</span><span class="count">34</span></div>
+            <div class="filter-item" data-count="4"><span class="filter-item-name"><span class="lang-dot" style="background:#f7df1e;box-shadow:none;"></span>Javascript</span><span class="count">4</span></div>
+            <div class="filter-item" data-count="3"><span class="filter-item-name"><span class="lang-dot" style="background:#3776ab;box-shadow:none;"></span>Python</span><span class="count">3</span></div>
+            <div class="filter-item" data-count="2"><span class="filter-item-name"><span class="lang-dot" style="background:#083fa1;box-shadow:none;"></span>Markdown</span><span class="count">2</span></div>
+            <div class="filter-item" data-count="1"><span class="filter-item-name"><span class="lang-dot" style="background:#6db33f;box-shadow:none;"></span>Spring</span><span class="count">1</span></div>
+          </div>
+        </div>
+
+        <div class="filter-group" data-group="meta">
+          <div class="filter-group-head"><span>By metadata</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="filter-group-body">
+            <div class="filter-item" data-count="7"><span class="filter-item-name">important:true</span><span class="count">7</span></div>
+            <div class="filter-item" data-count="4"><span class="filter-item-name">licence:MIT</span><span class="count">4</span></div>
+            <div class="filter-item" data-count="3"><span class="filter-item-name">licence:Apache-2.0</span><span class="count">3</span></div>
+            <div class="filter-item" data-count="2"><span class="filter-item-name">important:false</span><span class="count">2</span></div>
+            <div class="filter-item" data-count="1"><span class="filter-item-name">licence:Commons</span><span class="count">1</span></div>
+          </div>
+        </div>
+
+        <div class="filter-group" data-group="topic">
+          <div class="filter-group-head"><span>By topic</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="filter-group-body">
+            <input class="topic-search" placeholder="Search topics…" id="topic-search">
+            <div class="filter-item" data-count="7"><span class="filter-item-name">documentation</span><span class="count">7</span></div>
+            <div class="filter-item" data-count="7"><span class="filter-item-name">user-service</span><span class="count">7</span></div>
+            <div class="filter-item" data-count="7"><span class="filter-item-name">frontend</span><span class="count">7</span></div>
+            <div class="filter-item" data-count="4"><span class="filter-item-name">backend</span><span class="count">4</span></div>
+            <div class="filter-item" data-count="1"><span class="filter-item-name">scripts</span><span class="count">1</span></div>
+            <div class="filter-item" data-count="1"><span class="filter-item-name">microservices</span><span class="count">1</span></div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="trigrep-results" id="trigrep-results">
+        <article class="result-card">
+          <div class="result-card-head">
+            <div class="result-card-file"><span class="file-dot" style="background:#cb3446;"></span>base/pom.xml</div>
+            <div class="result-card-actions">
+              <span class="result-card-meta">3 matches</span>
+              <button class="icon-btn" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+              <button class="icon-btn chevron-btn" title="Collapse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+            </div>
+          </div>
+          <div class="result-card-body">
+            <div class="hunk-label">
+              <span class="hunk-text">@@ -34,7 +34,7 @@</span>
+              <button class="icon-btn" title="Copy hunk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+            </div>
+            <div class="code-body">
+              <div class="code-line"><span class="code-ln">34</span><span class="code-ln">34</span><span class="code-marker"></span><span class="code-text">  &lt;name&gt;Apache Sling Performance Test Utilities&lt;/name&gt;</span></div>
+              <div class="code-line"><span class="code-ln">35</span><span class="code-ln">35</span><span class="code-marker"></span><span class="code-text">  </span></div>
+              <div class="code-line"><span class="code-ln">36</span><span class="code-ln">36</span><span class="code-marker"></span><span class="code-text">  &lt;properties&gt;</span></div>
+              <div class="code-line removed"><span class="code-ln">37</span><span class="code-ln"></span><span class="code-marker">−</span><span class="code-text">    &lt;junit.version&gt;4.8.2&lt;/junit.version&gt;</span></div>
+              <div class="code-line added"><span class="code-ln"></span><span class="code-ln">37</span><span class="code-marker">+</span><span class="code-text">    &lt;junit.version&gt;4.13.1&lt;/junit.version&gt;</span></div>
+              <div class="code-line"><span class="code-ln">38</span><span class="code-ln">38</span><span class="code-marker"></span><span class="code-text">  &lt;/properties&gt;</span></div>
+              <div class="code-line"><span class="code-ln">39</span><span class="code-ln">39</span><span class="code-marker"></span><span class="code-text">  </span></div>
+              <div class="code-line"><span class="code-ln">40</span><span class="code-ln">40</span><span class="code-marker"></span><span class="code-text">  &lt;scm&gt;</span></div>
+            </div>
+          </div>
+        </article>
+        ${buildSimpleResultCards()}
+      </div>
+    </div>
+  `;
+}
+
+function buildSimpleResultCards() {
+  return FILE_CARDS.map(card => `
+    <article class="result-card">
+      <div class="result-card-head">
+        <div class="result-card-file"><span class="file-dot"></span>${card.file}<span class="file-module">— ${card.module}</span></div>
+        <div class="result-card-actions">
+          <span class="result-card-meta">${card.count} matches</span>
+          <button class="icon-btn" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+          <button class="icon-btn chevron-btn" title="Collapse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+      </div>
+      <div class="result-card-body">
+        <div class="code-body">
+          ${card.lines.map(l => `<div class="code-line simple"><span class="code-ln">${l.n}</span><span class="code-text">${l.code.replace(/<m>/g, '<span class="match">').replace(/<\/m>/g, '</span>')}</span></div>`).join('')}
+        </div>
+      </div>
+    </article>
+  `).join('');
+}
+
+// ===================================================================
+// Phase 2 interactions
+// ===================================================================
+function wireTrigrepInteractions() {
+  // Filter group collapse
+  trigrepPanel.querySelectorAll('.filter-group-head').forEach(head => {
+    head.addEventListener('click', () => head.parentElement.classList.toggle('collapsed'));
+  });
+  const collapseAll = trigrepPanel.querySelector('#collapse-all');
+  collapseAll.addEventListener('click', () => {
+    const groups = trigrepPanel.querySelectorAll('.filter-group');
+    const anyOpen = [...groups].some(g => !g.classList.contains('collapsed'));
+    groups.forEach(g => g.classList.toggle('collapsed', anyOpen));
+    collapseAll.textContent = anyOpen ? 'Expand all' : 'Collapse all';
+  });
+
+  // Filter item toggle + summary update
+  const BASE_MATCHES = 187, BASE_FILES = 42;
+  const activeFilters = new Map();
+  const summaryCount = trigrepPanel.querySelector('#summary-count');
+  const summaryFiles = trigrepPanel.querySelector('#summary-files');
+  trigrepPanel.querySelectorAll('.filter-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const key = item.querySelector('.filter-item-name').textContent.trim();
+      const count = parseInt(item.dataset.count, 10) || 0;
+      if (activeFilters.has(key)) activeFilters.delete(key);
+      else activeFilters.set(key, count);
+      item.classList.toggle('active');
+      if (activeFilters.size === 0) {
+        summaryCount.textContent = BASE_MATCHES;
+        summaryFiles.textContent = BASE_FILES;
+      } else {
+        const total = [...activeFilters.values()].reduce((a, b) => a + b, 0);
+        summaryCount.textContent = total;
+        summaryFiles.textContent = Math.max(1, Math.ceil(total / 4.5));
+      }
+    });
+  });
+
+  // Chip removal
+  trigrepPanel.querySelectorAll('.trigrep-chip-x').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btn.closest('.trigrep-chip').remove();
+    });
+  });
+
+  // Topic search filter
+  const topicSearch = trigrepPanel.querySelector('#topic-search');
+  if (topicSearch) {
+    topicSearch.addEventListener('input', () => {
+      const q = topicSearch.value.toLowerCase().trim();
+      const group = topicSearch.closest('.filter-group-body');
+      group.querySelectorAll('.filter-item').forEach(item => {
+        const name = item.querySelector('.filter-item-name').textContent.toLowerCase();
+        item.style.display = (q === '' || name.includes(q)) ? '' : 'none';
+      });
+    });
+  }
+
+  // Result card collapse
+  trigrepPanel.querySelectorAll('.chevron-btn').forEach(btn => {
+    btn.addEventListener('click', () => btn.closest('.result-card').classList.toggle('collapsed'));
+  });
+
+  // File path drill-down. Every card opens its own full-file detail view.
+  trigrepPanel.querySelectorAll('.result-card-file').forEach(el => {
+    const key = fileKeyFromCardEl(el);
+    if (key && FILE_DETAILS[key]) {
+      el.classList.add('is-clickable');
+      el.addEventListener('click', () => showFileDetail(FILE_DETAILS[key]));
+    }
+  });
+}
+
+function showFileDetail(file) {
+  const body = trigrepPanel.querySelector('.trigrep-body');
+  if (!body) return;
+  let detail = body.querySelector('.trigrep-detail');
+  if (!detail) {
+    detail = document.createElement('div');
+    detail.className = 'trigrep-detail';
+    body.appendChild(detail);
+  }
+  detail.innerHTML = buildFileDetailHTML(file);
+  detail.querySelector('.detail-back').addEventListener('click', showResultsList);
+
+  body.style.opacity = '0';
+  setTimeout(() => {
+    body.classList.add('detail-mode');
+    body.style.opacity = '1';
+  }, 100);
+}
+
+function showResultsList() {
+  const body = trigrepPanel.querySelector('.trigrep-body');
+  if (!body) return;
+  body.style.opacity = '0';
+  setTimeout(() => {
+    body.classList.remove('detail-mode');
+    body.style.opacity = '1';
+  }, 100);
+}
+
+function buildFileDetailHTML(file) {
+  const linesHtml = file.lines.map(l => {
+    const code = (l.code || ' ').replace(/<m>/g, '<span class="match">').replace(/<\/m>/g, '</span>');
+    return `<div class="code-line ${l.hasMatch ? 'has-match' : ''}"><span class="code-ln">${l.n}</span><span class="code-text">${code}</span></div>`;
+  }).join('');
+  return `
+    <div class="detail-breadcrumb">
+      <button class="detail-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Search results
+      </button>
+      <span class="detail-crumb-sep">/</span>
+      <span class="detail-crumb-current">${file.name}</span>
+    </div>
+    <div class="detail-search-row">
+      <label class="detail-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search in file…" spellcheck="false">
+        <span class="kbd-hint">⌘F</span>
+      </label>
+    </div>
+    <div class="detail-header">
+      <div class="detail-header-row">
+        <div class="detail-file-path"><span class="file-dot"></span>${file.path}</div>
+        <span class="result-card-meta">${file.matchCount} matches</span>
+      </div>
+      <div class="detail-module">${file.module}</div>
+    </div>
+    <div class="detail-code">${linesHtml}</div>
+  `;
+}
+
+// ===================================================================
+// Divider drag + collapse toggle (Phase 2 only)
+// ===================================================================
+let dragging = false, dragStartX = 0, startModdyWidth = 0;
+divider.addEventListener('mousedown', (e) => {
+  if (!document.body.classList.contains('phase-2')) return;
+  if (e.target.closest('.divider-toggle')) return;
+  if (moddyPanel.classList.contains('collapsed')) return;
+  dragging = true;
+  dragStartX = e.clientX;
+  startModdyWidth = moddyPanel.getBoundingClientRect().width;
+  divider.classList.add('dragging');
+  document.body.style.userSelect = 'none';
+  document.body.style.cursor = 'col-resize';
+});
+window.addEventListener('mousemove', (e) => {
+  if (!dragging) return;
+  const dx = e.clientX - dragStartX;
+  const newWidth = startModdyWidth - dx;
+  const pageWidth = document.getElementById('page').getBoundingClientRect().width;
+  const min = Math.max(320, pageWidth * 0.25);
+  const max = pageWidth * 0.5;
+  const clamped = Math.min(Math.max(newWidth, min), max);
+  moddyPanel.style.transition = 'none';
+  moddyPanel.style.flex = `0 0 ${clamped}px`;
+});
+window.addEventListener('mouseup', () => {
+  if (!dragging) return;
+  dragging = false;
+  divider.classList.remove('dragging');
+  document.body.style.userSelect = '';
+  document.body.style.cursor = '';
+  setTimeout(() => { moddyPanel.style.transition = ''; }, 50);
+});
+
+function setModdyCollapsed(collapsed) {
+  if (collapsed) {
+    moddyPanel.dataset.lastFlex = moddyPanel.style.flex || '';
+    moddyPanel.style.flex = '';
+    moddyPanel.classList.add('collapsed');
+    moddyReopen.classList.add('visible');
+    dividerToggle.title = 'Open Moddy';
+    dividerToggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+  } else {
+    moddyPanel.classList.remove('collapsed');
+    if (moddyPanel.dataset.lastFlex) moddyPanel.style.flex = moddyPanel.dataset.lastFlex;
+    moddyReopen.classList.remove('visible');
+    dividerToggle.title = 'Collapse Moddy';
+    dividerToggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+  }
+}
+dividerToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  setModdyCollapsed(!moddyPanel.classList.contains('collapsed'));
+});
+moddyReopen.addEventListener('click', () => setModdyCollapsed(false));
+
+// ===================================================================
+// New chat (only available in split view) — keeps the layout, clears
+// both panels so the user can start a fresh search session.
+// ===================================================================
+function newChatInSplit() {
+  flowStarted = false;
+  phase2Built = false;  // allow a future "Open in TriGrep" to rebuild
+  refinementApplied = false;
+  conversation.innerHTML = '';
+  conversation.classList.add('hidden');
+  greeter.classList.remove('hidden');
+  trigrepPanel.innerHTML = buildTrigrepEmpty();
+  promptInput.placeholder = 'Ask Moddy to search, refine, or run a recipe';
+}
+
+function buildTrigrepEmpty() {
+  return `
+    <div class="trigrep-empty">
+      <span class="trigrep-empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </span>
+      <div class="trigrep-empty-title">No active search</div>
+      <div class="trigrep-empty-desc">Ask Moddy a question to see search results here.</div>
+    </div>
+  `;
+}
+
+document.getElementById('new-chat-btn').addEventListener('click', newChatInSplit);
+</script>
+</body>
+</html>

@@ -1119,48 +1119,58 @@
     margin-top: 12px;
   }
 
-  /* Derived query block — styled code block + copy button (Step 3) */
+  /* Derived query block — Neo mini-code-card pattern (Step 3) */
   .derived-query {
-    background: var(--code-bg, #0d1117);
-    border-radius: 10px;
-    padding: 10px 12px 10px 14px;
-    color: #e8e9eb;
-    font-size: 12px;
-    display: flex; align-items: center; gap: 10px;
+    background: #0A0F1E; /* Neo near-black */
+    border-radius: 8px;
     overflow: hidden;
   }
-  .derived-query-label {
-    font-size: 11px;
-    color: var(--grey-300);
+  .derived-query-head {
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px;
+  }
+  .derived-query-head-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: #636687; /* Neo slate-mid */
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 4px;
   }
   .derived-query-cmd {
-    flex: 1; min-width: 0;
+    padding: 14px 16px;
     font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.6);
     white-space: pre;
     overflow-x: auto;
-    line-height: 1.5;
   }
-  .derived-query-cmd .prompt-sigil { color: #8b949e; user-select: none; }
-  .derived-query-cmd .arg-string { color: #a5d6ff; }
-  .derived-query-cmd .arg-flag { color: #ffa657; }
+  /* Neo code-card color tokens */
+  .derived-query-cmd .cb { color: #7B9FFF; }              /* klein-light — keywords */
+  .derived-query-cmd .cs { color: #A0A4C0; }              /* slate — string values */
+  .derived-query-cmd .cd { color: rgba(255,255,255,0.25); } /* muted — punctuation */
+  /* legacy hidden label kept for backward-compat (not rendered when head is present) */
+  .derived-query-label { display: none; }
   .derived-query-copy {
     flex-shrink: 0;
-    width: 28px; height: 28px; border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.04);
-    color: #c9d1d9;
+    width: 24px; height: 24px; border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    color: #A0A4C0;
     cursor: pointer;
     display: inline-flex; align-items: center; justify-content: center;
     transition: all 0.15s ease;
   }
   .derived-query-copy:hover {
-    background: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.08);
     color: #fff;
+    border-color: rgba(255,255,255,0.15);
   }
-  .derived-query-copy svg { width: 14px; height: 14px; }
+  .derived-query-copy svg { width: 12px; height: 12px; }
   .derived-query-copy.copied {
     background: rgba(61, 220, 132, 0.18);
     border-color: rgba(61, 220, 132, 0.4);
@@ -2035,32 +2045,30 @@
   }
 
   function buildDerivedQuery({ cmd }) {
-    const wrap = document.createElement('div');
-    const label = document.createElement('div');
-    label.className = 'derived-query-label';
-    label.textContent = 'Searched for';
     const block = document.createElement('div');
     block.className = 'derived-query';
     block.innerHTML = `
+      <div class="derived-query-head">
+        <span class="derived-query-head-title">Searched for · Trigrep</span>
+        <button class="derived-query-copy" title="Copy command" aria-label="Copy command">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
       <div class="derived-query-cmd">${formatCmd(cmd)}</div>
-      <button class="derived-query-copy" title="Copy command" aria-label="Copy command">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-      </button>
     `;
     const copyBtn = block.querySelector('.derived-query-copy');
     copyBtn.addEventListener('click', () => copyDerived(copyBtn, '$ mod search ' + cmd.replace(/^mod search\s*/, '')));
-    wrap.appendChild(label);
-    wrap.appendChild(block);
-    return wrap;
+    return block;
   }
 
   function formatCmd(cmd) {
-    // Highlight quoted args first (escapeHtml has turned ' into &#39;),
-    // then flags, then prepend the sigil so our own class="…" never gets re-matched.
+    // Neo code-card tokens: cb = keyword (klein-light), cs = string (slate), cd = muted punctuation.
+    // Order: escape, mark quoted strings, flags, the `mod search` keyword, then prepend the sigil.
     let html = escapeHtml(cmd);
-    html = html.replace(/(&#39;[^&]*?&#39;)/g, '<span class="arg-string">$1</span>');
-    html = html.replace(/(^|\s)(--?[a-zA-Z][\w-]*)/g, '$1<span class="arg-flag">$2</span>');
-    return '<span class="prompt-sigil">$ </span>' + html;
+    html = html.replace(/(&#39;[^&]*?&#39;)/g, '<span class="cs">$1</span>');
+    html = html.replace(/(^|\s)(--?[a-zA-Z][\w-]*)/g, '$1<span class="cb">$2</span>');
+    html = html.replace(/^(mod\s+search)\b/, '<span class="cb">$1</span>');
+    return '<span class="cd">$ </span>' + html;
   }
 
   function copyDerived(btn, cmd) {
