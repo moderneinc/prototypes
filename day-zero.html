@@ -227,7 +227,7 @@ body {
    ================================================ */
 .app-shell {
   display: grid;
-  grid-template-columns: 90px 1fr;
+  grid-template-columns: 98px 1fr;
   grid-template-areas: "nav content";
   width: 100%;
   height: 100%;
@@ -235,61 +235,64 @@ body {
 }
 
 /* ================================================
-   LEFT NAVIGATION RAIL (90px) — matches Figma Neo spec
+   LEFT NAVIGATION RAIL (98px) — matches v2-sandbox NAVIGATION_RAIL_WIDTH
    ================================================ */
 .left-nav {
   grid-area: nav;
-  width: 90px;
+  width: 98px;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
-  padding: 4px 4px 16px;
+  /* top padding pulled in so the logo sits roughly inline with the top-nav
+     org selector (v2 NAVIGATION_RAIL_VERTICAL_PAD ≈ 1.5px) */
+  padding: 2px 8px 24px;
   gap: 0;
   background: var(--surface-page);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 10;
-  overflow: hidden;
+  /* overflow visible so the More popover can escape the rail */
+  overflow: visible;
 }
 
 .left-nav-top {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
+  /* gap matches neo-design rail List spacing (spacing_1_2 = 4px) */
+  gap: 4px;
 }
 
-.nav-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 4px;
-  width: 100%;
-  cursor: pointer;
+/* Logo is now rendered via .nav-item.nav-item-home so it inherits the same
+   icon-chip styling (hover stroke + active state) as the other nav items.
+   Tighter padding so the logo aligns vertically with the top-nav org selector. */
+.nav-item-home {
+  padding: 0 4px;
 }
 
+.nav-item-home .nav-icon-container {
+  padding: 4px;
+}
+
+/* nav-item matches neo-design NeoNavigationItem:
+   - Outer item is transparent always
+   - Inner icon chip (.nav-icon-container) gets the blue background on hover/active
+   - Label color/weight changes on hover/active */
 .nav-item {
   width: 100%;
   padding: 8px 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  border-radius: 4px;
+  gap: 4px;
+  border-radius: var(--radius-lg);
   cursor: pointer;
   position: relative;
-  transition: background var(--transition-fast);
   text-decoration: none;
-}
-
-.nav-item:hover {
-  background: var(--surface-secondary);
-}
-
-.nav-item.active {
   background: transparent;
 }
 
@@ -298,25 +301,29 @@ body {
   align-items: center;
   justify-content: center;
   padding: 8px;
-  border-radius: 8px;
-  transition: all var(--transition-fast);
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  background: transparent;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+/* Hover + active states get a visible blue stroke around the icon chip */
+.nav-item:hover .nav-icon-container {
+  background: var(--brand-digital-blue-100);
+  border-color: var(--brand-digital-blue-200);
 }
 
 .nav-item.active .nav-icon-container {
-  background: #f2f3ff;
-  border: 1px solid #dce0ff;
+  background: var(--brand-digital-blue-100);
+  border-color: var(--brand-digital-blue-200);
 }
 
 .nav-item svg {
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
-  color: #1f2937;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  color: var(--brand-grey-900);
   flex-shrink: 0;
-}
-
-.nav-item.active svg {
-  color: #1e2ec2;
 }
 
 .nav-label {
@@ -324,49 +331,93 @@ body {
   font-size: 11px;
   font-weight: var(--brand-font-weight-regular);
   line-height: 1;
-  color: #1f2937;
+  color: var(--brand-grey-900);
   text-align: center;
   white-space: normal;
+  width: 100%;
+  transition: color 150ms ease;
+}
+
+.nav-item:hover .nav-label {
+  color: var(--brand-digital-blue-600);
 }
 
 .nav-item.active .nav-label {
-  font-weight: var(--brand-font-weight-regular);
-  color: #1e2ec2;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--brand-digital-blue-800);
 }
 
+/* Beta tag on nav items: v2 NeoBadge intent=default — neutral light bg,
+   dark text, 50%-alpha neutral border per neo-design Badge.tsx */
 .nav-badge {
-  font-size: 12px;
+  font-size: 11px;
   padding: 0 6px;
   height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: var(--brand-digital-blue-300);
-  color: white;
+  background: var(--brand-grey-200);
+  color: var(--brand-grey-800);
+  border: 1px solid rgba(107, 114, 128, 0.5);
   font-weight: var(--brand-font-weight-medium);
   line-height: 1;
   text-align: center;
+  letter-spacing: 0;
 }
 
-.nav-customer-logo {
-  width: 60px;
-  height: 60px;
-  background: var(--brand-digital-blue-800);
-  border-radius: 4px;
+/* HomeMenuItem stack: logo + v2 platform-version badge */
+.nav-home-stack {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 4px;
-  flex-shrink: 0;
+  margin-top: 2px;
+  padding: 4px 0;
 }
-.nav-customer-logo span {
-  font-size: 10px;
-  font-weight: var(--brand-font-weight-medium);
-  color: white;
+
+/* Platform version badge — matches PlatformVersionBadge gradient */
+.nav-version-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--brand-digital-blue-500) 0%, var(--brand-violet-500) 100%);
+  color: var(--brand-white);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--brand-font-weight-semibold);
   line-height: 1;
-  text-align: center;
+  letter-spacing: 0;
+}
+
+/* More menu wrapper + popover. v2 anchors the popover to the right of the
+   rail item, opening as a small floating panel of NeoNavigationItems. */
+.nav-more-wrapper {
+  position: relative;
+  margin-top: auto;
+}
+
+.nav-more-popover {
+  position: absolute;
+  left: calc(100% + 4px);
+  bottom: 0;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 96px;
+  z-index: 100;
+}
+
+.nav-more-popover .nav-item {
+  padding: 8px 4px;
 }
 
 /* ================================================
@@ -383,6 +434,7 @@ body {
 
 /* ================================================
    GLOBAL NAVIGATION BAR (65px toolbar)
+   matches v3 GlobalNavigationBar
    ================================================ */
 .global-nav {
   height: 65px;
@@ -392,8 +444,32 @@ body {
   gap: 12px;
   flex-shrink: 0;
   position: relative;
+  width: 100%;
 }
 
+/* Centered red radial-gradient glow behind nav contents (v3 sunset effect) */
+.global-nav::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  max-width: 90%;
+  height: 65px;
+  background: radial-gradient(ellipse at center, var(--brand-red-100) 0%, var(--brand-red-100) 40%, transparent 70%);
+  filter: blur(20px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.global-nav > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* v2 GlobalOrganizationSelector — full pill (999px) per latest dev render,
+   white bg, always-on secondary border, hover changes bg + border. */
 .org-selector {
   display: flex;
   align-items: center;
@@ -403,41 +479,68 @@ body {
   color: var(--text-primary);
   cursor: pointer;
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-full);
   transition: all var(--transition-fast);
   background: var(--surface-primary);
-  border: 1px solid transparent;
+  border: 1px solid var(--border-secondary);
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  text-transform: none;
 }
 
 .org-selector:hover {
   background: var(--brand-grey-200);
+  border-color: var(--border-primary);
 }
 
 .org-selector.selected {
   color: var(--text-primary);
-  font-weight: var(--brand-font-weight-medium);
+  font-weight: var(--brand-font-weight-regular);
 }
 
 .org-selector-wrapper {
   position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50vw;
 }
 
-.org-dropdown {
+@media (min-width: 1200px) {
+  .org-selector-wrapper {
+    max-width: min(65vw, 1200px);
+  }
+}
+
+/* v2 dialog scrim — semi-transparent, fixed full-viewport overlay below the
+   dialog Paper. Click to close. */
+.overlay-scrim {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  max-height: 500px;
+  inset: 0;
+  background: rgba(31, 41, 55, 0.2);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 100px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* Both modal dialogs (org selector + search) share these v2 dimensions:
+   anchored ~100px from top, max-width 800, height 80vh capped at 600. */
+.org-dropdown,
+.search-dropdown {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 80vh;
+  max-height: 600px;
   background: var(--surface-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: 12px;
-  box-shadow: 0 8px 15px rgba(31, 41, 55, 0.1);
-  z-index: 10001;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 12px 32px rgba(31, 41, 55, 0.18);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -446,9 +549,13 @@ body {
 .org-dropdown-header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border-primary);
+  gap: 12px;
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+
+.org-dropdown-header svg {
+  color: var(--icon-secondary);
   flex-shrink: 0;
 }
 
@@ -457,48 +564,86 @@ body {
   border: none;
   outline: none;
   background: transparent;
-  font-size: 16px;
+  font-size: var(--brand-font-size-400);
   font-family: var(--font-body);
   color: var(--text-primary);
 }
 
 .org-dropdown-header input::placeholder {
-  color: var(--text-tertiary);
+  color: var(--content-placeholder);
 }
 
 .org-dropdown-content {
   flex: 1;
   overflow-y: auto;
-  padding: 16px 24px;
+  border-top: 1px solid var(--border-secondary);
+  padding: var(--space-2) 0;
 }
 
-.org-dropdown-item {
+/* Tree rows in the org selector (Global → ALL → orgs).
+   Indent comes from inline paddingLeft based on node depth.
+   Subtle 1px divider between rows (skip on last). */
+.org-tree-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border-secondary);
+  gap: 8px;
+  padding: 8px 16px 8px 12px;
   cursor: pointer;
-  transition: color var(--transition-fast);
-  font-size: 14px;
+  font-size: var(--brand-font-size-300);
   color: var(--text-primary);
+  transition: background var(--transition-fast);
+  border-bottom: 1px solid var(--border-secondary);
 }
 
-.org-dropdown-item:hover {
-  color: var(--brand-purple-600);
-}
-
-.org-dropdown-item:last-child {
+.org-tree-row:last-child {
   border-bottom: none;
 }
 
-.org-dropdown-name {
-  font-weight: var(--brand-font-weight-regular);
+.org-tree-row:hover {
+  background: var(--surface-secondary);
 }
 
-.org-dropdown-count {
-  font-size: 14px;
-  color: var(--text-tertiary);
+.org-tree-row.selected {
+  background: var(--surface-primary-active);
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+.org-tree-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  flex-shrink: 0;
+  color: var(--icon-secondary);
+}
+
+.org-tree-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  color: var(--icon-secondary);
+  flex-shrink: 0;
+}
+
+.org-tree-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Org member-count chip: small grey pill with 50%-alpha neutral border (NeoBadge default) */
+.org-tree-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  font-size: var(--brand-font-size-200);
+  color: var(--brand-grey-800);
+  background: var(--brand-grey-200);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  border-radius: 999px;
+  flex-shrink: 0;
 }
 
 /* Shared overlay footer */
@@ -506,9 +651,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 24px;
-  border-top: 1px solid var(--border-primary);
-  font-size: 14px;
+  padding: 10px 20px;
+  border-top: 1px solid var(--border-secondary);
+  font-size: var(--brand-font-size-200);
   color: var(--text-primary);
   flex-shrink: 0;
 }
@@ -523,13 +668,36 @@ body {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 14px;
+  font-size: var(--brand-font-size-200);
   color: var(--text-secondary);
+}
+
+/* NeoButton tertiary pattern — see .neo-link */
+.overlay-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--brand-digital-blue-500);
+  font-size: var(--brand-font-size-200);
+  cursor: pointer;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  transition: color 150ms ease;
+}
+
+.overlay-footer-link:hover {
+  color: var(--brand-digital-blue-600);
+}
+
+.overlay-footer-link:active {
+  color: var(--brand-digital-blue-800);
 }
 
 .overlay-footer-right {
   color: var(--text-tertiary);
-  font-size: 14px;
+  font-size: var(--brand-font-size-200);
 }
 
 .overlay-footer kbd {
@@ -540,9 +708,9 @@ body {
   height: 20px;
   padding: 0 5px;
   background: var(--surface-secondary);
-  border: 1px solid var(--border-primary);
+  border: 1px solid var(--border-secondary);
   border-radius: 4px;
-  font-size: 11px;
+  font-size: var(--brand-font-size-100);
   font-family: var(--font-body);
   color: var(--text-secondary);
 }
@@ -551,17 +719,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border: none;
   background: none;
   cursor: pointer;
-  color: var(--text-tertiary);
+  color: var(--icon-secondary);
   padding: 0;
   flex-shrink: 0;
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast);
 }
 
 .overlay-close:hover {
+  background: var(--surface-secondary);
   color: var(--text-primary);
 }
 
@@ -569,29 +740,39 @@ body {
   flex: 1;
 }
 
+/* v2-sandbox SearchTrigger: full pill with always-on border, opens a centered
+   Dialog on click (no inline expansion). Width auto-sized to content. */
 .search-input {
   height: 40px;
-  width: 220px;
-  border-radius: 24px;
+  border-radius: var(--radius-full);
   border: 1px solid var(--border-secondary);
-  padding: 4px 12px;
+  padding: 10px 16px;
   font-size: var(--brand-font-size-300);
   color: var(--text-tertiary);
   background: var(--surface-primary);
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 12px;
   cursor: pointer;
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-xs);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  flex-shrink: 0;
+  user-select: none;
 }
 
 .search-input:hover {
+  background: var(--brand-grey-200);
   border-color: var(--border-primary);
 }
 
-.search-input span {
+.search-input > span:first-of-type {
   flex: 1;
+  white-space: nowrap;
+}
+
+.search-input-keys {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .search-input kbd {
@@ -602,8 +783,11 @@ body {
   color: var(--text-tertiary);
   font-family: var(--font-body);
   border: 1px solid var(--border-primary);
+  min-width: 18px;
+  text-align: center;
 }
 
+/* v3 action buttons group: tight cluster, rounded container */
 .nav-actions {
   display: flex;
   align-items: center;
@@ -613,37 +797,41 @@ body {
 }
 
 .nav-action-btn {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 200ms ease-in;
+  transition: background var(--transition-fast), transform 200ms ease-in;
   border: none;
-  background: var(--surface-primary);
+  background: transparent;
   color: var(--brand-grey-900);
-  box-shadow: var(--shadow-xs);
   flex-shrink: 0;
 }
 
 .nav-action-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--brand-grey-200);
 }
 
+.nav-action-btn.open {
+  background: var(--surface-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+/* v2 NeoNavigationAvatar default: bright coral/red filled circle with white initial */
 .avatar {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-full);
-  background: var(--brand-digital-blue-200);
+  background: #E45A4F;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: var(--brand-font-weight-medium);
-  color: var(--brand-digital-blue-800);
+  font-size: 14px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--brand-white);
   flex-shrink: 0;
 }
 
@@ -738,8 +926,8 @@ body {
 
 .page-title {
   font-family: var(--font-heading);
-  font-size: 21px;
-  font-weight: var(--brand-font-weight-regular);
+  font-size: 28px;
+  font-weight: var(--brand-font-weight-semibold);
   color: var(--content-heading);
   line-height: 140%;
 }
@@ -835,174 +1023,204 @@ body {
 /* ================================================
    MARKETPLACE PAGE
    ================================================ */
-.marketplace-banner {
-  font-size: var(--brand-font-size-300);
-  color: var(--text-secondary);
-  line-height: 1.5;
+/* v2 marketplace: single-column page with row list */
+.market-content {
+  max-width: 900px;
+  width: 100%;
+}
+
+.market-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  padding-bottom: var(--space-3);
+}
+
+.market-title-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* v2 titles.pageHeader: 21px Inter regular, line-height 1.4 */
+.market-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.4;
   margin: 0;
 }
 
-.marketplace-banner strong {
-  font-weight: var(--brand-font-weight-semibold);
-  color: var(--text-primary);
+/* NeoBadge color="info" — pale blue bg, info-blue text, 50%-alpha info border */
+.market-count-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-information);
+  background: var(--surface-information);
+  border: 1px solid rgba(47, 66, 255, 0.5);
+  border-radius: 999px;
+  white-space: nowrap;
 }
 
-.marketplace-layout {
-  display: grid;
-  grid-template-columns: 224px 1fr;
-  gap: var(--space-5);
-  margin-top: var(--space-3);
-}
-
-.marketplace-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  align-items: flex-start;
-}
-
-.marketplace-sidebar-search {
-  height: 36px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-primary);
-  padding: 0 var(--space-3);
-  font-size: var(--brand-font-size-300);
-  color: var(--text-primary);
-  background: var(--surface-primary);
+.market-actions {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  width: 100%;
+  flex-shrink: 0;
 }
 
-.marketplace-sidebar-search input {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: var(--brand-font-size-300);
-  font-family: var(--font-body);
+/* NeoButton variant=secondary size=small */
+.market-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-secondary);
+  background: var(--surface-primary);
   color: var(--text-primary);
-  flex: 1;
-  width: 100%;
-}
-
-.marketplace-sidebar-search input::placeholder {
-  color: var(--content-placeholder);
-}
-
-.sidebar-section-label {
   font-family: var(--font-body);
   font-size: var(--brand-font-size-300);
-  font-weight: var(--brand-font-weight-semibold);
-  color: var(--text-primary);
-}
-
-.sidebar-category-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  width: 100%;
-}
-
-.sidebar-category-link {
-  font-family: var(--font-body);
-  font-size: var(--brand-font-size-300);
-  font-weight: var(--brand-font-weight-regular);
-  color: var(--text-secondary);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background var(--transition-fast);
-}
-
-.sidebar-category-link:hover {
-  background: var(--surface-primary-hover);
-}
-
-.sidebar-category-link.active {
-  background: var(--surface-primary-pressed);
-  color: var(--text-primary);
   font-weight: var(--brand-font-weight-medium);
-}
-
-.category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 160px);
-  grid-auto-rows: min-content;
-  gap: var(--space-4);
-}
-
-.category-card {
-  width: 160px;
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-sm);
-  padding: var(--space-3);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.market-export-btn:hover {
+  background: var(--brand-grey-200);
+  border-color: var(--border-primary);
+}
+
+.market-export-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.market-divider {
+  height: 1px;
+  background: var(--border-secondary);
+  width: 100%;
+}
+
+/* Stack of category rows separated by thin dividers */
+.market-row-list {
   display: flex;
   flex-direction: column;
+}
+
+.market-row-list > .market-row + .market-row {
+  border-top: 1px solid var(--border-secondary);
+}
+
+.market-row {
+  display: flex;
+  align-items: flex-start;
   gap: var(--space-3);
+  padding: 12px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 150ms ease;
 }
 
-.category-card:hover {
-  border-color: var(--brand-digital-blue-500);
-  box-shadow: var(--shadow-sm);
+.market-row:hover {
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
-.category-card-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-secondary);
+.market-row-icon {
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   font-size: 22px;
-}
-
-.category-card-name {
-  font-size: var(--brand-font-size-300);
-  font-weight: var(--brand-font-weight-semibold);
   color: var(--text-primary);
 }
 
-.category-card-count {
-  font-size: var(--brand-font-size-200);
-  color: var(--text-tertiary);
+.market-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.category-card-desc {
+.market-row-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-400);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+/* NeoTag size=medium intent=default — height 18, padding 0 6px (neo-design Tag.tsx) */
+.market-row-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
   font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--brand-grey-800);
+  background: var(--brand-grey-200);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.market-row:hover .market-row-tag {
+  background: var(--surface-primary);
+}
+
+.market-row-desc {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
   color: var(--text-secondary);
   line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.market-row-trail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  color: var(--icon-secondary);
+  flex-shrink: 0;
+  align-self: center;
 }
 
 /* ================================================
-   SEARCH DROPDOWN
+   SEARCH DROPDOWN — sized by the shared .org-dropdown/.search-dropdown rule
+   above. Below: inner header/content/empty/row treatments.
    ================================================ */
-.search-dropdown {
-  position: fixed;
-  z-index: 10001;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--surface-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: 12px;
-  width: 600px;
-  max-height: 500px;
-  box-shadow: 0 8px 15px rgba(31, 41, 55, 0.1);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
 .search-dd-header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border-primary);
+  gap: 12px;
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+
+.search-dd-header > svg {
+  color: var(--icon-secondary);
   flex-shrink: 0;
 }
 
@@ -1011,61 +1229,84 @@ body {
   border: none;
   outline: none;
   background: transparent;
-  font-size: 16px;
+  font-size: var(--brand-font-size-400);
   font-family: var(--font-body);
   color: var(--text-primary);
 }
 
 .search-dd-input-field::placeholder {
-  color: var(--text-tertiary);
+  color: var(--content-placeholder);
 }
 
+/* Right-side "Clear" button — v2 NeoButton variant=tertiary small (pill radius) */
 .search-dd-clear {
-  font-size: 14px;
+  font-size: var(--brand-font-size-300);
   color: var(--text-secondary);
   cursor: pointer;
   border: none;
   background: none;
-  padding: 0;
+  padding: 4px 12px;
   font-family: var(--font-body);
+  font-weight: var(--brand-font-weight-medium);
   white-space: nowrap;
+  border-radius: var(--radius-full);
 }
 
 .search-dd-clear:hover {
   color: var(--text-primary);
+  background: var(--surface-secondary);
 }
 
 .search-dd-content {
   flex: 1;
   overflow-y: auto;
-  padding: 24px 24px 16px;
+  border-top: 1px solid var(--border-secondary);
+  padding: var(--space-2) 0;
 }
 
 .search-dd-label {
-  font-size: 16px;
+  font-size: var(--brand-font-size-300);
   font-weight: var(--brand-font-weight-semibold);
   color: var(--text-primary);
-  margin-bottom: 8px;
+  padding: 6px 20px;
 }
 
+/* Empty state shown when query is blank */
+.search-dd-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid var(--border-secondary);
+  gap: 4px;
+  padding: var(--space-6) var(--space-4);
+}
+
+.search-dd-empty-title {
+  font-size: var(--brand-font-size-500);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.search-dd-empty-sub {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-secondary);
+}
+
+/* Recipe rows in populated search results */
 .search-dd-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border-secondary);
+  gap: 10px;
+  padding: 10px 20px;
   cursor: pointer;
   transition: background var(--transition-fast);
 }
 
-.search-dd-item:last-child {
-  border-bottom: none;
-}
-
-.search-dd-item:hover {
-  background: var(--surface-primary-hover);
-  margin: 0 -24px;
-  padding: 12px 24px;
+.search-dd-item:hover,
+.search-dd-result-target {
+  background: var(--surface-secondary);
 }
 
 .search-dd-icon {
@@ -1079,28 +1320,13 @@ body {
 }
 
 .search-dd-name {
-  font-size: 14px;
+  font-size: var(--brand-font-size-300);
   color: var(--text-primary);
+  font-weight: var(--brand-font-weight-medium);
 }
 
-.search-dd-shortcuts {
-  margin-left: auto;
-  display: flex;
-  gap: 4px;
-}
-
-.search-dd-shortcuts kbd {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 22px;
-  height: 20px;
-  padding: 0 5px;
-  background: var(--surface-secondary);
-  border: 1px solid var(--border-primary);
-  border-radius: 4px;
-  font-size: 11px;
-  font-family: var(--font-body);
+.search-dd-ecosystem {
+  font-size: var(--brand-font-size-300);
   color: var(--text-tertiary);
 }
 
@@ -1108,55 +1334,99 @@ body {
 /* ================================================
    COMMIT DIALOG
    ================================================ */
+/* v2 MassRefactor: MUI Dialog fullWidth maxWidth="md" (~900px), fixed full-viewport scrim */
 .commit-dialog-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(31, 41, 55, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 1300;
+  padding: 32px 16px;
 }
 
 .commit-dialog {
   background: var(--surface-primary);
-  border-radius: var(--radius-2xl);
-  width: 560px;
-  max-height: 80vh;
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
   box-shadow: var(--shadow-xl);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
+/* ClosableDialogTitle: title + X close */
+.commit-dialog-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-secondary);
+  font-family: var(--font-heading);
+  font-size: var(--brand-font-size-500);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
 .commit-dialog-body {
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-4) var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-4);
   overflow-y: auto;
 }
 
-.commit-section {
+/* DialogContentText intro */
+.commit-dialog-intro {
+  margin: 0;
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.commit-dialog-intro strong {
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+/* FieldsetWithLegend: bordered box with embedded legend label */
+.commit-fieldset {
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  background: var(--surface-primary);
 }
 
-.commit-section-header {
-  display: flex;
+.commit-fieldset-legend {
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
+  padding: 0 6px;
+  margin: 0 0 0 -6px;
   font-family: var(--font-body);
-  font-size: var(--brand-font-size-200);
+  font-size: var(--brand-font-size-300);
   font-weight: var(--brand-font-weight-semibold);
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  color: var(--text-primary);
 }
 
-.commit-section-header svg {
+.commit-fieldset-legend svg {
+  color: var(--icon-secondary);
   flex-shrink: 0;
+}
+
+/* Nested fieldset uses a tinted background to read as a sub-section */
+.commit-fieldset-nested {
+  background: var(--surface-secondary);
+  border-color: var(--border-secondary);
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  gap: var(--space-2);
 }
 
 .commit-field {
@@ -1236,9 +1506,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding: var(--space-3);
-  background: var(--surface-secondary);
-  border-radius: var(--radius-lg);
 }
 
 .commit-checkbox-item {
@@ -1276,55 +1543,201 @@ body {
 
 /* ================================================
    COMMIT RESULTS PAGE
+   v2 CommitJobSummary: row of InformationBox cells, each = label/value/caption
    ================================================ */
-.commit-results-summary {
-  background: var(--surface-secondary);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-xl);
-  padding: var(--space-4) var(--space-5);
-}
-
-.commit-results-summary-grid {
-  display: flex;
-  gap: var(--space-6);
-  flex-wrap: wrap;
-}
-
-.commit-results-stat {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.commit-results-stat-label {
-  font-family: var(--font-body);
-  font-size: var(--brand-font-size-100);
-  font-weight: var(--brand-font-weight-medium);
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.commit-results-stat-value {
-  font-family: var(--font-body);
-  font-size: var(--brand-font-size-300);
+.commit-results-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
   font-weight: var(--brand-font-weight-semibold);
   color: var(--text-primary);
+  line-height: 1.4;
+  margin: var(--space-2) 0 0;
 }
 
-.commit-results-progress-bar {
-  margin-top: var(--space-3);
-  height: 4px;
-  background: var(--border-primary);
-  border-radius: 2px;
+.commit-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 4px;
+  row-gap: var(--space-3);
+  padding: var(--space-3) 0;
+  align-items: flex-start;
+}
+
+.commit-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 130px;
+  padding: 0 var(--space-3);
+  border-left: 1px solid var(--border-secondary);
+}
+
+.commit-info-box:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.commit-info-label {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-secondary);
+}
+
+.commit-info-value {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-400);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.commit-info-value-success {
+  color: var(--text-success);
+}
+
+/* NeoButton tertiary pattern — see .neo-link */
+.commit-info-link {
+  color: var(--brand-digital-blue-500);
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.commit-info-link:hover {
+  color: var(--brand-digital-blue-600);
+}
+
+.commit-info-link:active {
+  color: var(--brand-digital-blue-800);
+}
+
+.commit-info-caption {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  color: var(--text-secondary);
+}
+
+/* Progress bar that sits inside the Status info box */
+.commit-info-bar {
+  margin-top: 4px;
+  height: 6px;
+  background: var(--surface-secondary);
+  border-radius: 999px;
   overflow: hidden;
 }
 
-.commit-results-progress-fill {
+.commit-info-fill {
   height: 100%;
-  background: var(--surface-primary-filled);
-  border-radius: 2px;
+  background: var(--brand-green-600);
+  border-radius: 999px;
   transition: width 0.5s ease;
+}
+
+/* Slight refinement to the results table inside the Commits tab */
+.commit-results-table {
+  margin-top: var(--space-2);
+}
+
+/* v2 CommitJobToolbar — NeoToolbar wraps a quick-filter input + ToolbarActions */
+.commit-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0 var(--space-2);
+  flex-wrap: wrap;
+}
+
+.commit-toolbar-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-full);
+  background: var(--surface-primary);
+  color: var(--text-secondary);
+  min-width: 240px;
+}
+
+.commit-toolbar-filter input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.commit-toolbar-filter input::placeholder {
+  color: var(--content-placeholder);
+}
+
+.commit-toolbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* Compact secondary buttons inside toolbar (smaller than the default neo-btn) */
+.commit-toolbar-btn {
+  height: 32px;
+  padding: 0 12px;
+  font-size: var(--brand-font-size-300);
+}
+
+/* Highlighted primary toolbar button (Export in v2) — blue border + blue text */
+.commit-toolbar-btn-primary {
+  color: var(--brand-digital-blue-600);
+  border-color: var(--brand-digital-blue-500);
+}
+
+.commit-toolbar-btn-primary:hover {
+  background: var(--brand-digital-blue-100);
+  border-color: var(--brand-digital-blue-600);
+}
+
+/* "Actions" column header — minimal weight (most rows show only an icon button) */
+.commit-col-actions-head {
+  width: 80px;
+}
+
+/* Commit results table — fixed-width columns for checkbox/origin/actions */
+.commit-col-check {
+  width: 36px;
+  text-align: center;
+}
+
+.commit-col-check input {
+  cursor: pointer;
+}
+
+.commit-col-origin {
+  width: 60px;
+  text-align: center;
+  color: var(--icon-secondary);
+}
+
+.commit-col-origin svg {
+  vertical-align: middle;
+}
+
+.commit-col-actions {
+  width: 48px;
+  text-align: right;
+}
+
+/* Monospace base-branch chip (matches v2's "monospace" cellClassName) */
+.commit-base-branch {
+  font-family: var(--font-code);
+  font-size: var(--brand-font-size-200);
+  background: var(--brand-grey-200);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--text-secondary);
 }
 
 /* ================================================
@@ -1422,26 +1835,8 @@ body {
   background: var(--activity-commit-job);
 }
 
-.activity-type-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px var(--space-2);
-  border-radius: 999px;
-  font-size: var(--brand-font-size-200);
-  font-weight: var(--brand-font-weight-medium);
-  white-space: nowrap;
-}
-
-.activity-type-badge.recipe-run {
-  background: var(--surface-information);
-  color: var(--text-information);
-}
-
-.activity-type-badge.commit {
-  background: var(--surface-success);
-  color: var(--text-success);
-}
-
+/* NeoBadge — all variants share padding/radius/font; bg+text+border vary by intent */
+.activity-type-badge,
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -1451,16 +1846,21 @@ body {
   font-size: var(--brand-font-size-200);
   font-weight: var(--brand-font-weight-medium);
   white-space: nowrap;
+  border: 1px solid transparent;
 }
 
+.activity-type-badge.recipe-run,
 .status-badge.complete {
-  background: var(--surface-information);
-  color: var(--text-information);
-}
-
-.status-badge.running {
   background: var(--surface-success);
   color: var(--text-success);
+  border-color: rgba(76, 167, 90, 0.5);
+}
+
+.activity-type-badge.commit,
+.status-badge.running {
+  background: var(--surface-information);
+  color: var(--text-information);
+  border-color: rgba(47, 66, 255, 0.5);
 }
 
 .activity-row-mine {
@@ -1494,115 +1894,349 @@ body {
   gap: var(--space-2);
 }
 
+/* All link-like elements follow NeoButton variant="tertiary":
+   transparent bg, no border/padding, digital-blue default,
+   digital-blue-600 hover, digital-blue-800 active. No underline.
+   Applied via .neo-link or matched by individual link classes below. */
+.neo-link,
 .breadcrumb a {
-  color: var(--text-secondary);
-  text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--brand-digital-blue-500);
+  font-family: inherit;
   cursor: pointer;
+  text-decoration: none;
+  transition: color 150ms ease;
 }
 
+.neo-link:hover,
 .breadcrumb a:hover {
   color: var(--brand-digital-blue-600);
-  text-decoration: underline;
+}
+
+.neo-link:active,
+.breadcrumb a:active {
+  color: var(--brand-digital-blue-800);
 }
 
 .breadcrumb-sep {
   color: var(--text-disabled);
 }
 
-.recipe-header {
-  margin-bottom: var(--space-5);
-}
-
-.recipe-title {
-  font-size: var(--brand-font-size-700);
-  font-weight: var(--brand-font-weight-semibold);
-  color: var(--content-heading);
-  line-height: 1.3;
-}
-
-.recipe-meta {
-  font-size: var(--brand-font-size-200);
-  color: var(--text-tertiary);
-  margin-top: var(--space-1);
+/* ===== RECIPE DETAIL — v2 layout =====
+   - Stack of cards (1px primary border, 4px radius, 8px padding)
+   - Top card: icon + h2 title, description, recipe ID pill, action buttons,
+     "Will run on X" caption */
+.recipe-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 1200px;
 }
 
 .recipe-card {
   border: 1px solid var(--border-primary);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  margin-bottom: var(--space-4);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  background: var(--surface-primary);
 }
 
-.recipe-card-body {
-  padding: var(--space-5) var(--space-6);
+.recipe-card + .recipe-card {
+  margin-top: 0;
 }
 
-.recipe-desc {
+.recipe-card-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: var(--space-2) 0;
+}
+
+.recipe-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.recipe-card-icon svg {
+  width: 56px;
+  height: 56px;
+}
+
+.recipe-card-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.recipe-card-desc {
+  max-width: 800px;
+  font-size: var(--brand-font-size-400);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-3);
+  padding: 0 var(--space-2);
+}
+
+/* v2 RecipeIdPill: full pill (999px), 14px monospace, neo grey[100] bg, 8/16 padding.
+   Note: neo-design colors.grey[100] = #F3F4F6 which is my --brand-grey-200 alias. */
+.recipe-id-pill {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--brand-grey-200);
+  border-radius: var(--radius-full);
+  border: none;
+  font-family: var(--font-code);
   font-size: var(--brand-font-size-300);
-  color: var(--content-body);
-  line-height: 1.7;
-  margin-bottom: var(--space-5);
-  max-width: 700px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 150ms ease;
+  margin: 0 var(--space-2) var(--space-3);
+  max-width: max-content;
 }
 
+.recipe-id-pill:hover {
+  background: var(--brand-grey-300);
+}
+
+.recipe-id-text {
+  user-select: all;
+}
+
+.recipe-id-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Button row */
+.recipe-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2) var(--space-2);
+}
+
+/* NeoButton primary: filled digital-blue with white text/icon */
+.neo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  border: 1px solid transparent;
+  user-select: none;
+  line-height: 1;
+}
+
+.neo-btn-primary {
+  background: var(--surface-primary-filled);
+  color: var(--text-on-primary);
+  border-color: var(--surface-primary-filled);
+}
+
+.neo-btn-primary:hover {
+  background: var(--surface-primary-filled-hover);
+  border-color: var(--surface-primary-filled-hover);
+}
+
+.neo-btn-secondary {
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  border-color: var(--border-secondary);
+}
+
+.neo-btn-secondary:hover {
+  background: var(--brand-grey-200);
+  border-color: var(--border-primary);
+}
+
+.neo-btn svg {
+  flex-shrink: 0;
+}
+
+/* "Will run on X repositories from the {org} organization" caption */
+.recipe-run-caption {
+  padding: 0 var(--space-2) var(--space-1);
+  font-size: var(--brand-font-size-200);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.recipe-run-caption strong {
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+/* Section titles inside Preconditions / Recipe list cards */
 .recipe-section-title {
   font-size: var(--brand-font-size-300);
   font-weight: var(--brand-font-weight-semibold);
-  color: var(--content-heading);
-  margin-bottom: var(--space-3);
+  color: var(--text-primary);
+  padding: var(--space-2);
 }
 
-.recipe-actions {
+/* Recipe table (Preconditions + Recipe list) */
+.recipe-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--brand-font-size-300);
+}
+
+.recipe-table th {
+  text-align: left;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  padding: 12px var(--space-2);
+  background: var(--surface-datagrid-header);
+  border-top: 1px solid var(--border-secondary);
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.recipe-table td {
+  padding: 14px var(--space-2);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.recipe-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.recipe-table tbody tr:hover {
+  background: var(--surface-primary-active);
+}
+
+.recipe-table-tags {
+  width: 200px;
+}
+
+.recipe-table-cell {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-5);
+  gap: 10px;
+  font-weight: var(--brand-font-weight-semibold);
 }
 
-.recipe-org-message {
-  font-size: var(--brand-font-size-200);
-  color: var(--text-secondary);
-  margin-bottom: var(--space-3);
+.recipe-row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-secondary);
+  flex-shrink: 0;
 }
 
-.recipe-id-block {
-  background: var(--surface-secondary);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3) var(--space-4);
+/* RSPEC-#### chip — NeoBadge neutral with 50%-alpha border */
+.recipe-rspec-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
   font-family: var(--font-code);
   font-size: var(--brand-font-size-200);
-  color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.recipe-tags {
-  display: flex;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-}
-
-.recipe-tag {
-  font-size: var(--brand-font-size-200);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-  background: var(--surface-secondary);
-  color: var(--text-secondary);
-  font-weight: var(--brand-font-weight-medium);
+  color: var(--brand-grey-800);
+  background: var(--brand-grey-200);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  border-radius: 999px;
 }
 
 /* ================================================
    RESULTS PAGE
    ================================================ */
+/* ===== Results page root + header ===== */
+.results-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 600px;
+  position: relative;
+}
+
+.results-page-head {
+  padding: var(--space-4) var(--space-5) var(--space-3);
+}
+
+.results-page-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.results-page-subtitle {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.results-progress-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.results-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--surface-secondary);
+  border-radius: 999px;
+  overflow: hidden;
+  max-width: 400px;
+}
+
+.results-progress-fill {
+  height: 100%;
+  background: var(--brand-green-600);
+  border-radius: 999px;
+  transition: width 200ms ease;
+}
+
+.results-progress-status {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-medium);
+}
+
+/* ===== Tabs row ===== */
+.results-tabs-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border-secondary);
+  padding: 0 var(--space-5);
+  background: var(--surface-primary);
+}
+
 .results-tabs {
   display: flex;
   align-items: center;
   gap: 0;
-  border-bottom: 1px solid var(--border-primary);
-  padding: 0 var(--space-6);
-  background: var(--surface-primary);
 }
 
 .results-tab {
@@ -1611,7 +2245,7 @@ body {
   font-size: var(--brand-font-size-300);
   font-weight: var(--brand-font-weight-regular);
   line-height: var(--brand-line-height-300);
-  color: var(--brand-grey-700);
+  color: var(--text-secondary);
   cursor: pointer;
   border-bottom: 2px solid transparent;
   transition: all var(--transition-fast);
@@ -1620,10 +2254,11 @@ body {
   border-top: none;
   border-left: none;
   border-right: none;
+  margin-bottom: -1px;
 }
 
 .results-tab:hover {
-  color: var(--brand-grey-900);
+  color: var(--text-primary);
 }
 
 .results-tab.active {
@@ -1632,102 +2267,279 @@ body {
   border-bottom-color: var(--brand-digital-blue-500);
 }
 
-.results-tab.disabled {
-  color: var(--text-disabled);
-  cursor: default;
-}
-
 .results-tab-actions {
   margin-left: auto;
   display: flex;
-  gap: var(--space-2);
+  align-items: center;
+  gap: 2px;
 }
 
+.results-icon-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.results-icon-btn:hover {
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+/* ===== Split view ===== */
 .results-split {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  height: calc(100% - 120px);
-  min-height: 400px;
+  grid-template-columns: 360px 1fr;
+  flex: 1;
+  min-height: 0;
   position: relative;
 }
 
 .results-left {
-  border-right: 1px solid var(--border-primary);
-  overflow-y: auto;
+  border-right: 1px solid var(--border-secondary);
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
-.results-left-header {
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border-primary);
-  font-size: var(--brand-font-size-200);
+.results-left-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-3) var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.results-left-footer {
+  padding: var(--space-3);
+  border-top: 1px solid var(--border-secondary);
+  background: var(--surface-primary);
+  display: flex;
+  justify-content: center;
+}
+
+.results-left-footer .commit-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ===== Left panel sections ===== */
+.results-disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  padding: 4px 0;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
   font-weight: var(--brand-font-weight-semibold);
   color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  cursor: pointer;
+}
+
+.results-disclosure svg {
+  color: var(--icon-secondary);
   flex-shrink: 0;
 }
 
-.results-left-header span {
-  color: var(--text-tertiary);
-  font-weight: var(--brand-font-weight-regular);
-}
-
-.results-center {
-  overflow-y: auto;
-  padding: var(--space-5);
-  background: var(--surface-secondary);
-}
-
-.results-recipe-drawer {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 300px;
-  background: var(--surface-primary);
-  border-left: 1px solid var(--border-primary);
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.08);
-  overflow-y: auto;
+.results-summary-section {
   display: flex;
   flex-direction: column;
-  z-index: 10;
+  gap: var(--space-2);
 }
 
-.recipe-drawer-header {
-  padding: var(--space-4);
-  border-bottom: 1px solid var(--border-primary);
+/* Single-column stat list: label left, value right.
+   2-col grid in a 360px panel was too tight; labels like "Repositories with
+   results" kept wrapping to 3 lines. */
+.results-summary-grid {
+  display: flex;
+  flex-direction: column;
+  padding: 0 4px;
 }
 
-.recipe-drawer-title {
+.results-summary-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--brand-font-size-300);
+  padding: 4px 0;
+}
+
+.results-summary-label {
+  color: var(--text-secondary);
+}
+
+.results-summary-value {
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-semibold);
+  text-align: right;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Filter pills + search row */
+.results-filter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding-right: 4px;
+}
+
+.results-pill-group {
+  display: inline-flex;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: var(--surface-primary);
+}
+
+.results-pill {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.results-pill + .results-pill {
+  border-left: 1px solid var(--border-secondary);
+}
+
+.results-pill:hover {
+  background: var(--brand-grey-200);
+  color: var(--text-primary);
+}
+
+.results-pill.active {
+  background: var(--brand-digital-blue-100);
+  color: var(--brand-digital-blue-700);
+}
+
+.results-search-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-full);
+  background: var(--surface-primary);
+  color: var(--text-secondary);
+  font-size: var(--brand-font-size-300);
+  cursor: pointer;
+  flex: 1;
+  min-width: 110px;
+}
+
+.results-search-pill > span {
+  flex: 1;
+}
+
+/* ===== Results tree ===== */
+.results-tree {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border-secondary);
+  padding-top: var(--space-2);
+}
+
+.results-tree-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 4px;
   font-size: var(--brand-font-size-300);
   font-weight: var(--brand-font-weight-semibold);
   color: var(--text-primary);
 }
 
-.recipe-drawer-list {
-  padding: var(--space-2) 0;
+.results-tree-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px;
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
 }
 
+.results-tree-toggle {
+  border: none;
+  background: transparent;
+  color: var(--icon-secondary);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.results-tree-group-name {
+  flex: 1;
+  font-weight: var(--brand-font-weight-medium);
+}
+
+/* v2 WhyIsThisMarked uses an MUI Drawer anchored right — full viewport height,
+   overlays content (doesn't push the diff over), ~1/3 viewport width. */
+.results-recipe-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 33vw;
+  min-width: 360px;
+  max-width: 560px;
+  background: var(--surface-primary);
+  border-left: 1px solid var(--border-secondary);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 1100;
+}
+
+.recipe-drawer-header {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.recipe-drawer-title {
+  font-size: var(--brand-font-size-400);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.recipe-drawer-list {
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Root recipe (parent card) */
 .recipe-drawer-item {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  cursor: pointer;
-  transition: background var(--transition-fast);
-  border-left: 2px solid transparent;
-}
-
-.recipe-drawer-item:hover {
-  background: var(--surface-primary-hover);
-}
-
-.recipe-drawer-item.active {
-  background: var(--surface-primary-hover);
-  border-left-color: var(--surface-primary-filled);
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--surface-primary);
 }
 
 .recipe-drawer-icon {
@@ -1736,39 +2548,57 @@ body {
   margin-top: 2px;
 }
 
+/* Inherited sub-recipe (indented, arrow indicator) */
+.recipe-drawer-sub {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 12px 6px 24px;
+}
+
+.recipe-drawer-arrow {
+  color: var(--icon-tertiary);
+  font-size: 14px;
+  line-height: 1;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
 .recipe-drawer-info {
   min-width: 0;
+  flex: 1;
 }
 
 .recipe-drawer-name {
-  font-size: var(--brand-font-size-200);
-  font-weight: var(--brand-font-weight-medium);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
   color: var(--text-primary);
+  line-height: 1.3;
 }
 
 .recipe-drawer-id {
-  font-size: 11px;
+  font-size: var(--brand-font-size-200);
+  color: var(--text-secondary);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.recipe-drawer-item .recipe-drawer-id {
   font-family: var(--font-code);
   color: var(--text-tertiary);
   word-break: break-all;
-  margin-top: 2px;
 }
 
-.results-tree {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
+/* Repo rows inside the Results tree (v2 style: status icon + name + count) */
 .results-tree-item {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
+  padding: 6px 4px;
   cursor: pointer;
   transition: background var(--transition-fast);
-  font-size: var(--brand-font-size-200);
-  border-bottom: 1px solid var(--border-secondary);
+  font-size: var(--brand-font-size-300);
+  border-radius: var(--radius-sm);
 }
 
 .results-tree-item:hover {
@@ -1776,7 +2606,15 @@ body {
 }
 
 .results-tree-item.selected {
-  background: var(--surface-primary-hover);
+  background: var(--surface-primary-active);
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+.results-tree-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .results-tree-checkbox {
@@ -1791,6 +2629,7 @@ body {
 
 .results-tree-checkbox.checked {
   background: var(--surface-primary-filled);
+  color: white;
 }
 
 .results-tree-checkbox.unchecked {
@@ -1800,64 +2639,130 @@ body {
 
 .results-tree-name {
   flex: 1;
-  font-weight: var(--brand-font-weight-medium);
   color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* "N results" link in results tree — tertiary blue, no underline */
 .results-tree-count {
-  font-size: var(--brand-font-size-100);
-  color: var(--text-tertiary);
+  font-size: var(--brand-font-size-200);
+  color: var(--brand-digital-blue-500);
   white-space: nowrap;
+  font-weight: var(--brand-font-weight-medium);
+  cursor: pointer;
+  transition: color 150ms ease;
 }
 
-.results-action-panel {
-  padding: var(--space-3) var(--space-5);
-  border-top: 1px solid var(--border-primary);
+.results-tree-count:hover {
+  color: var(--brand-digital-blue-600);
+}
+
+/* ===== Right panel: repo header + diff ===== */
+.results-right {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-primary);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.results-right-head {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  background: var(--surface-primary);
+  /* Extra right padding so the "Commit only selected results" pill doesn't
+     sit flush against the panel edge */
+  padding: 10px var(--space-5) 10px var(--space-4);
+  border-bottom: 1px solid var(--border-secondary);
+  flex-wrap: wrap;
 }
 
-.results-actions {
+.results-right-repo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--brand-font-size-400);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.results-right-actions {
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
-.commit-btn {
-  /* tour target */
+.results-right-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-/* Diff view placeholder */
+.results-right-action:hover {
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+.results-right-action-primary {
+  color: var(--brand-digital-blue-600);
+  border: 1px solid var(--brand-digital-blue-500);
+  border-radius: var(--radius-full);
+}
+
+.results-right-action-primary:hover {
+  background: var(--brand-digital-blue-100);
+  color: var(--brand-digital-blue-700);
+}
+
+/* Diff view inside the right panel — flush, no outer border */
 .diff-placeholder {
   background: var(--surface-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  height: 100%;
-  min-height: 300px;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .diff-header {
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-4);
   background: var(--surface-secondary);
-  border-bottom: 1px solid var(--border-primary);
+  border-bottom: 1px solid var(--border-secondary);
   display: flex;
   align-items: center;
   gap: var(--space-2);
   font-size: var(--brand-font-size-200);
   font-weight: var(--brand-font-weight-medium);
   color: var(--text-primary);
+  min-width: 0;
 }
 
+.diff-header > svg {
+  flex-shrink: 0;
+}
+
+/* Long file paths truncate with ellipsis rather than overflow the panel */
 .diff-file-path {
   font-family: var(--font-code);
   font-size: var(--brand-font-size-200);
   color: var(--text-secondary);
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .diff-content {
@@ -2403,6 +3308,16 @@ const icons = {
 
   packageIcon: (s) => html`<${Icon} size=${s || 22}><path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></${Icon}>`,
 
+  // Changelog (Lucide Activity)
+  activity: (s) => html`<${Icon} size=${s || 22}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></${Icon}>`,
+
+  // More menu kebab
+  ellipsis: (s) => html`<${Icon} size=${s || 22} strokeWidth=${2}><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="19" cy="12" r="1.4" fill="currentColor"/><circle cx="5" cy="12" r="1.4" fill="currentColor"/></${Icon}>`,
+
+  // Results tree status icons (Lucide check-circle / alert-circle)
+  checkCircle: (s) => html`<${Icon} size=${s || 14} stroke="#4CA75A"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></${Icon}>`,
+  alertCircle: (s) => html`<${Icon} size=${s || 14} stroke="#CB3446"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></${Icon}>`,
+
   // Toolbar icons
   users: (s) => html`<${Icon} size=${s || 18}><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></${Icon}>`,
 
@@ -2457,16 +3372,26 @@ const navItems = [
   { id: 'marketplace', label: 'Marketplace', icon: 'globe' },
   { id: 'builder', label: 'Builder', icon: 'blocks' },
   { id: 'activity', label: 'Activity', icon: 'history' },
-  { id: 'repos', label: 'Repos', icon: 'folderGit' },
-  { id: 'batches', label: 'Batches', icon: 'layers' },
+  { id: 'changelog', label: 'Changelog', icon: 'activity', badge: 'Beta' },
+];
+
+// Overflow items shown inside the More popover at the bottom of the rail.
+const moreItems = [
+  { id: 'repos', label: 'Repositories', icon: 'folderGit' },
   { id: 'deploy', label: 'Deploy', icon: 'packageIcon' },
 ];
 
 function LeftNavigation({ activeItem }) {
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
   return html`
     <nav className="left-nav">
       <div className="left-nav-top">
-        <div className="nav-logo" dangerouslySetInnerHTML=${{ __html: '<svg width="24" height="24" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834"/></svg>' }}></div>
+        <div className="nav-home-stack">
+          <div className="nav-item nav-item-home" aria-label="Home">
+            <div className="nav-icon-container" dangerouslySetInnerHTML=${{ __html: '<svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>' }}></div>
+          </div>
+          <span className="nav-version-badge">v2</span>
+        </div>
         ${navItems.map(item => html`
           <div key=${item.id} className=${'nav-item' + (activeItem === item.id ? ' active' : '')}>
             <div className="nav-icon-container">
@@ -2476,10 +3401,26 @@ function LeftNavigation({ activeItem }) {
             ${item.badge ? html`<span className="nav-badge">${item.badge}</span>` : null}
           </div>
         `)}
-      </div>
-      <div className="nav-customer-logo">
-        <span>Acme</span>
-        <span>Corp</span>
+        <div className="nav-more-wrapper">
+          <div className=${'nav-item nav-item-more' + (showMoreMenu ? ' active' : '')} onClick=${() => setShowMoreMenu((p) => !p)}>
+            <div className="nav-icon-container">
+              ${icons.ellipsis(24)}
+            </div>
+            <span className="nav-label">More</span>
+          </div>
+          ${showMoreMenu ? html`
+            <div className="nav-more-popover">
+              ${moreItems.map((item, i) => html`
+                <div key=${i} className=${'nav-item' + (activeItem === item.id ? ' active' : '')}>
+                  <div className="nav-icon-container">
+                    ${icons[item.icon](24)}
+                  </div>
+                  <span className="nav-label">${item.label}</span>
+                </div>
+              `)}
+            </div>
+          ` : null}
+        </div>
       </div>
     </nav>
   `;
@@ -2507,37 +3448,47 @@ function GlobalNavBar({ orgSelected, orgName, showOrgDropdown, onOrgClick, onOrg
           ${icons.chevronDown(14)}
         </div>
         ${showOrgDropdown ? html`
-          <div className="org-dropdown">
-            <div className="org-dropdown-header">
-              ${icons.search(18)}
-              <input type="text" placeholder="Search organizations..." readOnly />
-              <button className="overlay-close" onClick=${onOrgClose}>
-                ${icons.x(18)}
-              </button>
-            </div>
-            <div className="org-dropdown-content">
-              <div className="org-dropdown-item org-dropdown-item-default" onClick=${() => onOrgSelect('Default')}>
-                <span className="org-dropdown-name">Default</span>
-                <span className="org-dropdown-count">(1)</span>
+          <div className="overlay-scrim" onClick=${onOrgClose}>
+            <div className="org-dropdown" onClick=${(e) => e.stopPropagation()}>
+              <div className="org-dropdown-header">
+                ${icons.search(18)}
+                <input type="text" placeholder="Search organizations..." readOnly />
+                <button className="overlay-close" onClick=${onOrgClose}>
+                  ${icons.x(18)}
+                </button>
               </div>
-              <div className="org-dropdown-item" onClick=${() => onOrgSelect('Moderne')}>
-                <span className="org-dropdown-name">Moderne</span>
-                <span className="org-dropdown-count">249</span>
+              <div className="org-dropdown-content">
+                ${orgTree.map((node) => {
+                  const isDefault = node.id === 'default';
+                  const isOrgRow = node.kind === 'org';
+                  const cls = [
+                    'org-tree-row',
+                    node.selected ? 'selected' : '',
+                    isDefault ? 'org-dropdown-item-default' : ''
+                  ].filter(Boolean).join(' ');
+                  const handler = isOrgRow ? () => onOrgSelect(node.name) : undefined;
+                  return html`
+                    <div key=${node.id} className=${cls} onClick=${handler}
+                         style=${{ paddingLeft: (12 + node.depth * 22) + 'px' }}>
+                      <span className="org-tree-toggle">
+                        ${node.expandable ? icons[node.expanded ? 'chevronDown' : 'chevronRight'](14) : null}
+                      </span>
+                      <span className="org-tree-icon">
+                        ${node.kind === 'group' && node.depth === 0 ? icons.globe(16) : icons.users(16)}
+                      </span>
+                      <span className="org-tree-name">${node.name}</span>
+                      ${node.count != null ? html`<span className="org-tree-count">${node.count.toLocaleString()}</span>` : null}
+                    </div>
+                  `;
+                })}
               </div>
-              <div className="org-dropdown-item" onClick=${() => onOrgSelect('Open Source')}>
-                <span className="org-dropdown-name">Open Source</span>
-                <span className="org-dropdown-count">40,929</span>
-              </div>
-              <div className="org-dropdown-item" onClick=${() => onOrgSelect('Acme Corp')}>
-                <span className="org-dropdown-name">Acme Corp</span>
-                <span className="org-dropdown-count">47</span>
-              </div>
-            </div>
-            <div className="overlay-footer">
-              <div className="overlay-footer-left">
-                <span className="overlay-footer-hint"><kbd>\u2191\u2193</kbd> Navigate</span>
-                <span className="overlay-footer-hint"><kbd>Enter</kbd> Select</span>
-                <span className="overlay-footer-hint"><kbd>Esc</kbd> Close</span>
+              <div className="overlay-footer">
+                <div className="overlay-footer-left">
+                  <span className="overlay-footer-hint"><kbd>\u2191\u2193</kbd> Navigate</span>
+                  <span className="overlay-footer-hint"><kbd>Enter</kbd> Select</span>
+                  <span className="overlay-footer-hint"><kbd>Esc</kbd> Close</span>
+                </div>
+                <a className="overlay-footer-link">${icons.settings(14)} Manage user organizations</a>
               </div>
             </div>
           </div>
@@ -2547,50 +3498,53 @@ function GlobalNavBar({ orgSelected, orgName, showOrgDropdown, onOrgClick, onOrg
       <div className="search-input" onClick=${onSearchClick}>
         ${icons.search(16)}
         <span>Search recipes</span>
-        <kbd>\u2318K</kbd>
+        <span className="search-input-keys">
+          <kbd>\u2318</kbd><kbd>K</kbd>
+        </span>
       </div>
       ${showSearchDropdown ? html`
-        <div className="search-dropdown">
-          <div className="search-dd-header">
-            ${icons.search(18)}
-            <input ref=${searchInputRef} className="search-dd-input-field" type="text" placeholder="Search recipes..." value=${searchQuery} onInput=${(e) => onSearchQueryChange(e.target.value)} />
-            ${searchQuery.length > 0 ? html`<button className="search-dd-clear" onClick=${() => onSearchQueryChange('')}>Clear</button>` : null}
-            <button className="overlay-close" onClick=${onSearchClose}>
-              ${icons.x(18)}
-            </button>
-          </div>
-          ${searchQuery.length >= 3 ? html`
-            <div className="search-dd-content">
-              <div className="search-dd-label">Recipes</div>
-              ${searchResults.map((item, i) => html`
-                <div key=${i} className=${'search-dd-item' + (item.target ? ' search-dd-result-target' : '')} onClick=${item.target ? onSearchResultClick : undefined}>
-                  <div className="search-dd-icon">${icons.fileCode(16)}</div>
-                  <div className="search-dd-name">${item.name}</div>
-                  <div className="search-dd-shortcuts">
-                    <kbd>\u2318</kbd><kbd>K</kbd>
+        <div className="overlay-scrim" onClick=${onSearchClose}>
+          <div className="search-dropdown" onClick=${(e) => e.stopPropagation()}>
+            <div className="search-dd-header">
+              ${icons.search(18)}
+              <input ref=${searchInputRef} className="search-dd-input-field" type="text" placeholder="Search recipes..." value=${searchQuery} onInput=${(e) => onSearchQueryChange(e.target.value)} />
+              ${searchQuery.length > 0 ? html`<button className="search-dd-clear" onClick=${() => onSearchQueryChange('')}>Clear</button>` : null}
+              <button className="overlay-close" onClick=${onSearchClose}>
+                ${icons.x(18)}
+              </button>
+            </div>
+            ${searchQuery.length >= 3 ? html`
+              <div className="search-dd-content">
+                <div className="search-dd-label">Recipes</div>
+                ${searchResults.map((item, i) => html`
+                  <div key=${i} className=${'search-dd-item' + (item.target ? ' search-dd-result-target' : '')} onClick=${item.target ? onSearchResultClick : undefined}>
+                    <div className="search-dd-icon">${icons.fileCode(16)}</div>
+                    <div className="search-dd-name">${item.name}</div>
+                    ${item.ecosystem ? html`<span className="search-dd-ecosystem">(${item.ecosystem})</span>` : null}
                   </div>
-                </div>
-              `)}
+                `)}
+              </div>
+            ` : html`
+              <div className="search-dd-empty">
+                <div className="search-dd-empty-title">No recent searches yet</div>
+                <div className="search-dd-empty-sub">Search for recipes to get started.</div>
+              </div>
+            `}
+            <div className="overlay-footer">
+              <div className="overlay-footer-left">
+                <span className="overlay-footer-hint"><kbd>\u2191\u2193</kbd> Navigate</span>
+                <span className="overlay-footer-hint"><kbd>Enter</kbd> Select</span>
+                <span className="overlay-footer-hint"><kbd>Esc</kbd> Close</span>
+              </div>
+              <a className="overlay-footer-link">Search syntax tips</a>
             </div>
-          ` : html`
-            <div className="search-dd-content">
-              <div className="search-dd-label">Recipes</div>
-            </div>
-          `}
-          <div className="overlay-footer">
-            <div className="overlay-footer-left">
-              <span className="overlay-footer-hint"><kbd>\u2191\u2193</kbd> Navigate</span>
-              <span className="overlay-footer-hint"><kbd>Enter</kbd> Select</span>
-              <span className="overlay-footer-hint"><kbd>Esc</kbd> Close</span>
-            </div>
-            <div className="overlay-footer-right">Search syntax tips</div>
           </div>
         </div>
       ` : null}
       <div className="nav-actions">
-        <button className="nav-action-btn">${icons.settings(18)}</button>
+        <button className="nav-action-btn" aria-label="Admin menu">${icons.settings(20)}</button>
         <div className="help-menu-wrapper">
-          <button className="nav-action-btn" onClick=${() => setShowHelpMenu((prev) => !prev)}>${icons.circleHelp(18)}</button>
+          <button className=${'nav-action-btn' + (showHelpMenu ? ' open' : '')} onClick=${() => setShowHelpMenu((prev) => !prev)} aria-label="Help menu">${icons.circleHelp(20)}</button>
           ${showHelpMenu ? html`
             <div className="help-menu">
               <div className="help-menu-section">
@@ -2628,60 +3582,51 @@ function GlobalNavBar({ orgSelected, orgName, showOrgDropdown, onOrgClick, onOrg
 // ============================================================
 // PAGE: MARKETPLACE
 // ============================================================
+// Categories shown on the marketplace page \u2014 ordering and counts mirror v2 dev.
 const categories = [
-  { icon: '\u2615', name: 'Java', count: '1,294', desc: 'Basic building blocks for transforming Java...' },
-  { icon: '\ud83e\udde9', name: 'Picnic', count: '905', desc: 'Picnic recipes, and more recipes.' },
-  { icon: 'C#', name: 'C#', count: '574', desc: 'Recipes for C# codebases.' },
-  { icon: 'JS', name: 'JavaScript Codemods', count: '456', desc: 'Recipes that run JavaScript codemods.' },
-  { icon: '\ud83d\udd27', name: 'Static analysis', count: '342', desc: 'Code quality and best practices.' },
-  { icon: '\ud83c\udf31', name: 'Spring', count: '298', desc: 'Spring Boot, Security, and Cloud migrations.' },
-  { icon: '\u26a1', name: 'Quarkus', count: '266', desc: 'Quarkus framework recipes.' },
-  { icon: '\ud83c\udf0d', name: 'Apache', count: '201', desc: 'Apache framework migrations.' },
-  { icon: '\ud83d\udee1\ufe0f', name: 'Security', count: '187', desc: 'Vulnerability fixes and security hardening.' },
+  { icon: '\u2615', name: 'Java',                              count: '1,741', desc: 'Basic building blocks for transforming Java code.' },
+  { icon: '\ud83e\uddfa', name: 'Picnic',                       count: '1,105', desc: 'Picnic recipes, and more recipes.' },
+  { icon: 'K',  name: 'Kotlin',                                 count: '1,022', desc: 'Recipes to search and transform Kotlin.' },
+  { icon: 'C#', name: 'C#',                                     count: '977',   desc: 'Recipes for C# codebases.' },
+  { icon: '\u26a1', name: 'Quarkus',                            count: '266',   desc: 'Quarkus framework recipes.' },
+  { icon: '\ud83c\udf3f', name: 'Apache',                       count: '216',   desc: 'Apache framework migrations.' },
+  { icon: 'Go', name: 'Go',                                     count: '196',   desc: 'Recipes for Go codebases.' },
+  { icon: '\ud83d\udd27', name: 'Static analysis and remediation', count: '180', desc: 'Remediations for issues identified by SAST tools.' },
+  { icon: '\ud83d\udc0d', name: 'Python',                       count: '136',   desc: 'Recipes for Python codebases.' },
 ];
-
-const sidebarCategories = ['Apache', 'C#', 'Java', 'JavaScript Codemods', 'Picnic', 'Quarkus', 'Security', 'Spring', 'Static analysis'];
 
 function MarketplacePage() {
   return html`
-    <div className="content-area">
-      <div className="page-header">
-        <div className="page-title">Marketplace</div>
-        <div className="marketplace-banner">Access <strong>4,958 recipes</strong> to search, analyze, and transform code across <strong>36,871 projects</strong></div>
-      </div>
-      <div className="marketplace-layout">
-        <div className="marketplace-sidebar">
-          <div className="marketplace-sidebar-search">
-            ${icons.search(14)}
-            <input type="text" placeholder="Search" readOnly />
-          </div>
-          <div>
-            <div className="sidebar-section-label">Sort by:</div>
-            <div className="sidebar-category-list">
-              <div className="sidebar-category-link active">Total recipe count</div>
-              <div className="sidebar-category-link">Alphabetical</div>
-            </div>
-          </div>
-          <div>
-            <div className="sidebar-section-label">Categories:</div>
-            <div className="sidebar-category-list">
-              ${sidebarCategories.map((cat, i) => html`
-                <div key=${i} className="sidebar-category-link">${cat}</div>
-              `)}
-            </div>
-          </div>
+    <div className="content-area market-content">
+      <div className="market-header">
+        <div className="market-title-row">
+          <h1 className="market-title">Recipe marketplace</h1>
+          <span className="market-count-badge">7,242 recipes across 41,459 projects</span>
         </div>
-        <div className="category-grid">
-          ${categories.map((cat, i) => html`
-            <div key=${i} className="category-card">
-              <div className="category-card-icon">${cat.icon}</div>
-              <div className="category-card-name">${cat.name}</div>
-              <div className="category-card-count">${cat.count} recipes</div>
-              <div className="category-card-desc">${cat.desc}</div>
-            </div>
-          `)}
+        <div className="market-actions">
+          <button className="market-export-btn" type="button">
+            ${icons.download(14, 'currentColor')}
+            <span>Export CSV</span>
+          </button>
         </div>
       </div>
+      <div className="market-divider"></div>
+      <div className="market-row-list">
+        ${categories.map((cat, i) => html`
+          <a key=${i} className="market-row" href="#" onClick=${(e) => e.preventDefault()}>
+            <div className="market-row-icon">${cat.icon}</div>
+            <div className="market-row-text">
+              <div className="market-row-name">
+                <span>${cat.name}</span>
+                <span className="market-row-tag">${cat.count}</span>
+              </div>
+              ${cat.desc ? html`<div className="market-row-desc">${cat.desc}</div>` : null}
+            </div>
+            <div className="market-row-trail">${icons.chevronRight(20)}</div>
+          </a>
+        `)}
+      </div>
+      <div className="market-divider"></div>
     </div>
   `;
 }
@@ -2689,73 +3634,41 @@ function MarketplacePage() {
 // ============================================================
 // PAGE: MARKETPLACE WITH SEARCH RESULTS
 // ============================================================
+// Recipes shown in the search modal when query length >= 3.
+// First row is the tour target; suffix mirrors v2 ecosystem pattern.
 const searchResults = [
-  { name: 'Common static analysis', target: true },
-  { name: 'Simplify method chain' },
-  { name: 'Remove unused imports' },
-  { name: 'Code cleanup' },
+  { name: 'Common static analysis issues', ecosystem: 'staticanalysis', target: true },
+  { name: 'Find methods that could be static', ecosystem: 'CSharp' },
+  { name: 'Find methods that could be static', ecosystem: 'CodeQuality' },
+  { name: 'Use static import', ecosystem: 'java' },
+  { name: 'Make class static', ecosystem: 'CSharp' },
+  { name: 'Make class static', ecosystem: 'CodeQuality' },
+  { name: 'Use constant instead of field', ecosystem: 'CSharp' },
+  { name: 'Use constant instead of field', ecosystem: 'CodeQuality' },
 ];
 
+// Tree shown in the org selector dialog. Mirrors v2 dev org layout with the
+// "Default" entry placed first so the tour selector .org-dropdown-item-default
+// still wins.
+const orgTree = [
+  { id: 'global',   depth: 0, kind: 'group', name: 'Global', expanded: true, expandable: true },
+  { id: 'all',      depth: 1, kind: 'group', name: 'ALL',    expanded: true, expandable: true, count: 41454 },
+  { id: 'default',  depth: 2, kind: 'org',   name: 'Default',  count: 11 },
+  { id: 'jet',      depth: 2, kind: 'org',   name: 'JetBrains', count: 159 },
+  { id: 'mod',      depth: 2, kind: 'group', name: 'Moderne',   count: 266, expanded: true, expandable: true },
+  { id: 'mod-or',   depth: 3, kind: 'org',   name: 'Moderne + OpenRewrite', count: 42, selected: true },
+  { id: 'mod-pub',  depth: 3, kind: 'org',   name: 'Moderne - Public',      count: 9 },
+  { id: 'mod-trn',  depth: 3, kind: 'org',   name: 'Moderne - Training',    count: 11 },
+  { id: 'mod-ai',   depth: 3, kind: 'org',   name: 'Moderne AI',            count: 8 },
+  { id: 'mod-saas', depth: 3, kind: 'group', name: 'Moderne SaaS',          count: 26, expandable: true },
+  { id: 'recipes',  depth: 2, kind: 'org',   name: 'Recipes', count: 33 },
+];
+
+// v2 has no dedicated "marketplace with search open" page — the global search
+// modal overlays the marketplace. Render the marketplace underneath; the search
+// Dialog comes from GlobalNavBar via showSearchDropdown state.
 function MarketplaceSearchPage() {
-  return html`
-    <div className="content-area">
-      <div className="page-header">
-        <div className="page-title">Marketplace</div>
-        <div className="page-subtitle">Browse and search recipes to transform your code</div>
-      </div>
-      <div className="marketplace-banner">
-        <p>Access <strong>5,000+ recipes</strong> to search, analyze, and transform code across <strong>47 projects</strong></p>
-      </div>
-      <div className="marketplace-layout">
-        <div className="marketplace-sidebar">
-          <div className="marketplace-sidebar-search">
-            ${icons.search(14)}
-            <input type="text" placeholder="Search" readOnly />
-          </div>
-          <div>
-            <div className="sidebar-section-label" style=${{ marginBottom: '8px' }}>Categories</div>
-            <div className="sidebar-category-list">
-              ${sidebarCategories.slice(0, 8).map((cat, i) => html`
-                <div key=${i} className="sidebar-category-link">${cat}</div>
-              `)}
-            </div>
-          </div>
-        </div>
-        <div className="category-grid">
-          ${categories.slice(0, 6).map((cat, i) => html`
-            <div key=${i} className="category-card" style=${{ opacity: 0.4 }}>
-              <div className="category-card-icon">${cat.icon}</div>
-              <div>
-                <div className="category-card-name">${cat.name}</div>
-                <div className="category-card-count">${cat.count} recipes</div>
-              </div>
-            </div>
-          `)}
-        </div>
-      </div>
-    </div>
-    <!-- Search dropdown overlay -->
-    <div className="search-dropdown">
-      <div className="search-dd-input">
-        ${icons.search(16)}
-        <span>Spring Boot 3</span>
-        <span className="search-dd-cursor"></span>
-      </div>
-      <div className="search-dd-section">
-        <div className="search-dd-label">Recipes</div>
-        ${searchResults.map((item, i) => html`
-          <div key=${i} className=${'search-dd-item' + (item.active ? ' active' : '')}>
-            <div className="search-dd-icon">${icons.fileCode(16)}</div>
-            <div style=${{ flex: 1 }}>
-              <div className="search-dd-name">${item.name}</div>
-              <div className="search-dd-meta">${item.meta}</div>
-            </div>
-            ${item.popular ? html`<span className="search-dd-badge popular">Popular</span>` : null}
-          </div>
-        `)}
-      </div>
-    </div>
-  `;
+  return html`<${MarketplacePage} />`;
 }
 
 // ============================================================
@@ -2825,42 +3738,111 @@ function ReposPage() {
 // ============================================================
 // PAGE: RECIPE DETAIL
 // ============================================================
+// Static analysis sub-recipes mirrored from the v2 "Recipe list" table on
+// dev.moderne.io for the Common static analysis issues page.
+const recipeListRows = [
+  { name: 'Constructors of an abstract class should not be declared public', tag: 'RSPEC-S5993' },
+  { name: 'Atomic Boolean, Integer, and Long equality checks compare their values', tag: 'RSPEC-S2204' },
+  { name: 'new BigDecimal(double) should not be used', tag: 'RSPEC-S2111' },
+  { name: 'BigDecimal rounding constants to RoundingMode enums', tag: 'RSPEC-S2111' },
+  { name: 'Boolean checks should not be inverted', tag: 'RSPEC-S1940' },
+  { name: 'CaseInsensitive comparisons do not alter case', tag: 'RSPEC-S1157' },
+  { name: 'Catch clause should do more than just rethrow', tag: 'RSPEC-S2737' },
+  { name: 'Chain StringBuilder.append() calls', tag: 'RSPEC-S3024' },
+];
+
 function RecipeDetailPage({ onDryRunClick }) {
   return html`
     <div className="content-area">
       <div className="breadcrumb">
         <a>Marketplace</a>
         <span className="breadcrumb-sep">\u203A</span>
-        <a>Static analysis</a>
-        <span className="breadcrumb-sep">\u203A</span>
-        <span>Common static analysis</span>
+        <span>Common static analysis issues</span>
       </div>
-      <div className="recipe-header">
-        <div className="recipe-title">Common static analysis</div>
-        <div className="recipe-meta">by OpenRewrite \u00B7 v1.8.0 \u00B7 Updated 3 days ago</div>
-      </div>
-      <div className="recipe-card">
-        <div className="recipe-card-body">
-          <div className="recipe-desc">This recipe will fix a significant amount of static analysis issues while also ensuring that your code continues to function as expected.</div>
-          <div className="recipe-org-message">Will run on <strong>Default</strong> / <strong>36,871 projects</strong></div>
-          <div className="recipe-actions">
-            <button className="btn btn-primary pulse dry-run-btn" onClick=${onDryRunClick}>${icons.playCircle(16, '#fff')} Dry run</button>
-            <button className="btn">${icons.plus(14)} Add to builder</button>
+      <div className="recipe-stack">
+        <!-- Top card: icon + title, description, recipe ID, action buttons, status caption -->
+        <div className="recipe-card">
+          <div className="recipe-card-head">
+            <div className="recipe-card-icon">${icons.fileCode(36)}</div>
+            <h1 className="recipe-card-title">Common static analysis issues</h1>
           </div>
-          <div className="recipe-section-title" style=${{ marginTop: 'var(--space-5)' }}>Recipe ID</div>
-          <div className="recipe-id-block">
-            <span>org.openrewrite.staticanalysis.CommonStaticAnalysis</span>
-            <span style=${{ cursor: 'pointer', color: 'var(--icon-tertiary)' }}>${icons.copy(14)}</span>
+          <p className="recipe-card-desc">Resolve common static analysis issues (also known as SAST issues).</p>
+          <div className="recipe-id-pill">
+            <span className="recipe-id-text">org.openrewrite.staticanalysis.CommonStaticAnalysis</span>
+            <button className="recipe-id-copy" aria-label="Copy recipe ID">${icons.copy(14)}</button>
           </div>
-          <div style=${{ marginTop: 'var(--space-5)' }}>
-            <div className="recipe-section-title">Tags</div>
-            <div className="recipe-tags">
-              <span className="recipe-tag">Static Analysis</span>
-              <span className="recipe-tag">Code Quality</span>
-              <span className="recipe-tag">Java</span>
-              <span className="recipe-tag">Best Practices</span>
-            </div>
+          <div className="recipe-action-row">
+            <button className="neo-btn neo-btn-primary dry-run-btn" onClick=${onDryRunClick}>
+              ${icons.playCircle(16, '#fff')}
+              <span>Dry run</span>
+            </button>
+            <button className="neo-btn neo-btn-secondary">
+              ${icons.blocks(16)}
+              <span>Add to Builder</span>
+            </button>
+            <button className="neo-btn neo-btn-secondary">
+              <span>Recipe actions</span>
+              ${icons.chevronDown(14)}
+            </button>
+            <button className="neo-btn neo-btn-secondary">
+              ${icons.settings(16)}
+              <span>API examples</span>
+              ${icons.chevronDown(14)}
+            </button>
           </div>
+          <div className="recipe-run-caption">
+            Will run on <strong>42</strong> repositories from the <strong>Moderne + OpenRewrite</strong> organization
+          </div>
+        </div>
+
+        <!-- Preconditions card -->
+        <div className="recipe-card">
+          <div className="recipe-section-title">Preconditions</div>
+          <table className="recipe-table">
+            <thead>
+              <tr>
+                <th>Precondition</th>
+                <th className="recipe-table-tags">Tags</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div className="recipe-table-cell">
+                    <span className="recipe-row-icon">${icons.fileCode(18)}</span>
+                    <span>Singleton</span>
+                  </div>
+                </td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Recipe list card -->
+        <div className="recipe-card">
+          <div className="recipe-section-title">Recipe list</div>
+          <table className="recipe-table">
+            <thead>
+              <tr>
+                <th>Recipe</th>
+                <th className="recipe-table-tags">Tags</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${recipeListRows.map((row, i) => html`
+                <tr key=${i}>
+                  <td>
+                    <div className="recipe-table-cell">
+                      <span className="recipe-row-icon">${icons.fileCode(18)}</span>
+                      <span>${row.name}</span>
+                    </div>
+                  </td>
+                  <td className="recipe-table-tags"><span className="recipe-rspec-tag">${row.tag}</span></td>
+                </tr>
+              `)}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -2901,7 +3883,7 @@ function ActivityPage({ onActivityRowClick }) {
           ${activityRows.map((row, i) => html`
             <tr key=${i} className=${row.mine ? 'activity-row-mine' : ''} onClick=${row.mine ? onActivityRowClick : undefined} style=${row.mine ? { cursor: 'pointer' } : undefined}>
               <td><span className=${'activity-dot ' + row.dot}></span></td>
-              <td style=${{ fontWeight: 'var(--brand-font-weight-medium)', color: row.mine ? 'var(--surface-primary-filled)' : 'var(--text-primary)', cursor: 'pointer' }}>${row.name}</td>
+              <td><a className="neo-link" style=${{ fontWeight: 'var(--brand-font-weight-medium)' }}>${row.name}</a></td>
               <td><span className=${'activity-type-badge ' + row.typeCls}>${row.type}</span></td>
               <td style=${{ color: 'var(--text-secondary)', fontSize: 'var(--brand-font-size-200)' }}>${row.org}</td>
               <td><span className="status-badge complete">${row.status}</span></td>
@@ -2956,61 +3938,142 @@ function ResultsPage({ mode, onCommitClick, onWhyClick, onCancelCommit, onCommit
   const showCommitDialog = mode === 'commit';
 
   return html`
-    <div style=${{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}>
-      <!-- Results page header -->
-      <div style=${{ padding: 'var(--space-4) var(--space-6)', borderBottom: '1px solid var(--border-primary)' }}>
-        <div style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-1)' }}>Default</div>
-        <div style=${{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <div style=${{ fontSize: 'var(--brand-font-size-600)', fontWeight: 'var(--brand-font-weight-semibold)' }}>Common static analysis</div>
-          <span className="status-badge complete">Complete</span>
+    <div className="results-page">
+      <!-- Header section: breadcrumb, title, subtitle, progress bar -->
+      <div className="results-page-head">
+        <div className="breadcrumb" style=${{ marginBottom: 'var(--space-2)' }}>
+          <a>Recent activity</a>
+          <span className="breadcrumb-sep">›</span>
+          <span>Results 20260528101109-Fivdu</span>
         </div>
-        <div style=${{ fontFamily: 'var(--font-code)', fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)', marginTop: 'var(--space-1)' }}>org.openrewrite.staticanalysis.CommonStaticAnalysis</div>
+        <h1 className="results-page-title">Common static analysis issues</h1>
+        <div className="results-page-subtitle">Results for Moderne + OpenRewrite</div>
+        <div className="results-progress-row">
+          <div className="results-progress-bar">
+            <div className="results-progress-fill" style=${{ width: '100%' }}></div>
+          </div>
+          <span className="results-progress-status">Finished</span>
+        </div>
       </div>
 
       <!-- Tabs -->
-      <div className="results-tabs">
-        <button className="results-tab active">Results</button>
-        <button className="results-tab">Repository status</button>
-        <button className="results-tab disabled">Visualizations</button>
-        <button className="results-tab disabled">Data tables</button>
+      <div className="results-tabs-row">
+        <div className="results-tabs">
+          <button className="results-tab active">Results</button>
+          <button className="results-tab">Repository status</button>
+          <button className="results-tab">Visualizations</button>
+          <button className="results-tab">Data tables</button>
+        </div>
         <div className="results-tab-actions">
-          <button className="btn btn-sm btn-ghost">${icons.refreshCw(14)} Replay</button>
-          <button className="btn btn-sm btn-ghost">${icons.share(14)} Share</button>
+          <button className="results-icon-btn" aria-label="Refresh">${icons.refreshCw(16)}</button>
+          <button className="results-icon-btn" aria-label="Share">${icons.share(16)}</button>
+          <button className="results-icon-btn" aria-label="More actions">${icons.ellipsis(16)}</button>
         </div>
       </div>
 
       <!-- Split view -->
       <div className="results-split">
-        <!-- Left panel: Repo list -->
+        <!-- Left panel: Options, Summary, filter pills, search, results tree, commit button -->
         <div className="results-left">
-          <div className="results-left-header">
-            Repositories <span>47 results</span>
-          </div>
-          <div className="results-tree">
-            ${resultRepos.map((repo, i) => html`
-              <div key=${i} className=${'results-tree-item' + (repo.selected ? ' selected' : '')}>
-                <div className=${'results-tree-checkbox ' + (repo.checked ? 'checked' : 'unchecked')}>
-                  ${repo.checked ? icons.check(10) : null}
+          <div className="results-left-scroll">
+            <button className="results-disclosure">${icons.chevronRight(14)} Options</button>
+
+            <div className="results-summary-section">
+              <button className="results-disclosure open">${icons.chevronDown(14)} Summary</button>
+              <div className="results-summary-grid">
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Started</span>
+                  <span className="results-summary-value">about 8 hours ago</span>
                 </div>
-                <span className="results-tree-name" style=${repo.error ? { color: 'var(--text-error)' } : {}}>
-                  ${repo.name}
-                  ${repo.error ? html` <span style=${{ fontSize: '10px', color: 'var(--text-error)', background: 'var(--surface-error)', padding: '1px 5px', borderRadius: '3px', marginLeft: '4px', fontWeight: 'normal' }}>error</span>` : null}
-                </span>
-                <span className="results-tree-count">${repo.files} files</span>
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Files changed</span>
+                  <span className="results-summary-value">1,310</span>
+                </div>
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Running time</span>
+                  <span className="results-summary-value">14m 21s</span>
+                </div>
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Repositories with results</span>
+                  <span className="results-summary-value">38</span>
+                </div>
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Files searched</span>
+                  <span className="results-summary-value">16,733</span>
+                </div>
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Est. time savings</span>
+                  <span className="results-summary-value">989 hours</span>
+                </div>
               </div>
-            `)}
-            <div style=${{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--brand-font-size-100)', color: 'var(--text-tertiary)' }}>+ 40 more repositories...</div>
+            </div>
+
+            <div className="results-filter-row">
+              <div className="results-pill-group">
+                <button className="results-pill active">All</button>
+                <button className="results-pill">Has results</button>
+                <button className="results-pill">Error</button>
+              </div>
+              <div className="results-search-pill">
+                ${icons.search(14)}
+                <span>Search</span>
+                ${icons.chevronDown(12)}
+              </div>
+            </div>
+
+            <div className="results-tree">
+              <div className="results-tree-head">
+                <span className="results-tree-checkbox checked">${icons.check(10)}</span>
+                <span>Results</span>
+              </div>
+              <div className="results-tree-group">
+                <button className="results-tree-toggle">${icons.chevronDown(12)}</button>
+                <span className="results-tree-checkbox unchecked"></span>
+                <span className="results-tree-group-name">openrewrite</span>
+                <span className="results-tree-count">42 repositories</span>
+              </div>
+              ${resultRepos.map((repo, i) => html`
+                <div key=${i} className=${'results-tree-item' + (repo.selected ? ' selected' : '')}>
+                  <span className=${'results-tree-status ' + (repo.error ? 'error' : 'ok')}>
+                    ${repo.error ? icons.alertCircle(14) : icons.checkCircle(14)}
+                  </span>
+                  <span className="results-tree-name">${repo.name} @ main</span>
+                  <span className="results-tree-count">${repo.files} results</span>
+                </div>
+              `)}
+            </div>
+          </div>
+
+          <!-- Floating commit pill at bottom of left panel -->
+          <div className="results-left-footer">
+            <button className=${'neo-btn neo-btn-primary commit-btn' + (showCommitDialog ? ' pulse' : '')} onClick=${onCommitClick}>
+              ${icons.gitPullRequest(14, '#fff')}
+              <span>Commit all results</span>
+            </button>
           </div>
         </div>
 
-        <!-- Center panel: Diff view -->
-        <div className="results-center">
+        <!-- Right panel: repo header + diff content -->
+        <div className="results-right">
+          <div className="results-right-head">
+            <div className="results-right-repo">
+              <span>openrewrite/rewrite @ main</span>
+              ${icons.info(14, 'var(--icon-tertiary)')}
+            </div>
+            <div className="results-right-actions">
+              <button className="results-right-action why-change-btn" onClick=${onWhyClick}>
+                ${icons.circleHelp(14)} Why did this change?
+              </button>
+              <button className="results-right-action">${icons.search(14)} Filter</button>
+              <button className="results-right-action">${icons.settings(14)} Settings ${icons.chevronDown(12)}</button>
+              <button className="results-right-action">${icons.x(14)} Collapse all</button>
+              <button className="results-right-action results-right-action-primary">Commit only selected results ${icons.chevronDown(12)}</button>
+            </div>
+          </div>
           <div className="diff-placeholder">
             <div className="diff-header">
-              ${icons.github(16)}
-              <span>api-gateway</span>
-              <span className="diff-file-path">src/main/java/com/acme/gateway/ApiGatewayApplication.java</span>
-              ${!showRecipeDrawer ? html`<button className="btn btn-sm btn-ghost why-change-btn" onClick=${onWhyClick}>${icons.circleHelp(14)} Why did this change?</button>` : null}
+              ${icons.fileCode(14)}
+              <span className="diff-file-path">src/main/java/org/openrewrite/RecipeIntrospectionUtils.java</span>
             </div>
             <div className="diff-content">
               ${diffLines.map((line, i) => html`
@@ -3023,32 +4086,40 @@ function ResultsPage({ mode, onCommitClick, onWhyClick, onCancelCommit, onCommit
           </div>
         </div>
 
-        <!-- Right panel: Recipe drawer -->
+        <!-- Why-did-this-change drawer: right-side overlay panel -->
         ${showRecipeDrawer ? html`
           <div className="results-recipe-drawer">
             <div className="recipe-drawer-header">
-              <div className="recipe-drawer-title">Recipes that made changes</div>
+              <div className="recipe-drawer-title">Why did this change?</div>
+              <button className="overlay-close" aria-label="Close drawer">${icons.x(18)}</button>
             </div>
             <div className="recipe-drawer-list">
-              <div className="recipe-drawer-item active">
-                <div className="recipe-drawer-icon">${icons.fileCode(14)}</div>
+              <div className="recipe-drawer-item">
+                <div className="recipe-drawer-icon">${icons.fileCode(16)}</div>
                 <div className="recipe-drawer-info">
-                  <div className="recipe-drawer-name">RemoveUnusedImports</div>
-                  <div className="recipe-drawer-id">org.openrewrite.java.RemoveUnusedImports</div>
+                  <div className="recipe-drawer-name">Common static analysis issues</div>
+                  <div className="recipe-drawer-id">org.openrewrite.staticanalysis.CommonStaticAnalysis</div>
                 </div>
               </div>
-              <div className="recipe-drawer-item">
-                <div className="recipe-drawer-icon">${icons.fileCode(14)}</div>
+              <div className="recipe-drawer-sub">
+                <div className="recipe-drawer-arrow">↳</div>
                 <div className="recipe-drawer-info">
-                  <div className="recipe-drawer-name">SimplifyBooleanReturn</div>
-                  <div className="recipe-drawer-id">org.openrewrite.staticanalysis.SimplifyBooleanReturn</div>
+                  <div className="recipe-drawer-name">Simplify boolean return</div>
+                  <div className="recipe-drawer-id">Replace if/else returning true/false with the boolean expression itself.</div>
                 </div>
               </div>
-              <div className="recipe-drawer-item">
-                <div className="recipe-drawer-icon">${icons.fileCode(14)}</div>
+              <div className="recipe-drawer-sub">
+                <div className="recipe-drawer-arrow">↳</div>
                 <div className="recipe-drawer-info">
-                  <div className="recipe-drawer-name">UseDiamondOperator</div>
-                  <div className="recipe-drawer-id">org.openrewrite.staticanalysis.UseDiamondOperator</div>
+                  <div className="recipe-drawer-name">Use diamond operator</div>
+                  <div className="recipe-drawer-id">Use the diamond operator on generic constructor calls.</div>
+                </div>
+              </div>
+              <div className="recipe-drawer-sub">
+                <div className="recipe-drawer-arrow">↳</div>
+                <div className="recipe-drawer-info">
+                  <div className="recipe-drawer-name">Remove unused imports</div>
+                  <div className="recipe-drawer-id">Removes import statements that aren't referenced.</div>
                 </div>
               </div>
             </div>
@@ -3056,19 +4127,21 @@ function ResultsPage({ mode, onCommitClick, onWhyClick, onCancelCommit, onCommit
         ` : null}
       </div>
 
-      <!-- Bottom action panel -->
-      <div className="results-action-panel results-actions">
-        <button className=${'btn' + (showCommitDialog ? ' btn-primary pulse' : '') + ' commit-btn'} onClick=${onCommitClick}>${icons.gitPullRequest(14, showCommitDialog ? '#fff' : 'currentColor')} Commit selected results</button>
-        <button className="btn">${icons.download(14)} Download CSV</button>
-        <button className="btn">${icons.download(14)} Download patch</button>
-        <span style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)' }}>46 repositories selected</span>
-      </div>
-
-      <!-- Commit dialog overlay -->
+      <!-- Commit dialog — mirrors v2 MassRefactor + CommitForm structure -->
       ${showCommitDialog ? html`
         <div className="commit-dialog-overlay">
           <div className="commit-dialog">
+            <!-- ClosableDialogTitle -->
+            <div className="commit-dialog-title">
+              <span>Commit to all selected results</span>
+              <button className="overlay-close" onClick=${onCancelCommit} aria-label="Close commit dialog">${icons.x(18)}</button>
+            </div>
             <div className="commit-dialog-body">
+              <!-- DialogContentText intro -->
+              <p className="commit-dialog-intro">
+                Commit results <strong>for each selected repository</strong> with the following settings:
+              </p>
+
               <!-- Commit strategy -->
               <div className="commit-field">
                 <label className="commit-field-label">Commit strategy</label>
@@ -3082,9 +4155,9 @@ function ResultsPage({ mode, onCommitClick, onWhyClick, onCancelCommit, onCommit
                 </select>
               </div>
 
-              <!-- Commit options section -->
-              <div className="commit-section">
-                <div className="commit-section-header">${icons.gitCommit(14, 'var(--text-tertiary)')} Commit options</div>
+              <!-- Commit options fieldset -->
+              <fieldset className="commit-fieldset">
+                <legend className="commit-fieldset-legend">${icons.gitCommit(14)} Commit options</legend>
                 <div className="commit-field">
                   <label className="commit-field-label">Branch name</label>
                   <input className="commit-field-input mono" type="text" value="feature/common-static-analysis" readOnly />
@@ -3098,11 +4171,11 @@ function ResultsPage({ mode, onCommitClick, onWhyClick, onCancelCommit, onCommit
                   <textarea className="commit-field-textarea" rows="2" readOnly>Remove unused imports, simplify boolean expressions,
 and apply diamond operator across the codebase.</textarea>
                 </div>
-              </div>
+              </fieldset>
 
-              <!-- Pull request options section -->
-              <div className="commit-section">
-                <div className="commit-section-header">${icons.gitPullRequest(14, 'var(--text-tertiary)')} Pull request options</div>
+              <!-- Pull request options fieldset -->
+              <fieldset className="commit-fieldset">
+                <legend className="commit-fieldset-legend">${icons.gitPullRequest(14)} Pull request options</legend>
                 <div className="commit-field">
                   <label className="commit-field-label">Pull request title</label>
                   <input className="commit-field-input" type="text" placeholder="Common static analysis" readOnly />
@@ -3112,28 +4185,33 @@ and apply diamond operator across the codebase.</textarea>
                   <label className="commit-field-label">Customize pull request body</label>
                   <textarea className="commit-field-textarea" rows="2" placeholder="Leave blank to use the extended commit message." readOnly></textarea>
                 </div>
-                <div className="commit-checkbox-group">
-                  <div className="commit-checkbox-item">
-                    <input type="checkbox" id="reopen-pr" checked readOnly />
-                    <div>
-                      <label htmlFor="reopen-pr">Can reopen closed pull request</label>
-                      <div className="commit-field-helper">If this pull request already exists and has been closed, it will be reopened.</div>
+
+                <!-- Nested Additional options sub-fieldset -->
+                <fieldset className="commit-fieldset commit-fieldset-nested">
+                  <legend className="commit-fieldset-legend">Additional options</legend>
+                  <div className="commit-checkbox-group">
+                    <div className="commit-checkbox-item">
+                      <input type="checkbox" id="reopen-pr" checked readOnly />
+                      <div>
+                        <label htmlFor="reopen-pr">Can reopen closed pull request</label>
+                        <div className="commit-field-helper">If this pull request already exists and has been closed, it will be reopened.</div>
+                      </div>
+                    </div>
+                    <div className="commit-checkbox-item">
+                      <input type="checkbox" id="draft-pr" readOnly />
+                      <div>
+                        <label htmlFor="draft-pr">Create a draft pull request</label>
+                        <div className="commit-field-helper">Not supported by Bitbucket Cloud.</div>
+                      </div>
                     </div>
                   </div>
-                  <div className="commit-checkbox-item">
-                    <input type="checkbox" id="draft-pr" readOnly />
-                    <div>
-                      <label htmlFor="draft-pr">Create a draft pull request</label>
-                      <div className="commit-field-helper">Not supported by Bitbucket Cloud.</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                </fieldset>
+              </fieldset>
             </div>
             <div className="commit-dialog-footer">
-              <button className="btn" style=${{ marginRight: 'auto' }}>See how to run GraphQL</button>
-              <button className="btn" onClick=${onCancelCommit}>Cancel</button>
-              <button className="btn btn-primary" onClick=${onCommitSubmit}>${icons.gitPullRequest(14, '#fff')} Commit</button>
+              <a className="neo-link" style=${{ marginRight: 'auto', fontSize: 'var(--brand-font-size-300)' }}>See how to run GraphQL</a>
+              <button className="neo-btn neo-btn-secondary" onClick=${onCancelCommit}>Cancel</button>
+              <button className="neo-btn neo-btn-primary" onClick=${onCommitSubmit}>${icons.gitPullRequest(14, '#fff')} <span>Commit</span></button>
             </div>
           </div>
         </div>
@@ -3145,88 +4223,99 @@ and apply diamond operator across the codebase.</textarea>
 // ============================================================
 // PAGE: COMMIT RESULTS
 // ============================================================
+// Commit results rows mirror the v2 CommitJobResultsTable column shape:
+// Status / PR Status / Organization / Repository / Origin / Base branch / Updated at / Actions
 const commitResultRepos = [
-  { name: 'api-gateway', status: 'Completed', pr: '#142', prStatus: 'Open' },
-  { name: 'user-service', status: 'Completed', pr: '#89', prStatus: 'Open' },
-  { name: 'payment-processor', status: 'Completed', pr: '#203', prStatus: 'Open' },
-  { name: 'inventory-api', status: 'Completed', pr: '#67', prStatus: 'Open' },
-  { name: 'notification-engine', status: 'Completed', pr: '#31', prStatus: 'Open' },
-  { name: 'auth-service', status: 'Completed', pr: '#55', prStatus: 'Open' },
+  { name: 'api-gateway', org: 'openrewrite', status: 'Completed', pr: '#142', prStatus: 'Open',   baseBranch: 'main',   updatedAt: '2 minutes ago' },
+  { name: 'user-service', org: 'openrewrite', status: 'Completed', pr: '#89',  prStatus: 'Open',   baseBranch: 'main',   updatedAt: '2 minutes ago' },
+  { name: 'payment-processor', org: 'openrewrite', status: 'Completed', pr: '#203', prStatus: 'Open',   baseBranch: 'main',   updatedAt: '3 minutes ago' },
+  { name: 'inventory-api', org: 'openrewrite', status: 'Completed', pr: '#67',  prStatus: 'Open',   baseBranch: 'main',   updatedAt: '3 minutes ago' },
+  { name: 'notification-engine', org: 'openrewrite', status: 'Completed', pr: '#31',  prStatus: 'Open',   baseBranch: 'main',   updatedAt: '3 minutes ago' },
+  { name: 'auth-service', org: 'openrewrite', status: 'Completed', pr: '#55',  prStatus: 'Open',   baseBranch: 'main',   updatedAt: '4 minutes ago' },
 ];
 
 function CommitResultsPage() {
   return html`
     <div className="content-area">
-      <div className="page-header">
-        <div style=${{ fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-1)' }}>
-          Recent Activity / Commit results
-        </div>
-        <div className="page-title">Commit results</div>
+      <div className="breadcrumb">
+        <a>Recent activity</a>
+        <span className="breadcrumb-sep">›</span>
+        <span>20260528101109-Fivdu</span>
       </div>
+      <h1 className="commit-results-title">Commit results for: "Common static analysis"</h1>
 
-      <!-- Summary -->
-      <div className="commit-results-summary">
-        <div className="commit-results-summary-grid">
-          <div className="commit-results-stat">
-            <div className="commit-results-stat-label">Status</div>
-            <div><span className="status-badge complete">Complete</span></div>
-          </div>
-          <div className="commit-results-stat">
-            <div className="commit-results-stat-label">Repositories</div>
-            <div className="commit-results-stat-value">46 of 46</div>
-          </div>
-          <div className="commit-results-stat">
-            <div className="commit-results-stat-label">Strategy</div>
-            <div className="commit-results-stat-value">Pull request</div>
-          </div>
-          <div className="commit-results-stat">
-            <div className="commit-results-stat-label">Committed</div>
-            <div className="commit-results-stat-value" style=${{ color: 'var(--text-success)' }}>46</div>
-          </div>
-          <div className="commit-results-stat">
-            <div className="commit-results-stat-label">Failed</div>
-            <div className="commit-results-stat-value">0</div>
-          </div>
-        </div>
-        <div className="commit-results-progress-bar">
-          <div className="commit-results-progress-fill" style=${{ width: '100%' }}></div>
+      <!-- Tabs row (Summary / Commits / Activity) — Commits is the default landing tab in v2 -->
+      <div className="results-tabs-row" style=${{ marginTop: 'var(--space-3)' }}>
+        <div className="results-tabs">
+          <button className="results-tab">Summary</button>
+          <button className="results-tab active">Commits</button>
+          <button className="results-tab">Activity</button>
         </div>
       </div>
 
-      <!-- Tabs -->
-      <div className="results-tabs" style=${{ marginTop: 'var(--space-4)' }}>
-        <button className="results-tab">Summary</button>
-        <button className="results-tab active">Commits</button>
-        <button className="results-tab">Activity</button>
-        <div className="results-tab-actions">
-          <button className="btn btn-sm btn-ghost">${icons.check(12, 'currentColor')} Approve PRs</button>
-          <button className="btn btn-sm btn-ghost">${icons.gitPullRequest(14)} Merge PRs</button>
+      <!-- CommitJobToolbar: search + mass action buttons. v2 omits the summary
+           InformationBox row on this page; it lives in the Summary tab only. -->
+      <div className="commit-toolbar">
+        <div className="commit-toolbar-filter">
+          ${icons.search(14)}
+          <input type="text" placeholder="Search..." readOnly />
+        </div>
+        <div className="commit-toolbar-actions">
+          <button className="neo-btn neo-btn-secondary commit-toolbar-btn">
+            ${icons.gitPullRequest(14)}
+            <span>Approve</span>
+          </button>
+          <button className="neo-btn neo-btn-secondary commit-toolbar-btn">
+            ${icons.gitCommit(14)}
+            <span>Merge</span>
+          </button>
+          <button className="neo-btn neo-btn-secondary commit-toolbar-btn">
+            ${icons.x(14)}
+            <span>Close</span>
+          </button>
+          <button className="neo-btn neo-btn-secondary commit-toolbar-btn commit-toolbar-btn-primary">
+            ${icons.download(14)}
+            <span>Export</span>
+          </button>
         </div>
       </div>
 
-      <!-- Results table -->
-      <table className="data-table">
+      <!-- v2 CommitJobResultsTable columns: ☐ | Actions | Commit status | Organization | Repository | Origin | Base branch | Updated at -->
+      <table className="data-table commit-results-table">
         <thead>
           <tr>
-            <th style=${{ width: '28px' }}></th>
+            <th className="commit-col-check"><input type="checkbox" readOnly /></th>
+            <th className="commit-col-actions-head">Actions</th>
+            <th>Commit status</th>
+            <th>Organization</th>
             <th>Repository</th>
-            <th>Status</th>
-            <th>Pull request</th>
-            <th>PR status</th>
+            <th className="commit-col-origin">Origin</th>
+            <th>Base branch</th>
+            <th>Updated at</th>
           </tr>
         </thead>
         <tbody>
           ${commitResultRepos.map((repo, i) => html`
-            <tr key=${i}>
-              <td><span className="activity-dot recipe-run"></span></td>
-              <td style=${{ fontWeight: 'var(--brand-font-weight-medium)', color: 'var(--text-primary)' }}>${repo.name}</td>
+            <tr key=${i} className=${'commit-row' + (i === 0 ? ' commit-row-first' : '')}>
+              <td className="commit-col-check"><input type="checkbox" readOnly /></td>
+              <td className="commit-col-actions">
+                <button className="results-icon-btn" aria-label="Row actions">${icons.ellipsis(16)}</button>
+              </td>
               <td><span className="status-badge complete">${repo.status}</span></td>
-              <td style=${{ color: 'var(--surface-primary-filled)', cursor: 'pointer' }}>${repo.pr}</td>
-              <td><span className="status-badge running">${repo.prStatus}</span></td>
+              <td style=${{ color: 'var(--text-secondary)' }}>${repo.org}</td>
+              <td>
+                <a className="neo-link" style=${{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 'var(--brand-font-weight-medium)' }}>
+                  ${icons.info(14, 'var(--brand-digital-blue-500)')}
+                  <span>${repo.name}</span>
+                </a>
+              </td>
+              <td className="commit-col-origin" title="github.com">${icons.github(16)}</td>
+              <td><code className="commit-base-branch">${repo.baseBranch}</code></td>
+              <td style=${{ color: 'var(--text-secondary)', fontSize: 'var(--brand-font-size-200)' }}>${repo.updatedAt}</td>
             </tr>
           `)}
           <tr>
-            <td colspan="5" style=${{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--brand-font-size-100)', color: 'var(--text-tertiary)' }}>+ 40 more repositories...</td>
+            <td colspan="8" style=${{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--brand-font-size-100)', color: 'var(--text-tertiary)' }}>+ 40 more repositories…</td>
           </tr>
         </tbody>
       </table>
@@ -3382,7 +4471,7 @@ const tourSteps = [
     target: '.commit-btn',
     title: 'Commit to create pull requests',
     content: 'You can customize the <strong>branch name</strong>, <strong>commit message</strong>, and choose a <strong>commit strategy</strong> (pull request, direct commit, or fork). You can <strong>uncheck repos</strong> you want to skip.<br><br><strong>Click Commit</strong> to open the commit dialog.',
-    placement: 'top',
+    placement: 'right-end',
     disableBeacon: true,
     spotlightClicks: true,
     data: { requiresAction: true },
@@ -3397,9 +4486,9 @@ const tourSteps = [
     data: { requiresAction: true },
   },
   {
-    target: '.commit-results-summary',
+    target: '.commit-row-first',
     title: 'Track your commit progress',
-    content: 'After committing, you land here. This page shows the <strong>status of each repository</strong> — whether the pull request was created, merged, or failed.',
+    content: 'After committing, you land here. Each row shows the <strong>status of one repository</strong> — whether the pull request was created, merged, or failed.',
     placement: 'bottom',
     disableBeacon: true,
   },
@@ -3489,8 +4578,11 @@ function NeoSpotlight({ rect, visible }) {
       }}
       style=${{
         position: 'fixed',
-        borderRadius: '8px',
-        boxShadow: '0 0 0 9999px rgba(17, 24, 39, 0.55)',
+        borderRadius: '10px',
+        /* Dim outside + solid blue ring + soft blue glow halo.
+           No `inset` shadow because the spotlight div sits on top of the target
+           (z-index 9998) and an inset would visibly cover the target's content. */
+        boxShadow: '0 0 0 9999px rgba(17, 24, 39, 0.7), 0 0 0 3px #FFFFFF, 0 0 0 6px rgba(47, 66, 255, 0.95), 0 0 36px 10px rgba(47, 66, 255, 0.55)',
         pointerEvents: 'none',
         zIndex: 9998,
       }}
@@ -3524,21 +4616,71 @@ function App() {
       setSpotlightRect(null);
       return;
     }
+    let raf;
+    const commitRect = () => {
+      const target = document.querySelector(step.target);
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      setSpotlightRect({
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      });
+    };
+    // Walk up looking for an ancestor with actual scroll space.
+    const findScrollableParent = (el) => {
+      let p = el.parentElement;
+      while (p && p !== document.body) {
+        const style = getComputedStyle(p);
+        const oy = style.overflowY;
+        if ((oy === 'auto' || oy === 'scroll' || oy === 'hidden') &&
+            p.scrollHeight > p.clientHeight) {
+          return p;
+        }
+        p = p.parentElement;
+      }
+      return null;
+    };
+    const ensureVisible = (target) => {
+      const bottomReserve = 60;
+      const rect = target.getBoundingClientRect();
+      const overflowBottom = rect.bottom - (window.innerHeight - bottomReserve);
+      const overflowTop = -rect.top;
+      if (overflowBottom <= 0 && overflowTop <= 0) return;
+      const scrollable = findScrollableParent(target);
+      if (!scrollable) return;
+      const delta = overflowBottom > 0 ? overflowBottom + 80 : -overflowTop - 80;
+      scrollable.scrollTop = Math.max(
+        0,
+        Math.min(scrollable.scrollTop + delta, scrollable.scrollHeight - scrollable.clientHeight)
+      );
+    };
     const updateRect = () => {
       const target = document.querySelector(step.target);
-      if (target) {
-        const rect = target.getBoundingClientRect();
-        setSpotlightRect({
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
-          height: rect.height,
-        });
-      }
+      if (!target) return;
+      ensureVisible(target);
+      commitRect();
     };
+    // Initial pass + several frames so the spotlight stays glued as layout settles.
     updateRect();
-    const t = setTimeout(updateRect, 150);
-    return () => clearTimeout(t);
+    let frames = 0;
+    const tick = () => {
+      const target = document.querySelector(step.target);
+      if (target) ensureVisible(target);
+      commitRect();
+      frames += 1;
+      if (frames < 30) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    const handler = () => commitRect();
+    window.addEventListener('scroll', handler, true);
+    window.addEventListener('resize', handler);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', handler, true);
+      window.removeEventListener('resize', handler);
+    };
   }, [runTour, stepIndex, currentView]);
 
   const activeSidebar = runTour ? (stepToSidebar[stepIndex] || 'marketplace') : (orgSelected ? 'marketplace' : 'marketplace');
@@ -3802,6 +4944,7 @@ function App() {
         disableOverlay=${true}
         disableOverlayClose=${true}
         disableCloseOnEsc=${false}
+        disableScrolling=${true}
         spotlightPadding=${8}
         callback=${handleJoyrideCallback}
         tooltipComponent=${CustomTooltip}
@@ -3824,7 +4967,7 @@ function App() {
         <div className="welcome-overlay">
           <div className="welcome-backdrop" onClick=${handleDismissWelcome}></div>
           <div className="welcome-card">
-            <div className="welcome-icon" dangerouslySetInnerHTML=${{ __html: '<svg width="36" height="36" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834"/></svg>' }}></div>
+            <div className="welcome-icon" dangerouslySetInnerHTML=${{ __html: '<svg width="36" height="36" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>' }}></div>
             <h2>Welcome to Moderne</h2>
             <p>Moderne runs automated code transformations across all your repositories at once. Let\u2019s get you to your first result in a few minutes.</p>
             <div className="welcome-buttons">
