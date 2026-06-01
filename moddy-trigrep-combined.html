@@ -1678,28 +1678,41 @@
   }
   /* Shared row treatment for "+ New Chat" and "History" — flush-left at
      x=14 so they align under the toggle button at the sidebar's left edge. */
-  /* "+ New Chat" — Neo tertiary button: hugs content, transparent bg, blue
-     icon + label, rounded hover tint. Sits at the same x=7 column as the
-     toggle button above it, with its icon at x=14. */
+  /* "+ New Chat" — Neo tertiary button.
+     Default: grey-900 text + icon, no background.
+     Hover/Pressed: switches text + icon to digital-blue, no background tint.
+     Focus: digital-blue text + icon, navy rounded outline.
+     Disabled: muted grey. */
   .moderne-history-newchat {
     display: inline-flex; align-items: center; gap: 10px;
     align-self: flex-start;
     margin-left: 7px;
     padding: 8px 12px 8px 7px;
-    border: none; background: transparent;
-    color: var(--neo-digital-blue-500);
+    border: 2px solid transparent; background: transparent;
+    color: var(--grey-900);
     font-family: inherit;
     font-size: 14px; font-weight: 500;
     text-align: left;
-    border-radius: 8px;
+    border-radius: 999px;
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: color 0.15s ease, border-color 0.15s ease;
   }
-  .moderne-history-newchat:hover { background: rgba(47, 66, 255, 0.06); }
+  .moderne-history-newchat:hover,
+  .moderne-history-newchat:active { color: var(--neo-digital-blue-500); }
+  .moderne-history-newchat:focus-visible {
+    outline: none;
+    color: var(--neo-digital-blue-500);
+    border-color: var(--brand-digital-blue-900, #000855);
+  }
   .moderne-history-newchat svg {
     width: 18px; height: 18px;
-    color: var(--neo-digital-blue-500);
+    color: currentColor;
     flex-shrink: 0;
+    transition: color 0.15s ease;
+  }
+  .moderne-history-newchat:disabled {
+    color: var(--grey-400);
+    cursor: not-allowed;
   }
   /* "History" — a Neo-style section label (uppercase eyebrow), flush-left with the toggle */
   .moderne-history-title {
