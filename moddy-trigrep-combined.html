@@ -748,14 +748,25 @@
   .back-to-chat svg { width: 14px; height: 14px; }
   .moddy-head-actions { display: inline-flex; gap: 4px; }
 
-  /* Greeter — Phase 1 step 1 only */
+  /* Greeter — Phase 1 step 1 only.
+     Centered as a single focused group (perplexity-inspired): logo,
+     headline, prompts, the search input itself, "or try asking" links,
+     and the disclaimer all live in one vertical stack. */
   .greeter {
     flex: 1;
     display: flex; flex-direction: column; align-items: center;
-    padding: 56px 0 16px; gap: 20px;
+    padding: 48px 0 16px; gap: 18px;
     width: 100%;
+    justify-content: center;
   }
   .greeter.hidden { display: none; }
+  /* When the search input lives INSIDE the greeter, drop the footer styling
+     (no bottom padding, no fade gradient — it's no longer pinned). */
+  .greeter .prompt-wrap {
+    padding: 4px 0 0;
+    background: none;
+    width: 100%;
+  }
   .greeter-logo {
     width: 135px; height: 135px;
     display: inline-flex; align-items: center; justify-content: center;
@@ -769,33 +780,34 @@
     line-height: 1.3;
   }
   .suggestions {
-    display: flex; flex-direction: column;
-    width: 100%;
-    margin-top: 12px;
+    display: flex; flex-direction: column; align-items: stretch;
+    gap: 8px;
+    /* Hug the widest child — all tiles share that width */
+    width: max-content;
+    max-width: 100%;
+    margin: 4px auto 0;
   }
   .suggestion {
-    text-align: left;
-    padding: 14px 16px;
-    border: none;
-    border-bottom: 1px solid var(--grey-50);
-    background: transparent;
-    color: var(--grey-700);
-    font-family: inherit;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.15s;
-    line-height: 1.45;
-  }
-  .suggestion:hover { background: var(--grey-25); color: var(--grey-900); }
-  .suggestion:last-child { border-bottom: none; }
-  /* Subtle highlight on the one tile that advances the demo */
-  .suggestion.is-primed {
-    background: rgba(47, 66, 255, 0.04);
-    border-left: 2px solid var(--neo-digital-blue-500);
-    padding-left: 14px;
+    display: block; width: 100%;
+    text-align: center;
+    padding: 10px 20px;
+    border: 1px solid var(--grey-200);
+    border-radius: 999px;
+    background: #fff;
     color: var(--grey-900);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.15s;
+    line-height: 1.3;
   }
-  .suggestion.is-primed:hover { background: rgba(47, 66, 255, 0.08); }
+  .suggestion:hover {
+    border-color: var(--neo-digital-blue-500);
+    background: rgba(47, 66, 255, 0.04);
+    color: var(--neo-digital-blue-500);
+  }
+  .suggestion:active { transform: translateY(1px); }
   .greeter-disclaimer {
     text-align: center;
     font-size: 12px;
@@ -1100,15 +1112,21 @@
   }
   body.phase-2 .prompt-input { font-size: 13.5px; padding: 6px 0; }
   .prompt-input::placeholder { color: var(--grey-300); }
+  /* Send button — icon-only, mirrors the nav-action-btn icon treatment
+     (transparent, no border) but sized to sit flush inside the input wrapper. */
   .send-btn {
-    width: 32px; height: 32px; border-radius: 50%; border: none;
-    background: var(--grey-900); color: #fff;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: transparent;
+    color: var(--neo-digital-blue-500);
+    border: none;
     display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer; flex-shrink: 0;
+    transition: color 0.15s ease;
   }
-  .send-btn:hover { background: var(--grey-700); }
-  .send-btn svg { width: 14px; height: 14px; }
+  .send-btn:hover { color: var(--brand-grey-900); }
+  .send-btn svg { width: 22px; height: 22px; }
   body.phase-2 .send-btn { width: 30px; height: 30px; }
+  body.phase-2 .send-btn svg { width: 20px; height: 20px; }
   .prompt-footnote {
     font-size: 11px; color: var(--grey-600);
     text-align: left;
@@ -1548,6 +1566,241 @@
   .trigrep-empty-icon svg { width: 24px; height: 24px; }
   .trigrep-empty-title { font-size: 15px; font-weight: 600; color: var(--grey-700); }
   .trigrep-empty-desc { font-size: 13px; color: var(--grey-600); max-width: 320px; line-height: 1.5; }
+
+  /* Scoping buttons — used when user types a broad question */
+  .scoping-prompt { font-size: 15px; color: var(--grey-700); line-height: 1.5; }
+  body.phase-2 .scoping-prompt { font-size: 13.5px; }
+  .scoping-buttons {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 4px;
+  }
+  .scoping-btn {
+    display: flex; flex-direction: column; gap: 4px;
+    text-align: left;
+    padding: 12px 14px;
+    border: 1px solid var(--grey-200);
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .scoping-btn:hover {
+    border-color: var(--neo-digital-blue-400, #8D99FF);
+    background: rgba(47, 66, 255, 0.03);
+  }
+  .scoping-btn-label {
+    font-size: 13.5px; font-weight: 600;
+    color: var(--grey-900);
+  }
+  .scoping-btn-query {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--grey-600);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .scoping-btn-query.muted { color: var(--grey-500); font-style: italic; font-family: inherit; }
+
+  /* Results breakdown — visually distinct from scope line */
+  .results-breakdown {
+    border-left: 3px solid var(--neo-digital-blue-500);
+    padding: 6px 12px;
+    background: rgba(47, 66, 255, 0.04);
+    font-size: 13px;
+    color: var(--grey-800);
+    line-height: 1.55;
+    border-radius: 0 6px 6px 0;
+  }
+  .results-breakdown p { margin: 0; }
+  .results-breakdown p + p { margin-top: 4px; }
+  body.phase-2 .results-breakdown { font-size: 12.5px; }
+
+  /* Fallback (typed text that doesn't match any flow) */
+  .fallback-msg {
+    background: var(--brand-orange-100, #FFF8E5);
+    border: 1px solid #F3D690;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    color: var(--grey-800);
+    line-height: 1.55;
+  }
+  .fallback-msg strong { color: var(--grey-900); }
+  .fallback-msg code {
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--grey-900);
+  }
+
+  /* Phase 2 contextual area (below conversation in Moddy panel) */
+  .phase2-contextual {
+    flex-shrink: 0;
+    padding: 12px 18px 8px;
+    border-top: 1px solid var(--grey-50);
+    background: #fff;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  body:not(.phase-2) .phase2-contextual { display: none; }
+  .phase2-contextual .ctx-msg {
+    font-size: 13px;
+    color: var(--grey-700);
+    line-height: 1.55;
+  }
+  .phase2-contextual .ctx-msg strong { color: var(--grey-900); font-weight: 600; }
+  .phase2-contextual .followup-actions { gap: 6px; }
+
+  /* Chat history pane (ported from moddy.html) */
+  .main-row { flex: 1; display: flex; min-height: 0; position: relative; }
+  .moderne-history {
+    width: 256px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--grey-50);
+    display: flex; flex-direction: column;
+    background: #fff;
+    transition: width 200ms ease, opacity 150ms ease;
+    overflow: hidden;
+    position: relative;
+  }
+  .moderne-history.collapsed { width: 0; opacity: 0; border-right-color: transparent; }
+  /* Hide the chat-history sidebar (and its floating reopen button) in the split panel view */
+  body.phase-2 .moderne-history,
+  body.phase-2 .moderne-history-reopen { display: none; }
+  .moderne-history-head {
+    /* Top padding clears the absolute-positioned toggle button (top:14 + 32 + 8 gap) */
+    padding: 56px 0 6px;
+    display: flex; flex-direction: column; gap: 2px;
+    flex-shrink: 0;
+  }
+  /* Shared row treatment for "+ New Chat" and "History" — flush-left at
+     x=14 so they align under the toggle button at the sidebar's left edge. */
+  /* "+ New Chat" — Neo tertiary button: hugs content, transparent bg, blue
+     icon + label, rounded hover tint. Sits at the same x=7 column as the
+     toggle button above it, with its icon at x=14. */
+  .moderne-history-newchat {
+    display: inline-flex; align-items: center; gap: 10px;
+    align-self: flex-start;
+    margin-left: 7px;
+    padding: 8px 12px 8px 7px;
+    border: none; background: transparent;
+    color: var(--neo-digital-blue-500);
+    font-family: inherit;
+    font-size: 14px; font-weight: 500;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .moderne-history-newchat:hover { background: rgba(47, 66, 255, 0.06); }
+  .moderne-history-newchat svg {
+    width: 18px; height: 18px;
+    color: var(--neo-digital-blue-500);
+    flex-shrink: 0;
+  }
+  /* "History" — a Neo-style section label (uppercase eyebrow), flush-left with the toggle */
+  .moderne-history-title {
+    display: flex; align-items: center;
+    padding: 16px 14px 6px;
+    color: var(--grey-500);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .moderne-history-title-label { flex: 1; }
+
+  /* History list — Neo list rows: full-width, flush-left, subtle hover, light-grey active */
+  .moderne-history-list {
+    flex: 1; overflow-y: auto;
+    padding: 0 0 16px;
+  }
+  .moderne-history-list::-webkit-scrollbar { width: 6px; }
+  .moderne-history-list::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 3px; }
+  .moderne-history-item {
+    display: block; width: 100%;
+    text-align: left;
+    border: none; background: transparent;
+    padding: 8px 14px;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+  .moderne-history-item:hover { background: var(--grey-25); }
+  .moderne-history-item.active { background: var(--grey-100); font-weight: 500; }
+  /* Toggle button — always pinned top-left. left:7 so the centered 18px icon
+     sits at x=14, matching the "+" icon and text in the rows below. */
+  .moderne-history-toggle {
+    position: absolute;
+    top: 14px; left: 7px;
+    border: none;
+    background: transparent;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    color: var(--grey-500);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    z-index: 5;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .moderne-history-toggle:hover { background: var(--grey-100); color: var(--grey-700); }
+  .moderne-history-toggle svg { width: 18px; height: 18px; }
+
+  /* "Or try asking:" — conversational prompts below the tiles */
+  .try-asking {
+    margin-top: 20px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 6px;
+  }
+  .try-asking-label {
+    font-size: 12px;
+    color: var(--grey-500);
+    letter-spacing: 0.01em;
+    margin-bottom: 2px;
+  }
+  .try-asking-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--grey-600);
+    transition: color 0.15s, background 0.15s;
+  }
+  .try-asking-link svg {
+    width: 13px; height: 13px;
+    color: var(--grey-400);
+    flex-shrink: 0;
+    transition: color 0.15s, transform 0.15s;
+  }
+  .try-asking-link:hover {
+    color: var(--neo-digital-blue-500);
+    background: rgba(47, 66, 255, 0.04);
+  }
+  .try-asking-link:hover svg { color: var(--neo-digital-blue-500); transform: translateX(2px); }
+
+  /* Secondary outlined variant for action buttons (matches Neo secondary) */
+  .followup.secondary {
+    background: #fff;
+    color: var(--neo-digital-blue-500);
+    border-color: var(--neo-digital-blue-500);
+  }
+  .followup.secondary:hover {
+    background: rgba(47, 66, 255, 0.06);
+    border-color: var(--neo-digital-blue-500);
+  }
 </style>
 </head>
 <body>
@@ -1601,6 +1854,38 @@
         </div>
       </div>
 
+      <!-- ROW: Chat history (left) + page (right) -->
+      <div class="main-row">
+
+        <!-- CHAT HISTORY PANE (ported from moddy.html) -->
+        <aside class="moderne-history" id="historyPane" aria-label="Chat history">
+          <div class="moderne-history-head">
+            <button class="moderne-history-newchat" id="history-newchat" title="New chat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              New Chat
+            </button>
+            <div class="moderne-history-title">
+              <span class="moderne-history-title-label">History</span>
+            </div>
+          </div>
+          <div class="moderne-history-list">
+            <button class="moderne-history-item active" data-history>Find public authorization rules</button>
+            <button class="moderne-history-item" data-history>How am I using Apache Commons?</button>
+            <button class="moderne-history-item" data-history>What secrets do I have in my code?</button>
+            <button class="moderne-history-item" data-history>Upgrade Spring Boot</button>
+            <button class="moderne-history-item" data-history>Which services use the deprecated PaymentGateway?</button>
+            <button class="moderne-history-item" data-history>Find unused imports across the working set</button>
+            <button class="moderne-history-item" data-history>Show me classes extending AbstractController</button>
+            <button class="moderne-history-item" data-history>Migrate JUnit 4 tests to JUnit 5</button>
+            <button class="moderne-history-item" data-history>Find string concatenation inside log statements</button>
+            <button class="moderne-history-item" data-history>Where do we handle null user IDs?</button>
+            <button class="moderne-history-item" data-history>Identify deprecated API calls in payments-service</button>
+          </div>
+        </aside>
+        <button class="moderne-history-toggle" id="history-toggle" title="Toggle history" aria-label="Toggle history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        </button>
+
       <!-- PAGE (split container, animates between phases) -->
       <div class="page" id="page">
         <!-- LEFT: TriGrep panel (only visible in Phase 2) -->
@@ -1634,11 +1919,25 @@
                 <div id="greeter-spinner"></div>
               </div>
               <div class="greeter-headline">What do you want to find in your codebase?</div>
+              <div class="try-asking" id="try-asking">
+                <div class="try-asking-label">Prototype triggers</div>
+                <button class="try-asking-link" data-scoped="a">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  How is authentication handled?
+                </button>
+                <button class="try-asking-link" data-scoped="b">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  How is logging done across our services?
+                </button>
+                <button class="try-asking-link" data-scoped="c">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  How are our REST APIs structured?
+                </button>
+              </div>
               <div class="suggestions" id="suggestions">
-                <button class="suggestion is-primed" data-q="Am I exposed to Log4j vulnerabilities?">Am I exposed to Log4j vulnerabilities?</button>
-                <button class="suggestion">Find all public methods returning List in my working set</button>
-                <button class="suggestion">Which classes extend AbstractController?</button>
-                <button class="suggestion">Find string concatenation inside log statements</button>
+                <button class="suggestion" data-flow="a">Find public authorization rules across my repos</button>
+                <button class="suggestion" data-flow="b">Find all Log4j usage in our services</button>
+                <button class="suggestion" data-flow="c">Find all REST controllers and outbound clients</button>
               </div>
               <div class="greeter-disclaimer">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -1655,7 +1954,7 @@
                 <div class="prompt-inner">
                   <input class="prompt-input" id="prompt-input" placeholder="Ask Moddy to search, refine, or run a recipe" autocomplete="off" spellcheck="false">
                   <button class="send-btn" id="send-btn" title="Send">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                   </button>
                 </div>
               </div>
@@ -1666,6 +1965,8 @@
 
         <button class="moddy-reopen" id="moddy-reopen" title="Open Moddy">Moddy</button>
       </div>
+
+      </div><!-- /.main-row -->
     </div>
   </div>
 </div>
@@ -1689,12 +1990,17 @@
 // ===================================================================
 // Left nav data
 // ===================================================================
-// Nav items mirror day-zero v2-sandbox order (Moddy active for this prototype).
+// Nav items mirror day-zero v2-sandbox order. Moddy is active in Phase 1;
+// when the user transitions to Phase 2, the active state shifts to TriGrep.
 const NAV_ITEMS = [
   { id: 'moddy',       label: 'Moddy',       badge: 'Beta', active: true,
     svg: '<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/>' },
   { id: 'devcenter',   label: 'DevCenter',
     svg: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>' },
+  { id: 'trigrep',     label: 'TriGrep',
+    svg: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>' },
+  { id: 'artifacts',   label: 'Artifacts',
+    svg: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' },
   { id: 'marketplace', label: 'Marketplace',
     svg: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>' },
   { id: 'builder',     label: 'Builder',
@@ -1707,6 +2013,8 @@ const NAV_ITEMS = [
 
 // Overflow items shown inside the More popover at the bottom of the rail.
 const MORE_ITEMS = [
+  { id: 'recipe-queue', label: 'Recipe queue',
+    svg: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>' },
   { id: 'repos',  label: 'Repositories',
     svg: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/>' },
   { id: 'deploy', label: 'Deploy',
@@ -1751,84 +2059,465 @@ document.addEventListener('click', (e) => {
 });
 
 // ===================================================================
-// Hardcoded data
+// Flow-aware data — three "happy paths" (A: auth, B: logging, C: REST)
+// Each flow defines: the tile bubble text, the scoping branch (for when
+// the user types a broad question), the streamed results, and the Phase 2
+// TriGrep panel (search bar, filters, result cards, drill-downs).
 // ===================================================================
-const SEARCH_CMD = "mod search working-set 'org.apache.log4j' --syntax sourcegraph";
-const TOTAL_MATCHES = 187;
-const TOTAL_FILES = 42;
-const SCOPE_LINE = `${TOTAL_MATCHES} matches across ${TOTAL_FILES} files in 101ms · 847 repositories searched`;
-const MODULES = [
-  { name: 'payments-service', count: 31 },
-  { name: 'common-logging', count: 28 },
-  { name: 'inventory-service', count: 27 },
-  { name: 'legacy-batch', count: 19 },
-];
-const MODULES_MORE = 8;
-const FILE_CARDS = [
-  {
-    file: 'PaymentLogger.java', module: 'payments-service', count: 3,
-    lines: [
-      { n: 14, code: 'import <m>org.apache.log4j</m>.Logger;' },
-      { n: 15, code: 'import <m>org.apache.log4j</m>.Level;' },
-      { n: 18, code: 'private static final Logger logger = <m>org.apache.log4j</m>.Logger.getLogger(PaymentLogger.class);' },
-    ]
+
+// Tokenize a query string into spans that match Phase 1's derived-query
+// styling (--syntax, working-set, single-quoted args, leading $, etc.)
+function tokenizeQuery(cmd) {
+  // Already-trimmed command starting from "mod search ..."
+  let html = cmd
+    .replace(/^/, '<span class="cd">$ </span>')
+    .replace(/\bmod search\b/g, '<span class="cb">mod search</span>')
+    .replace(/(--[a-z\-]+)/g, '<span class="cb">$1</span>')
+    .replace(/('[^']*')/g, '<span class="cs">$1</span>');
+  return html;
+}
+
+function tokenizeMultiQuery(cmds) {
+  return cmds.map(tokenizeQuery).join('\n');
+}
+
+const FLOWS = {
+  // ============== FLOW A — AUTHENTICATION ==============
+  a: {
+    id: 'a',
+    tileText: 'Find public authorization rules across my repos',
+    scopedTrigger: 'How is authentication handled?',
+    searchCmd: "mod search working-set '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public' lang:java --syntax sourcegraph",
+    derivedQueryHtml: tokenizeQuery("mod search working-set '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public' lang:java --syntax sourcegraph"),
+    scopeLine: '1,892 public authorization annotations across 234 repos in 89ms',
+    breakdown: '<p>156 repos use <strong>@PreAuthorize</strong> · 78 use <strong>@Secured</strong> · 23 use a mix of both</p>',
+    overflow: 'Showing <strong>2 of 234</strong> files (1,892 matches)',
+    cards: [
+      { id: 'a-OrderController', file: 'OrderController.java', module: 'payments-api', count: 4, lines: [
+        { n: 12, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'ADMIN\')"</span>)' },
+        { n: 28, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'MANAGER\') or hasRole(\'ADMIN\')"</span>)' },
+        { n: 45, code: '<m>@Secured</m>(<span class="cs">"ROLE_USER"</span>)' },
+        { n: 67, code: '<m>@PreAuthorize</m>(<span class="cs">"#userId == authentication.principal.id"</span>)' },
+      ]},
+      { id: 'a-AdminController', file: 'AdminController.java', module: 'customer-portal', count: 2, lines: [
+        { n: 15, code: '<m>@PreAuthorize</m>(<span class="cs">"hasAuthority(\'ADMIN\')"</span>)' },
+        { n: 34, code: '<m>@RolesAllowed</m>({<span class="cs">"ADMIN"</span>, <span class="cs">"SUPER_ADMIN"</span>})' },
+      ]},
+    ],
+    scoping: {
+      prompt: "That's a broad question — I can search more effectively if I know what aspect you're interested in:",
+      options: [
+        { label: 'Public authorization rules',  query: '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public lang:java' },
+        { label: 'Auth entry points',           query: 'implements:AuthenticationEntryPoint' },
+        { label: 'Just public-facing services', query: 'visibility:public' },
+        { label: 'Custom query…',               custom: true },
+      ],
+    },
+    actions: {
+      primary: 'Run recipe: Replace @Secured with @PreAuthorize',
+    },
+    phase2: {
+      chips: [
+        { label: 'lang', value: 'java' },
+        { label: 'visibility', value: 'public' },
+      ],
+      query: '(@PreAuthorize or @Secured or @RolesAllowed)',
+      summary: '<span class="summary-count" id="summary-count">1,892</span> matches across <span class="summary-count" id="summary-files">234</span> files in <span class="mono">89ms</span>',
+      baseMatches: 1892,
+      baseFiles: 234,
+      filters: [
+        { id: 'annotation', title: 'By annotation', items: [
+          { name: '@PreAuthorize', count: 156 },
+          { name: '@Secured', count: 78 },
+          { name: '@RolesAllowed', count: 23 },
+        ]},
+        { id: 'lang', title: 'By language', items: [
+          { name: 'Java', count: 234, dot: '#e76f00' },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'payments', count: 45 },
+          { name: 'customer-portal', count: 38 },
+          { name: 'user-service', count: 31 },
+          { name: 'admin', count: 28 },
+        ]},
+      ],
+      // Extra cards beyond the Phase 1 set (so the TriGrep view feels fuller)
+      extraCards: [
+        { id: 'a-UserController', file: 'UserController.java', module: 'user-service', count: 3, lines: [
+          { n: 22, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'USER\')"</span>)' },
+          { n: 41, code: '<m>@PreAuthorize</m>(<span class="cs">"#id == principal.id or hasRole(\'ADMIN\')"</span>)' },
+          { n: 58, code: '<m>@Secured</m>({<span class="cs">"ROLE_USER"</span>, <span class="cs">"ROLE_ADMIN"</span>})' },
+        ]},
+        { id: 'a-ReportsController', file: 'ReportsController.java', module: 'admin', count: 2, lines: [
+          { n: 18, code: '<m>@RolesAllowed</m>(<span class="cs">"ADMIN"</span>)' },
+          { n: 33, code: '<m>@PreAuthorize</m>(<span class="cs">"hasAuthority(\'REPORT_VIEW\')"</span>)' },
+        ]},
+        { id: 'a-BillingController', file: 'BillingController.java', module: 'payments-api', count: 2, lines: [
+          { n: 14, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'BILLING\')"</span>)' },
+          { n: 29, code: '<m>@Secured</m>(<span class="cs">"ROLE_BILLING_ADMIN"</span>)' },
+        ]},
+      ],
+    },
+    contextualMsg: "You're viewing <strong>1,892 authorization annotations</strong> across <strong>234 repos</strong>. Want me to run a recipe to standardize on <code>@PreAuthorize</code>, or narrow the search?",
   },
-  {
-    file: 'LogConfig.java', module: 'common-logging', count: 2,
-    lines: [
-      { n: 7, code: 'import <m>org.apache.log4j</m>.PropertyConfigurator;' },
-      { n: 23, code: '<m>org.apache.log4j</m>.PropertyConfigurator.configure("log4j.properties");' },
-    ]
+
+  // ============== FLOW B — LOGGING ==============
+  b: {
+    id: 'b',
+    tileText: 'Find all Log4j usage in our services',
+    scopedTrigger: 'How is logging done across our services?',
+    searchCmd: "mod search working-set 'Logger type:symbol' --syntax sourcegraph",
+    derivedQueryHtml: tokenizeQuery("mod search working-set 'Logger type:symbol' --syntax sourcegraph"),
+    scopeLine: '12,847 logger declarations across 392 repos in 101ms',
+    breakdown: '<p><strong>Logger types found:</strong> org.slf4j.Logger (198 repos) · java.util.logging.Logger (67) · org.apache.logging.log4j.Logger (54) · org.apache.commons.logging.Log (31) · plus 14 custom wrappers (AuditLogger, RequestLogger, etc.)</p>',
+    overflow: 'Showing <strong>2 of 392</strong> files (12,847 matches)',
+    cards: [
+      { id: 'b-OrderService', file: 'OrderService.java', module: 'orders-service', count: 1, lines: [
+        { n: 8, code: 'private static final <m>Logger</m> log = org.slf4j.LoggerFactory.getLogger(OrderService.class);' },
+      ]},
+      { id: 'b-InvoiceJob', file: 'InvoiceJob.java', module: 'billing-engine', count: 1, lines: [
+        { n: 11, code: 'private final <m>AuditLogger</m> auditLogger;' },
+      ]},
+    ],
+    scoping: {
+      prompt: "I can look at logging from a few angles:",
+      options: [
+        { label: 'Error logging',                              query: '/log\\.(error|warn)\\(/' },
+        { label: 'Logger declarations',                        query: 'Logger type:symbol' },
+        { label: 'Production code only (exclude tests)',       query: 'Logger type:symbol -file:**/test/**' },
+        { label: 'Custom query…',                              custom: true },
+      ],
+    },
+    actions: {
+      primary: 'Run recipe: Migrate Log4j to SLF4J',
+    },
+    phase2: {
+      chips: [],
+      query: 'org.apache.log4j',
+      summary: '<span class="summary-count" id="summary-count">12,847</span> matches across <span class="summary-count" id="summary-files">392</span> files in <span class="mono">101ms</span>',
+      baseMatches: 12847,
+      baseFiles: 392,
+      filters: [
+        { id: 'logger', title: 'By logger type', items: [
+          { name: 'org.slf4j.Logger', count: 198 },
+          { name: 'java.util.logging', count: 67 },
+          { name: 'org.apache.log4j', count: 54 },
+          { name: 'commons.logging', count: 31 },
+          { name: 'custom', count: 14 },
+        ]},
+        { id: 'lang', title: 'By language', items: [
+          { name: 'Java', count: 380, dot: '#e76f00' },
+          { name: 'XML', count: 8, dot: '#0060ac' },
+          { name: 'Markdown', count: 4, dot: '#083fa1' },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'orders', count: 42 },
+          { name: 'billing', count: 38 },
+          { name: 'payments', count: 35 },
+          { name: 'inventory', count: 29 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'b-PaymentLogger', file: 'PaymentLogger.java', module: 'payments-service', count: 3, lines: [
+          { n: 14, code: 'import <m>org.apache.log4j</m>.Logger;' },
+          { n: 15, code: 'import <m>org.apache.log4j</m>.Level;' },
+          { n: 18, code: 'private static final Logger logger = <m>org.apache.log4j</m>.Logger.getLogger(PaymentLogger.class);' },
+        ]},
+        { id: 'b-LogConfig', file: 'LogConfig.java', module: 'common-logging', count: 2, lines: [
+          { n: 7, code: 'import <m>org.apache.log4j</m>.PropertyConfigurator;' },
+          { n: 23, code: '<m>org.apache.log4j</m>.PropertyConfigurator.configure("log4j.properties");' },
+        ]},
+        { id: 'b-StockAudit', file: 'StockAudit.java', module: 'inventory-service', count: 3, lines: [
+          { n: 3, code: 'import <m>org.apache.log4j</m>.Logger;' },
+          { n: 4, code: 'import <m>org.apache.log4j</m>.PatternLayout;' },
+          { n: 12, code: 'Logger auditLog = <m>org.apache.log4j</m>.Logger.getLogger("stock.audit");' },
+        ]},
+        { id: 'b-BatchRunner', file: 'BatchRunner.java', module: 'legacy-batch', count: 2, lines: [
+          { n: 5, code: 'import <m>org.apache.log4j</m>.Logger;' },
+          { n: 11, code: 'private static final Logger log = <m>org.apache.log4j</m>.Logger.getLogger(BatchRunner.class);' },
+        ]},
+      ],
+    },
+    contextualMsg: "You're viewing <strong>12,847 logger declarations</strong> across <strong>392 repos</strong>. Want me to migrate the <strong>54 Log4j repos</strong> to SLF4J, or focus on the custom wrappers first?",
   },
-  {
-    file: 'StockAudit.java', module: 'inventory-service', count: 3,
-    lines: [
-      { n: 3, code: 'import <m>org.apache.log4j</m>.Logger;' },
-      { n: 4, code: 'import <m>org.apache.log4j</m>.PatternLayout;' },
-      { n: 12, code: 'Logger auditLog = <m>org.apache.log4j</m>.Logger.getLogger("stock.audit");' },
-    ]
+
+  // ============== FLOW C — REST APIs ==============
+  c: {
+    id: 'c',
+    tileText: 'Find all REST controllers and outbound clients',
+    scopedTrigger: 'How are our REST APIs structured?',
+    searchCmd: "mod search working-set '@RestController' lang:java --syntax sourcegraph",
+    derivedQueryHtml: tokenizeMultiQuery([
+      "mod search working-set '@RestController' lang:java --syntax sourcegraph",
+      "mod search working-set 'type:symbol RestTemplate or type:symbol WebClient or type:symbol RestClient' lang:java --syntax sourcegraph",
+    ]),
+    scopeLine: '1,672 REST controllers across 234 repos + 847 outbound REST clients across 156 repos · 143ms',
+    breakdown:
+      '<p><strong>Controllers:</strong> 187 repos on @RestController (modern) · 47 on @Controller + @ResponseBody (legacy) · 23 mixed</p>' +
+      '<p><strong>Outbound clients:</strong> 612 RestTemplate (legacy) · 187 WebClient (reactive) · 48 RestClient (modern). 89 repos act as both server and client.</p>',
+    overflow: 'Showing <strong>3 of 390</strong> files (2,519 matches)',
+    cards: [
+      { id: 'c-OrderController', file: 'OrderController.java', module: 'orders-service', count: 1, lines: [
+        { n: 5, code: '<m>@RestController</m>' },
+        { n: 6, code: '@RequestMapping(<span class="cs">"/api/orders"</span>)' },
+        { n: 7, code: 'public class OrderController {' },
+      ]},
+      { id: 'c-UserService', file: 'UserService.java', module: 'customer-portal', count: 1, lines: [
+        { n: 14, code: 'private final <m>RestTemplate</m> restTemplate;' },
+      ]},
+      { id: 'c-InvoiceClient', file: 'InvoiceClient.java', module: 'billing-service', count: 1, lines: [
+        { n: 12, code: 'private final <m>WebClient</m> webClient;' },
+      ]},
+    ],
+    scoping: {
+      prompt: "REST APIs have a server side and a client side — I can search for one or both:",
+      options: [
+        { label: 'REST controllers (server side)',         query: '@RestController lang:java' },
+        { label: 'Outbound REST calls (client side)',      query: 'type:symbol RestTemplate or type:symbol WebClient or type:symbol RestClient lang:java' },
+        { label: 'Both controllers and outbound calls',    query: '(runs both queries)', muted: true },
+        { label: 'Custom query…',                          custom: true },
+      ],
+    },
+    actions: {
+      primary: 'Run recipe: Generate API endpoint inventory',
+    },
+    phase2: {
+      chips: [
+        { label: 'lang', value: 'java' },
+      ],
+      query: '@RestController',
+      summary: '<span class="summary-count" id="summary-count">2,519</span> matches across <span class="summary-count" id="summary-files">390</span> files in <span class="mono">143ms</span>',
+      baseMatches: 2519,
+      baseFiles: 390,
+      filters: [
+        { id: 'type', title: 'By type', items: [
+          { name: '@RestController', count: 187 },
+          { name: '@Controller + @ResponseBody', count: 47 },
+          { name: 'RestTemplate', count: 612 },
+          { name: 'WebClient', count: 187 },
+          { name: 'RestClient', count: 48 },
+        ]},
+        { id: 'role', title: 'By role', items: [
+          { name: 'Server only', count: 145 },
+          { name: 'Client only', count: 67 },
+          { name: 'Both', count: 89 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'orders', count: 52 },
+          { name: 'customer-portal', count: 41 },
+          { name: 'billing', count: 38 },
+          { name: 'inventory', count: 31 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'c-PaymentsController', file: 'PaymentsController.java', module: 'payments-api', count: 2, lines: [
+          { n: 8, code: '<m>@RestController</m>' },
+          { n: 9, code: '@RequestMapping(<span class="cs">"/api/payments"</span>)' },
+        ]},
+        { id: 'c-CatalogClient', file: 'CatalogClient.java', module: 'inventory-service', count: 1, lines: [
+          { n: 10, code: 'private final <m>RestClient</m> restClient;' },
+        ]},
+        { id: 'c-LegacyShipController', file: 'ShipmentController.java', module: 'shipping-legacy', count: 2, lines: [
+          { n: 7, code: '@Controller' },
+          { n: 8, code: '<m>@ResponseBody</m>' },
+        ]},
+      ],
+    },
+    contextualMsg: "You're viewing <strong>2,519 REST API matches</strong> across <strong>390 repos</strong>. Want me to generate an endpoint inventory, or focus on the <strong>89 repos</strong> that are both server and client?",
   },
-  {
-    file: 'BatchRunner.java', module: 'legacy-batch', count: 2,
-    lines: [
-      { n: 5, code: 'import <m>org.apache.log4j</m>.Logger;' },
-      { n: 11, code: 'private static final Logger log = <m>org.apache.log4j</m>.Logger.getLogger(BatchRunner.class);' },
-    ]
-  },
-];
-// Full file content per file for the drill-down view. Click any result card's
-// file path → that file's detail view renders in the left panel.
+};
+
+// Reverse-lookup typed text → flow id (for scoping)
+const SCOPED_TRIGGERS = {};
+Object.values(FLOWS).forEach(f => { SCOPED_TRIGGERS[f.scopedTrigger.toLowerCase()] = f.id; });
+
+// ===================================================================
+// File detail content (drill-down view in Phase 2)
+// Keyed by card.id from the FLOWS data above. Every card that the user
+// can see in Phase 2 has a corresponding entry here.
+// ===================================================================
 const FILE_DETAILS = {
-  'pom.xml': {
-    name: 'pom.xml',
-    path: 'base/pom.xml',
-    module: 'base',
-    matchCount: 2,
+  // ---- Flow A
+  'a-OrderController': {
+    name: 'OrderController.java',
+    path: 'payments-api/src/main/java/com/acme/payments/OrderController.java',
+    module: 'payments-api',
+    matchCount: 4,
     lines: [
-      { n: 1,  code: '&lt;?xml version="1.0" encoding="UTF-8"?&gt;' },
-      { n: 2,  code: '&lt;project xmlns="http://maven.apache.org/POM/4.0.0"&gt;' },
-      { n: 3,  code: '    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;' },
-      { n: 4,  code: '    &lt;groupId&gt;org.apache.sling&lt;/groupId&gt;' },
-      { n: 5,  code: '    &lt;artifactId&gt;performance-test-utils&lt;/artifactId&gt;' },
-      { n: 6,  code: '    &lt;version&gt;1.0.0&lt;/version&gt;' },
-      { n: 7,  code: '' },
-      { n: 8,  code: '    &lt;name&gt;Apache Sling Performance Test Utilities&lt;/name&gt;' },
-      { n: 9,  code: '' },
-      { n: 10, code: '    &lt;properties&gt;' },
-      { n: 11, code: '        &lt;junit.version&gt;4.13.1&lt;/junit.version&gt;' },
-      { n: 12, code: '    &lt;/properties&gt;' },
-      { n: 13, code: '' },
-      { n: 14, code: '    &lt;dependencies&gt;' },
-      { n: 15, code: '        &lt;dependency&gt;' },
-      { n: 16, code: '            &lt;groupId&gt;<m>org.apache.log4j</m>&lt;/groupId&gt;', hasMatch: true },
-      { n: 17, code: '            &lt;artifactId&gt;<m>log4j</m>&lt;/artifactId&gt;', hasMatch: true },
-      { n: 18, code: '            &lt;version&gt;1.2.17&lt;/version&gt;' },
-      { n: 19, code: '        &lt;/dependency&gt;' },
-      { n: 20, code: '    &lt;/dependencies&gt;' },
-      { n: 21, code: '&lt;/project&gt;' },
+      { n: 1,  code: '<span class="kw">package</span> com.acme.payments;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.annotation.Secured;' },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@RestController</span>' },
+      { n: 8,  code: '<span class="ann">@RequestMapping</span>(<span class="str">"/orders"</span>)' },
+      { n: 9,  code: '<span class="kw">public class</span> OrderController {' },
+      { n: 10, code: '' },
+      { n: 11, code: '    <span class="kw">@GetMapping</span>' },
+      { n: 12, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 13, code: '    <span class="kw">public</span> List&lt;Order&gt; listAll() { ... }' },
+      { n: 14, code: '' },
+      { n: 27, code: '    <span class="kw">@PostMapping</span>' },
+      { n: 28, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'MANAGER\') or hasRole(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 29, code: '    <span class="kw">public</span> Order approve(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 30, code: '' },
+      { n: 44, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/mine"</span>)' },
+      { n: 45, code: '    <m>@Secured</m>(<span class="str">"ROLE_USER"</span>)', hasMatch: true },
+      { n: 46, code: '    <span class="kw">public</span> List&lt;Order&gt; mine() { ... }' },
+      { n: 47, code: '' },
+      { n: 66, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/{userId}"</span>)' },
+      { n: 67, code: '    <m>@PreAuthorize</m>(<span class="str">"#userId == authentication.principal.id"</span>)', hasMatch: true },
+      { n: 68, code: '    <span class="kw">public</span> List&lt;Order&gt; forUser(<span class="kw">@PathVariable</span> String userId) { ... }' },
+      { n: 69, code: '}' },
     ],
   },
-  'PaymentLogger.java': {
+  'a-AdminController': {
+    name: 'AdminController.java',
+    path: 'customer-portal/src/main/java/com/acme/portal/AdminController.java',
+    module: 'customer-portal',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.portal;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> jakarta.annotation.security.RolesAllowed;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@RestController</span>' },
+      { n: 8,  code: '<span class="ann">@RequestMapping</span>(<span class="str">"/admin"</span>)' },
+      { n: 9,  code: '<span class="kw">public class</span> AdminController {' },
+      { n: 10, code: '' },
+      { n: 14, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/users"</span>)' },
+      { n: 15, code: '    <m>@PreAuthorize</m>(<span class="str">"hasAuthority(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 16, code: '    <span class="kw">public</span> List&lt;User&gt; users() { ... }' },
+      { n: 17, code: '' },
+      { n: 33, code: '    <span class="kw">@DeleteMapping</span>(<span class="str">"/users/{id}"</span>)' },
+      { n: 34, code: '    <m>@RolesAllowed</m>({<span class="str">"ADMIN"</span>, <span class="str">"SUPER_ADMIN"</span>})', hasMatch: true },
+      { n: 35, code: '    <span class="kw">public void</span> remove(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 36, code: '}' },
+    ],
+  },
+  'a-UserController': {
+    name: 'UserController.java',
+    path: 'user-service/src/main/java/com/acme/users/UserController.java',
+    module: 'user-service',
+    matchCount: 3,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.users;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.annotation.Secured;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@RestController</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> UserController {' },
+      { n: 21, code: '    <span class="kw">@GetMapping</span>' },
+      { n: 22, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'USER\')"</span>)', hasMatch: true },
+      { n: 23, code: '    <span class="kw">public</span> User me(Principal p) { ... }' },
+      { n: 40, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/{id}"</span>)' },
+      { n: 41, code: '    <m>@PreAuthorize</m>(<span class="str">"#id == principal.id or hasRole(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 42, code: '    <span class="kw">public</span> User get(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 57, code: '    <span class="kw">@PostMapping</span>(<span class="str">"/{id}/upgrade"</span>)' },
+      { n: 58, code: '    <m>@Secured</m>({<span class="str">"ROLE_USER"</span>, <span class="str">"ROLE_ADMIN"</span>})', hasMatch: true },
+      { n: 59, code: '    <span class="kw">public void</span> upgrade(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 60, code: '}' },
+    ],
+  },
+  'a-ReportsController': {
+    name: 'ReportsController.java',
+    path: 'admin/src/main/java/com/acme/reports/ReportsController.java',
+    module: 'admin',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.reports;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> jakarta.annotation.security.RolesAllowed;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@RestController</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> ReportsController {' },
+      { n: 17, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/daily"</span>)' },
+      { n: 18, code: '    <m>@RolesAllowed</m>(<span class="str">"ADMIN"</span>)', hasMatch: true },
+      { n: 19, code: '    <span class="kw">public</span> Report daily() { ... }' },
+      { n: 32, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/audit"</span>)' },
+      { n: 33, code: '    <m>@PreAuthorize</m>(<span class="str">"hasAuthority(\'REPORT_VIEW\')"</span>)', hasMatch: true },
+      { n: 34, code: '    <span class="kw">public</span> Report audit() { ... }' },
+      { n: 35, code: '}' },
+    ],
+  },
+  'a-BillingController': {
+    name: 'BillingController.java',
+    path: 'payments-api/src/main/java/com/acme/billing/BillingController.java',
+    module: 'payments-api',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.billing;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.annotation.Secured;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@RestController</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> BillingController {' },
+      { n: 13, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/invoices"</span>)' },
+      { n: 14, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'BILLING\')"</span>)', hasMatch: true },
+      { n: 15, code: '    <span class="kw">public</span> List&lt;Invoice&gt; list() { ... }' },
+      { n: 28, code: '    <span class="kw">@PostMapping</span>(<span class="str">"/invoices/{id}/refund"</span>)' },
+      { n: 29, code: '    <m>@Secured</m>(<span class="str">"ROLE_BILLING_ADMIN"</span>)', hasMatch: true },
+      { n: 30, code: '    <span class="kw">public void</span> refund(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 31, code: '}' },
+    ],
+  },
+
+  // ---- Flow B
+  'b-OrderService': {
+    name: 'OrderService.java',
+    path: 'orders-service/src/main/java/com/acme/orders/OrderService.java',
+    module: 'orders-service',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.orders;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.slf4j.Logger;' },
+      { n: 4,  code: '<span class="kw">import</span> org.slf4j.LoggerFactory;' },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.stereotype.Service;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@Service</span>' },
+      { n: 8,  code: '<span class="kw">public class</span> OrderService {' },
+      { n: 9,  code: '    <span class="kw">private static final</span> <m>Logger</m> log = org.slf4j.LoggerFactory.getLogger(OrderService.<span class="kw">class</span>);', hasMatch: true },
+      { n: 10, code: '' },
+      { n: 11, code: '    <span class="kw">public</span> Order create(NewOrder req) {' },
+      { n: 12, code: '        log.info(<span class="str">"creating order for {}"</span>, req.customerId());' },
+      { n: 13, code: '        <span class="kw">return</span> repo.save(<span class="kw">new</span> Order(req));' },
+      { n: 14, code: '    }' },
+      { n: 15, code: '}' },
+    ],
+  },
+  'b-InvoiceJob': {
+    name: 'InvoiceJob.java',
+    path: 'billing-engine/src/main/java/com/acme/billing/InvoiceJob.java',
+    module: 'billing-engine',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.billing;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> com.acme.audit.AuditLogger;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.scheduling.annotation.Scheduled;' },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@Component</span>' },
+      { n: 8,  code: '<span class="kw">public class</span> InvoiceJob {' },
+      { n: 9,  code: '' },
+      { n: 10, code: '    <span class="kw">private final</span> InvoiceRepo repo;' },
+      { n: 11, code: '    <span class="kw">private final</span> <m>AuditLogger</m> auditLogger;', hasMatch: true },
+      { n: 12, code: '' },
+      { n: 13, code: '    <span class="ann">@Scheduled</span>(cron = <span class="str">"0 0 2 * * *"</span>)' },
+      { n: 14, code: '    <span class="kw">public void</span> nightlyRun() {' },
+      { n: 15, code: '        auditLogger.note(<span class="str">"invoice run started"</span>);' },
+      { n: 16, code: '    }' },
+      { n: 17, code: '}' },
+    ],
+  },
+  'b-PaymentLogger': {
     name: 'PaymentLogger.java',
     path: 'payments-service/src/main/java/com/acme/payments/PaymentLogger.java',
     module: 'payments-service',
@@ -1837,26 +2526,19 @@ const FILE_DETAILS = {
       { n: 1,  code: '<span class="kw">package</span> com.acme.payments;' },
       { n: 2,  code: '' },
       { n: 3,  code: '<span class="kw">import</span> java.time.LocalDateTime;' },
-      { n: 4,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Logger;', hasMatch: true },
-      { n: 5,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Level;', hasMatch: true },
-      { n: 6,  code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
-      { n: 7,  code: '' },
-      { n: 8,  code: '<span class="ann">@Component</span>' },
-      { n: 9,  code: '<span class="kw">public class</span> PaymentLogger {' },
-      { n: 10, code: '' },
-      { n: 11, code: '    <span class="kw">private static final</span> Logger logger = <m>org.apache.log4j</m>.Logger.getLogger(PaymentLogger.<span class="kw">class</span>);', hasMatch: true },
-      { n: 12, code: '' },
-      { n: 13, code: '    <span class="kw">public void</span> logTransaction(String txId, <span class="kw">double</span> amount) {' },
-      { n: 14, code: '        logger.info(<span class="str">"Processing payment "</span> + txId + <span class="str">": $"</span> + amount);' },
-      { n: 15, code: '    }' },
-      { n: 16, code: '' },
-      { n: 17, code: '    <span class="kw">public void</span> logFailure(String txId, Exception e) {' },
-      { n: 18, code: '        logger.log(Level.ERROR, <span class="str">"Payment failed: "</span> + txId, e);' },
-      { n: 19, code: '    }' },
-      { n: 20, code: '}' },
+      { n: 14, code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Logger;', hasMatch: true },
+      { n: 15, code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Level;', hasMatch: true },
+      { n: 16, code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
+      { n: 17, code: '' },
+      { n: 18, code: '    <span class="kw">private static final</span> Logger logger = <m>org.apache.log4j</m>.Logger.getLogger(PaymentLogger.<span class="kw">class</span>);', hasMatch: true },
+      { n: 19, code: '' },
+      { n: 20, code: '    <span class="kw">public void</span> logTransaction(String txId, <span class="kw">double</span> amount) {' },
+      { n: 21, code: '        logger.info(<span class="str">"Processing payment "</span> + txId + <span class="str">": $"</span> + amount);' },
+      { n: 22, code: '    }' },
+      { n: 23, code: '}' },
     ],
   },
-  'LogConfig.java': {
+  'b-LogConfig': {
     name: 'LogConfig.java',
     path: 'common-logging/src/main/java/com/acme/logging/LogConfig.java',
     module: 'common-logging',
@@ -1865,25 +2547,17 @@ const FILE_DETAILS = {
       { n: 1,  code: '<span class="kw">package</span> com.acme.logging;' },
       { n: 2,  code: '' },
       { n: 3,  code: '<span class="kw">import</span> java.io.File;' },
-      { n: 4,  code: '<span class="kw">import</span> java.io.IOException;' },
-      { n: 5,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.PropertyConfigurator;', hasMatch: true },
-      { n: 6,  code: '<span class="kw">import</span> org.springframework.context.annotation.Configuration;' },
-      { n: 7,  code: '' },
-      { n: 8,  code: '<span class="ann">@Configuration</span>' },
-      { n: 9,  code: '<span class="kw">public class</span> LogConfig {' },
-      { n: 10, code: '' },
-      { n: 11, code: '    <span class="kw">private static final</span> String CONFIG_PATH = <span class="str">"log4j.properties"</span>;' },
-      { n: 12, code: '' },
-      { n: 13, code: '    <span class="kw">public void</span> init() {' },
-      { n: 14, code: '        File configFile = <span class="kw">new</span> File(CONFIG_PATH);' },
-      { n: 15, code: '        <span class="kw">if</span> (configFile.exists()) {' },
-      { n: 16, code: '            <m>org.apache.log4j</m>.PropertyConfigurator.configure(CONFIG_PATH);', hasMatch: true },
-      { n: 17, code: '        }' },
-      { n: 18, code: '    }' },
-      { n: 19, code: '}' },
+      { n: 7,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.PropertyConfigurator;', hasMatch: true },
+      { n: 8,  code: '' },
+      { n: 9,  code: '<span class="ann">@Configuration</span>' },
+      { n: 10, code: '<span class="kw">public class</span> LogConfig {' },
+      { n: 22, code: '    <span class="kw">public void</span> init() {' },
+      { n: 23, code: '        <m>org.apache.log4j</m>.PropertyConfigurator.configure(<span class="str">"log4j.properties"</span>);', hasMatch: true },
+      { n: 24, code: '    }' },
+      { n: 25, code: '}' },
     ],
   },
-  'StockAudit.java': {
+  'b-StockAudit': {
     name: 'StockAudit.java',
     path: 'inventory-service/src/main/java/com/acme/inventory/StockAudit.java',
     module: 'inventory-service',
@@ -1894,72 +2568,161 @@ const FILE_DETAILS = {
       { n: 3,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Logger;', hasMatch: true },
       { n: 4,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.PatternLayout;', hasMatch: true },
       { n: 5,  code: '<span class="kw">import</span> org.springframework.stereotype.Service;' },
-      { n: 6,  code: '' },
-      { n: 7,  code: '<span class="ann">@Service</span>' },
-      { n: 8,  code: '<span class="kw">public class</span> StockAudit {' },
-      { n: 9,  code: '' },
-      { n: 10, code: '    <span class="kw">private static final</span> PatternLayout layout = <span class="kw">new</span> PatternLayout(<span class="str">"%d{ISO8601} %-5p %m%n"</span>);' },
-      { n: 11, code: '' },
+      { n: 11, code: '<span class="ann">@Service</span>' },
       { n: 12, code: '    Logger auditLog = <m>org.apache.log4j</m>.Logger.getLogger(<span class="str">"stock.audit"</span>);', hasMatch: true },
       { n: 13, code: '' },
-      { n: 14, code: '    <span class="kw">public void</span> recordAdjustment(String sku, <span class="kw">int</span> delta) {' },
-      { n: 15, code: '        auditLog.info(<span class="str">"Stock adjustment: "</span> + sku + <span class="str">" delta="</span> + delta);' },
-      { n: 16, code: '    }' },
-      { n: 17, code: '' },
-      { n: 18, code: '    <span class="kw">public void</span> recordDiscrepancy(String sku, <span class="kw">int</span> expected, <span class="kw">int</span> actual) {' },
-      { n: 19, code: '        auditLog.warn(<span class="str">"Discrepancy on "</span> + sku + <span class="str">": expected="</span> + expected + <span class="str">" actual="</span> + actual);' },
-      { n: 20, code: '    }' },
-      { n: 21, code: '}' },
+      { n: 14, code: '    <span class="kw">public void</span> recordAdjustment(String sku, <span class="kw">int</span> delta) { ... }' },
+      { n: 15, code: '}' },
     ],
   },
-  'BatchRunner.java': {
+  'b-BatchRunner': {
     name: 'BatchRunner.java',
     path: 'legacy-batch/src/main/java/com/acme/batch/BatchRunner.java',
     module: 'legacy-batch',
     matchCount: 2,
     lines: [
       { n: 1,  code: '<span class="kw">package</span> com.acme.batch;' },
-      { n: 2,  code: '' },
-      { n: 3,  code: '<span class="kw">import</span> java.util.List;' },
-      { n: 4,  code: '<span class="kw">import</span> java.util.concurrent.ExecutorService;' },
       { n: 5,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Logger;', hasMatch: true },
       { n: 6,  code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
-      { n: 7,  code: '' },
-      { n: 8,  code: '<span class="ann">@Component</span>' },
-      { n: 9,  code: '<span class="kw">public class</span> BatchRunner {' },
-      { n: 10, code: '' },
+      { n: 10, code: '<span class="ann">@Component</span>' },
       { n: 11, code: '    <span class="kw">private static final</span> Logger log = <m>org.apache.log4j</m>.Logger.getLogger(BatchRunner.<span class="kw">class</span>);', hasMatch: true },
-      { n: 12, code: '    <span class="kw">private final</span> ExecutorService executor;' },
+      { n: 12, code: '    <span class="kw">public void</span> runAll() { ... }' },
+      { n: 13, code: '}' },
+    ],
+  },
+
+  // ---- Flow C
+  'c-OrderController': {
+    name: 'OrderController.java',
+    path: 'orders-service/src/main/java/com/acme/orders/OrderController.java',
+    module: 'orders-service',
+    matchCount: 1,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.orders;' },
+      { n: 2, code: '' },
+      { n: 3, code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 4, code: '' },
+      { n: 5, code: '<m>@RestController</m>', hasMatch: true },
+      { n: 6, code: '<span class="ann">@RequestMapping</span>(<span class="str">"/api/orders"</span>)' },
+      { n: 7, code: '<span class="kw">public class</span> OrderController {' },
+      { n: 8, code: '' },
+      { n: 9, code: '    <span class="kw">@GetMapping</span>' },
+      { n: 10, code: '    <span class="kw">public</span> List&lt;Order&gt; list() { ... }' },
+      { n: 11, code: '' },
+      { n: 12, code: '    <span class="kw">@PostMapping</span>' },
+      { n: 13, code: '    <span class="kw">public</span> Order create(<span class="kw">@RequestBody</span> NewOrder req) { ... }' },
+      { n: 14, code: '}' },
+    ],
+  },
+  'c-UserService': {
+    name: 'UserService.java',
+    path: 'customer-portal/src/main/java/com/acme/portal/UserService.java',
+    module: 'customer-portal',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.portal;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.web.client.RestTemplate;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.stereotype.Service;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@Service</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> UserService {' },
       { n: 13, code: '' },
-      { n: 14, code: '    <span class="kw">public</span> BatchRunner(ExecutorService executor) {' },
-      { n: 15, code: '        <span class="kw">this</span>.executor = executor;' },
+      { n: 14, code: '    <span class="kw">private final</span> <m>RestTemplate</m> restTemplate;', hasMatch: true },
+      { n: 15, code: '' },
+      { n: 16, code: '    <span class="kw">public</span> UserService(RestTemplate restTemplate) {' },
+      { n: 17, code: '        <span class="kw">this</span>.restTemplate = restTemplate;' },
+      { n: 18, code: '    }' },
+      { n: 19, code: '}' },
+    ],
+  },
+  'c-InvoiceClient': {
+    name: 'InvoiceClient.java',
+    path: 'billing-service/src/main/java/com/acme/billing/InvoiceClient.java',
+    module: 'billing-service',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.billing;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.web.reactive.function.client.WebClient;' },
+      { n: 4,  code: '<span class="kw">import</span> reactor.core.publisher.Mono;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@Component</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> InvoiceClient {' },
+      { n: 8,  code: '' },
+      { n: 12, code: '    <span class="kw">private final</span> <m>WebClient</m> webClient;', hasMatch: true },
+      { n: 13, code: '' },
+      { n: 14, code: '    <span class="kw">public</span> Mono&lt;Invoice&gt; fetch(<span class="kw">long</span> id) {' },
+      { n: 15, code: '        <span class="kw">return</span> webClient.get().uri(<span class="str">"/invoices/{id}"</span>, id).retrieve().bodyToMono(Invoice.<span class="kw">class</span>);' },
       { n: 16, code: '    }' },
-      { n: 17, code: '' },
-      { n: 18, code: '    <span class="kw">public void</span> runAll(List&lt;Runnable&gt; tasks) {' },
-      { n: 19, code: '        log.info(<span class="str">"Starting batch of "</span> + tasks.size() + <span class="str">" tasks"</span>);' },
-      { n: 20, code: '        <span class="kw">for</span> (Runnable task : tasks) {' },
-      { n: 21, code: '            executor.submit(() -&gt; {' },
-      { n: 22, code: '                <span class="kw">try</span> {' },
-      { n: 23, code: '                    task.run();' },
-      { n: 24, code: '                } <span class="kw">catch</span> (Exception e) {' },
-      { n: 25, code: '                    log.error(<span class="str">"Task failed"</span>, e);' },
-      { n: 26, code: '                }' },
-      { n: 27, code: '            });' },
-      { n: 28, code: '        }' },
-      { n: 29, code: '        log.info(<span class="str">"All tasks submitted"</span>);' },
-      { n: 30, code: '    }' },
-      { n: 31, code: '}' },
+      { n: 17, code: '}' },
+    ],
+  },
+  'c-PaymentsController': {
+    name: 'PaymentsController.java',
+    path: 'payments-api/src/main/java/com/acme/payments/PaymentsController.java',
+    module: 'payments-api',
+    matchCount: 2,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.payments;' },
+      { n: 2, code: '' },
+      { n: 3, code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 4, code: '' },
+      { n: 7, code: '' },
+      { n: 8, code: '<m>@RestController</m>', hasMatch: true },
+      { n: 9, code: '<m>@RequestMapping</m>(<span class="str">"/api/payments"</span>)', hasMatch: true },
+      { n: 10, code: '<span class="kw">public class</span> PaymentsController {' },
+      { n: 11, code: '' },
+      { n: 12, code: '    <span class="kw">@PostMapping</span>' },
+      { n: 13, code: '    <span class="kw">public</span> Receipt charge(<span class="kw">@RequestBody</span> Charge c) { ... }' },
+      { n: 14, code: '}' },
+    ],
+  },
+  'c-CatalogClient': {
+    name: 'CatalogClient.java',
+    path: 'inventory-service/src/main/java/com/acme/catalog/CatalogClient.java',
+    module: 'inventory-service',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.catalog;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.web.client.RestClient;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@Component</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> CatalogClient {' },
+      { n: 8,  code: '' },
+      { n: 10, code: '    <span class="kw">private final</span> <m>RestClient</m> restClient;', hasMatch: true },
+      { n: 11, code: '' },
+      { n: 12, code: '    <span class="kw">public</span> Item lookup(String sku) {' },
+      { n: 13, code: '        <span class="kw">return</span> restClient.get().uri(<span class="str">"/catalog/{sku}"</span>, sku).retrieve().body(Item.<span class="kw">class</span>);' },
+      { n: 14, code: '    }' },
+      { n: 15, code: '}' },
+    ],
+  },
+  'c-LegacyShipController': {
+    name: 'ShipmentController.java',
+    path: 'shipping-legacy/src/main/java/com/acme/ship/ShipmentController.java',
+    module: 'shipping-legacy',
+    matchCount: 2,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.ship;' },
+      { n: 2, code: '' },
+      { n: 3, code: '<span class="kw">import</span> org.springframework.stereotype.Controller;' },
+      { n: 4, code: '<span class="kw">import</span> org.springframework.web.bind.annotation.ResponseBody;' },
+      { n: 5, code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 6, code: '' },
+      { n: 7, code: '<span class="ann">@Controller</span>' },
+      { n: 8, code: '<m>@ResponseBody</m>', hasMatch: true },
+      { n: 9, code: '<span class="ann">@RequestMapping</span>(<span class="str">"/shipments"</span>)' },
+      { n: 10, code: '<span class="kw">public class</span> ShipmentController {' },
+      { n: 11, code: '' },
+      { n: 12, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/{id}"</span>)' },
+      { n: 13, code: '    <span class="kw">public</span> Shipment track(<span class="kw">@PathVariable</span> String id) { ... }' },
+      { n: 14, code: '}' },
     ],
   },
 };
-
-function fileKeyFromCardEl(el) {
-  const text = el.textContent;
-  for (const key of Object.keys(FILE_DETAILS)) {
-    if (text.includes(key)) return key;
-  }
-  return null;
-}
 
 // ===================================================================
 // DOM refs
@@ -1973,16 +2736,100 @@ const trigrepPanel = document.getElementById('trigrep-panel');
 const divider = document.getElementById('divider');
 const dividerToggle = document.getElementById('divider-toggle');
 const moddyReopen = document.getElementById('moddy-reopen');
+const chatInner = document.getElementById('chat-inner');
+const promptWrap = document.querySelector('.prompt-wrap');
 
 // ===================================================================
-// Suggestion tile click → only the primed tile advances the demo.
-// Other tiles are hoverable but inert (per interview spec).
+// State
 // ===================================================================
-document.querySelectorAll('.suggestion.is-primed').forEach(btn => {
-  btn.addEventListener('click', () => startFlow(btn.dataset.q));
+let currentFlow = null;    // 'a' | 'b' | 'c' once a flow starts
+let flowStarted = false;
+let phase2Built = false;
+let refinementApplied = false;
+
+// ===================================================================
+// Greeter layout — pull the search input into the centered group on the
+// empty state, return it to the bottom of the panel once a flow starts.
+// ===================================================================
+function placeInputInGreeter() {
+  if (!promptWrap || !greeter) return;
+  // Insert the input between "Prototype triggers" (above) and the prompt tiles (below)
+  const suggestions = document.getElementById('suggestions');
+  if (suggestions && suggestions.parentElement === greeter) {
+    greeter.insertBefore(promptWrap, suggestions);
+  } else {
+    greeter.appendChild(promptWrap);
+  }
+}
+function placeInputAtBottom() {
+  if (!promptWrap || !chatInner) return;
+  chatInner.appendChild(promptWrap);
+}
+// Initial placement: empty state → input lives inside the greeter
+placeInputInGreeter();
+
+// ===================================================================
+// Tile click → direct flow (skips scoping)
+// ===================================================================
+document.querySelectorAll('.suggestion[data-flow]').forEach(btn => {
+  btn.addEventListener('click', () => startDirectFlow(btn.dataset.flow));
 });
 
-// Send button / Enter in input → in Phase 1: also kick off the canned flow; in Phase 2: append user msg
+// ===================================================================
+// "Or try asking:" links → scoping flow (as if the user typed the question)
+// ===================================================================
+document.querySelectorAll('.try-asking-link[data-scoped]').forEach(btn => {
+  btn.addEventListener('click', () => startScopingFlow(btn.dataset.scoped));
+});
+
+// ===================================================================
+// Chat history sidebar — collapse, new chat, item activation
+// ===================================================================
+const historyPane = document.getElementById('historyPane');
+const historyToggleBtn = document.getElementById('history-toggle');
+const historyNewChatBtn = document.getElementById('history-newchat');
+
+historyToggleBtn.addEventListener('click', () => historyPane.classList.toggle('collapsed'));
+
+historyNewChatBtn.addEventListener('click', () => resetToGreeter());
+
+document.querySelectorAll('.moderne-history-item[data-history]').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.moderne-history-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    // Items are hardcoded for prototype realism — no real conversation switching.
+  });
+});
+
+function resetToGreeter() {
+  flowStarted = false;
+  phase2Built = false;
+  refinementApplied = false;
+  currentFlow = null;
+  conversation.innerHTML = '';
+  conversation.classList.add('hidden');
+  greeter.classList.remove('hidden');
+  if (document.body.classList.contains('phase-2')) {
+    document.body.classList.remove('phase-2');
+    setNavActive('moddy');
+  }
+  trigrepPanel.innerHTML = '';
+  trigrepPanel.setAttribute('aria-hidden', 'true');
+  const ctx = document.getElementById('phase2-contextual');
+  if (ctx) ctx.remove();
+  promptInput.placeholder = 'Ask Moddy to search, refine, or run a recipe';
+  document.querySelectorAll('.moderne-history-item').forEach(i => i.classList.remove('active'));
+  placeInputInGreeter();
+}
+
+// ===================================================================
+// Input — Enter / Send button
+//   - Phase 1, no flow yet:
+//       * Tile-matching text → direct flow
+//       * Scoped-trigger text → scoping flow
+//       * Anything else      → fallback message
+//   - Phase 2 or flow already started: appended as a user bubble (prototype: Moddy doesn't respond)
+// ===================================================================
 sendBtn.addEventListener('click', handleSend);
 promptInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -1990,60 +2837,139 @@ promptInput.addEventListener('keydown', (e) => {
     handleSend();
   }
 });
+
 function handleSend() {
   const text = promptInput.value.trim();
   if (!text) return;
   promptInput.value = '';
-  if (!flowStarted) {
-    startFlow(text);
-  } else {
-    // Append user message; Phase 2 only — Moddy doesn't respond (prototype)
+
+  if (flowStarted) {
     appendUserMessage(text);
-    conversation.scrollTop = conversation.scrollHeight;
+    scrollChat();
+    return;
   }
+
+  const lc = text.toLowerCase();
+  // Direct tile match (typed verbatim)
+  const directMatch = Object.values(FLOWS).find(f => f.tileText.toLowerCase() === lc);
+  if (directMatch) { startDirectFlow(directMatch.id); return; }
+
+  // Scoped broad question match
+  if (SCOPED_TRIGGERS[lc]) { startScopingFlow(SCOPED_TRIGGERS[lc]); return; }
+
+  // Fallback — don't start a flow, just show a one-off message
+  showFallback(text);
+}
+
+function showFallback(text) {
+  placeInputAtBottom();
+  greeter.classList.add('hidden');
+  conversation.classList.remove('hidden');
+  appendUserMessage(text);
+  const moddy = document.createElement('div');
+  moddy.className = 'msg-moddy fade-in';
+  moddy.innerHTML = `
+    <div class="fallback-msg">
+      This is a prototype — try one of the prompt tiles or questions above.
+    </div>
+  `;
+  conversation.appendChild(moddy);
+  scrollChat();
 }
 
 // ===================================================================
-// Phase 1: streaming chat flow
+// Direct flow — tile click (skips scoping)
 // ===================================================================
-let flowStarted = false;
-
-function startFlow(userText) {
+function startDirectFlow(flowId) {
   if (flowStarted) return;
+  const flow = FLOWS[flowId];
+  if (!flow) return;
   flowStarted = true;
+  currentFlow = flowId;
+  placeInputAtBottom();
   greeter.classList.add('hidden');
   conversation.classList.remove('hidden');
 
-  // Step 2: user message
-  appendUserMessage(userText);
+  appendUserMessage(flow.tileText);
+  setTimeout(() => streamResults(flow), 400);
+}
 
-  // If we're already in the split view (e.g. user hit "+ new chat" and is
-  // running a fresh search), populate the TriGrep left panel in sync with
-  // the streaming chat so both panels reflect the same search session.
+// ===================================================================
+// Scoping flow — typed broad question
+// ===================================================================
+function startScopingFlow(flowId) {
+  if (flowStarted) return;
+  const flow = FLOWS[flowId];
+  if (!flow) return;
+  flowStarted = true;
+  currentFlow = flowId;
+  placeInputAtBottom();
+  greeter.classList.add('hidden');
+  conversation.classList.remove('hidden');
+
+  appendUserMessage(flow.scopedTrigger);
+  setTimeout(() => {
+    conversation.appendChild(buildScopingResponse(flow));
+    scrollChat();
+  }, 400);
+}
+
+function buildScopingResponse(flow) {
+  const msg = document.createElement('div');
+  msg.className = 'msg-moddy fade-in';
+  const buttons = flow.scoping.options.map((opt, i) => {
+    if (opt.custom) {
+      return `<button class="scoping-btn" data-custom="1">
+        <span class="scoping-btn-label">${opt.label}</span>
+        <span class="scoping-btn-query muted">opens chat input</span>
+      </button>`;
+    }
+    const queryClass = opt.muted ? 'scoping-btn-query muted' : 'scoping-btn-query';
+    return `<button class="scoping-btn" data-idx="${i}">
+      <span class="scoping-btn-label">${opt.label}</span>
+      <span class="${queryClass}">${opt.query}</span>
+    </button>`;
+  }).join('');
+  msg.innerHTML = `
+    <div class="scoping-prompt">${flow.scoping.prompt}</div>
+    <div class="scoping-buttons">${buttons}</div>
+  `;
+  msg.querySelectorAll('.scoping-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.custom) { promptInput.focus(); return; }
+      // Lock the scoping buttons after choice
+      msg.querySelectorAll('.scoping-btn').forEach(b => { b.disabled = true; b.style.opacity = '0.6'; b.style.cursor = 'default'; });
+      btn.style.opacity = '1';
+      btn.style.borderColor = 'var(--neo-digital-blue-500)';
+      streamResults(flow);
+    });
+  });
+  return msg;
+}
+
+// ===================================================================
+// Streamed results — common path for both direct + scoped flows
+// ===================================================================
+function streamResults(flow) {
+  // If we're in split view already (after Back-to-chat + new flow), rebuild left panel
   if (document.body.classList.contains('phase-2') && !phase2Built) {
-    trigrepPanel.innerHTML = buildTrigrepPanel();
-    trigrepPanel.setAttribute('aria-hidden', 'false');
-    phase2Built = true;
-    wireTrigrepInteractions();
+    buildAndShowTrigrep(flow);
   }
 
-  // Build the Moddy response container
   const moddy = document.createElement('div');
   moddy.className = 'msg-moddy';
   conversation.appendChild(moddy);
 
-  // Staggered streaming, 200ms between each. Derived query appears just before
-  // the action buttons (between "Showing 4 of 42…" and the actions).
   let t = 200;
-  setTimeout(() => { moddy.appendChild(buildScopeLine()); scrollChat(); }, t);
+  setTimeout(() => { moddy.appendChild(buildDerivedQuery(flow)); scrollChat(); }, t);
   t += 200;
-  setTimeout(() => { moddy.appendChild(buildModulesRow()); scrollChat(); }, t);
+  setTimeout(() => { moddy.appendChild(buildScopeLine(flow)); scrollChat(); }, t);
   t += 200;
-  setTimeout(() => { moddy.appendChild(buildResultsBlock()); scrollChat(); }, t);
+  setTimeout(() => { moddy.appendChild(buildBreakdown(flow)); scrollChat(); }, t);
   t += 200;
-  setTimeout(() => { moddy.appendChild(buildDerivedQuery()); scrollChat(); }, t);
+  setTimeout(() => { moddy.appendChild(buildResultsBlock(flow)); scrollChat(); }, t);
   t += 200;
-  setTimeout(() => { moddy.appendChild(buildActionButtons()); scrollChat(); }, t);
+  setTimeout(() => { moddy.appendChild(buildActionButtons(flow)); scrollChat(); }, t);
 }
 
 function appendUserMessage(text) {
@@ -2052,6 +2978,7 @@ function appendUserMessage(text) {
   el.innerHTML = `<div class="avatar">A</div><div class="msg-user-text"></div>`;
   el.querySelector('.msg-user-text').textContent = text;
   conversation.appendChild(el);
+  scrollChat();
 }
 
 function scrollChat() { conversation.scrollTop = conversation.scrollHeight; }
@@ -2059,7 +2986,7 @@ function scrollChat() { conversation.scrollTop = conversation.scrollHeight; }
 // ===================================================================
 // Component builders
 // ===================================================================
-function buildDerivedQuery() {
+function buildDerivedQuery(flow) {
   const wrap = document.createElement('div');
   wrap.className = 'derived-query fade-in';
   wrap.innerHTML = `
@@ -2069,14 +2996,14 @@ function buildDerivedQuery() {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       </button>
     </div>
-    <div class="derived-query-cmd"><span class="cd">$ </span><span class="cb">mod search</span> working-set <span class="cs">'org.apache.log4j'</span> <span class="cb">--syntax</span> sourcegraph</div>
+    <div class="derived-query-cmd">${flow.derivedQueryHtml}</div>
   `;
-  wrap.querySelector('.derived-query-copy').addEventListener('click', (e) => copyDerived(e.currentTarget));
+  wrap.querySelector('.derived-query-copy').addEventListener('click', (e) => copyDerived(e.currentTarget, flow.searchCmd));
   return wrap;
 }
 
-function copyDerived(btn) {
-  try { navigator.clipboard.writeText(SEARCH_CMD); } catch (e) {}
+function copyDerived(btn, cmd) {
+  try { navigator.clipboard.writeText(cmd || ''); } catch (e) {}
   const original = btn.innerHTML;
   btn.classList.add('copied');
   btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
@@ -2086,37 +3013,46 @@ function copyDerived(btn) {
   }, 1500);
 }
 
-function buildScopeLine() {
+function buildScopeLine(flow) {
   const el = document.createElement('div');
   el.className = 'scope-line fade-in';
-  el.textContent = SCOPE_LINE;
+  el.textContent = flow.scopeLine;
   return el;
 }
 
-function buildModulesRow() {
+function buildBreakdown(flow) {
   const el = document.createElement('div');
-  el.className = 'modules-row fade-in';
-  const chips = MODULES.map(m => `<button class="module-chip">${m.name}<span class="count">${m.count}</span></button>`).join('');
-  el.innerHTML = `<span class="modules-label">12 modules affected</span> ${chips} <button class="modules-more">and ${MODULES_MORE} more…</button>`;
+  el.className = 'results-breakdown fade-in';
+  el.innerHTML = flow.breakdown;
   return el;
 }
 
-function buildResultsBlock() {
+function buildResultsBlock(flow) {
   const wrap = document.createElement('div');
   wrap.className = 'results fade-in';
-  FILE_CARDS.forEach(card => wrap.appendChild(buildFileCard(card)));
-  // Overflow row
+  flow.cards.forEach(card => wrap.appendChild(buildFileCard(card)));
   const overflow = document.createElement('div');
   overflow.className = 'overflow-row';
-  overflow.innerHTML = `<span>Showing <strong>4 of ${TOTAL_FILES}</strong> files (${TOTAL_MATCHES} matches)</span><button class="more-link" id="show-more-btn">Show more results</button>`;
+  overflow.innerHTML = `<span>${flow.overflow}</span><button class="more-link" id="show-more-btn">Show more results</button>`;
   wrap.appendChild(overflow);
-  overflow.querySelector('.more-link').addEventListener('click', enterPhase2);
+  overflow.querySelector('.more-link').addEventListener('click', () => appendMoreResults(wrap, flow, overflow));
   return wrap;
+}
+
+function appendMoreResults(wrap, flow, overflow) {
+  // Append up to 2 more cards from phase2.extraCards
+  const more = (flow.phase2.extraCards || []).slice(0, 2);
+  more.forEach(card => {
+    const c = buildFileCard(card);
+    wrap.insertBefore(c, overflow);
+  });
+  overflow.querySelector('.more-link').remove();
 }
 
 function buildFileCard(card) {
   const el = document.createElement('div');
   el.className = 'file-group fade-in';
+  el.dataset.cardId = card.id;
   const linesHtml = card.lines.map(l =>
     `<div class="match-line"><span class="lineno">${l.n}</span><span class="code">${l.code.replace(/<m>/g, '<mark>').replace(/<\/m>/g, '</mark>')}</span></div>`
   ).join('');
@@ -2125,7 +3061,7 @@ function buildFileCard(card) {
       <span class="lang-dot"></span>
       <span class="file-path">${card.file}</span>
       <span class="file-module">— ${card.module}</span>
-      <span class="file-count">${card.count} matches</span>
+      <span class="file-count">${card.count} match${card.count === 1 ? '' : 'es'}</span>
       <svg class="file-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
     <div class="file-body">${linesHtml}</div>
@@ -2134,120 +3070,76 @@ function buildFileCard(card) {
   return el;
 }
 
-function buildActionButtons() {
+function buildActionButtons(flow) {
   const wrap = document.createElement('div');
   wrap.className = 'followup-actions fade-in';
   wrap.innerHTML = `
     <button class="followup primary">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Run recipe: Migrate Log4j 1.x → SLF4J
+      ${flow.actions.primary}
     </button>
-    <button class="followup">
+    <button class="followup secondary">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Export results to CSV
     </button>
-    <button class="followup" id="open-trigrep-btn">
+    <button class="followup secondary" data-open-trigrep="1">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       Open in TriGrep
     </button>
     <button class="followup tertiary">Refine search →</button>
   `;
-  wrap.querySelector('#open-trigrep-btn').addEventListener('click', enterPhase2);
+  wrap.querySelector('[data-open-trigrep]').addEventListener('click', enterPhase2);
   return wrap;
 }
 
-// ===================================================================
-// Phase 2: transition + TriGrep panel build
-// ===================================================================
-let phase2Built = false;
+// Delegated handler for "Refine search" — works in both Phase 1 and Phase 2
+document.body.addEventListener('click', (e) => {
+  const btn = e.target.closest('.followup.tertiary');
+  if (btn && !btn.disabled) refineSearch();
+});
 
-function enterPhase2() {
-  if (phase2Built) {
-    // Re-entry after "Back to chat" — just shift layout, conversation is preserved.
-    document.body.classList.add('phase-2');
-    promptInput.placeholder = 'Ask about these results or run a recipe';
-    setTimeout(() => { conversation.scrollTop = conversation.scrollHeight; }, 320);
-    return;
-  }
-  phase2Built = true;
-
-  // Build TriGrep left panel content
-  trigrepPanel.innerHTML = buildTrigrepPanel();
-  trigrepPanel.setAttribute('aria-hidden', 'false');
-
-  // Update input placeholder for Phase 2 context
-  promptInput.placeholder = 'Ask about these results or run a recipe';
-
-  // Trigger the layout shift
-  document.body.classList.add('phase-2');
-
-  // After transition, scroll chat to bottom
-  setTimeout(() => {
-    conversation.scrollTop = conversation.scrollHeight;
-    wireTrigrepInteractions();
-  }, 320);
-}
-
-// "Refine search" → coordinated update of chat (always) + TriGrep search pane
-// (when present). In Phase 1 only the chat updates; in Phase 2 both panes sync.
-let refinementApplied = false;
 function refineSearch() {
-  if (refinementApplied) return;
+  if (refinementApplied || !currentFlow) return;
   refinementApplied = true;
+  const flow = FLOWS[currentFlow];
 
-  // 1. Conversation: user msg + Moddy response with new derived query + scope + brief text.
-  appendUserMessage('Narrow to actual Logger calls (skip imports)');
+  // Per-flow refinement copy
+  const refinements = {
+    a: { typed: 'Just show admin-tier authorization rules',
+         scope: '412 admin-tier authorization annotations across 87 repos in 64ms',
+         note: 'Filtered to admin-tier annotations only. These are the rules that gate sensitive operations — the recipe will preserve their semantics while standardizing on @PreAuthorize.' },
+    b: { typed: 'Narrow to actual Logger calls (skip imports)',
+         scope: '8,219 logger call sites across 312 repos in 73ms',
+         note: 'Filtered to actual <code>Logger</code> call sites (excluding import statements). These are the lines the recipe will rewrite — imports get cleaned up automatically.' },
+    c: { typed: 'Just the legacy clients (RestTemplate)',
+         scope: '612 RestTemplate references across 134 repos in 81ms',
+         note: 'Filtered to the legacy <code>RestTemplate</code> clients. These are the primary migration targets to <code>WebClient</code> or <code>RestClient</code>.' },
+  };
+  const r = refinements[currentFlow];
+
+  appendUserMessage(r.typed);
 
   const moddy = document.createElement('div');
   moddy.className = 'msg-moddy fade-in';
 
-  const dq = document.createElement('div');
-  dq.className = 'derived-query';
-  dq.innerHTML = `
-    <div class="derived-query-head">
-      <span class="derived-query-head-title">Searched for · Trigrep</span>
-      <button class="derived-query-copy" title="Copy command" aria-label="Copy command">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-      </button>
-    </div>
-    <div class="derived-query-cmd"><span class="cd">$ </span><span class="cb">mod search</span> working-set <span class="cs">'Logger\\.\\w+\\('</span> <span class="cb">--type</span> call-site <span class="cb">--syntax</span> sourcegraph</div>
-  `;
-  dq.querySelector('.derived-query-copy').addEventListener('click', (e) => copyDerived(e.currentTarget));
-  moddy.appendChild(dq);
-
   const scope = document.createElement('div');
   scope.className = 'scope-line';
-  scope.textContent = '73 matches across 31 files in 89ms · 847 repositories searched';
+  scope.textContent = r.scope;
   moddy.appendChild(scope);
 
   const text = document.createElement('div');
   text.className = 'moddy-text';
-  text.innerHTML = `Filtered to actual <code>Logger</code> call sites (excluding import statements). These are the lines the recipe will rewrite — imports get cleaned up automatically.`;
+  text.innerHTML = r.note;
   moddy.appendChild(text);
 
   conversation.appendChild(moddy);
-  conversation.scrollTop = conversation.scrollHeight;
+  scrollChat();
 
-  // 2. TriGrep panel: add a chip, update summary count.
-  const searchBox = trigrepPanel.querySelector('.trigrep-search-box');
-  if (searchBox) {
-    const chip = document.createElement('span');
-    chip.className = 'trigrep-chip';
-    chip.dataset.chip = 'type';
-    chip.innerHTML = `<strong>type:</strong>call-site<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>`;
-    const queryInput = searchBox.querySelector('.trigrep-query');
-    searchBox.insertBefore(chip, queryInput);
-    chip.querySelector('.trigrep-chip-x').addEventListener('click', (e) => {
-      e.stopPropagation();
-      chip.remove();
-    });
-  }
+  // If a TriGrep panel is built, give a small visual update
   const summaryCount = trigrepPanel.querySelector('#summary-count');
-  const summaryFiles = trigrepPanel.querySelector('#summary-files');
-  if (summaryCount) summaryCount.textContent = '73';
-  if (summaryFiles) summaryFiles.textContent = '31';
+  if (summaryCount) summaryCount.textContent = (r.scope.match(/[\d,]+/) || [''])[0];
 
-  // 3. Visually retire the "Refine search" buttons so the user can't stack refinements.
+  // Disable all "Refine search" buttons
   document.querySelectorAll('.followup.tertiary').forEach(b => {
     b.disabled = true;
     b.style.opacity = '0.5';
@@ -2255,122 +3147,110 @@ function refineSearch() {
   });
 }
 
-// Delegated handler — covers both the original Phase 1 action buttons and
-// the Phase 2 contextual action stack appended on transition.
-document.body.addEventListener('click', (e) => {
-  const btn = e.target.closest('.followup.tertiary');
-  if (btn && !btn.disabled) refineSearch();
-});
-
-function exitPhase2() {
-  document.body.classList.remove('phase-2');
-  // If Moddy was collapsed within the split view, un-collapse so the chat is visible at full width.
-  if (moddyPanel.classList.contains('collapsed')) setModdyCollapsed(false);
-  promptInput.placeholder = 'Ask Moddy to search, refine, or run a recipe';
-  setTimeout(() => { conversation.scrollTop = conversation.scrollHeight; }, 320);
+// ===================================================================
+// Phase 2 transition
+// ===================================================================
+function enterPhase2() {
+  if (!currentFlow) return;
+  if (phase2Built) {
+    document.body.classList.add('phase-2');
+    setNavActive('trigrep');
+    promptInput.placeholder = 'Ask about these results or run a recipe';
+    setTimeout(() => { scrollChat(); }, 320);
+    return;
+  }
+  buildAndShowTrigrep(FLOWS[currentFlow]);
+  promptInput.placeholder = 'Ask about these results or run a recipe';
+  document.body.classList.add('phase-2');
+  setNavActive('trigrep');
+  setTimeout(() => {
+    scrollChat();
+    wireTrigrepInteractions();
+  }, 320);
 }
-document.getElementById('back-to-chat').addEventListener('click', exitPhase2);
 
-function buildTrigrepPanel() {
-  return `
-    <div class="trigrep-head">
-      <div class="trigrep-search-row">
-        <div class="trigrep-search-box">
-          <svg class="trigrep-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <span class="trigrep-chip" data-chip="lang"><strong>lang:</strong>java<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></span>
-          <span class="trigrep-chip" data-chip="file"><strong>file:</strong>src/main/**<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></span>
-          <input class="trigrep-query" value="org.apache.log4j" spellcheck="false">
-        </div>
-        <button class="btn-search">Search</button>
-      </div>
-      <div class="trigrep-meta-row">
-        <div class="trigrep-summary"><span class="summary-count" id="summary-count">187</span> matches across <span class="summary-count" id="summary-files">42</span> files in <span class="mono">&lt;1ms</span></div>
-      </div>
-    </div>
+function buildAndShowTrigrep(flow) {
+  trigrepPanel.innerHTML = buildTrigrepPanel(flow);
+  trigrepPanel.setAttribute('aria-hidden', 'false');
+  // Insert (or update) the contextual block in the Moddy panel just above the input
+  buildPhase2Contextual(flow);
+  phase2Built = true;
+}
 
-    <div class="trigrep-body">
-      <aside class="trigrep-filters" aria-label="Filters">
-        <div class="filters-head">
-          <span>Filters</span>
-          <span class="collapse-all" id="collapse-all">Collapse all</span>
-        </div>
-
-        <div class="filter-group" data-group="lang">
-          <div class="filter-group-head"><span>By language</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-          <div class="filter-group-body">
-            <div class="filter-item" data-count="34"><span class="filter-item-name"><span class="lang-dot" style="background:#e76f00;box-shadow:none;"></span>Java</span><span class="count">34</span></div>
-            <div class="filter-item" data-count="4"><span class="filter-item-name"><span class="lang-dot" style="background:#f7df1e;box-shadow:none;"></span>Javascript</span><span class="count">4</span></div>
-            <div class="filter-item" data-count="3"><span class="filter-item-name"><span class="lang-dot" style="background:#3776ab;box-shadow:none;"></span>Python</span><span class="count">3</span></div>
-            <div class="filter-item" data-count="2"><span class="filter-item-name"><span class="lang-dot" style="background:#083fa1;box-shadow:none;"></span>Markdown</span><span class="count">2</span></div>
-            <div class="filter-item" data-count="1"><span class="filter-item-name"><span class="lang-dot" style="background:#6db33f;box-shadow:none;"></span>Spring</span><span class="count">1</span></div>
-          </div>
-        </div>
-
-        <div class="filter-group" data-group="meta">
-          <div class="filter-group-head"><span>By metadata</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-          <div class="filter-group-body">
-            <div class="filter-item" data-count="7"><span class="filter-item-name">important:true</span><span class="count">7</span></div>
-            <div class="filter-item" data-count="4"><span class="filter-item-name">licence:MIT</span><span class="count">4</span></div>
-            <div class="filter-item" data-count="3"><span class="filter-item-name">licence:Apache-2.0</span><span class="count">3</span></div>
-            <div class="filter-item" data-count="2"><span class="filter-item-name">important:false</span><span class="count">2</span></div>
-            <div class="filter-item" data-count="1"><span class="filter-item-name">licence:Commons</span><span class="count">1</span></div>
-          </div>
-        </div>
-
-        <div class="filter-group" data-group="topic">
-          <div class="filter-group-head"><span>By topic</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
-          <div class="filter-group-body">
-            <input class="topic-search" placeholder="Search topics…" id="topic-search">
-            <div class="filter-item" data-count="7"><span class="filter-item-name">documentation</span><span class="count">7</span></div>
-            <div class="filter-item" data-count="7"><span class="filter-item-name">user-service</span><span class="count">7</span></div>
-            <div class="filter-item" data-count="7"><span class="filter-item-name">frontend</span><span class="count">7</span></div>
-            <div class="filter-item" data-count="4"><span class="filter-item-name">backend</span><span class="count">4</span></div>
-            <div class="filter-item" data-count="1"><span class="filter-item-name">scripts</span><span class="count">1</span></div>
-            <div class="filter-item" data-count="1"><span class="filter-item-name">microservices</span><span class="count">1</span></div>
-          </div>
-        </div>
-      </aside>
-
-      <div class="trigrep-results" id="trigrep-results">
-        <article class="result-card">
-          <div class="result-card-head">
-            <div class="result-card-file"><span class="file-dot" style="background:#cb3446;"></span>base/pom.xml</div>
-            <div class="result-card-actions">
-              <span class="result-card-meta">3 matches</span>
-              <button class="icon-btn" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-              <button class="icon-btn chevron-btn" title="Collapse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-            </div>
-          </div>
-          <div class="result-card-body">
-            <div class="hunk-label">
-              <span class="hunk-text">@@ -34,7 +34,7 @@</span>
-              <button class="icon-btn" title="Copy hunk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-            </div>
-            <div class="code-body">
-              <div class="code-line"><span class="code-ln">34</span><span class="code-ln">34</span><span class="code-marker"></span><span class="code-text">  &lt;name&gt;Apache Sling Performance Test Utilities&lt;/name&gt;</span></div>
-              <div class="code-line"><span class="code-ln">35</span><span class="code-ln">35</span><span class="code-marker"></span><span class="code-text">  </span></div>
-              <div class="code-line"><span class="code-ln">36</span><span class="code-ln">36</span><span class="code-marker"></span><span class="code-text">  &lt;properties&gt;</span></div>
-              <div class="code-line removed"><span class="code-ln">37</span><span class="code-ln"></span><span class="code-marker">−</span><span class="code-text">    &lt;junit.version&gt;4.8.2&lt;/junit.version&gt;</span></div>
-              <div class="code-line added"><span class="code-ln"></span><span class="code-ln">37</span><span class="code-marker">+</span><span class="code-text">    &lt;junit.version&gt;4.13.1&lt;/junit.version&gt;</span></div>
-              <div class="code-line"><span class="code-ln">38</span><span class="code-ln">38</span><span class="code-marker"></span><span class="code-text">  &lt;/properties&gt;</span></div>
-              <div class="code-line"><span class="code-ln">39</span><span class="code-ln">39</span><span class="code-marker"></span><span class="code-text">  </span></div>
-              <div class="code-line"><span class="code-ln">40</span><span class="code-ln">40</span><span class="code-marker"></span><span class="code-text">  &lt;scm&gt;</span></div>
-            </div>
-          </div>
-        </article>
-        ${buildSimpleResultCards()}
-      </div>
+function buildPhase2Contextual(flow) {
+  let ctx = document.getElementById('phase2-contextual');
+  if (!ctx) {
+    ctx = document.createElement('div');
+    ctx.id = 'phase2-contextual';
+    ctx.className = 'phase2-contextual';
+    chatInner.insertBefore(ctx, promptWrap);
+  }
+  ctx.innerHTML = `
+    <div class="ctx-msg">${flow.contextualMsg}</div>
+    <div class="followup-actions stacked">
+      <button class="followup primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        ${flow.actions.primary}
+      </button>
+      <button class="followup secondary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export results to CSV
+      </button>
+      <button class="followup tertiary">Refine search →</button>
     </div>
   `;
 }
 
-function buildSimpleResultCards() {
-  return FILE_CARDS.map(card => `
-    <article class="result-card">
+function exitPhase2() {
+  document.body.classList.remove('phase-2');
+  setNavActive('moddy');
+  if (moddyPanel.classList.contains('collapsed')) setModdyCollapsed(false);
+  promptInput.placeholder = 'Ask Moddy to search, refine, or run a recipe';
+  setTimeout(() => { scrollChat(); }, 320);
+}
+document.getElementById('back-to-chat').addEventListener('click', exitPhase2);
+
+// Update nav rail active state
+function setNavActive(id) {
+  document.querySelectorAll('#left-nav-items .nav-item, #nav-more-popover .nav-item').forEach(el => {
+    el.classList.remove('active');
+  });
+  // Find the right item by label
+  const labelMap = { moddy: 'Moddy', trigrep: 'TriGrep' };
+  const label = labelMap[id] || id;
+  document.querySelectorAll('#left-nav-items .nav-item').forEach(el => {
+    if (el.querySelector('.nav-label')?.textContent === label) el.classList.add('active');
+  });
+}
+
+// ===================================================================
+// Phase 2 — TriGrep panel
+// ===================================================================
+function buildTrigrepPanel(flow) {
+  const chipsHtml = (flow.phase2.chips || []).map(c =>
+    `<span class="trigrep-chip" data-chip="${c.label}"><strong>${c.label}:</strong>${c.value}<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></span>`
+  ).join('');
+
+  const filtersHtml = flow.phase2.filters.map(group => `
+    <div class="filter-group" data-group="${group.id}">
+      <div class="filter-group-head"><span>${group.title}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+      <div class="filter-group-body">
+        ${group.searchable ? '<input class="topic-search" placeholder="Search topics…">' : ''}
+        ${group.items.map(it => {
+          const dot = it.dot ? `<span class="lang-dot" style="background:${it.dot};box-shadow:none;"></span>` : '';
+          return `<div class="filter-item" data-count="${it.count}"><span class="filter-item-name">${dot}${it.name}</span><span class="count">${it.count.toLocaleString()}</span></div>`;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  const allCards = [...flow.cards, ...(flow.phase2.extraCards || [])];
+  const cardsHtml = allCards.map(card => `
+    <article class="result-card" data-card-id="${card.id}">
       <div class="result-card-head">
-        <div class="result-card-file"><span class="file-dot"></span>${card.file}<span class="file-module">— ${card.module}</span></div>
+        <div class="result-card-file is-clickable"><span class="file-dot"></span>${card.file}<span class="file-module">— ${card.module}</span></div>
         <div class="result-card-actions">
-          <span class="result-card-meta">${card.count} matches</span>
+          <span class="result-card-meta">${card.count} match${card.count === 1 ? '' : 'es'}</span>
           <button class="icon-btn" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
           <button class="icon-btn chevron-btn" title="Collapse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
         </div>
@@ -2382,6 +3262,36 @@ function buildSimpleResultCards() {
       </div>
     </article>
   `).join('');
+
+  return `
+    <div class="trigrep-head">
+      <div class="trigrep-search-row">
+        <div class="trigrep-search-box">
+          <svg class="trigrep-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          ${chipsHtml}
+          <input class="trigrep-query" value="${flow.phase2.query.replace(/"/g, '&quot;')}" spellcheck="false">
+        </div>
+        <button class="btn-search">Search</button>
+      </div>
+      <div class="trigrep-meta-row">
+        <div class="trigrep-summary">${flow.phase2.summary}</div>
+      </div>
+    </div>
+
+    <div class="trigrep-body">
+      <aside class="trigrep-filters" aria-label="Filters">
+        <div class="filters-head">
+          <span>Filters</span>
+          <span class="collapse-all" id="collapse-all">Collapse all</span>
+        </div>
+        ${filtersHtml}
+      </aside>
+
+      <div class="trigrep-results" id="trigrep-results">
+        ${cardsHtml}
+      </div>
+    </div>
+  `;
 }
 
 // ===================================================================
@@ -2393,15 +3303,19 @@ function wireTrigrepInteractions() {
     head.addEventListener('click', () => head.parentElement.classList.toggle('collapsed'));
   });
   const collapseAll = trigrepPanel.querySelector('#collapse-all');
-  collapseAll.addEventListener('click', () => {
-    const groups = trigrepPanel.querySelectorAll('.filter-group');
-    const anyOpen = [...groups].some(g => !g.classList.contains('collapsed'));
-    groups.forEach(g => g.classList.toggle('collapsed', anyOpen));
-    collapseAll.textContent = anyOpen ? 'Expand all' : 'Collapse all';
-  });
+  if (collapseAll) {
+    collapseAll.addEventListener('click', () => {
+      const groups = trigrepPanel.querySelectorAll('.filter-group');
+      const anyOpen = [...groups].some(g => !g.classList.contains('collapsed'));
+      groups.forEach(g => g.classList.toggle('collapsed', anyOpen));
+      collapseAll.textContent = anyOpen ? 'Expand all' : 'Collapse all';
+    });
+  }
 
   // Filter item toggle + summary update
-  const BASE_MATCHES = 187, BASE_FILES = 42;
+  const flow = FLOWS[currentFlow];
+  const baseMatches = flow.phase2.baseMatches;
+  const baseFiles = flow.phase2.baseFiles;
   const activeFilters = new Map();
   const summaryCount = trigrepPanel.querySelector('#summary-count');
   const summaryFiles = trigrepPanel.querySelector('#summary-files');
@@ -2413,12 +3327,12 @@ function wireTrigrepInteractions() {
       else activeFilters.set(key, count);
       item.classList.toggle('active');
       if (activeFilters.size === 0) {
-        summaryCount.textContent = BASE_MATCHES;
-        summaryFiles.textContent = BASE_FILES;
+        summaryCount.textContent = baseMatches.toLocaleString();
+        summaryFiles.textContent = baseFiles.toLocaleString();
       } else {
         const total = [...activeFilters.values()].reduce((a, b) => a + b, 0);
-        summaryCount.textContent = total;
-        summaryFiles.textContent = Math.max(1, Math.ceil(total / 4.5));
+        summaryCount.textContent = total.toLocaleString();
+        summaryFiles.textContent = Math.max(1, Math.ceil(total / 5.5)).toLocaleString();
       }
     });
   });
@@ -2432,7 +3346,7 @@ function wireTrigrepInteractions() {
   });
 
   // Topic search filter
-  const topicSearch = trigrepPanel.querySelector('#topic-search');
+  const topicSearch = trigrepPanel.querySelector('.topic-search');
   if (topicSearch) {
     topicSearch.addEventListener('input', () => {
       const q = topicSearch.value.toLowerCase().trim();
@@ -2444,17 +3358,19 @@ function wireTrigrepInteractions() {
     });
   }
 
-  // Result card collapse
+  // Result card collapse via chevron
   trigrepPanel.querySelectorAll('.chevron-btn').forEach(btn => {
     btn.addEventListener('click', () => btn.closest('.result-card').classList.toggle('collapsed'));
   });
 
-  // File path drill-down. Every card opens its own full-file detail view.
-  trigrepPanel.querySelectorAll('.result-card-file').forEach(el => {
-    const key = fileKeyFromCardEl(el);
-    if (key && FILE_DETAILS[key]) {
-      el.classList.add('is-clickable');
-      el.addEventListener('click', () => showFileDetail(FILE_DETAILS[key]));
+  // File path drill-down — every card knows its own id
+  trigrepPanel.querySelectorAll('.result-card .result-card-file').forEach(el => {
+    const card = el.closest('.result-card');
+    const id = card?.dataset.cardId;
+    if (id && FILE_DETAILS[id]) {
+      el.addEventListener('click', () => showFileDetail(FILE_DETAILS[id]));
+    } else {
+      el.classList.remove('is-clickable');
     }
   });
 }
@@ -2512,7 +3428,7 @@ function buildFileDetailHTML(file) {
     <div class="detail-header">
       <div class="detail-header-row">
         <div class="detail-file-path"><span class="file-dot"></span>${file.path}</div>
-        <span class="result-card-meta">${file.matchCount} matches</span>
+        <span class="result-card-meta">${file.matchCount} match${file.matchCount === 1 ? '' : 'es'}</span>
       </div>
       <div class="detail-module">${file.module}</div>
     </div>
@@ -2583,13 +3499,17 @@ moddyReopen.addEventListener('click', () => setModdyCollapsed(false));
 // ===================================================================
 function newChatInSplit() {
   flowStarted = false;
-  phase2Built = false;  // allow a future "Open in TriGrep" to rebuild
+  phase2Built = false;
   refinementApplied = false;
+  currentFlow = null;
   conversation.innerHTML = '';
   conversation.classList.add('hidden');
   greeter.classList.remove('hidden');
   trigrepPanel.innerHTML = buildTrigrepEmpty();
+  const ctx = document.getElementById('phase2-contextual');
+  if (ctx) ctx.remove();
   promptInput.placeholder = 'Ask Moddy to search, refine, or run a recipe';
+  placeInputInGreeter();
 }
 
 function buildTrigrepEmpty() {
