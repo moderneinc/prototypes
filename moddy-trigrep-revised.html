@@ -1,0 +1,4042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moddy × Trigrep — Combined</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+<style>
+/* ================================================
+   NEO DESIGN SYSTEM — BRAND TOKENS (Tier 1)
+   ================================================ */
+:root {
+  --brand-white: #FFFFFF;
+  --brand-black: #000000;
+  --brand-digital-blue-100: #F2F3FF;
+  --brand-digital-blue-200: #DCE0FF;
+  --brand-digital-blue-300: #B6BFFF;
+  --brand-digital-blue-400: #8D99FF;
+  --brand-digital-blue-500: #2F42FF;
+  --brand-digital-blue-600: #2637E6;
+  --brand-digital-blue-700: #1E2EC2;
+  --brand-digital-blue-800: #131E7A;
+  --brand-digital-blue-900: #000855;
+  --brand-green-100: #F3FFF5;
+  --brand-green-200: #CFFFD7;
+  --brand-green-500: #72E184;
+  --brand-green-600: #5EC46F;
+  --brand-green-700: #4CA75A;
+  --brand-green-800: #3B8948;
+  --brand-red-100: #FEF2F2;
+  --brand-red-400: #FCA5A5;
+  --brand-red-500: #F87171;
+  --brand-red-600: #CB3446;
+  --brand-red-700: #A92232;
+  --brand-red-800: #871421;
+  --brand-orange-100: #FFF8E5;
+  --brand-orange-600: #FFB800;
+  --brand-orange-700: #D69B00;
+  --brand-orange-800: #856000;
+  --brand-grey-100: #F9FAFB;
+  --brand-grey-200: #F3F4F6;
+  --brand-grey-300: #E5E7EB;
+  --brand-grey-400: #D1D5DB;
+  --brand-grey-500: #9CA3AF;
+  --brand-grey-600: #6B7280;
+  --brand-grey-700: #4B5563;
+  --brand-grey-800: #374151;
+  --brand-grey-900: #1F2937;
+  --brand-grey-1000: #111827;
+  --brand-violet-500: #AD59C7;
+  --brand-violet-600: #992FB9;
+  --brand-teal-600: #3BCCA6;
+  --brand-font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --brand-font-family-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --brand-font-weight-regular: 400;
+  --brand-font-weight-medium: 500;
+  --brand-font-weight-semibold: 600;
+  --brand-font-weight-bold: 700;
+  --brand-font-size-100: 10px;
+  --brand-font-size-200: 12px;
+  --brand-font-size-300: 14px;
+  --brand-font-size-400: 16px;
+  --brand-font-size-500: 18px;
+  --brand-font-size-600: 20px;
+  --brand-font-size-700: 24px;
+  --brand-font-size-800: 28px;
+  --brand-spacing-0: 0;
+  --brand-spacing-100: 4px;
+  --brand-spacing-200: 8px;
+  --brand-spacing-300: 12px;
+  --brand-spacing-400: 16px;
+  --brand-spacing-500: 20px;
+  --brand-spacing-600: 24px;
+  --brand-spacing-800: 32px;
+  --brand-spacing-1000: 40px;
+  --brand-radius-0: 0;
+  --brand-radius-100: 4px;
+  --brand-radius-200: 6px;
+  --brand-radius-300: 8px;
+  --brand-radius-400: 12px;
+  --brand-radius-500: 16px;
+  --brand-radius-full: 9999px;
+  --brand-shadow-100: 0 1px 3px rgba(31, 41, 55, 0.1);
+  --brand-shadow-200: 0 2px 4px rgba(31, 41, 55, 0.1);
+  --brand-shadow-300: 0 8px 15px rgba(31, 41, 55, 0.1);
+  --brand-shadow-400: 0 4px 4px rgba(31, 41, 55, 0.1), 0 8px 24px rgba(31, 41, 55, 0.1);
+  --brand-shadow-500: 0 8px 15px rgba(31, 41, 55, 0.1);
+  --brand-transition-fast: 150ms ease;
+  --brand-transition-base: 200ms ease;
+  --brand-line-height-200: 20px;
+  --brand-line-height-300: 24px;
+  --brand-line-height-400: 28px;
+}
+
+/* ================================================
+   NEO DESIGN SYSTEM — ALIAS TOKENS (Tier 2)
+   ================================================ */
+:root {
+  --alias-primary-100: var(--brand-digital-blue-100);
+  --alias-primary-200: var(--brand-digital-blue-200);
+  --alias-primary-300: var(--brand-digital-blue-300);
+  --alias-primary-500: var(--brand-digital-blue-500);
+  --alias-primary-600: var(--brand-digital-blue-600);
+  --alias-primary-700: var(--brand-digital-blue-700);
+  --alias-primary-800: var(--brand-digital-blue-800);
+  --alias-success-100: var(--brand-green-100);
+  --alias-success-600: var(--brand-green-600);
+  --alias-success-700: var(--brand-green-700);
+  --alias-error-100: var(--brand-red-100);
+  --alias-error-600: var(--brand-red-600);
+  --alias-error-700: var(--brand-red-700);
+  --alias-warning-100: var(--brand-orange-100);
+  --alias-warning-600: var(--brand-orange-600);
+  --alias-neutral-light-100: var(--brand-grey-100);
+  --alias-neutral-light-200: var(--brand-grey-200);
+  --alias-neutral-light-300: var(--brand-grey-300);
+  --alias-neutral-light-400: var(--brand-grey-400);
+  --alias-neutral-dark-500: var(--brand-grey-500);
+  --alias-neutral-dark-600: var(--brand-grey-600);
+  --alias-neutral-dark-700: var(--brand-grey-700);
+  --alias-neutral-dark-800: var(--brand-grey-800);
+  --alias-neutral-dark-900: var(--brand-grey-900);
+  --alias-neutral-dark-1000: var(--brand-grey-1000);
+  --alias-foundation-white: var(--brand-white);
+  --alias-foundation-black: var(--brand-black);
+  --alias-font-heading: var(--brand-font-family-sans);
+  --alias-font-body: var(--brand-font-family-sans);
+  --alias-font-code: var(--brand-font-family-mono);
+}
+
+/* ================================================
+   NEO DESIGN SYSTEM — MAPPED TOKENS (Tier 3)
+   Components consume ONLY these.
+   ================================================ */
+:root {
+  --surface-primary: var(--alias-foundation-white);
+  --surface-page: #f4f4f4;
+  --surface-secondary: var(--alias-neutral-light-100);
+  --surface-tertiary: var(--alias-neutral-light-200);
+  --surface-disabled: var(--alias-neutral-light-200);
+  --surface-error: var(--alias-error-100);
+  --surface-success: var(--alias-success-100);
+  --surface-information: var(--alias-primary-100);
+  --surface-warning: var(--alias-warning-100);
+  --surface-primary-filled: var(--alias-primary-500);
+  --surface-error-filled: var(--alias-error-600);
+  --surface-success-filled: var(--alias-success-600);
+  --surface-primary-hover: var(--alias-primary-100);
+  --surface-primary-pressed: var(--alias-primary-200);
+  --surface-primary-filled-hover: var(--alias-primary-700);
+  --surface-primary-filled-pressed: var(--alias-primary-800);
+  --surface-primary-active: #3776F01A;
+  --surface-error-filled-hover: var(--alias-error-700);
+  --text-primary: var(--alias-neutral-dark-1000);
+  --text-secondary: var(--alias-neutral-dark-600);
+  --text-tertiary: var(--alias-neutral-dark-500);
+  --text-disabled: var(--alias-neutral-light-400);
+  --text-error: var(--alias-error-600);
+  --text-success: var(--alias-success-700);
+  --text-information: var(--alias-primary-700);
+  --text-on-primary: var(--alias-foundation-white);
+  --text-on-error: var(--alias-foundation-white);
+  --text-primary-hover: var(--alias-primary-700);
+  --icon-primary: var(--alias-neutral-dark-1000);
+  --icon-secondary: var(--alias-neutral-dark-600);
+  --icon-tertiary: var(--alias-neutral-dark-500);
+  --icon-on-primary: var(--alias-foundation-white);
+  --border-primary: var(--alias-neutral-light-300);
+  --border-secondary: var(--alias-neutral-light-400);
+  --border-hover: var(--alias-neutral-light-400);
+  --border-focus: var(--alias-primary-600);
+  --content-heading: var(--alias-neutral-dark-1000);
+  --content-body: var(--alias-neutral-dark-800);
+  --content-caption: var(--alias-neutral-dark-600);
+  --content-placeholder: var(--alias-neutral-dark-500);
+  --font-heading: var(--alias-font-heading);
+  --font-body: var(--alias-font-body);
+  --font-code: var(--alias-font-code);
+  --space-1: var(--brand-spacing-100);
+  --space-2: var(--brand-spacing-200);
+  --space-3: var(--brand-spacing-300);
+  --space-4: var(--brand-spacing-400);
+  --space-5: var(--brand-spacing-500);
+  --space-6: var(--brand-spacing-600);
+  --space-8: var(--brand-spacing-800);
+  --space-10: var(--brand-spacing-1000);
+  --radius-sm: var(--brand-radius-100);
+  --radius-md: var(--brand-radius-200);
+  --radius-lg: var(--brand-radius-300);
+  --radius-xl: var(--brand-radius-400);
+  --radius-2xl: var(--brand-radius-500);
+  --radius-full: var(--brand-radius-full);
+  --shadow-xs: var(--brand-shadow-100);
+  --shadow-sm: var(--brand-shadow-200);
+  --shadow-md: var(--brand-shadow-300);
+  --shadow-lg: var(--brand-shadow-400);
+  --shadow-xl: var(--brand-shadow-500);
+  --transition-fast: var(--brand-transition-fast);
+  --transition-base: var(--brand-transition-base);
+}
+
+/* Legacy tokens still consumed by the rest of this file */
+:root {
+    --grey-25:  #f9fafb;
+    --grey-50:  #f3f4f6;
+    --grey-100: #e5e7eb;
+    --grey-200: #d1d5db;
+    --grey-300: #9ca3af;
+    --grey-500: #6b7280;
+    --grey-600: #4b5563;
+    --grey-700: #374151;
+    --grey-800: #1f2937;
+    --grey-900: #111827;
+    --bg: #ffffff;
+
+    --neo-digital-blue-300: #8d99ff;
+    --neo-digital-blue-500: #2f42ff;
+    --neo-red-500: #cb3446;
+
+    --neo-red: #FF3232;
+    --roseate: #DB4197;
+    --violet: #461DDE;
+    --digital-blue: #2F42FF;
+    --digital-green: #3DDC84;
+
+    --highlight: #fbbf24;
+    --highlight-bg: #fef3c7;
+    --highlight-text: #78350f;
+    --java-dot: #e76f00;
+    --code-bg: #0d1117;
+
+    --code-near-black: #0A0F1E;
+    --code-cb: #7B9FFF;
+    --code-cs: #A0A4C0;
+    --code-cd: rgba(255,255,255,0.25);
+    --code-slate-mid: #636687;
+
+    /* Moderne UI palette (recipe results page) — used in Phase 2 trigrep
+       to mirror FileDiffView / ResultExpansionPanel visuals.
+       Source: themes/moderne-theme.ts in moderneinc/moderne-ui. */
+    --mui-grey-100: #F8F9FA;   /* row hover bg, page bg */
+    --mui-grey-150: #EDEFEF;   /* tab strip bg */
+    --mui-grey-200: #E9ECEF;
+    --mui-grey-300: #DEE2E6;
+    --mui-grey-400: #CED4DA;   /* borders */
+    --mui-grey-500: #ADB5BD;   /* line numbers */
+    --mui-grey-600: #6C757D;   /* count text */
+    --mui-grey-700: #495057;
+    --mui-grey-800: #343A40;   /* body text */
+    --mui-card-bg: #F4F4F4;    /* newGreys.15 — FileDiffView card bg */
+    --mui-card-body-bg: #FFFFFF;
+    --mui-divider: #C1C1C1;    /* sticky paper bottom border */
+    --mui-blue: #2F42FF;       /* blue.main — count badge color, accents */
+    --mui-blue-200: #9FA8FF;   /* search-hit row bg */
+    --mui-gold: #FFC107;       /* neoGold[300] — search match highlight */
+    --mui-gold-soft: #FFF3B0;  /* gold highlight bg */
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--grey-50);
+    color: var(--grey-700);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    line-height: 1.55;
+    overflow: hidden;
+  }
+  .mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+
+  /* ===== Shell ===== */
+  body { background: var(--surface-page); }
+  .shell { height: 100vh; display: flex; flex-direction: column; }
+  .grid {
+    display: grid;
+    grid-template-columns: 98px 1fr;
+    grid-template-areas: "nav content";
+    flex: 1;
+    overflow: hidden;
+    gap: 0;
+    background: var(--surface-page);
+  }
+
+/* ================================================
+   LEFT NAVIGATION RAIL (98px) — v2-sandbox spec
+   ================================================ */
+.left-nav {
+  grid-area: nav;
+  width: 98px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 2px 8px 24px;
+  gap: 0;
+  background: var(--surface-page);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  overflow: visible;
+}
+
+.left-nav-top {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: 4px;
+}
+
+.nav-item-home {
+  padding: 0 4px;
+}
+
+.nav-item-home .nav-icon-container {
+  padding: 4px;
+}
+
+.nav-item {
+  width: 100%;
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  background: transparent;
+}
+
+.nav-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  background: transparent;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.nav-item:hover .nav-icon-container,
+.nav-item.active .nav-icon-container {
+  background: var(--brand-digital-blue-100);
+  border-color: var(--brand-digital-blue-200);
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  color: var(--brand-grey-900);
+  flex-shrink: 0;
+}
+
+.nav-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--brand-font-weight-regular);
+  line-height: 1;
+  color: var(--brand-grey-900);
+  text-align: center;
+  white-space: normal;
+  width: 100%;
+  transition: color 150ms ease;
+}
+
+.nav-item:hover .nav-label {
+  color: var(--brand-digital-blue-600);
+}
+
+.nav-item.active .nav-label {
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--brand-digital-blue-800);
+}
+
+.nav-badge {
+  font-size: 11px;
+  padding: 0 6px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--brand-grey-200);
+  color: var(--brand-grey-800);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: 1;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+.nav-home-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  padding: 4px 0;
+}
+
+.nav-version-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--brand-digital-blue-500) 0%, var(--brand-violet-500) 100%);
+  color: var(--brand-white);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--brand-font-weight-semibold);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.nav-more-wrapper {
+  position: relative;
+  margin-top: auto;
+}
+
+.nav-more-popover {
+  position: absolute;
+  left: calc(100% + 4px);
+  bottom: 0;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 96px;
+  z-index: 100;
+}
+
+.nav-more-popover[hidden] { display: none; }
+
+.nav-more-popover .nav-item {
+  padding: 8px 4px;
+}
+
+/* ================================================
+   MAIN CONTENT AREA
+   ================================================ */
+.main-area {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+}
+
+/* ================================================
+   GLOBAL NAVIGATION BAR (65px toolbar)
+   ================================================ */
+.global-nav {
+  height: 65px;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+  width: 100%;
+}
+
+.global-nav::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  max-width: 90%;
+  height: 65px;
+  background: radial-gradient(ellipse at center, var(--brand-red-100) 0%, var(--brand-red-100) 40%, transparent 70%);
+  filter: blur(20px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.global-nav > * {
+  position: relative;
+  z-index: 1;
+}
+
+.org-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  background: var(--surface-primary);
+  border: 1px solid var(--border-secondary);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-transform: none;
+}
+
+.org-selector:hover {
+  background: var(--brand-grey-200);
+  border-color: var(--border-primary);
+}
+
+.org-selector.selected {
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-regular);
+}
+
+.org-selector-wrapper {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50vw;
+}
+
+.nav-spacer {
+  flex: 1;
+}
+
+.search-input {
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-secondary);
+  padding: 10px 16px;
+  font-size: var(--brand-font-size-300);
+  color: var(--text-tertiary);
+  background: var(--surface-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.search-input:hover {
+  background: var(--brand-grey-200);
+  border-color: var(--border-primary);
+}
+
+.search-input > span:first-of-type {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.search-input-keys {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.search-input kbd {
+  font-size: var(--brand-font-size-100);
+  background: var(--surface-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--text-tertiary);
+  font-family: var(--font-body);
+  border: 1px solid var(--border-primary);
+  min-width: 18px;
+  text-align: center;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 64px;
+}
+
+.nav-action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform 200ms ease-in;
+  border: none;
+  background: transparent;
+  color: var(--brand-grey-900);
+  flex-shrink: 0;
+}
+
+.nav-action-btn:hover {
+  background: var(--brand-grey-200);
+}
+
+.nav-action-btn.open {
+  background: var(--surface-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+.nav-action-btn svg { width: 20px; height: 20px; }
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: #E45A4F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--brand-white);
+  flex-shrink: 0;
+}
+
+  /* ===== Page (split container) — transitions between Phase 1 and Phase 2 ===== */
+  .page {
+    flex: 1;
+    background: var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 8px 8px 0;
+    min-height: 0;
+    display: flex;
+    position: relative;
+  }
+  /* Trigrep panel: collapsed to width 0 in Phase 1; expanded to flex 1 in Phase 2 */
+  .trigrep-panel {
+    width: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                flex-basis 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                flex-grow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  /* Divider hidden in Phase 1 */
+  .divider {
+    width: 0;
+    background: transparent;
+    cursor: col-resize;
+    position: relative;
+    flex-shrink: 0;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1), background 0.15s ease;
+  }
+  .divider:hover, .divider.dragging { background: var(--grey-100); }
+  .divider-toggle {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 22px; height: 38px;
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    box-shadow: 0 1px 2px rgba(15,23,42,0.06);
+    display: none; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: var(--grey-500);
+    z-index: 2;
+  }
+  .divider-toggle:hover { color: var(--grey-900); border-color: var(--grey-200); }
+  .divider-toggle svg { width: 12px; height: 12px; }
+
+  /* Moddy panel: full flex in Phase 1; 30% in Phase 2 */
+  .moddy-panel {
+    flex: 1;
+    min-width: 0;
+    display: flex; flex-direction: column;
+    background: #fff;
+    overflow: hidden;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                flex-basis 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                flex-grow 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                border-left-width 300ms ease;
+    border-left: 0 solid var(--grey-100);
+  }
+  .moddy-panel.collapsed { width: 0 !important; min-width: 0; border-left-width: 0; flex: 0 0 0 !important; }
+
+  /* === Phase 2 active state === */
+  body.phase-2 .trigrep-panel {
+    width: auto;
+    flex: 1 1 auto;
+  }
+  body.phase-2 .divider {
+    width: 6px;
+  }
+  body.phase-2 .divider-toggle { display: none; }
+  body.phase-2 .moddy-panel {
+    flex: 0 0 30%;
+    border-left-width: 1px;
+  }
+
+  /* Reopen tab for Moddy when collapsed */
+  .moddy-reopen {
+    position: absolute;
+    right: 0; top: 50%;
+    transform: translateY(-50%);
+    padding: 12px 6px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    display: none;
+    align-items: center; justify-content: center;
+    color: var(--grey-700);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+  }
+  .moddy-reopen.visible { display: inline-flex; }
+
+  /* ===== Moddy chat container (lives inside .moddy-panel — flexes width with phase) ===== */
+  .chat-inner {
+    flex: 1;
+    display: flex; flex-direction: column;
+    min-height: 0;
+    width: 100%;
+    transition: max-width 300ms cubic-bezier(0.4, 0, 0.2, 1), padding 300ms ease;
+    margin: 0 auto;
+    /* Phase 1: centered, capped width */
+    max-width: 720px;
+    padding: 0 24px;
+  }
+  body.phase-2 .chat-inner {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  /* Moddy header (only shown in Phase 2) */
+  .moddy-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--grey-50);
+    display: none; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  body.phase-2 .moddy-head { display: flex; }
+  .back-to-chat {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; border: none;
+    padding: 4px 6px 4px 0;
+    color: var(--grey-500);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: color 0.15s ease;
+  }
+  .back-to-chat:hover { color: var(--neo-digital-blue-500); }
+  .back-to-chat svg { width: 14px; height: 14px; }
+  .moddy-head-actions { display: inline-flex; gap: 4px; }
+
+  /* Greeter — Phase 1 step 1 only.
+     Centered as a single focused group (perplexity-inspired): logo,
+     headline, prompts, the search input itself, "or try asking" links,
+     and the disclaimer all live in one vertical stack. */
+  .greeter {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 48px 0 16px; gap: 18px;
+    width: 100%;
+    justify-content: center;
+  }
+  .greeter.hidden { display: none; }
+  /* When the search input lives INSIDE the greeter, drop the footer styling
+     (no bottom padding, no fade gradient — it's no longer pinned). */
+  .greeter .prompt-wrap {
+    padding: 4px 0 0;
+    background: none;
+    width: 100%;
+  }
+  .greeter-logo {
+    width: 135px; height: 135px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .greeter-logo svg { width: 100%; height: 100%; }
+  #greeter-spinner { width: 100%; height: 100%; }
+  .greeter-headline {
+    text-align: center;
+    font-size: 22px; font-weight: 500; color: var(--grey-800);
+    line-height: 1.3;
+  }
+  .suggestions {
+    display: flex; flex-direction: column; align-items: stretch;
+    gap: 8px;
+    /* Hug the widest child — all tiles share that width */
+    width: max-content;
+    max-width: 100%;
+    margin: 4px auto 0;
+  }
+  .suggestion {
+    display: block; width: 100%;
+    text-align: center;
+    padding: 10px 20px;
+    border: 1px solid var(--grey-200);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.15s;
+    line-height: 1.3;
+  }
+  .suggestion:hover {
+    border-color: var(--neo-digital-blue-500);
+    background: rgba(47, 66, 255, 0.04);
+    color: var(--neo-digital-blue-500);
+  }
+  .suggestion:active { transform: translateY(1px); }
+  .greeter-disclaimer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--grey-600);
+    padding: 20px 16px 16px;
+    line-height: 1.5;
+  }
+  .greeter-disclaimer svg { width: 12px; height: 12px; vertical-align: -1px; margin-right: 4px; color: var(--neo-digital-blue-500); }
+
+  /* Conversation (shared between phases) */
+  .conversation {
+    flex: 1; overflow-y: auto;
+    padding: 24px 4px 24px;
+    display: flex; flex-direction: column; gap: 20px;
+    scrollbar-gutter: stable;
+  }
+  body.phase-2 .conversation { padding: 18px 18px 12px; gap: 14px; }
+  .conversation.hidden { display: none; }
+  .conversation::-webkit-scrollbar { width: 6px; }
+  .conversation::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 3px; }
+
+  /* User message — Phase 1 style (full-width grey bubble) */
+  .msg-user {
+    align-self: stretch;
+    display: flex; flex-direction: row; gap: 10px; align-items: flex-start;
+    background: var(--grey-50);
+    border-radius: 16px;
+    padding: 12px 14px;
+  }
+  body.phase-2 .msg-user {
+    align-self: flex-end;
+    max-width: 88%;
+    border-radius: 14px 14px 4px 14px;
+    padding: 10px 14px;
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+  }
+  body.phase-2 .msg-user .avatar { display: none; }
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    background: var(--grey-100); color: var(--grey-700);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+  }
+  .msg-user-text { color: var(--grey-800); font-size: 15px; padding-top: 4px; }
+  body.phase-2 .msg-user-text { padding-top: 0; font-size: 13.5px; color: var(--grey-900); line-height: 1.5; }
+
+  /* Moddy message */
+  .msg-moddy { display: flex; flex-direction: column; gap: 12px; color: var(--grey-600); font-size: 16px; }
+  body.phase-2 .msg-moddy { font-size: 13.5px; gap: 10px; }
+  .msg-moddy p { margin: 0; }
+  .msg-moddy .inline-code, .msg-moddy code {
+    background: var(--grey-25); border: 1px solid var(--grey-50);
+    padding: 0 5px; border-radius: 4px;
+    font-size: 13px; color: var(--violet);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  body.phase-2 .msg-moddy code { font-size: 12px; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeInUp 380ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+  /* Derived query — Neo mini-code-card */
+  .derived-query {
+    background: var(--code-near-black);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .derived-query-head {
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px;
+  }
+  .derived-query-head-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--code-slate-mid);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .derived-query-cmd {
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.6);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  /* In the narrow Moddy panel, wrap the command so it stays readable. */
+  body.phase-2 .derived-query-cmd {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: hidden;
+  }
+  .derived-query-cmd .cb { color: var(--code-cb); }
+  .derived-query-cmd .cs { color: var(--code-cs); }
+  .derived-query-cmd .cd { color: var(--code-cd); }
+  .derived-query-copy {
+    width: 24px; height: 24px;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    color: var(--code-cs);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease;
+  }
+  .derived-query-copy:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .derived-query-copy svg { width: 12px; height: 12px; }
+  .derived-query-copy.copied {
+    background: rgba(61,220,132,0.18);
+    border-color: rgba(61,220,132,0.4);
+    color: var(--digital-green);
+  }
+
+  /* Scope line */
+  .scope-line {
+    font-size: 12px; color: var(--grey-600);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  }
+  .scope-line .scope-sep { color: var(--grey-300); }
+
+  /* Module grouping */
+  .modules-row {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    font-size: 14px; color: var(--grey-600);
+  }
+  body.phase-2 .modules-row { font-size: 13px; }
+  .modules-label { font-weight: 600; color: var(--grey-800); margin-right: 4px; }
+  .module-chip {
+    border: 1px solid var(--grey-100); background: #fff;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px; color: var(--grey-700);
+    cursor: pointer; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .module-chip:hover { border-color: var(--violet); color: var(--violet); background: rgba(70,29,222,0.04); }
+  .module-chip .count {
+    background: var(--grey-50); color: var(--grey-500);
+    border-radius: 999px; padding: 0 6px; font-size: 11px;
+  }
+  .module-chip:hover .count { background: rgba(70,29,222,0.1); color: var(--violet); }
+  .modules-more {
+    background: none; border: none; padding: 0;
+    color: var(--violet); cursor: pointer;
+    font-family: inherit; font-size: 13px;
+    text-decoration: underline;
+  }
+
+  /* Java dot — used by Phase 2 filter items */
+  .lang-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--java-dot);
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(231, 111, 0, 0.15);
+  }
+
+  /* Followup action buttons (Phase 2 contextual block) */
+  .followup-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .followup-actions.stacked { flex-direction: column; align-items: stretch; gap: 8px; }
+  body.phase-2 .followup-actions { flex-direction: column; align-items: stretch; gap: 8px; }
+  .followup {
+    border: 1px solid var(--grey-200); background: #fff;
+    border-radius: 8px; padding: 9px 14px;
+    font-size: 13px; color: var(--grey-900); cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .followup:hover { border-color: var(--grey-300); background: var(--grey-25); }
+  body.phase-2 .followup { width: 100%; text-align: left; }
+  .followup.primary {
+    background: var(--neo-digital-blue-500);
+    color: #fff; border-color: var(--neo-digital-blue-500);
+    font-weight: 600;
+  }
+  .followup.primary:hover { background: #1f30e6; }
+  .followup.primary svg { width: 14px; height: 14px; }
+  .followup.tertiary {
+    border: none; background: transparent;
+    padding: 8px 6px; color: var(--neo-digital-blue-500);
+    font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .followup.tertiary:hover { background: rgba(47, 66, 255, 0.06); color: var(--neo-digital-blue-500); }
+  .followup svg { width: 14px; height: 14px; }
+
+  /* Conversational Moddy chat (Phase 1) */
+  .moddy-summary,
+  .moddy-prose,
+  .best-match-prose {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: var(--grey-700, #2b2b2b);
+    line-height: 1.55;
+  }
+  .moddy-summary code,
+  .moddy-prose code,
+  .best-match-prose code,
+  .results-link-card-label code {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    background: var(--grey-50, #f5f5f5);
+    border: 1px solid var(--grey-100, #ececec);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  /* Clickable "View N search results" card — same affordance as
+     "View Recipe Run Results" in the existing Moderne UI. */
+  .results-link-card {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%;
+    background: #fff;
+    border: 1px solid var(--grey-200, #e6e6e6);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 0 0 12px 0;
+    color: var(--grey-800, #2b2b2b);
+    font-family: inherit;
+    font-size: 14px; font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .results-link-card:hover {
+    background: var(--grey-25, #fafafa);
+    border-color: var(--neo-digital-blue-500);
+  }
+  .results-link-card-icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: var(--grey-50, #f5f5f5);
+    color: var(--grey-600, #555);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .results-link-card-icon svg { width: 14px; height: 14px; }
+  .results-link-card-label { flex: 1; }
+  .results-link-card-arrow {
+    width: 14px; height: 14px; color: var(--grey-500, #777);
+    flex: 0 0 auto;
+  }
+  .results-link-card:hover .results-link-card-arrow { color: var(--neo-digital-blue-500); }
+  /* Recipes list inside the expandable recipe card */
+  .recipe-links { display: flex; flex-direction: column; gap: 4px; }
+  .recipe-link {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: var(--neo-digital-blue-500);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    text-decoration: none;
+    transition: background 0.12s ease;
+  }
+  .recipe-link:hover { background: var(--grey-50, #f5f5f5); text-decoration: underline; }
+  .recipe-link-arrow { width: 12px; height: 12px; flex: 0 0 auto; }
+  /* Hover tooltip for recipe links */
+  .recipe-link { position: relative; }
+  .recipe-link[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 8px;
+    background: var(--mui-grey-800, #343A40);
+    color: #fff;
+    font-family: inherit;
+    font-size: 11px; font-weight: 500;
+    line-height: 1;
+    padding: 5px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(2px);
+    transition: opacity 0.12s ease 0.25s, transform 0.12s ease 0.25s;
+    z-index: 40;
+  }
+  .recipe-link[data-tooltip]:hover::after,
+  .recipe-link[data-tooltip]:focus-visible::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* Best match prose block */
+  .best-match-prose { margin: 0 0 12px 0; }
+  /* Bottom actions: outlined buttons row + Refine search text link */
+  .followup-actions.chat-bottom-actions {
+    display: flex; flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  body.phase-2 .followup-actions.chat-bottom-actions {
+    flex-direction: column; align-items: flex-start; gap: 10px;
+  }
+  .chat-bottom-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+  /* Neo secondary button — white fill, digital-blue border + text */
+  .btn-outlined {
+    background: #fff;
+    border: 1px solid var(--neo-digital-blue-500);
+    color: var(--neo-digital-blue-500);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .btn-outlined:hover {
+    background: rgba(47, 66, 255, 0.06);
+    border-color: var(--neo-digital-blue-500);
+  }
+  .btn-outlined:active {
+    background: rgba(47, 66, 255, 0.12);
+  }
+  .followup.tertiary.text-link.refine-link {
+    background: transparent; border: 0; padding: 0;
+    color: var(--neo-digital-blue-500);
+    font-size: 13px; font-weight: 500;
+    display: inline-flex; align-items: baseline;
+    cursor: pointer;
+  }
+  .followup.tertiary.text-link.refine-link:hover {
+    background: transparent; text-decoration: underline;
+  }
+  .recipe-card {
+    border: 1px solid var(--grey-200, #e6e6e6);
+    border-radius: 8px;
+    background: #fff;
+    margin: 0 0 10px 0;
+    overflow: hidden;
+  }
+  .recipe-card-head {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    background: transparent; border: 0;
+    padding: 10px 12px;
+    font-size: 13px; color: var(--grey-700, #2b2b2b);
+    text-align: left; cursor: pointer;
+  }
+  .recipe-card-head:hover { background: var(--grey-25, #fafafa); }
+  .recipe-card-title strong { font-weight: 600; }
+  .recipe-card-chev {
+    width: 14px; height: 14px;
+    color: var(--grey-500, #777);
+    transition: transform 200ms ease;
+    flex: 0 0 auto;
+  }
+  .recipe-card[data-expanded="1"] .recipe-card-chev { transform: rotate(90deg); }
+  .recipe-card-body {
+    display: none;
+    padding: 0 12px 12px 12px;
+    border-top: 1px solid var(--grey-100, #f0f0f0);
+    padding-top: 10px;
+    font-size: 13px; line-height: 1.5; color: var(--grey-700, #2b2b2b);
+  }
+  .recipe-card[data-expanded="1"] .recipe-card-body { display: block; }
+  .recipe-card-body p { margin: 0; }
+  .recipe-card-body code,
+  .inline-lead code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    background: var(--grey-50, #f5f5f5);
+    border: 1px solid var(--grey-100, #ececec);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  /* Chat input */
+  .prompt-wrap {
+    padding: 16px 0 24px;
+    background: linear-gradient(to bottom, transparent, var(--bg) 30%);
+    flex-shrink: 0;
+  }
+  body.phase-2 .prompt-wrap {
+    padding: 14px 18px 12px;
+    background: #fff;
+    border-top: 1px solid var(--grey-50);
+  }
+  .prompt-gradient {
+    position: relative; padding: 1px; border-radius: 10px;
+    background: linear-gradient(60deg, var(--neo-red), var(--roseate), var(--violet), var(--digital-blue), var(--digital-green));
+    background-size: 300% 300%;
+    animation: gradient-shift 10s ease alternate infinite;
+    box-shadow: rgba(0,0,0,0.12) 0px 1px 8px 0px;
+  }
+  body.phase-2 .prompt-gradient {
+    background: var(--grey-200);
+    animation: none;
+    box-shadow: none;
+  }
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .prompt-inner {
+    background: var(--bg); border-radius: 9px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px 10px 18px;
+  }
+  body.phase-2 .prompt-inner { padding: 6px 6px 6px 14px; }
+  .prompt-input {
+    flex: 1; border: none; outline: none; resize: none;
+    font-family: inherit; font-size: 15px; color: var(--grey-700);
+    background: transparent; padding: 8px 0;
+    height: 24px; line-height: 1.5;
+    overflow-y: auto;
+  }
+  body.phase-2 .prompt-input { font-size: 13.5px; padding: 6px 0; }
+  .prompt-input::placeholder { color: var(--grey-300); }
+  /* Send button — icon-only, mirrors the nav-action-btn icon treatment
+     (transparent, no border) but sized to sit flush inside the input wrapper. */
+  .send-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: transparent;
+    color: var(--neo-digital-blue-500);
+    border: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0;
+    transition: color 0.15s ease;
+  }
+  .send-btn:hover { color: var(--brand-grey-900); }
+  .send-btn svg { width: 22px; height: 22px; }
+  body.phase-2 .send-btn { width: 30px; height: 30px; }
+  body.phase-2 .send-btn svg { width: 20px; height: 20px; }
+  .prompt-footnote {
+    font-size: 11px; color: var(--grey-600);
+    text-align: left;
+    margin-top: 8px;
+    padding-left: 4px;
+  }
+  body.phase-2 .prompt-footnote { text-align: center; padding-left: 0; }
+
+  /* ===== Trigrep left panel ===== */
+  .trigrep-head {
+    padding: 16px 24px 12px;
+    border-bottom: 1px solid var(--mui-divider);
+    flex-shrink: 0;
+    background: #ffffff;
+  }
+  .trigrep-search-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .trigrep-search-box {
+    flex: 1;
+    display: flex; align-items: center; gap: 8px;
+    background: #fff;
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 6px 10px 6px 12px;
+    min-height: 40px;
+  }
+  .trigrep-search-box:focus-within {
+    border-color: var(--neo-digital-blue-500);
+    box-shadow: 0 0 0 3px rgba(47, 66, 255, 0.12);
+  }
+  .trigrep-search-icon { width: 16px; height: 16px; color: var(--grey-500); flex-shrink: 0; }
+  /* Syntax selector — understated dropdown on the left edge of the search bar */
+  .syntax-selector { position: relative; flex-shrink: 0; }
+  .syntax-selector-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: transparent; border: 0;
+    padding: 4px 6px;
+    font-size: 12px; color: var(--grey-600, #555);
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .syntax-selector-btn:hover { background: var(--grey-50, #f5f5f5); color: var(--grey-700, #2b2b2b); }
+  .syntax-selector-btn svg { width: 10px; height: 10px; color: var(--grey-500, #777); }
+  .syntax-selector[data-open="1"] .syntax-selector-btn svg { transform: rotate(180deg); }
+  .syntax-selector-divider {
+    width: 1px; height: 18px;
+    background: var(--grey-200, #e6e6e6);
+    flex-shrink: 0;
+    margin: 0 2px;
+  }
+  .syntax-selector-menu {
+    position: absolute;
+    top: calc(100% + 6px); left: 0;
+    margin: 0; padding: 4px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid var(--grey-200, #e6e6e6);
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    z-index: 30;
+    min-width: 130px;
+  }
+  .syntax-selector-menu li {
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--grey-700, #2b2b2b);
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .syntax-selector-menu li:hover { background: var(--grey-50, #f5f5f5); }
+  .syntax-selector-menu li[aria-selected="true"] {
+    color: var(--neo-digital-blue-500);
+    font-weight: 500;
+  }
+  .trigrep-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--grey-50);
+    color: var(--grey-700);
+    border: 1px solid var(--grey-100);
+    border-radius: 6px;
+    padding: 3px 4px 3px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .trigrep-chip strong { color: var(--grey-500); font-weight: 500; margin-right: 1px; }
+  .trigrep-chip-x {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: none; background: transparent;
+    color: var(--grey-500); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .trigrep-chip-x:hover { background: var(--grey-200); color: var(--grey-900); }
+  .trigrep-chip-x svg { width: 10px; height: 10px; }
+  .trigrep-query {
+    flex: 1; min-width: 80px;
+    border: none; outline: none; background: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--grey-900);
+  }
+  .btn-search {
+    background: var(--neo-digital-blue-500);
+    color: #fff; border: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-search:hover { background: #1f30e6; }
+  /* Active filter chips — appear directly below the search bar */
+  .trigrep-chips-row {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  /* Meta row — mirrors StickyPaper toolbar (body 14px/500 left, link right) */
+  .trigrep-meta-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--mui-grey-700);
+  }
+  .trigrep-meta-row a {
+    color: var(--mui-grey-600); text-decoration: none; font-size: 12px;
+  }
+  .trigrep-meta-row a:hover { color: var(--mui-blue); }
+  .trigrep-summary {
+    color: var(--mui-grey-800);
+    font-weight: 500;
+    font-size: 14px;
+  }
+  .trigrep-summary .summary-count {
+    color: var(--mui-grey-800); font-weight: 700;
+  }
+
+  .trigrep-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+  }
+  /* Sidebar — two stacked panes: Filters (top) and Repositories (bottom).
+     Each pane has its own header, scrollable body, and 1px divider. */
+  .trigrep-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--mui-grey-200);
+    background: #ffffff;
+    font-size: 12px;
+    min-height: 0;
+  }
+  .trigrep-pane {
+    display: flex; flex-direction: column;
+    min-height: 0;
+  }
+  .trigrep-pane + .trigrep-pane {
+    border-top: 1px solid var(--mui-grey-200);
+  }
+  /* Top (Filters) pane grows to fill; bottom (Repos) pane sized to content with a cap. */
+  .trigrep-pane-filters { flex: 1 1 auto; }
+  .trigrep-pane-repos   { flex: 0 1 auto; max-height: 45%; }
+  .trigrep-pane-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px 8px;
+    font-size: 11px;
+    color: var(--mui-grey-600);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+  .trigrep-pane-head .collapse-all {
+    color: var(--mui-blue); cursor: pointer;
+    text-transform: none; letter-spacing: 0; font-weight: 500;
+    font-size: 11.5px;
+  }
+  .trigrep-pane-head .collapse-all:hover { text-decoration: underline; }
+  .trigrep-pane-body {
+    overflow-y: auto;
+    padding: 0 8px 12px;
+    min-height: 0;
+  }
+  .trigrep-pane-body::-webkit-scrollbar { width: 6px; }
+  .trigrep-pane-body::-webkit-scrollbar-thumb { background: var(--mui-grey-300); border-radius: 3px; }
+  .filter-group {
+    margin: 4px 0 2px;
+  }
+  /* Header: 28px row, chevron + 14px/700 label, matches ResultExpansionPanel */
+  .filter-group-head {
+    display: flex; align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px; font-weight: 700;
+    color: var(--mui-grey-800);
+  }
+  .filter-group-head:hover { background: var(--mui-grey-100); }
+  .filter-group-head svg {
+    width: 14px; height: 14px;
+    color: var(--mui-grey-600);
+    transition: transform 0.2s ease;
+    flex: 0 0 auto;
+  }
+  .filter-group.collapsed .filter-group-head svg { transform: rotate(-90deg); }
+  .filter-group.collapsed .filter-group-body { display: none; }
+  /* Body indented to align under the title (icon width + gap) */
+  .filter-group-body { padding: 2px 0 6px 8px; margin-left: 12px; }
+  .topic-search {
+    width: calc(100% - 8px);
+    margin: 4px 0 6px;
+    padding: 5px 9px;
+    border: 1px solid var(--mui-grey-300);
+    border-radius: 4px;
+    font-family: inherit; font-size: 12px;
+    color: var(--mui-grey-800);
+    background: #ffffff;
+    outline: none;
+  }
+  .topic-search:focus { border-color: var(--mui-blue); }
+  /* Item row: 28px tall, 12px sans, hover mui-grey-100, no card chrome */
+  .filter-item {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    min-height: 28px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--mui-grey-800);
+  }
+  .filter-item:hover { background: var(--mui-grey-100); }
+  .filter-item .count {
+    color: var(--mui-grey-600);
+    font-size: 12px;
+    flex: 0 0 auto;
+  }
+  .filter-item.active {
+    background: rgba(47, 66, 255, 0.06);
+    color: var(--mui-blue);
+    font-weight: 600;
+  }
+  .filter-item.active .count { color: var(--mui-blue); }
+  .filter-item .lang-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: inline-block;
+    box-shadow: none;
+  }
+  .filter-item-name {
+    display: inline-flex; align-items: center;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Repository list — mirrors the ResultsTreeItem repo row from moderne-ui:
+     blue count text, repo-style row, +N more link below. */
+  .filter-group.is-repo-list .filter-item .count {
+    color: var(--mui-blue);
+    font-weight: 500;
+  }
+  .filter-group.is-repo-list .filter-item.active .count { color: var(--mui-blue); }
+  .filter-more-link {
+    display: block;
+    background: transparent; border: 0;
+    padding: 4px 6px;
+    margin-top: 2px;
+    font-family: inherit; font-size: 12px;
+    color: var(--mui-blue);
+    cursor: pointer;
+    text-align: left;
+  }
+  .filter-more-link:hover { text-decoration: underline; }
+
+  .trigrep-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px 32px;
+    background: var(--grey-25);
+  }
+  .trigrep-results::-webkit-scrollbar { width: 8px; }
+  .trigrep-results::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 4px; }
+
+  /* Result card — mirrors FileDiffView: outlined card on F4F4F4,
+     header with mono 14px file path + kebab + chevron, white body. */
+  .result-card {
+    background: var(--mui-card-bg);
+    border: 1px solid var(--mui-grey-300);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: none;
+  }
+  .result-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1px 8px 1px 12px;
+    background: var(--mui-card-bg);
+    min-height: 36px;
+  }
+  .result-card-file {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+    color: var(--mui-grey-800);
+    font-weight: 500;
+    min-width: 0;
+  }
+  .result-card-file .file-module {
+    color: var(--mui-grey-600); font-weight: 400;
+    font-family: inherit;
+    font-size: 13px;
+    margin-left: 2px;
+  }
+  .result-card-actions { display: inline-flex; align-items: center; gap: 2px; }
+  .result-card-meta {
+    font-size: 12px; color: var(--mui-grey-600); margin-right: 6px;
+  }
+  .icon-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: none; background: transparent;
+    color: var(--mui-grey-600);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:hover { background: var(--mui-grey-200); color: var(--mui-grey-800); }
+  .icon-btn svg { width: 14px; height: 14px; }
+  .chevron-btn svg { transition: transform 0.2s ease; }
+  .result-card.collapsed .chevron-btn svg { transform: rotate(-90deg); }
+  .result-card.collapsed .result-card-body { display: none; }
+  .result-card-body {
+    background: var(--mui-card-body-bg);
+    border-top: 1px solid var(--mui-grey-300);
+  }
+
+  /* Hunk-range header — mirrors ResultsHunkTableCell (F4F4F4 strip
+     between hunks, mono 12px, grey caption text) */
+  .hunk-label {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 14px;
+    background: var(--mui-card-bg);
+    border-top: 1px solid var(--mui-grey-300);
+    border-bottom: 1px solid var(--mui-grey-300);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: var(--mui-grey-600);
+  }
+  .hunk-label .hunk-text { color: var(--mui-grey-700); }
+  .hunk-label .icon-btn { width: 22px; height: 22px; }
+  .hunk-label .icon-btn svg { width: 12px; height: 12px; }
+
+  /* Code body — mirrors unified-diff-view: white bg, mono code,
+     line-number cells grey.500 mono centered, search match in gold. */
+  .code-body {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--mui-grey-800);
+    background: var(--mui-card-body-bg);
+    overflow-x: auto;
+    padding: 4px 0;
+  }
+  .code-line {
+    display: grid;
+    grid-template-columns: 5ch 5ch 24px 1fr;
+    align-items: center;
+    min-height: 22px;
+  }
+  /* Search results use a simpler 2-col layout: lineno + code */
+  .code-line.simple { grid-template-columns: 5ch 1fr; }
+  .code-ln {
+    color: var(--mui-grey-500);
+    text-align: center;
+    padding: 0;
+    user-select: none;
+    font-size: 12px;
+  }
+  .code-marker {
+    text-align: center;
+    color: var(--mui-grey-500);
+    user-select: none;
+    font-weight: 600;
+  }
+  .code-text {
+    padding: 0 14px 0 8px;
+    white-space: pre;
+    color: var(--mui-grey-800);
+  }
+  .code-line.simple .code-text { padding-left: 12px; }
+  /* Search-hit row tint — matches palette.blue['200'] from unified-diff-view */
+  .code-line.is-hit { background: rgba(159, 168, 255, 0.12); }
+  .code-line:hover { background: var(--mui-grey-100); }
+  /* Diff lines (file detail view) — keep the GitHub-like green/red */
+  .code-line.removed { background: #FFEBEB; }
+  .code-line.removed .code-marker { color: #cf222e; }
+  .code-line.added { background: #F3FFF5; }
+  .code-line.added .code-marker { color: #1a7f37; }
+  /* Search match highlight — gold underline-bg like SearchResultMarker */
+  .match {
+    background: var(--mui-gold-soft);
+    color: var(--mui-grey-800);
+    padding: 0 2px;
+    border-radius: 2px;
+    box-shadow: inset 0 -2px 0 var(--mui-gold);
+  }
+  .code-line.removed .match { background: #ffdce0; color: #82071e; box-shadow: none; }
+  .code-line.added .match { background: #aceebb; color: #0f5132; box-shadow: none; }
+
+  /* File detail drill-down */
+  .trigrep-body { transition: opacity 100ms ease; }
+  .trigrep-body.detail-mode > .trigrep-sidebar,
+  .trigrep-body.detail-mode > .trigrep-results { display: none; }
+  .trigrep-detail {
+    display: none;
+    flex: 1; flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    background: #fff;
+  }
+  .trigrep-body.detail-mode > .trigrep-detail { display: flex; }
+  .result-card-file.is-clickable { cursor: pointer; }
+  .result-card-file.is-clickable:hover { color: var(--mui-blue); }
+
+  .detail-breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 24px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--grey-50);
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .detail-back {
+    background: none; border: none; padding: 2px 0;
+    color: var(--neo-digital-blue-500);
+    cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .detail-back:hover { text-decoration: underline; }
+  .detail-back svg { width: 12px; height: 12px; }
+  .detail-crumb-sep { color: var(--grey-300); }
+  .detail-crumb-current {
+    color: var(--grey-900); font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+  }
+  .detail-search-row {
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--grey-50);
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .detail-search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: #fff;
+    border: 1px solid var(--grey-200);
+    border-radius: 6px;
+    padding: 6px 12px;
+  }
+  .detail-search-box:focus-within {
+    border-color: var(--neo-digital-blue-500);
+    box-shadow: 0 0 0 3px rgba(47, 66, 255, 0.12);
+  }
+  .detail-search-box svg {
+    width: 14px; height: 14px;
+    color: var(--grey-500);
+    flex-shrink: 0;
+  }
+  .detail-search-box input {
+    flex: 1;
+    border: none; outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--grey-900);
+  }
+  .detail-search-box input::placeholder { color: var(--grey-500); }
+  .detail-search-box .kbd-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 1px 5px;
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    border-radius: 4px;
+    color: var(--grey-600);
+    flex-shrink: 0;
+  }
+
+  .detail-header {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--grey-50);
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .detail-header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .detail-file-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--grey-900);
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .detail-module {
+    color: var(--grey-600);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  .detail-code {
+    flex: 1;
+    overflow-y: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    background: #fff;
+    padding: 12px 0;
+  }
+  .detail-code::-webkit-scrollbar { width: 8px; }
+  .detail-code::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 4px; }
+  .detail-code .code-line {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    align-items: center;
+    min-height: 22px;
+  }
+  .detail-code .code-line.has-match { background: #fffbeb; }
+  .detail-code .code-ln {
+    text-align: right;
+    color: var(--grey-300);
+    padding: 0 12px 0 0;
+    user-select: none;
+    font-size: 11.5px;
+  }
+  .detail-code .code-text {
+    padding: 0 14px;
+    white-space: pre;
+    color: var(--grey-900);
+  }
+  .detail-code .kw { color: var(--neo-digital-blue-500); }
+  .detail-code .str { color: #b45309; }
+  .detail-code .ann { color: var(--violet); }
+  .detail-code .match {
+    background: var(--highlight-bg); color: var(--highlight-text);
+    padding: 0 2px; border-radius: 2px;
+  }
+
+  /* Trigrep empty state — shown when a new chat is started inside the split view */
+  .trigrep-empty {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px;
+    text-align: center;
+    padding: 40px 24px;
+    background: var(--grey-25);
+  }
+  .trigrep-empty-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--grey-300);
+    margin-bottom: 4px;
+  }
+  .trigrep-empty-icon svg { width: 24px; height: 24px; }
+  .trigrep-empty-title { font-size: 15px; font-weight: 600; color: var(--grey-700); }
+  .trigrep-empty-desc { font-size: 13px; color: var(--grey-600); max-width: 320px; line-height: 1.5; }
+
+  /* Scoping buttons — used when user types a broad question */
+  .scoping-prompt { font-size: 15px; color: var(--grey-700); line-height: 1.5; }
+  body.phase-2 .scoping-prompt { font-size: 13.5px; }
+  .scoping-buttons {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 4px;
+  }
+  .scoping-btn {
+    display: flex; flex-direction: column; gap: 4px;
+    text-align: left;
+    padding: 12px 14px;
+    border: 1px solid var(--grey-200);
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .scoping-btn:hover {
+    border-color: var(--neo-digital-blue-400, #8D99FF);
+    background: rgba(47, 66, 255, 0.03);
+  }
+  .scoping-btn-label {
+    font-size: 13.5px; font-weight: 600;
+    color: var(--grey-900);
+  }
+  .scoping-btn-query {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--grey-600);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .scoping-btn-query.muted { color: var(--grey-500); font-style: italic; font-family: inherit; }
+
+
+  /* Fallback (typed text that doesn't match any flow) */
+  .fallback-msg {
+    background: var(--brand-orange-100, #FFF8E5);
+    border: 1px solid #F3D690;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    color: var(--grey-800);
+    line-height: 1.55;
+  }
+  .fallback-msg strong { color: var(--grey-900); }
+  .fallback-msg code {
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--grey-900);
+  }
+
+  /* Chat history pane (ported from moddy.html) */
+  .main-row { flex: 1; display: flex; min-height: 0; position: relative; }
+  .moderne-history {
+    width: 256px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--grey-50);
+    display: flex; flex-direction: column;
+    background: #fff;
+    transition: width 200ms ease, opacity 150ms ease;
+    overflow: hidden;
+    position: relative;
+  }
+  .moderne-history.collapsed { width: 0; opacity: 0; border-right-color: transparent; }
+  /* Hide the chat-history sidebar (and its floating reopen button) in the split panel view */
+  body.phase-2 .moderne-history,
+  body.phase-2 .moderne-history-reopen { display: none; }
+  .moderne-history-head {
+    /* Top padding clears the absolute-positioned toggle button (top:14 + 32 + 8 gap) */
+    padding: 56px 0 6px;
+    display: flex; flex-direction: column; gap: 2px;
+    flex-shrink: 0;
+  }
+  /* Shared row treatment for "+ New Chat" and "History" — flush-left at
+     x=14 so they align under the toggle button at the sidebar's left edge. */
+  /* "+ New Chat" — Neo tertiary button.
+     Default: grey-900 text + icon, no background.
+     Hover/Pressed: switches text + icon to digital-blue, no background tint.
+     Focus: digital-blue text + icon, navy rounded outline.
+     Disabled: muted grey. */
+  .moderne-history-newchat {
+    display: inline-flex; align-items: center; gap: 10px;
+    align-self: flex-start;
+    margin-left: 7px;
+    padding: 8px 12px 8px 7px;
+    border: 2px solid transparent; background: transparent;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 14px; font-weight: 500;
+    text-align: left;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .moderne-history-newchat:hover,
+  .moderne-history-newchat:active { color: var(--neo-digital-blue-500); }
+  .moderne-history-newchat:focus-visible {
+    outline: none;
+    color: var(--neo-digital-blue-500);
+    border-color: var(--brand-digital-blue-900, #000855);
+  }
+  .moderne-history-newchat svg {
+    width: 18px; height: 18px;
+    color: currentColor;
+    flex-shrink: 0;
+    transition: color 0.15s ease;
+  }
+  .moderne-history-newchat:disabled {
+    color: var(--grey-400);
+    cursor: not-allowed;
+  }
+  /* "History" — a Neo-style section label (uppercase eyebrow), flush-left with the toggle */
+  .moderne-history-title {
+    display: flex; align-items: center;
+    padding: 16px 14px 6px;
+    color: var(--grey-500);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .moderne-history-title-label { flex: 1; }
+
+  /* History list — Neo list rows: full-width, flush-left, subtle hover, light-grey active */
+  .moderne-history-list {
+    flex: 1; overflow-y: auto;
+    padding: 0 0 16px;
+  }
+  .moderne-history-list::-webkit-scrollbar { width: 6px; }
+  .moderne-history-list::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 3px; }
+  .moderne-history-item {
+    display: block; width: 100%;
+    text-align: left;
+    border: none; background: transparent;
+    padding: 8px 14px;
+    color: var(--grey-900);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+  .moderne-history-item:hover { background: var(--grey-25); }
+  .moderne-history-item.active { background: var(--grey-100); font-weight: 500; }
+  /* Toggle button — always pinned top-left. left:7 so the centered 18px icon
+     sits at x=14, matching the "+" icon and text in the rows below. */
+  .moderne-history-toggle {
+    position: absolute;
+    top: 14px; left: 7px;
+    border: none;
+    background: transparent;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    color: var(--grey-500);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    z-index: 5;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .moderne-history-toggle:hover { background: var(--grey-100); color: var(--grey-700); }
+  .moderne-history-toggle svg { width: 18px; height: 18px; }
+  body.phase-2 .moderne-history-toggle { display: none; }
+
+  /* "Or try asking:" — conversational prompts below the tiles */
+  .try-asking {
+    margin-top: 20px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 6px;
+  }
+  .try-asking-label {
+    font-size: 12px;
+    color: var(--grey-500);
+    letter-spacing: 0.01em;
+    margin-bottom: 2px;
+  }
+  .try-asking-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--grey-600);
+    transition: color 0.15s, background 0.15s;
+  }
+  .try-asking-link svg {
+    width: 13px; height: 13px;
+    color: var(--grey-400);
+    flex-shrink: 0;
+    transition: color 0.15s, transform 0.15s;
+  }
+  .try-asking-link:hover {
+    color: var(--neo-digital-blue-500);
+    background: rgba(47, 66, 255, 0.04);
+  }
+  .try-asking-link:hover svg { color: var(--neo-digital-blue-500); transform: translateX(2px); }
+
+  /* Secondary outlined variant for action buttons (matches Neo secondary) */
+  .followup.secondary {
+    background: #fff;
+    color: var(--neo-digital-blue-500);
+    border-color: var(--neo-digital-blue-500);
+  }
+  .followup.secondary:hover {
+    background: rgba(47, 66, 255, 0.06);
+    border-color: var(--neo-digital-blue-500);
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="grid">
+    <!-- LEFT NAV RAIL (98px v2-sandbox structure) -->
+    <nav class="left-nav" aria-label="Platform">
+      <div class="left-nav-top">
+        <div class="nav-home-stack">
+          <div class="nav-item nav-item-home" aria-label="Home">
+            <div class="nav-icon-container">
+              <svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <span class="nav-version-badge">v2</span>
+        </div>
+        <div id="left-nav-items" style="width:100%; display:flex; flex-direction:column; gap:4px;"></div>
+        <div class="nav-more-wrapper">
+          <div class="nav-item nav-item-more" id="nav-more-trigger" aria-label="More">
+            <div class="nav-icon-container">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </div>
+            <span class="nav-label">More</span>
+          </div>
+          <div class="nav-more-popover" id="nav-more-popover" hidden></div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="main-area">
+      <!-- GLOBAL NAV -->
+      <div class="global-nav">
+        <div class="org-selector-wrapper">
+          <div class="org-selector selected">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Default</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="nav-spacer"></div>
+        <div class="search-input">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span>Search recipes</span>
+          <span class="search-input-keys"><kbd>⌘</kbd><kbd>K</kbd></span>
+        </div>
+        <div class="nav-actions">
+          <button class="nav-action-btn" aria-label="Admin menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+          <button class="nav-action-btn" aria-label="Help menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+          <button class="nav-action-btn" aria-label="Account"><div class="avatar">A</div></button>
+        </div>
+      </div>
+
+      <!-- ROW: Chat history (left) + page (right) -->
+      <div class="main-row">
+
+        <!-- CHAT HISTORY PANE (ported from moddy.html) -->
+        <aside class="moderne-history" id="historyPane" aria-label="Chat history">
+          <div class="moderne-history-head">
+            <button class="moderne-history-newchat" id="history-newchat" title="New chat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              New Chat
+            </button>
+            <div class="moderne-history-title">
+              <span class="moderne-history-title-label">History</span>
+            </div>
+          </div>
+          <div class="moderne-history-list">
+            <button class="moderne-history-item active" data-history>Find public authorization rules</button>
+            <button class="moderne-history-item" data-history>How am I using Apache Commons?</button>
+            <button class="moderne-history-item" data-history>What secrets do I have in my code?</button>
+            <button class="moderne-history-item" data-history>Upgrade Spring Boot</button>
+            <button class="moderne-history-item" data-history>Which services use the deprecated PaymentGateway?</button>
+            <button class="moderne-history-item" data-history>Find unused imports across the working set</button>
+            <button class="moderne-history-item" data-history>Show me classes extending AbstractController</button>
+            <button class="moderne-history-item" data-history>Migrate JUnit 4 tests to JUnit 5</button>
+            <button class="moderne-history-item" data-history>Find string concatenation inside log statements</button>
+            <button class="moderne-history-item" data-history>Where do we handle null user IDs?</button>
+            <button class="moderne-history-item" data-history>Identify deprecated API calls in payments-service</button>
+          </div>
+        </aside>
+        <button class="moderne-history-toggle" id="history-toggle" title="Toggle history" aria-label="Toggle history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        </button>
+
+      <!-- PAGE (split container, animates between phases) -->
+      <div class="page" id="page">
+        <!-- LEFT: Trigrep panel (only visible in Phase 2) -->
+        <section class="trigrep-panel" id="trigrep-panel" aria-label="Trigrep search" aria-hidden="true"></section>
+
+        <!-- DIVIDER -->
+        <div class="divider" id="divider">
+          <button class="divider-toggle" id="divider-toggle" title="Collapse Moddy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <!-- RIGHT: Moddy panel (full-width in Phase 1, ~30% in Phase 2) -->
+        <aside class="moddy-panel" id="moddy-panel" aria-label="Moddy chat">
+          <div class="moddy-head">
+            <button class="back-to-chat" id="back-to-chat" title="Back to chat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              Back to chat
+            </button>
+            <div class="moddy-head-actions">
+              <button class="icon-btn" title="New chat" id="new-chat-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+              <button class="icon-btn moddy-close" title="Close Moddy" id="moddy-close-btn" aria-label="Close Moddy">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="chat-inner" id="chat-inner">
+            <!-- Greeter (Phase 1 step 1) -->
+            <div class="greeter" id="greeter">
+              <div class="greeter-logo" id="greeter-logo">
+                <div id="greeter-spinner"></div>
+              </div>
+              <div class="greeter-headline">What do you want to find in your codebase?</div>
+              <div class="try-asking" id="try-asking">
+                <div class="try-asking-label">Prototype triggers</div>
+                <button class="try-asking-link" data-scoped="a">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  How is authentication handled?
+                </button>
+                <button class="try-asking-link" data-scoped="b">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  How is logging done across our services?
+                </button>
+                <button class="try-asking-link" data-scoped="c">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  How are our REST APIs structured?
+                </button>
+              </div>
+              <div class="suggestions" id="suggestions">
+                <button class="suggestion" data-flow="a">Find public authorization rules across my repos</button>
+                <button class="suggestion" data-flow="b">Find all Log4j usage in our services</button>
+                <button class="suggestion" data-flow="c">Find all REST controllers and outbound clients</button>
+              </div>
+              <div class="greeter-disclaimer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                Moddy can search code patterns, find security risks, and run automated migrations.
+              </div>
+            </div>
+
+            <!-- Conversation (Phase 1 + Phase 2) -->
+            <div class="conversation hidden" id="conversation"></div>
+
+            <!-- Input -->
+            <div class="prompt-wrap">
+              <div class="prompt-gradient">
+                <div class="prompt-inner">
+                  <input class="prompt-input" id="prompt-input" placeholder="Ask Moddy to search, refine, or run a recipe" autocomplete="off" spellcheck="false">
+                  <button class="send-btn" id="send-btn" title="Send">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="prompt-footnote">Moddy v2 · Trigrep enabled</div>
+            </div>
+          </div>
+        </aside>
+
+        <button class="moddy-reopen" id="moddy-reopen" title="Open Moddy">Moddy</button>
+      </div>
+
+      </div><!-- /.main-row -->
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================================================================
+// Greeter logo — Moddy spinner Lottie (autoplay once, rest on final frame)
+// ===================================================================
+(function initGreeterSpinner() {
+  const container = document.getElementById('greeter-spinner');
+  if (!container || typeof lottie === 'undefined') return;
+  lottie.loadAnimation({
+    container,
+    renderer: 'svg',
+    loop: false,
+    autoplay: true,
+    path: 'assets/moddy-spinner/moddy-spinner.json',
+  });
+})();
+
+// ===================================================================
+// Left nav data
+// ===================================================================
+// Nav items mirror day-zero v2-sandbox order. Moddy is active in Phase 1;
+// when the user transitions to Phase 2, the active state shifts to Trigrep.
+const NAV_ITEMS = [
+  { id: 'moddy',       label: 'Moddy',       badge: 'Beta', active: true,
+    svg: '<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/>' },
+  { id: 'devcenter',   label: 'DevCenter',
+    svg: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>' },
+  { id: 'trigrep',     label: 'Trigrep',
+    svg: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>' },
+  { id: 'artifacts',   label: 'Artifacts',
+    svg: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' },
+  { id: 'marketplace', label: 'Marketplace',
+    svg: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>' },
+  { id: 'builder',     label: 'Builder',
+    svg: '<rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>' },
+  { id: 'activity',    label: 'Activity',
+    svg: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>' },
+  { id: 'changelog',   label: 'Changelog',   badge: 'Beta',
+    svg: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>' },
+];
+
+// Overflow items shown inside the More popover at the bottom of the rail.
+const MORE_ITEMS = [
+  { id: 'recipe-queue', label: 'Recipe queue',
+    svg: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>' },
+  { id: 'repos',  label: 'Repositories',
+    svg: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/>' },
+  { id: 'deploy', label: 'Deploy',
+    svg: '<path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' },
+];
+
+function renderNavItem(item) {
+  const el = document.createElement('div');
+  el.className = 'nav-item' + (item.active ? ' active' : '');
+  el.innerHTML = `
+    <div class="nav-icon-container">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${item.svg}</svg>
+    </div>
+    <span class="nav-label">${item.label}</span>
+    ${item.badge ? `<span class="nav-badge">${item.badge}</span>` : ''}
+  `;
+  return el;
+}
+
+const navList = document.getElementById('left-nav-items');
+NAV_ITEMS.forEach(item => navList.appendChild(renderNavItem(item)));
+
+const morePopover = document.getElementById('nav-more-popover');
+MORE_ITEMS.forEach(item => morePopover.appendChild(renderNavItem(item)));
+
+const moreTrigger = document.getElementById('nav-more-trigger');
+moreTrigger.addEventListener('click', () => {
+  const isOpen = !morePopover.hasAttribute('hidden');
+  if (isOpen) {
+    morePopover.setAttribute('hidden', '');
+    moreTrigger.classList.remove('active');
+  } else {
+    morePopover.removeAttribute('hidden');
+    moreTrigger.classList.add('active');
+  }
+});
+document.addEventListener('click', (e) => {
+  if (!moreTrigger.contains(e.target) && !morePopover.contains(e.target)) {
+    morePopover.setAttribute('hidden', '');
+    moreTrigger.classList.remove('active');
+  }
+});
+
+// ===================================================================
+// Flow-aware data — three "happy paths" (A: auth, B: logging, C: REST)
+// Each flow defines: the tile bubble text, the scoping branch (for when
+// the user types a broad question), the streamed results, and the Phase 2
+// Trigrep panel (search bar, filters, result cards, drill-downs).
+// ===================================================================
+
+// Tokenize a query string into spans that match Phase 1's derived-query
+// styling (--syntax, working-set, single-quoted args, leading $, etc.)
+function tokenizeQuery(cmd) {
+  // Already-trimmed command starting from "mod search ..."
+  let html = cmd
+    .replace(/^/, '<span class="cd">$ </span>')
+    .replace(/\bmod search\b/g, '<span class="cb">mod search</span>')
+    .replace(/(--[a-z\-]+)/g, '<span class="cb">$1</span>')
+    .replace(/('[^']*')/g, '<span class="cs">$1</span>');
+  return html;
+}
+
+function tokenizeMultiQuery(cmds) {
+  return cmds.map(tokenizeQuery).join('\n');
+}
+
+const FLOWS = {
+  // ============== FLOW A — AUTHENTICATION ==============
+  a: {
+    id: 'a',
+    tileText: 'Find public authorization rules across my repos',
+    scopedTrigger: 'How is authentication handled?',
+    searchCmd: "mod search working-set '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public' lang:java --syntax sourcegraph",
+    derivedQueryHtml: tokenizeQuery("mod search working-set '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public' lang:java --syntax sourcegraph"),
+    scopeLine: '1,892 public authorization annotations across 234 repos in 89ms',
+    breakdown: '<p>156 repos use <strong>@PreAuthorize</strong> · 78 use <strong>@Secured</strong> · 23 use a mix of both</p>',
+    overflow: 'Showing <strong>2 of 234</strong> files (1,892 matches)',
+    cards: [
+      { id: 'a-OrderController', file: 'OrderController.java', module: 'payments-api', count: 4, lines: [
+        { n: 12, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'ADMIN\')"</span>)' },
+        { n: 28, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'MANAGER\') or hasRole(\'ADMIN\')"</span>)' },
+        { n: 45, code: '<m>@Secured</m>(<span class="cs">"ROLE_USER"</span>)' },
+        { n: 67, code: '<m>@PreAuthorize</m>(<span class="cs">"#userId == authentication.principal.id"</span>)' },
+      ]},
+      { id: 'a-AdminController', file: 'AdminController.java', module: 'customer-portal', count: 2, lines: [
+        { n: 15, code: '<m>@PreAuthorize</m>(<span class="cs">"hasAuthority(\'ADMIN\')"</span>)' },
+        { n: 34, code: '<m>@RolesAllowed</m>({<span class="cs">"ADMIN"</span>, <span class="cs">"SUPER_ADMIN"</span>})' },
+      ]},
+    ],
+    scoping: {
+      prompt: "That's a broad question — I can search more effectively if I know what aspect you're interested in:",
+      options: [
+        { label: 'Public authorization rules',  query: '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public lang:java' },
+        { label: 'Auth entry points',           query: 'implements:AuthenticationEntryPoint' },
+        { label: 'Just public-facing services', query: 'visibility:public' },
+        { label: 'Custom query…',               custom: true },
+      ],
+    },
+    actions: {
+      primary: 'Run recipe: Replace @Secured with @PreAuthorize',
+    },
+    inlineActions: {
+      leadIn: 'I found a recipe that can standardize these annotations.',
+      recipeBlurb: 'The best match is <code>org.openrewrite.java.security.ReplaceSecuredWithPreAuthorize</code>, which replaces <code>@Secured</code> with <code>@PreAuthorize</code> across the 78 affected repos.',
+    },
+    moddyChat: {
+      summaryProse: 'I found <strong>1,892 public authorization annotations</strong> across 234 repos. 156 repos use <code>@PreAuthorize</code>, 78 use <code>@Secured</code>, and 23 use a mix of both.',
+      resultsCardLabel: 'View 1,892 search results',
+      recipesIntro: 'I also found recipes that can work on these results.',
+      recipes: [
+        { id: 'org.openrewrite.java.security.ReplaceSecuredWithPreAuthorize' },
+        { id: 'org.openrewrite.java.spring.security.AuthorizationMigration' },
+        { id: 'org.openrewrite.java.security.StandardizeAnnotationStyle' },
+      ],
+      bestMatchProse: 'The best match is <code>ReplaceSecuredWithPreAuthorize</code>, which replaces <code>@Secured</code> with <code>@PreAuthorize</code> across the 78 affected repos.',
+    },
+    phase2: {
+      chips: [
+        { label: 'lang', value: 'java' },
+        { label: 'visibility', value: 'public' },
+      ],
+      query: '(@PreAuthorize or @Secured or @RolesAllowed)',
+      summary: '<span class="summary-count" id="summary-count">1,892</span> matches across <span class="summary-count" id="summary-files">234</span> files in <span class="mono">89ms</span>',
+      baseMatches: 1892,
+      baseFiles: 234,
+      filters: [
+        { id: 'annotation', title: 'By annotation', items: [
+          { name: '@PreAuthorize', count: 156 },
+          { name: '@Secured', count: 78 },
+          { name: '@RolesAllowed', count: 23 },
+        ]},
+        { id: 'lang', title: 'By language', items: [
+          { name: 'Java', count: 234, dot: '#e76f00' },
+        ]},
+        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 218, items: [
+          { name: 'payments-api',     count: 12 },
+          { name: 'customer-portal',  count: 9 },
+          { name: 'user-service',     count: 8 },
+          { name: 'admin-service',    count: 6 },
+          { name: 'orders-service',   count: 5 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'payments', count: 45 },
+          { name: 'customer-portal', count: 38 },
+          { name: 'user-service', count: 31 },
+          { name: 'admin', count: 28 },
+        ]},
+      ],
+      // Extra cards beyond the Phase 1 set (so the Trigrep view feels fuller)
+      extraCards: [
+        { id: 'a-UserController', file: 'UserController.java', module: 'user-service', count: 3, lines: [
+          { n: 22, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'USER\')"</span>)' },
+          { n: 41, code: '<m>@PreAuthorize</m>(<span class="cs">"#id == principal.id or hasRole(\'ADMIN\')"</span>)' },
+          { n: 58, code: '<m>@Secured</m>({<span class="cs">"ROLE_USER"</span>, <span class="cs">"ROLE_ADMIN"</span>})' },
+        ]},
+        { id: 'a-ReportsController', file: 'ReportsController.java', module: 'admin', count: 2, lines: [
+          { n: 18, code: '<m>@RolesAllowed</m>(<span class="cs">"ADMIN"</span>)' },
+          { n: 33, code: '<m>@PreAuthorize</m>(<span class="cs">"hasAuthority(\'REPORT_VIEW\')"</span>)' },
+        ]},
+        { id: 'a-BillingController', file: 'BillingController.java', module: 'payments-api', count: 2, lines: [
+          { n: 14, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'BILLING\')"</span>)' },
+          { n: 29, code: '<m>@Secured</m>(<span class="cs">"ROLE_BILLING_ADMIN"</span>)' },
+        ]},
+      ],
+    },
+    contextualMsg: "You're viewing <strong>1,892 authorization annotations</strong> across <strong>234 repos</strong>. Want me to run a recipe to standardize on <code>@PreAuthorize</code>, or narrow the search?",
+  },
+
+  // ============== FLOW B — LOGGING ==============
+  b: {
+    id: 'b',
+    tileText: 'Find all Log4j usage in our services',
+    scopedTrigger: 'How is logging done across our services?',
+    searchCmd: "mod search working-set 'Logger type:symbol' --syntax sourcegraph",
+    derivedQueryHtml: tokenizeQuery("mod search working-set 'Logger type:symbol' --syntax sourcegraph"),
+    scopeLine: '12,847 logger declarations across 392 repos in 101ms',
+    breakdown: '<p><strong>Logger types found:</strong> org.slf4j.Logger (198 repos) · java.util.logging.Logger (67) · org.apache.logging.log4j.Logger (54) · org.apache.commons.logging.Log (31) · plus 14 custom wrappers (AuditLogger, RequestLogger, etc.)</p>',
+    overflow: 'Showing <strong>2 of 392</strong> files (12,847 matches)',
+    cards: [
+      { id: 'b-OrderService', file: 'OrderService.java', module: 'orders-service', count: 1, lines: [
+        { n: 8, code: 'private static final <m>Logger</m> log = org.slf4j.LoggerFactory.getLogger(OrderService.class);' },
+      ]},
+      { id: 'b-InvoiceJob', file: 'InvoiceJob.java', module: 'billing-engine', count: 1, lines: [
+        { n: 11, code: 'private final <m>AuditLogger</m> auditLogger;' },
+      ]},
+    ],
+    scoping: {
+      prompt: "I can look at logging from a few angles:",
+      options: [
+        { label: 'Error logging',                              query: '/log\\.(error|warn)\\(/' },
+        { label: 'Logger declarations',                        query: 'Logger type:symbol' },
+        { label: 'Production code only (exclude tests)',       query: 'Logger type:symbol -file:**/test/**' },
+        { label: 'Custom query…',                              custom: true },
+      ],
+    },
+    actions: {
+      primary: 'Run recipe: Migrate Log4j to SLF4J',
+    },
+    inlineActions: {
+      leadIn: '54 repos are still on Log4j — I can migrate them to SLF4J.',
+      recipeBlurb: 'The best match is <code>org.openrewrite.java.logging.log4j.Log4jToSlf4j</code>, which migrates Log4j imports and API calls to SLF4J across all 54 repos.',
+    },
+    moddyChat: {
+      summaryProse: 'I found <strong>12,847 logger declarations</strong> across 392 repos. Logger types: <code>org.slf4j.Logger</code> (198 repos), <code>java.util.logging.Logger</code> (67), <code>org.apache.logging.log4j.Logger</code> (54), <code>org.apache.commons.logging.Log</code> (31), plus 14 custom wrappers.',
+      resultsCardLabel: 'View 12,847 search results',
+      recipesIntro: 'I also found recipes that can work on these results.',
+      recipes: [
+        { id: 'org.openrewrite.java.logging.log4j.Log4jToSlf4j' },
+        { id: 'org.openrewrite.java.logging.slf4j.ParameterizedLogging' },
+        { id: 'org.openrewrite.java.logging.slf4j.JulToSlf4j' },
+      ],
+      bestMatchProse: 'The best match is <code>Log4jToSlf4j</code>, which migrates the 54 Log4j repos to SLF4J.',
+    },
+    // Tile-click variant: Log4j-specific results (847 / 54 repos) shown
+    // in both Phase 1 chat AND the Phase 2 Trigrep panel, so the two views
+    // tell the same story. The scoping flow keeps the broad results below.
+    tileVariant: {
+      searchCmd: "mod search working-set 'org.apache.logging.log4j lang:java' --syntax sourcegraph",
+      derivedQueryHtml: tokenizeQuery("mod search working-set 'org.apache.logging.log4j lang:java' --syntax sourcegraph"),
+      scopeLine: '847 Log4j references across 54 repos in 89ms',
+      breakdown: '<p>54 repos still import <strong>org.apache.logging.log4j</strong> directly. 38 use Log4j as the sole logger. 16 mix Log4j with SLF4J (partial migrations).</p>',
+      overflow: 'Showing <strong>2 of 54</strong> files (847 matches)',
+      moddyChat: {
+        summaryProse: 'I found <strong>847 Log4j references</strong> across 54 repos. 38 use Log4j as the sole logger, and 16 mix it with SLF4J (partial migrations).',
+        resultsCardLabel: 'View 847 search results',
+        recipesIntro: 'I also found recipes that can work on these results.',
+        recipes: [
+          { id: 'org.openrewrite.java.logging.log4j.Log4jToSlf4j' },
+          { id: 'org.openrewrite.java.logging.slf4j.ParameterizedLogging' },
+          { id: 'org.openrewrite.java.logging.slf4j.JulToSlf4j' },
+        ],
+        bestMatchProse: 'The best match is <code>Log4jToSlf4j</code>, which migrates Log4j imports and API calls to SLF4J across all 54 repos.',
+      },
+      cards: [
+        { id: 'b-PaymentProcessor', file: 'PaymentProcessor.java', module: 'payments-api', count: 3, lines: [
+          { n: 3,  code: 'import <m>org.apache.logging.log4j</m>.LogManager;' },
+          { n: 4,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+          { n: 12, code: 'private static final <m>Logger</m> logger = <m>LogManager</m>.getLogger(PaymentProcessor.class);' },
+        ]},
+        { id: 'b-NotificationService', file: 'NotificationService.java', module: 'notifications', count: 2, lines: [
+          { n: 5, code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+          { n: 9, code: 'private static final Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger();' },
+        ]},
+      ],
+      phase2: {
+        chips: [
+          { label: 'lang', value: 'java' },
+        ],
+        query: 'org.apache.logging.log4j',
+        summary: '<span class="summary-count" id="summary-count">847</span> matches across <span class="summary-count" id="summary-files">54</span> files in <span class="mono">89ms</span>',
+        baseMatches: 847,
+        baseFiles: 54,
+        filters: [
+          { id: 'usage', title: 'By usage pattern', items: [
+            { name: 'Sole logger (Log4j only)', count: 38 },
+            { name: 'Mixed with SLF4J', count: 16 },
+          ]},
+          { id: 'lang', title: 'By language', items: [
+            { name: 'Java', count: 54, dot: '#e76f00' },
+          ]},
+          { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 34, items: [
+            { name: 'payments-api',       count: 8 },
+            { name: 'notifications',      count: 5 },
+            { name: 'inventory-service',  count: 4 },
+            { name: 'legacy-batch',       count: 4 },
+            { name: 'common-logging',     count: 3 },
+          ]},
+          { id: 'topic', title: 'By topic', searchable: true, items: [
+            { name: 'payments', count: 14 },
+            { name: 'billing', count: 11 },
+            { name: 'inventory', count: 9 },
+            { name: 'notifications', count: 8 },
+            { name: 'batch', count: 6 },
+            { name: 'common-logging', count: 6 },
+          ]},
+        ],
+        extraCards: [
+          { id: 'b-LogConfig', file: 'LogConfig.java', module: 'common-logging', count: 3, lines: [
+            { n: 4,  code: 'import <m>org.apache.logging.log4j</m>.LogManager;' },
+            { n: 5,  code: 'import <m>org.apache.logging.log4j</m>.core.config.Configurator;' },
+            { n: 18, code: '<m>Configurator</m>.initialize(null, "log4j2.xml");' },
+          ]},
+          { id: 'b-StockAudit', file: 'StockAudit.java', module: 'inventory-service', count: 3, lines: [
+            { n: 3,  code: 'import <m>org.apache.logging.log4j</m>.LogManager;' },
+            { n: 4,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+            { n: 12, code: 'private static final Logger auditLog = <m>LogManager</m>.getLogger("stock.audit");' },
+          ]},
+          { id: 'b-BatchRunner', file: 'BatchRunner.java', module: 'legacy-batch', count: 2, lines: [
+            { n: 5,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+            { n: 11, code: 'private static final Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger(BatchRunner.class);' },
+          ]},
+          { id: 'b-InvoiceWriter', file: 'InvoiceWriter.java', module: 'billing-engine', count: 2, lines: [
+            { n: 6,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+            { n: 14, code: 'private final Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger(getClass());' },
+          ]},
+        ],
+      },
+      contextualMsg: "You're viewing <strong>847 Log4j references</strong> across <strong>54 repos</strong>. 38 use Log4j as their sole logger and 16 mix it with SLF4J. Want me to run the recipe to migrate them all to SLF4J?",
+    },
+    phase2: {
+      chips: [],
+      query: 'org.apache.log4j',
+      summary: '<span class="summary-count" id="summary-count">12,847</span> matches across <span class="summary-count" id="summary-files">392</span> files in <span class="mono">101ms</span>',
+      baseMatches: 12847,
+      baseFiles: 392,
+      filters: [
+        { id: 'logger', title: 'By logger type', items: [
+          { name: 'org.slf4j.Logger', count: 198 },
+          { name: 'java.util.logging', count: 67 },
+          { name: 'org.apache.log4j', count: 54 },
+          { name: 'commons.logging', count: 31 },
+          { name: 'custom', count: 14 },
+        ]},
+        { id: 'lang', title: 'By language', items: [
+          { name: 'Java', count: 380, dot: '#e76f00' },
+          { name: 'XML', count: 8, dot: '#0060ac' },
+          { name: 'Markdown', count: 4, dot: '#083fa1' },
+        ]},
+        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 382, items: [
+          { name: 'orders-service',   count: 18 },
+          { name: 'payments-api',     count: 15 },
+          { name: 'customer-portal',  count: 12 },
+          { name: 'billing-engine',   count: 11 },
+          { name: 'user-service',     count: 9 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'orders', count: 42 },
+          { name: 'billing', count: 38 },
+          { name: 'payments', count: 35 },
+          { name: 'inventory', count: 29 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'b-PaymentLogger', file: 'PaymentLogger.java', module: 'payments-service', count: 3, lines: [
+          { n: 14, code: 'import <m>org.apache.log4j</m>.Logger;' },
+          { n: 15, code: 'import <m>org.apache.log4j</m>.Level;' },
+          { n: 18, code: 'private static final Logger logger = <m>org.apache.log4j</m>.Logger.getLogger(PaymentLogger.class);' },
+        ]},
+        { id: 'b-LogConfig', file: 'LogConfig.java', module: 'common-logging', count: 2, lines: [
+          { n: 7, code: 'import <m>org.apache.log4j</m>.PropertyConfigurator;' },
+          { n: 23, code: '<m>org.apache.log4j</m>.PropertyConfigurator.configure("log4j.properties");' },
+        ]},
+        { id: 'b-StockAudit', file: 'StockAudit.java', module: 'inventory-service', count: 3, lines: [
+          { n: 3, code: 'import <m>org.apache.log4j</m>.Logger;' },
+          { n: 4, code: 'import <m>org.apache.log4j</m>.PatternLayout;' },
+          { n: 12, code: 'Logger auditLog = <m>org.apache.log4j</m>.Logger.getLogger("stock.audit");' },
+        ]},
+        { id: 'b-BatchRunner', file: 'BatchRunner.java', module: 'legacy-batch', count: 2, lines: [
+          { n: 5, code: 'import <m>org.apache.log4j</m>.Logger;' },
+          { n: 11, code: 'private static final Logger log = <m>org.apache.log4j</m>.Logger.getLogger(BatchRunner.class);' },
+        ]},
+      ],
+    },
+    contextualMsg: "You're viewing <strong>12,847 logger declarations</strong> across <strong>392 repos</strong>. Want me to migrate the <strong>54 Log4j repos</strong> to SLF4J, or focus on the custom wrappers first?",
+  },
+
+  // ============== FLOW C — REST APIs ==============
+  c: {
+    id: 'c',
+    tileText: 'Find all REST controllers and outbound clients',
+    scopedTrigger: 'How are our REST APIs structured?',
+    searchCmd: "mod search working-set '@RestController' lang:java --syntax sourcegraph",
+    derivedQueryHtml: tokenizeMultiQuery([
+      "mod search working-set '@RestController' lang:java --syntax sourcegraph",
+      "mod search working-set 'type:symbol RestTemplate or type:symbol WebClient or type:symbol RestClient' lang:java --syntax sourcegraph",
+    ]),
+    scopeLine: '1,672 REST controllers across 234 repos + 847 outbound REST clients across 156 repos · 143ms',
+    breakdown:
+      '<p><strong>Controllers:</strong> 187 repos on @RestController (modern) · 47 on @Controller + @ResponseBody (legacy) · 23 mixed</p>' +
+      '<p><strong>Outbound clients:</strong> 612 RestTemplate (legacy) · 187 WebClient (reactive) · 48 RestClient (modern). 89 repos act as both server and client.</p>',
+    overflow: 'Showing <strong>3 of 390</strong> files (2,519 matches)',
+    cards: [
+      { id: 'c-OrderController', file: 'OrderController.java', module: 'orders-service', count: 1, lines: [
+        { n: 5, code: '<m>@RestController</m>' },
+        { n: 6, code: '@RequestMapping(<span class="cs">"/api/orders"</span>)' },
+        { n: 7, code: 'public class OrderController {' },
+      ]},
+      { id: 'c-UserService', file: 'UserService.java', module: 'customer-portal', count: 1, lines: [
+        { n: 14, code: 'private final <m>RestTemplate</m> restTemplate;' },
+      ]},
+      { id: 'c-InvoiceClient', file: 'InvoiceClient.java', module: 'billing-service', count: 1, lines: [
+        { n: 12, code: 'private final <m>WebClient</m> webClient;' },
+      ]},
+    ],
+    scoping: {
+      prompt: "REST APIs have a server side and a client side — I can search for one or both:",
+      options: [
+        { label: 'REST controllers (server side)',         query: '@RestController lang:java' },
+        { label: 'Outbound REST calls (client side)',      query: 'type:symbol RestTemplate or type:symbol WebClient or type:symbol RestClient lang:java' },
+        { label: 'Both controllers and outbound calls',    query: '(runs both queries)', muted: true },
+        { label: 'Custom query…',                          custom: true },
+      ],
+    },
+    actions: {
+      primary: 'Run recipe: Generate API endpoint inventory',
+    },
+    inlineActions: {
+      leadIn: 'I can map these into a structured endpoint inventory.',
+      recipeBlurb: 'The best match is <code>org.openrewrite.java.search.FindApiEndpoints</code>, which generates a structured inventory of all REST endpoints across the 234 server-side repos.',
+    },
+    moddyChat: {
+      summaryProse: 'I found <strong>1,672 REST controllers</strong> across 234 repos and <strong>847 outbound REST clients</strong> across 156 repos. 89 repos act as both server and client.',
+      resultsCardLabel: 'View 2,519 search results',
+      recipesIntro: 'I also found recipes that can work on these results.',
+      recipes: [
+        { id: 'org.openrewrite.java.search.FindApiEndpoints' },
+        { id: 'org.openrewrite.java.spring.framework.MigrateRestTemplateToWebClient' },
+        { id: 'org.openrewrite.java.spring.framework.MigrateApacheHttpClient' },
+      ],
+      bestMatchProse: 'The best match is <code>FindApiEndpoints</code>, which generates a structured inventory of all REST endpoints across the 234 server-side repos.',
+    },
+    phase2: {
+      chips: [
+        { label: 'lang', value: 'java' },
+      ],
+      query: '@RestController',
+      summary: '<span class="summary-count" id="summary-count">2,519</span> matches across <span class="summary-count" id="summary-files">390</span> files in <span class="mono">143ms</span>',
+      baseMatches: 2519,
+      baseFiles: 390,
+      filters: [
+        { id: 'type', title: 'By type', items: [
+          { name: '@RestController', count: 187 },
+          { name: '@Controller + @ResponseBody', count: 47 },
+          { name: 'RestTemplate', count: 612 },
+          { name: 'WebClient', count: 187 },
+          { name: 'RestClient', count: 48 },
+        ]},
+        { id: 'role', title: 'By role', items: [
+          { name: 'Server only', count: 145 },
+          { name: 'Client only', count: 67 },
+          { name: 'Both', count: 89 },
+        ]},
+        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 380, items: [
+          { name: 'orders-service',     count: 14 },
+          { name: 'customer-portal',    count: 11 },
+          { name: 'billing-service',    count: 9 },
+          { name: 'payments-api',       count: 8 },
+          { name: 'inventory-service',  count: 7 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'orders', count: 52 },
+          { name: 'customer-portal', count: 41 },
+          { name: 'billing', count: 38 },
+          { name: 'inventory', count: 31 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'c-PaymentsController', file: 'PaymentsController.java', module: 'payments-api', count: 2, lines: [
+          { n: 8, code: '<m>@RestController</m>' },
+          { n: 9, code: '@RequestMapping(<span class="cs">"/api/payments"</span>)' },
+        ]},
+        { id: 'c-CatalogClient', file: 'CatalogClient.java', module: 'inventory-service', count: 1, lines: [
+          { n: 10, code: 'private final <m>RestClient</m> restClient;' },
+        ]},
+        { id: 'c-LegacyShipController', file: 'ShipmentController.java', module: 'shipping-legacy', count: 2, lines: [
+          { n: 7, code: '@Controller' },
+          { n: 8, code: '<m>@ResponseBody</m>' },
+        ]},
+      ],
+    },
+    contextualMsg: "You're viewing <strong>2,519 REST API matches</strong> across <strong>390 repos</strong>. Want me to generate an endpoint inventory, or focus on the <strong>89 repos</strong> that are both server and client?",
+  },
+};
+
+// Reverse-lookup typed text → flow id (for scoping)
+const SCOPED_TRIGGERS = {};
+Object.values(FLOWS).forEach(f => { SCOPED_TRIGGERS[f.scopedTrigger.toLowerCase()] = f.id; });
+
+// ===================================================================
+// File detail content (drill-down view in Phase 2)
+// Keyed by card.id from the FLOWS data above. Every card that the user
+// can see in Phase 2 has a corresponding entry here.
+// ===================================================================
+const FILE_DETAILS = {
+  // ---- Flow A
+  'a-OrderController': {
+    name: 'OrderController.java',
+    path: 'payments-api/src/main/java/com/acme/payments/OrderController.java',
+    module: 'payments-api',
+    matchCount: 4,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.payments;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.annotation.Secured;' },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@RestController</span>' },
+      { n: 8,  code: '<span class="ann">@RequestMapping</span>(<span class="str">"/orders"</span>)' },
+      { n: 9,  code: '<span class="kw">public class</span> OrderController {' },
+      { n: 10, code: '' },
+      { n: 11, code: '    <span class="kw">@GetMapping</span>' },
+      { n: 12, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 13, code: '    <span class="kw">public</span> List&lt;Order&gt; listAll() { ... }' },
+      { n: 14, code: '' },
+      { n: 27, code: '    <span class="kw">@PostMapping</span>' },
+      { n: 28, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'MANAGER\') or hasRole(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 29, code: '    <span class="kw">public</span> Order approve(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 30, code: '' },
+      { n: 44, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/mine"</span>)' },
+      { n: 45, code: '    <m>@Secured</m>(<span class="str">"ROLE_USER"</span>)', hasMatch: true },
+      { n: 46, code: '    <span class="kw">public</span> List&lt;Order&gt; mine() { ... }' },
+      { n: 47, code: '' },
+      { n: 66, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/{userId}"</span>)' },
+      { n: 67, code: '    <m>@PreAuthorize</m>(<span class="str">"#userId == authentication.principal.id"</span>)', hasMatch: true },
+      { n: 68, code: '    <span class="kw">public</span> List&lt;Order&gt; forUser(<span class="kw">@PathVariable</span> String userId) { ... }' },
+      { n: 69, code: '}' },
+    ],
+  },
+  'a-AdminController': {
+    name: 'AdminController.java',
+    path: 'customer-portal/src/main/java/com/acme/portal/AdminController.java',
+    module: 'customer-portal',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.portal;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> jakarta.annotation.security.RolesAllowed;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@RestController</span>' },
+      { n: 8,  code: '<span class="ann">@RequestMapping</span>(<span class="str">"/admin"</span>)' },
+      { n: 9,  code: '<span class="kw">public class</span> AdminController {' },
+      { n: 10, code: '' },
+      { n: 14, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/users"</span>)' },
+      { n: 15, code: '    <m>@PreAuthorize</m>(<span class="str">"hasAuthority(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 16, code: '    <span class="kw">public</span> List&lt;User&gt; users() { ... }' },
+      { n: 17, code: '' },
+      { n: 33, code: '    <span class="kw">@DeleteMapping</span>(<span class="str">"/users/{id}"</span>)' },
+      { n: 34, code: '    <m>@RolesAllowed</m>({<span class="str">"ADMIN"</span>, <span class="str">"SUPER_ADMIN"</span>})', hasMatch: true },
+      { n: 35, code: '    <span class="kw">public void</span> remove(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 36, code: '}' },
+    ],
+  },
+  'a-UserController': {
+    name: 'UserController.java',
+    path: 'user-service/src/main/java/com/acme/users/UserController.java',
+    module: 'user-service',
+    matchCount: 3,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.users;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.annotation.Secured;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@RestController</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> UserController {' },
+      { n: 21, code: '    <span class="kw">@GetMapping</span>' },
+      { n: 22, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'USER\')"</span>)', hasMatch: true },
+      { n: 23, code: '    <span class="kw">public</span> User me(Principal p) { ... }' },
+      { n: 40, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/{id}"</span>)' },
+      { n: 41, code: '    <m>@PreAuthorize</m>(<span class="str">"#id == principal.id or hasRole(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 42, code: '    <span class="kw">public</span> User get(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 57, code: '    <span class="kw">@PostMapping</span>(<span class="str">"/{id}/upgrade"</span>)' },
+      { n: 58, code: '    <m>@Secured</m>({<span class="str">"ROLE_USER"</span>, <span class="str">"ROLE_ADMIN"</span>})', hasMatch: true },
+      { n: 59, code: '    <span class="kw">public void</span> upgrade(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 60, code: '}' },
+    ],
+  },
+  'a-ReportsController': {
+    name: 'ReportsController.java',
+    path: 'admin/src/main/java/com/acme/reports/ReportsController.java',
+    module: 'admin',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.reports;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> jakarta.annotation.security.RolesAllowed;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@RestController</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> ReportsController {' },
+      { n: 17, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/daily"</span>)' },
+      { n: 18, code: '    <m>@RolesAllowed</m>(<span class="str">"ADMIN"</span>)', hasMatch: true },
+      { n: 19, code: '    <span class="kw">public</span> Report daily() { ... }' },
+      { n: 32, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/audit"</span>)' },
+      { n: 33, code: '    <m>@PreAuthorize</m>(<span class="str">"hasAuthority(\'REPORT_VIEW\')"</span>)', hasMatch: true },
+      { n: 34, code: '    <span class="kw">public</span> Report audit() { ... }' },
+      { n: 35, code: '}' },
+    ],
+  },
+  'a-BillingController': {
+    name: 'BillingController.java',
+    path: 'payments-api/src/main/java/com/acme/billing/BillingController.java',
+    module: 'payments-api',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.billing;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.annotation.Secured;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@RestController</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> BillingController {' },
+      { n: 13, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/invoices"</span>)' },
+      { n: 14, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'BILLING\')"</span>)', hasMatch: true },
+      { n: 15, code: '    <span class="kw">public</span> List&lt;Invoice&gt; list() { ... }' },
+      { n: 28, code: '    <span class="kw">@PostMapping</span>(<span class="str">"/invoices/{id}/refund"</span>)' },
+      { n: 29, code: '    <m>@Secured</m>(<span class="str">"ROLE_BILLING_ADMIN"</span>)', hasMatch: true },
+      { n: 30, code: '    <span class="kw">public void</span> refund(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 31, code: '}' },
+    ],
+  },
+
+  // ---- Flow B
+  'b-OrderService': {
+    name: 'OrderService.java',
+    path: 'orders-service/src/main/java/com/acme/orders/OrderService.java',
+    module: 'orders-service',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.orders;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.slf4j.Logger;' },
+      { n: 4,  code: '<span class="kw">import</span> org.slf4j.LoggerFactory;' },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.stereotype.Service;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@Service</span>' },
+      { n: 8,  code: '<span class="kw">public class</span> OrderService {' },
+      { n: 9,  code: '    <span class="kw">private static final</span> <m>Logger</m> log = org.slf4j.LoggerFactory.getLogger(OrderService.<span class="kw">class</span>);', hasMatch: true },
+      { n: 10, code: '' },
+      { n: 11, code: '    <span class="kw">public</span> Order create(NewOrder req) {' },
+      { n: 12, code: '        log.info(<span class="str">"creating order for {}"</span>, req.customerId());' },
+      { n: 13, code: '        <span class="kw">return</span> repo.save(<span class="kw">new</span> Order(req));' },
+      { n: 14, code: '    }' },
+      { n: 15, code: '}' },
+    ],
+  },
+  'b-InvoiceJob': {
+    name: 'InvoiceJob.java',
+    path: 'billing-engine/src/main/java/com/acme/billing/InvoiceJob.java',
+    module: 'billing-engine',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.billing;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> com.acme.audit.AuditLogger;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.scheduling.annotation.Scheduled;' },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@Component</span>' },
+      { n: 8,  code: '<span class="kw">public class</span> InvoiceJob {' },
+      { n: 9,  code: '' },
+      { n: 10, code: '    <span class="kw">private final</span> InvoiceRepo repo;' },
+      { n: 11, code: '    <span class="kw">private final</span> <m>AuditLogger</m> auditLogger;', hasMatch: true },
+      { n: 12, code: '' },
+      { n: 13, code: '    <span class="ann">@Scheduled</span>(cron = <span class="str">"0 0 2 * * *"</span>)' },
+      { n: 14, code: '    <span class="kw">public void</span> nightlyRun() {' },
+      { n: 15, code: '        auditLogger.note(<span class="str">"invoice run started"</span>);' },
+      { n: 16, code: '    }' },
+      { n: 17, code: '}' },
+    ],
+  },
+  'b-PaymentLogger': {
+    name: 'PaymentLogger.java',
+    path: 'payments-service/src/main/java/com/acme/payments/PaymentLogger.java',
+    module: 'payments-service',
+    matchCount: 3,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.payments;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> java.time.LocalDateTime;' },
+      { n: 14, code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Logger;', hasMatch: true },
+      { n: 15, code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Level;', hasMatch: true },
+      { n: 16, code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
+      { n: 17, code: '' },
+      { n: 18, code: '    <span class="kw">private static final</span> Logger logger = <m>org.apache.log4j</m>.Logger.getLogger(PaymentLogger.<span class="kw">class</span>);', hasMatch: true },
+      { n: 19, code: '' },
+      { n: 20, code: '    <span class="kw">public void</span> logTransaction(String txId, <span class="kw">double</span> amount) {' },
+      { n: 21, code: '        logger.info(<span class="str">"Processing payment "</span> + txId + <span class="str">": $"</span> + amount);' },
+      { n: 22, code: '    }' },
+      { n: 23, code: '}' },
+    ],
+  },
+  'b-LogConfig': {
+    name: 'LogConfig.java',
+    path: 'common-logging/src/main/java/com/acme/logging/LogConfig.java',
+    module: 'common-logging',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.logging;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> java.io.File;' },
+      { n: 7,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.PropertyConfigurator;', hasMatch: true },
+      { n: 8,  code: '' },
+      { n: 9,  code: '<span class="ann">@Configuration</span>' },
+      { n: 10, code: '<span class="kw">public class</span> LogConfig {' },
+      { n: 22, code: '    <span class="kw">public void</span> init() {' },
+      { n: 23, code: '        <m>org.apache.log4j</m>.PropertyConfigurator.configure(<span class="str">"log4j.properties"</span>);', hasMatch: true },
+      { n: 24, code: '    }' },
+      { n: 25, code: '}' },
+    ],
+  },
+  'b-StockAudit': {
+    name: 'StockAudit.java',
+    path: 'inventory-service/src/main/java/com/acme/inventory/StockAudit.java',
+    module: 'inventory-service',
+    matchCount: 3,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.inventory;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Logger;', hasMatch: true },
+      { n: 4,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.PatternLayout;', hasMatch: true },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.stereotype.Service;' },
+      { n: 11, code: '<span class="ann">@Service</span>' },
+      { n: 12, code: '    Logger auditLog = <m>org.apache.log4j</m>.Logger.getLogger(<span class="str">"stock.audit"</span>);', hasMatch: true },
+      { n: 13, code: '' },
+      { n: 14, code: '    <span class="kw">public void</span> recordAdjustment(String sku, <span class="kw">int</span> delta) { ... }' },
+      { n: 15, code: '}' },
+    ],
+  },
+  'b-BatchRunner': {
+    name: 'BatchRunner.java',
+    path: 'legacy-batch/src/main/java/com/acme/batch/BatchRunner.java',
+    module: 'legacy-batch',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.batch;' },
+      { n: 5,  code: '<span class="kw">import</span> <m>org.apache.log4j</m>.Logger;', hasMatch: true },
+      { n: 6,  code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
+      { n: 10, code: '<span class="ann">@Component</span>' },
+      { n: 11, code: '    <span class="kw">private static final</span> Logger log = <m>org.apache.log4j</m>.Logger.getLogger(BatchRunner.<span class="kw">class</span>);', hasMatch: true },
+      { n: 12, code: '    <span class="kw">public void</span> runAll() { ... }' },
+      { n: 13, code: '}' },
+    ],
+  },
+
+  // ---- Flow C
+  'c-OrderController': {
+    name: 'OrderController.java',
+    path: 'orders-service/src/main/java/com/acme/orders/OrderController.java',
+    module: 'orders-service',
+    matchCount: 1,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.orders;' },
+      { n: 2, code: '' },
+      { n: 3, code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 4, code: '' },
+      { n: 5, code: '<m>@RestController</m>', hasMatch: true },
+      { n: 6, code: '<span class="ann">@RequestMapping</span>(<span class="str">"/api/orders"</span>)' },
+      { n: 7, code: '<span class="kw">public class</span> OrderController {' },
+      { n: 8, code: '' },
+      { n: 9, code: '    <span class="kw">@GetMapping</span>' },
+      { n: 10, code: '    <span class="kw">public</span> List&lt;Order&gt; list() { ... }' },
+      { n: 11, code: '' },
+      { n: 12, code: '    <span class="kw">@PostMapping</span>' },
+      { n: 13, code: '    <span class="kw">public</span> Order create(<span class="kw">@RequestBody</span> NewOrder req) { ... }' },
+      { n: 14, code: '}' },
+    ],
+  },
+  'c-UserService': {
+    name: 'UserService.java',
+    path: 'customer-portal/src/main/java/com/acme/portal/UserService.java',
+    module: 'customer-portal',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.portal;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.web.client.RestTemplate;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.stereotype.Service;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@Service</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> UserService {' },
+      { n: 13, code: '' },
+      { n: 14, code: '    <span class="kw">private final</span> <m>RestTemplate</m> restTemplate;', hasMatch: true },
+      { n: 15, code: '' },
+      { n: 16, code: '    <span class="kw">public</span> UserService(RestTemplate restTemplate) {' },
+      { n: 17, code: '        <span class="kw">this</span>.restTemplate = restTemplate;' },
+      { n: 18, code: '    }' },
+      { n: 19, code: '}' },
+    ],
+  },
+  'c-InvoiceClient': {
+    name: 'InvoiceClient.java',
+    path: 'billing-service/src/main/java/com/acme/billing/InvoiceClient.java',
+    module: 'billing-service',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.billing;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.web.reactive.function.client.WebClient;' },
+      { n: 4,  code: '<span class="kw">import</span> reactor.core.publisher.Mono;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@Component</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> InvoiceClient {' },
+      { n: 8,  code: '' },
+      { n: 12, code: '    <span class="kw">private final</span> <m>WebClient</m> webClient;', hasMatch: true },
+      { n: 13, code: '' },
+      { n: 14, code: '    <span class="kw">public</span> Mono&lt;Invoice&gt; fetch(<span class="kw">long</span> id) {' },
+      { n: 15, code: '        <span class="kw">return</span> webClient.get().uri(<span class="str">"/invoices/{id}"</span>, id).retrieve().bodyToMono(Invoice.<span class="kw">class</span>);' },
+      { n: 16, code: '    }' },
+      { n: 17, code: '}' },
+    ],
+  },
+  'c-PaymentsController': {
+    name: 'PaymentsController.java',
+    path: 'payments-api/src/main/java/com/acme/payments/PaymentsController.java',
+    module: 'payments-api',
+    matchCount: 2,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.payments;' },
+      { n: 2, code: '' },
+      { n: 3, code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 4, code: '' },
+      { n: 7, code: '' },
+      { n: 8, code: '<m>@RestController</m>', hasMatch: true },
+      { n: 9, code: '<m>@RequestMapping</m>(<span class="str">"/api/payments"</span>)', hasMatch: true },
+      { n: 10, code: '<span class="kw">public class</span> PaymentsController {' },
+      { n: 11, code: '' },
+      { n: 12, code: '    <span class="kw">@PostMapping</span>' },
+      { n: 13, code: '    <span class="kw">public</span> Receipt charge(<span class="kw">@RequestBody</span> Charge c) { ... }' },
+      { n: 14, code: '}' },
+    ],
+  },
+  'c-CatalogClient': {
+    name: 'CatalogClient.java',
+    path: 'inventory-service/src/main/java/com/acme/catalog/CatalogClient.java',
+    module: 'inventory-service',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.catalog;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.web.client.RestClient;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.stereotype.Component;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@Component</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> CatalogClient {' },
+      { n: 8,  code: '' },
+      { n: 10, code: '    <span class="kw">private final</span> <m>RestClient</m> restClient;', hasMatch: true },
+      { n: 11, code: '' },
+      { n: 12, code: '    <span class="kw">public</span> Item lookup(String sku) {' },
+      { n: 13, code: '        <span class="kw">return</span> restClient.get().uri(<span class="str">"/catalog/{sku}"</span>, sku).retrieve().body(Item.<span class="kw">class</span>);' },
+      { n: 14, code: '    }' },
+      { n: 15, code: '}' },
+    ],
+  },
+  'c-LegacyShipController': {
+    name: 'ShipmentController.java',
+    path: 'shipping-legacy/src/main/java/com/acme/ship/ShipmentController.java',
+    module: 'shipping-legacy',
+    matchCount: 2,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.ship;' },
+      { n: 2, code: '' },
+      { n: 3, code: '<span class="kw">import</span> org.springframework.stereotype.Controller;' },
+      { n: 4, code: '<span class="kw">import</span> org.springframework.web.bind.annotation.ResponseBody;' },
+      { n: 5, code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 6, code: '' },
+      { n: 7, code: '<span class="ann">@Controller</span>' },
+      { n: 8, code: '<m>@ResponseBody</m>', hasMatch: true },
+      { n: 9, code: '<span class="ann">@RequestMapping</span>(<span class="str">"/shipments"</span>)' },
+      { n: 10, code: '<span class="kw">public class</span> ShipmentController {' },
+      { n: 11, code: '' },
+      { n: 12, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/{id}"</span>)' },
+      { n: 13, code: '    <span class="kw">public</span> Shipment track(<span class="kw">@PathVariable</span> String id) { ... }' },
+      { n: 14, code: '}' },
+    ],
+  },
+};
+
+// ===================================================================
+// DOM refs
+// ===================================================================
+const greeter = document.getElementById('greeter');
+const conversation = document.getElementById('conversation');
+const promptInput = document.getElementById('prompt-input');
+const sendBtn = document.getElementById('send-btn');
+const moddyPanel = document.getElementById('moddy-panel');
+const trigrepPanel = document.getElementById('trigrep-panel');
+const divider = document.getElementById('divider');
+const dividerToggle = document.getElementById('divider-toggle');
+const moddyReopen = document.getElementById('moddy-reopen');
+const chatInner = document.getElementById('chat-inner');
+const promptWrap = document.querySelector('.prompt-wrap');
+
+// ===================================================================
+// State
+// ===================================================================
+let currentFlow = null;    // 'a' | 'b' | 'c' once a flow starts
+let flowStarted = false;
+let phase2Built = false;
+let refinementApplied = false;
+let enteredViaTile = false; // true if user started via tile click (not scoping)
+
+// Merge tileVariant overrides when the flow was entered via tile click.
+// Variant fields override base fields shallowly (phase2/contextualMsg are
+// whole-object overrides). Flows without a tileVariant return as-is.
+function getEffectiveFlow(flowId) {
+  const f = FLOWS[flowId];
+  if (!f) return null;
+  return (enteredViaTile && f.tileVariant) ? { ...f, ...f.tileVariant } : f;
+}
+
+// ===================================================================
+// Greeter layout — pull the search input into the centered group on the
+// empty state, return it to the bottom of the panel once a flow starts.
+// ===================================================================
+function placeInputInGreeter() {
+  if (!promptWrap || !greeter) return;
+  // Insert the input between "Prototype triggers" (above) and the prompt tiles (below)
+  const suggestions = document.getElementById('suggestions');
+  if (suggestions && suggestions.parentElement === greeter) {
+    greeter.insertBefore(promptWrap, suggestions);
+  } else {
+    greeter.appendChild(promptWrap);
+  }
+}
+function placeInputAtBottom() {
+  if (!promptWrap || !chatInner) return;
+  chatInner.appendChild(promptWrap);
+}
+// Initial placement: empty state → input lives inside the greeter
+placeInputInGreeter();
+
+// ===================================================================
+// Tile click → direct flow (skips scoping)
+// ===================================================================
+document.querySelectorAll('.suggestion[data-flow]').forEach(btn => {
+  btn.addEventListener('click', () => startDirectFlow(btn.dataset.flow));
+});
+
+// ===================================================================
+// "Or try asking:" links → scoping flow (as if the user typed the question)
+// ===================================================================
+document.querySelectorAll('.try-asking-link[data-scoped]').forEach(btn => {
+  btn.addEventListener('click', () => startScopingFlow(btn.dataset.scoped));
+});
+
+// ===================================================================
+// Chat history sidebar — collapse, new chat, item activation
+// ===================================================================
+const historyPane = document.getElementById('historyPane');
+const historyToggleBtn = document.getElementById('history-toggle');
+const historyNewChatBtn = document.getElementById('history-newchat');
+
+historyToggleBtn.addEventListener('click', () => historyPane.classList.toggle('collapsed'));
+
+historyNewChatBtn.addEventListener('click', () => resetToGreeter());
+
+document.querySelectorAll('.moderne-history-item[data-history]').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.moderne-history-item').forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    // Items are hardcoded for prototype realism — no real conversation switching.
+  });
+});
+
+function resetToGreeter() {
+  flowStarted = false;
+  phase2Built = false;
+  refinementApplied = false;
+  enteredViaTile = false;
+  currentFlow = null;
+  conversation.innerHTML = '';
+  conversation.classList.add('hidden');
+  greeter.classList.remove('hidden');
+  if (document.body.classList.contains('phase-2')) {
+    document.body.classList.remove('phase-2');
+    setNavActive('moddy');
+  }
+  trigrepPanel.innerHTML = '';
+  trigrepPanel.setAttribute('aria-hidden', 'true');
+  promptInput.placeholder = 'Ask Moddy to search, refine, or run a recipe';
+  document.querySelectorAll('.moderne-history-item').forEach(i => i.classList.remove('active'));
+  placeInputInGreeter();
+}
+
+// ===================================================================
+// Input — Enter / Send button
+//   - Phase 1, no flow yet:
+//       * Tile-matching text → direct flow
+//       * Scoped-trigger text → scoping flow
+//       * Anything else      → fallback message
+//   - Phase 2 or flow already started: appended as a user bubble (prototype: Moddy doesn't respond)
+// ===================================================================
+sendBtn.addEventListener('click', handleSend);
+promptInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSend();
+  }
+});
+
+function handleSend() {
+  const text = promptInput.value.trim();
+  if (!text) return;
+  promptInput.value = '';
+
+  if (flowStarted) {
+    appendUserMessage(text);
+    scrollChat();
+    return;
+  }
+
+  const lc = text.toLowerCase();
+  // Direct tile match (typed verbatim)
+  const directMatch = Object.values(FLOWS).find(f => f.tileText.toLowerCase() === lc);
+  if (directMatch) { startDirectFlow(directMatch.id); return; }
+
+  // Scoped broad question match
+  if (SCOPED_TRIGGERS[lc]) { startScopingFlow(SCOPED_TRIGGERS[lc]); return; }
+
+  // Fallback — don't start a flow, just show a one-off message
+  showFallback(text);
+}
+
+function showFallback(text) {
+  placeInputAtBottom();
+  greeter.classList.add('hidden');
+  conversation.classList.remove('hidden');
+  appendUserMessage(text);
+  const moddy = document.createElement('div');
+  moddy.className = 'msg-moddy fade-in';
+  moddy.innerHTML = `
+    <div class="fallback-msg">
+      This is a prototype — try one of the prompt tiles or questions above.
+    </div>
+  `;
+  conversation.appendChild(moddy);
+  scrollChat();
+}
+
+// ===================================================================
+// Direct flow — tile click (skips scoping)
+// ===================================================================
+function startDirectFlow(flowId) {
+  if (flowStarted) return;
+  const flow = FLOWS[flowId];
+  if (!flow) return;
+  flowStarted = true;
+  currentFlow = flowId;
+  enteredViaTile = true;
+  placeInputAtBottom();
+  greeter.classList.add('hidden');
+  conversation.classList.remove('hidden');
+
+  // Some flows (Flow B) render a tile-specific variant — both Phase 1 results
+  // and the Phase 2 Trigrep panel use the variant data so the two stay in
+  // sync with each other.
+  const effectiveFlow = getEffectiveFlow(flowId);
+  appendUserMessage(effectiveFlow.tileText);
+  setTimeout(() => streamResults(effectiveFlow), 400);
+}
+
+// ===================================================================
+// Scoping flow — typed broad question
+// ===================================================================
+function startScopingFlow(flowId) {
+  if (flowStarted) return;
+  const flow = FLOWS[flowId];
+  if (!flow) return;
+  flowStarted = true;
+  currentFlow = flowId;
+  enteredViaTile = false;
+  placeInputAtBottom();
+  greeter.classList.add('hidden');
+  conversation.classList.remove('hidden');
+
+  appendUserMessage(flow.scopedTrigger);
+  setTimeout(() => {
+    conversation.appendChild(buildScopingResponse(flow));
+    scrollChat();
+  }, 400);
+}
+
+function buildScopingResponse(flow) {
+  const msg = document.createElement('div');
+  msg.className = 'msg-moddy fade-in';
+  const buttons = flow.scoping.options.map((opt, i) => {
+    if (opt.custom) {
+      return `<button class="scoping-btn" data-custom="1">
+        <span class="scoping-btn-label">${opt.label}</span>
+        <span class="scoping-btn-query muted">opens chat input</span>
+      </button>`;
+    }
+    const queryClass = opt.muted ? 'scoping-btn-query muted' : 'scoping-btn-query';
+    return `<button class="scoping-btn" data-idx="${i}">
+      <span class="scoping-btn-label">${opt.label}</span>
+      <span class="${queryClass}">${opt.query}</span>
+    </button>`;
+  }).join('');
+  msg.innerHTML = `
+    <div class="scoping-prompt">${flow.scoping.prompt}</div>
+    <div class="scoping-buttons">${buttons}</div>
+  `;
+  msg.querySelectorAll('.scoping-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.custom) { promptInput.focus(); return; }
+      // Lock the scoping buttons after choice
+      msg.querySelectorAll('.scoping-btn').forEach(b => { b.disabled = true; b.style.opacity = '0.6'; b.style.cursor = 'default'; });
+      btn.style.opacity = '1';
+      btn.style.borderColor = 'var(--neo-digital-blue-500)';
+      streamResults(flow);
+    });
+  });
+  return msg;
+}
+
+// ===================================================================
+// Streamed results — common path for both direct + scoped flows
+// ===================================================================
+function streamResults(flow) {
+  // If we're in split view already (after Back-to-chat + new flow), rebuild left panel
+  if (document.body.classList.contains('phase-2') && !phase2Built) {
+    buildAndShowTrigrep(flow);
+  }
+
+  const moddy = document.createElement('div');
+  moddy.className = 'msg-moddy';
+  conversation.appendChild(moddy);
+
+  let t = 200;
+  setTimeout(() => { moddy.appendChild(buildModdySummary(flow)); scrollChat(); }, t);
+  t += 200;
+  setTimeout(() => { moddy.appendChild(buildResultsLinkCard(flow)); scrollChat(); }, t);
+  t += 200;
+  setTimeout(() => { moddy.appendChild(buildRecipesIntro(flow)); scrollChat(); }, t);
+  t += 200;
+  setTimeout(() => { moddy.appendChild(buildRecipesCard(flow)); scrollChat(); }, t);
+  t += 200;
+  setTimeout(() => { moddy.appendChild(buildBestMatch(flow)); scrollChat(); }, t);
+  t += 200;
+  setTimeout(() => { moddy.appendChild(buildBottomActions(flow)); scrollChat(); }, t);
+}
+
+function appendUserMessage(text) {
+  const el = document.createElement('div');
+  el.className = 'msg-user fade-in';
+  el.innerHTML = `<div class="avatar">A</div><div class="msg-user-text"></div>`;
+  el.querySelector('.msg-user-text').textContent = text;
+  conversation.appendChild(el);
+  scrollChat();
+}
+
+function scrollChat() { conversation.scrollTop = conversation.scrollHeight; }
+
+// ===================================================================
+// Component builders
+// ===================================================================
+function buildDerivedQuery(flow) {
+  const wrap = document.createElement('div');
+  wrap.className = 'derived-query fade-in';
+  wrap.innerHTML = `
+    <div class="derived-query-head">
+      <span class="derived-query-head-title">Searched for · Trigrep</span>
+      <button class="derived-query-copy" title="Copy command" aria-label="Copy command">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+    </div>
+    <div class="derived-query-cmd">${flow.derivedQueryHtml}</div>
+  `;
+  wrap.querySelector('.derived-query-copy').addEventListener('click', (e) => copyDerived(e.currentTarget, flow.searchCmd));
+  return wrap;
+}
+
+function copyDerived(btn, cmd) {
+  try { navigator.clipboard.writeText(cmd || ''); } catch (e) {}
+  const original = btn.innerHTML;
+  btn.classList.add('copied');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.innerHTML = original;
+  }, 1500);
+}
+
+// Conversational Moddy chat — Moddy gives a summary + clickable cards,
+// not inline code results. Code lives in the trigrep panel.
+function buildModdySummary(flow) {
+  const mc = flow.moddyChat || {};
+  const el = document.createElement('p');
+  el.className = 'moddy-summary fade-in';
+  el.innerHTML = mc.summaryProse || '';
+  return el;
+}
+
+function buildResultsLinkCard(flow) {
+  const mc = flow.moddyChat || {};
+  const card = document.createElement('button');
+  card.type = 'button';
+  card.className = 'results-link-card fade-in';
+  card.innerHTML = `
+    <span class="results-link-card-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <span class="results-link-card-label">${mc.resultsCardLabel || 'View search results'}</span>
+    <svg class="results-link-card-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+  `;
+  card.addEventListener('click', enterPhase2);
+  return card;
+}
+
+function buildRecipesIntro(flow) {
+  const mc = flow.moddyChat || {};
+  const el = document.createElement('p');
+  el.className = 'moddy-prose fade-in';
+  el.textContent = mc.recipesIntro || '';
+  return el;
+}
+
+function buildRecipesCard(flow) {
+  const mc = flow.moddyChat || {};
+  const recipes = mc.recipes || [];
+  const wrap = document.createElement('div');
+  wrap.className = 'recipe-card fade-in';
+  wrap.dataset.expanded = '0';
+  const items = recipes.map(r => `
+    <a class="recipe-link" href="#" data-recipe-id="${r.id}" data-tooltip="View details">
+      <span class="recipe-link-name">${r.id}</span>
+      <svg class="recipe-link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  `).join('');
+  wrap.innerHTML = `
+    <button class="recipe-card-head" type="button" aria-expanded="false">
+      <span class="recipe-card-title">I found <strong>${recipes.length} recipe${recipes.length === 1 ? '' : 's'}</strong> from Moderne</span>
+      <svg class="recipe-card-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+    </button>
+    <div class="recipe-card-body">
+      <div class="recipe-links">${items}</div>
+    </div>
+  `;
+  const head = wrap.querySelector('.recipe-card-head');
+  head.addEventListener('click', () => {
+    const open = wrap.dataset.expanded === '1';
+    wrap.dataset.expanded = open ? '0' : '1';
+    head.setAttribute('aria-expanded', open ? 'false' : 'true');
+  });
+  wrap.querySelectorAll('.recipe-link').forEach(a => {
+    a.addEventListener('click', (e) => e.preventDefault());
+  });
+  return wrap;
+}
+
+function buildBestMatch(flow) {
+  const mc = flow.moddyChat || {};
+  const el = document.createElement('p');
+  el.className = 'best-match-prose fade-in';
+  el.innerHTML = mc.bestMatchProse || '';
+  return el;
+}
+
+function buildBottomActions(flow) {
+  // Keep .followup-actions class so existing refinement code finds + moves this block.
+  // Keep .followup.tertiary on the Refine link so the delegated handler still fires.
+  const wrap = document.createElement('div');
+  wrap.className = 'followup-actions chat-bottom-actions fade-in';
+  wrap.innerHTML = `
+    <div class="chat-bottom-buttons">
+      <button type="button" class="btn-outlined">Run recipe</button>
+      <button type="button" class="btn-outlined">Export results to CSV</button>
+    </div>
+    <button type="button" class="followup tertiary text-link refine-link">Refine search →</button>
+  `;
+  return wrap;
+}
+
+// Delegated handler for "Refine search" — works in both Phase 1 and Phase 2
+document.body.addEventListener('click', (e) => {
+  const btn = e.target.closest('.followup.tertiary');
+  if (btn && !btn.disabled) refineSearch();
+});
+
+function refineSearch() {
+  if (refinementApplied || !currentFlow) return;
+  refinementApplied = true;
+  const flow = FLOWS[currentFlow];
+
+  // Per-flow refinement copy
+  const refinements = {
+    a: { typed: 'Just show admin-tier authorization rules',
+         cmd:  "mod search working-set '(@PreAuthorize or @Secured or @RolesAllowed) /ADMIN/ visibility:public' lang:java --syntax sourcegraph",
+         scope: '412 admin-tier authorization annotations across 87 repos in 64ms',
+         note: 'Filtered to admin-tier annotations only. These are the rules that gate sensitive operations — the recipe will preserve their semantics while standardizing on @PreAuthorize.' },
+    b: { typed: 'Narrow to actual Logger calls (skip imports)',
+         cmd:  "mod search working-set 'Logger type:symbol /log\\.(error|warn|info|debug)\\(/' lang:java --syntax sourcegraph",
+         scope: '8,219 logger call sites across 312 repos in 73ms',
+         note: 'Filtered to actual <code>Logger</code> call sites (excluding import statements). These are the lines the recipe will rewrite — imports get cleaned up automatically.' },
+    c: { typed: 'Just the legacy clients (RestTemplate)',
+         cmd:  "mod search working-set 'type:symbol RestTemplate' lang:java --syntax sourcegraph",
+         scope: '612 RestTemplate references across 134 repos in 81ms',
+         note: 'Filtered to the legacy <code>RestTemplate</code> clients. These are the primary migration targets to <code>WebClient</code> or <code>RestClient</code>.' },
+  };
+  const r = refinements[currentFlow];
+
+  appendUserMessage(r.typed);
+
+  const moddy = document.createElement('div');
+  moddy.className = 'msg-moddy fade-in';
+
+  // Show the revised search command at the top, same component as the
+  // initial results render so users see the refined query syntax.
+  moddy.appendChild(buildDerivedQuery({ searchCmd: r.cmd, derivedQueryHtml: tokenizeQuery(r.cmd) }));
+
+  const scope = document.createElement('div');
+  scope.className = 'scope-line';
+  scope.textContent = r.scope;
+  moddy.appendChild(scope);
+
+  const text = document.createElement('div');
+  text.className = 'moddy-text';
+  text.innerHTML = r.note;
+  moddy.appendChild(text);
+
+  conversation.appendChild(moddy);
+
+  // Action buttons should always sit below the latest results return — move the
+  // existing Phase 1 action block from the original results message into this
+  // refinement message so it ends up right after the refined scope/note.
+  const existingActions = conversation.querySelector('.followup-actions');
+  if (existingActions) moddy.appendChild(existingActions);
+
+  scrollChat();
+
+  // If a Trigrep panel is built, give a small visual update
+  const summaryCount = trigrepPanel.querySelector('#summary-count');
+  if (summaryCount) summaryCount.textContent = (r.scope.match(/[\d,]+/) || [''])[0];
+
+  // Disable all "Refine search" buttons
+  document.querySelectorAll('.followup.tertiary').forEach(b => {
+    b.disabled = true;
+    b.style.opacity = '0.5';
+    b.style.cursor = 'default';
+  });
+}
+
+// ===================================================================
+// Phase 2 transition
+// ===================================================================
+function enterPhase2() {
+  if (!currentFlow) return;
+  if (phase2Built) {
+    document.body.classList.add('phase-2');
+    setNavActive('trigrep');
+    promptInput.placeholder = 'Ask about these results or run a recipe';
+    setTimeout(() => { scrollChat(); }, 320);
+    return;
+  }
+  buildAndShowTrigrep(getEffectiveFlow(currentFlow));
+  promptInput.placeholder = 'Ask about these results or run a recipe';
+  document.body.classList.add('phase-2');
+  setNavActive('trigrep');
+  setTimeout(() => {
+    scrollChat();
+    wireTrigrepInteractions();
+  }, 320);
+}
+
+function buildAndShowTrigrep(flow) {
+  trigrepPanel.innerHTML = buildTrigrepPanel(flow);
+  trigrepPanel.setAttribute('aria-hidden', 'false');
+  phase2Built = true;
+}
+
+function exitPhase2() {
+  document.body.classList.remove('phase-2');
+  setNavActive('moddy');
+  if (moddyPanel.classList.contains('collapsed')) setModdyCollapsed(false);
+  promptInput.placeholder = 'Ask Moddy to search, refine, or run a recipe';
+  setTimeout(() => { scrollChat(); }, 320);
+}
+document.getElementById('back-to-chat').addEventListener('click', exitPhase2);
+
+// Update nav rail active state
+function setNavActive(id) {
+  document.querySelectorAll('#left-nav-items .nav-item, #nav-more-popover .nav-item').forEach(el => {
+    el.classList.remove('active');
+  });
+  // Find the right item by label
+  const labelMap = { moddy: 'Moddy', trigrep: 'Trigrep' };
+  const label = labelMap[id] || id;
+  document.querySelectorAll('#left-nav-items .nav-item').forEach(el => {
+    if (el.querySelector('.nav-label')?.textContent === label) el.classList.add('active');
+  });
+}
+
+// ===================================================================
+// Phase 2 — Trigrep panel
+// ===================================================================
+function buildTrigrepPanel(flow) {
+  const chips = flow.phase2.chips || [];
+  const chipsHtml = chips.map(c =>
+    `<span class="trigrep-chip" data-chip="${c.label}"><strong>${c.label}:</strong>${c.value}<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></span>`
+  ).join('');
+  const chipsRowHtml = chips.length
+    ? `<div class="trigrep-chips-row">${chipsHtml}</div>`
+    : '';
+
+  const renderGroup = (group) => {
+    const repoClass = group.isRepoList ? ' is-repo-list' : '';
+    const overflow = group.overflowMore
+      ? `<button type="button" class="filter-more-link">+${group.overflowMore.toLocaleString()} more</button>`
+      : '';
+    return `
+    <div class="filter-group${repoClass}" data-group="${group.id}">
+      <div class="filter-group-head"><span>${group.title}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+      <div class="filter-group-body">
+        ${group.searchable ? '<input class="topic-search" placeholder="Search topics…">' : ''}
+        ${group.items.map(it => {
+          const dot = it.dot ? `<span class="lang-dot" style="background:${it.dot};box-shadow:none;"></span>` : '';
+          return `<div class="filter-item" data-count="${it.count}"><span class="filter-item-name">${dot}${it.name}</span><span class="count">${it.count.toLocaleString()}</span></div>`;
+        }).join('')}
+        ${overflow}
+      </div>
+    </div>`;
+  };
+  const nonRepoFilters = flow.phase2.filters.filter(g => !g.isRepoList);
+  const repoFilters    = flow.phase2.filters.filter(g => g.isRepoList);
+  const nonRepoFiltersHtml = nonRepoFilters.map(renderGroup).join('');
+  const repoFiltersHtml    = repoFilters.map(renderGroup).join('');
+
+  const allCards = [...flow.cards, ...(flow.phase2.extraCards || [])];
+  const cardsHtml = allCards.map(card => `
+    <article class="result-card" data-card-id="${card.id}">
+      <div class="result-card-head">
+        <div class="result-card-file is-clickable">${card.file}<span class="file-module">— ${card.module}</span></div>
+        <div class="result-card-actions">
+          <span class="result-card-meta">${card.count} match${card.count === 1 ? '' : 'es'}</span>
+          <button class="icon-btn" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+          <button class="icon-btn chevron-btn" title="Collapse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+      </div>
+      <div class="result-card-body">
+        <div class="code-body">
+          ${card.lines.map(l => `<div class="code-line simple"><span class="code-ln">${l.n}</span><span class="code-text">${l.code.replace(/<m>/g, '<span class="match">').replace(/<\/m>/g, '</span>')}</span></div>`).join('')}
+        </div>
+      </div>
+    </article>
+  `).join('');
+
+  return `
+    <div class="trigrep-head">
+      <div class="trigrep-search-row">
+        <div class="trigrep-search-box">
+          <div class="syntax-selector" id="syntax-selector">
+            <button type="button" class="syntax-selector-btn" aria-haspopup="listbox" aria-expanded="false">
+              <span class="syntax-selector-label">Sourcegraph</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <ul class="syntax-selector-menu" role="listbox" hidden>
+              <li role="option" data-value="nl">NL</li>
+              <li role="option" data-value="sourcegraph" aria-selected="true">Sourcegraph</li>
+              <li role="option" data-value="comby">Comby</li>
+              <li role="option" data-value="regex">Regex</li>
+            </ul>
+          </div>
+          <span class="syntax-selector-divider" aria-hidden="true"></span>
+          <svg class="trigrep-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="trigrep-query" value="${flow.phase2.query.replace(/"/g, '&quot;')}" spellcheck="false">
+        </div>
+        <button class="btn-search">Search</button>
+      </div>
+      ${chipsRowHtml}
+      <div class="trigrep-meta-row">
+        <div class="trigrep-summary">${flow.phase2.summary}</div>
+      </div>
+    </div>
+
+    <div class="trigrep-body">
+      <aside class="trigrep-sidebar" aria-label="Filters and repositories">
+        <section class="trigrep-pane trigrep-pane-filters" aria-label="Filters">
+          <div class="trigrep-pane-head">
+            <span>Filters</span>
+            <span class="collapse-all" id="collapse-all">Collapse all</span>
+          </div>
+          <div class="trigrep-pane-body">
+            ${nonRepoFiltersHtml}
+          </div>
+        </section>
+        ${repoFiltersHtml ? `
+        <section class="trigrep-pane trigrep-pane-repos" aria-label="Repositories">
+          <div class="trigrep-pane-head">
+            <span>Repositories</span>
+          </div>
+          <div class="trigrep-pane-body">
+            ${repoFiltersHtml}
+          </div>
+        </section>` : ''}
+      </aside>
+
+      <div class="trigrep-results" id="trigrep-results">
+        ${cardsHtml}
+      </div>
+    </div>
+  `;
+}
+
+// ===================================================================
+// Phase 2 interactions
+// ===================================================================
+function wireTrigrepInteractions() {
+  // Syntax selector dropdown (NL · Sourcegraph · Comby · Regex)
+  const selector = trigrepPanel.querySelector('#syntax-selector');
+  if (selector) {
+    const btn = selector.querySelector('.syntax-selector-btn');
+    const menu = selector.querySelector('.syntax-selector-menu');
+    const label = selector.querySelector('.syntax-selector-label');
+    const queryInput = trigrepPanel.querySelector('.trigrep-query');
+    const closeMenu = () => {
+      menu.hidden = true;
+      selector.removeAttribute('data-open');
+      btn.setAttribute('aria-expanded', 'false');
+    };
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = !menu.hidden;
+      if (open) { closeMenu(); return; }
+      menu.hidden = false;
+      selector.setAttribute('data-open', '1');
+      btn.setAttribute('aria-expanded', 'true');
+    });
+    menu.querySelectorAll('li[role="option"]').forEach(li => {
+      li.addEventListener('click', () => {
+        menu.querySelectorAll('li[role="option"]').forEach(o => o.removeAttribute('aria-selected'));
+        li.setAttribute('aria-selected', 'true');
+        label.textContent = li.textContent.trim();
+        closeMenu();
+        if (queryInput && li.dataset.value === 'nl') {
+          queryInput.placeholder = 'Describe what you want to find — Moddy translates to a query';
+        } else if (queryInput) {
+          queryInput.placeholder = '';
+        }
+      });
+    });
+    document.addEventListener('click', (e) => {
+      if (!selector.contains(e.target)) closeMenu();
+    });
+  }
+
+  // Filter group collapse
+  trigrepPanel.querySelectorAll('.filter-group-head').forEach(head => {
+    head.addEventListener('click', () => head.parentElement.classList.toggle('collapsed'));
+  });
+  const collapseAll = trigrepPanel.querySelector('#collapse-all');
+  if (collapseAll) {
+    collapseAll.addEventListener('click', () => {
+      const groups = trigrepPanel.querySelectorAll('.filter-group');
+      const anyOpen = [...groups].some(g => !g.classList.contains('collapsed'));
+      groups.forEach(g => g.classList.toggle('collapsed', anyOpen));
+      collapseAll.textContent = anyOpen ? 'Expand all' : 'Collapse all';
+    });
+  }
+
+  // Filter item toggle + summary update
+  const flow = getEffectiveFlow(currentFlow);
+  const baseMatches = flow.phase2.baseMatches;
+  const baseFiles = flow.phase2.baseFiles;
+  const activeFilters = new Map();
+  const summaryCount = trigrepPanel.querySelector('#summary-count');
+  const summaryFiles = trigrepPanel.querySelector('#summary-files');
+  trigrepPanel.querySelectorAll('.filter-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const key = item.querySelector('.filter-item-name').textContent.trim();
+      const count = parseInt(item.dataset.count, 10) || 0;
+      if (activeFilters.has(key)) activeFilters.delete(key);
+      else activeFilters.set(key, count);
+      item.classList.toggle('active');
+      if (activeFilters.size === 0) {
+        summaryCount.textContent = baseMatches.toLocaleString();
+        summaryFiles.textContent = baseFiles.toLocaleString();
+      } else {
+        const total = [...activeFilters.values()].reduce((a, b) => a + b, 0);
+        summaryCount.textContent = total.toLocaleString();
+        summaryFiles.textContent = Math.max(1, Math.ceil(total / 5.5)).toLocaleString();
+      }
+    });
+  });
+
+  // Chip removal
+  trigrepPanel.querySelectorAll('.trigrep-chip-x').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btn.closest('.trigrep-chip').remove();
+    });
+  });
+
+  // Topic search filter
+  const topicSearch = trigrepPanel.querySelector('.topic-search');
+  if (topicSearch) {
+    topicSearch.addEventListener('input', () => {
+      const q = topicSearch.value.toLowerCase().trim();
+      const group = topicSearch.closest('.filter-group-body');
+      group.querySelectorAll('.filter-item').forEach(item => {
+        const name = item.querySelector('.filter-item-name').textContent.toLowerCase();
+        item.style.display = (q === '' || name.includes(q)) ? '' : 'none';
+      });
+    });
+  }
+
+  // Result card collapse via chevron
+  trigrepPanel.querySelectorAll('.chevron-btn').forEach(btn => {
+    btn.addEventListener('click', () => btn.closest('.result-card').classList.toggle('collapsed'));
+  });
+
+  // File path drill-down — every card knows its own id
+  trigrepPanel.querySelectorAll('.result-card .result-card-file').forEach(el => {
+    const card = el.closest('.result-card');
+    const id = card?.dataset.cardId;
+    if (id && FILE_DETAILS[id]) {
+      el.addEventListener('click', () => showFileDetail(FILE_DETAILS[id]));
+    } else {
+      el.classList.remove('is-clickable');
+    }
+  });
+}
+
+function showFileDetail(file) {
+  const body = trigrepPanel.querySelector('.trigrep-body');
+  if (!body) return;
+  let detail = body.querySelector('.trigrep-detail');
+  if (!detail) {
+    detail = document.createElement('div');
+    detail.className = 'trigrep-detail';
+    body.appendChild(detail);
+  }
+  detail.innerHTML = buildFileDetailHTML(file);
+  detail.querySelector('.detail-back').addEventListener('click', showResultsList);
+
+  body.style.opacity = '0';
+  setTimeout(() => {
+    body.classList.add('detail-mode');
+    body.style.opacity = '1';
+  }, 100);
+}
+
+function showResultsList() {
+  const body = trigrepPanel.querySelector('.trigrep-body');
+  if (!body) return;
+  body.style.opacity = '0';
+  setTimeout(() => {
+    body.classList.remove('detail-mode');
+    body.style.opacity = '1';
+  }, 100);
+}
+
+function buildFileDetailHTML(file) {
+  const linesHtml = file.lines.map(l => {
+    const code = (l.code || ' ').replace(/<m>/g, '<span class="match">').replace(/<\/m>/g, '</span>');
+    return `<div class="code-line ${l.hasMatch ? 'has-match' : ''}"><span class="code-ln">${l.n}</span><span class="code-text">${code}</span></div>`;
+  }).join('');
+  return `
+    <div class="detail-breadcrumb">
+      <button class="detail-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Search results
+      </button>
+      <span class="detail-crumb-sep">/</span>
+      <span class="detail-crumb-current">${file.name}</span>
+    </div>
+    <div class="detail-search-row">
+      <label class="detail-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search in file…" spellcheck="false">
+        <span class="kbd-hint">⌘F</span>
+      </label>
+    </div>
+    <div class="detail-header">
+      <div class="detail-header-row">
+        <div class="detail-file-path">${file.path}</div>
+        <span class="result-card-meta">${file.matchCount} match${file.matchCount === 1 ? '' : 'es'}</span>
+      </div>
+      <div class="detail-module">${file.module}</div>
+    </div>
+    <div class="detail-code">${linesHtml}</div>
+  `;
+}
+
+// ===================================================================
+// Divider drag + collapse toggle (Phase 2 only)
+// ===================================================================
+let dragging = false, dragStartX = 0, startModdyWidth = 0;
+divider.addEventListener('mousedown', (e) => {
+  if (!document.body.classList.contains('phase-2')) return;
+  if (e.target.closest('.divider-toggle')) return;
+  if (moddyPanel.classList.contains('collapsed')) return;
+  dragging = true;
+  dragStartX = e.clientX;
+  startModdyWidth = moddyPanel.getBoundingClientRect().width;
+  divider.classList.add('dragging');
+  document.body.style.userSelect = 'none';
+  document.body.style.cursor = 'col-resize';
+});
+window.addEventListener('mousemove', (e) => {
+  if (!dragging) return;
+  const dx = e.clientX - dragStartX;
+  const newWidth = startModdyWidth - dx;
+  const pageWidth = document.getElementById('page').getBoundingClientRect().width;
+  const min = Math.max(320, pageWidth * 0.25);
+  const max = pageWidth * 0.5;
+  const clamped = Math.min(Math.max(newWidth, min), max);
+  moddyPanel.style.transition = 'none';
+  moddyPanel.style.flex = `0 0 ${clamped}px`;
+});
+window.addEventListener('mouseup', () => {
+  if (!dragging) return;
+  dragging = false;
+  divider.classList.remove('dragging');
+  document.body.style.userSelect = '';
+  document.body.style.cursor = '';
+  setTimeout(() => { moddyPanel.style.transition = ''; }, 50);
+});
+
+function setModdyCollapsed(collapsed) {
+  if (collapsed) {
+    moddyPanel.dataset.lastFlex = moddyPanel.style.flex || '';
+    moddyPanel.style.flex = '';
+    moddyPanel.classList.add('collapsed');
+    moddyReopen.classList.add('visible');
+    dividerToggle.title = 'Open Moddy';
+    dividerToggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+  } else {
+    moddyPanel.classList.remove('collapsed');
+    if (moddyPanel.dataset.lastFlex) moddyPanel.style.flex = moddyPanel.dataset.lastFlex;
+    moddyReopen.classList.remove('visible');
+    dividerToggle.title = 'Collapse Moddy';
+    dividerToggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+  }
+}
+dividerToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  setModdyCollapsed(!moddyPanel.classList.contains('collapsed'));
+});
+moddyReopen.addEventListener('click', () => setModdyCollapsed(false));
+const moddyCloseBtn = document.getElementById('moddy-close-btn');
+if (moddyCloseBtn) {
+  moddyCloseBtn.addEventListener('click', () => setModdyCollapsed(true));
+}
+
+// ===================================================================
+// New chat (only available in split view) — keeps the layout, clears
+// both panels so the user can start a fresh search session.
+// ===================================================================
+function newChatInSplit() {
+  flowStarted = false;
+  phase2Built = false;
+  refinementApplied = false;
+  enteredViaTile = false;
+  currentFlow = null;
+  conversation.innerHTML = '';
+  conversation.classList.add('hidden');
+  greeter.classList.remove('hidden');
+  trigrepPanel.innerHTML = buildTrigrepEmpty();
+  promptInput.placeholder = 'Ask Moddy to search, refine, or run a recipe';
+  placeInputInGreeter();
+}
+
+function buildTrigrepEmpty() {
+  return `
+    <div class="trigrep-empty">
+      <span class="trigrep-empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </span>
+      <div class="trigrep-empty-title">No active search</div>
+      <div class="trigrep-empty-desc">Ask Moddy a question to see search results here.</div>
+    </div>
+  `;
+}
+
+document.getElementById('new-chat-btn').addEventListener('click', newChatInSplit);
+</script>
+</body>
+</html>
