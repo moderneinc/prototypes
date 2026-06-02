@@ -2204,10 +2204,9 @@ const FLOWS = {
     actions: {
       primary: 'Run recipe: Migrate Log4j to SLF4J',
     },
-    // Tile-click variant: shows Log4j-specific Phase 1 results (847 / 54 repos)
-    // instead of the broad logger-declarations results (12,847 / 392 repos)
-    // that the scoping flow produces. Phase 2 is unaffected — both paths
-    // open the same Trigrep panel.
+    // Tile-click variant: Log4j-specific results (847 / 54 repos) shown
+    // in both Phase 1 chat AND the Phase 2 Trigrep panel, so the two views
+    // tell the same story. The scoping flow keeps the broad results below.
     tileVariant: {
       searchCmd: "mod search working-set 'org.apache.logging.log4j lang:java' --syntax sourcegraph",
       derivedQueryHtml: tokenizeQuery("mod search working-set 'org.apache.logging.log4j lang:java' --syntax sourcegraph"),
@@ -2225,6 +2224,53 @@ const FLOWS = {
           { n: 9, code: 'private static final Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger();' },
         ]},
       ],
+      phase2: {
+        chips: [
+          { label: 'lang', value: 'java' },
+        ],
+        query: 'org.apache.logging.log4j',
+        summary: '<span class="summary-count" id="summary-count">847</span> matches across <span class="summary-count" id="summary-files">54</span> files in <span class="mono">89ms</span>',
+        baseMatches: 847,
+        baseFiles: 54,
+        filters: [
+          { id: 'usage', title: 'By usage pattern', items: [
+            { name: 'Sole logger (Log4j only)', count: 38 },
+            { name: 'Mixed with SLF4J', count: 16 },
+          ]},
+          { id: 'lang', title: 'By language', items: [
+            { name: 'Java', count: 54, dot: '#e76f00' },
+          ]},
+          { id: 'topic', title: 'By topic', searchable: true, items: [
+            { name: 'payments', count: 14 },
+            { name: 'billing', count: 11 },
+            { name: 'inventory', count: 9 },
+            { name: 'notifications', count: 8 },
+            { name: 'batch', count: 6 },
+            { name: 'common-logging', count: 6 },
+          ]},
+        ],
+        extraCards: [
+          { id: 'b-LogConfig', file: 'LogConfig.java', module: 'common-logging', count: 3, lines: [
+            { n: 4,  code: 'import <m>org.apache.logging.log4j</m>.LogManager;' },
+            { n: 5,  code: 'import <m>org.apache.logging.log4j</m>.core.config.Configurator;' },
+            { n: 18, code: '<m>Configurator</m>.initialize(null, "log4j2.xml");' },
+          ]},
+          { id: 'b-StockAudit', file: 'StockAudit.java', module: 'inventory-service', count: 3, lines: [
+            { n: 3,  code: 'import <m>org.apache.logging.log4j</m>.LogManager;' },
+            { n: 4,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+            { n: 12, code: 'private static final Logger auditLog = <m>LogManager</m>.getLogger("stock.audit");' },
+          ]},
+          { id: 'b-BatchRunner', file: 'BatchRunner.java', module: 'legacy-batch', count: 2, lines: [
+            { n: 5,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+            { n: 11, code: 'private static final Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger(BatchRunner.class);' },
+          ]},
+          { id: 'b-InvoiceWriter', file: 'InvoiceWriter.java', module: 'billing-engine', count: 2, lines: [
+            { n: 6,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+            { n: 14, code: 'private final Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger(getClass());' },
+          ]},
+        ],
+      },
+      contextualMsg: "You're viewing <strong>847 Log4j references</strong> across <strong>54 repos</strong>. 38 use Log4j as their sole logger and 16 mix it with SLF4J. Want me to run the recipe to migrate them all to SLF4J?",
     },
     phase2: {
       chips: [],
@@ -2781,6 +2827,16 @@ let currentFlow = null;    // 'a' | 'b' | 'c' once a flow starts
 let flowStarted = false;
 let phase2Built = false;
 let refinementApplied = false;
+let enteredViaTile = false; // true if user started via tile click (not scoping)
+
+// Merge tileVariant overrides when the flow was entered via tile click.
+// Variant fields override base fields shallowly (phase2/contextualMsg are
+// whole-object overrides). Flows without a tileVariant return as-is.
+function getEffectiveFlow(flowId) {
+  const f = FLOWS[flowId];
+  if (!f) return null;
+  return (enteredViaTile && f.tileVariant) ? { ...f, ...f.tileVariant } : f;
+}
 
 // ===================================================================
 // Greeter layout — pull the search input into the centered group on the
@@ -2840,6 +2896,7 @@ function resetToGreeter() {
   flowStarted = false;
   phase2Built = false;
   refinementApplied = false;
+  enteredViaTile = false;
   currentFlow = null;
   conversation.innerHTML = '';
   conversation.classList.add('hidden');
@@ -2921,14 +2978,15 @@ function startDirectFlow(flowId) {
   if (!flow) return;
   flowStarted = true;
   currentFlow = flowId;
+  enteredViaTile = true;
   placeInputAtBottom();
   greeter.classList.add('hidden');
   conversation.classList.remove('hidden');
 
-  // Some flows (Flow B) render different Phase 1 results when reached via
-  // tile click vs. scoping. The variant only overrides Phase 1 fields —
-  // currentFlow stays the same so Phase 2 + refine still use the original.
-  const effectiveFlow = flow.tileVariant ? { ...flow, ...flow.tileVariant } : flow;
+  // Some flows (Flow B) render a tile-specific variant — both Phase 1 results
+  // and the Phase 2 Trigrep panel use the variant data so the two stay in
+  // sync with each other.
+  const effectiveFlow = getEffectiveFlow(flowId);
   appendUserMessage(effectiveFlow.tileText);
   setTimeout(() => streamResults(effectiveFlow), 400);
 }
@@ -2942,6 +3000,7 @@ function startScopingFlow(flowId) {
   if (!flow) return;
   flowStarted = true;
   currentFlow = flowId;
+  enteredViaTile = false;
   placeInputAtBottom();
   greeter.classList.add('hidden');
   conversation.classList.remove('hidden');
@@ -3212,7 +3271,7 @@ function enterPhase2() {
     setTimeout(() => { scrollChat(); }, 320);
     return;
   }
-  buildAndShowTrigrep(FLOWS[currentFlow]);
+  buildAndShowTrigrep(getEffectiveFlow(currentFlow));
   promptInput.placeholder = 'Ask about these results or run a recipe';
   document.body.classList.add('phase-2');
   setNavActive('trigrep');
@@ -3366,7 +3425,7 @@ function wireTrigrepInteractions() {
   }
 
   // Filter item toggle + summary update
-  const flow = FLOWS[currentFlow];
+  const flow = getEffectiveFlow(currentFlow);
   const baseMatches = flow.phase2.baseMatches;
   const baseFiles = flow.phase2.baseFiles;
   const activeFilters = new Map();
@@ -3554,6 +3613,7 @@ function newChatInSplit() {
   flowStarted = false;
   phase2Built = false;
   refinementApplied = false;
+  enteredViaTile = false;
   currentFlow = null;
   conversation.innerHTML = '';
   conversation.classList.add('hidden');
