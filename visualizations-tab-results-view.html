@@ -298,6 +298,15 @@ button{font:inherit;cursor:pointer;}
 .cfg-footer{display:flex;align-items:center;gap:10px;padding:14px 22px;border-top:1px solid var(--border-primary);}
 .cfg-footer .spacer{flex:1;}
 
+/* Demo button-style switcher */
+.demo-bar{position:fixed;bottom:24px;left:122px;z-index:95;display:inline-flex;align-items:center;gap:4px;padding:4px 4px 4px 14px;background:var(--brand-grey-1000);color:#fff;border-radius:var(--radius-full);box-shadow:var(--shadow-lg);font-size:12px;}
+.demo-bar-label{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:10px;color:rgba(255,255,255,.55);margin-right:4px;}
+.demo-btn{display:inline-flex;align-items:center;padding:6px 12px;height:28px;background:transparent;border:1px solid transparent;color:#fff;font-size:12px;font-weight:500;border-radius:var(--radius-full);cursor:pointer;transition:background var(--transition-fast);white-space:nowrap;}
+.demo-btn:hover{background:rgba(255,255,255,.10);}
+.demo-btn.active{background:var(--brand-digital-blue-500);}
+/* Rounded-rectangle variant toggled from the demo bar */
+body.btn-rounded .btn{border-radius:var(--radius-md);}
+
 /* toast */
 .toast-stack{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:80;}
 .toast{display:flex;align-items:center;gap:10px;min-width:280px;padding:12px 16px;background:#fff;border:1px solid var(--border-primary);border-radius:8px;box-shadow:var(--shadow-lg);font-size:13px;color:var(--text-primary);}
@@ -386,6 +395,12 @@ button{font:inherit;cursor:pointer;}
     <button class="btn btn-primary" id="cfg-save">Save</button>
   </div>
 </aside>
+
+<div class="demo-bar" role="group" aria-label="Button style">
+  <span class="demo-bar-label">Buttons</span>
+  <button class="demo-btn active" data-btnstyle="pill">Pill</button>
+  <button class="demo-btn" data-btnstyle="rounded">Rounded</button>
+</div>
 
 <div class="toast-stack" id="toast-stack"></div>
 
@@ -768,6 +783,15 @@ document.getElementById('cfg-save').addEventListener('click',()=>{
   toast('Configuration saved — ready to run');
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeConfig();});
+
+/* Demo button-style toggle (pill vs rounded rectangle) */
+document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.body.classList.toggle('btn-rounded',b.dataset.btnstyle==='rounded');
+  });
+});
 function refreshOutputAndBadge(v){
   const st=state.status[v.id];
   document.getElementById('output-slot').innerHTML=outputHTML(v,st);
