@@ -1,0 +1,4999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderne — Day Zero Onboarding Tour</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ================================================
+   NEO DESIGN SYSTEM — BRAND TOKENS (Tier 1)
+   ================================================ */
+:root {
+  --brand-white: #FFFFFF;
+  --brand-black: #000000;
+  --brand-digital-blue-100: #F2F3FF;
+  --brand-digital-blue-200: #DCE0FF;
+  --brand-digital-blue-300: #B6BFFF;
+  --brand-digital-blue-400: #8D99FF;
+  --brand-digital-blue-500: #2F42FF;
+  --brand-digital-blue-600: #2637E6;
+  --brand-digital-blue-700: #1E2EC2;
+  --brand-digital-blue-800: #131E7A;
+  --brand-digital-blue-900: #000855;
+  --brand-green-100: #F3FFF5;
+  --brand-green-200: #CFFFD7;
+  --brand-green-500: #72E184;
+  --brand-green-600: #5EC46F;
+  --brand-green-700: #4CA75A;
+  --brand-green-800: #3B8948;
+  --brand-red-100: #FEF2F2;
+  --brand-red-400: #FCA5A5;
+  --brand-red-500: #F87171;
+  --brand-red-600: #CB3446;
+  --brand-red-700: #A92232;
+  --brand-red-800: #871421;
+  --brand-orange-100: #FFF8E5;
+  --brand-orange-600: #FFB800;
+  --brand-orange-700: #D69B00;
+  --brand-orange-800: #856000;
+  --brand-grey-100: #F9FAFB;
+  --brand-grey-200: #F3F4F6;
+  --brand-grey-300: #E5E7EB;
+  --brand-grey-400: #D1D5DB;
+  --brand-grey-500: #9CA3AF;
+  --brand-grey-600: #6B7280;
+  --brand-grey-700: #4B5563;
+  --brand-grey-800: #374151;
+  --brand-grey-900: #1F2937;
+  --brand-grey-1000: #111827;
+  --brand-violet-500: #AD59C7;
+  --brand-violet-600: #992FB9;
+  --brand-teal-600: #3BCCA6;
+  --brand-font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --brand-font-family-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --brand-font-weight-regular: 400;
+  --brand-font-weight-medium: 500;
+  --brand-font-weight-semibold: 600;
+  --brand-font-weight-bold: 700;
+  --brand-font-size-100: 10px;
+  --brand-font-size-200: 12px;
+  --brand-font-size-300: 14px;
+  --brand-font-size-400: 16px;
+  --brand-font-size-500: 18px;
+  --brand-font-size-600: 20px;
+  --brand-font-size-700: 24px;
+  --brand-font-size-800: 28px;
+  --brand-spacing-0: 0;
+  --brand-spacing-100: 4px;
+  --brand-spacing-200: 8px;
+  --brand-spacing-300: 12px;
+  --brand-spacing-400: 16px;
+  --brand-spacing-500: 20px;
+  --brand-spacing-600: 24px;
+  --brand-spacing-800: 32px;
+  --brand-spacing-1000: 40px;
+  --brand-radius-0: 0;
+  --brand-radius-100: 4px;
+  --brand-radius-200: 6px;
+  --brand-radius-300: 8px;
+  --brand-radius-400: 12px;
+  --brand-radius-500: 16px;
+  --brand-radius-full: 9999px;
+  --brand-shadow-100: 0 1px 3px rgba(31, 41, 55, 0.1);
+  --brand-shadow-200: 0 2px 4px rgba(31, 41, 55, 0.1);
+  --brand-shadow-300: 0 8px 15px rgba(31, 41, 55, 0.1);
+  --brand-shadow-400: 0 4px 4px rgba(31, 41, 55, 0.1), 0 8px 24px rgba(31, 41, 55, 0.1);
+  --brand-shadow-500: 0 8px 15px rgba(31, 41, 55, 0.1);
+  --brand-transition-fast: 150ms ease;
+  --brand-transition-base: 200ms ease;
+  --brand-line-height-200: 20px;
+  --brand-line-height-300: 24px;
+  --brand-line-height-400: 28px;
+}
+
+/* ================================================
+   NEO DESIGN SYSTEM — ALIAS TOKENS (Tier 2)
+   ================================================ */
+:root {
+  --alias-primary-100: var(--brand-digital-blue-100);
+  --alias-primary-200: var(--brand-digital-blue-200);
+  --alias-primary-300: var(--brand-digital-blue-300);
+  --alias-primary-500: var(--brand-digital-blue-500);
+  --alias-primary-600: var(--brand-digital-blue-600);
+  --alias-primary-700: var(--brand-digital-blue-700);
+  --alias-primary-800: var(--brand-digital-blue-800);
+  --alias-success-100: var(--brand-green-100);
+  --alias-success-600: var(--brand-green-600);
+  --alias-success-700: var(--brand-green-700);
+  --alias-error-100: var(--brand-red-100);
+  --alias-error-600: var(--brand-red-600);
+  --alias-error-700: var(--brand-red-700);
+  --alias-warning-100: var(--brand-orange-100);
+  --alias-warning-600: var(--brand-orange-600);
+  --alias-neutral-light-100: var(--brand-grey-100);
+  --alias-neutral-light-200: var(--brand-grey-200);
+  --alias-neutral-light-300: var(--brand-grey-300);
+  --alias-neutral-light-400: var(--brand-grey-400);
+  --alias-neutral-dark-500: var(--brand-grey-500);
+  --alias-neutral-dark-600: var(--brand-grey-600);
+  --alias-neutral-dark-700: var(--brand-grey-700);
+  --alias-neutral-dark-800: var(--brand-grey-800);
+  --alias-neutral-dark-900: var(--brand-grey-900);
+  --alias-neutral-dark-1000: var(--brand-grey-1000);
+  --alias-foundation-white: var(--brand-white);
+  --alias-foundation-black: var(--brand-black);
+  --alias-font-heading: var(--brand-font-family-sans);
+  --alias-font-body: var(--brand-font-family-sans);
+  --alias-font-code: var(--brand-font-family-mono);
+}
+
+/* ================================================
+   NEO DESIGN SYSTEM — MAPPED TOKENS (Tier 3)
+   Components consume ONLY these.
+   ================================================ */
+:root {
+  --surface-primary: var(--alias-foundation-white);
+  --surface-page: #f4f4f4;
+  --surface-secondary: var(--alias-neutral-light-100);
+  --surface-tertiary: var(--alias-neutral-light-200);
+  --surface-disabled: var(--alias-neutral-light-200);
+  --surface-error: var(--alias-error-100);
+  --surface-success: var(--alias-success-100);
+  --surface-information: var(--alias-primary-100);
+  --surface-warning: var(--alias-warning-100);
+  --surface-primary-filled: var(--alias-primary-500);
+  --surface-error-filled: var(--alias-error-600);
+  --surface-success-filled: var(--alias-success-600);
+  --surface-primary-hover: var(--alias-primary-100);
+  --surface-primary-pressed: var(--alias-primary-200);
+  --surface-primary-filled-hover: var(--alias-primary-700);
+  --surface-primary-filled-pressed: var(--alias-primary-800);
+  --surface-primary-active: #3776F01A;
+  --surface-error-filled-hover: var(--alias-error-700);
+  --text-primary: var(--alias-neutral-dark-1000);
+  --text-secondary: var(--alias-neutral-dark-600);
+  --text-tertiary: var(--alias-neutral-dark-500);
+  --text-disabled: var(--alias-neutral-light-400);
+  --text-error: var(--alias-error-600);
+  --text-success: var(--alias-success-700);
+  --text-information: var(--alias-primary-700);
+  --text-on-primary: var(--alias-foundation-white);
+  --text-on-error: var(--alias-foundation-white);
+  --text-primary-hover: var(--alias-primary-700);
+  --icon-primary: var(--alias-neutral-dark-1000);
+  --icon-secondary: var(--alias-neutral-dark-600);
+  --icon-tertiary: var(--alias-neutral-dark-500);
+  --icon-on-primary: var(--alias-foundation-white);
+  --border-primary: var(--alias-neutral-light-300);
+  --border-secondary: var(--alias-neutral-light-400);
+  --border-hover: var(--alias-neutral-light-400);
+  --border-focus: var(--alias-primary-600);
+  --content-heading: var(--alias-neutral-dark-1000);
+  --content-body: var(--alias-neutral-dark-800);
+  --content-caption: var(--alias-neutral-dark-600);
+  --content-placeholder: var(--alias-neutral-dark-500);
+  --activity-recipe-run: #992fb9;
+  --activity-commit-job: #2f42ff;
+  --activity-visualization: #27aa88;
+  --surface-datagrid-header: var(--alias-neutral-light-100);
+  --font-heading: var(--alias-font-heading);
+  --font-body: var(--alias-font-body);
+  --font-code: var(--alias-font-code);
+  --space-1: var(--brand-spacing-100);
+  --space-2: var(--brand-spacing-200);
+  --space-3: var(--brand-spacing-300);
+  --space-4: var(--brand-spacing-400);
+  --space-5: var(--brand-spacing-500);
+  --space-6: var(--brand-spacing-600);
+  --space-8: var(--brand-spacing-800);
+  --space-10: var(--brand-spacing-1000);
+  --radius-sm: var(--brand-radius-100);
+  --radius-md: var(--brand-radius-200);
+  --radius-lg: var(--brand-radius-300);
+  --radius-xl: var(--brand-radius-400);
+  --radius-2xl: var(--brand-radius-500);
+  --radius-full: var(--brand-radius-full);
+  --shadow-xs: var(--brand-shadow-100);
+  --shadow-sm: var(--brand-shadow-200);
+  --shadow-md: var(--brand-shadow-300);
+  --shadow-lg: var(--brand-shadow-400);
+  --shadow-xl: var(--brand-shadow-500);
+  --transition-fast: var(--brand-transition-fast);
+  --transition-base: var(--brand-transition-base);
+}
+
+/* ================================================
+   BASE STYLES
+   ================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--surface-page);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ================================================
+   APP LAYOUT — CSS Grid matching real SaaS
+   ================================================ */
+.app-shell {
+  display: grid;
+  grid-template-columns: 98px 1fr;
+  grid-template-areas: "nav content";
+  width: 100%;
+  height: 100%;
+  background: var(--surface-page);
+}
+
+/* ================================================
+   LEFT NAVIGATION RAIL (98px) — matches v2-sandbox NAVIGATION_RAIL_WIDTH
+   ================================================ */
+.left-nav {
+  grid-area: nav;
+  width: 98px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  /* top padding pulled in so the logo sits roughly inline with the top-nav
+     org selector (v2 NAVIGATION_RAIL_VERTICAL_PAD ≈ 1.5px) */
+  padding: 2px 8px 24px;
+  gap: 0;
+  background: var(--surface-page);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  /* overflow visible so the More popover can escape the rail */
+  overflow: visible;
+}
+
+.left-nav-top {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  /* gap matches neo-design rail List spacing (spacing_1_2 = 4px) */
+  gap: 4px;
+}
+
+/* Logo is now rendered via .nav-item.nav-item-home so it inherits the same
+   icon-chip styling (hover stroke + active state) as the other nav items.
+   Tighter padding so the logo aligns vertically with the top-nav org selector. */
+.nav-item-home {
+  padding: 0 4px;
+}
+
+.nav-item-home .nav-icon-container {
+  padding: 4px;
+}
+
+/* nav-item matches neo-design NeoNavigationItem:
+   - Outer item is transparent always
+   - Inner icon chip (.nav-icon-container) gets the blue background on hover/active
+   - Label color/weight changes on hover/active */
+.nav-item {
+  width: 100%;
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  background: transparent;
+}
+
+.nav-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  background: transparent;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+/* Hover + active states get a visible blue stroke around the icon chip */
+.nav-item:hover .nav-icon-container {
+  background: var(--brand-digital-blue-100);
+  border-color: var(--brand-digital-blue-200);
+}
+
+.nav-item.active .nav-icon-container {
+  background: var(--brand-digital-blue-100);
+  border-color: var(--brand-digital-blue-200);
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  color: var(--brand-grey-900);
+  flex-shrink: 0;
+}
+
+.nav-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--brand-font-weight-regular);
+  line-height: 1;
+  color: var(--brand-grey-900);
+  text-align: center;
+  white-space: normal;
+  width: 100%;
+  transition: color 150ms ease;
+}
+
+.nav-item:hover .nav-label {
+  color: var(--brand-digital-blue-600);
+}
+
+.nav-item.active .nav-label {
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--brand-digital-blue-800);
+}
+
+/* Beta tag on nav items: v2 NeoBadge intent=default — neutral light bg,
+   dark text, 50%-alpha neutral border per neo-design Badge.tsx */
+.nav-badge {
+  font-size: 11px;
+  padding: 0 6px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--brand-grey-200);
+  color: var(--brand-grey-800);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: 1;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+/* HomeMenuItem stack: logo + v2 platform-version badge */
+.nav-home-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  padding: 4px 0;
+}
+
+/* Platform version badge — matches PlatformVersionBadge gradient */
+.nav-version-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--brand-digital-blue-500) 0%, var(--brand-violet-500) 100%);
+  color: var(--brand-white);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--brand-font-weight-semibold);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* More menu wrapper + popover. v2 anchors the popover to the right of the
+   rail item, opening as a small floating panel of NeoNavigationItems. */
+.nav-more-wrapper {
+  position: relative;
+  margin-top: auto;
+}
+
+.nav-more-popover {
+  position: absolute;
+  left: calc(100% + 4px);
+  bottom: 0;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 96px;
+  z-index: 100;
+}
+
+.nav-more-popover .nav-item {
+  padding: 8px 4px;
+}
+
+/* ================================================
+   MAIN CONTENT AREA
+   ================================================ */
+.main-area {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+}
+
+/* ================================================
+   GLOBAL NAVIGATION BAR (65px toolbar)
+   matches v3 GlobalNavigationBar
+   ================================================ */
+.global-nav {
+  height: 65px;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+  width: 100%;
+}
+
+/* Centered red radial-gradient glow behind nav contents (v3 sunset effect) */
+.global-nav::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  max-width: 90%;
+  height: 65px;
+  background: radial-gradient(ellipse at center, var(--brand-red-100) 0%, var(--brand-red-100) 40%, transparent 70%);
+  filter: blur(20px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.global-nav > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* v2 GlobalOrganizationSelector — full pill (999px) per latest dev render,
+   white bg, always-on secondary border, hover changes bg + border. */
+.org-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  background: var(--surface-primary);
+  border: 1px solid var(--border-secondary);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-transform: none;
+}
+
+.org-selector:hover {
+  background: var(--brand-grey-200);
+  border-color: var(--border-primary);
+}
+
+.org-selector.selected {
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-regular);
+}
+
+.org-selector-wrapper {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50vw;
+}
+
+@media (min-width: 1200px) {
+  .org-selector-wrapper {
+    max-width: min(65vw, 1200px);
+  }
+}
+
+/* v2 dialog scrim — semi-transparent, fixed full-viewport overlay below the
+   dialog Paper. Click to close. */
+.overlay-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 41, 55, 0.2);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 100px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* Both modal dialogs (org selector + search) share these v2 dimensions:
+   anchored ~100px from top, max-width 800, height 80vh capped at 600. */
+.org-dropdown,
+.search-dropdown {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 80vh;
+  max-height: 600px;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 12px 32px rgba(31, 41, 55, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.org-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+
+.org-dropdown-header svg {
+  color: var(--icon-secondary);
+  flex-shrink: 0;
+}
+
+.org-dropdown-header input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: var(--brand-font-size-400);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+}
+
+.org-dropdown-header input::placeholder {
+  color: var(--content-placeholder);
+}
+
+.org-dropdown-content {
+  flex: 1;
+  overflow-y: auto;
+  border-top: 1px solid var(--border-secondary);
+  padding: var(--space-2) 0;
+}
+
+/* Tree rows in the org selector (Global → ALL → orgs).
+   Indent comes from inline paddingLeft based on node depth.
+   Subtle 1px divider between rows (skip on last). */
+.org-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 8px 12px;
+  cursor: pointer;
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  transition: background var(--transition-fast);
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.org-tree-row:last-child {
+  border-bottom: none;
+}
+
+.org-tree-row:hover {
+  background: var(--surface-secondary);
+}
+
+.org-tree-row.selected {
+  background: var(--surface-primary-active);
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+.org-tree-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  flex-shrink: 0;
+  color: var(--icon-secondary);
+}
+
+.org-tree-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  color: var(--icon-secondary);
+  flex-shrink: 0;
+}
+
+.org-tree-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Org member-count chip: small grey pill with 50%-alpha neutral border (NeoBadge default) */
+.org-tree-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  font-size: var(--brand-font-size-200);
+  color: var(--brand-grey-800);
+  background: var(--brand-grey-200);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* Shared overlay footer */
+.overlay-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-top: 1px solid var(--border-secondary);
+  font-size: var(--brand-font-size-200);
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.overlay-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.overlay-footer-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--brand-font-size-200);
+  color: var(--text-secondary);
+}
+
+/* NeoButton tertiary pattern — see .neo-link */
+.overlay-footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--brand-digital-blue-500);
+  font-size: var(--brand-font-size-200);
+  cursor: pointer;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  transition: color 150ms ease;
+}
+
+.overlay-footer-link:hover {
+  color: var(--brand-digital-blue-600);
+}
+
+.overlay-footer-link:active {
+  color: var(--brand-digital-blue-800);
+}
+
+.overlay-footer-right {
+  color: var(--text-tertiary);
+  font-size: var(--brand-font-size-200);
+}
+
+.overlay-footer kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 5px;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 4px;
+  font-size: var(--brand-font-size-100);
+  font-family: var(--font-body);
+  color: var(--text-secondary);
+}
+
+.overlay-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--icon-secondary);
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast);
+}
+
+.overlay-close:hover {
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+.nav-spacer {
+  flex: 1;
+}
+
+/* v2-sandbox SearchTrigger: full pill with always-on border, opens a centered
+   Dialog on click (no inline expansion). Width auto-sized to content. */
+.search-input {
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-secondary);
+  padding: 10px 16px;
+  font-size: var(--brand-font-size-300);
+  color: var(--text-tertiary);
+  background: var(--surface-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.search-input:hover {
+  background: var(--brand-grey-200);
+  border-color: var(--border-primary);
+}
+
+.search-input > span:first-of-type {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.search-input-keys {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.search-input kbd {
+  font-size: var(--brand-font-size-100);
+  background: var(--surface-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--text-tertiary);
+  font-family: var(--font-body);
+  border: 1px solid var(--border-primary);
+  min-width: 18px;
+  text-align: center;
+}
+
+/* v3 action buttons group: tight cluster, rounded container */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 64px;
+}
+
+.nav-action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform 200ms ease-in;
+  border: none;
+  background: transparent;
+  color: var(--brand-grey-900);
+  flex-shrink: 0;
+}
+
+.nav-action-btn:hover {
+  background: var(--brand-grey-200);
+}
+
+.nav-action-btn.open {
+  background: var(--surface-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+/* v2 NeoNavigationAvatar default: bright coral/red filled circle with white initial */
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: #E45A4F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--brand-white);
+  flex-shrink: 0;
+}
+
+.help-menu-wrapper {
+  position: relative;
+}
+
+.help-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 260px;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.help-menu-section {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.help-menu-section:last-child {
+  border-bottom: none;
+}
+
+.help-menu-label {
+  font-size: var(--brand-font-size-100);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--space-1) var(--space-4);
+  margin-bottom: var(--space-1);
+}
+
+.help-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.help-menu-item:hover {
+  background: var(--surface-primary-hover);
+}
+
+.help-menu-item svg {
+  flex-shrink: 0;
+  color: var(--icon-secondary);
+}
+
+.help-menu-item.highlight {
+  color: var(--brand-digital-blue-600);
+  font-weight: var(--brand-font-weight-medium);
+}
+
+.help-menu-item.highlight svg {
+  color: var(--brand-digital-blue-600);
+}
+
+/* ================================================
+   CONTENT AREA — white card on page bg
+   ================================================ */
+.content-wrapper {
+  flex: 1;
+  background: var(--surface-primary);
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.content-area {
+  padding: 16px 24px 24px;
+}
+
+/* ================================================
+   PAGE CONTENT HEADER (ModernePageContent style)
+   ================================================ */
+.page-header {
+  margin-bottom: var(--space-5);
+}
+
+.page-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--content-heading);
+  line-height: 140%;
+}
+
+.page-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-regular);
+  color: var(--brand-grey-600);
+  line-height: var(--brand-line-height-300);
+  margin-top: var(--space-1);
+}
+
+.page-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ================================================
+   BUTTONS
+   ================================================ */
+.btn {
+  height: 40px;
+  padding: 0 var(--space-4);
+  border-radius: 999px;
+  border: 1px solid var(--brand-digital-blue-300);
+  background: var(--surface-primary);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: var(--brand-line-height-200);
+  color: var(--brand-grey-900);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn:hover {
+  background: var(--brand-digital-blue-100);
+  border-color: var(--brand-digital-blue-300);
+}
+
+.btn-primary {
+  background: var(--brand-digital-blue-500);
+  color: var(--text-on-primary);
+  border-color: var(--brand-digital-blue-500);
+}
+
+.btn-primary:hover {
+  background: var(--brand-digital-blue-700);
+  border-color: var(--brand-digital-blue-700);
+}
+
+.btn-primary.pulse {
+  position: relative;
+  box-shadow: 0 0 0 3px rgba(47, 66, 255, 0.25);
+}
+
+.btn-primary.pulse::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--brand-digital-blue-500);
+  border-radius: 999px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.btn-sm {
+  height: 28px;
+  padding: 0 var(--space-3);
+  font-size: var(--brand-font-size-200);
+}
+
+.btn-ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  background: var(--surface-secondary);
+  border-color: transparent;
+}
+
+/* ================================================
+   MARKETPLACE PAGE
+   ================================================ */
+/* v2 marketplace: single-column page with row list */
+.market-content {
+  max-width: 900px;
+  width: 100%;
+}
+
+.market-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  padding-bottom: var(--space-3);
+}
+
+.market-title-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* v2 titles.pageHeader: 21px Inter regular, line-height 1.4 */
+.market-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* NeoBadge color="info" — pale blue bg, info-blue text, 50%-alpha info border */
+.market-count-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-information);
+  background: var(--surface-information);
+  border: 1px solid rgba(47, 66, 255, 0.5);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.market-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* NeoButton variant=secondary size=small */
+.market-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-secondary);
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.market-export-btn:hover {
+  background: var(--brand-grey-200);
+  border-color: var(--border-primary);
+}
+
+.market-export-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.market-divider {
+  height: 1px;
+  background: var(--border-secondary);
+  width: 100%;
+}
+
+/* Stack of category rows separated by thin dividers */
+.market-row-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.market-row-list > .market-row + .market-row {
+  border-top: 1px solid var(--border-secondary);
+}
+
+.market-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: 12px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 150ms ease;
+}
+
+.market-row:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.market-row-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 22px;
+  color: var(--text-primary);
+}
+
+.market-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.market-row-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-400);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+/* NeoTag size=medium intent=default — height 18, padding 0 6px (neo-design Tag.tsx) */
+.market-row-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--brand-grey-800);
+  background: var(--brand-grey-200);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.market-row:hover .market-row-tag {
+  background: var(--surface-primary);
+}
+
+.market-row-desc {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.market-row-trail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  color: var(--icon-secondary);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* ================================================
+   SEARCH DROPDOWN — sized by the shared .org-dropdown/.search-dropdown rule
+   above. Below: inner header/content/empty/row treatments.
+   ================================================ */
+.search-dd-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+
+.search-dd-header > svg {
+  color: var(--icon-secondary);
+  flex-shrink: 0;
+}
+
+.search-dd-input-field {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: var(--brand-font-size-400);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+}
+
+.search-dd-input-field::placeholder {
+  color: var(--content-placeholder);
+}
+
+/* Right-side "Clear" button — v2 NeoButton variant=tertiary small (pill radius) */
+.search-dd-clear {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-secondary);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 4px 12px;
+  font-family: var(--font-body);
+  font-weight: var(--brand-font-weight-medium);
+  white-space: nowrap;
+  border-radius: var(--radius-full);
+}
+
+.search-dd-clear:hover {
+  color: var(--text-primary);
+  background: var(--surface-secondary);
+}
+
+.search-dd-content {
+  flex: 1;
+  overflow-y: auto;
+  border-top: 1px solid var(--border-secondary);
+  padding: var(--space-2) 0;
+}
+
+.search-dd-label {
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  padding: 6px 20px;
+}
+
+/* Empty state shown when query is blank */
+.search-dd-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid var(--border-secondary);
+  gap: 4px;
+  padding: var(--space-6) var(--space-4);
+}
+
+.search-dd-empty-title {
+  font-size: var(--brand-font-size-500);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.search-dd-empty-sub {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-secondary);
+}
+
+/* Recipe rows in populated search results */
+.search-dd-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.search-dd-item:hover,
+.search-dd-result-target {
+  background: var(--surface-secondary);
+}
+
+.search-dd-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--icon-secondary);
+}
+
+.search-dd-name {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-medium);
+}
+
+.search-dd-ecosystem {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-tertiary);
+}
+
+
+/* ================================================
+   COMMIT DIALOG
+   ================================================ */
+/* v2 MassRefactor: MUI Dialog fullWidth maxWidth="md" (~900px), fixed full-viewport scrim */
+.commit-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 41, 55, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
+  padding: 32px 16px;
+}
+
+.commit-dialog {
+  background: var(--surface-primary);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ClosableDialogTitle: title + X close */
+.commit-dialog-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-secondary);
+  font-family: var(--font-heading);
+  font-size: var(--brand-font-size-500);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.commit-dialog-body {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  overflow-y: auto;
+}
+
+/* DialogContentText intro */
+.commit-dialog-intro {
+  margin: 0;
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.commit-dialog-intro strong {
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+/* FieldsetWithLegend: bordered box with embedded legend label */
+.commit-fieldset {
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--surface-primary);
+}
+
+.commit-fieldset-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px;
+  margin: 0 0 0 -6px;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.commit-fieldset-legend svg {
+  color: var(--icon-secondary);
+  flex-shrink: 0;
+}
+
+/* Nested fieldset uses a tinted background to read as a sub-section */
+.commit-fieldset-nested {
+  background: var(--surface-secondary);
+  border-color: var(--border-secondary);
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  gap: var(--space-2);
+}
+
+.commit-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.commit-field-label {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: var(--brand-line-height-200);
+  color: var(--content-heading);
+}
+
+.commit-field-helper {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-100);
+  line-height: var(--brand-line-height-100);
+  color: var(--text-tertiary);
+}
+
+.commit-field-input {
+  height: 36px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 0 var(--space-3);
+  font-size: var(--brand-font-size-300);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--surface-primary);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.commit-field-input:focus {
+  border-color: var(--border-focus);
+}
+
+.commit-field-input.mono {
+  font-family: var(--font-code);
+  font-size: var(--brand-font-size-200);
+}
+
+.commit-field-textarea {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--brand-font-size-300);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--surface-primary);
+  outline: none;
+  resize: none;
+  transition: border-color var(--transition-fast);
+}
+
+.commit-field-textarea:focus {
+  border-color: var(--border-focus);
+}
+
+.commit-field-select {
+  height: 36px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: 0 var(--space-3);
+  font-size: var(--brand-font-size-300);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--surface-primary);
+  outline: none;
+  appearance: auto;
+}
+
+.commit-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.commit-checkbox-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.commit-checkbox-item input[type="checkbox"] {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.commit-checkbox-item label {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  line-height: var(--brand-line-height-200);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.commit-checkbox-item .commit-field-helper {
+  margin-top: 1px;
+}
+
+.commit-dialog-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  background: var(--surface-secondary);
+}
+
+/* ================================================
+   COMMIT RESULTS PAGE
+   v2 CommitJobSummary: row of InformationBox cells, each = label/value/caption
+   ================================================ */
+.commit-results-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin: var(--space-2) 0 0;
+}
+
+.commit-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 4px;
+  row-gap: var(--space-3);
+  padding: var(--space-3) 0;
+  align-items: flex-start;
+}
+
+.commit-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 130px;
+  padding: 0 var(--space-3);
+  border-left: 1px solid var(--border-secondary);
+}
+
+.commit-info-box:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.commit-info-label {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-secondary);
+}
+
+.commit-info-value {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-400);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.commit-info-value-success {
+  color: var(--text-success);
+}
+
+/* NeoButton tertiary pattern — see .neo-link */
+.commit-info-link {
+  color: var(--brand-digital-blue-500);
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.commit-info-link:hover {
+  color: var(--brand-digital-blue-600);
+}
+
+.commit-info-link:active {
+  color: var(--brand-digital-blue-800);
+}
+
+.commit-info-caption {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  color: var(--text-secondary);
+}
+
+/* Progress bar that sits inside the Status info box */
+.commit-info-bar {
+  margin-top: 4px;
+  height: 6px;
+  background: var(--surface-secondary);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.commit-info-fill {
+  height: 100%;
+  background: var(--brand-green-600);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+/* Slight refinement to the results table inside the Commits tab */
+.commit-results-table {
+  margin-top: var(--space-2);
+}
+
+/* v2 CommitJobToolbar — NeoToolbar wraps a quick-filter input + ToolbarActions */
+.commit-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0 var(--space-2);
+  flex-wrap: wrap;
+}
+
+.commit-toolbar-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-full);
+  background: var(--surface-primary);
+  color: var(--text-secondary);
+  min-width: 240px;
+}
+
+.commit-toolbar-filter input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.commit-toolbar-filter input::placeholder {
+  color: var(--content-placeholder);
+}
+
+.commit-toolbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* Compact secondary buttons inside toolbar (smaller than the default neo-btn) */
+.commit-toolbar-btn {
+  height: 32px;
+  padding: 0 12px;
+  font-size: var(--brand-font-size-300);
+}
+
+/* Highlighted primary toolbar button (Export in v2) — blue border + blue text */
+.commit-toolbar-btn-primary {
+  color: var(--brand-digital-blue-600);
+  border-color: var(--brand-digital-blue-500);
+}
+
+.commit-toolbar-btn-primary:hover {
+  background: var(--brand-digital-blue-100);
+  border-color: var(--brand-digital-blue-600);
+}
+
+/* "Actions" column header — minimal weight (most rows show only an icon button) */
+.commit-col-actions-head {
+  width: 80px;
+}
+
+/* Commit results table — fixed-width columns for checkbox/origin/actions */
+.commit-col-check {
+  width: 36px;
+  text-align: center;
+}
+
+.commit-col-check input {
+  cursor: pointer;
+}
+
+.commit-col-origin {
+  width: 60px;
+  text-align: center;
+  color: var(--icon-secondary);
+}
+
+.commit-col-origin svg {
+  vertical-align: middle;
+}
+
+.commit-col-actions {
+  width: 48px;
+  text-align: right;
+}
+
+/* Monospace base-branch chip (matches v2's "monospace" cellClassName) */
+.commit-base-branch {
+  font-family: var(--font-code);
+  font-size: var(--brand-font-size-200);
+  background: var(--brand-grey-200);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+/* ================================================
+   DATA TABLE (shared pattern for Repos & Activity)
+   ================================================ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.data-table thead {
+  background: var(--brand-grey-100);
+}
+
+.data-table th {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  line-height: var(--brand-line-height-300);
+  color: var(--brand-grey-600);
+  text-align: left;
+  padding: 10px var(--space-4);
+  border-bottom: 1px solid var(--border-primary);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-regular);
+  line-height: var(--brand-line-height-300);
+  color: var(--brand-grey-900);
+  border-bottom: 1px solid var(--brand-grey-200);
+  vertical-align: middle;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover td {
+  background: var(--brand-grey-100);
+}
+
+/* ================================================
+   REPOSITORIES PAGE
+   ================================================ */
+.repo-origin-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.repo-name-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--brand-digital-blue-500);
+}
+
+.ingestion-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--surface-success-filled);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ================================================
+   ACTIVITY PAGE
+   ================================================ */
+.activity-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.activity-dot.recipe-run {
+  background: var(--activity-recipe-run);
+}
+
+.activity-dot.commit-job {
+  background: var(--activity-commit-job);
+}
+
+/* NeoBadge — all variants share padding/radius/font; bg+text+border vary by intent */
+.activity-type-badge,
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.activity-type-badge.recipe-run,
+.status-badge.complete {
+  background: var(--surface-success);
+  color: var(--text-success);
+  border-color: rgba(76, 167, 90, 0.5);
+}
+
+.activity-type-badge.commit,
+.status-badge.running {
+  background: var(--surface-information);
+  color: var(--text-information);
+  border-color: rgba(47, 66, 255, 0.5);
+}
+
+.activity-row-mine {
+  position: relative;
+}
+
+.activity-row-mine td {
+  background: var(--surface-primary-hover) !important;
+  font-weight: var(--brand-font-weight-medium);
+}
+
+.activity-row-mine td:first-child {
+  border-left: 3px solid var(--surface-primary-filled);
+}
+
+.run-by-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ================================================
+   RECIPE DETAIL PAGE
+   ================================================ */
+.breadcrumb {
+  font-size: var(--brand-font-size-200);
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* All link-like elements follow NeoButton variant="tertiary":
+   transparent bg, no border/padding, digital-blue default,
+   digital-blue-600 hover, digital-blue-800 active. No underline.
+   Applied via .neo-link or matched by individual link classes below. */
+.neo-link,
+.breadcrumb a {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--brand-digital-blue-500);
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.neo-link:hover,
+.breadcrumb a:hover {
+  color: var(--brand-digital-blue-600);
+}
+
+.neo-link:active,
+.breadcrumb a:active {
+  color: var(--brand-digital-blue-800);
+}
+
+.breadcrumb-sep {
+  color: var(--text-disabled);
+}
+
+/* ===== RECIPE DETAIL — v2 layout =====
+   - Stack of cards (1px primary border, 4px radius, 8px padding)
+   - Top card: icon + h2 title, description, recipe ID pill, action buttons,
+     "Will run on X" caption */
+.recipe-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 1200px;
+}
+
+.recipe-card {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  background: var(--surface-primary);
+}
+
+.recipe-card + .recipe-card {
+  margin-top: 0;
+}
+
+.recipe-card-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: var(--space-2) 0;
+}
+
+.recipe-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.recipe-card-icon svg {
+  width: 56px;
+  height: 56px;
+}
+
+.recipe-card-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.recipe-card-desc {
+  max-width: 800px;
+  font-size: var(--brand-font-size-400);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-3);
+  padding: 0 var(--space-2);
+}
+
+/* v2 RecipeIdPill: full pill (999px), 14px monospace, neo grey[100] bg, 8/16 padding.
+   Note: neo-design colors.grey[100] = #F3F4F6 which is my --brand-grey-200 alias. */
+.recipe-id-pill {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--brand-grey-200);
+  border-radius: var(--radius-full);
+  border: none;
+  font-family: var(--font-code);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 150ms ease;
+  margin: 0 var(--space-2) var(--space-3);
+  max-width: max-content;
+}
+
+.recipe-id-pill:hover {
+  background: var(--brand-grey-300);
+}
+
+.recipe-id-text {
+  user-select: all;
+}
+
+.recipe-id-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Button row */
+.recipe-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2) var(--space-2);
+}
+
+/* NeoButton primary: filled digital-blue with white text/icon */
+.neo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  border: 1px solid transparent;
+  user-select: none;
+  line-height: 1;
+}
+
+.neo-btn-primary {
+  background: var(--surface-primary-filled);
+  color: var(--text-on-primary);
+  border-color: var(--surface-primary-filled);
+}
+
+.neo-btn-primary:hover {
+  background: var(--surface-primary-filled-hover);
+  border-color: var(--surface-primary-filled-hover);
+}
+
+.neo-btn-secondary {
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  border-color: var(--border-secondary);
+}
+
+.neo-btn-secondary:hover {
+  background: var(--brand-grey-200);
+  border-color: var(--border-primary);
+}
+
+.neo-btn svg {
+  flex-shrink: 0;
+}
+
+/* "Will run on X repositories from the {org} organization" caption */
+.recipe-run-caption {
+  padding: 0 var(--space-2) var(--space-1);
+  font-size: var(--brand-font-size-200);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.recipe-run-caption strong {
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+/* Section titles inside Preconditions / Recipe list cards */
+.recipe-section-title {
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  padding: var(--space-2);
+}
+
+/* Recipe table (Preconditions + Recipe list) */
+.recipe-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--brand-font-size-300);
+}
+
+.recipe-table th {
+  text-align: left;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  padding: 12px var(--space-2);
+  background: var(--surface-datagrid-header);
+  border-top: 1px solid var(--border-secondary);
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.recipe-table td {
+  padding: 14px var(--space-2);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.recipe-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.recipe-table tbody tr:hover {
+  background: var(--surface-primary-active);
+}
+
+.recipe-table-tags {
+  width: 200px;
+}
+
+.recipe-table-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+.recipe-row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-secondary);
+  flex-shrink: 0;
+}
+
+/* RSPEC-#### chip — NeoBadge neutral with 50%-alpha border */
+.recipe-rspec-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-family: var(--font-code);
+  font-size: var(--brand-font-size-200);
+  color: var(--brand-grey-800);
+  background: var(--brand-grey-200);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  border-radius: 999px;
+}
+
+/* ================================================
+   RESULTS PAGE
+   ================================================ */
+/* ===== Results page root + header ===== */
+.results-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 600px;
+  position: relative;
+}
+
+.results-page-head {
+  padding: var(--space-4) var(--space-5) var(--space-3);
+}
+
+.results-page-title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.results-page-subtitle {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.results-progress-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.results-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--surface-secondary);
+  border-radius: 999px;
+  overflow: hidden;
+  max-width: 400px;
+}
+
+.results-progress-fill {
+  height: 100%;
+  background: var(--brand-green-600);
+  border-radius: 999px;
+  transition: width 200ms ease;
+}
+
+.results-progress-status {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-medium);
+}
+
+/* ===== Tabs row ===== */
+.results-tabs-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border-secondary);
+  padding: 0 var(--space-5);
+  background: var(--surface-primary);
+}
+
+.results-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.results-tab {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-regular);
+  line-height: var(--brand-line-height-300);
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  margin-bottom: -1px;
+}
+
+.results-tab:hover {
+  color: var(--text-primary);
+}
+
+.results-tab.active {
+  color: var(--brand-digital-blue-500);
+  font-weight: var(--brand-font-weight-semibold);
+  border-bottom-color: var(--brand-digital-blue-500);
+}
+
+.results-tab-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.results-icon-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.results-icon-btn:hover {
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+/* ===== Split view ===== */
+.results-split {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.results-left {
+  border-right: 1px solid var(--border-secondary);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.results-left-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-3) var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.results-left-footer {
+  padding: var(--space-3);
+  border-top: 1px solid var(--border-secondary);
+  background: var(--surface-primary);
+  display: flex;
+  justify-content: center;
+}
+
+.results-left-footer .commit-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ===== Left panel sections ===== */
+.results-disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  padding: 4px 0;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.results-disclosure svg {
+  color: var(--icon-secondary);
+  flex-shrink: 0;
+}
+
+.results-summary-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Single-column stat list: label left, value right.
+   2-col grid in a 360px panel was too tight; labels like "Repositories with
+   results" kept wrapping to 3 lines. */
+.results-summary-grid {
+  display: flex;
+  flex-direction: column;
+  padding: 0 4px;
+}
+
+.results-summary-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--brand-font-size-300);
+  padding: 4px 0;
+}
+
+.results-summary-label {
+  color: var(--text-secondary);
+}
+
+.results-summary-value {
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-semibold);
+  text-align: right;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Filter pills + search row */
+.results-filter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding-right: 4px;
+}
+
+.results-pill-group {
+  display: inline-flex;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: var(--surface-primary);
+}
+
+.results-pill {
+  border: none;
+  background: transparent;
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.results-pill + .results-pill {
+  border-left: 1px solid var(--border-secondary);
+}
+
+.results-pill:hover {
+  background: var(--brand-grey-200);
+  color: var(--text-primary);
+}
+
+.results-pill.active {
+  background: var(--brand-digital-blue-100);
+  color: var(--brand-digital-blue-700);
+}
+
+.results-search-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-full);
+  background: var(--surface-primary);
+  color: var(--text-secondary);
+  font-size: var(--brand-font-size-300);
+  cursor: pointer;
+  flex: 1;
+  min-width: 110px;
+}
+
+.results-search-pill > span {
+  flex: 1;
+}
+
+/* ===== Results tree ===== */
+.results-tree {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border-secondary);
+  padding-top: var(--space-2);
+}
+
+.results-tree-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 4px;
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.results-tree-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px;
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+}
+
+.results-tree-toggle {
+  border: none;
+  background: transparent;
+  color: var(--icon-secondary);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+
+.results-tree-group-name {
+  flex: 1;
+  font-weight: var(--brand-font-weight-medium);
+}
+
+/* v2 WhyIsThisMarked uses an MUI Drawer anchored right — full viewport height,
+   overlays content (doesn't push the diff over), ~1/3 viewport width. */
+.results-recipe-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 33vw;
+  min-width: 360px;
+  max-width: 560px;
+  background: var(--surface-primary);
+  border-left: 1px solid var(--border-secondary);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 1100;
+}
+
+.recipe-drawer-header {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.recipe-drawer-title {
+  font-size: var(--brand-font-size-400);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.recipe-drawer-list {
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Root recipe (parent card) */
+.recipe-drawer-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--surface-primary);
+}
+
+.recipe-drawer-icon {
+  color: var(--icon-secondary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Inherited sub-recipe (indented, arrow indicator) */
+.recipe-drawer-sub {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 12px 6px 24px;
+}
+
+.recipe-drawer-arrow {
+  color: var(--icon-tertiary);
+  font-size: 14px;
+  line-height: 1;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.recipe-drawer-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.recipe-drawer-name {
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.recipe-drawer-id {
+  font-size: var(--brand-font-size-200);
+  color: var(--text-secondary);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.recipe-drawer-item .recipe-drawer-id {
+  font-family: var(--font-code);
+  color: var(--text-tertiary);
+  word-break: break-all;
+}
+
+/* Repo rows inside the Results tree (v2 style: status icon + name + count) */
+.results-tree-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  font-size: var(--brand-font-size-300);
+  border-radius: var(--radius-sm);
+}
+
+.results-tree-item:hover {
+  background: var(--surface-secondary);
+}
+
+.results-tree-item.selected {
+  background: var(--surface-primary-active);
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+.results-tree-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.results-tree-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.results-tree-checkbox.checked {
+  background: var(--surface-primary-filled);
+  color: white;
+}
+
+.results-tree-checkbox.unchecked {
+  border: 1.5px solid var(--border-secondary);
+  background: var(--surface-primary);
+}
+
+.results-tree-name {
+  flex: 1;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "N results" link in results tree — tertiary blue, no underline */
+.results-tree-count {
+  font-size: var(--brand-font-size-200);
+  color: var(--brand-digital-blue-500);
+  white-space: nowrap;
+  font-weight: var(--brand-font-weight-medium);
+  cursor: pointer;
+  transition: color 150ms ease;
+}
+
+.results-tree-count:hover {
+  color: var(--brand-digital-blue-600);
+}
+
+/* ===== Right panel: repo header + diff ===== */
+.results-right {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-primary);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.results-right-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  /* Extra right padding so the "Commit only selected results" pill doesn't
+     sit flush against the panel edge */
+  padding: 10px var(--space-5) 10px var(--space-4);
+  border-bottom: 1px solid var(--border-secondary);
+  flex-wrap: wrap;
+}
+
+.results-right-repo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--brand-font-size-400);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.results-right-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.results-right-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.results-right-action:hover {
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+.results-right-action-primary {
+  color: var(--brand-digital-blue-600);
+  border: 1px solid var(--brand-digital-blue-500);
+  border-radius: var(--radius-full);
+}
+
+.results-right-action-primary:hover {
+  background: var(--brand-digital-blue-100);
+  color: var(--brand-digital-blue-700);
+}
+
+/* Diff view inside the right panel — flush, no outer border */
+.diff-placeholder {
+  background: var(--surface-primary);
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.diff-header {
+  padding: var(--space-2) var(--space-4);
+  background: var(--surface-secondary);
+  border-bottom: 1px solid var(--border-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-primary);
+  min-width: 0;
+}
+
+.diff-header > svg {
+  flex-shrink: 0;
+}
+
+/* Long file paths truncate with ellipsis rather than overflow the panel */
+.diff-file-path {
+  font-family: var(--font-code);
+  font-size: var(--brand-font-size-200);
+  color: var(--text-secondary);
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.diff-content {
+  font-family: var(--font-code);
+  font-size: var(--brand-font-size-200);
+  line-height: 1.7;
+  padding: 0;
+}
+
+.diff-line {
+  display: flex;
+  padding: 0 var(--space-4);
+  min-height: 22px;
+}
+
+.diff-line-num {
+  width: 40px;
+  text-align: right;
+  color: var(--text-tertiary);
+  user-select: none;
+  flex-shrink: 0;
+  padding-right: var(--space-2);
+}
+
+.diff-line-content {
+  flex: 1;
+  padding-left: var(--space-2);
+  white-space: pre;
+}
+
+.diff-line.added {
+  background: var(--surface-success);
+}
+
+.diff-line.added .diff-line-content {
+  color: var(--brand-green-800);
+}
+
+.diff-line.removed {
+  background: var(--surface-error);
+}
+
+.diff-line.removed .diff-line-content {
+  color: var(--brand-red-700);
+}
+
+.diff-line.context .diff-line-content {
+  color: var(--text-secondary);
+}
+
+/* ================================================
+   EMPTY STATE
+   ================================================ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+  color: var(--text-tertiary);
+  font-size: var(--brand-font-size-300);
+  gap: var(--space-3);
+}
+
+
+/* ================================================
+   WELCOME MODAL
+   ================================================ */
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.welcome-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.welcome-card {
+  position: relative;
+  background: var(--surface-primary);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8) 36px;
+  width: 480px;
+  text-align: center;
+  z-index: 1;
+  box-shadow: var(--shadow-xl);
+}
+
+.welcome-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-4);
+}
+
+.welcome-card h2 {
+  font-family: var(--font-heading);
+  font-size: var(--brand-font-size-700);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--content-heading);
+  line-height: var(--brand-line-height-400);
+  margin-bottom: var(--space-2);
+}
+
+.welcome-card > p {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  color: var(--content-body);
+  line-height: var(--brand-line-height-300);
+  margin-bottom: var(--space-6);
+}
+
+
+.welcome-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.wb-primary {
+  padding: var(--space-3) var(--space-5);
+  border-radius: 999px;
+  border: none;
+  background: var(--brand-digital-blue-500);
+  color: var(--text-on-primary);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: var(--brand-line-height-300);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.wb-primary:hover {
+  background: var(--brand-digital-blue-700);
+}
+
+.wb-secondary {
+  padding: var(--space-2) var(--space-5);
+  border-radius: 999px;
+  border: none;
+  background: none;
+  color: var(--content-caption);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  line-height: var(--brand-line-height-200);
+  cursor: pointer;
+}
+
+.wb-secondary:hover {
+  color: var(--text-secondary);
+}
+
+/* ================================================
+   TOUR PROGRESS BAR
+   ================================================ */
+.tour-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: var(--surface-primary-hover);
+  border-top: 1px solid var(--surface-primary-pressed);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-5);
+  gap: var(--space-2);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  z-index: 4;
+}
+
+.progress-dots {
+  display: flex;
+  gap: 3px;
+  margin-left: var(--space-1);
+}
+
+.progress-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full);
+  background: var(--border-primary);
+}
+
+.progress-dot.done { background: var(--surface-primary-filled); }
+.progress-dot.current { background: var(--brand-digital-blue-500); }
+
+.progress-dismiss {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+/* ================================================
+   JOYRIDE CUSTOM TOOLTIP
+   ================================================ */
+.joyride-tooltip {
+  background: var(--surface-primary) !important;
+  border-radius: var(--radius-xl) !important;
+  padding: var(--space-5) var(--space-6) !important;
+  box-shadow: var(--shadow-xl) !important;
+  max-width: 340px;
+}
+
+.joyride-tooltip__step {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-100);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--brand-digital-blue-500);
+  letter-spacing: 0.4px;
+  margin-bottom: 5px;
+}
+
+.joyride-tooltip__title {
+  font-family: var(--font-heading);
+  font-size: var(--brand-font-size-400);
+  font-weight: var(--brand-font-weight-semibold);
+  line-height: var(--brand-line-height-300);
+  color: var(--content-heading);
+  margin-bottom: 5px;
+}
+
+.joyride-tooltip__content {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  color: var(--content-body);
+  line-height: var(--brand-line-height-300);
+  margin-bottom: var(--space-4);
+}
+
+.joyride-tooltip__content strong {
+  color: var(--content-heading);
+  font-weight: var(--brand-font-weight-semibold);
+}
+
+.joyride-tooltip__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.joyride-tooltip__btn-next {
+  padding: 7px var(--space-4);
+  border-radius: 999px;
+  border: none;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: var(--brand-line-height-200);
+  background: var(--brand-digital-blue-500);
+  color: var(--text-on-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.joyride-tooltip__btn-next:hover {
+  background: var(--brand-digital-blue-700);
+}
+
+.joyride-tooltip__btn-skip {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  line-height: var(--brand-line-height-200);
+  color: var(--content-caption);
+  background: none;
+  border: none;
+  padding: 7px var(--space-3);
+  cursor: pointer;
+}
+
+.joyride-tooltip__btn-skip:hover {
+  color: var(--content-body);
+}
+
+.joyride-tooltip__dots {
+  display: flex;
+  gap: var(--space-1);
+  margin-left: auto;
+}
+
+.joyride-tooltip__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full);
+  background: var(--border-primary);
+}
+
+.joyride-tooltip__dot.active {
+  background: var(--surface-primary-filled);
+  width: 16px;
+  border-radius: 3px;
+}
+
+.joyride-tooltip__dot.done {
+  background: var(--surface-primary-filled);
+}
+
+/* Wide tooltip (step 6 review) */
+.joyride-tooltip--wide {
+  max-width: 520px !important;
+}
+
+/* Next steps tooltip */
+.joyride-tooltip--next-steps {
+  max-width: 420px !important;
+}
+
+/* Neo motion polish for Joyride */
+.neo-joyride-tooltip {
+  animation: neo-tooltip-enter 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes neo-tooltip-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.next-steps-content p {
+  margin: 0 0 var(--space-3) 0;
+}
+
+.next-steps-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.next-step-link {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-secondary);
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--transition-fast);
+}
+
+.next-step-link:hover {
+  background: var(--surface-tertiary);
+}
+
+.next-step-link > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.next-step-link strong {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--content-heading);
+  line-height: var(--brand-line-height-200);
+}
+
+.next-step-link > div > span {
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  color: var(--content-caption);
+  line-height: var(--brand-line-height-200);
+}
+
+.next-step-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-digital-blue-100);
+}
+
+.next-step-icon-viz {
+  background: var(--brand-digital-blue-100);
+}
+
+.next-step-icon-dev {
+  background: #E8F5E9;
+}
+
+.next-step-icon-builder {
+  background: #FFF3E0;
+}
+
+/* Debug panel */
+.debug-panel {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: var(--font-code);
+  font-size: 11px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  max-height: 90vh;
+  overflow-y: auto;
+  min-width: 180px;
+}
+
+.debug-panel-title {
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.debug-panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.debug-panel button {
+  background: #2a2a40;
+  border: 1px solid #3a3a55;
+  color: #ccc;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-code);
+  font-size: 10px;
+  text-align: left;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+
+.debug-panel button:hover {
+  background: #3a3a60;
+  color: #fff;
+}
+
+.debug-panel button.debug-active {
+  background: #2F42FF;
+  border-color: #2F42FF;
+  color: #fff;
+}
+
+.debug-toggle {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  z-index: 99999;
+  background: #1a1a2e;
+  color: #888;
+  border: 1px solid #3a3a55;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: var(--font-code);
+  font-size: 10px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.debug-toggle:hover {
+  opacity: 1;
+  color: #fff;
+}
+</style>
+
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@19",
+    "react/jsx-runtime": "https://esm.sh/react@19/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@19",
+    "react-dom/client": "https://esm.sh/react-dom@19/client",
+    "react-joyride": "https://esm.sh/react-joyride@2?external=react,react-dom",
+    "htm": "https://esm.sh/htm@3",
+    "framer-motion": "https://esm.sh/framer-motion@11?external=react,react-dom"
+  }
+}
+</script>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="module">
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { createRoot } from 'react-dom/client';
+import Joyride from 'react-joyride';
+import htm from 'htm';
+import { motion } from 'framer-motion';
+
+const html = htm.bind(React.createElement);
+
+// ============================================================
+// ICONS — Lucide-style SVG components matching real SaaS
+// ============================================================
+function Icon({ size = 22, stroke = 'currentColor', strokeWidth = 1.75, fill = 'none', children, className }) {
+  return html`<svg width=${size} height=${size} viewBox="0 0 24 24" fill=${fill} stroke=${stroke} strokeWidth=${strokeWidth} strokeLinecap="round" strokeLinejoin="round" className=${className || ''}>${children}</svg>`;
+}
+
+const icons = {
+  // Moderne logo mark
+  moderneLogo: (s) => html`
+    <svg width=${s || 32} height=${s || 32} viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="8" fill="var(--surface-primary-filled)"/>
+      <path d="M7 22V10l5 8 5-8v12" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      <path d="M19 22V10l4 6" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    </svg>
+  `,
+
+  // Nav icons (Lucide)
+  sparkles: (s) => html`<${Icon} size=${s || 22}><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/></${Icon}>`,
+
+  pieChart: (s) => html`<${Icon} size=${s || 22}><path d="M21.21 15.89A10 10 0 118 2.83"/><path d="M22 12A10 10 0 0012 2v10z"/></${Icon}>`,
+
+  globe: (s) => html`<${Icon} size=${s || 22}><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></${Icon}>`,
+
+  blocks: (s) => html`<${Icon} size=${s || 22}><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/></${Icon}>`,
+
+  history: (s) => html`<${Icon} size=${s || 22}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></${Icon}>`,
+
+  folderGit: (s) => html`<${Icon} size=${s || 22}><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/></${Icon}>`,
+
+  layers: (s) => html`<${Icon} size=${s || 22}><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></${Icon}>`,
+
+  packageIcon: (s) => html`<${Icon} size=${s || 22}><path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></${Icon}>`,
+
+  // Changelog (Lucide Activity)
+  activity: (s) => html`<${Icon} size=${s || 22}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></${Icon}>`,
+
+  // More menu kebab
+  ellipsis: (s) => html`<${Icon} size=${s || 22} strokeWidth=${2}><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="19" cy="12" r="1.4" fill="currentColor"/><circle cx="5" cy="12" r="1.4" fill="currentColor"/></${Icon}>`,
+
+  // Results tree status icons (Lucide check-circle / alert-circle)
+  checkCircle: (s) => html`<${Icon} size=${s || 14} stroke="#4CA75A"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></${Icon}>`,
+  alertCircle: (s) => html`<${Icon} size=${s || 14} stroke="#CB3446"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></${Icon}>`,
+
+  // Toolbar icons
+  users: (s) => html`<${Icon} size=${s || 18}><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></${Icon}>`,
+
+  search: (s) => html`<${Icon} size=${s || 18}><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></${Icon}>`,
+
+  settings: (s) => html`<${Icon} size=${s || 18}><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></${Icon}>`,
+
+  circleHelp: (s) => html`<${Icon} size=${s || 18}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></${Icon}>`,
+
+  chevronDown: (s) => html`<${Icon} size=${s || 16} strokeWidth=${2}><path d="M6 9l6 6 6-6"/></${Icon}>`,
+  chevronRight: (s) => html`<${Icon} size=${s || 16} strokeWidth=${2}><path d="M9 18l6-6-6-6"/></${Icon}>`,
+
+  x: (s) => html`<${Icon} size=${s || 18}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></${Icon}>`,
+
+  bookOpen: (s) => html`<${Icon} size=${s || 16}><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></${Icon}>`,
+  externalLink: (s) => html`<${Icon} size=${s || 16}><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></${Icon}>`,
+  messageCircle: (s) => html`<${Icon} size=${s || 16}><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></${Icon}>`,
+  mail: (s) => html`<${Icon} size=${s || 16}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></${Icon}>`,
+
+  // Action icons
+  playCircle: (s, c) => html`<${Icon} size=${s || 16} stroke=${c || 'currentColor'}><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></${Icon}>`,
+
+  plus: (s) => html`<${Icon} size=${s || 16}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></${Icon}>`,
+
+  download: (s, c) => html`<${Icon} size=${s || 14} stroke=${c || 'currentColor'}><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></${Icon}>`,
+
+  gitPullRequest: (s, c) => html`<${Icon} size=${s || 14} stroke=${c || 'currentColor'}><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></${Icon}>`,
+
+  gitCommit: (s, c) => html`<${Icon} size=${s || 14} stroke=${c || 'currentColor'}><circle cx="12" cy="12" r="3"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/></${Icon}>`,
+
+  share: (s) => html`<${Icon} size=${s || 14}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></${Icon}>`,
+
+  refreshCw: (s) => html`<${Icon} size=${s || 14}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></${Icon}>`,
+
+  check: (s, c) => html`<${Icon} size=${s || 10} stroke=${c || '#fff'} strokeWidth=${3}><polyline points="20 6 9 17 4 12"/></${Icon}>`,
+
+  info: (s, c) => html`<${Icon} size=${s || 14} stroke=${c || 'currentColor'}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><line x1="12" y1="8" x2="12.01" y2="8"/></${Icon}>`,
+
+  copy: (s) => html`<${Icon} size=${s || 14}><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></${Icon}>`,
+
+  github: (s) => html`<svg width=${s || 16} height=${s || 16} viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>`,
+
+  fileCode: (s) => html`<${Icon} size=${s || 16}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 13l-2 2 2 2"/><path d="M14 17l2-2-2-2"/></${Icon}>`,
+};
+
+// ============================================================
+// LEFT NAVIGATION RAIL
+// ============================================================
+const navItems = [
+  { id: 'moddy', label: 'Moddy', icon: 'sparkles', badge: 'Beta' },
+  { id: 'devcenter', label: 'DevCenter', icon: 'pieChart' },
+  { id: 'marketplace', label: 'Marketplace', icon: 'globe' },
+  { id: 'builder', label: 'Builder', icon: 'blocks' },
+  { id: 'activity', label: 'Activity', icon: 'history' },
+  { id: 'changelog', label: 'Changelog', icon: 'activity', badge: 'Beta' },
+];
+
+// Overflow items shown inside the More popover at the bottom of the rail.
+const moreItems = [
+  { id: 'repos', label: 'Repositories', icon: 'folderGit' },
+  { id: 'deploy', label: 'Deploy', icon: 'packageIcon' },
+];
+
+function LeftNavigation({ activeItem }) {
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  return html`
+    <nav className="left-nav">
+      <div className="left-nav-top">
+        <div className="nav-home-stack">
+          <div className="nav-item nav-item-home" aria-label="Home">
+            <div className="nav-icon-container" dangerouslySetInnerHTML=${{ __html: '<svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>' }}></div>
+          </div>
+          <span className="nav-version-badge">v2</span>
+        </div>
+        ${navItems.map(item => html`
+          <div key=${item.id} className=${'nav-item' + (activeItem === item.id ? ' active' : '')}>
+            <div className="nav-icon-container">
+              ${icons[item.icon](24)}
+            </div>
+            <span className="nav-label">${item.label}</span>
+            ${item.badge ? html`<span className="nav-badge">${item.badge}</span>` : null}
+          </div>
+        `)}
+        <div className="nav-more-wrapper">
+          <div className=${'nav-item nav-item-more' + (showMoreMenu ? ' active' : '')} onClick=${() => setShowMoreMenu((p) => !p)}>
+            <div className="nav-icon-container">
+              ${icons.ellipsis(24)}
+            </div>
+            <span className="nav-label">More</span>
+          </div>
+          ${showMoreMenu ? html`
+            <div className="nav-more-popover">
+              ${moreItems.map((item, i) => html`
+                <div key=${i} className=${'nav-item' + (activeItem === item.id ? ' active' : '')}>
+                  <div className="nav-icon-container">
+                    ${icons[item.icon](24)}
+                  </div>
+                  <span className="nav-label">${item.label}</span>
+                </div>
+              `)}
+            </div>
+          ` : null}
+        </div>
+      </div>
+    </nav>
+  `;
+}
+
+// ============================================================
+// GLOBAL NAVIGATION BAR
+// ============================================================
+function GlobalNavBar({ orgSelected, orgName, showOrgDropdown, onOrgClick, onOrgSelect, onOrgClose, onSearchClick, onSearchClose, showSearchDropdown, searchQuery, onSearchQueryChange, onSearchResultClick, onStartTour }) {
+  const searchInputRef = useRef(null);
+  const [showHelpMenu, setShowHelpMenu] = useState(false);
+  const [orgSearchQuery, setOrgSearchQuery] = useState('');
+
+  useEffect(() => {
+    if (!showOrgDropdown) setOrgSearchQuery('');
+  }, [showOrgDropdown]);
+
+  const filteredOrgTree = orgSearchQuery.trim()
+    ? orgTree.filter((node) =>
+        node.kind === 'org' &&
+        node.name.toLowerCase().includes(orgSearchQuery.trim().toLowerCase())
+      )
+    : orgTree;
+
+  useEffect(() => {
+    if (showSearchDropdown && searchInputRef.current) {
+      setTimeout(() => searchInputRef.current?.focus(), 200);
+    }
+  }, [showSearchDropdown]);
+
+  return html`
+    <div className="global-nav">
+      <div className="org-selector-wrapper">
+        <div className=${'org-selector' + (orgSelected ? ' selected' : '')} onClick=${onOrgClick}>
+          ${icons.users(18)}
+          <span>${orgSelected ? orgName : 'Select an organization'}</span>
+          ${icons.chevronDown(14)}
+        </div>
+        ${showOrgDropdown ? html`
+          <div className="overlay-scrim" onClick=${onOrgClose}>
+            <div className="org-dropdown" onClick=${(e) => e.stopPropagation()}>
+              <div className="org-dropdown-header">
+                ${icons.search(18)}
+                <input
+                  type="text"
+                  placeholder="Search organizations..."
+                  value=${orgSearchQuery}
+                  onInput=${(e) => setOrgSearchQuery(e.target.value)}
+                />
+                <button className="overlay-close" onClick=${onOrgClose}>
+                  ${icons.x(18)}
+                </button>
+              </div>
+              <div className="org-dropdown-content">
+                ${filteredOrgTree.map((node) => {
+                  const isDefault = node.id === 'default';
+                  const isOrgRow = node.kind === 'org';
+                  const cls = [
+                    'org-tree-row',
+                    node.selected ? 'selected' : '',
+                    isDefault ? 'org-dropdown-item-default' : ''
+                  ].filter(Boolean).join(' ');
+                  const handler = isOrgRow ? () => onOrgSelect(node.name) : undefined;
+                  return html`
+                    <div key=${node.id} className=${cls} onClick=${handler}
+                         style=${{ paddingLeft: (12 + node.depth * 22) + 'px' }}>
+                      <span className="org-tree-toggle">
+                        ${node.expandable ? icons[node.expanded ? 'chevronDown' : 'chevronRight'](14) : null}
+                      </span>
+                      <span className="org-tree-icon">
+                        ${node.kind === 'group' && node.depth === 0 ? icons.globe(16) : icons.users(16)}
+                      </span>
+                      <span className="org-tree-name">${node.name}</span>
+                      ${node.count != null ? html`<span className="org-tree-count">${node.count.toLocaleString()}</span>` : null}
+                    </div>
+                  `;
+                })}
+              </div>
+              <div className="overlay-footer">
+                <div className="overlay-footer-left">
+                  <span className="overlay-footer-hint"><kbd>\u2191\u2193</kbd> Navigate</span>
+                  <span className="overlay-footer-hint"><kbd>Enter</kbd> Select</span>
+                  <span className="overlay-footer-hint"><kbd>Esc</kbd> Close</span>
+                </div>
+                <a className="overlay-footer-link">${icons.settings(14)} Manage user organizations</a>
+              </div>
+            </div>
+          </div>
+        ` : null}
+      </div>
+      <div className="nav-spacer" />
+      <div className="search-input" onClick=${onSearchClick}>
+        ${icons.search(16)}
+        <span>Search recipes</span>
+        <span className="search-input-keys">
+          <kbd>\u2318</kbd><kbd>K</kbd>
+        </span>
+      </div>
+      ${showSearchDropdown ? html`
+        <div className="overlay-scrim" onClick=${onSearchClose}>
+          <div className="search-dropdown" onClick=${(e) => e.stopPropagation()}>
+            <div className="search-dd-header">
+              ${icons.search(18)}
+              <input ref=${searchInputRef} className="search-dd-input-field" type="text" placeholder="Search recipes..." value=${searchQuery} onInput=${(e) => onSearchQueryChange(e.target.value)} />
+              ${searchQuery.length > 0 ? html`<button className="search-dd-clear" onClick=${() => onSearchQueryChange('')}>Clear</button>` : null}
+              <button className="overlay-close" onClick=${onSearchClose}>
+                ${icons.x(18)}
+              </button>
+            </div>
+            ${searchQuery.length >= 3 ? html`
+              <div className="search-dd-content">
+                <div className="search-dd-label">Recipes</div>
+                ${searchResults.map((item, i) => html`
+                  <div key=${i} className=${'search-dd-item' + (item.target ? ' search-dd-result-target' : '')} onClick=${item.target ? onSearchResultClick : undefined}>
+                    <div className="search-dd-icon">${icons.fileCode(16)}</div>
+                    <div className="search-dd-name">${item.name}</div>
+                    ${item.ecosystem ? html`<span className="search-dd-ecosystem">(${item.ecosystem})</span>` : null}
+                  </div>
+                `)}
+              </div>
+            ` : html`
+              <div className="search-dd-empty">
+                <div className="search-dd-empty-title">No recent searches yet</div>
+                <div className="search-dd-empty-sub">Search for recipes to get started.</div>
+              </div>
+            `}
+            <div className="overlay-footer">
+              <div className="overlay-footer-left">
+                <span className="overlay-footer-hint"><kbd>\u2191\u2193</kbd> Navigate</span>
+                <span className="overlay-footer-hint"><kbd>Enter</kbd> Select</span>
+                <span className="overlay-footer-hint"><kbd>Esc</kbd> Close</span>
+              </div>
+              <a className="overlay-footer-link">Search syntax tips</a>
+            </div>
+          </div>
+        </div>
+      ` : null}
+      <div className="nav-actions">
+        <button className="nav-action-btn" aria-label="Admin menu">${icons.settings(20)}</button>
+        <div className="help-menu-wrapper">
+          <button className=${'nav-action-btn' + (showHelpMenu ? ' open' : '')} onClick=${() => setShowHelpMenu((prev) => !prev)} aria-label="Help menu">${icons.circleHelp(20)}</button>
+          ${showHelpMenu ? html`
+            <div className="help-menu">
+              <div className="help-menu-section">
+                <div className="help-menu-item highlight" onClick=${() => { setShowHelpMenu(false); onStartTour(); }}>
+                  ${icons.playCircle(16)} Getting started tour
+                </div>
+              </div>
+              <div className="help-menu-section">
+                <div className="help-menu-label">Resources</div>
+                <div className="help-menu-item">
+                  ${icons.bookOpen(16)} Documentation ${icons.externalLink(12)}
+                </div>
+                <div className="help-menu-item">
+                  ${icons.fileCode(16)} Changelog ${icons.externalLink(12)}
+                </div>
+                <div className="help-menu-item">
+                  ${icons.messageCircle(16)} Feedback
+                </div>
+              </div>
+              <div className="help-menu-section">
+                <div className="help-menu-label">Need more help?</div>
+                <div className="help-menu-item">
+                  ${icons.mail(16)} support@moderne.io
+                </div>
+              </div>
+            </div>
+          ` : null}
+        </div>
+        <button className="nav-action-btn"><div className="avatar">A</div></button>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// PAGE: MARKETPLACE
+// ============================================================
+// Categories shown on the marketplace page \u2014 ordering and counts mirror v2 dev.
+const categories = [
+  { icon: '\u2615', name: 'Java',                              count: '1,741', desc: 'Basic building blocks for transforming Java code.' },
+  { icon: '\ud83e\uddfa', name: 'Picnic',                       count: '1,105', desc: 'Picnic recipes, and more recipes.' },
+  { icon: 'K',  name: 'Kotlin',                                 count: '1,022', desc: 'Recipes to search and transform Kotlin.' },
+  { icon: 'C#', name: 'C#',                                     count: '977',   desc: 'Recipes for C# codebases.' },
+  { icon: '\u26a1', name: 'Quarkus',                            count: '266',   desc: 'Quarkus framework recipes.' },
+  { icon: '\ud83c\udf3f', name: 'Apache',                       count: '216',   desc: 'Apache framework migrations.' },
+  { icon: 'Go', name: 'Go',                                     count: '196',   desc: 'Recipes for Go codebases.' },
+  { icon: '\ud83d\udd27', name: 'Static analysis and remediation', count: '180', desc: 'Remediations for issues identified by SAST tools.' },
+  { icon: '\ud83d\udc0d', name: 'Python',                       count: '136',   desc: 'Recipes for Python codebases.' },
+];
+
+function MarketplacePage() {
+  return html`
+    <div className="content-area market-content">
+      <div className="market-header">
+        <div className="market-title-row">
+          <h1 className="market-title">Recipe marketplace</h1>
+          <span className="market-count-badge">7,242 recipes across 41,459 projects</span>
+        </div>
+        <div className="market-actions">
+          <button className="market-export-btn" type="button">
+            ${icons.download(14, 'currentColor')}
+            <span>Export CSV</span>
+          </button>
+        </div>
+      </div>
+      <div className="market-divider"></div>
+      <div className="market-row-list">
+        ${categories.map((cat, i) => html`
+          <a key=${i} className="market-row" href="#" onClick=${(e) => e.preventDefault()}>
+            <div className="market-row-icon">${cat.icon}</div>
+            <div className="market-row-text">
+              <div className="market-row-name">
+                <span>${cat.name}</span>
+                <span className="market-row-tag">${cat.count}</span>
+              </div>
+              ${cat.desc ? html`<div className="market-row-desc">${cat.desc}</div>` : null}
+            </div>
+            <div className="market-row-trail">${icons.chevronRight(20)}</div>
+          </a>
+        `)}
+      </div>
+      <div className="market-divider"></div>
+    </div>
+  `;
+}
+
+// ============================================================
+// PAGE: MARKETPLACE WITH SEARCH RESULTS
+// ============================================================
+// Recipes shown in the search modal when query length >= 3.
+// First row is the tour target; suffix mirrors v2 ecosystem pattern.
+const searchResults = [
+  { name: 'Common static analysis issues', ecosystem: 'staticanalysis', target: true },
+  { name: 'Find methods that could be static', ecosystem: 'CSharp' },
+  { name: 'Find methods that could be static', ecosystem: 'CodeQuality' },
+  { name: 'Use static import', ecosystem: 'java' },
+  { name: 'Make class static', ecosystem: 'CSharp' },
+  { name: 'Make class static', ecosystem: 'CodeQuality' },
+  { name: 'Use constant instead of field', ecosystem: 'CSharp' },
+  { name: 'Use constant instead of field', ecosystem: 'CodeQuality' },
+];
+
+// Tree shown in the org selector dialog. Mirrors v2 dev org layout with the
+// "Default" entry placed first so the tour selector .org-dropdown-item-default
+// still wins.
+const orgTree = [
+  { id: 'global',   depth: 0, kind: 'group', name: 'Global', expanded: true, expandable: true },
+  { id: 'all',      depth: 1, kind: 'group', name: 'ALL',    expanded: true, expandable: true, count: 41454 },
+  { id: 'default',  depth: 2, kind: 'org',   name: 'Default',  count: 11 },
+  { id: 'jet',      depth: 2, kind: 'org',   name: 'JetBrains', count: 159 },
+  { id: 'mod',      depth: 2, kind: 'group', name: 'Moderne',   count: 266, expanded: true, expandable: true },
+  { id: 'mod-or',   depth: 3, kind: 'org',   name: 'Moderne + OpenRewrite', count: 42, selected: true },
+  { id: 'mod-pub',  depth: 3, kind: 'org',   name: 'Moderne - Public',      count: 9 },
+  { id: 'mod-trn',  depth: 3, kind: 'org',   name: 'Moderne - Training',    count: 11 },
+  { id: 'mod-ai',   depth: 3, kind: 'org',   name: 'Moderne AI',            count: 8 },
+  { id: 'mod-saas', depth: 3, kind: 'group', name: 'Moderne SaaS',          count: 26, expandable: true },
+  { id: 'recipes',  depth: 2, kind: 'org',   name: 'Recipes', count: 33 },
+];
+
+// v2 has no dedicated "marketplace with search open" page — the global search
+// modal overlays the marketplace. Render the marketplace underneath; the search
+// Dialog comes from GlobalNavBar via showSearchDropdown state.
+function MarketplaceSearchPage() {
+  return html`<${MarketplacePage} />`;
+}
+
+// ============================================================
+// PAGE: REPOSITORIES
+// ============================================================
+const repos = [
+  { org: 'Acme Corp', name: 'api-gateway', branch: 'main', ingested: '5 min ago' },
+  { org: 'Acme Corp', name: 'user-service', branch: 'main', ingested: '5 min ago' },
+  { org: 'Acme Corp', name: 'payment-processor', branch: 'main', ingested: '12 min ago' },
+  { org: 'Acme Corp', name: 'inventory-api', branch: 'main', ingested: '12 min ago' },
+  { org: 'Acme Corp', name: 'notification-engine', branch: 'main', ingested: '15 min ago' },
+  { org: 'Acme Corp', name: 'auth-service', branch: 'main', ingested: '15 min ago' },
+  { org: 'Acme Corp', name: 'analytics-pipeline', branch: 'main', ingested: '20 min ago' },
+  { org: 'Acme Corp', name: 'config-server', branch: 'main', ingested: '20 min ago' },
+];
+
+function ReposPage() {
+  return html`
+    <div className="content-area">
+      <div className="page-header">
+        <div className="page-header-row">
+          <div>
+            <div className="page-title">Repositories</div>
+            <div className="page-subtitle">Displaying 47 of 47 repositories</div>
+          </div>
+          <div style=${{ display: 'flex', gap: '8px' }}>
+            <button className="btn btn-sm btn-ghost">${icons.search(14)} Filter</button>
+          </div>
+        </div>
+      </div>
+      <div className="repo-list">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th style=${{ width: '28px' }}></th>
+              <th>Organization</th>
+              <th>Repository</th>
+              <th>Branch</th>
+              <th>Last ingested</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${repos.map((repo, i) => html`
+              <tr key=${i}>
+                <td><span className="ingestion-dot"></span></td>
+                <td style=${{ color: 'var(--text-secondary)', fontSize: 'var(--brand-font-size-200)' }}>${repo.org}</td>
+                <td>
+                  <div className="repo-name-cell">
+                    ${icons.github(16)}
+                    ${repo.name}
+                  </div>
+                </td>
+                <td><code style=${{ fontSize: 'var(--brand-font-size-200)', background: 'var(--surface-secondary)', padding: '2px 6px', borderRadius: '4px', fontFamily: 'var(--font-code)' }}>${repo.branch}</code></td>
+                <td style=${{ color: 'var(--text-tertiary)', fontSize: 'var(--brand-font-size-200)' }}>${repo.ingested}</td>
+              </tr>
+            `)}
+          </tbody>
+        </table>
+        <div style=${{ padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--brand-font-size-200)', color: 'var(--text-tertiary)', background: 'var(--surface-secondary)', borderTop: '1px solid var(--border-primary)', borderBottomLeftRadius: 'var(--radius-xl)', borderBottomRightRadius: 'var(--radius-xl)' }}>
+          Showing 8 of 47 repositories \u2014 all synced and ready
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// PAGE: RECIPE DETAIL
+// ============================================================
+// Static analysis sub-recipes mirrored from the v2 "Recipe list" table on
+// dev.moderne.io for the Common static analysis issues page.
+const recipeListRows = [
+  { name: 'Constructors of an abstract class should not be declared public', tag: 'RSPEC-S5993' },
+  { name: 'Atomic Boolean, Integer, and Long equality checks compare their values', tag: 'RSPEC-S2204' },
+  { name: 'new BigDecimal(double) should not be used', tag: 'RSPEC-S2111' },
+  { name: 'BigDecimal rounding constants to RoundingMode enums', tag: 'RSPEC-S2111' },
+  { name: 'Boolean checks should not be inverted', tag: 'RSPEC-S1940' },
+  { name: 'CaseInsensitive comparisons do not alter case', tag: 'RSPEC-S1157' },
+  { name: 'Catch clause should do more than just rethrow', tag: 'RSPEC-S2737' },
+  { name: 'Chain StringBuilder.append() calls', tag: 'RSPEC-S3024' },
+];
+
+function RecipeDetailPage({ onDryRunClick }) {
+  return html`
+    <div className="content-area">
+      <div className="breadcrumb">
+        <a>Marketplace</a>
+        <span className="breadcrumb-sep">\u203A</span>
+        <span>Common static analysis issues</span>
+      </div>
+      <div className="recipe-stack">
+        <!-- Top card: icon + title, description, recipe ID, action buttons, status caption -->
+        <div className="recipe-card">
+          <div className="recipe-card-head">
+            <div className="recipe-card-icon">${icons.fileCode(36)}</div>
+            <h1 className="recipe-card-title">Common static analysis issues</h1>
+          </div>
+          <p className="recipe-card-desc">Resolve common static analysis issues (also known as SAST issues).</p>
+          <div className="recipe-id-pill">
+            <span className="recipe-id-text">org.openrewrite.staticanalysis.CommonStaticAnalysis</span>
+            <button className="recipe-id-copy" aria-label="Copy recipe ID">${icons.copy(14)}</button>
+          </div>
+          <div className="recipe-action-row">
+            <button className="neo-btn neo-btn-primary dry-run-btn" onClick=${onDryRunClick}>
+              ${icons.playCircle(16, '#fff')}
+              <span>Dry run</span>
+            </button>
+            <button className="neo-btn neo-btn-secondary">
+              ${icons.blocks(16)}
+              <span>Add to Builder</span>
+            </button>
+            <button className="neo-btn neo-btn-secondary">
+              <span>Recipe actions</span>
+              ${icons.chevronDown(14)}
+            </button>
+            <button className="neo-btn neo-btn-secondary">
+              ${icons.settings(16)}
+              <span>API examples</span>
+              ${icons.chevronDown(14)}
+            </button>
+          </div>
+          <div className="recipe-run-caption">
+            Will run on <strong>42</strong> repositories from the <strong>Moderne + OpenRewrite</strong> organization
+          </div>
+        </div>
+
+        <!-- Preconditions card -->
+        <div className="recipe-card">
+          <div className="recipe-section-title">Preconditions</div>
+          <table className="recipe-table">
+            <thead>
+              <tr>
+                <th>Precondition</th>
+                <th className="recipe-table-tags">Tags</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div className="recipe-table-cell">
+                    <span className="recipe-row-icon">${icons.fileCode(18)}</span>
+                    <span>Singleton</span>
+                  </div>
+                </td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Recipe list card -->
+        <div className="recipe-card">
+          <div className="recipe-section-title">Recipe list</div>
+          <table className="recipe-table">
+            <thead>
+              <tr>
+                <th>Recipe</th>
+                <th className="recipe-table-tags">Tags</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${recipeListRows.map((row, i) => html`
+                <tr key=${i}>
+                  <td>
+                    <div className="recipe-table-cell">
+                      <span className="recipe-row-icon">${icons.fileCode(18)}</span>
+                      <span>${row.name}</span>
+                    </div>
+                  </td>
+                  <td className="recipe-table-tags"><span className="recipe-rspec-tag">${row.tag}</span></td>
+                </tr>
+              `)}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// PAGE: ACTIVITY
+// ============================================================
+const activityRows = [
+  { dot: 'recipe-run', name: 'Migrate to Spring Boot 3.x', type: 'Recipe Run', typeCls: 'recipe-run', org: 'Acme Corp', status: 'Complete', runBy: 'You', avatar: true, time: '2 min ago', mine: true },
+  { dot: 'recipe-run', name: 'Upgrade to Java 21', type: 'Recipe Run', typeCls: 'recipe-run', org: 'Acme Corp', status: 'Complete', runBy: 'Marcus T.', time: '2 hrs ago' },
+  { dot: 'commit-job', name: 'Fix CVE-2024-22234', type: 'Commit', typeCls: 'commit', org: 'Acme Corp', status: 'Complete', runBy: 'Priya S.', time: '5 hrs ago' },
+  { dot: 'recipe-run', name: 'Migrate to JUnit 5', type: 'Recipe Run', typeCls: 'recipe-run', org: 'Acme Corp', status: 'Complete', runBy: 'Alex K.', time: '1 day ago' },
+  { dot: 'recipe-run', name: 'Remove unused imports', type: 'Recipe Run', typeCls: 'recipe-run', org: 'Acme Corp', status: 'Complete', runBy: 'Marcus T.', time: '2 days ago' },
+];
+
+function ActivityPage({ onActivityRowClick }) {
+  return html`
+    <div className="content-area">
+      <div className="page-header">
+        <div className="page-title">Activity</div>
+        <div className="page-subtitle">Activity for Acme Corp</div>
+      </div>
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th style=${{ width: '28px' }}></th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Organization</th>
+            <th>Status</th>
+            <th>Run by</th>
+            <th>Start time</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${activityRows.map((row, i) => html`
+            <tr key=${i} className=${row.mine ? 'activity-row-mine' : ''} onClick=${row.mine ? onActivityRowClick : undefined} style=${row.mine ? { cursor: 'pointer' } : undefined}>
+              <td><span className=${'activity-dot ' + row.dot}></span></td>
+              <td><a className="neo-link" style=${{ fontWeight: 'var(--brand-font-weight-medium)' }}>${row.name}</a></td>
+              <td><span className=${'activity-type-badge ' + row.typeCls}>${row.type}</span></td>
+              <td style=${{ color: 'var(--text-secondary)', fontSize: 'var(--brand-font-size-200)' }}>${row.org}</td>
+              <td><span className="status-badge complete">${row.status}</span></td>
+              <td>
+                <div className="run-by-cell">
+                  ${row.avatar ? html`<div className="avatar" style=${{ width: 22, height: 22, fontSize: 9 }}>A</div>` : null}
+                  <span style=${{ color: row.mine ? 'var(--text-primary)' : 'var(--text-secondary)', fontSize: 'var(--brand-font-size-200)' }}>${row.runBy}</span>
+                </div>
+              </td>
+              <td style=${{ color: 'var(--text-tertiary)', fontSize: 'var(--brand-font-size-200)' }}>${row.time}</td>
+            </tr>
+          `)}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ============================================================
+// PAGE: RESULTS (split-view with tabs)
+// ============================================================
+const resultRepos = [
+  { name: 'api-gateway', files: 14, checked: true, selected: true },
+  { name: 'user-service', files: 11, checked: true },
+  { name: 'payment-processor', files: 9, checked: true },
+  { name: 'inventory-api', files: 7, checked: true },
+  { name: 'notification-engine', files: 5, checked: true },
+  { name: 'auth-service', files: 4, checked: true },
+  { name: 'analytics-pipeline', files: 3, checked: false, error: true },
+];
+
+const diffLines = [
+  { type: 'context', num: '1', content: 'package com.acme.gateway;' },
+  { type: 'context', num: '2', content: '' },
+  { type: 'context', num: '3', content: 'import org.springframework.boot.SpringApplication;' },
+  { type: 'removed', num: '4', content: 'import java.util.List;' },
+  { type: 'removed', num: '5', content: 'import java.io.IOException;' },
+  { type: 'context', num: '4', content: 'import org.springframework.web.bind.annotation.*;' },
+  { type: 'context', num: '5', content: '' },
+  { type: 'context', num: '14', content: '    public ResponseEntity<?> handleRequest() {' },
+  { type: 'removed', num: '15', content: '        boolean isValid = (input != null) ? true : false;' },
+  { type: 'added', num: '15', content: '        boolean isValid = input != null;' },
+  { type: 'context', num: '16', content: '' },
+  { type: 'removed', num: '17', content: '        List<String> items = new ArrayList<String>();' },
+  { type: 'added', num: '17', content: '        List<String> items = new ArrayList<>();' },
+  { type: 'context', num: '18', content: '        return ResponseEntity.ok(items);' },
+];
+
+function ResultsPage({ mode, onCommitClick, onWhyClick, onCancelCommit, onCommitSubmit }) {
+  // mode: 'review' = steps 6-7 (diff only), 'drawer' = steps 8-9 (diff + recipe drawer), 'commit' = step 10 (commit dialog)
+  const showRecipeDrawer = mode === 'drawer' || mode === 'commit';
+  const showCommitDialog = mode === 'commit';
+
+  return html`
+    <div className="results-page">
+      <!-- Header section: breadcrumb, title, subtitle, progress bar -->
+      <div className="results-page-head">
+        <div className="breadcrumb" style=${{ marginBottom: 'var(--space-2)' }}>
+          <a>Recent activity</a>
+          <span className="breadcrumb-sep">›</span>
+          <span>Results 20260528101109-Fivdu</span>
+        </div>
+        <h1 className="results-page-title">Common static analysis issues</h1>
+        <div className="results-page-subtitle">Results for Moderne + OpenRewrite</div>
+        <div className="results-progress-row">
+          <div className="results-progress-bar">
+            <div className="results-progress-fill" style=${{ width: '100%' }}></div>
+          </div>
+          <span className="results-progress-status">Finished</span>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div className="results-tabs-row">
+        <div className="results-tabs">
+          <button className="results-tab active">Results</button>
+          <button className="results-tab">Repository status</button>
+          <button className="results-tab">Visualizations</button>
+          <button className="results-tab">Data tables</button>
+        </div>
+        <div className="results-tab-actions">
+          <button className="results-icon-btn" aria-label="Refresh">${icons.refreshCw(16)}</button>
+          <button className="results-icon-btn" aria-label="Share">${icons.share(16)}</button>
+          <button className="results-icon-btn" aria-label="More actions">${icons.ellipsis(16)}</button>
+        </div>
+      </div>
+
+      <!-- Split view -->
+      <div className="results-split">
+        <!-- Left panel: Options, Summary, filter pills, search, results tree, commit button -->
+        <div className="results-left">
+          <div className="results-left-scroll">
+            <button className="results-disclosure">${icons.chevronRight(14)} Options</button>
+
+            <div className="results-summary-section">
+              <button className="results-disclosure open">${icons.chevronDown(14)} Summary</button>
+              <div className="results-summary-grid">
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Started</span>
+                  <span className="results-summary-value">about 8 hours ago</span>
+                </div>
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Files changed</span>
+                  <span className="results-summary-value">1,310</span>
+                </div>
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Running time</span>
+                  <span className="results-summary-value">14m 21s</span>
+                </div>
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Repositories with results</span>
+                  <span className="results-summary-value">38</span>
+                </div>
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Files searched</span>
+                  <span className="results-summary-value">16,733</span>
+                </div>
+                <div className="results-summary-cell">
+                  <span className="results-summary-label">Est. time savings</span>
+                  <span className="results-summary-value">989 hours</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="results-filter-row">
+              <div className="results-pill-group">
+                <button className="results-pill active">All</button>
+                <button className="results-pill">Has results</button>
+                <button className="results-pill">Error</button>
+              </div>
+              <div className="results-search-pill">
+                ${icons.search(14)}
+                <span>Search</span>
+                ${icons.chevronDown(12)}
+              </div>
+            </div>
+
+            <div className="results-tree">
+              <div className="results-tree-head">
+                <span className="results-tree-checkbox checked">${icons.check(10)}</span>
+                <span>Results</span>
+              </div>
+              <div className="results-tree-group">
+                <button className="results-tree-toggle">${icons.chevronDown(12)}</button>
+                <span className="results-tree-checkbox unchecked"></span>
+                <span className="results-tree-group-name">openrewrite</span>
+                <span className="results-tree-count">42 repositories</span>
+              </div>
+              ${resultRepos.map((repo, i) => html`
+                <div key=${i} className=${'results-tree-item' + (repo.selected ? ' selected' : '')}>
+                  <span className=${'results-tree-status ' + (repo.error ? 'error' : 'ok')}>
+                    ${repo.error ? icons.alertCircle(14) : icons.checkCircle(14)}
+                  </span>
+                  <span className="results-tree-name">${repo.name} @ main</span>
+                  <span className="results-tree-count">${repo.files} results</span>
+                </div>
+              `)}
+            </div>
+          </div>
+
+          <!-- Floating commit pill at bottom of left panel -->
+          <div className="results-left-footer">
+            <button className=${'neo-btn neo-btn-primary commit-btn' + (showCommitDialog ? ' pulse' : '')} onClick=${onCommitClick}>
+              ${icons.gitPullRequest(14, '#fff')}
+              <span>Commit all results</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right panel: repo header + diff content -->
+        <div className="results-right">
+          <div className="results-right-head">
+            <div className="results-right-repo">
+              <span>openrewrite/rewrite @ main</span>
+              ${icons.info(14, 'var(--icon-tertiary)')}
+            </div>
+            <div className="results-right-actions">
+              <button className="results-right-action why-change-btn" onClick=${onWhyClick}>
+                ${icons.circleHelp(14)} Why did this change?
+              </button>
+              <button className="results-right-action">${icons.search(14)} Filter</button>
+              <button className="results-right-action">${icons.settings(14)} Settings ${icons.chevronDown(12)}</button>
+              <button className="results-right-action">${icons.x(14)} Collapse all</button>
+              <button className="results-right-action results-right-action-primary">Commit only selected results ${icons.chevronDown(12)}</button>
+            </div>
+          </div>
+          <div className="diff-placeholder">
+            <div className="diff-header">
+              ${icons.fileCode(14)}
+              <span className="diff-file-path">src/main/java/org/openrewrite/RecipeIntrospectionUtils.java</span>
+            </div>
+            <div className="diff-content">
+              ${diffLines.map((line, i) => html`
+                <div key=${i} className=${'diff-line ' + line.type}>
+                  <span className="diff-line-num">${line.num}</span>
+                  <span className="diff-line-content">${(line.type === 'removed' ? '- ' : line.type === 'added' ? '+ ' : '  ') + line.content}</span>
+                </div>
+              `)}
+            </div>
+          </div>
+        </div>
+
+        <!-- Why-did-this-change drawer: right-side overlay panel -->
+        ${showRecipeDrawer ? html`
+          <div className="results-recipe-drawer">
+            <div className="recipe-drawer-header">
+              <div className="recipe-drawer-title">Why did this change?</div>
+              <button className="overlay-close" aria-label="Close drawer">${icons.x(18)}</button>
+            </div>
+            <div className="recipe-drawer-list">
+              <div className="recipe-drawer-item">
+                <div className="recipe-drawer-icon">${icons.fileCode(16)}</div>
+                <div className="recipe-drawer-info">
+                  <div className="recipe-drawer-name">Common static analysis issues</div>
+                  <div className="recipe-drawer-id">org.openrewrite.staticanalysis.CommonStaticAnalysis</div>
+                </div>
+              </div>
+              <div className="recipe-drawer-sub">
+                <div className="recipe-drawer-arrow">↳</div>
+                <div className="recipe-drawer-info">
+                  <div className="recipe-drawer-name">Simplify boolean return</div>
+                  <div className="recipe-drawer-id">Replace if/else returning true/false with the boolean expression itself.</div>
+                </div>
+              </div>
+              <div className="recipe-drawer-sub">
+                <div className="recipe-drawer-arrow">↳</div>
+                <div className="recipe-drawer-info">
+                  <div className="recipe-drawer-name">Use diamond operator</div>
+                  <div className="recipe-drawer-id">Use the diamond operator on generic constructor calls.</div>
+                </div>
+              </div>
+              <div className="recipe-drawer-sub">
+                <div className="recipe-drawer-arrow">↳</div>
+                <div className="recipe-drawer-info">
+                  <div className="recipe-drawer-name">Remove unused imports</div>
+                  <div className="recipe-drawer-id">Removes import statements that aren't referenced.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ` : null}
+      </div>
+
+      <!-- Commit dialog — mirrors v2 MassRefactor + CommitForm structure -->
+      ${showCommitDialog ? html`
+        <div className="commit-dialog-overlay">
+          <div className="commit-dialog">
+            <!-- ClosableDialogTitle -->
+            <div className="commit-dialog-title">
+              <span>Commit to all selected results</span>
+              <button className="overlay-close" onClick=${onCancelCommit} aria-label="Close commit dialog">${icons.x(18)}</button>
+            </div>
+            <div className="commit-dialog-body">
+              <!-- DialogContentText intro -->
+              <p className="commit-dialog-intro">
+                Commit results <strong>for each selected repository</strong> with the following settings:
+              </p>
+
+              <!-- Commit strategy -->
+              <div className="commit-field">
+                <label className="commit-field-label">Commit strategy</label>
+                <select className="commit-field-select">
+                  <option>Create a pull request</option>
+                  <option>Commit directly</option>
+                  <option>Create a branch</option>
+                  <option>Create a fork</option>
+                  <option>Create a pull request from a fork</option>
+                  <option>No commit</option>
+                </select>
+              </div>
+
+              <!-- Commit options fieldset -->
+              <fieldset className="commit-fieldset">
+                <legend className="commit-fieldset-legend">${icons.gitCommit(14)} Commit options</legend>
+                <div className="commit-field">
+                  <label className="commit-field-label">Branch name</label>
+                  <input className="commit-field-input mono" type="text" value="feature/common-static-analysis" readOnly />
+                </div>
+                <div className="commit-field">
+                  <label className="commit-field-label">Commit title</label>
+                  <input className="commit-field-input" type="text" value="Common static analysis" readOnly />
+                </div>
+                <div className="commit-field">
+                  <label className="commit-field-label">Extended commit message</label>
+                  <textarea className="commit-field-textarea" rows="2" readOnly>Remove unused imports, simplify boolean expressions,
+and apply diamond operator across the codebase.</textarea>
+                </div>
+              </fieldset>
+
+              <!-- Pull request options fieldset -->
+              <fieldset className="commit-fieldset">
+                <legend className="commit-fieldset-legend">${icons.gitPullRequest(14)} Pull request options</legend>
+                <div className="commit-field">
+                  <label className="commit-field-label">Pull request title</label>
+                  <input className="commit-field-input" type="text" placeholder="Common static analysis" readOnly />
+                  <span className="commit-field-helper">Leave blank to use the commit title.</span>
+                </div>
+                <div className="commit-field">
+                  <label className="commit-field-label">Customize pull request body</label>
+                  <textarea className="commit-field-textarea" rows="2" placeholder="Leave blank to use the extended commit message." readOnly></textarea>
+                </div>
+
+                <!-- Nested Additional options sub-fieldset -->
+                <fieldset className="commit-fieldset commit-fieldset-nested">
+                  <legend className="commit-fieldset-legend">Additional options</legend>
+                  <div className="commit-checkbox-group">
+                    <div className="commit-checkbox-item">
+                      <input type="checkbox" id="reopen-pr" checked readOnly />
+                      <div>
+                        <label htmlFor="reopen-pr">Can reopen closed pull request</label>
+                        <div className="commit-field-helper">If this pull request already exists and has been closed, it will be reopened.</div>
+                      </div>
+                    </div>
+                    <div className="commit-checkbox-item">
+                      <input type="checkbox" id="draft-pr" readOnly />
+                      <div>
+                        <label htmlFor="draft-pr">Create a draft pull request</label>
+                        <div className="commit-field-helper">Not supported by Bitbucket Cloud.</div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+              </fieldset>
+            </div>
+            <div className="commit-dialog-footer">
+              <a className="neo-link" style=${{ marginRight: 'auto', fontSize: 'var(--brand-font-size-300)' }}>See how to run GraphQL</a>
+              <button className="neo-btn neo-btn-secondary" onClick=${onCancelCommit}>Cancel</button>
+              <button className="neo-btn neo-btn-primary" onClick=${onCommitSubmit}>${icons.gitPullRequest(14, '#fff')} <span>Commit</span></button>
+            </div>
+          </div>
+        </div>
+      ` : null}
+    </div>
+  `;
+}
+
+// ============================================================
+// PAGE: COMMIT RESULTS
+// ============================================================
+// Commit results rows mirror the v2 CommitJobResultsTable column shape:
+// Status / PR Status / Organization / Repository / Origin / Base branch / Updated at / Actions
+const commitResultRepos = [
+  { name: 'api-gateway', org: 'openrewrite', status: 'Completed', pr: '#142', prStatus: 'Open',   baseBranch: 'main',   updatedAt: '2 minutes ago' },
+  { name: 'user-service', org: 'openrewrite', status: 'Completed', pr: '#89',  prStatus: 'Open',   baseBranch: 'main',   updatedAt: '2 minutes ago' },
+  { name: 'payment-processor', org: 'openrewrite', status: 'Completed', pr: '#203', prStatus: 'Open',   baseBranch: 'main',   updatedAt: '3 minutes ago' },
+  { name: 'inventory-api', org: 'openrewrite', status: 'Completed', pr: '#67',  prStatus: 'Open',   baseBranch: 'main',   updatedAt: '3 minutes ago' },
+  { name: 'notification-engine', org: 'openrewrite', status: 'Completed', pr: '#31',  prStatus: 'Open',   baseBranch: 'main',   updatedAt: '3 minutes ago' },
+  { name: 'auth-service', org: 'openrewrite', status: 'Completed', pr: '#55',  prStatus: 'Open',   baseBranch: 'main',   updatedAt: '4 minutes ago' },
+];
+
+function CommitResultsPage() {
+  return html`
+    <div className="content-area">
+      <div className="breadcrumb">
+        <a>Recent activity</a>
+        <span className="breadcrumb-sep">›</span>
+        <span>20260528101109-Fivdu</span>
+      </div>
+      <h1 className="commit-results-title">Commit results for: "Common static analysis"</h1>
+
+      <!-- Tabs row (Summary / Commits / Activity) — Commits is the default landing tab in v2 -->
+      <div className="results-tabs-row" style=${{ marginTop: 'var(--space-3)' }}>
+        <div className="results-tabs">
+          <button className="results-tab">Summary</button>
+          <button className="results-tab active">Commits</button>
+          <button className="results-tab">Activity</button>
+        </div>
+      </div>
+
+      <!-- CommitJobToolbar: search + mass action buttons. v2 omits the summary
+           InformationBox row on this page; it lives in the Summary tab only. -->
+      <div className="commit-toolbar">
+        <div className="commit-toolbar-filter">
+          ${icons.search(14)}
+          <input type="text" placeholder="Search..." readOnly />
+        </div>
+        <div className="commit-toolbar-actions">
+          <button className="neo-btn neo-btn-secondary commit-toolbar-btn">
+            ${icons.gitPullRequest(14)}
+            <span>Approve</span>
+          </button>
+          <button className="neo-btn neo-btn-secondary commit-toolbar-btn">
+            ${icons.gitCommit(14)}
+            <span>Merge</span>
+          </button>
+          <button className="neo-btn neo-btn-secondary commit-toolbar-btn">
+            ${icons.x(14)}
+            <span>Close</span>
+          </button>
+          <button className="neo-btn neo-btn-secondary commit-toolbar-btn commit-toolbar-btn-primary">
+            ${icons.download(14)}
+            <span>Export</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- v2 CommitJobResultsTable columns: ☐ | Actions | Commit status | Organization | Repository | Origin | Base branch | Updated at -->
+      <table className="data-table commit-results-table">
+        <thead>
+          <tr>
+            <th className="commit-col-check"><input type="checkbox" readOnly /></th>
+            <th className="commit-col-actions-head">Actions</th>
+            <th>Commit status</th>
+            <th>Organization</th>
+            <th>Repository</th>
+            <th className="commit-col-origin">Origin</th>
+            <th>Base branch</th>
+            <th>Updated at</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${commitResultRepos.map((repo, i) => html`
+            <tr key=${i} className=${'commit-row' + (i === 0 ? ' commit-row-first' : '')}>
+              <td className="commit-col-check"><input type="checkbox" readOnly /></td>
+              <td className="commit-col-actions">
+                <button className="results-icon-btn" aria-label="Row actions">${icons.ellipsis(16)}</button>
+              </td>
+              <td><span className="status-badge complete">${repo.status}</span></td>
+              <td style=${{ color: 'var(--text-secondary)' }}>${repo.org}</td>
+              <td>
+                <a className="neo-link" style=${{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 'var(--brand-font-weight-medium)' }}>
+                  ${icons.info(14, 'var(--brand-digital-blue-500)')}
+                  <span>${repo.name}</span>
+                </a>
+              </td>
+              <td className="commit-col-origin" title="github.com">${icons.github(16)}</td>
+              <td><code className="commit-base-branch">${repo.baseBranch}</code></td>
+              <td style=${{ color: 'var(--text-secondary)', fontSize: 'var(--brand-font-size-200)' }}>${repo.updatedAt}</td>
+            </tr>
+          `)}
+          <tr>
+            <td colspan="8" style=${{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--brand-font-size-100)', color: 'var(--text-tertiary)' }}>+ 40 more repositories…</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ============================================================
+// EMPTY STATE
+// ============================================================
+function EmptyState() {
+  return html`
+    <div className="empty-state">
+      ${icons.users(32)}
+      <div>Select an organization to get started</div>
+    </div>
+  `;
+}
+
+// ============================================================
+// CUSTOM JOYRIDE TOOLTIP
+// ============================================================
+function CustomTooltip({ continuous, index, step, backProps, closeProps, primaryProps, skipProps, tooltipProps, size }) {
+  const isLast = index === size - 1;
+  const requiresAction = step.data?.requiresAction;
+  const isNextSteps = step.data?.isNextSteps;
+  const hl = getHighLevelStep(index);
+
+  if (isNextSteps) {
+    return html`
+      <div ...${tooltipProps} className="neo-joyride-tooltip joyride-tooltip joyride-tooltip--next-steps">
+        ${step.title ? html`<div className="joyride-tooltip__title">${step.title}</div>` : null}
+        <div className="joyride-tooltip__content" dangerouslySetInnerHTML=${{ __html: step.content }}></div>
+        <div className="joyride-tooltip__footer">
+          <button ...${primaryProps} className="joyride-tooltip__btn-next">Done</button>
+          <button ...${skipProps} className="joyride-tooltip__btn-skip">Restart tour</button>
+          <div className="joyride-tooltip__dots">
+            ${Array.from({ length: highLevelSteps.length }, (_, i) => html`
+              <div key=${i} className="joyride-tooltip__dot done"></div>
+            `)}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  const isWide = step.data?.wide;
+  return html`
+    <div ...${tooltipProps} className=${'neo-joyride-tooltip joyride-tooltip' + (isWide ? ' joyride-tooltip--wide' : '')}>
+      <div className="joyride-tooltip__step">STEP ${hl.number} OF ${hl.total}: ${hl.label}</div>
+      ${step.title ? html`<div className="joyride-tooltip__title">${step.title}</div>` : null}
+      <div className="joyride-tooltip__content" dangerouslySetInnerHTML=${{ __html: step.content }}></div>
+      <div className="joyride-tooltip__footer">
+        ${requiresAction ? null : html`
+          <button ...${primaryProps} className="joyride-tooltip__btn-next">${isLast ? 'Got it!' : 'Next'}</button>
+        `}
+        <button ...${skipProps} className="joyride-tooltip__btn-skip">${isLast ? 'Restart tour' : 'Skip tour'}</button>
+        <div className="joyride-tooltip__dots">
+          ${Array.from({ length: hl.total }, (_, i) => html`
+            <div key=${i} className=${'joyride-tooltip__dot' + (i + 1 === hl.number ? ' active' : '') + (i + 1 < hl.number ? ' done' : '')}></div>
+          `)}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// TOUR STEPS
+// ============================================================
+const tourSteps = [
+  {
+    target: '.org-selector',
+    title: 'Select your organization',
+    content: 'In Moderne, an <strong>organization</strong> is a collection of related repositories. Choosing an organization makes it possible to take action on those repositories.<br><br>(You can see the repositories associated with each organization by clicking the <strong>Repositories</strong> tab in the side nav.)<br><br><strong>Click the selector</strong> to see available organizations.',
+    placement: 'bottom-start',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.org-dropdown',
+    title: 'Search and select your organization',
+    content: 'Use the <strong>search bar</strong> to find your organization. Type part of your org name to filter the list, then <strong>click your organization</strong> to select it.<br><br>Your organization determines which repositories you can run recipes on.',
+    placement: 'right',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.search-input',
+    title: 'Search for a recipe',
+    content: 'There are over <strong>5,000 recipes</strong> available in the Moderne Platform. The search bar is the quickest, most powerful way to find the recipe you are looking for.<br><br><strong>Click the search bar</strong> to find a recipe.',
+    placement: 'bottom',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.search-dd-input-field',
+    title: 'Search for the recipe',
+    content: 'Let\'s start by running the <strong>common static analysis</strong> recipe. To do so, type <strong>common static</strong>.',
+    placement: 'bottom',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.search-dd-result-target',
+    title: 'Select the recipe',
+    content: 'This recipe fixes a significant amount of static analysis issues while ensuring your code continues to work as expected.<br><br><strong>Click it</strong> to see the details.',
+    placement: 'bottom',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.dry-run-btn',
+    title: 'Try a dry run first \u2014 nothing changes until you say so',
+    content: '<strong>Nothing is modified until you review and approve.</strong> It\'s completely safe to experiment.<br><br>You might be asked for additional GitHub permissions after you click this button.<br><br><strong>Click Dry Run</strong> to continue.',
+    placement: 'bottom',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.content-wrapper',
+    title: 'Review the changes',
+    content: 'The recipe results page shows a summary of the recipe status, a list of all of the repositories where results were found, and a code block section that shows some of the changes that were made by the recipe. Click any repository to see the <strong>file-by-file diff</strong> of what the recipe would change.',
+    placement: 'bottom',
+    disableBeacon: true,
+    disableOverlay: true,
+    floaterProps: { hideArrow: true },
+    data: { wide: true },
+  },
+  {
+    target: '.why-change-btn',
+    title: 'See why a line changed',
+    content: 'Want to know which recipe modified a specific line? <strong>Click "Why did this change?"</strong> to open the recipe drawer.',
+    placement: 'bottom',
+    disableBeacon: true,
+    spotlightClicks: true,
+    data: { requiresAction: true },
+  },
+  {
+    target: '.results-recipe-drawer',
+    title: 'Why did this change?',
+    content: 'The drawer shows exactly which <strong>recipes triggered each change</strong>, so you always know why a line was modified.',
+    placement: 'left-start',
+    disableBeacon: true,
+  },
+  {
+    target: '.content-wrapper',
+    title: 'You\'re all set!',
+    content: '<div class="next-steps-content"><p>You\'ve completed the getting started tour! When you\'re ready, you can <strong>commit your changes</strong> to create pull requests using the Commit button below. Here are some more things to explore:</p><div class="next-steps-links"><a href="https://docs.moderne.io/user-documentation/moderne-platform/getting-started/visualizations" target="_blank" class="next-step-link"><span class="next-step-icon next-step-icon-viz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F42FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><div><strong>Visualizations</strong><span>See interactive charts and graphs of your recipe results</span></div></a><span class="next-step-link"><span class="next-step-icon next-step-icon-dev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span><div><strong>DevCenter</strong><span>Your dashboard for tracking upgrades, migrations, and security fixes</span></div></span><a href="https://docs.moderne.io/user-documentation/moderne-platform/getting-started/recipe-builder" target="_blank" class="next-step-link"><span class="next-step-icon next-step-icon-builder"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E65100" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span><div><strong>Builder</strong><span>Create custom recipes by combining existing ones</span></div></a></div></div>',
+    placement: 'center',
+    disableBeacon: true,
+    data: { isNextSteps: true },
+  },
+];
+
+// ============================================================
+// HIGH-LEVEL STEP MAPPING (docs-aligned)
+// ============================================================
+const highLevelSteps = [
+  { label: 'Select your organization', range: [0, 1] },
+  { label: 'Find a recipe', range: [2, 4] },
+  { label: 'Run the recipe', range: [5, 5] },
+  { label: 'Review and commit', range: [6, 9] },
+];
+
+function getHighLevelStep(stepIndex) {
+  for (let i = 0; i < highLevelSteps.length; i++) {
+    const [start, end] = highLevelSteps[i].range;
+    if (stepIndex >= start && stepIndex <= end) {
+      return { number: i + 1, total: highLevelSteps.length, label: highLevelSteps[i].label };
+    }
+  }
+  return { number: 1, total: highLevelSteps.length, label: highLevelSteps[0].label };
+}
+
+// ============================================================
+// VIEW-to-STEP MAPPING
+// ============================================================
+const stepToView = {
+  0: 'marketplace',
+  1: 'marketplace',
+  2: 'marketplace',
+  3: 'marketplace',
+  4: 'marketplace',
+  5: 'recipe',
+  6: 'results-review',
+  7: 'results-review',
+  8: 'results-drawer',
+  9: 'results-review',
+};
+
+const stepToSidebar = {
+  0: 'marketplace',
+  1: 'marketplace',
+  2: 'marketplace',
+  3: 'marketplace',
+  4: 'marketplace',
+  5: 'marketplace',
+  6: 'activity',
+  7: 'activity',
+  8: 'activity',
+  9: 'activity',
+};
+
+// ============================================================
+// NEO SPOTLIGHT (framer-motion driven)
+// ============================================================
+function NeoSpotlight({ rect, visible }) {
+  if (!rect) return null;
+  const padding = 6;
+  return html`
+    <${motion.div}
+      initial=${false}
+      animate=${{
+        opacity: visible ? 1 : 0,
+        top: rect.top - padding,
+        left: rect.left - padding,
+        width: rect.width + padding * 2,
+        height: rect.height + padding * 2,
+      }}
+      transition=${{
+        duration: 0.4,
+        ease: [0.4, 0, 0.2, 1],
+        opacity: { duration: 0.2 },
+      }}
+      style=${{
+        position: 'fixed',
+        borderRadius: '10px',
+        /* Dim outside + solid blue ring + soft blue glow halo.
+           No `inset` shadow because the spotlight div sits on top of the target
+           (z-index 9998) and an inset would visibly cover the target's content. */
+        boxShadow: '0 0 0 9999px rgba(17, 24, 39, 0.7), 0 0 0 3px #FFFFFF, 0 0 0 6px rgba(47, 66, 255, 0.95), 0 0 36px 10px rgba(47, 66, 255, 0.55)',
+        pointerEvents: 'none',
+        zIndex: 9998,
+      }}
+    />
+  `;
+}
+
+// ============================================================
+// APP
+// ============================================================
+function App() {
+  const [showWelcome, setShowWelcome] = useState(true);
+  const [runTour, setRunTour] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
+  const [currentView, setCurrentView] = useState('marketplace');
+  const [orgSelected, setOrgSelected] = useState(false);
+  const [orgName, setOrgName] = useState('');
+  const [showOrgDropdown, setShowOrgDropdown] = useState(false);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showDebug, setShowDebug] = useState(false);
+  const [spotlightRect, setSpotlightRect] = useState(null);
+
+  useEffect(() => {
+    if (!runTour) {
+      setSpotlightRect(null);
+      return;
+    }
+    const step = tourSteps[stepIndex];
+    if (!step || step.disableOverlay || step.placement === 'center') {
+      setSpotlightRect(null);
+      return;
+    }
+    let raf;
+    const commitRect = () => {
+      const target = document.querySelector(step.target);
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      setSpotlightRect({
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      });
+    };
+    // Walk up looking for an ancestor with actual scroll space.
+    const findScrollableParent = (el) => {
+      let p = el.parentElement;
+      while (p && p !== document.body) {
+        const style = getComputedStyle(p);
+        const oy = style.overflowY;
+        if ((oy === 'auto' || oy === 'scroll' || oy === 'hidden') &&
+            p.scrollHeight > p.clientHeight) {
+          return p;
+        }
+        p = p.parentElement;
+      }
+      return null;
+    };
+    const ensureVisible = (target) => {
+      const bottomReserve = 60;
+      const rect = target.getBoundingClientRect();
+      const overflowBottom = rect.bottom - (window.innerHeight - bottomReserve);
+      const overflowTop = -rect.top;
+      if (overflowBottom <= 0 && overflowTop <= 0) return;
+      const scrollable = findScrollableParent(target);
+      if (!scrollable) return;
+      const delta = overflowBottom > 0 ? overflowBottom + 80 : -overflowTop - 80;
+      scrollable.scrollTop = Math.max(
+        0,
+        Math.min(scrollable.scrollTop + delta, scrollable.scrollHeight - scrollable.clientHeight)
+      );
+    };
+    const updateRect = () => {
+      const target = document.querySelector(step.target);
+      if (!target) return;
+      ensureVisible(target);
+      commitRect();
+    };
+    // Initial pass + several frames so the spotlight stays glued as layout settles.
+    updateRect();
+    let frames = 0;
+    const tick = () => {
+      const target = document.querySelector(step.target);
+      if (target) ensureVisible(target);
+      commitRect();
+      frames += 1;
+      if (frames < 30) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    const handler = () => commitRect();
+    window.addEventListener('scroll', handler, true);
+    window.addEventListener('resize', handler);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', handler, true);
+      window.removeEventListener('resize', handler);
+    };
+  }, [runTour, stepIndex, currentView]);
+
+  const activeSidebar = runTour ? (stepToSidebar[stepIndex] || 'marketplace') : (orgSelected ? 'marketplace' : 'marketplace');
+
+  const handleStartTour = useCallback(() => {
+    setShowWelcome(false);
+    setCurrentView('marketplace');
+    setOrgSelected(false);
+    setOrgName('');
+    setShowOrgDropdown(false);
+    setShowSearchDropdown(false);
+    setSearchQuery('');
+    setStepIndex(0);
+    setTimeout(() => setRunTour(true), 100);
+  }, []);
+
+  const handleDismissWelcome = useCallback(() => {
+    setShowWelcome(false);
+  }, []);
+
+  const advanceTour = useCallback(() => {
+    setStepIndex((prev) => {
+      const nextIndex = prev + 1;
+      if (nextIndex >= tourSteps.length) {
+        setRunTour(false);
+        return prev;
+      }
+      const nextView = stepToView[nextIndex];
+      if (nextView) {
+        setCurrentView(nextView);
+      }
+      if (nextIndex >= 2) {
+        setOrgSelected(true);
+      }
+      return nextIndex;
+    });
+  }, []);
+
+  const handleJoyrideCallback = useCallback((data) => {
+    const { action, index, status, type } = data;
+
+    if (status === 'finished') {
+      setRunTour(false);
+      return;
+    }
+
+    if (status === 'skipped') {
+      // If on last step, restart the tour
+      if (index === tourSteps.length - 1) {
+        setRunTour(false);
+        setCurrentView('marketplace');
+        setOrgSelected(false);
+        setOrgName('');
+        setShowOrgDropdown(false);
+        setShowSearchDropdown(false);
+        setSearchQuery('');
+        setStepIndex(0);
+        setTimeout(() => setRunTour(true), 100);
+      } else {
+        setRunTour(false);
+        setCurrentView('marketplace');
+        setOrgSelected(true);
+        setOrgName((prev) => prev || 'Default');
+        setShowOrgDropdown(false);
+        setShowSearchDropdown(false);
+      }
+      return;
+    }
+
+    // Only advance on "Next" button clicks for non-action steps
+    if (type === 'step:after') {
+      const step = tourSteps[index];
+      if (step?.data?.requiresAction) return; // handled by click handlers
+      const nextIndex = index + (action === 'prev' ? -1 : 1);
+      if (nextIndex >= tourSteps.length) {
+        setRunTour(false);
+        return;
+      }
+      if (nextIndex >= 0 && nextIndex < tourSteps.length) {
+        const nextView = stepToView[nextIndex];
+        if (nextView) {
+          setCurrentView(nextView);
+        }
+        if (nextIndex >= 2) {
+          setOrgSelected(true);
+        }
+        setStepIndex(nextIndex);
+      }
+    }
+  }, []);
+
+  const handleOrgClick = useCallback(() => {
+    if (runTour && stepIndex === 0) {
+      setShowOrgDropdown(true);
+      // Advance to step 1 after dropdown renders
+      setTimeout(() => advanceTour(), 100);
+      return;
+    }
+    if (!runTour) {
+      setShowOrgDropdown((prev) => !prev);
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleOrgSelect = useCallback((name) => {
+    setOrgName(name);
+    setOrgSelected(true);
+    setShowOrgDropdown(false);
+    if (runTour && stepIndex === 1) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleOrgClose = useCallback(() => {
+    setShowOrgDropdown(false);
+  }, []);
+
+  const handleSearchClose = useCallback(() => {
+    setShowSearchDropdown(false);
+    setSearchQuery('');
+  }, []);
+
+  const handleSearchClick = useCallback(() => {
+    if (runTour && stepIndex === 2) {
+      setShowSearchDropdown(true);
+      setTimeout(() => advanceTour(), 100);
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleSearchQueryChange = useCallback((value) => {
+    setSearchQuery(value);
+  }, []);
+
+  // Advance from step 3 → 4 once results are visible
+  useEffect(() => {
+    if (runTour && stepIndex === 3 && searchQuery.length >= 3) {
+      const timer = setTimeout(() => advanceTour(), 400);
+      return () => clearTimeout(timer);
+    }
+  }, [runTour, stepIndex, searchQuery, advanceTour]);
+
+  const handleSearchResultClick = useCallback(() => {
+    if (runTour && stepIndex === 4) {
+      setShowSearchDropdown(false);
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleDryRunClick = useCallback(() => {
+    if (runTour && stepIndex === 5) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleActivityRowClick = useCallback(() => {
+    if (runTour && stepIndex === 6) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleWhyClick = useCallback(() => {
+    if (runTour && stepIndex === 7) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleCommitClick = useCallback(() => {
+    if (runTour && stepIndex === 99) {
+      advanceTour();
+    }
+  }, [runTour, stepIndex, advanceTour]);
+
+  const handleCancelCommit = useCallback(() => {
+    setCurrentView('results-drawer');
+  }, []);
+
+  const handleCommitSubmit = useCallback(() => {
+    if (runTour && stepIndex === 99) {
+      setCurrentView('commit-results');
+      setStepIndex(9);
+    }
+  }, [runTour, stepIndex]);
+
+  // Determine if the current view needs the content wrapper (white bg + rounded)
+  const isResultsView = currentView === 'results' || currentView === 'results-commit' || currentView === 'results-drawer' || currentView === 'commit-results';
+
+  let pageContent;
+  switch (currentView) {
+    case 'repos':
+      pageContent = html`<${ReposPage} />`;
+      break;
+    case 'marketplace':
+      pageContent = html`<${MarketplacePage} />`;
+      break;
+    case 'marketplace-search':
+      pageContent = html`<${MarketplaceSearchPage} />`;
+      break;
+    case 'recipe':
+      pageContent = html`<${RecipeDetailPage} onDryRunClick=${handleDryRunClick} />`;
+      break;
+    case 'activity':
+      pageContent = html`<${ActivityPage} onActivityRowClick=${handleActivityRowClick} />`;
+      break;
+    case 'results-review':
+      pageContent = html`<${ResultsPage} mode="review" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} onCommitSubmit=${handleCommitSubmit} />`;
+      break;
+    case 'results-drawer':
+      pageContent = html`<${ResultsPage} mode="drawer" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} onCommitSubmit=${handleCommitSubmit} />`;
+      break;
+    case 'results-commit':
+      pageContent = html`<${ResultsPage} mode="commit" onCommitClick=${handleCommitClick} onWhyClick=${handleWhyClick} onCancelCommit=${handleCancelCommit} onCommitSubmit=${handleCommitSubmit} />`;
+      break;
+    case 'commit-results':
+      pageContent = html`<${CommitResultsPage} />`;
+      break;
+    default:
+      pageContent = html`<${EmptyState} />`;
+  }
+
+  return html`
+    <div className="app-shell">
+      <${NeoSpotlight} rect=${spotlightRect} visible=${runTour} />
+      <${LeftNavigation} activeItem=${activeSidebar} />
+      <div className="main-area">
+        <${GlobalNavBar}
+          orgSelected=${orgSelected}
+          orgName=${orgName}
+          showOrgDropdown=${showOrgDropdown}
+          onOrgClick=${handleOrgClick}
+          onOrgSelect=${handleOrgSelect}
+          onOrgClose=${handleOrgClose}
+          onSearchClick=${handleSearchClick}
+          onSearchClose=${handleSearchClose}
+          showSearchDropdown=${showSearchDropdown}
+          searchQuery=${searchQuery}
+          onSearchQueryChange=${handleSearchQueryChange}
+          onSearchResultClick=${handleSearchResultClick}
+          onStartTour=${handleStartTour}
+        />
+        <div className="content-wrapper" style=${runTour ? { paddingBottom: '36px' } : {}}>
+          ${pageContent}
+        </div>
+        ${runTour ? html`
+          <div className="tour-progress">
+            ${icons.info(12, 'var(--surface-primary-filled)')}
+            <span>${stepIndex >= tourSteps.length - 1 ? 'Tour complete' : 'Step ' + getHighLevelStep(stepIndex).number + ' of ' + highLevelSteps.length + ': ' + getHighLevelStep(stepIndex).label}</span>
+            <div className="progress-dots">
+              ${Array.from({ length: highLevelSteps.length }, (_, i) => html`
+                <div key=${i} className=${'progress-dot' + (stepIndex >= tourSteps.length - 1 || i + 1 < getHighLevelStep(stepIndex).number ? ' done' : '') + (stepIndex < tourSteps.length - 1 && i + 1 === getHighLevelStep(stepIndex).number ? ' current' : '')}></div>
+              `)}
+            </div>
+            <button className="progress-dismiss" onClick=${() => { setRunTour(false); setCurrentView('marketplace'); setOrgSelected(true); setOrgName((prev) => prev || 'Default'); setShowOrgDropdown(false); setShowSearchDropdown(false); }}>Dismiss</button>
+          </div>
+        ` : null}
+      </div>
+      <${Joyride}
+        steps=${tourSteps}
+        run=${runTour}
+        stepIndex=${stepIndex}
+        continuous=${true}
+        showSkipButton=${true}
+        disableOverlay=${true}
+        disableOverlayClose=${true}
+        disableCloseOnEsc=${false}
+        disableScrolling=${true}
+        spotlightPadding=${8}
+        callback=${handleJoyrideCallback}
+        tooltipComponent=${CustomTooltip}
+        styles=${{
+          options: {
+            arrowColor: '#FFFFFF',
+            backgroundColor: '#FFFFFF',
+            overlayColor: 'rgba(17, 24, 39, 0.55)',
+            primaryColor: '#2F42FF',
+            textColor: '#111827',
+            spotlightShadow: '0 0 0 9999px rgba(17, 24, 39, 0.55)',
+            zIndex: 10010,
+          },
+          spotlight: {
+            display: 'none',
+          },
+        }}
+      />
+      ${showWelcome ? html`
+        <div className="welcome-overlay">
+          <div className="welcome-backdrop" onClick=${handleDismissWelcome}></div>
+          <div className="welcome-card">
+            <div className="welcome-icon" dangerouslySetInnerHTML=${{ __html: '<svg width="36" height="36" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>' }}></div>
+            <h2>Welcome to Moderne</h2>
+            <p>Moderne runs automated code transformations across all your repositories at once. Let\u2019s get you to your first result in a few minutes.</p>
+            <div className="welcome-buttons">
+              <button className="wb-primary" onClick=${handleStartTour}>Show me how</button>
+              <button className="wb-secondary" onClick=${handleDismissWelcome}>I\u2019ll explore on my own \u2014 restart from Help anytime</button>
+            </div>
+          </div>
+        </div>
+      ` : null}
+      ${showDebug ? html`
+        <div className="debug-panel">
+          <div className="debug-panel-title">Views</div>
+          <div className="debug-panel-section">
+            ${['marketplace', 'recipe', 'results-review', 'results-drawer', 'results-commit', 'commit-results'].map(v => html`
+              <button key=${v} className=${currentView === v ? 'debug-active' : ''} onClick=${() => { setCurrentView(v); setRunTour(false); setShowWelcome(false); setOrgSelected(true); setOrgName('Default'); setShowOrgDropdown(false); setShowSearchDropdown(false); }}>${v}</button>
+            `)}
+          </div>
+          <div className="debug-panel-title" style=${{ marginTop: '4px' }}>Tour steps</div>
+          <div className="debug-panel-section">
+            ${tourSteps.map((s, i) => html`
+              <button key=${i} className=${runTour && stepIndex === i ? 'debug-active' : ''} onClick=${() => { setShowWelcome(false); setOrgSelected(true); setOrgName('Default'); setShowOrgDropdown(false); setShowSearchDropdown(false); const v = stepToView[i]; if (v) setCurrentView(v); setStepIndex(i); setRunTour(true); }}>${i}: ${s.target.replace('.', '')}</button>
+            `)}
+          </div>
+          <button style=${{ marginTop: '4px', background: '#442', borderColor: '#663' }} onClick=${() => setShowDebug(false)}>Close</button>
+        </div>
+      ` : html`
+        <button className="debug-toggle" onClick=${() => setShowDebug(true)}>Debug</button>
+      `}
+    </div>
+  `;
+}
+
+// ============================================================
+// MOUNT
+// ============================================================
+const root = createRoot(document.getElementById('root'));
+root.render(html`<${App} />`);
+</script>
+
+</body>
+</html>
