@@ -514,7 +514,7 @@ const VIZ=[
     desc:'A grid of repositories × dependencies, shaded by how far each repository lags behind the latest resolved version.',
     tableId:'io.moderne.devcenter.DependencyHeatmap',
     source:'Dependencies in use',
-    output:'bars',
+    output:'heatmap',
     fields:[
       {section:'req', kind:'text', label:'Dependency filter', name:'depFilter',
         help:'GAV pattern to include, e.g. <span class="mono">org.springframework:*</span>.', value:'', placeholder:'e.g. org.springframework:*', required:true},
@@ -664,7 +664,31 @@ function outputHTML(v,st){
 function sampleChart(v){
   if(v.output==='treemap') return treemapSVG();
   if(v.output==='pie') return samplePie();
+  if(v.output==='heatmap') return sampleHeatmap();
   return sampleBars();
+}
+function sampleHeatmap(){
+  const cols=['spring-core','spring-web','jackson','guava','netty','slf4j'];
+  const rows=['kotlin','intellij','exposed','datalore','rider-fs','youtrack'];
+  // 0 = up to date … 5 = many versions behind
+  const colors=['#5EC46F','#9BD88A','#DCECA6','#FFD166','#F2A65A','#CB3446'];
+  const lag=(r,c)=>((r*2 + c*3 + r*c) % 6);
+  const cw=86, ch=28, gap=6, labelW=84, headerH=24, padX=18, padY=14, legendH=22;
+  const gridW=cols.length*(cw+gap)-gap;
+  const W=padX*2+labelW+gridW;
+  const H=padY*2+headerH+rows.length*(ch+gap)-gap+legendH;
+  let s='';
+  cols.forEach((c,ci)=>{const x=padX+labelW+ci*(cw+gap)+cw/2;s+=`<text x="${x}" y="${padY+15}" text-anchor="middle" font-size="10" fill="var(--text-tertiary)">${c}</text>`;});
+  rows.forEach((r,ri)=>{
+    const y=padY+headerH+ri*(ch+gap);
+    s+=`<text x="${padX+labelW-8}" y="${y+ch/2+4}" text-anchor="end" font-size="10.5" fill="var(--text-secondary)">${r}</text>`;
+    cols.forEach((c,ci)=>{const x=padX+labelW+ci*(cw+gap);const l=lag(ri,ci);s+=`<rect x="${x}" y="${y}" width="${cw}" height="${ch}" rx="4" fill="${colors[l]}"/>`;});
+  });
+  const ly=H-8;
+  s+=`<text x="${padX}" y="${ly}" font-size="10" fill="var(--text-tertiary)">Up to date</text>`;
+  colors.forEach((c,i)=>{s+=`<rect x="${padX+62+i*15}" y="${ly-9}" width="12" height="10" rx="2" fill="${c}"/>`;});
+  s+=`<text x="${padX+62+colors.length*15+6}" y="${ly}" font-size="10" fill="var(--text-tertiary)">Behind</text>`;
+  return `<svg class="sample-bars" viewBox="0 0 ${W} ${H}">${s}</svg>`;
 }
 function samplePie(){
   const data=[{l:'Critical',v:142,c:'#CB3446'},{l:'High',v:684,c:'#FFB800'},{l:'Medium',v:1893,c:'#8D99FF'},{l:'Low',v:1499,c:'#D1D5DB'}];
