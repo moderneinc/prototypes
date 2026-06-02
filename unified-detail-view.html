@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderne — Unified detail view</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand-white:#FFF;
+  --brand-digital-blue-100:#F2F3FF; --brand-digital-blue-200:#DCE0FF; --brand-digital-blue-300:#B6BFFF;
+  --brand-digital-blue-400:#8D99FF; --brand-digital-blue-500:#2F42FF; --brand-digital-blue-600:#2637E6;
+  --brand-digital-blue-700:#1E2EC2; --brand-digital-blue-800:#131E7A;
+  --brand-green-100:#F3FFF5; --brand-green-200:#CFFFD7; --brand-green-500:#72E184; --brand-green-600:#5EC46F; --brand-green-700:#4CA75A; --brand-green-800:#3B8948;
+  --brand-red-100:#FEF2F2; --brand-red-500:#F87171; --brand-red-600:#CB3446; --brand-red-700:#A92232;
+  --brand-orange-100:#FFF8E5; --brand-orange-600:#FFB800; --brand-orange-700:#D69B00; --brand-orange-800:#856000;
+  --brand-grey-100:#F9FAFB; --brand-grey-200:#F3F4F6; --brand-grey-300:#E5E7EB; --brand-grey-400:#D1D5DB;
+  --brand-grey-500:#9CA3AF; --brand-grey-600:#6B7280; --brand-grey-700:#4B5563; --brand-grey-800:#374151; --brand-grey-900:#1F2937; --brand-grey-1000:#111827;
+  --brand-violet-500:#AD59C7; --brand-violet-600:#992FB9; --brand-teal-600:#3BCCA6;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-code:'JetBrains Mono','Fira Code','Consolas',monospace;
+  --surface-primary:#FFF; --surface-page:#f4f4f4; --surface-tertiary:var(--brand-grey-200);
+  --text-primary:var(--brand-grey-1000); --text-secondary:var(--brand-grey-600); --text-tertiary:var(--brand-grey-500);
+  --text-information:var(--brand-digital-blue-700);
+  --border-primary:var(--brand-grey-300); --border-secondary:var(--brand-grey-400);
+  --radius-sm:4px; --radius-md:6px; --radius-lg:8px; --radius-xl:12px; --radius-full:9999px;
+  --shadow-xs:0 1px 3px rgba(31,41,55,.08); --shadow-sm:0 2px 4px rgba(31,41,55,.08);
+  --shadow-md:0 8px 15px rgba(31,41,55,.10); --shadow-lg:0 4px 4px rgba(31,41,55,.08),0 8px 24px rgba(31,41,55,.10);
+  --transition-fast:150ms ease;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--surface-page);color:var(--text-primary);font-family:var(--font-body);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.55;overflow-x:auto;overflow-y:hidden;}
+button{font:inherit;cursor:pointer;}
+.mono{font-family:var(--font-code);}
+.svg-stroke{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+.shell{height:100vh;min-width:1100px;display:grid;grid-template-columns:98px 1fr;grid-template-rows:65px 1fr;grid-template-areas:"nav topbar" "nav main";background:var(--surface-page);overflow:hidden;}
+
+/* left rail */
+.left-nav{grid-area:nav;width:98px;display:flex;flex-direction:column;justify-content:space-between;padding:2px 8px 24px;background:var(--surface-page);z-index:10;}
+.left-nav-top{display:flex;flex-direction:column;gap:4px;width:100%;}
+.nav-home-stack{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:2px;padding:4px 0;}
+.nav-item-home{padding:0 4px;}.nav-item-home .nav-icon-container{padding:4px;}
+.nav-version-badge{display:inline-flex;align-items:center;justify-content:center;height:18px;padding:0 8px;border-radius:999px;background:linear-gradient(135deg,var(--brand-digital-blue-500),var(--brand-violet-500));color:#fff;font-size:11px;font-weight:600;line-height:1;}
+.nav-item{width:100%;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;border-radius:var(--radius-lg);position:relative;background:transparent;}
+.nav-icon-container{display:flex;align-items:center;justify-content:center;padding:8px;border-radius:var(--radius-lg);border:1px solid transparent;background:transparent;transition:background-color 150ms,border-color 150ms;}
+.nav-item:hover .nav-icon-container,.nav-item.active .nav-icon-container{background:var(--brand-digital-blue-100);border-color:var(--brand-digital-blue-200);}
+.nav-item svg{width:22px;height:22px;min-width:22px;color:var(--brand-grey-900);flex-shrink:0;}
+.nav-label{font-size:11px;font-weight:400;line-height:1;color:var(--brand-grey-900);text-align:center;width:100%;transition:color 150ms;}
+.nav-item:hover .nav-label{color:var(--brand-digital-blue-600);}
+.nav-item.active .nav-label{font-weight:600;color:var(--brand-digital-blue-800);}
+.nav-badge{font-size:11px;padding:0 6px;height:18px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:var(--brand-grey-200);color:var(--brand-grey-800);border:1px solid rgba(107,114,128,.5);font-weight:500;line-height:1;}
+.nav-more-wrapper{position:relative;margin-top:auto;}
+
+/* main */
+.main-area{grid-area:main;display:flex;flex-direction:column;overflow:hidden;position:relative;min-height:0;background:var(--surface-primary);border-top-left-radius:20px;box-shadow:-1px 0 0 var(--border-primary),0 -1px 0 var(--border-primary);}
+
+/* global nav */
+.global-nav{grid-area:topbar;height:65px;display:flex;align-items:center;gap:12px;padding:12px 20px;flex-shrink:0;position:relative;width:100%;background:var(--surface-page);}
+.global-nav::before{content:'';position:absolute;left:50%;top:70%;transform:translate(-50%,-50%);width:1000px;max-width:90%;height:65px;background:radial-gradient(ellipse at center,var(--brand-red-100) 0%,var(--brand-red-100) 40%,transparent 70%);filter:blur(20px);z-index:0;pointer-events:none;}
+.global-nav>*{position:relative;z-index:1;}
+.org-selector{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-primary);padding:10px 16px;border-radius:var(--radius-full);background:var(--surface-primary);border:1px solid var(--border-secondary);white-space:nowrap;transition:all var(--transition-fast);}
+.org-selector:hover{background:var(--brand-grey-200);}.org-selector .org-name{font-weight:500;}
+.nav-spacer{flex:1;}
+.search-input{height:40px;border-radius:var(--radius-full);border:1px solid var(--border-secondary);padding:10px 16px;font-size:14px;color:var(--text-tertiary);background:var(--surface-primary);display:flex;align-items:center;gap:12px;width:280px;user-select:none;}
+.search-input:hover{background:var(--brand-grey-200);}.search-input>span:first-of-type{flex:1;}
+.search-input-keys{display:inline-flex;gap:2px;}
+.search-input kbd{font-size:10px;background:var(--surface-tertiary);padding:2px 6px;border-radius:var(--radius-sm);color:var(--text-tertiary);border:1px solid var(--border-primary);min-width:18px;text-align:center;}
+.nav-actions{display:flex;align-items:center;gap:4px;}
+.nav-action-btn{width:40px;height:40px;border-radius:64px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--brand-grey-900);transition:background var(--transition-fast);}
+.nav-action-btn:hover{background:var(--brand-grey-200);}.nav-action-btn svg{width:20px;height:20px;}
+.avatar{width:32px;height:32px;border-radius:var(--radius-full);background:#E45A4F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;}
+
+/* page top (non-scrolling) */
+.page-top{padding:0 32px;flex-shrink:0;}
+.crumbs{display:flex;align-items:center;gap:8px;color:var(--text-secondary);font-size:13px;padding:8px 0 12px;}
+.crumbs a{color:var(--brand-digital-blue-600);font-weight:600;text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+.crumbs .sep{display:inline-flex;align-items:center;color:var(--brand-grey-400);}.crumbs .sep svg{width:13px;height:13px;}
+.crumbs .current{color:var(--text-secondary);font-weight:500;}
+.run-header{margin-bottom:14px;}
+.run-title h1{font-size:22px;font-weight:600;letter-spacing:-.01em;color:var(--text-primary);margin-bottom:4px;}
+.run-subhead{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:12px;}
+.run-status-row{display:flex;align-items:center;gap:12px;}
+.run-chip{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px 0 8px;border-radius:var(--radius-full);font-size:13px;font-weight:600;}
+.run-chip svg{width:17px;height:17px;}
+.run-chip.done{background:var(--brand-green-100);color:var(--brand-green-800);border:1px solid var(--brand-green-200);}
+.run-meta{font-size:12.5px;color:var(--text-tertiary);}
+.tabs{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border-primary);}
+.tab{position:relative;padding:12px 18px;font-size:14px;font-weight:500;color:var(--text-secondary);background:transparent;border:none;cursor:pointer;}
+.tab:hover{color:var(--text-primary);}
+.tab.active{color:var(--text-information);font-weight:600;}
+.tab.active::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--brand-digital-blue-500);border-radius:2px 2px 0 0;}
+
+/* ===== Master-detail layout ===== */
+.md-layout{flex:1;min-height:0;display:grid;grid-template-columns:300px 1fr;gap:20px;padding:20px 32px 24px;overflow:hidden;}
+
+/* LEFT list panel */
+.md-list{
+  background:var(--surface-primary);
+  border:1px solid var(--border-primary);
+  border-radius:var(--radius-xl);
+  overflow-y:auto;
+  padding:8px;
+}
+.md-list-head{padding:10px 10px 8px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-tertiary);}
+.md-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 10px;
+  border-radius:var(--radius-lg);
+  cursor:pointer;
+  position:relative;
+  border:1px solid transparent;
+  transition:background var(--transition-fast),border-color var(--transition-fast);
+}
+.md-item:hover{background:var(--brand-grey-100);}
+.md-item.active{background:var(--brand-digital-blue-100);border-color:var(--brand-digital-blue-200);}
+.md-item-icon{
+  width:32px;height:32px;border-radius:var(--radius-md);flex-shrink:0;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--brand-grey-100);color:var(--text-secondary);border:1px solid var(--border-primary);
+}
+.md-item.active .md-item-icon{background:var(--surface-primary);color:var(--brand-digital-blue-700);border-color:var(--brand-digital-blue-200);}
+.md-item-icon svg{width:17px;height:17px;}
+.md-item-body{min-width:0;flex:1;}
+.md-item-name{font-size:13.5px;font-weight:600;color:var(--text-primary);line-height:1.3;}
+.md-item.active .md-item-name{color:var(--brand-digital-blue-800);}
+
+/* RIGHT detail panel */
+.md-detail{
+  background:var(--surface-primary);
+  border:1px solid var(--border-primary);
+  border-radius:var(--radius-xl);
+  overflow-y:auto;
+  position:relative;
+  display:flex;flex-direction:column;
+}
+.detail-header{padding:22px 24px 18px;}
+.detail-title-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.detail-icon{width:40px;height:40px;border-radius:var(--radius-lg);flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:var(--brand-digital-blue-100);color:var(--brand-digital-blue-700);border:1px solid var(--brand-digital-blue-200);}
+.detail-icon svg{width:22px;height:22px;}
+.detail-title{font-size:20px;font-weight:600;color:var(--text-primary);line-height:1.2;flex:1;}
+.status-badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--radius-full);font-size:12px;font-weight:600;}
+.status-badge .dot{width:7px;height:7px;border-radius:50%;}
+.status-badge.idle{background:var(--brand-grey-200);color:var(--brand-grey-700);}
+.status-badge.idle .dot{background:var(--brand-grey-500);}
+.status-badge.ready{background:var(--brand-green-200);color:var(--brand-green-800);}
+.status-badge.ready .dot{background:var(--brand-green-600);}
+.status-badge.running{background:var(--brand-digital-blue-100);color:var(--brand-digital-blue-700);}
+.status-badge.running .dot{background:var(--brand-digital-blue-500);animation:pulse 1s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.detail-lede{font-size:14.5px;font-weight:600;color:var(--text-primary);margin-bottom:6px;}
+.detail-desc{font-size:13.5px;color:var(--text-secondary);line-height:1.55;max-width:680px;}
+
+/* More details disclosure */
+.more-details{margin-top:14px;border:1px solid var(--border-primary);border-radius:var(--radius-lg);overflow:hidden;}
+.more-details-toggle{width:100%;display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--brand-grey-100);border:none;font-size:12.5px;font-weight:600;color:var(--text-secondary);text-align:left;}
+.more-details-toggle:hover{color:var(--text-primary);}
+.more-details-toggle .chev{margin-left:auto;transition:transform var(--transition-fast);}
+.more-details.open .more-details-toggle .chev{transform:rotate(90deg);}
+.more-details-toggle svg{width:14px;height:14px;}
+.more-details-body{display:none;padding:12px 14px;border-top:1px solid var(--border-primary);}
+.more-details.open .more-details-body{display:block;}
+.meta-grid{display:grid;grid-template-columns:140px 1fr;gap:8px 16px;font-size:12.5px;}
+.meta-key{color:var(--text-tertiary);}
+.meta-val{color:var(--text-primary);}
+.meta-val.mono{font-size:12px;word-break:break-all;}
+
+/* Sticky action bar */
+.action-bar{
+  position:sticky;top:0;z-index:5;
+  display:flex;align-items:center;gap:8px;
+  padding:12px 24px;
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(8px);
+  border-top:1px solid var(--border-primary);
+  border-bottom:1px solid var(--border-primary);
+}
+.action-bar-spacer{flex:1;}
+.btn{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 18px;font-size:13.5px;font-weight:600;background:var(--surface-primary);color:var(--text-primary);border:1px solid var(--border-primary);border-radius:var(--radius-full);white-space:nowrap;transition:background var(--transition-fast),border-color var(--transition-fast);}
+.btn:hover{background:var(--brand-grey-100);border-color:var(--border-secondary);}
+.btn svg{width:16px;height:16px;}
+.btn-primary{background:var(--brand-digital-blue-500);border-color:var(--brand-digital-blue-500);color:#fff;}
+.btn-primary:hover{background:var(--brand-digital-blue-600);border-color:var(--brand-digital-blue-600);}
+.btn-outline{background:var(--surface-primary);border-color:var(--brand-digital-blue-300);color:var(--brand-digital-blue-700);}
+.btn-outline:hover{background:var(--brand-digital-blue-100);border-color:var(--brand-digital-blue-400);}
+.btn-ghost{border-color:transparent;background:transparent;color:var(--text-secondary);}
+.btn-ghost:hover{background:var(--brand-grey-100);color:var(--text-primary);}
+.btn-sm{height:30px;padding:0 12px;font-size:12px;}
+.btn.is-disabled{opacity:.5;}
+.btn-primary.is-disabled:hover{background:var(--brand-digital-blue-500);border-color:var(--brand-digital-blue-500);}
+.run-hint{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-orange-800);background:var(--brand-orange-100);border:1px solid #F3E2B0;padding:5px 10px;border-radius:var(--radius-full);}
+.run-hint svg{width:13px;height:13px;}
+.run-note{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-tertiary);}
+.run-note svg{width:13px;height:13px;}
+.text-input.err,.input-suffix.err .text-input{border-color:var(--brand-red-500);box-shadow:0 0 0 3px var(--brand-red-100);}
+.cfg-error{display:none;align-items:center;gap:7px;font-size:12.5px;color:var(--brand-red-700);background:var(--brand-red-100);border:1px solid #F6C9C9;padding:8px 12px;border-radius:var(--radius-md);margin-bottom:14px;}
+.cfg-error.show{display:flex;}
+.cfg-error svg{width:15px;height:15px;}
+.scope-control{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 12px;font-size:13px;font-weight:500;color:var(--text-secondary);background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-md);}
+.scope-control:hover{background:var(--brand-grey-100);color:var(--text-primary);}
+.scope-control svg{width:15px;height:15px;}
+.scope-control .scope-val{color:var(--text-primary);font-weight:600;}
+
+/* Config section */
+.config{padding:20px 24px;}
+.config-section{margin-bottom:24px;}
+.config-section:last-child{margin-bottom:0;}
+.config-section-head{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.config-section-title{font-size:13px;font-weight:600;color:var(--text-primary);}
+.config-section-pill{font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:var(--radius-full);}
+.config-section-pill.req{background:var(--brand-orange-100);color:var(--brand-orange-800);}
+.config-section-pill.opt{background:var(--brand-grey-200);color:var(--brand-grey-700);}
+.config-section-sub{font-size:12px;color:var(--text-tertiary);margin-bottom:14px;}
+
+.field{margin-bottom:18px;}
+.field:last-child{margin-bottom:0;}
+.field-label{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;display:flex;align-items:center;gap:6px;}
+.field-req-star{color:var(--brand-red-600);}
+.field-help{font-size:12px;color:var(--text-tertiary);line-height:1.5;margin-bottom:10px;max-width:620px;}
+.field-help .mono{font-size:11.5px;background:var(--brand-grey-100);padding:1px 5px;border-radius:var(--radius-sm);}
+
+.radio-group{display:flex;flex-direction:column;gap:8px;}
+.radio-group.inline{flex-direction:row;gap:20px;}
+.radio{display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:13px;color:var(--text-primary);}
+.radio input{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:1.5px solid var(--brand-grey-400);border-radius:50%;flex-shrink:0;margin-top:1px;position:relative;transition:border-color var(--transition-fast);}
+.radio:hover input{border-color:var(--brand-digital-blue-500);}
+.radio input:checked{border-color:var(--brand-digital-blue-500);border-width:5px;}
+.radio-text{display:flex;flex-direction:column;}
+.radio-title{font-weight:500;}
+.radio-sub{font-size:12px;color:var(--text-tertiary);}
+
+.text-input,.select-input{width:100%;max-width:360px;height:38px;padding:0 12px;border:1px solid var(--border-primary);border-radius:var(--radius-md);font-size:13.5px;color:var(--text-primary);font-family:var(--font-body);background:var(--surface-primary);outline:none;transition:border-color var(--transition-fast),box-shadow var(--transition-fast);}
+.text-input:focus,.select-input:focus{border-color:var(--brand-digital-blue-400);box-shadow:0 0 0 3px var(--brand-digital-blue-100);}
+.input-suffix{display:inline-flex;align-items:center;gap:0;max-width:360px;}
+.input-suffix .text-input{border-top-right-radius:0;border-bottom-right-radius:0;}
+.input-suffix .suffix{height:38px;display:inline-flex;align-items:center;padding:0 12px;border:1px solid var(--border-primary);border-left:none;border-radius:0 var(--radius-md) var(--radius-md) 0;background:var(--brand-grey-100);color:var(--text-tertiary);font-size:12.5px;}
+.checkbox{display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:13px;}
+.checkbox input{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:1.5px solid var(--brand-grey-400);border-radius:4px;flex-shrink:0;margin-top:1px;position:relative;transition:all var(--transition-fast);}
+.checkbox:hover input{border-color:var(--brand-digital-blue-500);}
+.checkbox input:checked{background:var(--brand-digital-blue-500);border-color:var(--brand-digital-blue-500);}
+.checkbox input:checked::after{content:'';position:absolute;left:5px;top:1px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);}
+
+/* Output (create / not rendered) */
+.output{padding:20px 24px 8px;}
+.output-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.output-title{font-size:13px;font-weight:600;color:var(--text-primary);}
+.output-create{
+  border:1.5px dashed var(--border-secondary);
+  border-radius:var(--radius-xl);
+  background:var(--brand-grey-100);
+  padding:48px 24px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;
+}
+.output-create-icon{width:52px;height:52px;border-radius:var(--radius-lg);background:var(--surface-primary);border:1px solid var(--border-primary);display:inline-flex;align-items:center;justify-content:center;color:var(--brand-digital-blue-500);margin-bottom:6px;}
+.output-create-icon svg{width:26px;height:26px;}
+.output-create-title{font-size:15px;font-weight:600;color:var(--text-primary);}
+.output-create-sub{font-size:13px;color:var(--text-secondary);max-width:380px;line-height:1.5;}
+.output-create .btn-primary{margin-top:12px;height:40px;padding:0 20px;}
+
+.output-rendered{border:1px solid var(--border-primary);border-radius:var(--radius-xl);overflow:hidden;}
+.output-rendered-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--brand-grey-100);border-bottom:1px solid var(--border-primary);font-size:12px;color:var(--text-secondary);}
+.output-rendered-bar .spacer{flex:1;}
+.treemap{display:block;width:100%;height:auto;background:#fff;padding:14px;}
+.tm-cell text{font-family:var(--font-body);fill:#fff;}
+
+/* Sample preview (idle) */
+.output-sample{position:relative;border-style:dashed;border-color:var(--border-secondary);}
+.output-sample .sample-canvas{position:relative;}
+.output-sample .sample-canvas .chart-host{opacity:.6;filter:saturate(.85);pointer-events:none;}
+.sample-pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:var(--radius-full);background:var(--brand-grey-200);color:var(--brand-grey-700);}
+.sample-pill svg{width:11px;height:11px;}
+.sample-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.72) 100%);}
+.sample-overlay .ov-text{font-size:13px;color:var(--text-secondary);background:rgba(255,255,255,.9);padding:4px 10px;border-radius:var(--radius-full);box-shadow:var(--shadow-xs);}
+.sample-bars{display:block;width:100%;height:auto;background:#fff;padding:14px;}
+.sample-bars text{font-family:var(--font-body);}
+
+/* spinner */
+.spinner{width:34px;height:34px;border:3px solid var(--brand-digital-blue-200);border-top-color:var(--brand-digital-blue-500);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== Configure side panel ===== */
+.cfg-scrim{position:fixed;inset:0;background:rgba(17,24,39,.32);opacity:0;pointer-events:none;transition:opacity 200ms ease;z-index:90;}
+.cfg-scrim.open{opacity:1;pointer-events:auto;}
+.cfg-drawer{position:fixed;top:0;right:0;bottom:0;width:480px;max-width:92vw;background:var(--surface-primary);box-shadow:-16px 0 40px rgba(17,24,39,.12);display:flex;flex-direction:column;transform:translateX(100%);transition:transform 240ms cubic-bezier(.4,0,.2,1);z-index:91;}
+.cfg-drawer.open{transform:translateX(0);}
+.cfg-head{padding:18px 22px;border-bottom:1px solid var(--border-primary);}
+.cfg-head-top{display:flex;align-items:center;gap:10px;}
+.cfg-eyebrow{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-tertiary);flex:1;}
+.cfg-close{width:32px;height:32px;border-radius:var(--radius-md);background:transparent;border:none;color:var(--text-secondary);display:inline-flex;align-items:center;justify-content:center;}
+.cfg-close:hover{background:var(--brand-grey-200);color:var(--text-primary);}
+.cfg-close svg{width:16px;height:16px;}
+.cfg-title{font-size:18px;font-weight:600;color:var(--text-primary);margin-top:6px;}
+.cfg-sub{font-size:12.5px;color:var(--text-secondary);margin-top:2px;}
+.cfg-body{flex:1;overflow:auto;padding:20px 22px;}
+.cfg-footer{display:flex;align-items:center;gap:10px;padding:14px 22px;border-top:1px solid var(--border-primary);}
+.cfg-footer .spacer{flex:1;}
+
+/* toast */
+.toast-stack{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:80;}
+.toast{display:flex;align-items:center;gap:10px;min-width:280px;padding:12px 16px;background:#fff;border:1px solid var(--border-primary);border-radius:8px;box-shadow:var(--shadow-lg);font-size:13px;color:var(--text-primary);}
+.toast svg{width:16px;height:16px;color:var(--brand-digital-blue-600);flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="left-nav" aria-label="Platform">
+    <div class="left-nav-top">
+      <div class="nav-home-stack">
+        <div class="nav-item nav-item-home"><div class="nav-icon-container">
+          <svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </div></div>
+        <span class="nav-version-badge">v2</span>
+      </div>
+      <div id="left-nav-items"></div>
+      <div class="nav-more-wrapper"><div class="nav-item"><div class="nav-icon-container"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div><span class="nav-label">More</span></div></div>
+    </div>
+  </nav>
+
+  <div class="global-nav">
+    <div class="org-selector"><svg width="18" height="18" viewBox="0 0 24 24" class="svg-stroke"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="org-name">JetBrains</span><svg width="14" height="14" viewBox="0 0 24 24" class="svg-stroke"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="nav-spacer"></div>
+    <div class="search-input"><svg width="18" height="18" viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Search recipes</span><span class="search-input-keys"><kbd>⌘</kbd><kbd>K</kbd></span></div>
+    <div class="nav-actions">
+      <button class="nav-action-btn"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      <button class="nav-action-btn"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+      <button class="nav-action-btn"><div class="avatar">L</div></button>
+    </div>
+  </div>
+
+  <div class="main-area">
+    <div class="page-top">
+      <div class="crumbs">
+        <a href="#">Recent activity</a>
+        <span class="sep"><svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="9 18 15 12 9 6"/></svg></span>
+        <a href="#">Results 20260601155132-MZSxi</a>
+        <span class="sep"><svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="9 18 15 12 9 6"/></svg></span>
+        <span class="current">Visualizations</span>
+      </div>
+      <div class="run-header">
+        <div class="run-title"><h1>DevCenter</h1></div>
+        <div class="run-subhead">Results for JetBrains</div>
+        <div class="run-status-row">
+          <span class="run-chip done"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed</span>
+          <span class="run-meta">234 repositories · finished in 6m 12s · 12 min ago</span>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab">Results</button>
+        <button class="tab">Repository status</button>
+        <button class="tab active">Visualizations</button>
+        <button class="tab">Data tables</button>
+      </div>
+    </div>
+
+    <div class="md-layout">
+      <!-- LEFT LIST -->
+      <aside class="md-list">
+        <div class="md-list-head">Visualizations</div>
+        <div id="md-items"></div>
+      </aside>
+
+      <!-- RIGHT DETAIL -->
+      <section class="md-detail" id="md-detail"></section>
+    </div>
+  </div>
+</div>
+
+<!-- Configure side panel -->
+<div class="cfg-scrim" id="cfg-scrim"></div>
+<aside class="cfg-drawer" id="cfg-drawer" aria-hidden="true" aria-label="Configure visualization">
+  <div class="cfg-head">
+    <div class="cfg-head-top">
+      <span class="cfg-eyebrow">Customize output</span>
+      <button class="cfg-close" id="cfg-close" aria-label="Close"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="cfg-title" id="cfg-title">—</div>
+    <div class="cfg-sub" id="cfg-sub">Set options for this visualization.</div>
+  </div>
+  <div class="cfg-body" id="cfg-body"></div>
+  <div class="cfg-footer">
+    <div class="spacer"></div>
+    <button class="btn btn-ghost" id="cfg-cancel">Cancel</button>
+    <button class="btn btn-primary" id="cfg-save">Save</button>
+  </div>
+</aside>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<script>
+/* ===== Left nav ===== */
+const NAV_ITEMS=[
+  {label:'Moddy',badge:'Beta',svg:'<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/>'},
+  {label:'DevCenter',active:true,svg:'<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>'},
+  {label:'Marketplace',svg:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'},
+  {label:'Builder',svg:'<rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>'},
+  {label:'Activity',svg:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>'},
+  {label:'Changelog',badge:'Beta',svg:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
+];
+const navList=document.getElementById('left-nav-items');
+NAV_ITEMS.forEach(i=>{const el=document.createElement('div');el.className='nav-item'+(i.active?' active':'');el.innerHTML=`<div class="nav-icon-container"><svg width="22" height="22" viewBox="0 0 24 24" class="svg-stroke">${i.svg}</svg></div><span class="nav-label">${i.label}</span>${i.badge?`<span class="nav-badge">${i.badge}</span>`:''}`;navList.appendChild(el);});
+
+/* ===== Icons ===== */
+const ICONS={
+  bar:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+  folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  repo:'<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/>',
+  line:'<polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/>',
+  pie:'<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>',
+  grid:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+};
+
+/* ===== Data ===== */
+const VIZ=[
+  {
+    id:'lang-comp', icon:'bar', name:'Language composition',
+    short:'Languages that make up your codebase.',
+    lede:'See which programming languages make up your codebase.',
+    desc:'Renders a treemap of language usage across the working set. Measure by lines of code or by file count — note that measuring by lines only includes successfully-parsed files, since unparsed files have no line counts.',
+    tableId:'io.moderne.devcenter.LanguageComposition',
+    source:'Organization statistics',
+    output:'treemap',
+    fields:[
+      {section:'opt', kind:'radio', label:'Measurement unit', name:'unit',
+        help:'Which unit to use when measuring language composition. <span class="mono">lines</span> measures by lines of code; <span class="mono">files</span> counts the number of files per language. Defaults to lines.',
+        options:[{v:'lines',t:'Lines of code',s:'Successfully-parsed files only'},{v:'files',t:'File count',s:'Includes unparsed files'}], value:'lines'},
+      {section:'opt', kind:'number', label:'Top N languages', name:'topN',
+        help:'Show this many languages; group the remainder into a single bucket.', value:'12', suffix:'languages'},
+      {section:'opt', kind:'text', label:'Remainder label', name:'otherLabel',
+        help:'Label used for the grouped remainder bucket.', value:'Other'},
+    ],
+  },
+  {
+    id:'lang-folder', icon:'folder', name:'Language by folder',
+    short:'Break language usage down by top-level folder.',
+    lede:'Break down language usage by top-level folder.',
+    desc:'Groups language composition by the first path segment of each repository, so you can see which areas of a monorepo are dominated by which languages.',
+    tableId:'io.moderne.devcenter.LanguageByFolder',
+    source:'Organization statistics',
+    output:'bars',
+    fields:[
+      {section:'req', kind:'number', label:'Folder depth', name:'depth',
+        help:'How many path segments to group by.', value:'', placeholder:'e.g. 1', suffix:'levels', required:true},
+      {section:'opt', kind:'radio', label:'Measurement unit', name:'unit',
+        help:'Measure by lines of code or file count.',
+        options:[{v:'lines',t:'Lines of code'},{v:'files',t:'File count'}], value:'lines'},
+    ],
+  },
+  {
+    id:'lang-repo', icon:'repo', name:'Language by repository',
+    short:'Compare language composition across repositories.',
+    lede:'Compare language composition across repositories.',
+    desc:'Produces one stacked bar per repository so you can compare how language mix varies across the org.',
+    tableId:'io.moderne.devcenter.LanguageByRepository',
+    source:'Organization statistics',
+    output:'bars',
+    fields:[
+      {section:'opt', kind:'number', label:'Top N repositories', name:'topRepos',
+        help:'Limit to the largest N repositories by size.', value:'20', suffix:'repos'},
+      {section:'opt', kind:'checkbox', label:'Normalize to 100%', name:'normalize',
+        help:'Show each repository as a proportion rather than absolute counts.', value:true},
+    ],
+  },
+  {
+    id:'composite', icon:'line', name:'Composite recipe results',
+    short:'Combine multiple recipe data tables into one view.',
+    lede:'Combine multiple recipe data tables into one view.',
+    desc:'Joins several recipe data tables on a shared key and plots them together — useful for correlating, say, dependency counts against commit activity.',
+    tableId:'io.moderne.devcenter.CompositeResults',
+    source:'Multiple data tables',
+    output:'bars',
+    fields:[
+      {section:'req', kind:'text', label:'Join key', name:'joinKey',
+        help:'Column shared across the selected data tables.', value:'', placeholder:'e.g. repository', required:true},
+      {section:'opt', kind:'radio', label:'Chart type', name:'chart',
+        help:'How to render the combined result.',
+        options:[{v:'line',t:'Line'},{v:'bar',t:'Bar'},{v:'scatter',t:'Scatter'}], value:'line'},
+    ],
+  },
+  {
+    id:'security-mix', icon:'pie', name:'Security severity mix',
+    short:'Distribution of issues by severity.',
+    lede:'Distribution of security issues by severity.',
+    desc:'Renders a donut of CVE severities across the working set, sourced from the Security issues data table.',
+    tableId:'io.moderne.devcenter.SecuritySeverityMix',
+    source:'Security issues',
+    output:'pie',
+    fields:[
+      {section:'opt', kind:'checkbox', label:'Exclude resolved', name:'excludeResolved',
+        help:'Only count issues without a known fix version.', value:false},
+    ],
+  },
+  {
+    id:'dep-grid', icon:'grid', name:'Dependency heatmap',
+    short:'Dependency versions across repositories.',
+    lede:'Dependency versions across repositories.',
+    desc:'A grid of repositories × dependencies, shaded by how far each repository lags behind the latest resolved version.',
+    tableId:'io.moderne.devcenter.DependencyHeatmap',
+    source:'Dependencies in use',
+    output:'bars',
+    fields:[
+      {section:'req', kind:'text', label:'Dependency filter', name:'depFilter',
+        help:'GAV pattern to include, e.g. <span class="mono">org.springframework:*</span>.', value:'', placeholder:'e.g. org.springframework:*', required:true},
+    ],
+  },
+];
+
+/* ===== State ===== */
+const state={ selectedId:VIZ[0].id, status:{}, moreOpen:false, configured:{}, configVizId:null };
+VIZ.forEach(v=>{
+  state.status[v.id]='idle'; // idle | running | ready
+  // A viz with required fields starts unconfigured (Run gated); otherwise runnable.
+  state.configured[v.id] = v.fields.filter(f=>f.section==='req').length===0;
+});
+
+/* ===== Left list ===== */
+const itemsEl=document.getElementById('md-items');
+function renderList(){
+  itemsEl.innerHTML=VIZ.map(v=>`
+    <div class="md-item ${v.id===state.selectedId?'active':''}" data-id="${v.id}">
+      <div class="md-item-body">
+        <div class="md-item-name">${v.name}</div>
+      </div>
+    </div>`).join('');
+}
+itemsEl.addEventListener('click',e=>{
+  const it=e.target.closest('.md-item'); if(!it)return;
+  state.selectedId=it.dataset.id;
+  state.moreOpen=false;
+  renderList(); renderDetail();
+  document.getElementById('md-detail').scrollTop=0;
+});
+
+/* ===== Field rendering ===== */
+function fieldHTML(f){
+  let control='';
+  if(f.kind==='radio'){
+    control=`<div class="radio-group">${f.options.map(o=>`
+      <label class="radio"><input type="radio" name="${f.name}" value="${o.v}" ${o.v===f.value?'checked':''}>
+        <span class="radio-text"><span class="radio-title">${o.t}</span>${o.s?`<span class="radio-sub">${o.s}</span>`:''}</span>
+      </label>`).join('')}</div>`;
+  } else if(f.kind==='number'||f.kind==='text'){
+    const input=`<input class="text-input" type="${f.kind==='number'?'number':'text'}" value="${f.value}" ${f.placeholder?`placeholder="${f.placeholder}"`:''} ${f.required?'data-required="1"':''}>`;
+    control=f.suffix?`<div class="input-suffix">${input}<span class="suffix">${f.suffix}</span></div>`:input;
+  } else if(f.kind==='checkbox'){
+    control=`<label class="checkbox"><input type="checkbox" ${f.value?'checked':''}><span>${f.label}</span></label>`;
+    return `<div class="field"><div class="field-help" style="margin-bottom:8px">${f.help||''}</div>${control}</div>`;
+  }
+  return `<div class="field">
+    <div class="field-label">${f.label}${f.required?'<span class="field-req-star">*</span>':''}</div>
+    ${f.help?`<div class="field-help">${f.help}</div>`:''}
+    ${control}
+  </div>`;
+}
+
+/* ===== Detail rendering ===== */
+function detailStatusBadge(st){
+  if(st==='running')return `<span class="status-badge running"><span class="dot"></span>Running…</span>`;
+  if(st==='ready')return `<span class="status-badge ready"><span class="dot"></span>Output ready</span>`;
+  return `<span class="status-badge idle"><span class="dot"></span>Not run</span>`;
+}
+function renderDetail(){
+  const v=VIZ.find(x=>x.id===state.selectedId);
+  const st=state.status[v.id];
+  const hasReq=v.fields.some(f=>f.section==='req');
+  const needsConfig=!state.configured[v.id];
+  const detail=document.getElementById('md-detail');
+  detail.innerHTML=`
+    <div class="detail-header">
+      <div class="detail-title-row">
+        <div class="detail-icon"><svg viewBox="0 0 24 24" class="svg-stroke">${ICONS[v.icon]}</svg></div>
+        <div class="detail-title">${v.name}</div>
+        ${detailStatusBadge(st)}
+      </div>
+      <div class="detail-lede">${v.lede}</div>
+      <div class="detail-desc">${v.desc}</div>
+      <div class="more-details ${state.moreOpen?'open':''}" id="more-details">
+        <button class="more-details-toggle" id="more-toggle">
+          <svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          More details
+          <svg class="chev" viewBox="0 0 24 24" class="svg-stroke" style="width:14px;height:14px"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="more-details-body">
+          <div class="meta-grid">
+            <div class="meta-key">Visualization ID</div><div class="meta-val mono">${v.id}</div>
+            <div class="meta-key">Recipe</div><div class="meta-val mono">${v.tableId}</div>
+            <div class="meta-key">Data source</div><div class="meta-val">${v.source}</div>
+            <div class="meta-key">Output type</div><div class="meta-val">${v.output}</div>
+            <div class="meta-key">Last run</div><div class="meta-val">${st==='ready'?'Just now':'— never run'}</div>
+            <div class="meta-key">Scope</div><div class="meta-val">JetBrains · 234 repositories</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-ghost" id="api-example"><svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>API example</button>
+      <div class="action-bar-spacer"></div>
+      ${needsConfig
+        ? `<span class="run-hint"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Configure required options to run</span>`
+        : (!hasReq ? `<span class="run-note"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Fine-tune the output. All settings are optional.</span>` : '')}
+      <button class="btn btn-outline" id="configure-btn">Configure${needsConfig?' <span class="req-dot" style="width:6px;height:6px;border-radius:50%;background:var(--brand-orange-600);display:inline-block;margin-left:2px"></span>':''}</button>
+      <button class="btn btn-primary ${needsConfig?'is-disabled':''}" id="run-btn" ${needsConfig?'aria-disabled="true"':''}>
+        <svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>
+        Run
+      </button>
+    </div>
+
+    <div class="output">
+      <div class="output-head"><span class="output-title">Output</span></div>
+      <div id="output-slot">${outputHTML(v,st)}</div>
+    </div>
+  `;
+  wireDetail(v);
+}
+
+/* ===== Output states (create / running / rendered) ===== */
+function outputHTML(v,st){
+  if(st==='running'){
+    return `<div class="output-create"><div class="spinner"></div><div class="output-create-title" style="margin-top:14px">Generating visualization…</div><div class="output-create-sub">Running <span class="mono">${v.tableId}</span> over the working set.</div></div>`;
+  }
+  if(st==='ready'){
+    return `<div class="output-rendered">
+      <div class="output-rendered-bar">
+        <svg viewBox="0 0 24 24" class="svg-stroke" style="width:14px;height:14px;color:var(--brand-green-700)"><polyline points="20 6 9 17 4 12"/></svg>
+        Generated just now · ${v.source}
+        <span class="spacer"></span>
+        <button class="btn" style="height:28px;padding:0 10px;font-size:12px"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
+      </div>
+      ${treemapSVG()}
+    </div>`;
+  }
+  // idle → sample preview of what the chart will look like
+  return `<div class="output-rendered output-sample">
+    <div class="output-rendered-bar">
+      <span class="sample-pill"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Sample preview</span>
+      Example output · not your data yet
+    </div>
+    <div class="sample-canvas">
+      <div class="chart-host">${sampleChart(v)}</div>
+      <div class="sample-overlay"><span class="ov-text">Run to generate with your working set</span></div>
+    </div>
+  </div>`;
+}
+
+/* Generic sample charts per output type (illustrative, not real data) */
+function sampleChart(v){
+  if(v.output==='treemap') return treemapSVG();
+  if(v.output==='pie') return samplePie();
+  return sampleBars();
+}
+function samplePie(){
+  const data=[{l:'Critical',v:142,c:'#CB3446'},{l:'High',v:684,c:'#FFB800'},{l:'Medium',v:1893,c:'#8D99FF'},{l:'Low',v:1499,c:'#D1D5DB'}];
+  const total=data.reduce((s,d)=>s+d.v,0);const C=2*Math.PI*60;let off=0;
+  const segs=data.map(d=>{const len=d.v/total*C;const s=`<circle cx="80" cy="80" r="60" fill="none" stroke="${d.c}" stroke-width="22" stroke-dasharray="${len.toFixed(1)} ${(C-len).toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" transform="rotate(-90 80 80)"/>`;off+=len;return s;}).join('');
+  const legend=data.map(d=>`<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);margin-bottom:6px"><span style="width:10px;height:10px;border-radius:3px;background:${d.c}"></span>${d.l} <strong style="color:var(--text-primary);margin-left:auto">${(d.v/total*100).toFixed(0)}%</strong></div>`).join('');
+  return `<div style="display:flex;align-items:center;gap:24px;padding:18px 24px;background:#fff"><svg viewBox="0 0 160 160" width="160" height="160" style="flex:0 0 160px"><circle cx="80" cy="80" r="60" fill="none" stroke="var(--brand-grey-100)" stroke-width="22"/>${segs}</svg><div style="flex:1;max-width:220px">${legend}</div></div>`;
+}
+function sampleBars(){
+  const data=[{l:'repo-a',v:92},{l:'repo-b',v:74},{l:'repo-c',v:63},{l:'repo-d',v:51},{l:'repo-e',v:38},{l:'repo-f',v:24}];
+  const W=600,H=210,padB=26,padT=12;const max=100;const innerH=H-padB-padT;const slot=W/data.length;const bw=Math.min(56,slot*0.55);
+  const palette=['#2F42FF','#3BCCA6','#5EC46F','#FFB800','#8D99FF','#AD59C7'];
+  const bars=data.map((d,i)=>{const h=d.v/max*innerH;const cx=i*slot+slot/2;const bx=cx-bw/2;const by=padT+innerH-h;return `<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="4" fill="${palette[i%palette.length]}"/><text x="${cx}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--text-tertiary)">${d.l}</text>`;}).join('');
+  return `<svg class="sample-bars" viewBox="0 0 ${W} ${H}"><line x1="0" y1="${padT+innerH}" x2="${W}" y2="${padT+innerH}" stroke="var(--brand-grey-200)"/>${bars}</svg>`;
+}
+
+function treemapSVG(){
+  // static demo treemap (resembles language composition)
+  const cells=[
+    {x:0,y:0,w:200,h:150,c:'#2F42FF',l:'TypeScript',v:'34%'},
+    {x:202,y:0,w:120,h:74,c:'#3BCCA6',l:'Java',v:'18%'},
+    {x:324,y:0,w:96,h:74,c:'#5EC46F',l:'Kotlin',v:'12%'},
+    {x:202,y:76,w:106,h:74,c:'#FFB800',l:'Go',v:'9%'},
+    {x:310,y:76,w:110,h:36,c:'#8D99FF',l:'CSS',v:'6%'},
+    {x:310,y:114,w:54,h:36,c:'#AD59C7',l:'SQL',v:'4%'},
+    {x:366,y:114,w:54,h:36,c:'#CB3446',l:'YAML',v:'3%'},
+    {x:0,y:152,w:130,h:58,c:'#B6BFFF',l:'Shell',v:'5%'},
+    {x:132,y:152,w:120,h:58,c:'#72E184',l:'Python',v:'5%'},
+    {x:254,y:152,w:90,h:58,c:'#DCC8E6',l:'JSON',v:'3%'},
+    {x:346,y:152,w:74,h:58,c:'#E5E7EB',l:'Other',v:'1%'},
+  ];
+  return `<svg class="treemap" viewBox="0 0 420 210">${cells.map(c=>`
+    <g class="tm-cell"><rect x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h}" rx="3" fill="${c.c}"/>
+    ${c.w>52&&c.h>30?`<text x="${c.x+8}" y="${c.y+20}" font-size="11" font-weight="600" fill="${c.c==='#E5E7EB'||c.c==='#DCC8E6'?'#374151':'#fff'}">${c.l}</text>
+    <text x="${c.x+8}" y="${c.y+34}" font-size="10" fill="${c.c==='#E5E7EB'||c.c==='#DCC8E6'?'#6B7280':'rgba(255,255,255,.85)'}">${c.v}</text>`:''}</g>`).join('')}</svg>`;
+}
+
+/* ===== Wire detail interactions ===== */
+function wireDetail(v){
+  const detail=document.getElementById('md-detail');
+  document.getElementById('more-toggle').addEventListener('click',()=>{
+    state.moreOpen=!state.moreOpen;
+    document.getElementById('more-details').classList.toggle('open',state.moreOpen);
+  });
+  function run(){
+    if(!state.configured[v.id]){
+      toast('Configure the required options before running');
+      openConfig(v);
+      return;
+    }
+    state.status[v.id]='running';
+    refreshOutputAndBadge(v);
+    setTimeout(()=>{
+      state.status[v.id]='ready';
+      refreshOutputAndBadge(v);
+      toast(`“${v.name}” generated`);
+    },1400);
+  }
+  document.getElementById('run-btn').addEventListener('click',run);
+  const inline=document.getElementById('run-btn-inline');
+  if(inline)inline.addEventListener('click',run);
+  document.getElementById('api-example').addEventListener('click',()=>toast('Showing API example…'));
+  document.getElementById('configure-btn').addEventListener('click',()=>openConfig(v));
+}
+
+/* ===== Configure side panel ===== */
+function openConfig(v){
+  state.configVizId=v.id;
+  const req=v.fields.filter(f=>f.section==='req');
+  const opt=v.fields.filter(f=>f.section==='opt');
+  document.getElementById('cfg-title').textContent=v.name;
+  document.getElementById('cfg-sub').textContent=req.length
+    ? 'Required options must be set before this visualization can run.'
+    : 'Fine-tune the output. All settings are optional.';
+  document.getElementById('cfg-body').innerHTML=`
+    <div class="cfg-error" id="cfg-error"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Fill in the required options highlighted below to continue.</div>
+    ${req.length?`<div class="config-section">
+      <div class="config-section-head"><span class="config-section-title">Required</span><span class="config-section-pill req">Required</span></div>
+      <div class="config-section-sub">These options must be set before the visualization can run.</div>
+      ${req.map(fieldHTML).join('')}
+    </div>`:''}
+    <div class="config-section">
+      <div class="config-section-head"><span class="config-section-title">Optional</span><span class="config-section-pill opt">Optional</span></div>
+      <div class="config-section-sub">Fine-tune the output. Leave blank to use recipe defaults.</div>
+      ${opt.length?opt.map(fieldHTML).join(''):'<div class="field-help">No optional settings for this visualization.</div>'}
+    </div>`;
+  // clear error styling as user types
+  document.getElementById('cfg-body').querySelectorAll('[data-required]').forEach(inp=>{
+    inp.addEventListener('input',()=>{ inp.classList.remove('err'); });
+  });
+  document.getElementById('cfg-drawer').classList.add('open');
+  document.getElementById('cfg-scrim').classList.add('open');
+  document.getElementById('cfg-drawer').setAttribute('aria-hidden','false');
+}
+function closeConfig(){
+  document.getElementById('cfg-drawer').classList.remove('open');
+  document.getElementById('cfg-scrim').classList.remove('open');
+  document.getElementById('cfg-drawer').setAttribute('aria-hidden','true');
+}
+document.getElementById('cfg-close').addEventListener('click',closeConfig);
+document.getElementById('cfg-cancel').addEventListener('click',closeConfig);
+document.getElementById('cfg-scrim').addEventListener('click',closeConfig);
+document.getElementById('cfg-save').addEventListener('click',()=>{
+  const body=document.getElementById('cfg-body');
+  const reqInputs=[...body.querySelectorAll('[data-required]')];
+  const empty=reqInputs.filter(i=>!i.value.trim());
+  reqInputs.forEach(i=>i.classList.toggle('err',!i.value.trim()));
+  if(empty.length){
+    const err=document.getElementById('cfg-error'); if(err)err.classList.add('show');
+    empty[0].focus();
+    return;
+  }
+  state.configured[state.configVizId]=true;
+  closeConfig();
+  if(state.configVizId===state.selectedId) renderDetail();
+  toast('Configuration saved — ready to run');
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeConfig();});
+function refreshOutputAndBadge(v){
+  const st=state.status[v.id];
+  document.getElementById('output-slot').innerHTML=outputHTML(v,st);
+  // re-wire inline run if present
+  const inline=document.getElementById('run-btn-inline');
+  if(inline)inline.addEventListener('click',()=>{state.status[v.id]='running';refreshOutputAndBadge(v);setTimeout(()=>{state.status[v.id]='ready';refreshOutputAndBadge(v);toast(`“${v.name}” generated`);},1400);});
+  // update header badge
+  const badge=document.querySelector('.detail-title-row .status-badge');
+  if(badge)badge.outerHTML=detailStatusBadge(st);
+}
+
+/* ===== Toast ===== */
+function toast(msg){
+  const stack=document.getElementById('toast-stack');
+  const el=document.createElement('div');el.className='toast';
+  el.innerHTML=`<svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="20 6 9 17 4 12"/></svg>${msg}`;
+  stack.appendChild(el);setTimeout(()=>el.remove(),2600);
+}
+
+/* init */
+renderList();
+renderDetail();
+</script>
+</body>
+</html>

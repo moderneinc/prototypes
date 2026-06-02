@@ -375,27 +375,20 @@ button { font: inherit; cursor: pointer; }
   color: rgb(52, 58, 64);
   margin-bottom: 14px;
 }
-.run-status-row { display: flex; align-items: center; gap: 16px; }
-.run-status-bar {
-  flex: 1; max-width: 520px;
-  height: 8px; background: var(--brand-grey-200);
-  border-radius: var(--radius-full); overflow: hidden;
-}
-.run-status-bar-fill {
-  height: 100%; width: 100%;
-  background: linear-gradient(90deg, var(--brand-green-500), var(--brand-green-600));
+.run-status-row { display: flex; align-items: center; gap: 12px; }
+.run-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 28px; padding: 0 12px 0 8px;
   border-radius: var(--radius-full);
+  font-size: 13px; font-weight: 600;
 }
-.run-status-label {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 500; color: var(--brand-green-800);
-}
-.run-status-label::before {
-  content: ''; width: 8px; height: 8px;
-  border-radius: 50%; background: var(--brand-green-600);
+.run-chip svg { width: 17px; height: 17px; }
+.run-chip.done {
+  background: var(--brand-green-100); color: var(--brand-green-800);
+  border: 1px solid var(--brand-green-200);
 }
 .run-status-meta {
-  font-size: 13px; color: var(--text-secondary);
+  font-size: 12.5px; color: var(--text-tertiary);
 }
 
 /* ===== Tabs ===== */
@@ -585,11 +578,10 @@ button { font: inherit; cursor: pointer; }
   display: inline-flex; align-items: center; gap: 6px;
   cursor: help;
 }
-.legend-dot {
+.legend-check {
   display: inline-block;
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--brand-green-600);
+  width: 13px; height: 13px;
+  color: var(--brand-digital-blue-600);
 }
 
 /* ===== Table ===== */
@@ -853,15 +845,9 @@ button { font: inherit; cursor: pointer; }
 .row-action-btn.ai.full::after {
   content: '';
   position: absolute;
-  bottom: 4px; right: 4px;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--brand-green-600);
-  border: 1.5px solid var(--surface-primary);
-  box-sizing: content-box;
-}
-.tbl tbody tr:hover .row-action-btn.ai.full::after {
-  border-color: var(--brand-grey-100);
+  bottom: 1px; right: 1px;
+  width: 13px; height: 13px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='white' stroke='%232637E6' stroke-width='2'/%3E%3Cpolyline points='8 12.5 11 15.5 16 9' fill='none' stroke='%232637E6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 13px 13px no-repeat;
 }
 .menu[hidden] { display: none; }
 .menu-section {
@@ -1205,9 +1191,8 @@ button { font: inherit; cursor: pointer; }
   margin-top: auto;
   padding-top: 4px;
 }
-.card-tile-footer .btn,
-.card-tile-footer .btn-split { flex: 1; }
-.card-tile-footer .btn { justify-content: center; height: 36px; }
+.card-tile-footer .btn-split { flex: 1; min-width: 0; }
+.card-tile-footer .btn { flex: 0 0 auto; justify-content: center; height: 36px; }
 /* Outline variant for the card download split button */
 .card-tile-footer .btn-split {
   border-color: var(--brand-digital-blue-500);
@@ -1639,8 +1624,8 @@ button { font: inherit; cursor: pointer; }
           </div>
           <div class="run-subhead">Results for JetBrains</div>
           <div class="run-status-row">
-            <div class="run-status-bar"><div class="run-status-bar-fill"></div></div>
-            <span class="run-status-label">Finished</span>
+            <span class="run-chip done"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed</span>
+            <span class="run-status-meta">234 repositories · finished in 6m 12s · 12 min ago</span>
           </div>
         </div>
 
@@ -1706,7 +1691,7 @@ button { font: inherit; cursor: pointer; }
             </button>
             <div class="filters-spacer"></div>
             <span class="filters-meta" title="Tables under 2,000 rows and 1 MB ship full when you Copy for AI; larger tables ship as a schema + sample.">
-              <span class="legend-dot"></span> Fits in full for AI · others sampled
+              <svg class="legend-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="8.5 12.5 11 15 15.5 9"/></svg> Fits in full for AI · others sampled
             </span>
           </div>
 
