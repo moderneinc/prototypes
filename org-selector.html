@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Org selector — picker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Design tokens (neo-design)
+   ============================================================ */
+:root {
+  --neo-digital-blue-50:  #f2f3ff;
+  --neo-digital-blue-100: #dce0ff;
+  --neo-digital-blue-200: #b6bfff;
+  --neo-digital-blue-300: #8d99ff;
+  --neo-digital-blue-500: #2f42ff;
+  --neo-digital-blue-600: #2637e6;
+  --neo-digital-blue-700: #1e2ec2;
+  --neo-grey-50:  #f9fafb;
+  --neo-grey-100: #f3f4f6;
+  --neo-grey-200: #e5e7eb;
+  --neo-grey-300: #d1d5db;
+  --neo-grey-400: #9ca3af;
+  --neo-grey-500: #6b7280;
+  --neo-grey-600: #4b5563;
+  --neo-grey-700: #374151;
+  --neo-grey-800: #1f2937;
+  --neo-grey-900: #111827;
+  --neo-red-50:   #ffedef;
+  --neo-violet-500: #992fb9;
+
+  --neo-white: #ffffff;
+  --neo-divider: var(--neo-grey-200);
+
+  --neo-shadow-card:     0 2px 4px 0 rgba(31, 41, 55, 0.1);
+  --neo-shadow-dropdown: 0 8px 15px 0 rgba(31, 41, 55, 0.1);
+  --neo-shadow-popover:  0 12px 32px -4px rgba(31, 41, 55, 0.18), 0 4px 12px -2px rgba(31, 41, 55, 0.08);
+
+  --neo-font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --neo-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --neo-nav-rail-width: 82px;
+  --neo-global-nav-height: 65px;
+
+  --neo-radius-card: 16px;
+  --neo-radius-button: 999px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; padding: 0; }
+body {
+  background: var(--neo-grey-100);
+  color: var(--neo-grey-800);
+  font-family: var(--neo-font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+button { font-family: inherit; }
+
+/* ============================================================
+   App shell
+   ============================================================ */
+.app-shell { height: 100vh; display: flex; flex-direction: column; }
+#moderne-app {
+  display: grid;
+  grid-template-columns: var(--neo-nav-rail-width) 1fr;
+  grid-template-areas: "rail main";
+  flex: 1;
+  overflow: hidden;
+  gap: 8px;
+  background: var(--neo-grey-100);
+}
+.rail-area { grid-area: rail; }
+.main-area { grid-area: main; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+/* ============================================================
+   Left navigation rail (82px)
+   ============================================================ */
+nav.left-rail {
+  position: fixed;
+  width: var(--neo-nav-rail-width);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 8px 24px;
+  background: var(--neo-grey-100);
+  z-index: 10;
+}
+.rail-list, .rail-bottom {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 4px;
+  min-height: 48px;
+  color: #1C1B1F;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  border-radius: 4px;
+  transition: background-color 150ms ease;
+}
+.nav-item:hover { background: rgba(0,0,0,0.04); }
+.nav-item.selected { background: #3776F01A; color: var(--neo-grey-800); }
+.nav-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neo-grey-900);
+  flex-shrink: 0;
+}
+.nav-icon svg { width: 22px; height: 22px; display: block; }
+.nav-text { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; margin: 0; width: 100%; }
+.nav-label {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 16px;
+  white-space: normal;
+  text-align: center;
+  margin: 4px 0;
+  color: inherit;
+}
+.nav-badge {
+  padding: 0 8px;
+  margin: 0 auto;
+  font-size: 11px;
+  line-height: 1.4;
+  background: var(--neo-digital-blue-300);
+  color: var(--neo-white);
+  border-radius: 50px;
+}
+.nav-item-home { padding: 8px 4px; min-height: auto; }
+.nav-item-home svg { width: 22px; height: 22px; }
+
+/* ============================================================
+   Global nav (65px)
+   ============================================================ */
+.global-nav-bar {
+  position: relative;
+  width: 100%;
+  height: var(--neo-global-nav-height);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.global-nav-bar::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 70%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  max-width: 90%;
+  height: var(--neo-global-nav-height);
+  background: radial-gradient(ellipse at center,
+              var(--neo-red-50) 0%,
+              var(--neo-red-50) 40%,
+              transparent 70%);
+  filter: blur(20px);
+  z-index: 0;
+  pointer-events: none;
+}
+.global-nav-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  gap: 12px;
+  padding: 12px 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Org selector button */
+.org-selector-wrap { flex: 0 1 auto; min-width: 0; max-width: 50vw; }
+.org-selector-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-transform: none;
+  color: var(--neo-grey-800);
+  background: var(--neo-white);
+  border: 1px solid transparent;
+  cursor: pointer;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+.org-selector-btn:hover { background: var(--neo-grey-200); }
+.org-selector-btn.open { border-color: var(--neo-digital-blue-500); }
+.org-selector-btn .start-icon,
+.org-selector-btn .end-icon { display: inline-flex; align-items: center; flex-shrink: 0; }
+.org-selector-btn .start-icon svg { width: 20px; height: 20px; }
+.org-selector-btn .end-icon svg   { width: 20px; height: 20px; transition: transform 150ms ease; }
+.org-selector-btn.open .end-icon svg { transform: rotate(180deg); }
+.org-selector-btn .label {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.global-nav-spacer { flex: 1; }
+
+/* Search input */
+.global-search { position: absolute; right: 172px; width: 180px; z-index: 10; transition: width 300ms cubic-bezier(0.4,0,0.2,1); }
+.global-search.expanded { width: calc(100% - 172px); z-index: 50; }
+.global-search-form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border-radius: 24px;
+  border: 1px solid var(--neo-divider);
+  background: var(--neo-white);
+  box-shadow: 0 1px 3px rgba(31,41,55,0.1);
+  padding: 4px 6px;
+  position: relative;
+  transition: border-color 300ms ease, box-shadow 300ms ease;
+}
+.global-search.expanded .global-search-form,
+.global-search-form:focus-within { border-color: var(--neo-digital-blue-500); }
+.global-search-form svg.search-icon { width: 22px; height: 22px; color: var(--neo-grey-800); margin-right: 4px; flex-shrink: 0; }
+.global-search-form input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 4px 0;
+  min-width: 0;
+  color: var(--neo-grey-800);
+}
+.global-search-form input::placeholder { color: var(--neo-grey-600); opacity: 0.7; }
+
+/* Action buttons */
+.global-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 64px;
+  margin-left: auto;
+  position: relative;
+}
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 64px;
+  padding: 8px;
+  flex-shrink: 0;
+  color: var(--neo-grey-800);
+  background: var(--neo-white);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(31,41,55,0.1);
+  transition: transform 200ms ease-in, box-shadow 200ms ease;
+}
+.icon-btn svg { width: 24px; height: 24px; }
+.icon-btn:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.icon-btn.popover-open {
+  background: var(--neo-digital-blue-100);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  transform: scale(1.1);
+}
+.icon-btn.avatar-btn { padding: 6px; }
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--neo-digital-blue-100);
+  color: var(--neo-grey-800);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Generic dropdown menu */
+.menu-paper {
+  position: fixed;
+  background: var(--neo-white);
+  border: 1px solid var(--neo-divider);
+  border-radius: 12px;
+  box-shadow: var(--neo-shadow-dropdown);
+  padding: 8px 0;
+  min-width: 220px;
+  z-index: 1500;
+}
+.menu-paper[hidden] { display: none; }
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--neo-grey-800);
+  text-align: left;
+}
+.menu-item:hover { background: var(--neo-grey-100); }
+.menu-item svg { width: 20px; height: 20px; color: var(--neo-grey-800); flex-shrink: 0; }
+.menu-divider { height: 1px; background: var(--neo-divider); margin: 4px 0; }
+
+/* Content area */
+#moderne-content {
+  background: var(--neo-white);
+  border-radius: 4px;
+  flex: 1;
+  overflow: auto;
+}
+.page-view { display: none; }
+.page-view.active { display: flex; flex-direction: column; min-height: 100%; }
+
+/* Welcome */
+.welcome-view {
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+}
+.welcome-card { max-width: 560px; display: flex; flex-direction: column; gap: 14px; align-items: center; margin: auto; }
+.welcome-card h1 { font-size: 28px; font-weight: 400; color: var(--neo-grey-800); margin: 0; }
+.welcome-card p { font-size: 15px; color: var(--neo-grey-700); margin: 0; line-height: 24px; }
+.selected-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  background: var(--neo-grey-100);
+  border: 1px solid var(--neo-grey-200);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--neo-grey-800);
+}
+
+/* My organizations page */
+.page-content { padding: 24px 32px 32px; display: flex; flex-direction: column; gap: 16px; }
+.page-breadcrumbs {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--neo-grey-600);
+}
+.page-breadcrumbs button { background: none; border: none; color: var(--neo-grey-600); cursor: pointer; padding: 0; font: inherit; }
+.page-breadcrumbs button:hover { color: var(--neo-digital-blue-500); }
+.page-breadcrumbs svg { width: 12px; height: 12px; color: var(--neo-grey-400); }
+.page-breadcrumbs .crumb-current { color: var(--neo-grey-800); font-weight: 500; }
+.page-title { font-size: 24px; font-weight: 400; color: var(--neo-grey-800); margin: 0; }
+.page-subtitle { font-size: 14px; color: var(--neo-grey-700); margin: 4px 0 0; }
+
+/* ============================================================
+   ORG PICKER POPOVER — search-driven hierarchical picker
+   (mirrors the production v2 component shown in screenshots)
+   ============================================================ */
+/* Scrim behind the centered modal */
+.picker-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 41, 55, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+  z-index: 1399;
+}
+.picker-scrim.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.org-picker {
+  position: fixed;
+  display: none;
+  z-index: 1400;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(620px, calc(100vw - 120px));
+  max-height: min(680px, calc(100vh - 100px));
+  background: var(--neo-white);
+  border-radius: var(--neo-radius-card);
+  box-shadow: var(--neo-shadow-popover);
+  overflow: hidden;
+  flex-direction: column;
+}
+.org-picker.open { display: flex; }
+.org-picker.full {
+  position: static;
+  transform: none;
+  top: auto;
+  left: auto;
+  width: 100%;
+  max-width: 720px;
+  max-height: none;
+  display: flex;
+  border: 1px solid var(--neo-divider);
+  box-shadow: var(--neo-shadow-card);
+}
+
+/* --- Search header --- */
+.picker-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--neo-grey-100);
+  flex-shrink: 0;
+}
+.picker-search-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--neo-grey-500);
+  flex-shrink: 0;
+}
+.picker-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--neo-grey-800);
+  padding: 4px 0;
+  min-width: 0;
+}
+.picker-search input::placeholder { color: var(--neo-grey-500); }
+.picker-search-clear-text {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--neo-grey-700);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.picker-search-clear-text:hover { background: var(--neo-grey-100); }
+.picker-search-close {
+  background: none;
+  border: none;
+  padding: 4px;
+  color: var(--neo-grey-700);
+  cursor: pointer;
+  display: inline-flex;
+  border-radius: 4px;
+}
+.picker-search-close:hover { background: var(--neo-grey-100); }
+.picker-search-close svg { width: 22px; height: 22px; }
+
+/* --- Tree list --- */
+.picker-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+.picker-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  font-size: 15px;
+  color: var(--neo-grey-800);
+  cursor: pointer;
+  border-bottom: 1px solid var(--neo-grey-100);
+  user-select: none;
+  position: relative;
+}
+.picker-row:last-child { border-bottom: none; }
+.picker-row:hover { background: var(--neo-grey-50); }
+.picker-row.focused { background: var(--neo-grey-50); }
+.picker-row.selected { background: var(--neo-digital-blue-50); }
+.picker-row.selected.focused { background: var(--neo-digital-blue-50); }
+
+/* indent — each level adds left padding to the leading cluster */
+.picker-row .indent { display: inline-block; flex-shrink: 0; }
+.picker-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--neo-grey-600);
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 150ms ease;
+}
+.picker-chevron svg { width: 14px; height: 14px; display: block; }
+.picker-chevron.expanded { transform: rotate(90deg); }
+.picker-chevron.empty { visibility: hidden; }
+.picker-row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--neo-grey-700);
+  flex-shrink: 0;
+}
+.picker-row-icon svg { width: 18px; height: 18px; }
+.picker-row-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 400;
+  color: var(--neo-grey-800);
+  min-width: 0;
+}
+.picker-row.group .picker-row-name { color: var(--neo-grey-600); }
+.picker-row.selected .picker-row-name { font-weight: 600; color: var(--neo-grey-900); }
+.picker-row-name .match { font-weight: 700; color: var(--neo-grey-900); }
+.picker-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--neo-white);
+  border: 1px solid var(--neo-grey-200);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--neo-grey-700);
+  flex-shrink: 0;
+}
+.picker-row.selected .picker-count { border-color: var(--neo-grey-200); }
+.picker-more-items {
+  font-size: 14px;
+  color: var(--neo-grey-500);
+  text-align: center;
+  padding: 8px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--neo-grey-100);
+  user-select: none;
+}
+.picker-more-items:hover { background: var(--neo-grey-50); color: var(--neo-grey-700); }
+
+/* --- Empty state --- */
+.picker-empty {
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--neo-grey-600);
+  font-size: 14px;
+}
+
+/* --- Footer --- */
+.picker-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--neo-grey-100);
+  flex-shrink: 0;
+  background: var(--neo-white);
+}
+.picker-shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.picker-shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--neo-grey-700);
+}
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border: 1px solid var(--neo-grey-200);
+  border-bottom-width: 1.5px;
+  border-radius: 4px;
+  background: var(--neo-white);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--neo-grey-700);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+.kbd-row { display: inline-flex; gap: 2px; }
+.picker-manage {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--neo-grey-800);
+  cursor: pointer;
+  border-radius: 6px;
+  text-decoration: none;
+}
+.picker-manage:hover { background: var(--neo-grey-100); color: var(--neo-digital-blue-700); }
+.picker-manage svg { width: 18px; height: 18px; color: var(--neo-grey-700); }
+.picker-manage:hover svg { color: var(--neo-digital-blue-500); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--neo-grey-700);
+  color: var(--neo-white);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 15px rgba(31,41,55,0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast svg { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div id="moderne-app">
+
+    <!-- LEFT NAV RAIL -->
+    <div class="rail-area">
+      <nav class="left-rail" aria-label="Platform navigation">
+        <ul class="rail-list" id="nav-list"></ul>
+      </nav>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-area">
+
+      <!-- GLOBAL NAV -->
+      <div class="global-nav-bar">
+        <div class="global-nav-inner">
+          <div class="org-selector-wrap">
+            <button class="org-selector-btn" id="org-selector-btn" aria-haspopup="true" aria-expanded="false">
+              <span class="start-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 4 9 14 14 0 0 1-4 9 14 14 0 0 1-4-9 14 14 0 0 1 4-9z"/></svg>
+              </span>
+              <span class="label" id="org-selector-label">test1</span>
+              <span class="end-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </span>
+            </button>
+          </div>
+
+          <div class="global-nav-spacer"></div>
+
+          <div class="global-search" id="global-search">
+            <form class="global-search-form" id="global-search-form" autocomplete="off">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input id="global-search-input" type="search" placeholder="Search recipes..." />
+            </form>
+          </div>
+
+          <div class="global-actions">
+            <button class="icon-btn" id="admin-btn" aria-label="Admin menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+            <button class="icon-btn" id="help-btn" aria-label="Help menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+            <button class="icon-btn avatar-btn" id="account-btn" aria-label="User account"><span class="avatar">AR</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div id="moderne-content">
+
+        <!-- Welcome -->
+        <section class="page-view welcome-view active" id="view-welcome">
+          <div class="welcome-card">
+            <h1>Organization selector</h1>
+            <p>
+              You're scoped to
+              <span class="selected-chip" id="welcome-current-chip">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg>
+                <span id="welcome-current-org">test1</span>
+              </span>.
+            </p>
+            <p>
+              Click the org pill in the top-left to open the picker, search, and switch organizations.
+              The footer link inside the picker — <strong>Manage user organizations</strong> — opens the
+              full management page.
+            </p>
+          </div>
+        </section>
+
+        <!-- My organizations page -->
+        <section class="page-view" id="view-my-organizations">
+          <div class="page-content">
+            <div class="page-breadcrumbs">
+              <button data-route="/">Home</button>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              <span class="crumb-current">User organizations</span>
+            </div>
+            <div>
+              <h1 class="page-title">User organizations</h1>
+              <p class="page-subtitle">Browse, search, and manage the organizations available to you.</p>
+            </div>
+
+            <div class="org-picker full" id="org-picker-full"></div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scrim behind centered modal -->
+<div class="picker-scrim" id="picker-scrim" aria-hidden="true"></div>
+
+<!-- ORG PICKER MODAL (centered) -->
+<div class="org-picker" id="org-picker-popover" role="dialog" aria-modal="true" aria-label="Select an organization"></div>
+
+<!-- Shared dropdown menu -->
+<div class="menu-paper" id="floating-menu" hidden role="menu"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-text">Done</span>
+</div>
+
+<script>
+'use strict';
+
+/* ============================================================
+   Icons
+   ============================================================ */
+const ICONS = {
+  home: '<svg viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>',
+  ai: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/></svg>',
+  devcenter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>',
+  marketplace: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+  builder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/></svg>',
+  activity: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>',
+  repositories: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7a2 2 0 0 1 2-2h4l2 2h10a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/></svg>',
+  batch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+  deploy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 12 13 21 6"/><path d="M21 6v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6"/></svg>',
+  agents: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><line x1="6" y1="7" x2="6.01" y2="7"/><line x1="6" y1="17" x2="6.01" y2="17"/></svg>',
+  audit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+  reports: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  token: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  status: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+  close:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  chevron:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
+  arrowUp:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>',
+  arrowDown:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>',
+  globe:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 4 9 14 14 0 0 1-4 9 14 14 0 0 1-4-9 14 14 0 0 1 4-9z"/></svg>',
+  bell:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+};
+const icon = (n) => ICONS[n] || '';
+
+/* ============================================================
+   Left rail
+   ============================================================ */
+const HOME_ITEM = { id: 'home', href: '/', icon: 'home' };
+const NAV_ITEMS = [
+  { id: 'moddy',        label: 'Moddy',        href: '/chat',            badge: 'Beta', icon: 'ai' },
+  { id: 'devcenter',    label: 'DevCenter',    href: '/devcenter',       icon: 'devcenter' },
+  { id: 'marketplace',  label: 'Marketplace',  href: '/marketplace',     icon: 'marketplace' },
+  { id: 'builder',      label: 'Builder',      href: '/builder',         icon: 'builder' },
+  { id: 'activity',     label: 'Activity',     href: '/recent-activity', icon: 'activity' },
+  { id: 'repositories', label: 'Repositories', href: '/organizations',   icon: 'repositories' },
+  { id: 'batch-changes',label: 'Batch Changes',href: '/batch-changes',   icon: 'batch' },
+  { id: 'deploy',       label: 'Deploy',       href: '/recipes/deploy',  icon: 'deploy' },
+];
+const ADMIN_MENU_ITEMS = [
+  { label: 'Agents',        href: '/admin/agents',        icon: 'agents' },
+  { label: 'Audit logs',    href: '/admin/audit-logs',    icon: 'audit' },
+  { label: 'Reports',       href: '/admin/reports',       icon: 'reports' },
+  { label: 'Access tokens', href: '/admin/access-tokens', icon: 'token' },
+  { label: 'Users',         href: '/admin/users',         icon: 'user' },
+  { label: 'Status',        href: '/admin/status',        icon: 'status' },
+];
+
+function renderNav() {
+  const ul = document.getElementById('nav-list');
+  // home
+  const homeLi = document.createElement('li');
+  const homeBtn = document.createElement('button');
+  homeBtn.className = 'nav-item nav-item-home';
+  homeBtn.dataset.navId = HOME_ITEM.id;
+  homeBtn.innerHTML = `<span class="nav-icon">${icon(HOME_ITEM.icon)}</span>`;
+  homeBtn.addEventListener('click', () => navigateTo(HOME_ITEM.href, HOME_ITEM.id));
+  homeLi.appendChild(homeBtn);
+  ul.appendChild(homeLi);
+  // others
+  NAV_ITEMS.forEach(item => {
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.className = 'nav-item';
+    btn.dataset.navId = item.id;
+    btn.title = item.label;
+    btn.innerHTML = `
+      <span class="nav-icon">${icon(item.icon)}</span>
+      <span class="nav-text">
+        <span class="nav-label">${item.label}</span>
+        ${item.badge ? `<span class="nav-badge">${item.badge}</span>` : ''}
+      </span>`;
+    btn.addEventListener('click', () => navigateTo(item.href, item.id));
+    li.appendChild(btn);
+    ul.appendChild(li);
+  });
+}
+
+function setNavSelected(id) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected'));
+  const m = document.querySelector(`.nav-item[data-nav-id="${id}"]`);
+  if (m) m.classList.add('selected');
+}
+
+/* ============================================================
+   Routing
+   ============================================================ */
+const ROUTES = {
+  '/':                            { view: 'view-welcome',          navId: 'home' },
+  '/organizations':               { view: 'view-welcome',          navId: 'repositories' },
+  '/organizations/my-organizations': { view: 'view-my-organizations', navId: 'repositories' },
+};
+function navigateTo(href, navId) {
+  const r = ROUTES[href] || ROUTES['/'];
+  document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
+  document.getElementById(r.view).classList.add('active');
+  setNavSelected(navId || r.navId);
+  if (r.view === 'view-my-organizations') {
+    mountPicker(document.getElementById('org-picker-full'), { embedded: true });
+  }
+  document.getElementById('moderne-content').scrollTop = 0;
+}
+
+/* ============================================================
+   ORG TREE — mirrors the structure from the screenshots
+   ============================================================ */
+const ORG_TREE = [
+  { id: 'global', name: 'Global', icon: 'globe', kind: 'group', children: [
+    { id: 'all', name: 'ALL', count: 41247, children: [
+      { id: 'open-source', name: 'Open Source', children: [
+        { id: 'javascript', name: 'JavaScript', children: [
+          { id: 'devtools', name: 'DevTools', children: [
+            { id: 'testing',   name: 'Testing',   count: 26 },
+            { id: 'mocking',   name: 'Mocking',   count: 14 },
+            { id: 'fixtures',  name: 'Fixtures',  count: 9 },
+          ]},
+          { id: 'frameworks', name: 'Frameworks', children: [
+            { id: 'react',     name: 'React',     count: 312 },
+            { id: 'vue',       name: 'Vue',       count: 187 },
+            { id: 'svelte',    name: 'Svelte',    count: 74 },
+            { id: 'angular',   name: 'Angular',   count: 122 },
+          ]},
+        ]},
+        { id: 'java',       name: 'Java', children: [
+          { id: 'spring',    name: 'Spring',    count: 412 },
+          { id: 'jakarta',   name: 'Jakarta EE', count: 88 },
+        ]},
+        { id: 'python',     name: 'Python', count: 1284 },
+        { id: 'rust',       name: 'Rust',   count: 318 },
+      ]},
+      { id: 'private',     name: 'Private', count: 18204 },
+      { id: 'archived',    name: 'Archived', count: 6231 },
+    ]},
+    { id: 'jackson-users', name: 'Jackson Users', count: 7 },
+    { id: 'my-organizations', name: 'My organizations', count: 12, defaultExpanded: true, children: [
+      { id: 'annies-orgs', name: "Annie's orgs", count: 11 },
+      { id: 'my-user-orgs', name: 'My user orgs', count: 11 },
+      { id: 'test',  name: 'test',  count: 3 },
+      { id: 'test1', name: 'test1', count: 1 },
+    ]},
+    { id: 'user-organizations', name: 'User organizations', count: 35 },
+  ]},
+  { id: 'csharp-demo', name: 'csharp-demo', count: 35 },
+  { id: 'moderneinc', name: 'moderneinc',  count: 1 },
+];
+const DEFAULT_SELECTED = 'test1';
+
+/* Walk the tree and tag each node with parent + depth + path */
+function indexTree() {
+  const byId = new Map();
+  const visit = (node, parent, depth) => {
+    node.parent = parent ? parent.id : null;
+    node.depth = depth;
+    byId.set(node.id, node);
+    (node.children || []).forEach(c => visit(c, node, depth + 1));
+  };
+  ORG_TREE.forEach(n => visit(n, null, 0));
+  return byId;
+}
+const TREE_BY_ID = indexTree();
+function getNode(id) { return TREE_BY_ID.get(id); }
+function ancestorsOf(id) {
+  const acc = [];
+  let n = getNode(id);
+  while (n && n.parent) { acc.push(n.parent); n = getNode(n.parent); }
+  return acc;
+}
+
+/* ============================================================
+   PICKER state + render
+   ============================================================ */
+const state = {
+  selectedId: DEFAULT_SELECTED,
+  expanded: new Set(),
+  query: '',
+  focusedId: DEFAULT_SELECTED,
+  pickerOpen: false,
+  pickerContainer: null,
+};
+
+function seedDefaultExpansion() {
+  // Start with default-expanded nodes
+  TREE_BY_ID.forEach(n => { if (n.defaultExpanded) state.expanded.add(n.id); });
+  // Expand "Global" by default since most things live under it
+  state.expanded.add('global');
+  // Expand the path to the selected org so it's visible
+  ancestorsOf(state.selectedId).forEach(id => state.expanded.add(id));
+}
+
+/* Build the flat list of rows visible given current expansion + filter. */
+function buildVisibleRows() {
+  const q = state.query.trim().toLowerCase();
+  const rows = [];
+
+  if (q) {
+    // SEARCH mode: depth-first, only show matches + ancestors-of-matches.
+    // For non-matching siblings at each level, accumulate a "+ N more items" placeholder.
+    const matches = new Set();
+    TREE_BY_ID.forEach(n => {
+      if (n.name.toLowerCase().includes(q)) matches.add(n.id);
+    });
+    // Add ancestors so we can show the path to each match
+    const visible = new Set();
+    matches.forEach(id => {
+      visible.add(id);
+      ancestorsOf(id).forEach(a => visible.add(a));
+    });
+
+    const walk = (nodes, depth) => {
+      // partition into visible vs hidden so we can show "+ N more items"
+      const shown = nodes.filter(n => visible.has(n.id));
+      const hiddenCount = nodes.length - shown.length;
+      shown.forEach(n => {
+        const isMatch = matches.has(n.id);
+        rows.push({
+          kind: 'node',
+          id: n.id,
+          node: n,
+          depth,
+          expandable: !!(n.children && n.children.length),
+          expanded: true, // when searching, always expand
+          highlight: isMatch ? q : '',
+        });
+        if (n.children && n.children.length) walk(n.children, depth + 1);
+      });
+      if (hiddenCount > 0) {
+        rows.push({ kind: 'more', depth, count: hiddenCount, parentId: nodes[0]?.parent ?? null });
+      }
+    };
+    walk(ORG_TREE, 0);
+    return rows;
+  }
+
+  // NORMAL mode: depth-first, respect expansion state
+  const walk = (nodes, depth) => {
+    nodes.forEach(n => {
+      const expanded = state.expanded.has(n.id);
+      rows.push({
+        kind: 'node',
+        id: n.id,
+        node: n,
+        depth,
+        expandable: !!(n.children && n.children.length),
+        expanded,
+        highlight: '',
+      });
+      if (expanded && n.children) walk(n.children, depth + 1);
+    });
+  };
+  walk(ORG_TREE, 0);
+  return rows;
+}
+
+function nameWithHighlight(name, q) {
+  if (!q) return escapeHTML(name);
+  const lower = name.toLowerCase();
+  const idx = lower.indexOf(q);
+  if (idx < 0) return escapeHTML(name);
+  const a = name.slice(0, idx);
+  const b = name.slice(idx, idx + q.length);
+  const c = name.slice(idx + q.length);
+  return `${escapeHTML(a)}<span class="match">${escapeHTML(b)}</span>${escapeHTML(c)}`;
+}
+
+function indentWidth(depth) {
+  // each level adds ~28px of left indent (chevron stays as the anchor)
+  return depth * 28;
+}
+
+function renderPicker(container) {
+  const rows = buildVisibleRows();
+  const list = container.querySelector('.picker-list');
+  if (!list) return;
+  list.innerHTML = '';
+
+  if (rows.length === 0) {
+    list.innerHTML = `<div class="picker-empty">No organizations match "${escapeHTML(state.query)}"</div>`;
+    return;
+  }
+
+  // Ensure focusedId is still in the visible set; otherwise focus first selectable
+  const selectableRowIds = rows.filter(r => r.kind === 'node' && !isGroupOnly(r.node)).map(r => r.id);
+  if (!selectableRowIds.includes(state.focusedId)) {
+    state.focusedId = selectableRowIds[0] || null;
+  }
+
+  const frag = document.createDocumentFragment();
+  rows.forEach(r => {
+    if (r.kind === 'more') {
+      const el = document.createElement('div');
+      el.className = 'picker-more-items';
+      el.style.paddingLeft = `${20 + indentWidth(r.depth) + 20}px`;
+      el.textContent = `+ ${r.count} more items`;
+      frag.appendChild(el);
+      return;
+    }
+    const n = r.node;
+    const row = document.createElement('div');
+    row.className = 'picker-row';
+    row.dataset.id = n.id;
+    if (n.kind === 'group') row.classList.add('group');
+    if (n.id === state.selectedId) row.classList.add('selected');
+    if (n.id === state.focusedId)  row.classList.add('focused');
+
+    const indent = `<span class="indent" style="width:${indentWidth(r.depth)}px;"></span>`;
+    const chevron = r.expandable
+      ? `<button class="picker-chevron ${r.expanded ? 'expanded' : ''}" data-toggle="${n.id}" aria-label="${r.expanded ? 'Collapse' : 'Expand'}">${icon('chevron')}</button>`
+      : `<span class="picker-chevron empty"></span>`;
+    const icn = n.icon ? `<span class="picker-row-icon">${icon(n.icon)}</span>` : '';
+    const name = `<span class="picker-row-name">${nameWithHighlight(n.name, r.highlight)}</span>`;
+    const count = (typeof n.count === 'number') ? `<span class="picker-count">${formatCount(n.count)}</span>` : '';
+
+    row.innerHTML = indent + chevron + icn + name + count;
+    frag.appendChild(row);
+  });
+  list.appendChild(frag);
+}
+
+/* Returns true if a node is a parent-only group (cannot be selected directly) */
+function isGroupOnly(node) {
+  return node.kind === 'group';
+}
+
+function formatCount(n) {
+  return n.toLocaleString('en-US');
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ============================================================
+   PICKER mount + behavior
+   ============================================================ */
+function mountPicker(container, opts = {}) {
+  if (!container.__mounted) {
+    container.innerHTML = `
+      <div class="picker-search">
+        <span class="picker-search-icon">${icon('search')}</span>
+        <input type="search" placeholder="Search organizations..." autocomplete="off" />
+        <button class="picker-search-clear-text" hidden>Clear</button>
+        <button class="picker-search-close" aria-label="Close">${icon('close')}</button>
+      </div>
+      <div class="picker-list" tabindex="-1"></div>
+      <div class="picker-footer">
+        <div class="picker-shortcuts">
+          <span class="picker-shortcut">
+            <span class="kbd-row"><span class="kbd">${icon('arrowUp')}</span><span class="kbd">${icon('arrowDown')}</span></span>
+            Navigate
+          </span>
+          <span class="picker-shortcut"><span class="kbd">Enter</span> Select</span>
+          <span class="picker-shortcut"><span class="kbd">Esc</span> Close</span>
+        </div>
+        <button class="picker-manage" data-action="manage">
+          ${icon('bell')}
+          <span>Manage user organizations</span>
+        </button>
+      </div>
+    `;
+    // wire events
+    const input = container.querySelector('.picker-search input');
+    const clearText = container.querySelector('.picker-search-clear-text');
+    const closeBtn = container.querySelector('.picker-search-close');
+    const list = container.querySelector('.picker-list');
+
+    input.addEventListener('input', () => {
+      state.query = input.value;
+      clearText.hidden = !input.value;
+      renderPicker(container);
+    });
+    input.addEventListener('keydown', (e) => handlePickerKey(e, container));
+    clearText.addEventListener('click', () => {
+      input.value = '';
+      state.query = '';
+      clearText.hidden = true;
+      input.focus();
+      renderPicker(container);
+    });
+    closeBtn.addEventListener('click', () => {
+      if (opts.embedded) {
+        input.value = '';
+        state.query = '';
+        clearText.hidden = true;
+        renderPicker(container);
+      } else {
+        closePicker();
+      }
+    });
+    list.addEventListener('click', (e) => handlePickerClick(e, container));
+    container.querySelector('[data-action="manage"]').addEventListener('click', () => {
+      if (!opts.embedded) closePicker();
+      navigateTo('/organizations/my-organizations', 'repositories');
+    });
+
+    container.__mounted = true;
+  }
+  state.pickerContainer = container;
+  renderPicker(container);
+}
+
+function handlePickerClick(e, container) {
+  const toggle = e.target.closest('[data-toggle]');
+  if (toggle) {
+    e.stopPropagation();
+    const id = toggle.dataset.toggle;
+    if (state.expanded.has(id)) state.expanded.delete(id);
+    else state.expanded.add(id);
+    renderPicker(container);
+    return;
+  }
+  const row = e.target.closest('.picker-row');
+  if (!row) return;
+  const id = row.dataset.id;
+  const node = getNode(id);
+  if (!node) return;
+  if (isGroupOnly(node)) {
+    if (state.expanded.has(id)) state.expanded.delete(id);
+    else state.expanded.add(id);
+    renderPicker(container);
+    return;
+  }
+  selectOrg(id);
+  if (!container.classList.contains('full')) closePicker();
+}
+
+function handlePickerKey(e, container) {
+  if (e.key === 'Escape') {
+    if (state.query) {
+      // clear search first, then close on next escape
+      state.query = '';
+      const input = container.querySelector('.picker-search input');
+      input.value = '';
+      container.querySelector('.picker-search-clear-text').hidden = true;
+      renderPicker(container);
+    } else if (!container.classList.contains('full')) {
+      closePicker();
+    }
+    return;
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (state.focusedId) {
+      const n = getNode(state.focusedId);
+      if (n && !isGroupOnly(n)) {
+        selectOrg(state.focusedId);
+        if (!container.classList.contains('full')) closePicker();
+      } else if (n) {
+        if (state.expanded.has(n.id)) state.expanded.delete(n.id);
+        else state.expanded.add(n.id);
+        renderPicker(container);
+      }
+    }
+    return;
+  }
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    const rows = buildVisibleRows().filter(r => r.kind === 'node');
+    if (!rows.length) return;
+    const idx = Math.max(0, rows.findIndex(r => r.id === state.focusedId));
+    const next = e.key === 'ArrowDown'
+      ? Math.min(rows.length - 1, idx + 1)
+      : Math.max(0, idx - 1);
+    state.focusedId = rows[next].id;
+    renderPicker(container);
+    // scroll into view
+    const rowEl = container.querySelector(`.picker-row[data-id="${state.focusedId}"]`);
+    if (rowEl) rowEl.scrollIntoView({ block: 'nearest' });
+    return;
+  }
+  if (e.key === 'ArrowRight' && state.focusedId) {
+    e.preventDefault();
+    state.expanded.add(state.focusedId);
+    renderPicker(container);
+    return;
+  }
+  if (e.key === 'ArrowLeft' && state.focusedId) {
+    e.preventDefault();
+    if (state.expanded.has(state.focusedId)) {
+      state.expanded.delete(state.focusedId);
+    } else {
+      const n = getNode(state.focusedId);
+      if (n && n.parent) state.focusedId = n.parent;
+    }
+    renderPicker(container);
+    return;
+  }
+}
+
+function selectOrg(id) {
+  const node = getNode(id);
+  if (!node) return;
+  state.selectedId = id;
+  state.focusedId = id;
+  document.getElementById('org-selector-label').textContent = node.name;
+  document.getElementById('welcome-current-org').textContent = node.name;
+  // ensure path to selected is expanded for next open
+  ancestorsOf(id).forEach(a => state.expanded.add(a));
+  // re-render any mounted pickers
+  if (state.pickerContainer) renderPicker(state.pickerContainer);
+  const fullEl = document.getElementById('org-picker-full');
+  if (fullEl && fullEl.__mounted) renderPicker(fullEl);
+  toast(`Switched to ${node.name}`);
+}
+
+/* ============================================================
+   POPOVER positioning + open/close
+   ============================================================ */
+const popover = document.getElementById('org-picker-popover');
+const scrim = document.getElementById('picker-scrim');
+const orgBtn = document.getElementById('org-selector-btn');
+
+function openPopover() {
+  mountPicker(popover, { embedded: false });
+  scrim.classList.add('open');
+  popover.classList.add('open');
+  orgBtn.classList.add('open');
+  orgBtn.setAttribute('aria-expanded', 'true');
+  state.pickerOpen = true;
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { popover.querySelector('.picker-search input').focus(); }, 30);
+}
+function closePicker() {
+  scrim.classList.remove('open');
+  popover.classList.remove('open');
+  orgBtn.classList.remove('open');
+  orgBtn.setAttribute('aria-expanded', 'false');
+  state.pickerOpen = false;
+  document.body.style.overflow = '';
+  // clear search for next time
+  const input = popover.querySelector('.picker-search input');
+  if (input) input.value = '';
+  state.query = '';
+  const clearText = popover.querySelector('.picker-search-clear-text');
+  if (clearText) clearText.hidden = true;
+}
+orgBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (state.pickerOpen) closePicker(); else openPopover();
+});
+popover.addEventListener('click', e => e.stopPropagation());
+scrim.addEventListener('click', () => { if (state.pickerOpen) closePicker(); });
+
+/* ============================================================
+   Admin menu
+   ============================================================ */
+const adminBtn = document.getElementById('admin-btn');
+const floatingMenu = document.getElementById('floating-menu');
+let menuOwner = null;
+
+function openMenuAt(triggerEl, items) {
+  closeFloatingMenu();
+  const rect = triggerEl.getBoundingClientRect();
+  floatingMenu.innerHTML = '';
+  items.forEach(item => {
+    if (item.divider) {
+      const d = document.createElement('div'); d.className = 'menu-divider'; floatingMenu.appendChild(d); return;
+    }
+    const b = document.createElement('button');
+    b.className = 'menu-item';
+    b.innerHTML = `${item.icon ? icon(item.icon) : ''}<span>${item.label}</span>`;
+    b.addEventListener('click', (e) => { e.stopPropagation(); closeFloatingMenu(); if (item.onClick) item.onClick(); });
+    floatingMenu.appendChild(b);
+  });
+  floatingMenu.hidden = false;
+  const menuRect = floatingMenu.getBoundingClientRect();
+  let top = rect.bottom + 8;
+  let left = rect.right - menuRect.width;
+  left = Math.max(8, Math.min(left, window.innerWidth - menuRect.width - 8));
+  floatingMenu.style.top = `${top}px`;
+  floatingMenu.style.left = `${left}px`;
+  menuOwner = triggerEl;
+  triggerEl.classList.add('popover-open');
+}
+function closeFloatingMenu() {
+  if (floatingMenu.hidden) return;
+  floatingMenu.hidden = true;
+  if (menuOwner) { menuOwner.classList.remove('popover-open'); menuOwner = null; }
+}
+adminBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!floatingMenu.hidden && menuOwner === adminBtn) { closeFloatingMenu(); return; }
+  openMenuAt(adminBtn, ADMIN_MENU_ITEMS.map(it => ({
+    icon: it.icon, label: it.label,
+    onClick: () => toast(`${it.label} → ${it.href} (out of scope for this prototype)`)
+  })));
+});
+document.getElementById('help-btn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!floatingMenu.hidden && menuOwner === e.currentTarget) { closeFloatingMenu(); return; }
+  openMenuAt(e.currentTarget, [
+    { icon: 'audit',   label: 'Documentation',         onClick: () => toast('Docs (mock)') },
+    { icon: 'reports', label: 'Keyboard shortcuts',    onClick: () => toast('Shortcuts (mock)') },
+    { icon: 'status',  label: 'What’s new',       onClick: () => toast('Changelog (mock)') },
+  ]);
+});
+document.getElementById('account-btn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!floatingMenu.hidden && menuOwner === e.currentTarget) { closeFloatingMenu(); return; }
+  openMenuAt(e.currentTarget, [
+    { icon: 'user',  label: 'Profile',  onClick: () => toast('Profile (mock)') },
+    { divider: true },
+    { icon: 'token', label: 'Sign out', onClick: () => toast('Signed out (mock)') },
+  ]);
+});
+
+/* ============================================================
+   Global search input collapse/expand
+   ============================================================ */
+const gs = document.getElementById('global-search');
+const gsInput = document.getElementById('global-search-input');
+gsInput.addEventListener('focus', () => gs.classList.add('expanded'));
+gsInput.addEventListener('blur',  () => { if (!gsInput.value) gs.classList.remove('expanded'); });
+document.getElementById('global-search-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (gsInput.value) toast(`Search: "${gsInput.value}" (mock)`);
+});
+
+/* ============================================================
+   Global close handlers
+   ============================================================ */
+document.addEventListener('mousedown', (e) => {
+  if (state.pickerOpen && !popover.contains(e.target) && !orgBtn.contains(e.target)) closePicker();
+  if (!floatingMenu.hidden && !floatingMenu.contains(e.target) && menuOwner && !menuOwner.contains(e.target)) closeFloatingMenu();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (!floatingMenu.hidden) closeFloatingMenu();
+  }
+});
+
+/* Page breadcrumb home link */
+document.querySelectorAll('.page-breadcrumbs [data-route]').forEach(b => {
+  b.addEventListener('click', () => navigateTo(b.dataset.route));
+});
+
+/* ============================================================
+   Toast
+   ============================================================ */
+const toastEl = document.getElementById('toast');
+const toastText = document.getElementById('toast-text');
+let toastTimer = null;
+function toast(msg) {
+  toastText.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+}
+
+/* ============================================================
+   Init
+   ============================================================ */
+renderNav();
+seedDefaultExpansion();
+navigateTo('/', 'home');
+</script>
+</body>
+</html>
