@@ -1099,10 +1099,10 @@ button { font: inherit; cursor: pointer; }
   padding: 20px;
   background: var(--brand-grey-100);
 }
-@media (max-width: 1280px) {
+@media (max-width: 1024px) {
   .cards-grid { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 880px) {
+@media (max-width: 768px) {
   .cards-grid { grid-template-columns: 1fr; }
 }
 
@@ -1149,6 +1149,13 @@ button { font: inherit; cursor: pointer; }
 .card-tile-actions {
   display: inline-flex; align-items: center; gap: 4px;
 }
+.full-flag {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--brand-digital-blue-600);
+  flex-shrink: 0;
+}
+.full-flag svg { width: 16px; height: 16px; }
 
 .card-tile-title {
   font-size: 17px; font-weight: 600;
@@ -1200,7 +1207,7 @@ button { font: inherit; cursor: pointer; }
   margin-top: auto;
   padding-top: 4px;
 }
-.card-tile-footer .btn-split { flex: 1; min-width: 0; }
+.card-tile-footer .btn-split { flex: 0 0 auto; }
 .card-tile-footer .btn { flex: 0 0 auto; justify-content: center; height: 36px; }
 /* Outline variant for the card download split button */
 .card-tile-footer .btn-split {
@@ -1214,7 +1221,7 @@ button { font: inherit; cursor: pointer; }
   background: var(--brand-digital-blue-100);
 }
 .card-tile-footer .btn-split .btn-split-main {
-  flex: 1; justify-content: center; height: 34px;
+  justify-content: center; height: 34px; padding: 0 16px;
 }
 .card-tile-footer .btn-split .btn-split-caret {
   height: 34px;
@@ -2246,11 +2253,12 @@ function cardHTML(t) {
         </label>
         <span class="card-tile-eyebrow ${isAgg ? 'agg' : ''}">${isAgg ? 'Aggregated table' : 'Data table'}</span>
         <div class="card-tile-actions">
-          <button class="row-action-btn ai ${isFull ? 'full' : ''}" data-act="ai-copy" data-id="${t.id}" title="${isFull
+          <button class="row-action-btn ai" data-act="ai-copy" data-id="${t.id}" title="${isFull
             ? `Copy for AI · full table (${t.rows.toLocaleString()} rows fits)`
             : `Copy for AI · ${t.rows.toLocaleString()} rows — will sample`}">
             <svg viewBox="0 0 24 24" class="svg-stroke"><path d="M12 3l1.4 4.2L17.6 8l-3.2 1.6L12 14l-1.4-4.2L7.4 8l3.2-1.6L12 3z"/><path d="M19 13l.7 1.8L21.5 15l-1.8.7L19 17l-.7-1.5L17 15l1.5-.7L19 13z"/></svg>
           </button>
+          ${isFull ? `<span class="full-flag" title="Fits in full for AI — copy includes every row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="8.5 12.5 11 15 15.5 9"/></svg></span>` : ''}
         </div>
       </div>
 
@@ -2308,11 +2316,12 @@ function tableRowHTML(t) {
           <button class="row-action-btn" data-act="preview" data-id="${t.id}" title="Inspect">
             <svg viewBox="0 0 24 24" class="svg-stroke"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           </button>
-          <button class="row-action-btn ai ${isFull ? 'full' : ''}" data-act="ai-copy" data-id="${t.id}" title="${isFull
+          <button class="row-action-btn ai" data-act="ai-copy" data-id="${t.id}" title="${isFull
             ? `Copy for AI · full table (${t.rows.toLocaleString()} rows fits)`
             : `Copy for AI · ${t.rows.toLocaleString()} rows — will sample`}">
             <svg viewBox="0 0 24 24" class="svg-stroke"><path d="M12 3l1.4 4.2L17.6 8l-3.2 1.6L12 14l-1.4-4.2L7.4 8l3.2-1.6L12 3z"/><path d="M19 13l.7 1.8L21.5 15l-1.8.7L19 17l-.7-1.5L17 15l1.5-.7L19 13z"/></svg>
           </button>
+          ${isFull ? `<span class="full-flag" title="Fits in full for AI — copy includes every row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="8.5 12.5 11 15 15.5 9"/></svg></span>` : ''}
           <div class="dl-split">
             <button class="dl-main" data-act="download" data-id="${t.id}">
               <svg viewBox="0 0 24 24" class="svg-stroke"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -2598,7 +2607,7 @@ function buildTableMarkdown(t) {
   lines.push('| Column | Type | Description |');
   lines.push('| --- | --- | --- |');
   cols.forEach(c => {
-    lines.push(`| \`${c.name}\` | \`${c.type}\`${c.key ? ' (key)' : ''} | ${(c.desc || '').replace(/\|/g, '\\|')} |`);
+    lines.push(`| \`${c.name}\` | \`${c.type}\` | ${(c.desc || '').replace(/\|/g, '\\|')} |`);
   });
   lines.push('');
   if (rows.length) {
@@ -2633,7 +2642,7 @@ function buildTableJSON(t) {
     aggregated: t.group ? { groupId: t.group, recipes: t.recipes } : null,
     rows: t.rows,
     bytes: t.bytes,
-    columns: cols.map(c => ({ name: c.name, type: c.type, description: c.desc, key: !!c.key })),
+    columns: cols.map(c => ({ name: c.name, type: c.type, description: c.desc })),
     downloadUrl: tableDownloadURL(t),
     data: {
       mode, // 'full' | 'sample'
@@ -2653,7 +2662,7 @@ function buildTableMCP(t) {
     description: t.desc,
     rows: t.rows,
     aggregated: t.group ? { groupId: t.group, recipes: t.recipes } : null,
-    columns: cols.map(c => ({ name: c.name, type: c.type, description: c.desc, key: !!c.key })),
+    columns: cols.map(c => ({ name: c.name, type: c.type, description: c.desc })),
     fetch: {
       mcp: tableMCPRef(t),
       url: tableDownloadURL(t),
@@ -2680,7 +2689,7 @@ function buildManifestMarkdown() {
     lines.push('');
     lines.push(`### ${t.name}`);
     cols.forEach(c => {
-      lines.push(`- \`${c.name}\` (\`${c.type}\`)${c.key ? ' · key' : ''} — ${c.desc || ''}`);
+      lines.push(`- \`${c.name}\` (\`${c.type}\`) — ${c.desc || ''}`);
     });
   });
   return lines.join('\n');
@@ -2699,7 +2708,7 @@ function buildManifestJSON() {
       rows: t.rows,
       bytes: t.bytes,
       aggregated: t.group ? { groupId: t.group, recipes: t.recipes } : null,
-      columns: (SCHEMAS[t.id] || []).map(c => ({ name: c.name, type: c.type, description: c.desc, key: !!c.key })),
+      columns: (SCHEMAS[t.id] || []).map(c => ({ name: c.name, type: c.type, description: c.desc })),
       downloadUrl: tableDownloadURL(t),
     })),
   }, null, 2);
@@ -2983,10 +2992,6 @@ function renderDrawerBody() {
         <div>
           <div class="schema-item-name">${c.name}</div>
           <div class="schema-item-desc">${c.desc || ''}</div>
-          ${c.key ? `<div class="schema-item-flags"><span class="schema-flag key">
-            <svg viewBox="0 0 24 24" class="svg-stroke" width="10" height="10"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-            Key
-          </span></div>` : ''}
         </div>
         <span class="schema-item-type type-${c.type}">${c.type}</span>
       </div>
