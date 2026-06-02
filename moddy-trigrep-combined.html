@@ -619,7 +619,7 @@
     display: flex;
     position: relative;
   }
-  /* TriGrep panel: collapsed to width 0 in Phase 1; expanded to flex 1 in Phase 2 */
+  /* Trigrep panel: collapsed to width 0 in Phase 1; expanded to flex 1 in Phase 2 */
   .trigrep-panel {
     width: 0;
     flex-shrink: 0;
@@ -1135,7 +1135,7 @@
   }
   body.phase-2 .prompt-footnote { text-align: center; padding-left: 0; }
 
-  /* ===== TriGrep left panel ===== */
+  /* ===== Trigrep left panel ===== */
   .trigrep-head {
     padding: 16px 24px 12px;
     border-bottom: 1px solid var(--grey-50);
@@ -1544,7 +1544,7 @@
     padding: 0 2px; border-radius: 2px;
   }
 
-  /* TriGrep empty state — shown when a new chat is started inside the split view */
+  /* Trigrep empty state — shown when a new chat is started inside the split view */
   .trigrep-empty {
     flex: 1;
     display: flex; flex-direction: column;
@@ -1901,8 +1901,8 @@
 
       <!-- PAGE (split container, animates between phases) -->
       <div class="page" id="page">
-        <!-- LEFT: TriGrep panel (only visible in Phase 2) -->
-        <section class="trigrep-panel" id="trigrep-panel" aria-label="TriGrep search" aria-hidden="true"></section>
+        <!-- LEFT: Trigrep panel (only visible in Phase 2) -->
+        <section class="trigrep-panel" id="trigrep-panel" aria-label="Trigrep search" aria-hidden="true"></section>
 
         <!-- DIVIDER -->
         <div class="divider" id="divider">
@@ -2004,13 +2004,13 @@
 // Left nav data
 // ===================================================================
 // Nav items mirror day-zero v2-sandbox order. Moddy is active in Phase 1;
-// when the user transitions to Phase 2, the active state shifts to TriGrep.
+// when the user transitions to Phase 2, the active state shifts to Trigrep.
 const NAV_ITEMS = [
   { id: 'moddy',       label: 'Moddy',       badge: 'Beta', active: true,
     svg: '<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/>' },
   { id: 'devcenter',   label: 'DevCenter',
     svg: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>' },
-  { id: 'trigrep',     label: 'TriGrep',
+  { id: 'trigrep',     label: 'Trigrep',
     svg: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>' },
   { id: 'artifacts',   label: 'Artifacts',
     svg: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' },
@@ -2075,7 +2075,7 @@ document.addEventListener('click', (e) => {
 // Flow-aware data — three "happy paths" (A: auth, B: logging, C: REST)
 // Each flow defines: the tile bubble text, the scoping branch (for when
 // the user types a broad question), the streamed results, and the Phase 2
-// TriGrep panel (search bar, filters, result cards, drill-downs).
+// Trigrep panel (search bar, filters, result cards, drill-downs).
 // ===================================================================
 
 // Tokenize a query string into spans that match Phase 1's derived-query
@@ -2154,7 +2154,7 @@ const FLOWS = {
           { name: 'admin', count: 28 },
         ]},
       ],
-      // Extra cards beyond the Phase 1 set (so the TriGrep view feels fuller)
+      // Extra cards beyond the Phase 1 set (so the Trigrep view feels fuller)
       extraCards: [
         { id: 'a-UserController', file: 'UserController.java', module: 'user-service', count: 3, lines: [
           { n: 22, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'USER\')"</span>)' },
@@ -2203,6 +2203,28 @@ const FLOWS = {
     },
     actions: {
       primary: 'Run recipe: Migrate Log4j to SLF4J',
+    },
+    // Tile-click variant: shows Log4j-specific Phase 1 results (847 / 54 repos)
+    // instead of the broad logger-declarations results (12,847 / 392 repos)
+    // that the scoping flow produces. Phase 2 is unaffected — both paths
+    // open the same Trigrep panel.
+    tileVariant: {
+      searchCmd: "mod search working-set 'org.apache.logging.log4j lang:java' --syntax sourcegraph",
+      derivedQueryHtml: tokenizeQuery("mod search working-set 'org.apache.logging.log4j lang:java' --syntax sourcegraph"),
+      scopeLine: '847 Log4j references across 54 repos in 89ms',
+      breakdown: '<p>54 repos still import <strong>org.apache.logging.log4j</strong> directly. 38 use Log4j as the sole logger. 16 mix Log4j with SLF4J (partial migrations).</p>',
+      overflow: 'Showing <strong>2 of 54</strong> files (847 matches)',
+      cards: [
+        { id: 'b-PaymentProcessor', file: 'PaymentProcessor.java', module: 'payments-api', count: 3, lines: [
+          { n: 3,  code: 'import <m>org.apache.logging.log4j</m>.LogManager;' },
+          { n: 4,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+          { n: 12, code: 'private static final <m>Logger</m> logger = <m>LogManager</m>.getLogger(PaymentProcessor.class);' },
+        ]},
+        { id: 'b-NotificationService', file: 'NotificationService.java', module: 'notifications', count: 2, lines: [
+          { n: 5, code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+          { n: 9, code: 'private static final Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger();' },
+        ]},
+      ],
     },
     phase2: {
       chips: [],
@@ -2903,8 +2925,12 @@ function startDirectFlow(flowId) {
   greeter.classList.add('hidden');
   conversation.classList.remove('hidden');
 
-  appendUserMessage(flow.tileText);
-  setTimeout(() => streamResults(flow), 400);
+  // Some flows (Flow B) render different Phase 1 results when reached via
+  // tile click vs. scoping. The variant only overrides Phase 1 fields —
+  // currentFlow stays the same so Phase 2 + refine still use the original.
+  const effectiveFlow = flow.tileVariant ? { ...flow, ...flow.tileVariant } : flow;
+  appendUserMessage(effectiveFlow.tileText);
+  setTimeout(() => streamResults(effectiveFlow), 400);
 }
 
 // ===================================================================
@@ -3097,7 +3123,7 @@ function buildActionButtons(flow) {
     </button>
     <button class="followup secondary" data-open-trigrep="1">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      Open in TriGrep
+      Open in Trigrep tab
     </button>
     <button class="followup tertiary">Refine search →</button>
   `;
@@ -3119,12 +3145,15 @@ function refineSearch() {
   // Per-flow refinement copy
   const refinements = {
     a: { typed: 'Just show admin-tier authorization rules',
+         cmd:  "mod search working-set '(@PreAuthorize or @Secured or @RolesAllowed) /ADMIN/ visibility:public' lang:java --syntax sourcegraph",
          scope: '412 admin-tier authorization annotations across 87 repos in 64ms',
          note: 'Filtered to admin-tier annotations only. These are the rules that gate sensitive operations — the recipe will preserve their semantics while standardizing on @PreAuthorize.' },
     b: { typed: 'Narrow to actual Logger calls (skip imports)',
+         cmd:  "mod search working-set 'Logger type:symbol /log\\.(error|warn|info|debug)\\(/' lang:java --syntax sourcegraph",
          scope: '8,219 logger call sites across 312 repos in 73ms',
          note: 'Filtered to actual <code>Logger</code> call sites (excluding import statements). These are the lines the recipe will rewrite — imports get cleaned up automatically.' },
     c: { typed: 'Just the legacy clients (RestTemplate)',
+         cmd:  "mod search working-set 'type:symbol RestTemplate' lang:java --syntax sourcegraph",
          scope: '612 RestTemplate references across 134 repos in 81ms',
          note: 'Filtered to the legacy <code>RestTemplate</code> clients. These are the primary migration targets to <code>WebClient</code> or <code>RestClient</code>.' },
   };
@@ -3134,6 +3163,10 @@ function refineSearch() {
 
   const moddy = document.createElement('div');
   moddy.className = 'msg-moddy fade-in';
+
+  // Show the revised search command at the top, same component as the
+  // initial results render so users see the refined query syntax.
+  moddy.appendChild(buildDerivedQuery({ searchCmd: r.cmd, derivedQueryHtml: tokenizeQuery(r.cmd) }));
 
   const scope = document.createElement('div');
   scope.className = 'scope-line';
@@ -3146,9 +3179,16 @@ function refineSearch() {
   moddy.appendChild(text);
 
   conversation.appendChild(moddy);
+
+  // Action buttons should always sit below the latest results return — move the
+  // existing Phase 1 action block from the original results message into this
+  // refinement message so it ends up right after the refined scope/note.
+  const existingActions = conversation.querySelector('.followup-actions');
+  if (existingActions) moddy.appendChild(existingActions);
+
   scrollChat();
 
-  // If a TriGrep panel is built, give a small visual update
+  // If a Trigrep panel is built, give a small visual update
   const summaryCount = trigrepPanel.querySelector('#summary-count');
   if (summaryCount) summaryCount.textContent = (r.scope.match(/[\d,]+/) || [''])[0];
 
@@ -3229,7 +3269,7 @@ function setNavActive(id) {
     el.classList.remove('active');
   });
   // Find the right item by label
-  const labelMap = { moddy: 'Moddy', trigrep: 'TriGrep' };
+  const labelMap = { moddy: 'Moddy', trigrep: 'Trigrep' };
   const label = labelMap[id] || id;
   document.querySelectorAll('#left-nav-items .nav-item').forEach(el => {
     if (el.querySelector('.nav-label')?.textContent === label) el.classList.add('active');
@@ -3237,7 +3277,7 @@ function setNavActive(id) {
 }
 
 // ===================================================================
-// Phase 2 — TriGrep panel
+// Phase 2 — Trigrep panel
 // ===================================================================
 function buildTrigrepPanel(flow) {
   const chipsHtml = (flow.phase2.chips || []).map(c =>
