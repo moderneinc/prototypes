@@ -3698,9 +3698,21 @@ function refineSearch() {
 
   scrollChat();
 
-  // If a Trigrep panel is built, give a small visual update
-  const summaryCount = trigrepPanel.querySelector('#summary-count');
-  if (summaryCount) summaryCount.textContent = (r.scope.match(/[\d,]+/) || [''])[0];
+  // Sync the Trigrep panel so the split view reflects the refinement.
+  // - Update the query input to the refined inner query (between single quotes in r.cmd)
+  // - Update both summary numbers (matches + files/repos) from r.scope
+  if (phase2Built) {
+    const queryInput = trigrepPanel.querySelector('.trigrep-query');
+    if (queryInput) {
+      const innerQuery = (r.cmd.match(/'([^']+)'/) || [, ''])[1];
+      if (innerQuery) queryInput.value = innerQuery;
+    }
+    const nums = (r.scope.match(/[\d,]+/g) || []);
+    const summaryCount = trigrepPanel.querySelector('#summary-count');
+    const summaryFiles = trigrepPanel.querySelector('#summary-files');
+    if (summaryCount && nums[0]) summaryCount.textContent = nums[0];
+    if (summaryFiles && nums[1]) summaryFiles.textContent = nums[1];
+  }
 
   // Disable all "Refine search" buttons
   document.querySelectorAll('.followup.tertiary').forEach(b => {
