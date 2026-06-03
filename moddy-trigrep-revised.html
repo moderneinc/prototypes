@@ -3688,11 +3688,18 @@ function refineSearch() {
   text.innerHTML = r.note;
   moddy.appendChild(text);
 
+  // The result set changed, so re-surface the "View N search results" card
+  // with the refined count — mirrors the initial results message layout.
+  const refinedCount = (r.scope.match(/[\d,]+/) || [''])[0];
+  moddy.appendChild(buildResultsLinkCard({
+    moddyChat: { resultsCardLabel: `View ${refinedCount} search results` }
+  }));
+
   conversation.appendChild(moddy);
 
   // Action buttons should always sit below the latest results return — move the
   // existing Phase 1 action block from the original results message into this
-  // refinement message so it ends up right after the refined scope/note.
+  // refinement message so it ends up right after the refined results card.
   const existingActions = conversation.querySelector('.followup-actions');
   if (existingActions) moddy.appendChild(existingActions);
 
