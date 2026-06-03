@@ -753,19 +753,31 @@
   }
   body.phase-2 .moddy-head { display: flex; }
   .back-to-chat {
-    display: inline-flex; align-items: center; gap: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px;
     background: transparent; border: none;
-    padding: 4px 6px 4px 0;
+    padding: 0;
     color: var(--grey-500);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
     cursor: pointer;
     border-radius: 6px;
-    transition: color 0.15s ease;
+    transition: color 0.15s ease, background 0.15s ease;
   }
-  .back-to-chat:hover { color: var(--neo-digital-blue-500); }
-  .back-to-chat svg { width: 14px; height: 14px; }
+  .back-to-chat:hover { color: var(--neo-digital-blue-500); background: var(--grey-50); }
+  .back-to-chat svg { width: 16px; height: 16px; }
+  .moddy-head-left {
+    display: inline-flex; align-items: center; gap: 10px;
+    min-width: 0;
+  }
+  .moddy-head-title {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 600; color: var(--grey-900);
+  }
+  .moddy-head-title .moddy-mark {
+    width: 22px; height: 22px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--grey-900, #041834);
+  }
+  .moddy-head-title .moddy-mark svg { width: 18px; height: 18px; }
   .moddy-head-actions { display: inline-flex; gap: 4px; }
 
   /* Greeter — Phase 1 step 1 only.
@@ -1122,6 +1134,32 @@
     opacity: 1;
     transform: translateY(0);
   }
+  /* Hover tooltip for the "View N search results" card */
+  .results-link-card { position: relative; }
+  .results-link-card[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 12px;
+    background: var(--mui-grey-800, #343A40);
+    color: #fff;
+    font-family: inherit;
+    font-size: 11px; font-weight: 500;
+    line-height: 1;
+    padding: 5px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(2px);
+    transition: opacity 0.12s ease 0.25s, transform 0.12s ease 0.25s;
+    z-index: 40;
+  }
+  .results-link-card[data-tooltip]:hover::after,
+  .results-link-card[data-tooltip]:focus-visible::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
   /* Best match prose block */
   .best-match-prose { margin: 0 0 12px 0; }
   /* Bottom actions: outlined buttons row + Refine search text link */
@@ -1134,7 +1172,12 @@
   body.phase-2 .followup-actions.chat-bottom-actions {
     flex-direction: column; align-items: flex-start; gap: 10px;
   }
-  .chat-bottom-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chat-bottom-buttons {
+    display: flex; flex-direction: column; align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+  .chat-bottom-buttons .btn-outlined { text-align: center; }
   /* Neo secondary button — white fill, digital-blue border + text */
   .btn-outlined {
     background: #fff;
@@ -1272,8 +1315,26 @@
   body.phase-2 .prompt-footnote { text-align: center; padding-left: 0; }
 
   /* ===== Trigrep left panel ===== */
+  /* Page header — mirrors ModernePageContent (28px/600 title, 14px subtitle) */
+  .trigrep-page-header {
+    padding: 20px 24px 12px;
+    background: #ffffff;
+    flex-shrink: 0;
+  }
+  .trigrep-page-title {
+    font-family: var(--font-heading, 'Inter', sans-serif);
+    font-size: 21px;
+    font-weight: 400;
+    color: var(--grey-900, #111827);
+    line-height: 1.4;
+  }
+  .trigrep-page-subtitle {
+    font-size: 14px;
+    color: var(--grey-600, #6B7280);
+    margin-top: 2px;
+  }
   .trigrep-head {
-    padding: 16px 24px 12px;
+    padding: 8px 24px 12px;
     border-bottom: 1px solid var(--mui-divider);
     flex-shrink: 0;
     background: #ffffff;
@@ -1376,11 +1437,23 @@
     cursor: pointer;
   }
   .btn-search:hover { background: #1f30e6; }
-  /* Active filter chips — appear directly below the search bar */
+  /* Active filter chips — appear directly below the search bar.
+     Summary text (matches across files in ms) sits right-aligned on the same row. */
   .trigrep-chips-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .trigrep-chips-list {
     display: flex; flex-wrap: wrap; align-items: center;
     gap: 6px;
-    margin-top: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .trigrep-chips-row .trigrep-summary {
+    flex: 0 0 auto;
+    text-align: right;
+    white-space: nowrap;
   }
   /* Meta row — mirrors StickyPaper toolbar (body 14px/500 left, link right) */
   .trigrep-meta-row {
@@ -1544,6 +1617,36 @@
     text-align: left;
   }
   .filter-more-link:hover { text-decoration: underline; }
+  /* Repo list — no expandable header, search field on top. */
+  .filter-group.is-repo-list.flat { margin: 4px 0 2px; }
+  .filter-group.is-repo-list.flat .repo-list-body {
+    padding: 4px 0 6px;
+    margin-left: 0;
+  }
+  .repo-search-wrap {
+    display: flex; align-items: center; gap: 6px;
+    margin: 4px 0 6px;
+    padding: 4px 9px;
+    border: 1px solid var(--mui-grey-300);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .repo-search-wrap:focus-within {
+    border-color: var(--mui-blue);
+  }
+  .repo-search-icon {
+    width: 12px; height: 12px;
+    color: var(--mui-grey-500);
+    flex-shrink: 0;
+  }
+  .repo-search {
+    flex: 1; min-width: 0;
+    border: 0; outline: none;
+    background: transparent;
+    font-family: inherit; font-size: 12px;
+    color: var(--mui-grey-800);
+  }
+  .repo-search::placeholder { color: var(--mui-grey-500); }
 
   .trigrep-results {
     flex: 1;
@@ -2161,10 +2264,12 @@
         <!-- RIGHT: Moddy panel (full-width in Phase 1, ~30% in Phase 2) -->
         <aside class="moddy-panel" id="moddy-panel" aria-label="Moddy chat">
           <div class="moddy-head">
-            <button class="back-to-chat" id="back-to-chat" title="Back to chat">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-              Back to chat
-            </button>
+            <div class="moddy-head-left">
+              <button class="back-to-chat" id="back-to-chat" title="Back to chat" aria-label="Back to chat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              </button>
+              <div class="moddy-head-title">Moddy</div>
+            </div>
             <div class="moddy-head-actions">
               <button class="icon-btn" title="New chat" id="new-chat-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -3460,6 +3565,7 @@ function buildResultsLinkCard(flow) {
   const card = document.createElement('button');
   card.type = 'button';
   card.className = 'results-link-card fade-in';
+  card.setAttribute('data-tooltip', 'Open in Trigrep tab');
   card.innerHTML = `
     <span class="results-link-card-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -3662,24 +3768,42 @@ function buildTrigrepPanel(flow) {
   const chipsHtml = chips.map(c =>
     `<span class="trigrep-chip" data-chip="${c.label}"><strong>${c.label}:</strong>${c.value}<button class="trigrep-chip-x" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button></span>`
   ).join('');
-  const chipsRowHtml = chips.length
-    ? `<div class="trigrep-chips-row">${chipsHtml}</div>`
-    : '';
+  const summaryHtml = `<div class="trigrep-summary">${flow.phase2.summary}</div>`;
+  const chipsRowHtml = `<div class="trigrep-chips-row">
+      <div class="trigrep-chips-list">${chipsHtml}</div>
+      ${summaryHtml}
+    </div>`;
 
   const renderGroup = (group) => {
     const repoClass = group.isRepoList ? ' is-repo-list' : '';
     const overflow = group.overflowMore
       ? `<button type="button" class="filter-more-link">+${group.overflowMore.toLocaleString()} more</button>`
       : '';
+    const itemsHtml = group.items.map(it => {
+      const dot = it.dot ? `<span class="lang-dot" style="background:${it.dot};box-shadow:none;"></span>` : '';
+      return `<div class="filter-item" data-count="${it.count}"><span class="filter-item-name">${dot}${it.name}</span><span class="count">${it.count.toLocaleString()}</span></div>`;
+    }).join('');
+    // Repo list: drop the "By repository" expandable header and lead with a
+    // search field instead — the parent pane already labels the section.
+    if (group.isRepoList) {
+      return `
+    <div class="filter-group is-repo-list flat" data-group="${group.id}">
+      <div class="repo-search-wrap">
+        <svg class="repo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="repo-search" placeholder="Search repositories…">
+      </div>
+      <div class="filter-group-body repo-list-body">
+        ${itemsHtml}
+        ${overflow}
+      </div>
+    </div>`;
+    }
     return `
     <div class="filter-group${repoClass}" data-group="${group.id}">
       <div class="filter-group-head"><span>${group.title}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
       <div class="filter-group-body">
         ${group.searchable ? '<input class="topic-search" placeholder="Search topics…">' : ''}
-        ${group.items.map(it => {
-          const dot = it.dot ? `<span class="lang-dot" style="background:${it.dot};box-shadow:none;"></span>` : '';
-          return `<div class="filter-item" data-count="${it.count}"><span class="filter-item-name">${dot}${it.name}</span><span class="count">${it.count.toLocaleString()}</span></div>`;
-        }).join('')}
+        ${itemsHtml}
         ${overflow}
       </div>
     </div>`;
@@ -3709,6 +3833,9 @@ function buildTrigrepPanel(flow) {
   `).join('');
 
   return `
+    <div class="trigrep-page-header">
+      <div class="trigrep-page-title">Trigrep</div>
+    </div>
     <div class="trigrep-head">
       <div class="trigrep-search-row">
         <div class="trigrep-search-box">
@@ -3731,9 +3858,6 @@ function buildTrigrepPanel(flow) {
         <button class="btn-search">Search</button>
       </div>
       ${chipsRowHtml}
-      <div class="trigrep-meta-row">
-        <div class="trigrep-summary">${flow.phase2.summary}</div>
-      </div>
     </div>
 
     <div class="trigrep-body">
