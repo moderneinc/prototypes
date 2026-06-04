@@ -2199,30 +2199,38 @@
   body.trigrep-landing #new-chat-btn { display: none; }
   body.trigrep-landing .moddy-reopen { display: none !important; }
 
-  /* Moddy button — primary "I want AI help" action, sits next to Search. */
+  /* Moddy button — primary "I want AI help" action, lives in the top bar
+     to the right of the global Search input. */
+  .topbar-divider {
+    width: 1px; height: 24px;
+    background: var(--grey-200);
+    margin: 0 8px;
+    flex-shrink: 0;
+  }
   .btn-moddy {
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    min-height: 40px;
-    padding: 0 14px;
-    border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 8px 14px 8px 12px;
+    border-radius: 999px;
     background: #fff;
-    border: 1px solid var(--grey-200);
-    color: var(--grey-900);
-    font-family: inherit; font-size: 13px; font-weight: 600;
+    border: 1px solid var(--border-secondary);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: var(--brand-font-size-300);
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all var(--transition-fast);
     flex-shrink: 0;
   }
   .btn-moddy:hover {
     background: var(--brand-grey-100);
-    border-color: var(--grey-300);
+    border-color: var(--border-primary);
   }
   .btn-moddy.active {
     background: var(--brand-digital-blue-100);
     border-color: var(--brand-digital-blue-300);
     color: var(--brand-digital-blue-700);
   }
-  .btn-moddy svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .btn-moddy svg { width: 16px; height: 16px; flex-shrink: 0; }
 
   /* ===== Trigrep landing empty state ===== */
   .trigrep-landing-empty {
@@ -2359,19 +2367,21 @@
     border-color: var(--neo-digital-blue-500);
     background: rgba(47, 66, 255, 0.03);
   }
-  .trigrep-start-example-query {
+  .trigrep-start-example-text {
     flex: 1; min-width: 0;
-    font-size: 13.5px;
-    color: var(--grey-900);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .trigrep-start-example-query {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--neo-digital-blue-500);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  /* Sourcegraph syntax cards render the query as code. */
-  .trigrep-start-example.is-syntax .trigrep-start-example-query {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--neo-digital-blue-500);
+  .trigrep-start-example-desc {
+    font-size: 12.5px;
+    color: var(--grey-500);
   }
   .trigrep-start-example-icon {
     width: 16px; height: 16px;
@@ -2524,29 +2534,6 @@
   .results-toolbar-export svg { width: 11px; height: 11px; }
   .results-toolbar-sep {
     width: 1px; height: 14px; background: var(--grey-200);
-  }
-
-  /* ===== Moddy reasoning trace — single-line entry to the Moddy panel ===== */
-  .reasoning-trace {
-    background: #fff;
-    border-bottom: 1px solid var(--mui-divider);
-    padding: 8px 24px;
-    flex-shrink: 0;
-  }
-  .reasoning-trace-summary {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: transparent; border: 0; padding: 0;
-    font-family: inherit;
-    font-size: 13px;
-    color: var(--mui-grey-600);
-    cursor: pointer;
-    text-align: left;
-    line-height: 1.4;
-  }
-  .reasoning-trace-summary:hover { color: var(--neo-digital-blue-500); }
-  .reasoning-trace-chevron {
-    width: 12px; height: 12px;
-    flex-shrink: 0;
   }
 
   /* Sidebar width is set by the golden-ratio flex rule on .trigrep-sidebar. */
@@ -2801,6 +2788,11 @@
           <button class="nav-action-btn" aria-label="Admin menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
           <button class="nav-action-btn" aria-label="Help menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
           <button class="nav-action-btn" aria-label="Account"><div class="avatar">A</div></button>
+          <span class="topbar-divider" aria-hidden="true"></span>
+          <button class="btn-moddy topbar-moddy-btn" id="topbar-moddy-btn" title="Open Moddy" aria-label="Open Moddy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/></svg>
+            <span>Moddy</span>
+          </button>
         </div>
       </div>
 
@@ -4440,7 +4432,7 @@ function buildTrigrepPanel(flow) {
 
   return `
     <div class="trigrep-page-header">
-      <div class="trigrep-page-title">Trigrep</div>
+      <div class="trigrep-page-title">TriGrep</div>
     </div>
     <div class="trigrep-head">
       <div class="trigrep-search-row">
@@ -4827,7 +4819,7 @@ function initTrigrepLandingBoot() {
 function buildTrigrepLandingHTML() {
   return `
     <div class="trigrep-page-header">
-      <div class="trigrep-page-title">Trigrep</div>
+      <div class="trigrep-page-title">TriGrep</div>
     </div>
     <div class="trigrep-head" id="trigrep-head">
       <div class="trigrep-search-row">
@@ -4870,10 +4862,6 @@ function buildTrigrepLandingHTML() {
           <input class="trigrep-query" id="trigrep-query-input" placeholder="Describe what you're looking for in plain English…" spellcheck="false">
         </div>
         <button class="btn-search" id="trigrep-search-btn">Search</button>
-        <button class="btn-moddy" id="topbar-moddy-btn" title="Open Moddy" aria-label="Open Moddy">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/></svg>
-          <span>Moddy</span>
-        </button>
       </div>
       <div class="search-help" id="search-help"></div>
     </div>
@@ -4901,15 +4889,24 @@ function buildTrigrepLandingHTML() {
             <div class="trigrep-start-examples-label">Try these examples</div>
             <div class="trigrep-start-examples-list">
               <button class="trigrep-start-example" type="button" data-example-nl="a">
-                <span class="trigrep-start-example-query">Find public authorization rules across my repos</span>
+                <span class="trigrep-start-example-text">
+                  <span class="trigrep-start-example-query">Find public authorization rules across my repos</span>
+                  <span class="trigrep-start-example-desc">Search using plain English</span>
+                </span>
                 <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </button>
-              <button class="trigrep-start-example is-syntax" type="button" data-example-syntax="b">
-                <span class="trigrep-start-example-query">org.apache.logging.log4j lang:java</span>
+              <button class="trigrep-start-example" type="button" data-example-nl="b">
+                <span class="trigrep-start-example-text">
+                  <span class="trigrep-start-example-query">Find all Log4j usage in our services</span>
+                  <span class="trigrep-start-example-desc">Search using plain English</span>
+                </span>
                 <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </button>
               <button class="trigrep-start-example" type="button" data-example-nl="c">
-                <span class="trigrep-start-example-query">Find all REST controllers and outbound clients</span>
+                <span class="trigrep-start-example-text">
+                  <span class="trigrep-start-example-query">Find all REST controllers and outbound clients</span>
+                  <span class="trigrep-start-example-desc">Search using plain English</span>
+                </span>
                 <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </button>
             </div>
@@ -4988,33 +4985,6 @@ function highlightModCommand(cmd) {
   const tail = m[4];
   const tailHtml = tail.replace(/(--[\w-]+(?:\s+[\w:./-]+)*)/g, '<span class="tok-flag">$1</span>');
   return `${head} <span class="tok-str">${quote}${escapeHtml(queryBody)}${quote}</span> ${tailHtml}`;
-}
-
-function buildReasoningTraceHTML(flowId) {
-  const trace = REASONING_TRACES[flowId];
-  if (!trace) return '';
-  return `
-    <div class="reasoning-trace">
-      <button class="reasoning-trace-summary" type="button" data-open-moddy-reasoning="${flowId}">
-        <span>${escapeHtml(trace.summary)}</span>
-        <svg class="reasoning-trace-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
-    </div>
-  `;
-}
-
-function wireReasoningTrace() {
-  const trace = trigrepPanel.querySelector('.reasoning-trace');
-  if (!trace) return;
-  const summaryBtn = trace.querySelector('.reasoning-trace-summary');
-  if (!summaryBtn) return;
-  summaryBtn.addEventListener('click', () => {
-    const flowId = summaryBtn.dataset.openModdyReasoning;
-    if (flowId) rebuildModdyForFlow(flowId, 'reasoning');
-    setModdyCollapsed(false);
-    const topbarBtn = document.getElementById('topbar-moddy-btn');
-    if (topbarBtn) topbarBtn.classList.add('active');
-  });
 }
 
 let trigrepCurrentMode = 'moddy'; // 'moddy' | 'sourcegraph' | 'comby' | 'regex'
@@ -5237,8 +5207,17 @@ function executeSearch(flowId, opts) {
 
   // Rebuild results + sidebar
   renderTrigrepResults(flow);
-  // Rebuild Moddy panel content (latent — only visible when user opens panel)
-  rebuildModdyForFlow(flowId);
+  // Rebuild Moddy panel content. When the search ran via NL, preload the
+  // reasoning view AND auto-open the panel. For syntax searches the panel
+  // stays closed and is built latently with the standard button-mode view.
+  if (translatedFromNL) {
+    rebuildModdyForFlow(flowId, 'reasoning');
+    setModdyCollapsed(false);
+    const topbarBtn = document.getElementById('topbar-moddy-btn');
+    if (topbarBtn) topbarBtn.classList.add('active');
+  } else {
+    rebuildModdyForFlow(flowId, 'button');
+  }
   phase2Built = true;
 }
 
@@ -5263,11 +5242,9 @@ function renderTrigrepResults(flow) {
   ['.trigrep-chips-row', '.trigrep-summary-line', '.translated-from']
     .forEach(sel => { const el = head.querySelector(sel); if (el) el.remove(); });
 
-  // Remove pre-existing results toolbar / reasoning trace (re-running search)
+  // Remove pre-existing results toolbar (re-running search)
   const oldToolbar = trigrepPanel.querySelector('.results-toolbar');
   if (oldToolbar) oldToolbar.remove();
-  const oldTrace = trigrepPanel.querySelector('.reasoning-trace');
-  if (oldTrace) oldTrace.remove();
 
   // ----- Sidebar groups -----
   const activeSet = PRESET_ACTIVE_FILTERS[currentFlow] || new Set();
@@ -5347,15 +5324,6 @@ function renderTrigrepResults(flow) {
   // Insert toolbar between head and body
   head.insertAdjacentHTML('afterend', toolbarHtml);
 
-  // Reasoning trace (only when search ran via NL translation)
-  if (translatedFromNL) {
-    const traceHtml = buildReasoningTraceHTML(currentFlow);
-    if (traceHtml) {
-      const toolbarEl = trigrepPanel.querySelector('.results-toolbar');
-      if (toolbarEl) toolbarEl.insertAdjacentHTML('afterend', traceHtml);
-    }
-  }
-
   // Replace body content (no chips, no breakdown — sidebar shows active filters)
   body.innerHTML = `
     <aside class="trigrep-sidebar" aria-label="Repositories and filters">
@@ -5386,7 +5354,6 @@ function renderTrigrepResults(flow) {
   `;
 
   wireResultsInteractions(flow, remainingCards);
-  wireReasoningTrace();
 }
 
 function buildResultCardHTML(card) {
