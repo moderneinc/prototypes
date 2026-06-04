@@ -2418,17 +2418,32 @@
   }
   .search-help-link:hover { text-decoration: underline; }
 
-  /* ===== Breadcrumb (Translated from: ...) ===== */
+  /* ===== Breadcrumb — shows NL → derived syntax mapping ===== */
   .translated-from {
-    margin-top: 4px;
+    margin-top: 6px;
+    display: inline-flex; align-items: center;
+    gap: 8px;
     font-size: 12px;
     color: var(--grey-500);
+    flex-wrap: wrap;
+  }
+  .translated-from .translated-nl {
+    color: var(--grey-600);
     font-style: italic;
   }
-  .translated-from strong {
-    font-style: normal;
+  .translated-from .translated-arrow {
+    width: 12px; height: 12px;
+    color: var(--grey-400);
+    flex-shrink: 0;
+  }
+  .translated-from .translated-syntax {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
     color: var(--grey-700);
-    font-weight: 400;
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    padding: 1px 6px;
+    border-radius: 3px;
   }
 
   /* ===== Results toolbar strip — full-width band above sidebar+results ===== */
@@ -4825,7 +4840,6 @@ function buildTrigrepLandingHTML() {
         <button class="btn-search" id="trigrep-search-btn">Search</button>
       </div>
       <div class="search-help" id="search-help"></div>
-      <div id="nl-translation-slot"></div>
     </div>
 
     <div class="trigrep-body" id="trigrep-body">
@@ -5117,50 +5131,12 @@ function showSearchFallback() {
 }
 
 // ===================================================================
-// NL translation step — shows the derived syntax, Edit / Run actions.
+// NL search — translates and executes in one step. The teaching surface
+// is the breadcrumb under the search bar (NL → derived syntax). Users
+// who want to edit the syntax just type in the search bar.
 // ===================================================================
 function startNLTranslation(flowId, nlText) {
-  const slot = trigrepPanel.querySelector('#nl-translation-slot');
-  const input = trigrepPanel.querySelector('#trigrep-query-input');
-  if (!slot || !input) return;
-  input.value = nlText;
-  input.style.color = 'var(--grey-400)';
-
-  // 400ms simulated AI thinking
-  slot.innerHTML = `
-    <div class="nl-translation-thinking">
-      <span class="dots"><span></span><span></span><span></span></span>
-      <span>Moddy is translating to trigrep syntax…</span>
-    </div>
-  `;
-
-  setTimeout(() => {
-    const derived = NL_TRANSLATIONS[flowId];
-    slot.innerHTML = `
-      <div class="nl-translation-card">
-        <div class="nl-translation-left">
-          <svg class="nl-translation-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          <span class="nl-translation-syntax">${escapeHtml(derived)}</span>
-        </div>
-        <div class="nl-translation-actions">
-          <button type="button" class="nl-translation-edit">Edit</button>
-          <button type="button" class="nl-translation-run">Run</button>
-        </div>
-      </div>
-    `;
-    slot.querySelector('.nl-translation-run').addEventListener('click', () => {
-      slot.innerHTML = '';
-      input.style.color = '';
-      executeSearch(flowId, { fromNL: nlText });
-    });
-    slot.querySelector('.nl-translation-edit').addEventListener('click', () => {
-      slot.innerHTML = '';
-      input.value = derived;
-      input.style.color = '';
-      setSyntaxMode('sourcegraph');
-      input.focus();
-    });
-  }, 400);
+  executeSearch(flowId, { fromNL: nlText });
 }
 
 function escapeHtml(s) {
@@ -5219,9 +5195,12 @@ function renderTrigrepResults(flow) {
     .forEach(sel => { const el = head.querySelector(sel); if (el) el.remove(); });
 
   if (translatedFromNL) {
+    const derived = NL_TRANSLATIONS[currentFlow] || '';
     const crumb = document.createElement('div');
     crumb.className = 'translated-from';
-    crumb.innerHTML = `Translated from: <strong>"${escapeHtml(translatedFromNL)}"</strong>`;
+    crumb.innerHTML = `<span class="translated-nl">"${escapeHtml(translatedFromNL)}"</span>
+      <svg class="translated-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <code class="translated-syntax">${escapeHtml(derived)}</code>`;
     head.appendChild(crumb);
   }
 
