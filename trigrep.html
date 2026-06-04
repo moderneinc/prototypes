@@ -1428,10 +1428,19 @@
     font-size: 13px;
     color: var(--grey-900);
   }
+  /* Placeholder uses the sans-serif body face; typed syntax stays monospace. */
+  .trigrep-query::placeholder {
+    font-family: var(--brand-font-family-sans);
+    font-size: 13.5px;
+    color: var(--grey-500);
+    opacity: 1;
+  }
   .btn-search {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 40px;
     background: var(--neo-digital-blue-500);
     color: #fff; border: none;
-    padding: 9px 16px;
+    padding: 0 16px;
     border-radius: 8px;
     font-family: inherit; font-size: 13px; font-weight: 600;
     cursor: pointer;
@@ -1483,9 +1492,10 @@
   }
   /* Sidebar — two stacked panes: Filters (top) and Repositories (bottom).
      Each pane has its own header, scrollable body, and 1px divider. */
+  /* Sidebar = 24% of body row, results pane = 76%. */
   .trigrep-sidebar {
-    width: 280px;
-    flex-shrink: 0;
+    flex: 0 0 24%;
+    min-width: 0;
     display: flex; flex-direction: column;
     border-right: 1px solid var(--mui-grey-200);
     background: #ffffff;
@@ -1649,7 +1659,8 @@
   .repo-search::placeholder { color: var(--mui-grey-500); }
 
   .trigrep-results {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     overflow-y: auto;
     padding: 16px 24px 32px;
     background: var(--grey-25);
@@ -2188,37 +2199,30 @@
   body.trigrep-landing #new-chat-btn { display: none; }
   body.trigrep-landing .moddy-reopen { display: none !important; }
 
-  /* Top-bar Moddy button — separated from Search input by a divider */
-  .topbar-divider {
-    width: 1px; height: 24px;
-    background: var(--grey-200);
-    margin: 0 8px;
-    flex-shrink: 0;
-  }
-  .topbar-moddy-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 8px 14px 8px 12px;
-    border-radius: 999px;
+  /* Moddy button — primary "I want AI help" action, sits next to Search. */
+  .btn-moddy {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 8px;
     background: #fff;
-    border: 1px solid var(--border-secondary);
-    color: var(--text-primary);
-    font-family: inherit;
-    font-size: var(--brand-font-size-300);
-    font-weight: 500;
+    border: 1px solid var(--grey-200);
+    color: var(--grey-900);
+    font-family: inherit; font-size: 13px; font-weight: 600;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: all 0.15s;
     flex-shrink: 0;
   }
-  .topbar-moddy-btn:hover {
+  .btn-moddy:hover {
     background: var(--brand-grey-100);
-    border-color: var(--border-primary);
+    border-color: var(--grey-300);
   }
-  .topbar-moddy-btn.active {
+  .btn-moddy.active {
     background: var(--brand-digital-blue-100);
     border-color: var(--brand-digital-blue-300);
     color: var(--brand-digital-blue-700);
   }
-  .topbar-moddy-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .btn-moddy svg { width: 14px; height: 14px; flex-shrink: 0; }
 
   /* ===== Trigrep landing empty state ===== */
   .trigrep-landing-empty {
@@ -2290,6 +2294,119 @@
   }
   .trigrep-example:hover svg { color: var(--neo-digital-blue-500); transform: translateX(2px); }
 
+  /* ===== Redesigned trigrep empty state (centered hero) ===== */
+  .trigrep-start-state {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 24px 64px;
+    background: var(--grey-25);
+    overflow-y: auto;
+  }
+  .trigrep-start-hero {
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%; max-width: 560px;
+    text-align: center;
+  }
+  .trigrep-start-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: rgba(47, 66, 255, 0.10);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--neo-digital-blue-500);
+  }
+  .trigrep-start-icon svg { width: 28px; height: 28px; }
+  .trigrep-start-title {
+    font-size: 22px; font-weight: 600;
+    color: var(--grey-900);
+    margin: 6px 0 0;
+  }
+  .trigrep-start-subtitle {
+    font-size: 14.5px;
+    color: var(--grey-600);
+    line-height: 1.55;
+    max-width: 480px;
+  }
+  .trigrep-start-examples-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    margin-top: 18px;
+  }
+  .trigrep-start-examples-list {
+    display: flex; flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .trigrep-start-example {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    font-family: inherit;
+    width: 100%;
+  }
+  .trigrep-start-example:hover {
+    border-color: var(--neo-digital-blue-500);
+    background: rgba(47, 66, 255, 0.03);
+  }
+  .trigrep-start-example-query {
+    flex: 1; min-width: 0;
+    font-size: 13.5px;
+    color: var(--grey-900);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Sourcegraph syntax cards render the query as code. */
+  .trigrep-start-example.is-syntax .trigrep-start-example-query {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--neo-digital-blue-500);
+  }
+  .trigrep-start-example-icon {
+    width: 16px; height: 16px;
+    color: var(--grey-400);
+    flex-shrink: 0;
+    transition: color 0.15s;
+  }
+  .trigrep-start-example:hover .trigrep-start-example-icon {
+    color: var(--neo-digital-blue-500);
+  }
+  .trigrep-start-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--grey-200);
+    margin-top: 14px;
+  }
+  .trigrep-start-reference-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 18px;
+    border: 1px solid var(--brand-digital-blue-200);
+    border-radius: 9999px;
+    color: var(--neo-digital-blue-500);
+    font-size: 13px;
+    font-weight: 500;
+    background: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 14px;
+  }
+  .trigrep-start-reference-link:hover {
+    background: rgba(47, 66, 255, 0.04);
+    border-color: var(--neo-digital-blue-500);
+  }
+  .trigrep-start-reference-link svg { width: 13px; height: 13px; flex-shrink: 0; }
+
   /* Trigrep landing search bar (centered on empty state, larger than head bar) */
   .trigrep-landing-search-wrap {
     width: 100%;
@@ -2317,78 +2434,11 @@
   .syntax-selector-menu { min-width: 260px; padding: 4px; }
   .syntax-selector-menu li { padding: 8px 10px; }
 
-  /* ===== NL translation card ===== */
-  .nl-translation-card {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 12px;
-    margin-top: 10px;
-    padding: 10px 14px;
-    background: #fff;
-    border: 1px solid var(--neo-digital-blue-300);
-    border-radius: 8px;
-    box-shadow: 0 1px 2px rgba(47, 66, 255, 0.08);
-  }
-  .nl-translation-left {
-    display: flex; align-items: center; gap: 10px;
-    flex: 1; min-width: 0;
-  }
-  .nl-translation-arrow {
-    width: 18px; height: 18px;
-    flex-shrink: 0;
-    color: var(--neo-digital-blue-500);
-  }
-  .nl-translation-syntax {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12.5px;
-    color: var(--grey-900);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .nl-translation-actions { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; }
-  .nl-translation-edit {
-    background: transparent; border: 0; padding: 4px 6px;
-    color: var(--neo-digital-blue-500);
-    font-family: inherit; font-size: 13px; font-weight: 500;
-    cursor: pointer;
-  }
-  .nl-translation-edit:hover { text-decoration: underline; }
-  .nl-translation-run {
-    background: var(--neo-digital-blue-500);
-    color: #fff; border: none;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-family: inherit; font-size: 13px; font-weight: 600;
-    cursor: pointer;
-  }
-  .nl-translation-run:hover { background: #1f30e6; }
-  .nl-translation-thinking {
-    display: flex; align-items: center; gap: 8px;
-    margin-top: 10px;
-    padding: 10px 14px;
-    background: var(--grey-25);
-    border: 1px dashed var(--grey-200);
-    border-radius: 8px;
-    color: var(--grey-600);
-    font-size: 13px;
-  }
-  .nl-translation-thinking .dots span {
-    display: inline-block; width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--neo-digital-blue-500);
-    margin-right: 4px;
-    animation: dotPulse 1.2s infinite ease-in-out;
-  }
-  .nl-translation-thinking .dots span:nth-child(2) { animation-delay: 0.15s; }
-  .nl-translation-thinking .dots span:nth-child(3) { animation-delay: 0.3s; }
-  @keyframes dotPulse {
-    0%, 60%, 100% { opacity: 0.3; transform: scale(0.85); }
-    30% { opacity: 1; transform: scale(1.1); }
-  }
-
   /* ===== Search-bar help text (persistent muted line below the search bar) ===== */
+  /* margin-top matches .trigrep-head padding-bottom so the help text sits
+     visually centered between the input field and the body-row divider. */
   .search-help {
-    margin-top: 6px;
+    margin-top: 12px;
     font-size: 12px;
     color: var(--grey-500);
     line-height: 1.5;
@@ -2454,6 +2504,10 @@
     color: var(--mui-grey-700);
   }
   .results-toolbar-summary strong { color: var(--grey-900); font-weight: 600; }
+  .results-toolbar-recipes {
+    color: var(--mui-grey-700);
+  }
+  .results-toolbar-recipes strong { color: var(--grey-900); font-weight: 600; }
   .results-toolbar-time {
     color: var(--mui-grey-500);
     font-size: 12px;
@@ -2472,37 +2526,30 @@
     width: 1px; height: 14px; background: var(--grey-200);
   }
 
-  /* "N recipes available" card on toolbar — play icon + text + arrow */
-  .recipes-available-card {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(47, 66, 255, 0.04);
-    border: 1px solid var(--brand-digital-blue-200);
-    border-radius: 6px;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-    color: var(--neo-digital-blue-500);
-    font-size: 13px;
-    font-weight: 500;
-    font-family: inherit;
-  }
-  .recipes-available-card:hover {
-    background: rgba(47, 66, 255, 0.09);
-    border-color: var(--brand-digital-blue-300);
-  }
-  .recipes-available-card .play-icon {
-    width: 14px; height: 14px;
+  /* ===== Moddy reasoning trace — single-line entry to the Moddy panel ===== */
+  .reasoning-trace {
+    background: #fff;
+    border-bottom: 1px solid var(--mui-divider);
+    padding: 8px 24px;
     flex-shrink: 0;
   }
-  .recipes-available-card .arrow-icon {
+  .reasoning-trace-summary {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; border: 0; padding: 0;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--mui-grey-600);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.4;
+  }
+  .reasoning-trace-summary:hover { color: var(--neo-digital-blue-500); }
+  .reasoning-trace-chevron {
     width: 12px; height: 12px;
     flex-shrink: 0;
-    transition: transform 0.15s;
   }
-  .recipes-available-card:hover .arrow-icon { transform: translateX(2px); }
 
-  /* ===== Sidebar width ===== */
-  body.trigrep-landing .trigrep-sidebar { width: 260px; }
+  /* Sidebar width is set by the golden-ratio flex rule on .trigrep-sidebar. */
   /* Repositories first, then Filters */
   body.trigrep-landing .trigrep-pane-repos { flex: 0 1 auto; max-height: 40%; }
   body.trigrep-landing .trigrep-pane-filters { flex: 1 1 auto; }
@@ -2754,11 +2801,6 @@
           <button class="nav-action-btn" aria-label="Admin menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
           <button class="nav-action-btn" aria-label="Help menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
           <button class="nav-action-btn" aria-label="Account"><div class="avatar">A</div></button>
-          <span class="topbar-divider" aria-hidden="true"></span>
-          <button class="topbar-moddy-btn" id="topbar-moddy-btn" title="Open Moddy" aria-label="Open Moddy">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/></svg>
-            <span>Moddy</span>
-          </button>
         </div>
       </div>
 
@@ -4755,17 +4797,22 @@ function initTrigrepLandingBoot() {
   placeInputAtBottom();
   promptInput.placeholder = 'Ask Moddy about these results…';
 
-  // Top-bar Moddy button toggles the Moddy panel
+  // Top-bar Moddy button — always shows the context-aware view for the
+  // current results (re-renders even if a prior reasoning view was open).
   const topbarBtn = document.getElementById('topbar-moddy-btn');
   if (topbarBtn) {
     topbarBtn.addEventListener('click', () => {
       const collapsed = moddyPanel.classList.contains('collapsed');
-      setModdyCollapsed(!collapsed);
-      topbarBtn.classList.toggle('active', collapsed);
+      if (collapsed) {
+        if (currentFlow) rebuildModdyForFlow(currentFlow, 'button');
+        setModdyCollapsed(false);
+        topbarBtn.classList.add('active');
+      } else {
+        setModdyCollapsed(true);
+        topbarBtn.classList.remove('active');
+      }
     });
   }
-
-  // When user clicks Moddy panel close, also un-activate top-bar button
   const closeBtn = document.getElementById('moddy-close-btn');
   if (closeBtn) {
     closeBtn.addEventListener('click', () => {
@@ -4787,15 +4834,15 @@ function buildTrigrepLandingHTML() {
         <div class="trigrep-search-box" id="trigrep-search-box">
           <div class="syntax-selector" id="syntax-selector">
             <button type="button" class="syntax-selector-btn" aria-haspopup="listbox" aria-expanded="false">
-              <span class="syntax-selector-label">Sourcegraph</span>
+              <span class="syntax-selector-label">Moddy</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <ul class="syntax-selector-menu" role="listbox" hidden>
-              <li role="option" data-value="moddy">
+              <li role="option" data-value="moddy" aria-selected="true">
                 <span class="opt-label">Moddy</span>
                 <span class="opt-desc">plain English</span>
               </li>
-              <li role="option" data-value="sourcegraph" aria-selected="true">
+              <li role="option" data-value="sourcegraph">
                 <span class="opt-label">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                   Sourcegraph
@@ -4820,12 +4867,15 @@ function buildTrigrepLandingHTML() {
           </div>
           <span class="syntax-selector-divider" aria-hidden="true"></span>
           <svg class="trigrep-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input class="trigrep-query" id="trigrep-query-input" placeholder="(@PreAuthorize or @Secured) lang:java visibility:public" spellcheck="false">
+          <input class="trigrep-query" id="trigrep-query-input" placeholder="Describe what you're looking for in plain English…" spellcheck="false">
         </div>
         <button class="btn-search" id="trigrep-search-btn">Search</button>
+        <button class="btn-moddy" id="topbar-moddy-btn" title="Open Moddy" aria-label="Open Moddy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/></svg>
+          <span>Moddy</span>
+        </button>
       </div>
       <div class="search-help" id="search-help"></div>
-      <div id="nl-translation-slot"></div>
     </div>
 
     <div class="trigrep-body" id="trigrep-body">
@@ -4841,45 +4891,33 @@ function buildTrigrepLandingHTML() {
       </aside>
 
       <div class="trigrep-results" id="trigrep-results">
-        <div class="trigrep-landing-empty">
-          <div class="trigrep-landing-greeting">Search across your working set</div>
-          <div class="trigrep-landing-helper">Type a search query or ask in plain English — trigrep will figure out the syntax.</div>
-
-          <div class="trigrep-examples">
-            <div>
-              <div class="trigrep-examples-group-label">Try asking</div>
-              <div class="trigrep-examples-list">
-                <button class="trigrep-example" data-example-nl="a">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  Find public authorization rules across my repos
-                </button>
-                <button class="trigrep-example" data-example-nl="b">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  Find all Log4j usage in our services
-                </button>
-                <button class="trigrep-example" data-example-nl="c">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  Find all REST controllers and outbound clients
-                </button>
-              </div>
+        <div class="trigrep-start-state">
+          <div class="trigrep-start-hero">
+            <div class="trigrep-start-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><polyline points="8.5 8 6 11 8.5 14"/><polyline points="13.5 8 16 11 13.5 14"/></svg>
             </div>
-            <div>
-              <div class="trigrep-examples-group-label">Or search directly</div>
-              <div class="trigrep-examples-list">
-                <button class="trigrep-example is-syntax" data-example-syntax="a">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                  @PreAuthorize lang:java visibility:public
-                </button>
-                <button class="trigrep-example is-syntax" data-example-syntax="b">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                  org.apache.logging.log4j lang:java
-                </button>
-                <button class="trigrep-example is-syntax" data-example-syntax="c">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                  @RestController lang:java
-                </button>
-              </div>
+            <div class="trigrep-start-title">Start Your Code Search</div>
+            <div class="trigrep-start-subtitle">Use powerful filters and semantic search to find exactly what you're looking for across your entire codebase</div>
+            <div class="trigrep-start-examples-label">Try these examples</div>
+            <div class="trigrep-start-examples-list">
+              <button class="trigrep-start-example" type="button" data-example-nl="a">
+                <span class="trigrep-start-example-query">Find public authorization rules across my repos</span>
+                <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
+              <button class="trigrep-start-example is-syntax" type="button" data-example-syntax="b">
+                <span class="trigrep-start-example-query">org.apache.logging.log4j lang:java</span>
+                <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
+              <button class="trigrep-start-example" type="button" data-example-nl="c">
+                <span class="trigrep-start-example-query">Find all REST controllers and outbound clients</span>
+                <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </button>
             </div>
+            <div class="trigrep-start-divider"></div>
+            <a class="trigrep-start-reference-link" href="#" onclick="return false;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Complete query reference
+            </a>
           </div>
         </div>
       </div>
@@ -4912,22 +4950,87 @@ const FINAL_QUERIES = {
   c: '@RestController',
 };
 
-let trigrepCurrentMode = 'sourcegraph'; // 'moddy' | 'sourcegraph' | 'comby' | 'regex'
+// Reasoning traces — shown between results toolbar and body when search ran via NL.
+// `summary` is one-line collapsed text. `explanation` is muted prose (HTML allowed for <code>).
+// `commands` is an array of CLI strings (sans the "$ " prefix).
+const REASONING_TRACES = {
+  a: {
+    summary: 'Moddy searched for authorization annotations with public visibility in Java',
+    explanation: 'I looked for <code>@PreAuthorize</code>, <code>@Secured</code>, and <code>@RolesAllowed</code> annotations and filtered to public visibility because those are the standard Spring Security authorization annotations on public-facing endpoints.',
+    commands: [
+      "mod search working-set '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public' --syntax sourcegraph lang:java",
+    ],
+  },
+  b: {
+    summary: 'Moddy searched for the Log4j package name, filtered to Java',
+    explanation: "I looked for <code>org.apache.logging.log4j</code> because that's the root import for all Log4j usage. Filtered to Java since Log4j is a Java library.",
+    commands: [
+      "mod search working-set 'org.apache.logging.log4j' --syntax sourcegraph lang:java",
+    ],
+  },
+  c: {
+    summary: 'Moddy searched for REST controllers and outbound HTTP clients in Java',
+    explanation: 'I ran two searches — <code>@RestController</code> for server-side endpoints and <code>RestTemplate or WebClient or RestClient</code> for outbound HTTP clients. Filtered to Java since these are Spring framework patterns.',
+    commands: [
+      "mod search working-set '@RestController' --syntax sourcegraph lang:java",
+      "mod search working-set 'type:symbol RestTemplate or type:symbol WebClient or type:symbol RestClient' --syntax sourcegraph lang:java",
+    ],
+  },
+};
+
+function highlightModCommand(cmd) {
+  const head = '<span class="tok-cmd">mod search working-set</span>';
+  let rest = cmd.replace(/^mod search working-set\s*/, '');
+  const m = rest.match(/^('([^']*)'|"([^"]*)")\s*(.*)$/);
+  if (!m) return head + ' ' + escapeHtml(rest);
+  const quote = m[1][0];
+  const queryBody = m[2] != null ? m[2] : m[3];
+  const tail = m[4];
+  const tailHtml = tail.replace(/(--[\w-]+(?:\s+[\w:./-]+)*)/g, '<span class="tok-flag">$1</span>');
+  return `${head} <span class="tok-str">${quote}${escapeHtml(queryBody)}${quote}</span> ${tailHtml}`;
+}
+
+function buildReasoningTraceHTML(flowId) {
+  const trace = REASONING_TRACES[flowId];
+  if (!trace) return '';
+  return `
+    <div class="reasoning-trace">
+      <button class="reasoning-trace-summary" type="button" data-open-moddy-reasoning="${flowId}">
+        <span>${escapeHtml(trace.summary)}</span>
+        <svg class="reasoning-trace-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  `;
+}
+
+function wireReasoningTrace() {
+  const trace = trigrepPanel.querySelector('.reasoning-trace');
+  if (!trace) return;
+  const summaryBtn = trace.querySelector('.reasoning-trace-summary');
+  if (!summaryBtn) return;
+  summaryBtn.addEventListener('click', () => {
+    const flowId = summaryBtn.dataset.openModdyReasoning;
+    if (flowId) rebuildModdyForFlow(flowId, 'reasoning');
+    setModdyCollapsed(false);
+    const topbarBtn = document.getElementById('topbar-moddy-btn');
+    if (topbarBtn) topbarBtn.classList.add('active');
+  });
+}
+
+let trigrepCurrentMode = 'moddy'; // 'moddy' | 'sourcegraph' | 'comby' | 'regex'
 let translatedFromNL = null; // original NL when search executed via translation
 
 function wireTrigrepLanding() {
   wireSyntaxSelector();
   wireTrigrepSearchBar();
-  renderHelpText('sourcegraph');
-  // Example query clicks
+  setSyntaxMode('moddy');
+  // Example query clicks — execute immediately (one-step, no Edit/Run card).
   trigrepPanel.querySelectorAll('[data-example-nl]').forEach(btn => {
     btn.addEventListener('click', () => {
       const flowId = btn.dataset.exampleNl;
       const text = NL_EXAMPLES[flowId];
-      const input = trigrepPanel.querySelector('#trigrep-query-input');
-      if (input) input.value = text;
       setSyntaxMode('moddy');
-      startNLTranslation(flowId, text);
+      executeSearch(flowId, { fromNL: text });
     });
   });
   trigrepPanel.querySelectorAll('[data-example-syntax]').forEach(btn => {
@@ -4993,19 +5096,7 @@ const HELP_TEXT = {
 function renderHelpText(mode) {
   const slot = trigrepPanel.querySelector('#search-help');
   if (!slot) return;
-  const body = HELP_TEXT[mode] || '';
-  const helpLink = (mode === 'moddy')
-    ? ''
-    : `<span class="help-sep">·</span><button type="button" class="search-help-link" data-help-moddy="1">Ask Moddy for help</button>`;
-  slot.innerHTML = `<span>${body}</span>${helpLink}`;
-  const link = slot.querySelector('[data-help-moddy]');
-  if (link) {
-    link.addEventListener('click', () => {
-      setModdyCollapsed(false);
-      const topbarBtn = document.getElementById('topbar-moddy-btn');
-      if (topbarBtn) topbarBtn.classList.add('active');
-    });
-  }
+  slot.innerHTML = `<span>${HELP_TEXT[mode] || ''}</span>`;
 }
 
 function setSyntaxMode(mode) {
@@ -5057,7 +5148,7 @@ function wireTrigrepSearchBar() {
     if (!text) return;
     // Match against example queries (NL or syntax) — happy paths
     const nlMatch = Object.entries(NL_EXAMPLES).find(([, t]) => t.toLowerCase() === text.toLowerCase());
-    if (nlMatch) { startNLTranslation(nlMatch[0], text); return; }
+    if (nlMatch) { executeSearch(nlMatch[0], { fromNL: text }); return; }
     const syntaxMatch = Object.entries(SYNTAX_EXAMPLES).find(([, t]) => t.toLowerCase() === text.toLowerCase());
     if (syntaxMatch) { executeSearch(syntaxMatch[0], { fromNL: null }); return; }
     // If we're in Moddy mode, attempt NL translation for typed text
@@ -5103,64 +5194,15 @@ function showSearchFallback() {
       </div>
     </div>
   `;
-  // Re-wire example clicks in the fallback
+  // Re-wire example clicks in the fallback — one-step execution.
   results.querySelectorAll('[data-example-nl]').forEach(btn => {
     btn.addEventListener('click', () => {
       const flowId = btn.dataset.exampleNl;
       const text = NL_EXAMPLES[flowId];
-      const input = trigrepPanel.querySelector('#trigrep-query-input');
-      if (input) input.value = text;
       setSyntaxMode('moddy');
-      startNLTranslation(flowId, text);
+      executeSearch(flowId, { fromNL: text });
     });
   });
-}
-
-// ===================================================================
-// NL translation step — shows the derived syntax, Edit / Run actions.
-// ===================================================================
-function startNLTranslation(flowId, nlText) {
-  const slot = trigrepPanel.querySelector('#nl-translation-slot');
-  const input = trigrepPanel.querySelector('#trigrep-query-input');
-  if (!slot || !input) return;
-  input.value = nlText;
-  input.style.color = 'var(--grey-400)';
-
-  // 400ms simulated AI thinking
-  slot.innerHTML = `
-    <div class="nl-translation-thinking">
-      <span class="dots"><span></span><span></span><span></span></span>
-      <span>Moddy is translating to trigrep syntax…</span>
-    </div>
-  `;
-
-  setTimeout(() => {
-    const derived = NL_TRANSLATIONS[flowId];
-    slot.innerHTML = `
-      <div class="nl-translation-card">
-        <div class="nl-translation-left">
-          <svg class="nl-translation-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          <span class="nl-translation-syntax">${escapeHtml(derived)}</span>
-        </div>
-        <div class="nl-translation-actions">
-          <button type="button" class="nl-translation-edit">Edit</button>
-          <button type="button" class="nl-translation-run">Run</button>
-        </div>
-      </div>
-    `;
-    slot.querySelector('.nl-translation-run').addEventListener('click', () => {
-      slot.innerHTML = '';
-      input.style.color = '';
-      executeSearch(flowId, { fromNL: nlText });
-    });
-    slot.querySelector('.nl-translation-edit').addEventListener('click', () => {
-      slot.innerHTML = '';
-      input.value = derived;
-      input.style.color = '';
-      setSyntaxMode('sourcegraph');
-      input.focus();
-    });
-  }, 400);
 }
 
 function escapeHtml(s) {
@@ -5178,17 +5220,20 @@ function executeSearch(flowId, opts) {
   enteredViaTile = (flowId === 'b'); // Log4j uses the tileVariant data
   translatedFromNL = (opts && opts.fromNL) || null;
 
-  // Wipe NL translation slot
-  const slot = trigrepPanel.querySelector('#nl-translation-slot');
-  if (slot) slot.innerHTML = '';
-
-  // Update the search bar input value to the final query
+  // Update the search bar input value. When the search ran via NL, keep the
+  // original NL text in the bar with Moddy selector — the reasoning trace
+  // below the toolbar shows the actual executed syntax. When the user typed
+  // syntax directly, drop in the canonical query string.
   const input = trigrepPanel.querySelector('#trigrep-query-input');
   if (input) {
-    input.value = FINAL_QUERIES[flowId] || flow.phase2.query;
+    if (translatedFromNL) {
+      input.value = translatedFromNL;
+    } else {
+      input.value = FINAL_QUERIES[flowId] || flow.phase2.query;
+    }
     input.style.color = '';
   }
-  setSyntaxMode('sourcegraph');
+  setSyntaxMode(translatedFromNL ? 'moddy' : 'sourcegraph');
 
   // Rebuild results + sidebar
   renderTrigrepResults(flow);
@@ -5213,21 +5258,16 @@ function renderTrigrepResults(flow) {
   const body = trigrepPanel.querySelector('#trigrep-body');
   if (!body) return;
 
-  // Clean trigrep-head — keep only the search row + (optional) "Translated from"
+  // Clean trigrep-head — keep only the search row
   const head = trigrepPanel.querySelector('#trigrep-head');
   ['.trigrep-chips-row', '.trigrep-summary-line', '.translated-from']
     .forEach(sel => { const el = head.querySelector(sel); if (el) el.remove(); });
 
-  if (translatedFromNL) {
-    const crumb = document.createElement('div');
-    crumb.className = 'translated-from';
-    crumb.innerHTML = `Translated from: <strong>"${escapeHtml(translatedFromNL)}"</strong>`;
-    head.appendChild(crumb);
-  }
-
-  // Remove pre-existing results toolbar (if user is running a second search)
+  // Remove pre-existing results toolbar / reasoning trace (re-running search)
   const oldToolbar = trigrepPanel.querySelector('.results-toolbar');
   if (oldToolbar) oldToolbar.remove();
+  const oldTrace = trigrepPanel.querySelector('.reasoning-trace');
+  if (oldTrace) oldTrace.remove();
 
   // ----- Sidebar groups -----
   const activeSet = PRESET_ACTIVE_FILTERS[currentFlow] || new Set();
@@ -5291,15 +5331,10 @@ function renderTrigrepResults(flow) {
   const timeMs = (summaryRaw.match(/([\d.]+ms)/) || [, ''])[1];
   const toolbarHtml = `
     <div class="results-toolbar">
-      <div class="results-toolbar-left">
-        <button class="recipes-available-card" type="button" data-open-moddy="1" title="Open Moddy recipe recommendations">
-          <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span>${recipeCountEffective} recipes available</span>
-          <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-      </div>
+      <div class="results-toolbar-left"></div>
       <div class="results-toolbar-right">
         <span class="results-toolbar-summary"><strong id="summary-count">${matchCount}</strong> matches across <strong id="summary-files">${fileCount}</strong> files</span>
+        <span class="results-toolbar-recipes"><strong>${recipeCountEffective}</strong> recipes</span>
         <a class="results-toolbar-export" href="#" onclick="return false;" title="Export results as CSV">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Export
@@ -5311,6 +5346,15 @@ function renderTrigrepResults(flow) {
 
   // Insert toolbar between head and body
   head.insertAdjacentHTML('afterend', toolbarHtml);
+
+  // Reasoning trace (only when search ran via NL translation)
+  if (translatedFromNL) {
+    const traceHtml = buildReasoningTraceHTML(currentFlow);
+    if (traceHtml) {
+      const toolbarEl = trigrepPanel.querySelector('.results-toolbar');
+      if (toolbarEl) toolbarEl.insertAdjacentHTML('afterend', traceHtml);
+    }
+  }
 
   // Replace body content (no chips, no breakdown — sidebar shows active filters)
   body.innerHTML = `
@@ -5342,16 +5386,7 @@ function renderTrigrepResults(flow) {
   `;
 
   wireResultsInteractions(flow, remainingCards);
-
-  // Wire "N recipes available" card on toolbar to open Moddy
-  const recipesCard = trigrepPanel.querySelector('.recipes-available-card[data-open-moddy]');
-  if (recipesCard) {
-    recipesCard.addEventListener('click', () => {
-      setModdyCollapsed(false);
-      const topbarBtn = document.getElementById('topbar-moddy-btn');
-      if (topbarBtn) topbarBtn.classList.add('active');
-    });
-  }
+  wireReasoningTrace();
 }
 
 function buildResultCardHTML(card) {
@@ -5458,8 +5493,6 @@ function wireResultsInteractions(flow, remainingCards) {
   if (breakdownLink) {
     breakdownLink.addEventListener('click', () => {
       setModdyCollapsed(false);
-      const topbarBtn = document.getElementById('topbar-moddy-btn');
-      if (topbarBtn) topbarBtn.classList.add('active');
     });
   }
   // Show more
@@ -5548,8 +5581,11 @@ const MODDY_FREEFLOW = {
   },
 };
 
-function rebuildModdyForFlow(flowId) {
-  // Clear conversation, append new structured response for this flow
+function rebuildModdyForFlow(flowId, entryMode) {
+  // Clear conversation, append new structured response for this flow.
+  // entryMode === 'reasoning' prepends the NL→syntax explanation + CLI block
+  // (used when the reasoning line below the toolbar is clicked).
+  // entryMode === 'button' (default) shows the standard context-aware view.
   conversation.innerHTML = '';
   conversation.classList.remove('hidden');
   if (greeter) greeter.classList.add('hidden');
@@ -5564,8 +5600,31 @@ function rebuildModdyForFlow(flowId) {
   conversation.appendChild(moddy);
 
   let html = '';
+
+  // Reasoning lead — explanation + CLI command boxes.
+  if (entryMode === 'reasoning') {
+    const trace = REASONING_TRACES[flowId];
+    if (trace) {
+      html += `<p class="moddy-context-msg lead">${trace.explanation}</p>`;
+      trace.commands.forEach(c => {
+        html += `
+          <div class="derived-query">
+            <div class="derived-query-head">
+              <div class="derived-query-head-title">Command</div>
+              <button class="derived-query-copy" type="button" title="Copy command" data-copy="${escapeHtml(c)}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+            <div class="derived-query-cmd"><span class="cb">$ </span>${highlightModCommand(c).replace(/tok-cmd/g, 'cb').replace(/tok-str/g, 'cs').replace(/tok-flag/g, 'cd')}</div>
+          </div>
+        `;
+      });
+    }
+  }
+
   data.intro.forEach((p, i) => {
-    html += `<p class="moddy-context-msg${i === 0 ? ' lead' : ''}">${p}</p>`;
+    const isLead = entryMode !== 'reasoning' && i === 0;
+    html += `<p class="moddy-context-msg${isLead ? ' lead' : ''}">${p}</p>`;
   });
   if (data.diagram) {
     html += buildFlowCDiagramHTML();
@@ -5601,6 +5660,16 @@ function rebuildModdyForFlow(flowId) {
       box.style.borderColor = 'var(--neo-digital-blue-500)';
       const name = box.querySelector('.moddy-recipe-box-name')?.textContent;
       // No-op for prototype — just visual feedback
+    });
+  });
+  // Copy buttons on the reasoning-lead CLI blocks.
+  moddy.querySelectorAll('.derived-query-copy[data-copy]').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const text = btn.dataset.copy || '';
+      try { await navigator.clipboard.writeText(text); } catch (_) {}
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 1200);
     });
   });
 
