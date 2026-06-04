@@ -1797,11 +1797,6 @@ body.btn-rounded .dl-split { border-radius: var(--radius-md); }
     CSV
     <span class="menu-meta">.csv</span>
   </button>
-  <button class="menu-item" data-fmt="JSON">
-    <svg viewBox="0 0 24 24" class="svg-stroke"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-    JSON
-    <span class="menu-meta">.json</span>
-  </button>
 <button class="menu-item" data-fmt="Excel">
     <svg viewBox="0 0 24 24" class="svg-stroke"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
     Excel
@@ -1817,7 +1812,6 @@ body.btn-rounded .dl-split { border-radius: var(--radius-md); }
 <div class="menu" id="row-menu" hidden>
   <div class="menu-section">Download as</div>
   <button class="menu-item" data-fmt="CSV"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>CSV<span class="menu-meta">.csv</span></button>
-  <button class="menu-item" data-fmt="JSON"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>JSON<span class="menu-meta">.json</span></button>
   <button class="menu-item" data-fmt="Excel"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Excel<span class="menu-meta">.xlsx</span></button>
   <div class="menu-divider"></div>
   <button class="menu-item" data-fmt="preview">
@@ -2967,7 +2961,7 @@ function toast({ title, sub, icon }) {
 }
 
 function startDownload(tables, fmt, asZip = false) {
-  const ext = ({ CSV: 'csv', JSON: 'json', Excel: 'xlsx' })[fmt] || 'csv';
+  const ext = ({ CSV: 'csv', Excel: 'xlsx' })[fmt] || 'csv';
   if (asZip || tables.length > 1) {
     const totalRows = tables.reduce((s, t) => s + t.rows, 0);
     const totalBytes = tables.reduce((s, t) => s + t.bytes, 0);
