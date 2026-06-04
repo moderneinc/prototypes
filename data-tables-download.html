@@ -1314,6 +1314,12 @@ body.btn-rounded .btn,
 body.btn-rounded .btn-split,
 body.btn-rounded .dl-split { border-radius: var(--radius-md); }
 
+/* MVP mode (demo toggle): hide all AI enhancements */
+body.mvp #copy-manifest-btn,
+body.mvp .row-action-btn.ai,
+body.mvp .full-flag,
+body.mvp .filters-meta { display: none; }
+
 /* View toggle (cards / table) — segmented control */
 .view-toggle {
   display: inline-flex; align-items: stretch;
@@ -1838,6 +1844,10 @@ body.btn-rounded .dl-split { border-radius: var(--radius-md); }
   <span class="demo-bar-label">Buttons</span>
   <button class="demo-btn active" data-btnstyle="pill">Pill</button>
   <button class="demo-btn" data-btnstyle="rounded">Rounded</button>
+  <span class="demo-divider"></span>
+  <span class="demo-bar-label">Mode</span>
+  <button class="demo-btn" data-mode="mvp">MVP</button>
+  <button class="demo-btn active" data-mode="ai">AI enhanced</button>
 </div>
 
 <!-- Copy-for-AI menu (shared by row + manifest triggers) -->
@@ -3142,6 +3152,15 @@ document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(b => {
     document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(x => x.classList.remove('active'));
     b.classList.add('active');
     document.body.classList.toggle('btn-rounded', b.dataset.btnstyle === 'rounded');
+  });
+});
+
+/* MVP vs AI-enhanced toggle (hides/shows all AI affordances) */
+document.querySelectorAll('.demo-btn[data-mode]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.demo-btn[data-mode]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.body.classList.toggle('mvp', b.dataset.mode === 'mvp');
   });
 });
 
