@@ -308,6 +308,20 @@ button{font:inherit;cursor:pointer;}
 /* Rounded-rectangle variant toggled from the demo bar */
 body.btn-rounded .btn{border-radius:var(--radius-md);}
 
+/* Short viewports (e.g. 1200×680): compact the header so the list/detail
+   panels get more height. */
+@media (max-height: 760px){
+  .page-top{padding-top:16px;}
+  .run-title{margin-bottom:2px;}
+  .run-subhead{margin-bottom:8px;}
+  .run-header{margin-bottom:6px;}
+  .md-layout{padding-top:14px;padding-bottom:16px;}
+  /* Collapse the rail to icons-only (labels via hover tooltip) */
+  .nav-label{display:none;}
+  .nav-item{padding:6px 4px;}
+  .left-nav-top{gap:2px;}
+}
+
 /* toast */
 .toast-stack{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:80;}
 .toast{display:flex;align-items:center;gap:10px;min-width:280px;padding:12px 16px;background:#fff;border:1px solid var(--border-primary);border-radius:8px;box-shadow:var(--shadow-lg);font-size:13px;color:var(--text-primary);}
@@ -319,13 +333,12 @@ body.btn-rounded .btn{border-radius:var(--radius-md);}
   <nav class="left-nav" aria-label="Platform">
     <div class="left-nav-top">
       <div class="nav-home-stack">
-        <div class="nav-item nav-item-home"><div class="nav-icon-container">
+        <div class="nav-item nav-item-home" title="Home"><div class="nav-icon-container">
           <svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>
         </div></div>
         <span class="nav-version-badge">v2</span>
       </div>
       <div id="left-nav-items"></div>
-      <div class="nav-more-wrapper"><div class="nav-item"><div class="nav-icon-container"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div><span class="nav-label">More</span></div></div>
     </div>
   </nav>
 
@@ -407,9 +420,11 @@ const NAV_ITEMS=[
   {label:'Builder',svg:'<rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>'},
   {label:'Activity',svg:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>'},
   {label:'Changelog',badge:'Beta',svg:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
+  {label:'Repositories',svg:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/>'},
+  {label:'Deploy',svg:'<path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>'},
 ];
 const navList=document.getElementById('left-nav-items');
-NAV_ITEMS.forEach(i=>{const el=document.createElement('div');el.className='nav-item'+(i.active?' active':'');el.innerHTML=`<div class="nav-icon-container"><svg width="22" height="22" viewBox="0 0 24 24" class="svg-stroke">${i.svg}</svg></div><span class="nav-label">${i.label}</span>${i.badge?`<span class="nav-badge">${i.badge}</span>`:''}`;navList.appendChild(el);});
+NAV_ITEMS.forEach(i=>{const el=document.createElement('div');el.className='nav-item'+(i.active?' active':'');el.title=i.label;el.innerHTML=`<div class="nav-icon-container"><svg width="22" height="22" viewBox="0 0 24 24" class="svg-stroke">${i.svg}</svg></div><span class="nav-label">${i.label}</span>`;navList.appendChild(el);});
 
 /* ===== Icons ===== */
 const ICONS={

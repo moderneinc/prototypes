@@ -1105,6 +1105,23 @@ button { font: inherit; cursor: pointer; }
 @media (max-width: 768px) {
   .cards-grid { grid-template-columns: 1fr; }
 }
+/* Short viewports (e.g. 1200×680): compact the vertical chrome so more
+   of the table is visible without heavy scrolling. */
+@media (max-height: 760px) {
+  .page-scroll { padding-top: 16px; }
+  .run-title { margin-bottom: 2px; }
+  .run-subhead { margin-bottom: 8px; }
+  .run-header { margin-bottom: 6px; }
+  .run-status-row { gap: 10px; }
+  .tabs { margin-bottom: 14px; }
+  .toolbar { padding: 12px 20px; }
+  .filters { padding: 10px 20px; }
+  .cards-grid { padding: 16px; gap: 14px; }
+  /* Collapse the rail to icons-only (labels via hover tooltip) */
+  .nav-label { display: none; }
+  .nav-item { padding: 6px 4px; }
+  .left-nav-top { gap: 2px; }
+}
 
 .card-tile {
   background: var(--surface-primary);
@@ -1607,7 +1624,7 @@ body.btn-rounded .dl-split { border-radius: var(--radius-md); }
     <nav class="left-nav" aria-label="Platform">
       <div class="left-nav-top">
         <div class="nav-home-stack">
-          <div class="nav-item nav-item-home" aria-label="Home">
+          <div class="nav-item nav-item-home" aria-label="Home" title="Home">
             <div class="nav-icon-container">
               <svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z"
@@ -1618,14 +1635,6 @@ body.btn-rounded .dl-split { border-radius: var(--radius-md); }
           <span class="nav-version-badge">v2</span>
         </div>
         <div id="left-nav-items"></div>
-        <div class="nav-more-wrapper">
-          <div class="nav-item" aria-label="More">
-            <div class="nav-icon-container">
-              <svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
-            </div>
-            <span class="nav-label">More</span>
-          </div>
-        </div>
       </div>
     </nav>
 
@@ -1847,13 +1856,6 @@ body.btn-rounded .dl-split { border-radius: var(--radius-md); }
       <div class="menu-item-col-sub" id="copy-md-sub">Schema + sample rows · for pasting into chat</div>
     </div>
   </button>
-  <button class="menu-item-col" data-copy="json">
-    <svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-    <div class="menu-item-col-body">
-      <div class="menu-item-col-title">Copy as JSON</div>
-      <div class="menu-item-col-sub" id="copy-json-sub">Schema + sample rows · structured</div>
-    </div>
-  </button>
   <button class="menu-item-col" data-copy="mcp">
     <svg viewBox="0 0 24 24" class="svg-stroke"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
     <div class="menu-item-col-body">
@@ -1929,17 +1931,21 @@ const NAV_ITEMS = [
     svg: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>' },
   { id: 'changelog',   label: 'Changelog', badge: 'Beta',
     svg: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>' },
+  { id: 'repositories', label: 'Repositories',
+    svg: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/>' },
+  { id: 'deploy',      label: 'Deploy',
+    svg: '<path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' },
 ];
 
 function renderNavItem(item) {
   const el = document.createElement('div');
   el.className = 'nav-item' + (item.active ? ' active' : '');
+  el.title = item.label;
   el.innerHTML = `
     <div class="nav-icon-container">
       <svg width="22" height="22" viewBox="0 0 24 24" class="svg-stroke">${item.svg}</svg>
     </div>
     <span class="nav-label">${item.label}</span>
-    ${item.badge ? `<span class="nav-badge">${item.badge}</span>` : ''}
   `;
   return el;
 }
@@ -2799,7 +2805,6 @@ async function copyToClipboard(text) {
 function openCopyMenu(anchor, ctx) {
   const section = document.getElementById('copy-menu-section');
   const mdSub = document.getElementById('copy-md-sub');
-  const jsonSub = document.getElementById('copy-json-sub');
   const mcpSub = document.getElementById('copy-mcp-sub');
 
   if (ctx.mode === 'row') {
@@ -2811,12 +2816,10 @@ function openCopyMenu(anchor, ctx) {
       : `Sample · first ${sampleN} of ${fmtRows(t.rows)} rows`;
     section.textContent = `Copy “${t.name}” for AI · ${mode === 'full' ? 'fits in full' : 'will sample'}`;
     mdSub.textContent = `Schema + ${modeTag} + URL · for chat`;
-    jsonSub.textContent = `Schema + ${modeTag} + URL · structured`;
     mcpSub.textContent = `URL + schema only · no row data`;
   } else {
     section.textContent = `Copy manifest for AI`;
     mdSub.textContent = `${TABLES.length} tables: names, descriptions, sizes, schemas, URLs · no row data`;
-    jsonSub.textContent = `${TABLES.length} tables · structured map · no row data`;
     mcpSub.textContent = `URLs + schemas only · minimal`;
   }
 
