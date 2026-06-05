@@ -2446,15 +2446,92 @@
 
   /* ===== Search-bar help text (persistent muted line below the search bar) ===== */
   /* margin-top matches .trigrep-head padding-bottom so the help text sits
-     visually centered between the input field and the body-row divider. */
-  .search-help {
+     visually centered between the input field and the body-row divider.
+     The row is split: help text on the left, results stats on the right
+     once a search has executed. */
+  .search-help-row {
     margin-top: 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    min-height: 18px;
+  }
+  .search-help {
     font-size: 12px;
     color: var(--grey-500);
     line-height: 1.5;
     display: flex; flex-wrap: wrap; align-items: center;
     gap: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
   }
+  .search-help-stats {
+    display: inline-flex; align-items: center;
+    gap: 14px;
+    font-size: 13px;
+    color: var(--mui-grey-600);
+    flex-shrink: 0;
+  }
+  .search-help-stats:empty { display: none; }
+
+  /* ===== Trigrep waiting state (NL query → Moddy processing in side panel) ===== */
+  .trigrep-waiting {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px;
+    padding: 120px 24px;
+    color: var(--grey-500);
+    font-size: 14px;
+  }
+  .trigrep-waiting-text {
+    font-size: 14px;
+    color: var(--mui-grey-700);
+    font-weight: 500;
+  }
+  .trigrep-waiting-dots { display: inline-flex; gap: 8px; }
+  .trigrep-waiting-dots span {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--neo-digital-blue-500, #1e6cf3);
+    opacity: 0.35;
+    animation: trigrep-waiting-bounce 1.1s ease-in-out infinite;
+  }
+  .trigrep-waiting-dots span:nth-child(2) { animation-delay: 0.18s; }
+  .trigrep-waiting-dots span:nth-child(3) { animation-delay: 0.36s; }
+  @keyframes trigrep-waiting-bounce {
+    0%, 80%, 100% { opacity: 0.35; transform: translateY(0); }
+    40%           { opacity: 1;    transform: translateY(-5px); }
+  }
+
+  /* Subtle one-line note in the Moddy conversation that acknowledges a
+     filter change made in either panel. Sits between full chat bubbles —
+     italic, muted, no avatar — so it reads as a sync log, not a reply. */
+  .moddy-sync-note {
+    font-size: 12px;
+    color: var(--mui-grey-600);
+    font-style: italic;
+    padding: 6px 4px;
+    border-left: 2px solid var(--neo-digital-blue-500, #1e6cf3);
+    padding-left: 10px;
+    margin: 4px 0;
+    background: var(--grey-25, #fafafa);
+    border-radius: 0 4px 4px 0;
+  }
+  .moddy-sync-note strong { color: var(--mui-grey-800); font-style: normal; font-weight: 500; }
+
+  /* Moddy panel "thinking" placeholder — matches the trigrep waiting dots
+     so the two views read as a single coordinated loading beat. */
+  .moddy-thinking { padding: 4px 0; }
+  .moddy-thinking-dots {
+    display: inline-flex; gap: 8px;
+    align-items: center;
+    padding: 4px 2px;
+  }
+  .moddy-thinking-dots span {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--neo-digital-blue-500, #1e6cf3);
+    opacity: 0.35;
+    animation: trigrep-waiting-bounce 1.1s ease-in-out infinite;
+  }
+  .moddy-thinking-dots span:nth-child(2) { animation-delay: 0.18s; }
+  .moddy-thinking-dots span:nth-child(3) { animation-delay: 0.36s; }
   .search-help code {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11.5px;
@@ -2774,7 +2851,7 @@
         <div class="org-selector-wrapper">
           <div class="org-selector selected">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span>Default</span>
+            <span>Acme Bank</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
           </div>
         </div>
@@ -2899,7 +2976,7 @@
             <div class="prompt-wrap">
               <div class="prompt-gradient">
                 <div class="prompt-inner">
-                  <input class="prompt-input" id="prompt-input" placeholder="Ask Moddy to search, refine, or run a recipe" autocomplete="off" spellcheck="false">
+                  <input class="prompt-input" id="prompt-input" placeholder="Ask Moddy about these results…" autocomplete="off" spellcheck="false">
                   <button class="send-btn" id="send-btn" title="Send">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                   </button>
@@ -3038,7 +3115,7 @@ const FLOWS = {
     derivedQueryHtml: tokenizeQuery("mod search working-set '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public' lang:java --syntax sourcegraph"),
     scopeLine: '1,892 public authorization annotations across 234 repos in 89ms',
     breakdown: '<p>156 repos use <strong>@PreAuthorize</strong> · 78 use <strong>@Secured</strong> · 23 use a mix of both</p>',
-    overflow: 'Showing <strong>2 of 234</strong> files (1,892 matches)',
+    overflow: 'Showing <strong>5 of 234</strong> files (1,892 matches)',
     cards: [
       { id: 'a-OrderController', file: 'OrderController.java', module: 'payments-api', count: 4, lines: [
         { n: 12, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'ADMIN\')"</span>)' },
@@ -3183,7 +3260,7 @@ const FLOWS = {
       derivedQueryHtml: tokenizeQuery("mod search working-set 'org.apache.logging.log4j lang:java' --syntax sourcegraph"),
       scopeLine: '847 Log4j references across 54 repos in 89ms',
       breakdown: '<p>54 repos still import <strong>org.apache.logging.log4j</strong> directly. 38 use Log4j as the sole logger. 16 mix Log4j with SLF4J (partial migrations).</p>',
-      overflow: 'Showing <strong>2 of 54</strong> files (847 matches)',
+      overflow: 'Showing <strong>5 of 54</strong> files (847 matches)',
       moddyChat: {
         summaryProse: 'I found <strong>847 Log4j references</strong> across 54 repos. 38 use Log4j as the sole logger, and 16 mix it with SLF4J (partial migrations).',
         resultsCardLabel: 'View 847 search results',
@@ -3330,9 +3407,9 @@ const FLOWS = {
     ]),
     scopeLine: '1,672 REST controllers across 234 repos + 847 outbound REST clients across 156 repos · 143ms',
     breakdown:
-      '<p><strong>Controllers:</strong> 187 repos on @RestController (modern) · 47 on @Controller + @ResponseBody (legacy) · 23 mixed</p>' +
-      '<p><strong>Outbound clients:</strong> 612 RestTemplate (legacy) · 187 WebClient (reactive) · 48 RestClient (modern). 89 repos act as both server and client.</p>',
-    overflow: 'Showing <strong>3 of 390</strong> files (2,519 matches)',
+      '<p><strong>APIs that serve requests:</strong> 187 repos use <strong>@RestController</strong> · 47 use the older <strong>@Controller</strong> pattern · 23 mix both.</p>' +
+      '<p><strong>APIs that call other services:</strong> 612 use <strong>RestTemplate</strong> · 187 use <strong>WebClient</strong> · 48 use <strong>RestClient</strong>. 89 repos do both — they serve and call.</p>',
+    overflow: 'Showing <strong>5 of 390</strong> files (2,519 matches)',
     cards: [
       { id: 'c-OrderController', file: 'OrderController.java', module: 'orders-service', count: 1, lines: [
         { n: 5, code: '<m>@RestController</m>' },
@@ -3947,9 +4024,25 @@ promptInput.addEventListener('keydown', (e) => {
 });
 
 function handleSend() {
-  const text = promptInput.value.trim();
+  // The chat input is rewired later via replaceWith, which detaches the
+  // module-level `promptInput` reference. Read from the live element.
+  const livePromptInput = document.getElementById('prompt-input');
+  const text = (livePromptInput || promptInput).value.trim();
   if (!text) return;
+  if (livePromptInput) livePromptInput.value = '';
   promptInput.value = '';
+
+  // Phase 2 (results displayed): try to interpret the message as a filter
+  // refinement that maps to a trigrep sidebar action. If recognized, the
+  // refinement updates trigrep immediately and posts an ack in Moddy —
+  // both panels stay in lockstep. Otherwise fall through to the standard
+  // chat echo.
+  if (phase2Built) {
+    appendUserMessage(text);
+    if (applyModdyRefinement(text)) { scrollChat(); return; }
+    scrollChat();
+    return;
+  }
 
   if (flowStarted) {
     appendUserMessage(text);
@@ -4863,7 +4956,10 @@ function buildTrigrepLandingHTML() {
         </div>
         <button class="btn-search" id="trigrep-search-btn">Search</button>
       </div>
-      <div class="search-help" id="search-help"></div>
+      <div class="search-help-row">
+        <div class="search-help" id="search-help"></div>
+        <div class="search-help-stats" id="search-help-stats"></div>
+      </div>
     </div>
 
     <div class="trigrep-body" id="trigrep-body">
@@ -4887,28 +4983,8 @@ function buildTrigrepLandingHTML() {
             <div class="trigrep-start-title">Start Your Code Search</div>
             <div class="trigrep-start-subtitle">Use powerful filters and semantic search to find exactly what you're looking for across your entire codebase</div>
             <div class="trigrep-start-examples-label">Try these examples</div>
-            <div class="trigrep-start-examples-list">
-              <button class="trigrep-start-example" type="button" data-example-nl="a">
-                <span class="trigrep-start-example-text">
-                  <span class="trigrep-start-example-query">Find public authorization rules across my repos</span>
-                  <span class="trigrep-start-example-desc">Search using plain English</span>
-                </span>
-                <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              </button>
-              <button class="trigrep-start-example" type="button" data-example-nl="b">
-                <span class="trigrep-start-example-text">
-                  <span class="trigrep-start-example-query">Find all Log4j usage in our services</span>
-                  <span class="trigrep-start-example-desc">Search using plain English</span>
-                </span>
-                <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              </button>
-              <button class="trigrep-start-example" type="button" data-example-nl="c">
-                <span class="trigrep-start-example-text">
-                  <span class="trigrep-start-example-query">Find all REST controllers and outbound clients</span>
-                  <span class="trigrep-start-example-desc">Search using plain English</span>
-                </span>
-                <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              </button>
+            <div class="trigrep-start-examples-list" id="trigrep-start-examples-list">
+              <!-- One example card, swapped in by renderStartExampleCard() based on the active syntax mode. -->
             </div>
             <div class="trigrep-start-divider"></div>
             <a class="trigrep-start-reference-link" href="#" onclick="return false;">
@@ -4994,21 +5070,129 @@ function wireTrigrepLanding() {
   wireSyntaxSelector();
   wireTrigrepSearchBar();
   setSyntaxMode('moddy');
-  // Example query clicks — execute immediately (one-step, no Edit/Run card).
-  trigrepPanel.querySelectorAll('[data-example-nl]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const flowId = btn.dataset.exampleNl;
-      const text = NL_EXAMPLES[flowId];
-      setSyntaxMode('moddy');
-      executeSearch(flowId, { fromNL: text });
+  renderStartExamples();
+}
+
+// ───────────────────────────────────────────────────────────────────
+// Empty state shows ONE example prompt per syntax (Moddy, Sourcegraph,
+// Comby, Regex). Clicking a prompt sets the syntax mode to match and
+// triggers that mode's action: Moddy → scoping flow in the panel;
+// Sourcegraph → direct execute against Flow B; Comby/Regex → fallback.
+// The order matches the syntax-selector dropdown.
+// ───────────────────────────────────────────────────────────────────
+const START_EXAMPLES = [
+  { mode: 'moddy',       query: 'How is logging done across our services?',  desc: 'Search using plain English',     action: 'nl-scoping-b' },
+  { mode: 'sourcegraph', query: 'org.apache.logging.log4j lang:java',         desc: 'Search in Java files',           action: 'syntax-b'     },
+  { mode: 'comby',       query: 'try { :[body] } catch (:[ex]) { :[handler] }', desc: 'Match structural patterns',   action: 'fallback'     },
+  { mode: 'regex',       query: '/log\\.(error|warn)\\(/',                   desc: 'Match with regular expressions', action: 'fallback'     },
+];
+
+function renderStartExamples() {
+  const slot = trigrepPanel.querySelector('#trigrep-start-examples-list');
+  if (!slot) return;
+  slot.innerHTML = START_EXAMPLES.map(ex => `
+    <button class="trigrep-start-example" type="button" data-action="${ex.action}" data-mode="${ex.mode}">
+      <span class="trigrep-start-example-text">
+        <span class="trigrep-start-example-query">${escapeHtml(ex.query)}</span>
+        <span class="trigrep-start-example-desc">${ex.desc}</span>
+      </span>
+      <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+  `).join('');
+  slot.querySelectorAll('.trigrep-start-example').forEach(card => {
+    card.addEventListener('click', () => {
+      // Set the syntax selector to match the clicked prompt so the search
+      // bar reflects how this query would run.
+      const mode = card.dataset.mode;
+      if (mode) setSyntaxMode(mode);
+      const action = card.dataset.action;
+      if (action === 'fallback') { showSearchFallback(); return; }
+      if (action === 'syntax-b') {
+        executeSearch('b', { fromNL: null });
+        return;
+      }
+      if (action && action.startsWith('nl-scoping-')) {
+        const flowId = action.slice('nl-scoping-'.length);
+        startTrigrepScopingFlow(flowId);
+        return;
+      }
     });
   });
-  trigrepPanel.querySelectorAll('[data-example-syntax]').forEach(btn => {
+}
+
+// Trigrep-first scoping flow: open Moddy panel with the user's broad NL
+// question + Moddy's scoping cards. Trigrep waits until the user picks
+// one of the scoping options, then runs the corresponding search.
+function startTrigrepScopingFlow(flowId) {
+  const flow = FLOWS[flowId];
+  if (!flow || !flow.scoping) return;
+
+  currentFlow = flowId;
+  translatedFromNL = flow.scopedTrigger;
+
+  // Drop the broad question into the search bar in Moddy mode.
+  setSyntaxMode('moddy');
+  const input = trigrepPanel.querySelector('#trigrep-query-input');
+  if (input) { input.value = flow.scopedTrigger; input.style.color = ''; }
+
+  // Open Moddy panel and reveal the topbar button as active.
+  setModdyCollapsed(false);
+  const topbarBtn = document.getElementById('topbar-moddy-btn');
+  if (topbarBtn) topbarBtn.classList.add('active');
+
+  // Render the panel: user message + scoping cards. Reuse Phase 1's
+  // buildScopingResponse for consistency with the existing scoping UI.
+  conversation.innerHTML = '';
+  conversation.classList.remove('hidden');
+  if (greeter) greeter.classList.add('hidden');
+  placeInputAtBottom();
+  promptInput.placeholder = 'Ask Moddy about these results…';
+  appendUserMessage(flow.scopedTrigger);
+  conversation.appendChild(buildTrigrepScopingResponse(flow, flowId));
+  scrollChat();
+
+  // Trigrep stays in a waiting state until the user picks a scoping option.
+  showTrigrepWaitingState();
+}
+
+// Build the same visual scoping card list as Phase 1's buildScopingResponse,
+// but with a click handler that drives the trigrep-first flow (executeSearch
+// + waiting state) instead of Phase 1's streamResults pipeline.
+function buildTrigrepScopingResponse(flow, flowId) {
+  const msg = document.createElement('div');
+  msg.className = 'msg-moddy fade-in';
+  const buttons = flow.scoping.options.map((opt, i) => {
+    if (opt.custom) {
+      return `<button class="scoping-btn" data-custom="1">
+        <span class="scoping-btn-label">${opt.label}</span>
+        <span class="scoping-btn-query muted">opens chat input</span>
+      </button>`;
+    }
+    const queryClass = opt.muted ? 'scoping-btn-query muted' : 'scoping-btn-query';
+    return `<button class="scoping-btn" data-idx="${i}">
+      <span class="scoping-btn-label">${opt.label}</span>
+      <span class="${queryClass}">${opt.query}</span>
+    </button>`;
+  }).join('');
+  msg.innerHTML = `
+    <div class="scoping-prompt">${flow.scoping.prompt}</div>
+    <div class="scoping-buttons">${buttons}</div>
+  `;
+  msg.querySelectorAll('.scoping-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const flowId = btn.dataset.exampleSyntax;
-      executeSearch(flowId, { fromNL: null });
+      if (btn.dataset.custom) { promptInput.focus(); return; }
+      // Lock the scoping buttons after choice (visual feedback)
+      msg.querySelectorAll('.scoping-btn').forEach(b => { b.disabled = true; b.style.opacity = '0.6'; b.style.cursor = 'default'; });
+      btn.style.opacity = '1';
+      btn.style.borderColor = 'var(--neo-digital-blue-500)';
+      // Commit to the search: trigrep loads results, Moddy panel swaps to
+      // the standard reasoning + recipes view for this flow.
+      setTimeout(() => {
+        executeSearch(flowId, { fromNL: flow.scopedTrigger });
+      }, 250);
     });
   });
+  return msg;
 }
 
 function wireSyntaxSelector() {
@@ -5058,7 +5242,7 @@ const SYNTAX_LABELS = {
 // active syntax mode. "Ask Moddy for help" appears only on non-Moddy modes.
 const HELP_TEXT = {
   moddy: `Try: <code>where are we using log4j</code> or <code>find deprecated APIs in payments</code>`,
-  sourcegraph: `Syntax: <code>lang:</code> <code>visibility:</code> <code>type:</code> <code>extends:</code> <code>implements:</code> <code>file:</code>`,
+  sourcegraph: `Syntax: <code>lang:</code> <code>visibility:</code> <code>type:</code> <code>extends:</code> <code>implements:</code> <code>returns:</code> <code>throws:</code> <code>file:</code>`,
   comby: `Syntax: <code>:[hole]</code> matches any code — e.g. <code>if (:[cond]) { :[body] }</code>`,
   regex: `Standard regex — e.g. <code>/log\\.(error|warn)\\(/</code>`,
 };
@@ -5180,6 +5364,97 @@ function escapeHtml(s) {
 }
 
 // ===================================================================
+// Parallel Moddy ↔ Trigrep state bridge
+// -------------------------------------------------------------------
+// Both panels operate on the same filter state. Sidebar clicks in
+// trigrep route through TRIGREP_SYNC.toggleFilterItem and post a sync
+// note to Moddy. Refinements typed in the Moddy chat route through
+// applyModdyRefinement, which finds the matching .filter-item and
+// toggles it via the same helper — so visual state, counts, and the
+// conversation log stay in lockstep.
+// ===================================================================
+const TRIGREP_SYNC = {
+  activeFilters: null,
+  baseMatches: 0,
+  baseFiles: 0,
+  summaryCount: null,
+  summaryFiles: null,
+  toggleFilterItem: null,
+  recomputeSummary: null,
+};
+
+function appendModdySyncNote(html) {
+  if (!conversation) return;
+  const note = document.createElement('div');
+  note.className = 'moddy-sync-note fade-in';
+  note.innerHTML = html;
+  conversation.appendChild(note);
+  scrollChat();
+}
+
+// Find a .filter-item in the trigrep sidebar by its visible name. Match
+// is case-insensitive and tolerates partial substrings ("payments" finds
+// "payments-api"), preferring exact matches when present.
+function findFilterItemByName(name) {
+  const items = trigrepPanel.querySelectorAll('.filter-item');
+  const needle = name.trim().toLowerCase();
+  let exact = null, partial = null;
+  items.forEach(item => {
+    const label = item.querySelector('.filter-item-name')?.textContent.trim().toLowerCase() || '';
+    if (label === needle && !exact) exact = item;
+    else if (!partial && label.includes(needle)) partial = item;
+  });
+  return exact || partial || null;
+}
+
+// Parse a Moddy chat message for a filter refinement and apply it to
+// trigrep. Returns true if a refinement was recognized. Supported forms:
+//   "narrow to X" / "filter to X" / "just X" / "only X"  → activate X
+//   "remove X" / "exclude X" / "drop X"                  → deactivate X
+//   "clear filters" / "reset filters" / "show all"       → clear all
+function applyModdyRefinement(text) {
+  if (!TRIGREP_SYNC.toggleFilterItem || !TRIGREP_SYNC.activeFilters) return false;
+  const lc = text.trim().toLowerCase();
+
+  if (/^(clear|reset)\s+(all\s+)?filters?\b/.test(lc) || /^show\s+all\b/.test(lc)) {
+    const items = trigrepPanel.querySelectorAll('.filter-item.active');
+    if (items.length === 0) return false;
+    items.forEach(item => TRIGREP_SYNC.toggleFilterItem(item, { force: 'off' }));
+    appendModdySyncNote(`Cleared all filters — back to <strong>${TRIGREP_SYNC.baseFiles.toLocaleString()}</strong> files (${TRIGREP_SYNC.baseMatches.toLocaleString()} matches).`);
+    return true;
+  }
+
+  let m = lc.match(/^(?:narrow|filter|scope)\s+(?:to|on|down to)\s+(.+)$/);
+  if (!m) m = lc.match(/^(?:just|only)\s+(.+)$/);
+  if (m) {
+    const target = m[1].replace(/\.$/, '').trim();
+    const item = findFilterItemByName(target);
+    if (!item) { appendModdySyncNote(`No filter matches <strong>${escapeHtml(target)}</strong> in the current view.`); return true; }
+    const result = TRIGREP_SYNC.toggleFilterItem(item, { force: 'on' });
+    if (!result.changed) { appendModdySyncNote(`<strong>${result.key}</strong> is already the active filter.`); return true; }
+    const filesNow = TRIGREP_SYNC.summaryFiles?.textContent || '';
+    const matchesNow = TRIGREP_SYNC.summaryCount?.textContent || '';
+    appendModdySyncNote(`Narrowed to <strong>${result.key}</strong> — ${filesNow} files (${matchesNow} matches).`);
+    return true;
+  }
+
+  m = lc.match(/^(?:remove|exclude|drop)\s+(.+)$/);
+  if (m) {
+    const target = m[1].replace(/\.$/, '').trim();
+    const item = findFilterItemByName(target);
+    if (!item) { appendModdySyncNote(`No filter matches <strong>${escapeHtml(target)}</strong>.`); return true; }
+    const result = TRIGREP_SYNC.toggleFilterItem(item, { force: 'off' });
+    if (!result.changed) { appendModdySyncNote(`<strong>${result.key}</strong> isn't currently active.`); return true; }
+    const filesNow = TRIGREP_SYNC.summaryFiles?.textContent || '';
+    const matchesNow = TRIGREP_SYNC.summaryCount?.textContent || '';
+    appendModdySyncNote(`Removed <strong>${result.key}</strong> filter — back to ${filesNow} files (${matchesNow} matches).`);
+    return true;
+  }
+
+  return false;
+}
+
+// ===================================================================
 // Execute a search — flips trigrep to results state for that flow,
 // rebuilds sidebar + results, sets the breadcrumb if it came from NL.
 // ===================================================================
@@ -5205,20 +5480,84 @@ function executeSearch(flowId, opts) {
   }
   setSyntaxMode(translatedFromNL ? 'moddy' : 'sourcegraph');
 
-  // Rebuild results + sidebar
-  renderTrigrepResults(flow);
-  // Rebuild Moddy panel content. When the search ran via NL, preload the
-  // reasoning view AND auto-open the panel. For syntax searches the panel
-  // stays closed and is built latently with the standard button-mode view.
+  // ─── NL path: Moddy is the gatekeeper. Open the panel with the query as
+  // the conversation starter and the reasoning trace. Trigrep shows a
+  // waiting state until Moddy "commits" to a search, then results stream in.
+  // ─── Syntax path: results load directly in trigrep, no panel.
   if (translatedFromNL) {
-    rebuildModdyForFlow(flowId, 'reasoning');
     setModdyCollapsed(false);
     const topbarBtn = document.getElementById('topbar-moddy-btn');
     if (topbarBtn) topbarBtn.classList.add('active');
+    // Both views show a matching "thinking" placeholder. Moddy's reasoning
+    // and trigrep's results commit at the same moment — neither leads.
+    showModdyThinkingState(translatedFromNL);
+    showTrigrepWaitingState();
+    setTimeout(() => {
+      rebuildModdyForFlow(flowId, 'reasoning');
+      renderTrigrepResults(flow);
+      phase2Built = true;
+    }, 1200);
   } else {
+    renderTrigrepResults(flow);
     rebuildModdyForFlow(flowId, 'button');
+    phase2Built = true;
   }
-  phase2Built = true;
+}
+
+// Moddy panel "thinking" placeholder shown while Moddy is processing an
+// NL query. Matches the dots animation used in the trigrep waiting state
+// so the two views read as a single coordinated loading beat.
+function showModdyThinkingState(nlText) {
+  conversation.classList.remove('hidden');
+  if (greeter) greeter.classList.add('hidden');
+  placeInputAtBottom();
+  promptInput.placeholder = 'Ask Moddy about these results…';
+  // For the direct NL-execute path the conversation is empty; seed it
+  // with the user's message so the panel has context. For the scoping
+  // path the user message + scoping cards are already in the conversation
+  // — we just append the thinking indicator below them.
+  if (!conversation.querySelector('.msg-user') && nlText) {
+    appendUserMessage(nlText);
+  }
+  const thinking = document.createElement('div');
+  thinking.className = 'msg-moddy fade-in moddy-thinking';
+  thinking.innerHTML = `
+    <div class="moddy-thinking-dots" aria-label="Moddy is thinking">
+      <span></span><span></span><span></span>
+    </div>
+  `;
+  conversation.appendChild(thinking);
+  scrollChat();
+}
+
+// Waiting state shown in the trigrep main area while Moddy is processing an
+// NL query in the side panel. Replaces the results body with a centered
+// status message; the search bar and help row stay visible.
+function showTrigrepWaitingState() {
+  const body = trigrepPanel.querySelector('#trigrep-body');
+  if (!body) return;
+  // Clear any inline stats from a previous search
+  const inlineStats = trigrepPanel.querySelector('#search-help-stats');
+  if (inlineStats) inlineStats.innerHTML = '';
+  // Clear any results-toolbar band left over from older renders
+  const oldToolbar = trigrepPanel.querySelector('.results-toolbar');
+  if (oldToolbar) oldToolbar.remove();
+  body.innerHTML = `
+    <aside class="trigrep-sidebar" aria-label="Filters">
+      <section class="trigrep-pane trigrep-pane-filters">
+        <div class="trigrep-pane-head"><span>Filters</span></div>
+        <div class="trigrep-pane-body" style="padding: 12px; color: var(--grey-500); font-size: 12px;">
+          Filters appear after a search.
+        </div>
+      </section>
+    </aside>
+    <div class="trigrep-results" id="trigrep-results">
+      <div class="trigrep-waiting">
+        <div class="trigrep-waiting-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="trigrep-waiting-text">Moddy is working on your query…</div>
+      </div>
+    </div>
+  `;
 }
 
 // Filters to pre-activate per flow — derived from the search query semantics
@@ -5242,9 +5581,13 @@ function renderTrigrepResults(flow) {
   ['.trigrep-chips-row', '.trigrep-summary-line', '.translated-from']
     .forEach(sel => { const el = head.querySelector(sel); if (el) el.remove(); });
 
-  // Remove pre-existing results toolbar (re-running search)
+  // Remove pre-existing results toolbar (re-running search). The inline
+  // stats slot inside the search-help row is reused; legacy band — if any —
+  // is removed below.
   const oldToolbar = trigrepPanel.querySelector('.results-toolbar');
   if (oldToolbar) oldToolbar.remove();
+  const inlineStats = trigrepPanel.querySelector('#search-help-stats');
+  if (inlineStats) inlineStats.innerHTML = '';
 
   // ----- Sidebar groups -----
   const activeSet = PRESET_ACTIVE_FILTERS[currentFlow] || new Set();
@@ -5292,12 +5635,16 @@ function renderTrigrepResults(flow) {
   const repoCount = flow.phase2.baseFiles || 0;
 
   // ----- Result cards -----
-  const initialCards = [...flow.cards, ...(flow.phase2.extraCards || []).slice(0, 3)];
-  const remainingCards = (flow.phase2.extraCards || []).slice(3);
+  // Cap initial display at 5 cards so the overflow text ("Showing 5 of N…")
+  // matches what's actually rendered across all flows.
+  const extraCards = flow.phase2.extraCards || [];
+  const extraSlice = Math.max(0, 5 - flow.cards.length);
+  const initialCards = [...flow.cards, ...extraCards.slice(0, extraSlice)];
+  const remainingCards = extraCards.slice(extraSlice);
   const cardsHtml = initialCards.map(buildResultCardHTML).join('');
   const overflowText = flow.overflow || '';
 
-  // ----- Results toolbar — sits ABOVE the body row (full-width band) -----
+  // ----- Results stats — render inline on the right side of the search-help row -----
   const ff = (typeof MODDY_FREEFLOW !== 'undefined' && MODDY_FREEFLOW[currentFlow]) || null;
   const recipeCountEffective = (ff && ff.recipes && ff.recipes.length) || 3;
   // Pull match + file numbers out of the summary HTML (e.g. "1,892" + "234" + "89ms")
@@ -5306,23 +5653,16 @@ function renderTrigrepResults(flow) {
   const matchCount = nums[0] || '';
   const fileCount = nums[1] || '';
   const timeMs = (summaryRaw.match(/([\d.]+ms)/) || [, ''])[1];
-  const toolbarHtml = `
-    <div class="results-toolbar">
-      <div class="results-toolbar-left"></div>
-      <div class="results-toolbar-right">
-        <span class="results-toolbar-summary"><strong id="summary-count">${matchCount}</strong> matches across <strong id="summary-files">${fileCount}</strong> files</span>
-        <span class="results-toolbar-recipes"><strong>${recipeCountEffective}</strong> recipes</span>
-        <a class="results-toolbar-export" href="#" onclick="return false;" title="Export results as CSV">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export
-        </a>
-        <span class="results-toolbar-time">${timeMs}</span>
-      </div>
-    </div>
+  const statsHtml = `
+    <span class="results-toolbar-summary"><strong id="summary-count">${matchCount}</strong> matches across <strong id="summary-files">${fileCount}</strong> files</span>
+    <span class="results-toolbar-recipes"><strong>${recipeCountEffective}</strong> recipes</span>
+    <a class="results-toolbar-export" href="#" onclick="return false;" title="Export results as CSV">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export
+    </a>
+    <span class="results-toolbar-time">${timeMs}</span>
   `;
-
-  // Insert toolbar between head and body
-  head.insertAdjacentHTML('afterend', toolbarHtml);
+  if (inlineStats) inlineStats.innerHTML = statsHtml;
 
   // Replace body content (no chips, no breakdown — sidebar shows active filters)
   body.innerHTML = `
@@ -5396,20 +5736,55 @@ function wireResultsInteractions(flow, remainingCards) {
       collapseAll.textContent = anyOpen ? 'Expand all' : 'Collapse all';
     });
   }
+  // Make activeFilters reachable from the Moddy→Trigrep refinement path
+  // so chat-driven filter changes share the same in-memory state. The
+  // toggleFilterItem helper below is the single point that mutates filters
+  // — it's called by both sidebar clicks and Moddy chat refinements.
+  TRIGREP_SYNC.activeFilters = activeFilters;
+  TRIGREP_SYNC.baseMatches = baseMatches;
+  TRIGREP_SYNC.baseFiles = baseFiles;
+  TRIGREP_SYNC.summaryCount = summaryCount;
+  TRIGREP_SYNC.summaryFiles = summaryFiles;
+
+  function toggleFilterItem(item, opts) {
+    opts = opts || {};
+    const key = item.querySelector('.filter-item-name').textContent.trim();
+    const count = parseInt(item.dataset.count, 10) || 0;
+    const wasActive = activeFilters.has(key);
+    if (opts.force === 'on' && wasActive) return { changed: false, key, count, action: 'on', total: activeFilters.size };
+    if (opts.force === 'off' && !wasActive) return { changed: false, key, count, action: 'off', total: activeFilters.size };
+    const turningOn = !wasActive;
+    if (turningOn) activeFilters.set(key, count);
+    else activeFilters.delete(key);
+    item.classList.toggle('active', turningOn);
+    recomputeSummary();
+    return { changed: true, key, count, action: turningOn ? 'on' : 'off', total: activeFilters.size };
+  }
+  function recomputeSummary() {
+    if (activeFilters.size === 0) {
+      if (summaryCount) summaryCount.textContent = baseMatches.toLocaleString();
+      if (summaryFiles) summaryFiles.textContent = baseFiles.toLocaleString();
+    } else {
+      const total = [...activeFilters.values()].reduce((a, b) => a + b, 0);
+      if (summaryCount) summaryCount.textContent = total.toLocaleString();
+      if (summaryFiles) summaryFiles.textContent = Math.max(1, Math.ceil(total / 5.5)).toLocaleString();
+    }
+  }
+  TRIGREP_SYNC.toggleFilterItem = toggleFilterItem;
+  TRIGREP_SYNC.recomputeSummary = recomputeSummary;
+
   trigrepPanel.querySelectorAll('.filter-item').forEach(item => {
     item.addEventListener('click', () => {
-      const key = item.querySelector('.filter-item-name').textContent.trim();
-      const count = parseInt(item.dataset.count, 10) || 0;
-      if (activeFilters.has(key)) activeFilters.delete(key);
-      else activeFilters.set(key, count);
-      item.classList.toggle('active');
-      if (activeFilters.size === 0) {
-        if (summaryCount) summaryCount.textContent = baseMatches.toLocaleString();
-        if (summaryFiles) summaryFiles.textContent = baseFiles.toLocaleString();
+      const result = toggleFilterItem(item);
+      if (!result.changed) return;
+      // Trigrep → Moddy: post a one-line sync note so the panel reflects
+      // the filter change made in the sidebar.
+      const summary = summaryCount ? summaryCount.textContent : '';
+      const filesNow = summaryFiles ? summaryFiles.textContent : '';
+      if (result.action === 'on') {
+        appendModdySyncNote(`Narrowed to <strong>${result.key}</strong> — ${filesNow} files (${summary} matches).`);
       } else {
-        const total = [...activeFilters.values()].reduce((a, b) => a + b, 0);
-        if (summaryCount) summaryCount.textContent = total.toLocaleString();
-        if (summaryFiles) summaryFiles.textContent = Math.max(1, Math.ceil(total / 5.5)).toLocaleString();
+        appendModdySyncNote(`Removed <strong>${result.key}</strong> filter — back to ${filesNow} files (${summary} matches).`);
       }
     });
   });
@@ -5692,15 +6067,30 @@ const MODDY_BROAD_QUESTIONS = {
 // also bound via sendBtn click + keydown, which still call this name.
 const _origHandleSend = handleSend;
 handleSend = function() {
-  const text = promptInput.value.trim();
+  // Read from the live input — promptInput (module-level const) was
+  // detached by the replaceWith calls below, so we look up the live
+  // element fresh each call.
+  const liveInput = document.getElementById('prompt-input');
+  const text = (liveInput || promptInput).value.trim();
   if (!text) return;
+  if (liveInput) liveInput.value = '';
   promptInput.value = '';
 
   const lc = text.toLowerCase();
+  // Phase 2 (results displayed): try to interpret the message as a
+  // sidebar-filter refinement that updates trigrep in lockstep. If
+  // recognized, the trigrep view changes immediately and Moddy gets
+  // a sync-note ack — both panels stay in parallel.
+  if (phase2Built && typeof applyModdyRefinement === 'function') {
+    appendUserMessage(text);
+    if (applyModdyRefinement(text)) { scrollChat(); return; }
+    // Fall through to broad-question / fallback handling below if the
+    // refinement parser didn't recognize the message.
+  }
   // Broad questions → scoping cards
   if (MODDY_BROAD_QUESTIONS[lc]) {
     const flowId = MODDY_BROAD_QUESTIONS[lc];
-    appendUserMessage(text);
+    if (!phase2Built) appendUserMessage(text);
     setTimeout(() => {
       const flow = FLOWS[flowId];
       conversation.appendChild(buildScopingResponseTrigrep(flow, flowId));
@@ -5709,7 +6099,7 @@ handleSend = function() {
     return;
   }
   // Anything else → fallback
-  appendUserMessage(text);
+  if (!phase2Built) appendUserMessage(text);
   const fallback = document.createElement('div');
   fallback.className = 'msg-moddy fade-in';
   fallback.innerHTML = `
