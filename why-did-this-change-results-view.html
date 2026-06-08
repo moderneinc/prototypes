@@ -113,26 +113,27 @@ button{font:inherit;cursor:pointer;}
 body.col-resizing{cursor:col-resize;user-select:none;}
 
 /* Options / Summary */
-.rd{margin-bottom:6px;}
-.rd-headrow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:6px;}
+.rd{margin-bottom:6px;border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:12px 14px;}
+.rd-headrow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:3px;}
 .rd-spacer{flex:1;}
-.rd-toggle{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border-primary);font-size:12px;font-weight:500;color:var(--text-secondary);padding:5px 11px;border-radius:var(--radius-full);}
+.rd-toggle{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;background:transparent;border:none;color:var(--text-tertiary);border-radius:var(--radius-sm);}
 .rd-toggle:hover{color:var(--text-primary);background:var(--brand-grey-100);}
-.rd-toggle svg{width:13px;height:13px;}
-#rd.rd-hidden{display:none;}
+.rd-toggle svg{width:15px;height:15px;}
+#rd.rd-hidden .rd-bodies{display:none;}
+#rd.rd-hidden .rd-headrow{margin-bottom:0;}
 .section-toggle{display:inline-flex;align-items:center;gap:7px;background:transparent;border:none;padding:3px 0;font-size:13px;font-weight:600;color:var(--text-primary);}
 .section-toggle .chev{transform:rotate(90deg);transition:transform var(--transition-fast);color:var(--text-tertiary);}
 .section-toggle.collapsed .chev{transform:rotate(0deg);}
 .section-toggle svg{width:14px;height:14px;}
-.section-body{padding-top:6px;margin-bottom:8px;}
+.section-body{padding-top:4px;margin-bottom:5px;}
 .section-body.collapsed{display:none;}
-.opt-list{display:grid;grid-template-columns:1fr 1fr;gap:3px 24px;padding-left:21px;}
+.opt-list{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;padding-left:21px;}
 .opt-item{font-size:12px;color:var(--text-secondary);font-family:var(--font-code);}
 .opt-item b{color:var(--text-primary);font-weight:600;}
 
-.summary{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:10px 14px;}
-.summary-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:2px 0;font-size:12.5px;}
-.summary-row.recipes-row{grid-column:1/-1;align-items:center;background:var(--brand-digital-blue-100);border:1px solid var(--brand-digital-blue-200);border-radius:var(--radius-md);padding:6px 10px;margin-bottom:4px;cursor:pointer;transition:background var(--transition-fast);}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:1px 24px;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:7px 12px;}
+.summary-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:1px 0;font-size:12.5px;}
+.summary-row.recipes-row{grid-column:1/-1;align-items:center;background:var(--brand-digital-blue-100);border:1px solid var(--brand-digital-blue-200);border-radius:var(--radius-md);padding:4px 9px;margin-bottom:3px;cursor:pointer;transition:background var(--transition-fast);}
 .summary-row.recipes-row:hover{background:var(--brand-digital-blue-200);}
 .recipes-row .summary-key{display:inline-flex;align-items:center;gap:6px;color:var(--brand-digital-blue-700);font-weight:600;}
 .recipes-row .summary-key svg{width:14px;height:14px;}
@@ -341,7 +342,7 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 .commit-btn .pill{background:rgba(255,255,255,.22);border-radius:var(--radius-full);padding:1px 8px;font-size:11.5px;font-weight:600;}
 
 /* ===== Recipe attribution chip ===== */
-.recipe-chip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px 0 7px;margin-left:2px;border-radius:var(--radius-full);background:var(--brand-digital-blue-100);border:1px solid var(--brand-digital-blue-200);color:var(--brand-digital-blue-700);font-family:var(--font-body);font-size:11.5px;font-weight:500;white-space:nowrap;flex-shrink:0;max-width:300px;overflow:hidden;}
+.recipe-chip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;margin-left:2px;border-radius:var(--radius-full);background:var(--brand-digital-blue-100);border:1px solid var(--brand-digital-blue-200);color:var(--brand-digital-blue-700);font-family:var(--font-body);font-size:11.5px;font-weight:500;white-space:nowrap;flex-shrink:0;max-width:300px;overflow:hidden;}
 .recipe-chip:hover{background:var(--brand-digital-blue-200);border-color:var(--brand-digital-blue-300);}
 .recipe-chip>svg{width:12px;height:12px;flex-shrink:0;}
 .recipe-chip .rc-via{color:var(--brand-digital-blue-600);font-weight:400;}
@@ -500,9 +501,8 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
       <div class="results-left">
         <div class="rd" id="rd">
           <div class="rd-headrow">
-            <button class="section-toggle" data-target="opt-body">
-              <svg class="chev" viewBox="0 0 24 24" class="svg-stroke"><polyline points="9 18 15 12 9 6"/></svg>Options
-            </button>
+            <button class="section-toggle" data-target="opt-body">Summary + options ( if applicable)</button>
+            <button class="rd-toggle" id="rd-toggle" title="Hide details" aria-label="Hide details"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
           </div>
           <div class="rd-bodies" id="rd-bodies">
             <div id="opt-body" class="section-body">
@@ -514,10 +514,6 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
             </div>
             <div class="section-body">
               <div class="summary">
-                <div class="summary-row recipes-row" id="recipes-row" title="See the recipes that produced this run">
-                  <span class="summary-key"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/></svg>Recipes that matched</span>
-                  <span class="summary-val link">4</span>
-                </div>
                 <div class="summary-row"><span class="summary-key">Files changed</span><span class="summary-val link">5,392</span></div>
                 <div class="summary-row"><span class="summary-key">Repositories with results</span><span class="summary-val link">234</span></div>
                 <div class="summary-row"><span class="summary-key">Files searched</span><span class="summary-val">33,377</span></div>
@@ -528,7 +524,6 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
         </div>
 
         <div class="results-head">
-          <h2>Results</h2>
           <div class="seg" role="tablist" aria-label="Filter">
             <button class="seg-btn active" data-filter="all">All <span class="seg-count" data-c="all"></span></button>
             <button class="seg-btn" data-filter="results">Has results <span class="seg-count" data-c="results"></span></button>
@@ -538,7 +533,6 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
             <svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
             <input id="repo-search" type="search" placeholder="Filter repositories…" autocomplete="off" spellcheck="false">
           </div>
-          <button class="rd-toggle" id="rd-toggle"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>Hide details</button>
         </div>
 
         <div class="tree">
@@ -591,7 +585,6 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
 <div class="why-scrim" id="why-scrim"></div>
 <aside class="why-panel" id="why-panel" aria-hidden="true" aria-label="Why did this change?">
   <div class="why-head">
-    <svg class="spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/></svg>
     <h3>Why did this change?</h3>
     <button class="why-close" id="why-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
@@ -835,7 +828,6 @@ function recipeChipHTML(ids){
   const primary=RECIPES[ids[0]].name;
   const extra=ids.length-1;
   return `<button class="recipe-chip" data-recipes="${ids.join(',')}" title="Why did this change?">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.4 4.2L17.6 8l-3.2 1.6L12 14l-1.4-4.2L7.4 8l3.2-1.6L12 3z"/></svg>
     <span class="rc-via">via</span> <span class="rc-name">${primary}</span>${extra>0?`<span class="rc-more">+${extra}</span>`:''}
   </button>`;
 }
@@ -1095,8 +1087,10 @@ document.querySelectorAll('.section-toggle').forEach(t=>t.addEventListener('clic
 document.getElementById('rd-toggle').addEventListener('click',function(){
   const hidden=document.getElementById('rd').classList.toggle('rd-hidden');
   this.innerHTML = hidden
-    ? '<svg viewBox="0 0 24 24" class="svg-stroke"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Show details'
-    : '<svg viewBox="0 0 24 24" class="svg-stroke"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>Hide details';
+    ? '<svg viewBox="0 0 24 24" class="svg-stroke"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+    : '<svg viewBox="0 0 24 24" class="svg-stroke"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+  const label = hidden ? 'Show details' : 'Hide details';
+  this.title = label; this.setAttribute('aria-label', label);
 });
 
 /* org collapse */
@@ -1131,7 +1125,7 @@ function openWhyPanel(ids, contextLabel){
     </div>`;
   body.innerHTML = (contextLabel?`<div class="why-context">${contextLabel}</div>`:'')
     + ids.map(id=>{ const rc=RECIPES[id]; return `<div class="recipe-card">
-        <div class="recipe-card-name">${spark}${rc.name}</div>
+        <div class="recipe-card-name">${rc.name}</div>
         <div class="recipe-card-desc">${rc.desc}</div>
         <a class="recipe-card-link" href="#" onclick="return false">View recipe ${ext}</a>
       </div>`; }).join('')
@@ -1148,7 +1142,6 @@ function closeWhyPanel(){
 document.getElementById('why-close').addEventListener('click',closeWhyPanel);
 document.getElementById('why-scrim').addEventListener('click',closeWhyPanel);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeWhyPanel(); });
-document.getElementById('recipes-row').addEventListener('click',()=>openWhyPanel(RECIPE_ORDER, `<b>4 recipes</b> produced this run`));
 
 /* chat send (demo — fakes a Moddy reply in a conversation thread) */
 const MODDY_SPARK=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/></svg>`;
