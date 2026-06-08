@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Detail — Wireframe Prototype</title>
+  <link rel="stylesheet" href="../wireframe-kit.css">
+  <script src="../wireframe-kit.js"></script>
+</head>
+<body class="wf-kit">
+
+  <div class="wf-page">
+
+    <!-- Navbar -->
+    <wf-navbar brand="Moderne" items="Recipes,Repositories,Activity,Admin"></wf-navbar>
+
+    <!-- Sidebar -->
+    <wf-sidebar
+      title="RECIPES"
+      items="All Recipes,My Recipes,Recently Run,Favorites,Categories"
+      active="0">
+    </wf-sidebar>
+
+    <!-- Main Content -->
+    <main class="wf-main">
+
+      <!-- Breadcrumb + Actions -->
+      <div class="wf-main__header">
+        <div>
+          <wf-breadcrumb items="Recipes,Java,Migrate to Spring Boot 3"></wf-breadcrumb>
+          <h1 class="wf-h2" style="margin-top: var(--wf-space-sm);">Migrate to Spring Boot 3</h1>
+          <div class="wf-row" style="gap: var(--wf-space-sm); margin-top: var(--wf-space-xs);">
+            <wf-tag>Java</wf-tag>
+            <wf-tag>Spring</wf-tag>
+            <wf-tag>Migration</wf-tag>
+            <wf-badge filled>v2.4.1</wf-badge>
+          </div>
+        </div>
+        <div class="wf-row">
+          <wf-button>Dry Run</wf-button>
+          <wf-button variant="primary">Run Recipe</wf-button>
+          <wf-dropdown items="Edit,Duplicate,Share,Delete" label="⋯"></wf-dropdown>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <wf-tabs items="Overview,Code Changes,Run History,YAML Definition" active="0"></wf-tabs>
+
+      <div style="margin-top: var(--wf-space-lg);">
+        <div class="wf-grid wf-grid--3">
+
+          <!-- Main Column (2 cols) -->
+          <div style="grid-column: span 2;" class="wf-stack">
+
+            <!-- Description Card -->
+            <wf-card title="Description">
+            </wf-card>
+
+            <!-- Code Changes Preview -->
+            <wf-card title="Sample Code Changes">
+              <wf-diffstat additions="24" deletions="8"></wf-diffstat>
+              <div style="margin-top: var(--wf-space-md);">
+                <wf-code-snippet language="java" lines="8">
+                </wf-code-snippet>
+              </div>
+            </wf-card>
+
+            <!-- Recent Runs -->
+            <wf-card title="Recent Runs">
+              <wf-table
+                rows="4"
+                cols="4"
+                headers="Run ID,Status,Repos Affected,Duration">
+              </wf-table>
+            </wf-card>
+          </div>
+
+          <!-- Sidebar Column -->
+          <div class="wf-stack">
+
+            <!-- Details Card -->
+            <div class="wf-card">
+              <div class="wf-card__header">
+                <span>Details</span>
+              </div>
+              <div class="wf-card__body">
+                <wf-kv key="Author" value="Moderne Team"></wf-kv>
+                <hr class="wf-divider">
+                <wf-kv key="Category" value="Java / Spring"></wf-kv>
+                <hr class="wf-divider">
+                <wf-kv key="Last Updated" value="Jun 2, 2026"></wf-kv>
+                <hr class="wf-divider">
+                <wf-kv key="Total Runs" value="342"></wf-kv>
+                <hr class="wf-divider">
+                <wf-kv key="Success Rate" value="96.4%"></wf-kv>
+              </div>
+            </div>
+
+            <!-- Options Card -->
+            <div class="wf-card">
+              <div class="wf-card__header">
+                <span>Run Options</span>
+              </div>
+              <div class="wf-card__body wf-stack">
+                <wf-input label="Target Branch" placeholder="main"></wf-input>
+                <wf-select placeholder="Select organization..."></wf-select>
+                <wf-checkbox label="Include forked repositories"></wf-checkbox>
+                <wf-checkbox label="Auto-commit changes" checked></wf-checkbox>
+                <div class="wf-row" style="gap: var(--wf-space-sm);">
+                  <span class="wf-text-sm">Dry run mode</span>
+                  <wf-toggle on></wf-toggle>
+                </div>
+              </div>
+            </div>
+
+            <!-- Activity Feed -->
+            <div class="wf-card">
+              <div class="wf-card__header">
+                <span>Activity</span>
+              </div>
+              <div class="wf-card__body" style="padding: 0;">
+                <wf-list-item title="Recipe updated to v2.4.1" subtitle="Moderne Team" trailing="2d ago"></wf-list-item>
+                <wf-list-item title="Run completed (342 repos)" subtitle="alice@moderne.io" trailing="3d ago"></wf-list-item>
+                <wf-list-item title="Run started" subtitle="alice@moderne.io" trailing="3d ago"></wf-list-item>
+                <wf-list-item title="Recipe forked from v2.3" subtitle="bob@moderne.io" trailing="1w ago"></wf-list-item>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Wireframe Prototype</title>
+  <link rel="stylesheet" href="../wireframe-kit.css">
+  <script src="../wireframe-kit.js"></script>
+</head>
+<body class="wf-kit">
+
+  <div class="wf-page">
+
+    <!-- Navbar -->
+    <wf-navbar brand="Moderne" items="Recipes,Repositories,Activity,Admin"></wf-navbar>
+
+    <!-- Sidebar -->
+    <wf-sidebar
+      title="NAVIGATION"
+      items="Dashboard,Recipe Builder,Run History,Organizations,Data Tables,Settings"
+      active="0">
+    </wf-sidebar>
+
+    <!-- Main Content -->
+    <main class="wf-main">
+
+      <!-- Page Header -->
+      <div class="wf-main__header">
+        <div>
+          <h1 class="wf-h2">Dashboard</h1>
+          <wf-breadcrumb items="Home,Dashboard"></wf-breadcrumb>
+        </div>
+        <div class="wf-row">
+          <wf-select placeholder="All Organizations" value="moderne-inc"></wf-select>
+          <wf-button variant="primary">New Recipe Run</wf-button>
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="wf-grid wf-grid--4" style="margin-bottom: var(--wf-space-lg);">
+        <wf-stat-card label="Active Recipes" value="247" change="+12 this week"></wf-stat-card>
+        <wf-stat-card label="Repositories" value="1,834" change="3 pending"></wf-stat-card>
+        <wf-stat-card label="Recipe Runs" value="89" change="14 running"></wf-stat-card>
+        <wf-stat-card label="Success Rate" value="94.2%" change="+2.1%"></wf-stat-card>
+      </div>
+
+      <!-- Tabs + Content -->
+      <wf-tabs items="Overview,Recent Runs,Activity Log" active="0"></wf-tabs>
+
+      <div style="margin-top: var(--wf-space-lg);">
+
+        <!-- Chart Row -->
+        <div class="wf-grid wf-grid--2" style="margin-bottom: var(--wf-space-lg);">
+          <wf-chart title="Recipe Runs (Last 7 Days)" bars="7"></wf-chart>
+          <wf-chart title="Success vs Failure" bars="5"></wf-chart>
+        </div>
+
+        <!-- Banner -->
+        <wf-banner>3 recipe runs require attention — 2 failures and 1 timeout detected.</wf-banner>
+
+        <!-- Recent Runs Table -->
+        <div style="margin-top: var(--wf-space-lg);">
+          <h3 class="wf-h3">Recent Recipe Runs</h3>
+          <wf-data-grid
+            rows="6"
+            cols="4"
+            headers="Recipe Name,Status,Repositories,Last Run">
+          </wf-data-grid>
+
+          <div style="margin-top: var(--wf-space-md); display: flex; justify-content: space-between; align-items: center;">
+            <span class="wf-text-sm wf-text-light">Showing 1-6 of 89 results</span>
+            <wf-pagination pages="15" active="1"></wf-pagination>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>
