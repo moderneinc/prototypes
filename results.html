@@ -113,25 +113,26 @@ button{font:inherit;cursor:pointer;}
 body.col-resizing{cursor:col-resize;user-select:none;}
 
 /* Options / Summary */
-.rd{margin-bottom:6px;}
-.rd-headrow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:6px;}
+.rd{margin-bottom:6px;border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:12px 14px;}
+.rd-headrow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:3px;}
 .rd-spacer{flex:1;}
-.rd-toggle{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border-primary);font-size:12px;font-weight:500;color:var(--text-secondary);padding:5px 11px;border-radius:var(--radius-full);}
+.rd-toggle{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;background:transparent;border:none;color:var(--text-tertiary);border-radius:var(--radius-sm);}
 .rd-toggle:hover{color:var(--text-primary);background:var(--brand-grey-100);}
-.rd-toggle svg{width:13px;height:13px;}
-#rd.rd-hidden{display:none;}
+.rd-toggle svg{width:15px;height:15px;}
+#rd.rd-hidden .rd-bodies{display:none;}
+#rd.rd-hidden .rd-headrow{margin-bottom:0;}
 .section-toggle{display:inline-flex;align-items:center;gap:7px;background:transparent;border:none;padding:3px 0;font-size:13px;font-weight:600;color:var(--text-primary);}
 .section-toggle .chev{transform:rotate(90deg);transition:transform var(--transition-fast);color:var(--text-tertiary);}
 .section-toggle.collapsed .chev{transform:rotate(0deg);}
 .section-toggle svg{width:14px;height:14px;}
-.section-body{padding-top:6px;margin-bottom:8px;}
+.section-body{padding-top:4px;margin-bottom:5px;}
 .section-body.collapsed{display:none;}
-.opt-list{display:grid;grid-template-columns:1fr 1fr;gap:3px 24px;padding-left:21px;}
+.opt-list{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;padding-left:21px;}
 .opt-item{font-size:12px;color:var(--text-secondary);font-family:var(--font-code);}
 .opt-item b{color:var(--text-primary);font-weight:600;}
 
-.summary{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:10px 14px;}
-.summary-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:2px 0;font-size:12.5px;}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:1px 24px;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:7px 12px;}
+.summary-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:1px 0;font-size:12.5px;}
 .summary-key{color:var(--text-secondary);}
 .summary-val{color:var(--text-primary);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .summary-val.link{color:var(--text-information);cursor:pointer;font-weight:600;}
@@ -432,9 +433,8 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
       <div class="results-left">
         <div class="rd" id="rd">
           <div class="rd-headrow">
-            <button class="section-toggle" data-target="opt-body">
-              <svg class="chev" viewBox="0 0 24 24" class="svg-stroke"><polyline points="9 18 15 12 9 6"/></svg>Options
-            </button>
+            <button class="section-toggle" data-target="opt-body">Summary + options ( if applicable)</button>
+            <button class="rd-toggle" id="rd-toggle" title="Hide details" aria-label="Hide details"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
           </div>
           <div class="rd-bodies" id="rd-bodies">
             <div id="opt-body" class="section-body">
@@ -456,7 +456,6 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
         </div>
 
         <div class="results-head">
-          <h2>Results</h2>
           <div class="seg" role="tablist" aria-label="Filter">
             <button class="seg-btn active" data-filter="all">All <span class="seg-count" data-c="all"></span></button>
             <button class="seg-btn" data-filter="results">Has results <span class="seg-count" data-c="results"></span></button>
@@ -466,7 +465,6 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
             <svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
             <input id="repo-search" type="search" placeholder="Filter repositories…" autocomplete="off" spellcheck="false">
           </div>
-          <button class="rd-toggle" id="rd-toggle"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>Hide details</button>
         </div>
 
         <div class="tree">
@@ -966,8 +964,10 @@ document.querySelectorAll('.section-toggle').forEach(t=>t.addEventListener('clic
 document.getElementById('rd-toggle').addEventListener('click',function(){
   const hidden=document.getElementById('rd').classList.toggle('rd-hidden');
   this.innerHTML = hidden
-    ? '<svg viewBox="0 0 24 24" class="svg-stroke"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Show details'
-    : '<svg viewBox="0 0 24 24" class="svg-stroke"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>Hide details';
+    ? '<svg viewBox="0 0 24 24" class="svg-stroke"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+    : '<svg viewBox="0 0 24 24" class="svg-stroke"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+  const label = hidden ? 'Show details' : 'Hide details';
+  this.title = label; this.setAttribute('aria-label', label);
 });
 
 /* org collapse */
