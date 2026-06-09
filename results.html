@@ -435,7 +435,7 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
         <div class="run-status-row">
           <span class="run-chip done"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed</span>
           <span class="savings-chip"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><strong>80 hours</strong> <span class="lbl">estimated time savings</span></span>
-          <span class="run-meta">569 repositories · finished in 6m 12s · 7 days ago</span>
+          <span class="run-meta">241 repositories · finished in 6m 12s · 7 days ago</span>
         </div>
       </div>
       <div class="tabs">
@@ -575,15 +575,17 @@ const REPOS=[
   {name:'rider-fs', branch:'main', results:0},
   {name:'fleet-plugin-template', branch:'main', results:0},
 ];
-/* Pad to 569 repositories (234 with results) to match the run summary. */
+/* Build the run: 234 repos with results, 4 errored, 3 No LST (the seed
+   list above already contributes 12 results / 1 error / 2 No LST). */
 const PRE=['kotlin','intellij','ktor','space','fleet','rider','clion','webstorm','datalore','qodana','teamcity','youtrack','hub','toolbox','mps','resharper','dataspell','aqua','rustrover','writerside','grazie','kover','dokka','arrow','koin','ktlint','detekt','okio','skija','compose','spek','mockk','klock','kodein','ktorm','jackson','guava','netty','okhttp','retrofit'];
 const SUF=['core','api','gradle-plugin','cli','client','sdk','common','runtime','compiler','tools','ui','server','db','utils','testkit','samples','docs','playground','bench','ide','plugin','android','jvm','native','web','dsl'];
 const BR=['main','master','develop','trunk'];
 (function(){
   let k=0;
   const nm=()=>{ const n=PRE[k%PRE.length]+'-'+SUF[Math.floor(k/PRE.length)%SUF.length]; k++; return n; };
-  for(let j=0;j<222;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:1+((j*17+5)%59)}); }
-  for(let j=0;j<332;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:0, error:(j%140===3)}); }
+  for(let j=0;j<222;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:1+((j*17+5)%59)}); } // → 234 with results
+  for(let j=0;j<3;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:0, error:true}); }      // → 4 errored
+  REPOS.push({name:nm(),branch:BR[0],results:0});                                            // → 3 No LST
 })();
 /* Surface attention states first: No LST at the top, then errored,
    then successes by result count. */
