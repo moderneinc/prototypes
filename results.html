@@ -585,7 +585,10 @@ const BR=['main','master','develop','trunk'];
   for(let j=0;j<222;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:1+((j*17+5)%59)}); }
   for(let j=0;j<332;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:0, error:(j%140===3)}); }
 })();
-REPOS.sort((a,b)=> (b.results-a.results) || ((a.error?1:0)-(b.error?1:0)));
+/* Surface attention states first: No LST at the top, then errored,
+   then successes by result count. */
+const STATUS_RANK={none:0, error:1, ok:2};
+REPOS.sort((a,b)=> (STATUS_RANK[statusOf(a)]-STATUS_RANK[statusOf(b)]) || (b.results-a.results));
 REPOS.forEach((r,i)=>{ r.id='r'+i; r.selected = r.results>0; });
 
 function statusOf(r){ return r.error ? 'error' : (r.results>0 ? 'ok' : 'none'); }
