@@ -192,13 +192,11 @@ body.opts-none .opt-empty{display:block;}
 .repo-row{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 28px;border-bottom:1px solid var(--brand-grey-200);cursor:pointer;transition:background var(--transition-fast);position:relative;}
 .repo-row:hover{background:var(--brand-grey-100);}
 .repo-row.active{background:var(--brand-digital-blue-100);}
-.repo-row.active::after{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--brand-digital-blue-500);}
 .repo-chev{flex-shrink:0;}
 
 /* nested file rows (tree level 3) */
 .tree-file{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 72px;border-bottom:1px solid var(--brand-grey-200);background:var(--brand-grey-100);cursor:pointer;position:relative;}
 .tree-file:hover{background:var(--brand-grey-200);}
-.tree-file::before{content:'';position:absolute;left:48px;top:0;bottom:0;width:1px;background:var(--brand-grey-300);}
 .tree-file .tf-icon{width:14px;height:14px;color:var(--text-tertiary);flex-shrink:0;}
 .tree-file .tf-path{font-family:var(--font-code);font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .tree-file .tf-count{margin-left:auto;font-size:11px;color:var(--text-tertiary);white-space:nowrap;}
@@ -863,7 +861,7 @@ function openDiffToolsMenu(anchor, slot){
   document.getElementById('gh-menu').classList.remove('wide');
   const html=`
     <button class="gh-item noicon" data-act="repoinfo">Repository information<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="gh-item noicon" data-act="settings">Settings<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>`;
+    <button class="gh-item noicon" data-act="settings">Display settings<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>`;
   openGhMenu(anchor, html, (item)=>{
     const a=item.dataset.act;
     if(a==='repoinfo'){ openRepoInfoMenu(anchor, slot); return false; }
@@ -909,7 +907,7 @@ function openSettingsMenu(anchor, slot){
   const t=diffSettings;
   const tog=(k,l)=>`<button class="gh-item toggle ${t[k]?'on':''}" data-tgl="${k}">${l}<span class="tgl"></span></button>`;
   const html=`
-    <button class="gh-item set-back" data-act="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Settings</button>
+    <button class="gh-item set-back" data-act="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Display settings</button>
     <div class="gh-divider"></div>
     <div class="gh-menu-label">Errors</div>
     ${tog('errors','Only show errors')}
