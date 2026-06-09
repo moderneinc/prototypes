@@ -207,10 +207,13 @@ body.opts-none .opt-empty{display:block;}
 .repo-results{font-size:12.5px;color:var(--text-information);font-weight:600;white-space:nowrap;}
 .repo-results.none{color:var(--text-tertiary);font-weight:500;}
 .repo-results.error{color:var(--text-error,var(--brand-red-600));font-weight:600;}
-.repo-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.repo-status-dot.ok{background:var(--brand-green-500);}
-.repo-status-dot.none{background:var(--brand-grey-400);}
-.repo-status-dot.error{background:var(--brand-red-500);}
+/* Status shapes (not color alone) for color-blind accessibility:
+   success = circle, warning = triangle, error = square. */
+.repo-status-dot{width:9px;height:9px;flex-shrink:0;}
+.repo-status-dot.ok{background:var(--brand-green-600);border-radius:50%;}
+.repo-status-dot.none{background:var(--brand-grey-400);border-radius:50%;}
+.repo-status-dot.warning{background:var(--brand-orange-600);clip-path:polygon(50% 0,100% 100%,0 100%);}
+.repo-status-dot.error{background:var(--brand-red-600);border-radius:1.5px;}
 
 .load-more{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px 12px;background:var(--brand-grey-100);border:none;border-top:1px solid var(--brand-grey-200);font-size:12.5px;font-weight:600;color:var(--text-information);cursor:pointer;}
 .load-more:hover{background:var(--brand-grey-200);}
