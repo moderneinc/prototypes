@@ -18,23 +18,23 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 
 | File | What it explores |
 | --- | --- |
-| `moderne-dashboard.html` | Moderne dashboard layout |
-| `day-zero.html` | First-run / day-zero onboarding tour |
-| `day-zero-revised.html` | Revised day-zero tour variant |
-| `org-selector.html` | Org selector with centered modal picker |
-| `moddy.html` | Moddy prompt input |
-| `moddy-help.html` | Moddy first-contact "by role" states |
-| `moddy-trigrep.html` | Moddy × Trigrep exploration |
-| `moddy-trigrep-split.html` | Moddy × Trigrep split layout |
-| `moddy-trigrep-combined.html` | Moddy × Trigrep combined layout |
-| `moddy-trigrep-revised.html` | Revised Moddy refine-search results |
-| `trigrep.html` | Trigrep spec audit + parallel Moddy/Trigrep filter sync |
-| `results.html` | Recipe run Results tab |
-| `data-tables-download.html` | Data tables with download + MVP vs AI-enhanced toggle |
-| `data-tables-download-v2.html` | Data tables download (v2) |
-| `visualizations-results-inline.html` | Inline-config visualizations demo |
-| `CLI-rewrites.html` | CLI / terminal label rewrites |
-| `brand-guidelines.html` | Brand guidelines, including Product Symbols |
+| [`moderne-dashboard.html`](https://moderneinc.github.io/prototypes/moderne-dashboard.html) | Moderne dashboard layout |
+| [`day-zero.html`](https://moderneinc.github.io/prototypes/day-zero.html) | First-run / day-zero onboarding tour |
+| [`day-zero-revised.html`](https://moderneinc.github.io/prototypes/day-zero-revised.html) | Revised day-zero tour variant |
+| [`org-selector.html`](https://moderneinc.github.io/prototypes/org-selector.html) | Org selector with centered modal picker |
+| [`moddy.html`](https://moderneinc.github.io/prototypes/moddy.html) | Moddy prompt input |
+| [`moddy-help.html`](https://moderneinc.github.io/prototypes/moddy-help.html) | Moddy first-contact "by role" states |
+| [`moddy-trigrep.html`](https://moderneinc.github.io/prototypes/moddy-trigrep.html) | Moddy × Trigrep exploration |
+| [`moddy-trigrep-split.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-split.html) | Moddy × Trigrep split layout |
+| [`moddy-trigrep-combined.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-combined.html) | Moddy × Trigrep combined layout |
+| [`moddy-trigrep-revised.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-revised.html) | Revised Moddy refine-search results |
+| [`trigrep.html`](https://moderneinc.github.io/prototypes/trigrep.html) | Trigrep spec audit + parallel Moddy/Trigrep filter sync |
+| [`results.html`](https://moderneinc.github.io/prototypes/results.html) | Recipe run Results tab |
+| [`data-tables-download.html`](https://moderneinc.github.io/prototypes/data-tables-download.html) | Data tables with download + MVP vs AI-enhanced toggle |
+| [`data-tables-download-v2.html`](https://moderneinc.github.io/prototypes/data-tables-download-v2.html) | Data tables download (v2) |
+| [`visualizations-results-inline.html`](https://moderneinc.github.io/prototypes/visualizations-results-inline.html) | Inline-config visualizations demo |
+| [`CLI-rewrites.html`](https://moderneinc.github.io/prototypes/CLI-rewrites.html) | CLI / terminal label rewrites |
+| [`brand-guidelines.html`](https://moderneinc.github.io/prototypes/brand-guidelines.html) | Brand guidelines, including Product Symbols |
 
 ## Folders
 
