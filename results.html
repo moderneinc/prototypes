@@ -78,7 +78,25 @@ button{font:inherit;cursor:pointer;}
 .crumbs a{color:var(--brand-digital-blue-600);font-weight:600;text-decoration:none;}
 .crumbs a:hover{text-decoration:underline;}
 .crumbs .sep{display:inline-flex;align-items:center;color:var(--brand-grey-400);}.crumbs .sep svg{width:13px;height:13px;}
-.run-title h1{font-family:'Inter',sans-serif;font-weight:500;font-size:18px;line-height:24px;color:rgb(52,58,64);margin-bottom:4px;}
+.run-title{position:relative;display:inline-block;max-width:720px;}
+.run-title h1{font-family:'Inter',sans-serif;font-weight:500;font-size:18px;line-height:24px;color:rgb(52,58,64);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* Custom tooltip: shows the full title on hover, only when truncated
+   (the is-truncated class is set by JS when the h1 overflows). */
+.run-title.is-truncated:hover::after{
+  content:attr(data-tooltip);
+  position:absolute;top:calc(100% + 6px);left:0;z-index:60;
+  max-width:520px;padding:8px 12px;
+  background:var(--brand-grey-900);color:#fff;
+  border:1px solid var(--brand-grey-800);border-radius:var(--radius-md);
+  box-shadow:var(--shadow-lg);
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:500;line-height:18px;
+  white-space:normal;pointer-events:none;
+}
+.run-title.is-truncated:hover::before{
+  content:'';position:absolute;top:calc(100% + 1px);left:18px;z-index:61;
+  border:5px solid transparent;border-bottom-color:var(--brand-grey-900);
+  pointer-events:none;
+}
 .run-subhead{font-family:'Inter',sans-serif;font-weight:500;font-size:14px;line-height:20px;color:rgb(52,58,64);margin-bottom:12px;}
 .run-status-row{display:flex;align-items:center;gap:12px;margin-bottom:2px;}
 .run-chip{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px 0 8px;border-radius:var(--radius-full);font-size:13px;font-weight:600;}
@@ -130,6 +148,9 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 .opt-list{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;padding-left:13px;}
 .opt-item{font-size:12px;color:var(--text-secondary);font-family:var(--font-code);}
 .opt-item b{color:var(--text-primary);font-weight:600;}
+.opt-empty{display:none;font-size:12px;font-style:italic;color:var(--text-tertiary);padding-left:13px;}
+body.opts-none .opt-list{display:none;}
+body.opts-none .opt-empty{display:block;}
 
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:1px 24px;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:7px 12px;}
 .summary-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:1px 0;font-size:12.5px;}
@@ -171,13 +192,11 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 .repo-row{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 28px;border-bottom:1px solid var(--brand-grey-200);cursor:pointer;transition:background var(--transition-fast);position:relative;}
 .repo-row:hover{background:var(--brand-grey-100);}
 .repo-row.active{background:var(--brand-digital-blue-100);}
-.repo-row.active::after{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--brand-digital-blue-500);}
 .repo-chev{flex-shrink:0;}
 
 /* nested file rows (tree level 3) */
 .tree-file{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 72px;border-bottom:1px solid var(--brand-grey-200);background:var(--brand-grey-100);cursor:pointer;position:relative;}
 .tree-file:hover{background:var(--brand-grey-200);}
-.tree-file::before{content:'';position:absolute;left:48px;top:0;bottom:0;width:1px;background:var(--brand-grey-300);}
 .tree-file .tf-icon{width:14px;height:14px;color:var(--text-tertiary);flex-shrink:0;}
 .tree-file .tf-path{font-family:var(--font-code);font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .tree-file .tf-count{margin-left:auto;font-size:11px;color:var(--text-tertiary);white-space:nowrap;}
@@ -289,6 +308,7 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 .diff-code .a{color:#1E2EC2;}
 .diff-code .c{color:var(--text-tertiary);font-style:italic;}
 .dt-btn.icon{width:32px;padding:0;justify-content:center;}
+.dt-btn.icon.active{background:var(--brand-digital-blue-100);border-color:var(--brand-digital-blue-300);color:var(--brand-digital-blue-700);}
 
 /* inline file filter (revealed from the diff menu) */
 .diff-filter{display:flex;align-items:center;position:relative;margin:-4px 0 14px;}
@@ -342,6 +362,7 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 .demo-btn{display:inline-flex;align-items:center;padding:6px 12px;height:28px;background:transparent;border:1px solid transparent;color:#fff;font-size:12px;font-weight:500;border-radius:var(--radius-full);cursor:pointer;transition:background var(--transition-fast);white-space:nowrap;}
 .demo-btn:hover{background:rgba(255,255,255,.10);}
 .demo-btn.active{background:var(--brand-digital-blue-500);}
+.demo-bar-sep{width:1px;height:18px;background:rgba(255,255,255,.18);margin:0 6px;}
 /* Rounded-rectangle variant toggled from the demo bar */
 body.btn-rounded .dt-btn,
 body.btn-rounded .dt-split,
@@ -406,7 +427,7 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
   <div class="main-area">
     <div class="page-top">
       <div class="run-header">
-        <div class="run-title"><h1>DevCenter - Acme International Financial Trust and Enterprise Risk Management Solutions Department of North American Operations... Q1 2026</h1></div>
+        <div class="run-title" data-tooltip="DevCenter - Acme International Financial Trust and Enterprise Risk Management Solutions Department of North American Operations Q1 2026"><h1>DevCenter - Acme International Financial Trust and Enterprise Risk Management Solutions Department of North American Operations Q1 2026</h1></div>
         <div class="run-subhead">Results for Acme International Financial Trust and Enterprise Risk Management Solutions Department of North American Operations</div>
         <div class="run-status-row">
           <span class="run-chip done"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed</span>
@@ -433,7 +454,7 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
       <div class="results-left">
         <div class="rd" id="rd">
           <div class="rd-headrow">
-            <button class="section-toggle" data-target="opt-body">Summary + options ( if applicable)</button>
+            <button class="section-toggle" data-target="opt-body">Summary + Options</button>
             <button class="rd-toggle" id="rd-toggle" title="Hide details" aria-label="Hide details"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
           </div>
           <div class="rd-bodies" id="rd-bodies">
@@ -443,6 +464,7 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
                 <div class="opt-item">overrideTransitive: <b>true</b></div>
                 <div class="opt-item">maximumUpgradeDelta: <b>minor</b></div>
               </div>
+              <div class="opt-empty">No options configured</div>
             </div>
             <div class="section-body">
               <div class="summary">
@@ -503,10 +525,14 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
   </div>
 </div>
 
-<div class="demo-bar" role="group" aria-label="Button style">
+<div class="demo-bar" role="group" aria-label="Demo controls">
   <span class="demo-bar-label">Buttons</span>
   <button class="demo-btn active" data-btnstyle="pill">Pill</button>
   <button class="demo-btn" data-btnstyle="rounded">Rounded</button>
+  <span class="demo-bar-sep"></span>
+  <span class="demo-bar-label">Options</span>
+  <button class="demo-btn active" data-opts="configured">Configured</button>
+  <button class="demo-btn" data-opts="none">None</button>
 </div>
 
 <div class="gh-menu" id="gh-menu" hidden></div>
@@ -754,6 +780,8 @@ function renderDetail(){
           <button class="dt-split-main" id="commit-selected"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Commit selected results</button>
           <button class="dt-split-caret" id="commit-caret" aria-label="Commit options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
         </div>
+        <button class="dt-btn icon" id="filter-toggle" title="Filter files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
+        <button class="dt-btn icon" id="collapse-toggle"></button>
         <button class="dt-btn icon" id="diff-tools" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
       </div>
     </div>
@@ -776,7 +804,11 @@ function wireDiff(slot){
     const act=e.target.closest('.diff-act');
     if(act){ e.stopPropagation(); openFileMenu(act, h.closest('.diff-file')); return; }
     h.closest('.diff-file').classList.toggle('collapsed');
+    syncCollapseToggle(slot);
   }));
+  const ct=document.getElementById('collapse-toggle');
+  if(ct)ct.addEventListener('click',()=>{ collapseAll(slot); syncCollapseToggle(slot); });
+  syncCollapseToggle(slot);
   const ds=document.getElementById('diff-tools');
   if(ds)ds.addEventListener('click',()=>openDiffToolsMenu(ds, slot));
   const cs=document.getElementById('commit-selected');
@@ -794,6 +826,15 @@ function wireDiff(slot){
       c.classList.toggle('hide', q && !path.includes(q));
     });
   });
+  const ft=document.getElementById('filter-toggle');
+  if(ft)ft.addEventListener('click',()=>{
+    const f=document.getElementById('diff-filter');
+    const show=f.hidden;
+    f.hidden=!show;
+    ft.classList.toggle('active',show);
+    if(show){ fi.focus(); }
+    else { fi.value=''; slot.querySelectorAll('.diff-file.hide').forEach(c=>c.classList.remove('hide')); }
+  });
   applyDiffSettings(slot);
 }
 
@@ -803,21 +844,26 @@ function collapseAll(slot){
   cards.forEach(c=>c.classList.toggle('collapsed',anyOpen));
   return anyOpen; // true if it just collapsed
 }
+// Keep the inline toggle's label/icon in sync with the current state:
+// if any file is open the action is "Collapse all", otherwise "Expand all".
+function syncCollapseToggle(slot){
+  const btn=document.getElementById('collapse-toggle');
+  if(!btn)return;
+  const cards=[...slot.querySelectorAll('.diff-file')];
+  const anyOpen=cards.some(c=>!c.classList.contains('collapsed'));
+  const up='<polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/>';
+  const down='<polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/>';
+  btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${anyOpen?up:down}</svg>`;
+  btn.title=anyOpen?'Collapse all':'Expand all';
+}
 
 function openDiffToolsMenu(anchor, slot){
   document.getElementById('gh-menu').classList.remove('wide');
-  const cards=[...slot.querySelectorAll('.diff-file')];
-  const anyOpen=cards.some(c=>!c.classList.contains('collapsed'));
   const html=`
-    <button class="gh-item noicon" data-act="collapse">${anyOpen?'Collapse all files':'Expand all files'}</button>
-    <button class="gh-item noicon" data-act="filter">Filter files…</button>
-    <div class="gh-divider"></div>
     <button class="gh-item noicon" data-act="repoinfo">Repository information<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-    <button class="gh-item noicon" data-act="settings">Settings<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>`;
+    <button class="gh-item noicon" data-act="settings">Display settings<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>`;
   openGhMenu(anchor, html, (item)=>{
     const a=item.dataset.act;
-    if(a==='collapse'){ collapseAll(slot); return true; }
-    if(a==='filter'){ const f=document.getElementById('diff-filter'); f.hidden=false; f.querySelector('input').focus(); return true; }
     if(a==='repoinfo'){ openRepoInfoMenu(anchor, slot); return false; }
     if(a==='settings'){ openSettingsMenu(anchor, slot); return false; }
     return true;
@@ -861,7 +907,7 @@ function openSettingsMenu(anchor, slot){
   const t=diffSettings;
   const tog=(k,l)=>`<button class="gh-item toggle ${t[k]?'on':''}" data-tgl="${k}">${l}<span class="tgl"></span></button>`;
   const html=`
-    <button class="gh-item set-back" data-act="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Settings</button>
+    <button class="gh-item set-back" data-act="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Display settings</button>
     <div class="gh-divider"></div>
     <div class="gh-menu-label">Errors</div>
     ${tog('errors','Only show errors')}
@@ -1038,7 +1084,24 @@ document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(b=>b.addEventListe
   document.body.classList.toggle('btn-rounded',b.dataset.btnstyle==='rounded');
 }));
 
+/* Demo options toggle (configured vs 'No options configured') */
+document.querySelectorAll('.demo-btn[data-opts]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.demo-btn[data-opts]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.body.classList.toggle('opts-none',b.dataset.opts==='none');
+}));
+
 render();
+
+// Show the title tooltip only when the h1 is actually truncated.
+(function(){
+  const wrap=document.querySelector('.run-title');
+  if(!wrap)return;
+  const h1=wrap.querySelector('h1');
+  const check=()=>wrap.classList.toggle('is-truncated',h1.scrollWidth>h1.clientWidth);
+  check();
+  window.addEventListener('resize',check);
+})();
 </script>
 </body>
 </html>
