@@ -40,9 +40,23 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | [`CLI-rewrites.html`](https://moderneinc.github.io/prototypes/CLI-rewrites.html) | CLI / terminal label rewrites |
 | [`brand-guidelines.html`](https://moderneinc.github.io/prototypes/brand-guidelines.html) | Brand guidelines, including Product Symbols |
 
+## Wireframe kit
+
+A lo-fi sketch kit for quickly mocking up new prototypes. The showcase page lists every component, design token, and starter template.
+
+- [`wireframes.html`](https://moderneinc.github.io/prototypes/wireframes.html) — kit showcase and getting-started reference
+- `wireframe-kit/wireframe-kit.css` / `.js` / `.jsx` — drop-in styles and components (vanilla + React)
+- `wireframe-kit/examples/` — page templates (`dashboard.html`, `recipe-detail.html`, `components.html`)
+
+To use the kit in a new prototype:
+
+```html
+<link rel="stylesheet" href="wireframe-kit/wireframe-kit.css">
+<script type="module" src="wireframe-kit/wireframe-kit.js"></script>
+```
+
 ## Folders
 
-- **`Wireframes/`** — lo-fi sketch kit and example wireframes.
 - **`assets/moddy-spinner/`** — shared chrome and the Moddy spinner used across prototypes.
 
 ## Working in this repo
