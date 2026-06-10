@@ -30,9 +30,13 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | [`moddy-trigrep-revised.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-revised.html) | Revised Moddy refine-search results |
 | [`trigrep.html`](https://moderneinc.github.io/prototypes/trigrep.html) | Trigrep spec audit + parallel Moddy/Trigrep filter sync |
 | [`results.html`](https://moderneinc.github.io/prototypes/results.html) | Recipe run Results tab |
+| [`results-view-summary.html`](https://moderneinc.github.io/prototypes/results-view-summary.html) | Results Summary + options panel: show/hide + container-query responsiveness |
+| [`results-hierarchical-selection.html`](https://moderneinc.github.io/prototypes/results-hierarchical-selection.html) | Results hierarchy: drill repo → package → file → class → method (tree vs group-by) |
+| [`why-did-this-change-results-view.html`](https://moderneinc.github.io/prototypes/why-did-this-change-results-view.html) | Recipe attribution on Results + Moddy "why did this change?" chat |
 | [`data-tables-download.html`](https://moderneinc.github.io/prototypes/data-tables-download.html) | Data tables with download + MVP vs AI-enhanced toggle |
 | [`data-tables-download-v2.html`](https://moderneinc.github.io/prototypes/data-tables-download-v2.html) | Data tables download (v2) |
 | [`visualizations-results-inline.html`](https://moderneinc.github.io/prototypes/visualizations-results-inline.html) | Inline-config visualizations demo |
+| [`visualizations-tab-results-view.html`](https://moderneinc.github.io/prototypes/visualizations-tab-results-view.html) | Visualizations tab: master-detail picker with Configure panel |
 | [`CLI-rewrites.html`](https://moderneinc.github.io/prototypes/CLI-rewrites.html) | CLI / terminal label rewrites |
 | [`brand-guidelines.html`](https://moderneinc.github.io/prototypes/brand-guidelines.html) | Brand guidelines, including Product Symbols |
 
