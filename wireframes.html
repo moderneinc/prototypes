@@ -6,7 +6,7 @@
   <title>Wireframe Kit — Component Catalog</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap">
   <link rel="stylesheet" href="wireframe-kit/wireframe-kit.css">
-  <script src="wireframe-kit/wireframe-kit.js"></script>
+  <script type="module" src="wireframe-kit/wireframe-kit.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: var(--wf-bg); color: var(--wf-text); }
@@ -171,7 +171,7 @@
     .component__code {
       display: none;
       background: var(--wf-text);
-      color: #d4d0c8;
+      color: #d0d0d0;
       font-family: var(--wf-font-mono);
       font-size: 12px;
       line-height: 1.6;
@@ -187,16 +187,16 @@
       padding: 3px 10px;
       font-family: 'Inter', sans-serif;
       font-size: 11px;
-      border: 1px solid #4a4640;
+      border: 1px solid #4a4a4a;
       border-radius: 3px;
-      background: #2a2825;
-      color: #8a857e;
+      background: #2a2a2a;
+      color: #858585;
       cursor: pointer;
       display: none;
       z-index: 10;
     }
     .component__code.open ~ .component__copy { display: block; }
-    .component__copy:hover { background: #3a3835; }
+    .component__copy:hover { background: #3a3a3a; }
 
     /* Template cards */
     .template-grid {
@@ -253,7 +253,7 @@
     /* Getting started section */
     .getting-started-code {
       background: var(--wf-text);
-      color: #d4d0c8;
+      color: #d0d0d0;
       font-family: var(--wf-font-mono);
       font-size: 12px;
       line-height: 1.7;
@@ -339,6 +339,16 @@
       <div class="nav-group__title">Developer</div>
       <a class="nav-item" href="#code-snippet" data-search="code snippet block syntax highlight">CodeSnippet</a>
       <a class="nav-item" href="#tree" data-search="tree hierarchy folder file structure">Tree</a>
+
+      <div class="nav-group__title">Assemblies</div>
+      <a class="nav-item" href="#card-table" data-search="card table layout assembly stacked rows">CardTable</a>
+      <a class="nav-item" href="#filter-results" data-search="filter results layout assembly chips search">FilterResults</a>
+      <a class="nav-item" href="#data-table-layout" data-search="data table layout assembly toolbar grid">DataTableLayout</a>
+      <a class="nav-item" href="#changelog-feed" data-search="changelog feed layout assembly timeline events">ChangelogFeed</a>
+
+      <div class="nav-group__title">Compositions</div>
+      <a class="nav-item" href="#recipe-results" data-search="recipe execution results composition">RecipeResults</a>
+      <a class="nav-item" href="#activation" data-search="activation empty state onboarding composition">Activation</a>
     </nav>
   </aside>
 
@@ -944,6 +954,72 @@ public class Main {
         <div class="component__code-wrapper">
           <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
           <div class="component__code">&lt;wf-tree depth="3" items="4"&gt;&lt;/wf-tree&gt;</div>
+          <button class="component__copy" onclick="copyCode(this)">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ASSEMBLIES ===== -->
+    <div class="section" id="card-table">
+      <div class="section__title">Assemblies</div>
+      <div class="component">
+        <div class="component__header"><span class="component__name">CardTable</span><span class="component__tag">&lt;wf-card-table&gt;</span></div>
+        <div class="component__preview component__preview--full"><wf-card-table title="Recipe Runs" rows="4"></wf-card-table></div>
+        <div class="component__code-wrapper">
+          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
+          <div class="component__code">&lt;wf-card-table title="Recipe Runs" rows="4"&gt;&lt;/wf-card-table&gt;</div>
+          <button class="component__copy" onclick="copyCode(this)">Copy</button>
+        </div>
+      </div>
+      <div class="component" id="filter-results">
+        <div class="component__header"><span class="component__name">FilterResults</span><span class="component__tag">&lt;wf-filter-results&gt;</span></div>
+        <div class="component__preview component__preview--full"><wf-filter-results rows="4" headers="Repository,Status,Changes,Date" filters="Status,Language"></wf-filter-results></div>
+        <div class="component__code-wrapper">
+          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
+          <div class="component__code">&lt;wf-filter-results rows="4" headers="Repository,Status,Changes,Date" filters="Status,Language"&gt;&lt;/wf-filter-results&gt;</div>
+          <button class="component__copy" onclick="copyCode(this)">Copy</button>
+        </div>
+      </div>
+      <div class="component" id="data-table-layout">
+        <div class="component__header"><span class="component__name">DataTableLayout</span><span class="component__tag">&lt;wf-data-table-layout&gt;</span></div>
+        <div class="component__preview component__preview--full"><wf-data-table-layout rows="5" headers="Name,Status,Type,Modified"></wf-data-table-layout></div>
+        <div class="component__code-wrapper">
+          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
+          <div class="component__code">&lt;wf-data-table-layout rows="5" headers="Name,Status,Type,Modified"&gt;&lt;/wf-data-table-layout&gt;</div>
+          <button class="component__copy" onclick="copyCode(this)">Copy</button>
+        </div>
+      </div>
+      <div class="component" id="changelog-feed">
+        <div class="component__header"><span class="component__name">ChangelogFeed</span><span class="component__tag">&lt;wf-changelog-feed&gt;</span></div>
+        <div class="component__preview component__preview--full"><wf-changelog-feed entries="4"></wf-changelog-feed></div>
+        <div class="component__code-wrapper">
+          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
+          <div class="component__code">&lt;wf-changelog-feed entries="4"&gt;&lt;/wf-changelog-feed&gt;</div>
+          <button class="component__copy" onclick="copyCode(this)">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== COMPOSITIONS ===== -->
+    <div class="section" id="recipe-results">
+      <div class="section__title">Compositions</div>
+      <div class="component">
+        <div class="component__header"><span class="component__name">RecipeResults</span><span class="component__tag">&lt;wf-recipe-results&gt;</span></div>
+        <div class="component__preview component__preview--full"><wf-recipe-results recipe="Migrate to Java 17" status="completed" repos="24" changes="18" errors="2"></wf-recipe-results></div>
+        <div class="component__code-wrapper">
+          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
+          <div class="component__code">&lt;wf-recipe-results recipe="Migrate to Java 17" status="completed" repos="24" changes="18" errors="2"&gt;&lt;/wf-recipe-results&gt;</div>
+          <button class="component__copy" onclick="copyCode(this)">Copy</button>
+        </div>
+      </div>
+      <div class="component" id="activation">
+        <div class="component__header"><span class="component__name">Activation</span><span class="component__tag">&lt;wf-activation&gt;</span></div>
+        <div class="component__preview component__preview--full"><wf-activation headline="Welcome to Moderne" cta="Run your first recipe"></wf-activation></div>
+        <div class="component__code-wrapper">
+          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
+          <div class="component__code">&lt;wf-activation headline="Welcome to Moderne" cta="Run your first recipe"
+  prereqs="Connect an SCM:done,Add repositories:done,Run first recipe:pending"&gt;
+&lt;/wf-activation&gt;</div>
           <button class="component__copy" onclick="copyCode(this)">Copy</button>
         </div>
       </div>

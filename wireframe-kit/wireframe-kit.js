@@ -799,9 +799,322 @@ class WfSidebar extends WfBase {
   }
 }
 
+// --- Divider ---
+class WfDivider extends WfBase {
+  render() {
+    const dashed = this.boolAttr('dashed');
+    const el = document.createElement('hr');
+    el.className = `wf-divider${dashed ? ' wf-divider--dashed' : ''}`;
+    this.replaceWith(el);
+  }
+}
+
+// --- Icon ---
+class WfIcon extends WfBase {
+  render() {
+    const name = this.attr('name', '◇');
+    const size = this.attr('size', 'md');
+    this.className = `wf-icon${size !== 'md' ? ` wf-icon--${size}` : ''}`;
+    this.textContent = name;
+  }
+}
+
+// --- Logo ---
+class WfLogo extends WfBase {
+  render() {
+    const size = this.attr('size', 'md');
+    const text = this.attr('text', 'Moderne');
+    this.className = `wf-logo${size !== 'md' ? ` wf-logo--${size}` : ''}`;
+    this.append(
+      h('span', { className: 'wf-logo__mark' }, '◈'),
+      h('span', { className: 'wf-logo__text' }, text)
+    );
+  }
+}
+
+// --- Skeleton ---
+class WfSkeleton extends WfBase {
+  render() {
+    const variant = this.attr('variant', 'text');
+    const width = this.attr('width');
+    const height = this.attr('height');
+    this.className = `wf-skeleton wf-skeleton--${variant}`;
+    if (width) this.style.width = width;
+    if (height) this.style.height = height;
+  }
+}
+
+// --- Slider ---
+class WfSlider extends WfBase {
+  render() {
+    const min = this.attr('min', '0');
+    const max = this.attr('max', '100');
+    const value = this.attr('value', '50');
+    const label = this.attr('label');
+    const disabled = this.boolAttr('disabled');
+    this.className = 'wf-slider';
+
+    const valueDisplay = h('span', { className: 'wf-slider__value' }, value);
+    const input = h('input', {
+      type: 'range',
+      className: 'wf-slider__input',
+      min, max, value,
+      ...(disabled && { disabled: '' })
+    });
+    input.addEventListener('input', () => {
+      valueDisplay.textContent = input.value;
+    });
+
+    if (label) {
+      this.append(
+        h('div', { className: 'wf-slider__header' },
+          h('span', { className: 'wf-slider__label' }, label),
+          valueDisplay
+        )
+      );
+    }
+    this.append(input);
+  }
+}
+
+// --- Spinner ---
+class WfSpinner extends WfBase {
+  render() {
+    const size = this.attr('size', 'md');
+    this.className = `wf-spinner${size !== 'md' ? ` wf-spinner--${size}` : ''}`;
+  }
+}
+
+// --- Tooltip ---
+class WfTooltip extends WfBase {
+  render() {
+    const content = this.attr('content', 'Tooltip');
+    this.className = 'wf-tooltip-wrapper';
+    this.append(h('span', { className: 'wf-tooltip' }, content));
+  }
+}
+
 // ============================================
 // REGISTER ALL COMPONENTS
 // ============================================
+// ============================================
+// ASSEMBLIES
+// ============================================
+
+// --- Card Table Layout ---
+class WfCardTable extends WfBase {
+  render() {
+    const title = this.attr('title', 'Results');
+    const rows = this.numAttr('rows', 5);
+    const sampleTitles = ['Migrate to Java 17', 'Upgrade Spring Boot 3.x', 'Fix CVE-2024-1234', 'Modernize logging', 'Remove deprecated API'];
+    const sampleTypes = ['Recipe Run', 'Commit', 'Visualization', 'Migration', 'Security'];
+
+    this.className = 'wf-card-table';
+    const header = h('div', { className: 'wf-card-table__header' },
+      h('span', { className: 'wf-card-table__title' }, title),
+      h('div', { className: 'wf-card-table__actions' },
+        h('wf-button', { size: 'sm' }, 'Filter'),
+        h('wf-button', { size: 'sm' }, 'Export')
+      )
+    );
+    this.append(header);
+    for (let i = 0; i < rows; i++) {
+      const row = h('div', { className: 'wf-card-table__row' },
+        h('wf-checkbox', {}),
+        h('div', { className: 'wf-card-table__row-content' },
+          h('div', { className: 'wf-card-table__row-title' }, sampleTitles[i % sampleTitles.length]),
+          h('div', { className: 'wf-card-table__row-meta' },
+            h('wf-badge', {}, sampleTypes[i % sampleTypes.length]),
+            h('wf-badge', { variant: i % 3 === 0 ? 'success' : 'default' }, i % 3 === 0 ? 'Complete' : 'Pending')
+          ),
+          h('div', { className: 'wf-card-table__row-secondary' }, `${sampleNames[i % sampleNames.length]} · ${sampleDates[i % sampleDates.length]} · ${3 + i} repositories`)
+        ),
+        h('div', { className: 'wf-card-table__row-actions' },
+          h('wf-button', { variant: 'ghost', size: 'sm' }, '⋮')
+        )
+      );
+      this.append(row);
+    }
+  }
+}
+
+// --- Filter Results Layout ---
+class WfFilterResults extends WfBase {
+  render() {
+    const rows = this.numAttr('rows', 5);
+    const cols = this.numAttr('cols', 4);
+    const headers = this.attr('headers', 'Repository,Status,Changes,Date');
+    const filters = this.attr('filters', 'Status,Language,Organization');
+
+    this.className = 'wf-filter-results';
+    const filterChips = filters.split(',').map(f =>
+      h('wf-chip', {}, f.trim())
+    );
+    const bar = h('div', { className: 'wf-filter-results__bar' },
+      h('div', { className: 'wf-filter-results__filters' }, ...filterChips),
+      h('div', { className: 'wf-filter-results__search' },
+        h('wf-search', { placeholder: 'Search results…' })
+      )
+    );
+    const table = h('div', { className: 'wf-filter-results__table' },
+      h('wf-data-grid', { rows: String(rows), cols: String(cols), headers })
+    );
+    const summary = h('div', { className: 'wf-filter-results__summary' },
+      h('span', {}, `${rows} results`),
+      h('wf-pagination', {})
+    );
+    this.append(bar, table, summary);
+  }
+}
+
+// --- Data Table Layout ---
+class WfDataTableLayout extends WfBase {
+  render() {
+    const rows = this.numAttr('rows', 8);
+    const cols = this.numAttr('cols', 5);
+    const headers = this.attr('headers', 'Name,Status,Type,Modified,Actions');
+
+    this.className = 'wf-data-table-layout';
+    const toolbar = h('div', { className: 'wf-data-table-layout__toolbar' },
+      h('div', { className: 'wf-data-table-layout__toolbar-left' },
+        h('wf-search', { placeholder: 'Search…', size: 'sm' }),
+        h('wf-button', { size: 'sm' }, '⧩ Filter'),
+        h('wf-button', { size: 'sm' }, '⊞ Columns')
+      ),
+      h('div', { className: 'wf-data-table-layout__toolbar-right' },
+        h('wf-button', { size: 'sm' }, 'Bulk actions')
+      )
+    );
+    const grid = h('wf-data-grid', { rows: String(rows), cols: String(cols), headers });
+    const footer = h('div', { className: 'wf-data-table-layout__footer' },
+      h('span', {}, 'Selected: 0 items'),
+      h('wf-pagination', {})
+    );
+    this.append(toolbar, grid, footer);
+  }
+}
+
+// --- Changelog Feed Layout ---
+class WfChangelogFeed extends WfBase {
+  render() {
+    const count = this.numAttr('entries', 5);
+    const showFilters = !this.boolAttr('no-filters');
+    const eventTypes = ['Recipe Run', 'Commit', 'Visualization', 'Ingestion', 'Migration'];
+    const eventIcons = ['▶', '⊙', '◉', '↓', '⟳'];
+    const titles = [
+      'Migrate to Java 17 completed',
+      'Pushed formatting fixes to spring-petclinic',
+      'Generated dependency visualization',
+      'Ingested 12 new repositories',
+      'Applied security patches across 8 repos'
+    ];
+    const timestamps = ['3 hours ago', '5 hours ago', 'Yesterday', 'Mar 28, 2026', 'Mar 25, 2026'];
+
+    this.className = 'wf-changelog-feed';
+    if (showFilters) {
+      const filters = h('div', { className: 'wf-changelog-feed__filters' },
+        ...eventTypes.slice(0, 3).map(t => h('wf-chip', {}, t)),
+        h('wf-chip', {}, 'Date range ▾')
+      );
+      this.append(filters);
+    }
+    const list = h('div', { className: 'wf-changelog-feed__list' });
+    for (let i = 0; i < count; i++) {
+      const entry = h('div', { className: 'wf-changelog-entry' },
+        h('div', { className: 'wf-changelog-entry__icon' }, eventIcons[i % eventIcons.length]),
+        h('div', { className: 'wf-changelog-entry__body' },
+          h('div', { className: 'wf-changelog-entry__header' },
+            h('wf-badge', {}, eventTypes[i % eventTypes.length]),
+            h('span', { className: 'wf-changelog-entry__title' }, titles[i % titles.length])
+          ),
+          h('div', { className: 'wf-changelog-entry__meta' },
+            `${sampleNames[i % sampleNames.length]} · ${2 + i} repositories affected`)
+        ),
+        h('div', { className: 'wf-changelog-entry__timestamp' }, timestamps[i % timestamps.length])
+      );
+      list.append(entry);
+    }
+    this.append(list);
+  }
+}
+
+// ============================================
+// COMPOSITIONS
+// ============================================
+
+// --- Recipe Execution Results ---
+class WfRecipeResults extends WfBase {
+  render() {
+    const recipeName = this.attr('recipe', 'Migrate to Java 17');
+    const status = this.attr('status', 'completed');
+    const repos = this.numAttr('repos', 24);
+    const changes = this.numAttr('changes', 18);
+    const errors = this.numAttr('errors', 2);
+
+    this.className = 'wf-recipe-results';
+    const statusBadgeVariant = status === 'completed' ? 'success' : status === 'failed' ? 'error' : status === 'running' ? 'info' : 'warning';
+    const summary = h('div', { className: 'wf-recipe-results__summary' },
+      h('div', { className: 'wf-recipe-results__summary-left' },
+        h('div', { className: 'wf-recipe-results__recipe-name' }, recipeName),
+        h('div', { className: 'wf-recipe-results__stats' },
+          h('span', {}, h('span', { className: 'wf-recipe-results__stat-value' }, String(repos)), ' repositories'),
+          h('span', {}, h('span', { className: 'wf-recipe-results__stat-value' }, String(changes)), ' changes'),
+          h('span', {}, h('span', { className: 'wf-recipe-results__stat-value' }, String(errors)), ' errors')
+        )
+      ),
+      h('div', { className: 'wf-recipe-results__summary-right' },
+        h('wf-badge', { variant: statusBadgeVariant }, status.charAt(0).toUpperCase() + status.slice(1)),
+        h('wf-button', { variant: 'primary', size: 'sm' }, 'Commit Selected'),
+        h('wf-button', { size: 'sm' }, 'Share')
+      )
+    );
+    const tabs = h('div', { className: 'wf-recipe-results__tabs' },
+      h('wf-tabs', { items: 'Results,Visualizations,Data Tables' })
+    );
+    const body = h('div', { className: 'wf-recipe-results__body' },
+      h('wf-filter-results', { rows: '6', headers: 'Repository,Status,Changes,Diff' })
+    );
+    this.append(summary, tabs, body);
+  }
+}
+
+// --- Empty State Activation ---
+class WfActivation extends WfBase {
+  render() {
+    const headline = this.attr('headline', 'Welcome to Moderne');
+    const description = this.attr('description', 'Run large-scale code transformations across all your repositories. Start by connecting your source code manager and running your first recipe.');
+    const cta = this.attr('cta', 'Run your first recipe');
+    const illustration = this.attr('illustration', '◈');
+    const prereqsAttr = this.attr('prereqs', 'Connect an SCM:done,Add repositories:done,Run first recipe:pending');
+
+    this.className = 'wf-activation';
+    const illus = h('div', { className: 'wf-activation__illustration' }, illustration);
+    const head = h('div', { className: 'wf-activation__headline' }, headline);
+    const desc = h('div', { className: 'wf-activation__description' }, description);
+
+    const prereqList = h('div', { className: 'wf-activation__prereqs' });
+    prereqsAttr.split(',').forEach(p => {
+      const [label, state] = p.split(':');
+      const isDone = state?.trim() === 'done';
+      const prereq = h('div', { className: `wf-activation__prereq wf-activation__prereq--${isDone ? 'done' : 'pending'}` },
+        h('span', { className: 'wf-activation__prereq-icon' }, isDone ? '✓' : '○'),
+        h('span', {}, label.trim())
+      );
+      prereqList.append(prereq);
+    });
+
+    const ctaArea = h('div', { className: 'wf-activation__cta' },
+      h('wf-button', { variant: 'primary' }, cta),
+      h('div', { className: 'wf-activation__links' },
+        h('span', { className: 'wf-activation__link' }, 'Read the docs'),
+        h('span', { className: 'wf-activation__link' }, 'Take a tour')
+      )
+    );
+
+    this.append(illus, head, desc, prereqList, ctaArea);
+  }
+}
+
 const components = {
   'wf-alert': WfAlert,
   'wf-avatar': WfAvatar,
@@ -840,6 +1153,21 @@ const components = {
   'wf-empty-state': WfEmptyState,
   'wf-navbar': WfNavbar,
   'wf-sidebar': WfSidebar,
+  'wf-divider': WfDivider,
+  'wf-icon': WfIcon,
+  'wf-logo': WfLogo,
+  'wf-skeleton': WfSkeleton,
+  'wf-slider': WfSlider,
+  'wf-spinner': WfSpinner,
+  'wf-tooltip': WfTooltip,
+  // Assemblies
+  'wf-card-table': WfCardTable,
+  'wf-filter-results': WfFilterResults,
+  'wf-data-table-layout': WfDataTableLayout,
+  'wf-changelog-feed': WfChangelogFeed,
+  // Compositions
+  'wf-recipe-results': WfRecipeResults,
+  'wf-activation': WfActivation,
 };
 
 for (const [name, cls] of Object.entries(components)) {

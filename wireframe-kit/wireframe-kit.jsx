@@ -635,3 +635,230 @@ export const Skeleton = ({ variant = 'text', width, height, className, ...props 
     {...props}
   />
 );
+
+export const Logo = ({ size = 'md', text = 'Moderne', className, ...props }) => (
+  <span className={cn('wf-logo', size !== 'md' && `wf-logo--${size}`, className)} {...props}>
+    <span className="wf-logo__mark">◈</span>
+    <span className="wf-logo__text">{text}</span>
+  </span>
+);
+
+// ============================================
+// ASSEMBLIES
+// ============================================
+
+export const CardTableRow = ({ title, badges = [], meta, actions, className, children, ...props }) => (
+  <div className={cn('wf-card-table__row', className)} {...props}>
+    <Checkbox />
+    <div className="wf-card-table__row-content">
+      <div className="wf-card-table__row-title">{title}</div>
+      {badges.length > 0 && (
+        <div className="wf-card-table__row-meta">
+          {badges.map((b, i) => <Badge key={i} variant={b.variant}>{b.label}</Badge>)}
+        </div>
+      )}
+      {meta && <div className="wf-card-table__row-secondary">{meta}</div>}
+      {children}
+    </div>
+    {actions && <div className="wf-card-table__row-actions">{actions}</div>}
+  </div>
+);
+
+export const CardTable = ({ title = 'Results', rows, actions, className, children, ...props }) => (
+  <div className={cn('wf-card-table', className)} {...props}>
+    <div className="wf-card-table__header">
+      <span className="wf-card-table__title">{title}</span>
+      <div className="wf-card-table__actions">{actions || <><Button size="sm">Filter</Button><Button size="sm">Export</Button></>}</div>
+    </div>
+    {children || Array.from({ length: rows || 5 }, (_, i) => (
+      <CardTableRow
+        key={i}
+        title={['Migrate to Java 17', 'Upgrade Spring Boot', 'Fix CVE-2024-1234', 'Modernize logging', 'Remove deprecated API'][i % 5]}
+        badges={[{ label: ['Recipe Run', 'Commit', 'Visualization'][i % 3] }, { label: i % 3 === 0 ? 'Complete' : 'Pending', variant: i % 3 === 0 ? 'success' : 'default' }]}
+        meta={`Alice Chen · Jun ${1 + i} · ${3 + i} repositories`}
+        actions={<Button variant="ghost" size="sm">⋮</Button>}
+      />
+    ))}
+  </div>
+);
+
+export const FilterResults = ({ filters = ['Status', 'Language', 'Organization'], rows = 5, headers = 'Repository,Status,Changes,Date', summary, className, children, ...props }) => (
+  <div className={cn('wf-filter-results', className)} {...props}>
+    <div className="wf-filter-results__bar">
+      <div className="wf-filter-results__filters">
+        {filters.map((f, i) => <Chip key={i}>{f}</Chip>)}
+      </div>
+      <div className="wf-filter-results__search">
+        <Search placeholder="Search results…" />
+      </div>
+    </div>
+    <div className="wf-filter-results__table">
+      {children || <DataGrid rows={rows} headers={headers} />}
+    </div>
+    <div className="wf-filter-results__summary">
+      <span>{summary || `${rows} results`}</span>
+      <Pagination />
+    </div>
+  </div>
+);
+
+export const DataTableLayout = ({ rows = 8, cols = 5, headers = 'Name,Status,Type,Modified,Actions', className, children, ...props }) => (
+  <div className={cn('wf-data-table-layout', className)} {...props}>
+    <div className="wf-data-table-layout__toolbar">
+      <div className="wf-data-table-layout__toolbar-left">
+        <Search placeholder="Search…" size="sm" />
+        <Button size="sm">⧩ Filter</Button>
+        <Button size="sm">⊞ Columns</Button>
+      </div>
+      <div className="wf-data-table-layout__toolbar-right">
+        <Button size="sm">Bulk actions</Button>
+      </div>
+    </div>
+    {children || <DataGrid rows={rows} cols={cols} headers={headers} />}
+    <div className="wf-data-table-layout__footer">
+      <span>Selected: 0 items</span>
+      <Pagination />
+    </div>
+  </div>
+);
+
+export const ChangelogEntry = ({ icon = '▶', type = 'Recipe Run', title, meta, timestamp, className, ...props }) => (
+  <div className={cn('wf-changelog-entry', className)} {...props}>
+    <div className="wf-changelog-entry__icon">{icon}</div>
+    <div className="wf-changelog-entry__body">
+      <div className="wf-changelog-entry__header">
+        <Badge>{type}</Badge>
+        <span className="wf-changelog-entry__title">{title}</span>
+      </div>
+      {meta && <div className="wf-changelog-entry__meta">{meta}</div>}
+    </div>
+    {timestamp && <div className="wf-changelog-entry__timestamp">{timestamp}</div>}
+  </div>
+);
+
+export const ChangelogFeed = ({ entries = 5, showFilters = true, className, children, ...props }) => {
+  const defaults = [
+    { icon: '▶', type: 'Recipe Run', title: 'Migrate to Java 17 completed', meta: 'Alice Chen · 3 repositories', timestamp: '3 hours ago' },
+    { icon: '⊙', type: 'Commit', title: 'Pushed formatting fixes', meta: 'Bob Torres · 1 repository', timestamp: '5 hours ago' },
+    { icon: '◉', type: 'Visualization', title: 'Generated dependency graph', meta: 'Carol Kim · 8 repositories', timestamp: 'Yesterday' },
+    { icon: '↓', type: 'Ingestion', title: 'Ingested 12 new repositories', meta: 'System · 12 repositories', timestamp: 'Mar 28, 2026' },
+    { icon: '⟳', type: 'Migration', title: 'Applied security patches', meta: 'Dave Patel · 8 repositories', timestamp: 'Mar 25, 2026' },
+  ];
+  return (
+    <div className={cn('wf-changelog-feed', className)} {...props}>
+      {showFilters && (
+        <div className="wf-changelog-feed__filters">
+          <Chip>Recipe Run</Chip>
+          <Chip>Commit</Chip>
+          <Chip>Visualization</Chip>
+          <Chip>Date range ▾</Chip>
+        </div>
+      )}
+      <div className="wf-changelog-feed__list">
+        {children || defaults.slice(0, entries).map((e, i) => <ChangelogEntry key={i} {...e} />)}
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// COMPOSITIONS
+// ============================================
+
+export const RecipeResults = ({
+  recipe = 'Migrate to Java 17',
+  status = 'completed',
+  repos = 24,
+  changes = 18,
+  errors = 2,
+  tabs = ['Results', 'Visualizations', 'Data Tables'],
+  className,
+  children,
+  ...props
+}) => {
+  const statusVariant = status === 'completed' ? 'success' : status === 'failed' ? 'error' : status === 'running' ? 'info' : 'warning';
+  return (
+    <div className={cn('wf-recipe-results', className)} {...props}>
+      <div className="wf-recipe-results__summary">
+        <div className="wf-recipe-results__summary-left">
+          <div className="wf-recipe-results__recipe-name">{recipe}</div>
+          <div className="wf-recipe-results__stats">
+            <span><span className="wf-recipe-results__stat-value">{repos}</span> repositories</span>
+            <span><span className="wf-recipe-results__stat-value">{changes}</span> changes</span>
+            <span><span className="wf-recipe-results__stat-value">{errors}</span> errors</span>
+          </div>
+        </div>
+        <div className="wf-recipe-results__summary-right">
+          <Badge variant={statusVariant}>{status.charAt(0).toUpperCase() + status.slice(1)}</Badge>
+          <Button variant="primary" size="sm">Commit Selected</Button>
+          <Button size="sm">Share</Button>
+        </div>
+      </div>
+      <div className="wf-recipe-results__tabs">
+        <Tabs items={tabs} />
+      </div>
+      <div className="wf-recipe-results__body">
+        {children || <FilterResults rows={6} headers="Repository,Status,Changes,Diff" />}
+      </div>
+    </div>
+  );
+};
+
+export const Activation = ({
+  headline = 'Welcome to Moderne',
+  description = 'Run large-scale code transformations across all your repositories. Start by connecting your source code manager and running your first recipe.',
+  cta = 'Run your first recipe',
+  illustration = '◈',
+  prereqs = [{ label: 'Connect an SCM', done: true }, { label: 'Add repositories', done: true }, { label: 'Run first recipe', done: false }],
+  links = [{ label: 'Read the docs' }, { label: 'Take a tour' }],
+  onAction,
+  className,
+  ...props
+}) => (
+  <div className={cn('wf-activation', className)} {...props}>
+    <div className="wf-activation__illustration">{illustration}</div>
+    <div className="wf-activation__headline">{headline}</div>
+    <div className="wf-activation__description">{description}</div>
+    {prereqs.length > 0 && (
+      <div className="wf-activation__prereqs">
+        {prereqs.map((p, i) => (
+          <div key={i} className={`wf-activation__prereq wf-activation__prereq--${p.done ? 'done' : 'pending'}`}>
+            <span className="wf-activation__prereq-icon">{p.done ? '✓' : '○'}</span>
+            <span>{p.label}</span>
+          </div>
+        ))}
+      </div>
+    )}
+    <div className="wf-activation__cta">
+      <Button variant="primary" onClick={onAction}>{cta}</Button>
+      {links.length > 0 && (
+        <div className="wf-activation__links">
+          {links.map((l, i) => <span key={i} className="wf-activation__link">{l.label}</span>)}
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+export const Slider = ({ min = 0, max = 100, value: initialValue = 50, label, disabled, className, ...props }) => {
+  const [value, setValue] = useState(initialValue);
+  return (
+    <div className={cn('wf-slider', className)} {...props}>
+      {label && (
+        <div className="wf-slider__header">
+          <span className="wf-slider__label">{label}</span>
+          <span className="wf-slider__value">{value}</span>
+        </div>
+      )}
+      <input
+        type="range"
+        className="wf-slider__input"
+        min={min}
+        max={max}
+        value={value}
+        disabled={disabled}
+        onChange={e => setValue(Number(e.target.value))}
+      />
+    </div>
+  );
+};
