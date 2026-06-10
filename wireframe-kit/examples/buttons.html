@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buttons — Neo Design System</title>
+  <link rel="stylesheet" href="../wireframe-kit.css">
+  <style>
+    body { font-family: var(--neo-button-font); background: var(--wf-bg); padding: 32px; color: var(--wf-text); }
+    h1 { font-family: var(--wf-font); font-weight: 400; font-size: 28px; margin: 0 0 6px; }
+    .subtitle { font-family: var(--wf-font); color: var(--wf-text-light); margin: 0 0 32px; font-size: 16px; }
+    h2 { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wf-text-light); margin: 32px 0 12px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 100px repeat(4, minmax(140px, 1fr));
+      gap: 16px;
+      align-items: center;
+      background: var(--wf-surface);
+      border: 1.5px solid var(--wf-border);
+      border-radius: 8px;
+      padding: 20px 24px;
+    }
+    .grid__head, .grid__row-label {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--wf-text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .grid__row-label { text-align: right; padding-right: 8px; }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 1280px;
+    }
+    .compare__card {
+      background: var(--wf-surface);
+      border: 1.5px solid var(--wf-border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .compare__card h3 { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--wf-text-light); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 12px; }
+    .compare__card iframe, .compare__card img { width: 100%; border: none; display: block; }
+  </style>
+</head>
+<body>
+  <h1>Button — Neo Design System</h1>
+  <p class="subtitle">Implementation of Figma node <code>4086:7590</code>. Four hierarchies × two sizes × six states.</p>
+
+  <h2>Small (32px) — all hierarchies × all states</h2>
+  <div class="grid">
+    <span class="grid__head"></span>
+    <span class="grid__head">Primary</span>
+    <span class="grid__head">Secondary</span>
+    <span class="grid__head">Tertiary</span>
+    <span class="grid__head">Destructive</span>
+
+    <span class="grid__row-label">Default</span>
+    <span><button class="wf-button wf-button--primary"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--secondary"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--tertiary"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--destructive"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+
+    <span class="grid__row-label">Hover</span>
+    <span><button class="wf-button wf-button--primary" style="background:var(--neo-blue-600);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--secondary" style="background:var(--neo-blue-50);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--tertiary" style="background:var(--neo-blue-50);color:var(--neo-blue-600);"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--destructive" style="box-shadow:var(--neo-button-shadow-skeu);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+
+    <span class="grid__row-label">Pressed</span>
+    <span><button class="wf-button wf-button--primary" style="background:var(--neo-blue-800);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--secondary" style="background:var(--neo-blue-100);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--tertiary" style="background:var(--neo-blue-100);color:var(--neo-blue-800);"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--destructive" style="box-shadow:var(--neo-button-shadow-skeu);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+
+    <span class="grid__row-label">Focused</span>
+    <span><button class="wf-button wf-button--primary wf-button--focused"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--secondary wf-button--focused"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--tertiary wf-button--focused"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--destructive wf-button--focused"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+
+    <span class="grid__row-label">Disabled</span>
+    <span><button class="wf-button wf-button--primary wf-button--disabled"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--secondary wf-button--disabled"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--tertiary wf-button--disabled"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--destructive wf-button--disabled"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+
+    <span class="grid__row-label">Loading</span>
+    <span><button class="wf-button wf-button--primary wf-button--loading"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--secondary wf-button--loading"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--tertiary wf-button--loading"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--destructive wf-button--loading"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+  </div>
+
+  <h2>Medium (40px) — all hierarchies × all states</h2>
+  <div class="grid">
+    <span class="grid__head"></span>
+    <span class="grid__head">Primary</span>
+    <span class="grid__head">Secondary</span>
+    <span class="grid__head">Tertiary</span>
+    <span class="grid__head">Destructive</span>
+
+    <span class="grid__row-label">Default</span>
+    <span><button class="wf-button wf-button--md wf-button--primary"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--secondary"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--tertiary"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--md wf-button--destructive"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+
+    <span class="grid__row-label">Hover</span>
+    <span><button class="wf-button wf-button--md wf-button--primary" style="background:var(--neo-blue-600);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--secondary" style="background:var(--neo-blue-50);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--tertiary" style="background:var(--neo-blue-50);color:var(--neo-blue-600);"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--md wf-button--destructive" style="box-shadow:var(--neo-button-shadow-skeu);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+
+    <span class="grid__row-label">Pressed</span>
+    <span><button class="wf-button wf-button--md wf-button--primary" style="background:var(--neo-blue-800);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--secondary" style="background:var(--neo-blue-100);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--tertiary" style="background:var(--neo-blue-100);color:var(--neo-blue-800);"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--md wf-button--destructive" style="box-shadow:var(--neo-button-shadow-skeu);"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+
+    <span class="grid__row-label">Focused</span>
+    <span><button class="wf-button wf-button--md wf-button--primary wf-button--focused"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--secondary wf-button--focused"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--tertiary wf-button--focused"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--md wf-button--destructive wf-button--focused"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+
+    <span class="grid__row-label">Disabled</span>
+    <span><button class="wf-button wf-button--md wf-button--primary wf-button--disabled"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--secondary wf-button--disabled"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--tertiary wf-button--disabled"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--md wf-button--destructive wf-button--disabled"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+
+    <span class="grid__row-label">Loading</span>
+    <span><button class="wf-button wf-button--md wf-button--primary wf-button--loading"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--secondary wf-button--loading"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--tertiary wf-button--loading"><i data-lucide="plus"></i>Button</button></span>
+    <span><button class="wf-button wf-button--md wf-button--destructive wf-button--loading"><i data-lucide="plus"></i><span class="wf-button__label">Button</span></button></span>
+  </div>
+
+  <h2>Live interactivity test (use real hover / focus)</h2>
+  <div class="grid">
+    <span class="grid__head"></span>
+    <span class="grid__head">Primary</span>
+    <span class="grid__head">Secondary</span>
+    <span class="grid__head">Tertiary</span>
+    <span class="grid__head">Destructive</span>
+
+    <span class="grid__row-label">Small</span>
+    <span><button class="wf-button wf-button--primary"><i data-lucide="plus"></i><span class="wf-button__label">Hover me</span></button></span>
+    <span><button class="wf-button wf-button--secondary"><i data-lucide="plus"></i><span class="wf-button__label">Hover me</span></button></span>
+    <span><button class="wf-button wf-button--tertiary"><i data-lucide="plus"></i>Hover me</button></span>
+    <span><button class="wf-button wf-button--destructive"><i data-lucide="plus"></i><span class="wf-button__label">Hover me</span></button></span>
+
+    <span class="grid__row-label">Medium</span>
+    <span><button class="wf-button wf-button--md wf-button--primary"><i data-lucide="plus"></i><span class="wf-button__label">Hover me</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--secondary"><i data-lucide="plus"></i><span class="wf-button__label">Hover me</span></button></span>
+    <span><button class="wf-button wf-button--md wf-button--tertiary"><i data-lucide="plus"></i>Hover me</button></span>
+    <span><button class="wf-button wf-button--md wf-button--destructive"><i data-lucide="plus"></i><span class="wf-button__label">Hover me</span></button></span>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="../wireframe-kit.js"></script>
+</body>
+</html>

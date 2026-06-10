@@ -4,7 +4,7 @@
    low-fidelity prototyping at Moderne.
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Handlee&family=Fira+Code:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Handlee&family=Inter:wght@400;500;600&family=Fira+Code:wght@400&display=swap');
 
 /* --- Custom Properties --- */
 :root {
@@ -347,56 +347,184 @@ svg.wf-filters {
 .wf-breadcrumb__item--active { color: var(--wf-text); cursor: default; }
 .wf-breadcrumb__sep { color: var(--wf-text-lighter); }
 
-/* --- Button --- */
+/* --- Button (Neo Design System spec) ---
+   Implements the four hierarchies (Primary, Secondary, Tertiary, Destructive),
+   two sizes (Small = 32px, Medium = 40px), and six states (Default, Hover,
+   Pressed, Focused, Disabled, Loading) per the Neo Figma component
+   (node 4086:7590).
+   Tokens are inlined here as `--neo-*` since the kit doesn't import the
+   real Neo token CSS. The remote prototype mirrors them via
+   `--brand-digital-blue-*`/etc., so keep names cross-referenceable. */
+:root {
+  --neo-blue-500: #2f42ff;
+  --neo-blue-600: #1e2ec2;
+  --neo-blue-800: #131e7a;
+  --neo-blue-50: #f2f3ff;
+  --neo-blue-100: #dce0ff;
+  --neo-blue-200: #b6bfff;
+  --neo-grey-50: #f9fafb;
+  --neo-grey-100: #f3f4f6;
+  --neo-grey-200: #e5e7eb;
+  --neo-grey-400: #9ca3af;
+  --neo-grey-900: #1f2937;
+  --neo-red-700: #a92232;
+
+  --neo-button-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --neo-button-shadow-skeu:
+    0px 1px 2px 0px rgba(10, 13, 18, 0.05),
+    inset 0px -2px 0px 0px rgba(10, 13, 18, 0.05),
+    inset 0px 0px 0px 1px rgba(10, 13, 18, 0.18);
+}
+
 .wf-button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 16px;
-  font-family: var(--wf-font);
-  font-size: var(--wf-font-size-sm);
-  border: 1.5px solid var(--wf-border-dark);
-  border-radius: var(--wf-radius);
-  background: var(--wf-surface);
-  color: var(--wf-text);
+  justify-content: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 8px;
+  font-family: var(--neo-button-font);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--neo-blue-500);
+  color: var(--neo-grey-50);
   cursor: pointer;
-  box-shadow: var(--wf-shadow);
-  transition: background 0.15s;
-  line-height: 1.4;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  box-shadow: none;
 }
-.wf-button:hover { background: var(--wf-fill); }
+.wf-button:hover { background: var(--neo-blue-600); }
+.wf-button:active { background: var(--neo-blue-800); }
+.wf-button:focus-visible {
+  outline: none;
+  border: 2px solid var(--neo-blue-800);
+  background: var(--neo-blue-500);
+}
 
+/* "Text padding" inside the button — the Figma component nests the label
+   in a wrapper with 2px horizontal padding so icon-to-text gap stays even. */
+.wf-button > .wf-button__label { padding: 0 2px; }
+
+/* --- Hierarchies --- */
 .wf-button--primary {
-  background: var(--wf-text);
-  color: var(--wf-white);
-  border-color: var(--wf-text);
+  background: var(--neo-blue-500);
+  color: var(--neo-grey-50);
+  border-color: transparent;
 }
-.wf-button--primary:hover { background: #555; }
 
 .wf-button--secondary {
-  background: var(--wf-fill-dark);
-  border-color: var(--wf-border);
+  background: var(--wf-white);
+  border-color: var(--neo-blue-200);
+  color: var(--neo-blue-500);
+}
+.wf-button--secondary:hover { background: var(--neo-blue-50); }
+.wf-button--secondary:active { background: var(--neo-blue-100); }
+.wf-button--secondary:focus-visible {
+  background: var(--wf-white);
+  border: 2px solid var(--neo-blue-800);
 }
 
+.wf-button--tertiary {
+  background: transparent;
+  border-color: transparent;
+  color: var(--neo-blue-500);
+  gap: 8px;
+}
+.wf-button--tertiary:hover { background: var(--neo-blue-50); color: var(--neo-blue-600); }
+.wf-button--tertiary:active { background: var(--neo-blue-100); color: var(--neo-blue-800); }
+.wf-button--tertiary:focus-visible {
+  background: var(--wf-white);
+  border: 2px solid var(--neo-blue-800);
+}
+
+/* Legacy alias — older wireframes use `--ghost` for the same role. */
 .wf-button--ghost {
   background: transparent;
   border-color: transparent;
-  box-shadow: none;
+  color: var(--neo-blue-500);
+  gap: 8px;
 }
-.wf-button--ghost:hover { background: var(--wf-fill); }
+.wf-button--ghost:hover { background: var(--neo-blue-50); color: var(--neo-blue-600); }
 
 .wf-button--destructive {
-  border-color: var(--wf-error);
-  color: var(--wf-error-text);
+  background: var(--neo-red-700);
+  border-color: transparent;
+  color: var(--neo-grey-50);
+}
+.wf-button--destructive:hover {
+  background: var(--neo-red-700);
+  box-shadow: var(--neo-button-shadow-skeu);
+}
+.wf-button--destructive:active {
+  background: var(--neo-red-700);
+  box-shadow: var(--neo-button-shadow-skeu);
+}
+.wf-button--destructive:focus-visible {
+  background: var(--neo-red-700);
+  border: 2px solid var(--neo-blue-800);
+  box-shadow: none;
 }
 
-.wf-button--sm { padding: 4px 10px; font-size: var(--wf-font-size-xs); }
-.wf-button--lg { padding: 10px 22px; font-size: var(--wf-font-size-md); }
-
-.wf-button:disabled, .wf-button--disabled {
-  opacity: 0.45;
+/* --- Disabled (applies after hierarchy so it always wins) --- */
+.wf-button:disabled, .wf-button--disabled,
+.wf-button--primary:disabled,
+.wf-button--destructive:disabled, .wf-button--destructive.wf-button--disabled {
   cursor: not-allowed;
+  pointer-events: none;
+  background: var(--neo-grey-100);
+  border: 1px solid var(--neo-grey-200);
+  color: var(--neo-grey-400);
+  box-shadow: none;
 }
+.wf-button--secondary:disabled, .wf-button--secondary.wf-button--disabled {
+  background: var(--neo-grey-50);
+  border-color: var(--neo-grey-200);
+  color: var(--neo-grey-400);
+}
+.wf-button--tertiary:disabled, .wf-button--tertiary.wf-button--disabled,
+.wf-button--ghost:disabled, .wf-button--ghost.wf-button--disabled {
+  background: transparent;
+  border-color: transparent;
+  color: var(--neo-grey-400);
+}
+
+/* --- Sizes — small (default, 32px) + medium (40px) --- */
+.wf-button--md { height: 40px; padding: 0 10px; }
+.wf-button svg { width: 16px; height: 16px; stroke-width: 1.8; flex-shrink: 0; }
+.wf-button--md svg { width: 20px; height: 20px; }
+
+/* --- Focused state class — equivalent to :focus-visible but applied
+   imperatively (e.g. via `state="focused"`) so the demo grid can show
+   the ring without an actual focus event. --- */
+.wf-button--focused { outline: none; border: 2px solid var(--neo-blue-800); }
+.wf-button--secondary.wf-button--focused { background: var(--wf-white); }
+.wf-button--tertiary.wf-button--focused { background: var(--wf-white); }
+.wf-button--destructive.wf-button--focused { background: var(--neo-red-700); }
+
+/* --- Loading — pre-empts the leading icon with a spinner --- */
+.wf-button--loading { pointer-events: none; }
+.wf-button--loading > svg:first-child,
+.wf-button--loading > i:first-child { display: none; }
+.wf-button--loading::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: wf-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+.wf-button--md.wf-button--loading::before { width: 16px; height: 16px; }
+
+/* --- Legacy size aliases — keep `--sm`/`--lg` working for older wireframes
+   built before the Small/Medium split. --sm collapses onto the new default. --- */
+.wf-button--sm { height: 32px; padding: 0 8px; font-size: 14px; }
+.wf-button--lg { height: 40px; padding: 0 10px; font-size: 14px; }
 
 /* --- ButtonGroup --- */
 .wf-button-group {
@@ -1250,6 +1378,255 @@ svg.wf-filters {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+
+/* ============================================
+   APP SHELL — rail + topbar + main area
+   Compose <wf-rail>, <wf-topbar>, and a content
+   region inside .wf-app-shell.
+   ============================================ */
+.wf-app-shell {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+.wf-app-shell > .wf-rail { grid-row: 1 / -1; }
+.wf-app-shell > .wf-topbar { grid-column: 2; grid-row: 1; }
+.wf-app-shell__main {
+  grid-column: 2;
+  grid-row: 2;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--wf-surface);
+}
+
+/* --- Topbar (global app bar) --- */
+.wf-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--wf-space-md);
+  padding: var(--wf-space-sm) var(--wf-space-lg);
+  background: var(--wf-surface);
+  border-bottom: var(--wf-border-style);
+  box-shadow: var(--wf-shadow);
+  height: 60px;
+}
+.wf-topbar__org {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wf-space-sm);
+  max-width: 380px;
+  padding: 6px 14px;
+  border: var(--wf-border-style);
+  border-radius: 999px;
+  background: var(--wf-surface);
+  font-size: var(--wf-font-size-sm);
+  color: var(--wf-text);
+  cursor: pointer;
+}
+.wf-topbar__org:hover { background: var(--wf-fill); }
+.wf-topbar__org-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--wf-border);
+  background: var(--wf-fill);
+  background-image: var(--wf-crosshatch);
+  flex-shrink: 0;
+}
+.wf-topbar__org-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.wf-topbar__org-caret { color: var(--wf-text-light); }
+.wf-topbar__spacer { flex: 1; }
+.wf-topbar__search {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wf-space-sm);
+  height: 38px;
+  width: 280px;
+  padding: 0 14px;
+  border: var(--wf-border-style);
+  border-radius: 999px;
+  background: var(--wf-surface);
+  font-size: var(--wf-font-size-sm);
+  color: var(--wf-text-lighter);
+  cursor: pointer;
+}
+.wf-topbar__search:hover { background: var(--wf-fill); }
+.wf-topbar__search-icon { color: var(--wf-text-lighter); font-size: 14px; }
+.wf-topbar__search-text { flex: 1; }
+.wf-topbar__kbd { display: inline-flex; gap: 2px; }
+.wf-topbar__kbd kbd {
+  font-family: var(--wf-font);
+  font-size: var(--wf-font-size-xs);
+  background: var(--wf-fill);
+  border: 1px solid var(--wf-border);
+  border-radius: 3px;
+  padding: 1px 7px;
+  color: var(--wf-text-light);
+  min-width: 18px;
+  text-align: center;
+}
+.wf-topbar__actions { display: flex; align-items: center; gap: 4px; }
+.wf-topbar__action {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wf-text-light);
+  font-family: var(--wf-font);
+  font-size: var(--wf-font-size-md);
+  cursor: pointer;
+}
+.wf-topbar__action:hover { background: var(--wf-fill); color: var(--wf-text); }
+.wf-topbar__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--wf-border-dark);
+  background: var(--wf-fill-dark);
+  background-image: var(--wf-crosshatch);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--wf-font-size-sm);
+  color: var(--wf-text);
+  margin-left: 4px;
+}
+
+/* --- Rail (left icon navigation) --- */
+.wf-rail {
+  width: 100px;
+  background: var(--wf-bg);
+  border-right: var(--wf-border-style);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--wf-space-sm) 8px var(--wf-space-lg);
+}
+.wf-rail__top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wf-space-xs);
+}
+.wf-rail__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0;
+}
+.wf-rail__brand-mark {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--wf-border-dark);
+  border-radius: var(--wf-radius-lg);
+  background: var(--wf-surface);
+  background-image: var(--wf-crosshatch);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--wf-font-size-lg);
+  color: var(--wf-text);
+}
+.wf-rail__brand-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--wf-fill-dark);
+  border: 1px solid var(--wf-border);
+  font-size: var(--wf-font-size-xs);
+  color: var(--wf-text);
+}
+.wf-rail__items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: var(--wf-space-xs);
+}
+.wf-rail__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px;
+  border-radius: var(--wf-radius);
+  text-decoration: none;
+  color: var(--wf-text-light);
+  font-size: var(--wf-font-size-xs);
+  cursor: pointer;
+  text-align: center;
+}
+.wf-rail__item:hover { background: var(--wf-fill); color: var(--wf-text); }
+.wf-rail__item--active { background: var(--wf-fill-dark); color: var(--wf-text); }
+.wf-rail__item--active .wf-rail__icon {
+  border-color: var(--wf-border-dark);
+  background: var(--wf-surface);
+}
+.wf-rail__icon {
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--wf-border);
+  border-radius: var(--wf-radius);
+  background: var(--wf-surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--wf-font-size-md);
+  color: var(--wf-text-light);
+}
+.wf-rail__label {
+  font-family: var(--wf-font);
+  font-size: var(--wf-font-size-xs);
+  line-height: 1.2;
+  color: inherit;
+}
+.wf-rail__tenant {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 0;
+}
+.wf-rail__tenant-mark {
+  width: 52px;
+  height: 52px;
+  border: 1.5px solid var(--wf-border-dark);
+  border-radius: var(--wf-radius-lg);
+  background: var(--wf-fill);
+  background-image: var(--wf-crosshatch);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--wf-font-size-xs);
+  color: var(--wf-text);
+  text-align: center;
+  padding: 4px;
+  line-height: 1.2;
+}
+
+/* --- Lucide icon sizing in kit components --- */
+/* Lucide replaces <i data-lucide="..."> with <svg>. Before the swap,
+   <i> is invisible (no inline content), so layout is stable either way. */
+.wf-rail__icon svg { width: 20px; height: 20px; stroke-width: 1.8; }
+.wf-topbar__org-icon svg { width: 18px; height: 18px; stroke-width: 1.8; }
+.wf-topbar__org-caret svg { width: 14px; height: 14px; stroke-width: 2; }
+.wf-topbar__search-icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+.wf-topbar__action svg { width: 18px; height: 18px; stroke-width: 1.8; }
 
 /* --- Utility --- */
 .wf-sr-only {

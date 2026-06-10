@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe — Results · Hierarchical selection</title>
+<link rel="stylesheet" href="wireframe-kit/wireframe-kit.css">
+<style>
+  /* ---------------------------------------------------------
+     Font-size overrides — Handlee renders smaller than the
+     equivalent px in monospace/sans, so bump the kit scale up
+     so body/labels stay legible at wireframe density.
+     --------------------------------------------------------- */
+  :root {
+    --wf-font-size-xs: 13px;
+    --wf-font-size-sm: 15px;
+    --wf-font-size-md: 17px;
+    --wf-font-size-lg: 20px;
+    --wf-font-size-xl: 24px;
+    --wf-font-size-2xl: 30px;
+  }
+  .wf-kit { font-size: var(--wf-font-size-md); }
+  body { overflow: hidden; }
+
+  /* ---------------- Page shell ---------------- */
+  /* .pg lives inside .wf-app-shell__main, so it fills the available
+     height below the topbar and to the right of the rail. */
+  .pg {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    min-height: 0;
+  }
+
+  /* ---------------- Page header ---------------- */
+  .page-top {
+    padding: var(--wf-space-md) var(--wf-space-xl) 0;
+    background: var(--wf-surface);
+    border-bottom: 1.5px solid var(--wf-border);
+  }
+  .crumbs {
+    display: flex; align-items: center; gap: var(--wf-space-sm);
+    font-size: var(--wf-font-size-sm); color: var(--wf-text-light);
+    margin-bottom: var(--wf-space-sm);
+  }
+  .crumbs a { color: var(--wf-text); text-decoration: underline; }
+  .run-title { font-size: var(--wf-font-size-xl); margin: 0 0 6px; line-height: 1.3; }
+  .run-subhead { font-size: var(--wf-font-size-sm); color: var(--wf-text-light); margin-bottom: var(--wf-space-sm); }
+  .status-row {
+    display: flex; align-items: center; gap: var(--wf-space-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--wf-space-md);
+  }
+  .run-meta { font-size: var(--wf-font-size-sm); color: var(--wf-text-light); }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    border: 1.5px solid var(--wf-border);
+    border-radius: 999px;
+    background: var(--wf-surface);
+    font-size: var(--wf-font-size-sm);
+    color: var(--wf-text);
+  }
+  .status-pill svg { width: 16px; height: 16px; stroke-width: 1.8; }
+  .status-pill--ok { background: color-mix(in srgb, var(--wf-success) 18%, var(--wf-surface)); border-color: var(--wf-success); color: var(--wf-success-text); }
+  .status-pill--ok svg { color: var(--wf-success-text); }
+  .tabs-actions { margin-left: auto; display: flex; gap: 4px; }
+
+  /* ---------------- Two-pane ---------------- */
+  .pane {
+    display: grid;
+    grid-template-columns: minmax(440px, 44%) 1fr;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .pane > div { overflow-y: auto; min-width: 0; }
+  .left-pane { padding: var(--wf-space-md) var(--wf-space-lg); border-right: 1.5px solid var(--wf-border); }
+  .right-pane { padding: var(--wf-space-md) var(--wf-space-lg); background: var(--wf-bg); }
+
+  /* ---------------- Summary + Options ---------------- */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 24px;
+  }
+  .summary-row {
+    display: flex; justify-content: space-between;
+    font-size: var(--wf-font-size-sm);
+    padding: 3px 0;
+  }
+  .summary-row .k { color: var(--wf-text-light); }
+  .summary-row .v { color: var(--wf-text); }
+  .summary-row .v.link { color: var(--wf-text); text-decoration: underline; }
+
+  .opt-row {
+    display: flex; flex-wrap: wrap; gap: var(--wf-space-sm);
+    margin-bottom: var(--wf-space-sm);
+    font-size: var(--wf-font-size-sm);
+  }
+
+  /* ---------------- Filter row ---------------- */
+  .filter-row {
+    display: flex; align-items: center; gap: var(--wf-space-sm);
+    margin: var(--wf-space-md) 0 var(--wf-space-sm);
+    flex-wrap: wrap;
+  }
+  .filter-row .wf-search { flex: 1; min-width: 180px; }
+
+  /* ---------------- Hierarchical tree ---------------- */
+  .htree {
+    background: var(--wf-surface);
+    border: var(--wf-border-style);
+    border-radius: var(--wf-radius-lg);
+    box-shadow: var(--wf-shadow);
+    overflow: hidden;
+  }
+  .htree__head {
+    display: flex; align-items: center; gap: var(--wf-space-sm);
+    padding: 10px var(--wf-space-md);
+    background: var(--wf-fill);
+    border-bottom: var(--wf-border-style);
+    font-size: var(--wf-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--wf-text-lighter);
+  }
+  .htree__head .trailing { margin-left: auto; }
+
+  .hn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px var(--wf-space-md);
+    border-bottom: 1px solid var(--wf-fill-dark);
+    font-size: var(--wf-font-size-sm);
+    cursor: pointer;
+  }
+  .hn:last-child { border-bottom: none; }
+  .hn:hover { background: var(--wf-fill); }
+  .hn--active { background: var(--wf-fill-dark); }
+  .hn--lvl1 { padding-left: var(--wf-space-md); }
+  .hn--lvl2 { padding-left: 36px; }
+  .hn--lvl3 { padding-left: 60px; }
+  .hn--lvl4 { padding-left: 84px; background: var(--wf-bg); }
+  .hn--lvl5 { padding-left: 108px; background: var(--wf-bg); }
+  .hn__chev {
+    width: 18px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--wf-text-light);
+    background: none; border: none; padding: 0;
+    cursor: pointer; font-family: var(--wf-font);
+  }
+  .hn__chev-spacer, .hn__cb-spacer { width: 18px; flex-shrink: 0; display: inline-block; }
+  .hn__cb-spacer { width: 18px; }
+
+  /* CSS-only checkbox styled like the kit's wf-checkbox box. Used here
+     instead of <wf-checkbox> because the cascade logic needs to set
+     checked/indeterminate from JS without fighting the kit's own click
+     handler. */
+  .wf-ck {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--wf-border-dark);
+    border-radius: 3px 4px 3px 4px;
+    background: var(--wf-surface);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    position: relative;
+    font-family: var(--wf-font);
+    color: var(--wf-text);
+  }
+  .wf-ck:checked { background: var(--wf-fill-dark); }
+  .wf-ck:checked::after { content: '✓'; font-size: 13px; line-height: 1; }
+  .wf-ck:indeterminate { background: var(--wf-fill-dark); }
+  .wf-ck:indeterminate::after { content: '—'; font-size: 13px; line-height: 1; }
+  .hn__name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hn__branch { color: var(--wf-text-lighter); font-family: var(--wf-font-mono); font-size: var(--wf-font-size-xs); margin-left: 6px; }
+  .hn__mono { font-family: var(--wf-font-mono); font-size: var(--wf-font-size-xs); color: var(--wf-text-light); }
+  .hn__method { font-family: var(--wf-font-mono); font-size: var(--wf-font-size-xs); color: var(--wf-text-light); }
+  .hn__count { font-size: var(--wf-font-size-xs); color: var(--wf-text-light); white-space: nowrap; }
+  .hn__count--zero { color: var(--wf-text-lighter); }
+  .hn__count--err { color: var(--wf-error-text); }
+
+  /* color-blind safe status shapes */
+  .hn__status { width: 10px; height: 10px; flex-shrink: 0; }
+  .hn__status--ok { background: var(--wf-success); border-radius: 50%; }
+  .hn__status--none { background: var(--wf-warning); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+  .hn__status--err { background: var(--wf-error); border-radius: 1.5px; }
+
+  .load-more {
+    width: 100%;
+    padding: 12px;
+    background: var(--wf-fill);
+    border: none;
+    border-top: 1px solid var(--wf-fill-dark);
+    font-family: var(--wf-font);
+    font-size: var(--wf-font-size-sm);
+    color: var(--wf-text);
+    cursor: pointer;
+  }
+  .load-more:hover { background: var(--wf-fill-dark); }
+  .load-more .rest { color: var(--wf-text-lighter); margin-left: 6px; }
+
+  .footer-summary {
+    font-size: var(--wf-font-size-xs);
+    color: var(--wf-text-lighter);
+    padding: 10px 4px 0;
+  }
+
+  /* Sticky commit bar */
+  .commit-bar {
+    position: sticky; bottom: 0;
+    display: flex; justify-content: center;
+    margin-top: var(--wf-space-md);
+    padding: var(--wf-space-md) 0 var(--wf-space-sm);
+    background: linear-gradient(to top, var(--wf-surface) 65%, transparent);
+  }
+  .commit-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px;
+    background: var(--wf-text);
+    color: var(--wf-white);
+    border: 1.5px solid var(--wf-text);
+    border-radius: var(--wf-radius);
+    font-family: var(--wf-font);
+    font-size: var(--wf-font-size-sm);
+    box-shadow: var(--wf-shadow-lg);
+    cursor: pointer;
+  }
+  .commit-btn .pill {
+    background: rgba(255,255,255,0.22);
+    padding: 1px 10px;
+    border-radius: 12px;
+    font-size: var(--wf-font-size-xs);
+  }
+  .commit-btn svg { width: 16px; height: 16px; stroke-width: 2; }
+
+  /* SVG sizing in page-local components */
+  .tabs-actions .wf-button svg { width: 16px; height: 16px; stroke-width: 1.8; }
+  .wf-search__icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+  .filter-row .wf-search__icon svg { color: var(--wf-text-lighter); }
+  .hn svg { width: 14px; height: 14px; stroke-width: 1.8; flex-shrink: 0; color: var(--wf-text-light); }
+  .hn__chev svg { width: 14px; height: 14px; }
+  .diff-file__head svg { width: 14px; height: 14px; stroke-width: 1.8; }
+  .detail-actions .wf-button svg { width: 16px; height: 16px; stroke-width: 1.8; }
+  .detail-actions .wf-button--primary svg { color: var(--wf-white); }
+  .detail-empty .ic svg { width: 26px; height: 26px; stroke-width: 1.5; color: var(--wf-text-light); }
+
+  /* ---------------- Right pane: scope ---------------- */
+  .scope-bar {
+    display: flex; align-items: center; gap: var(--wf-space-sm);
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    background: var(--wf-surface);
+    border: var(--wf-border-style);
+    border-radius: var(--wf-radius-lg);
+    margin-bottom: var(--wf-space-md);
+  }
+  .scope-level {
+    font-size: var(--wf-font-size-xs);
+    padding: 3px 12px;
+    border: 1px solid var(--wf-border-dark);
+    border-radius: 12px;
+    background: var(--wf-fill);
+    color: var(--wf-text);
+  }
+  .scope-crumbs {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--wf-font-mono);
+    font-size: var(--wf-font-size-xs);
+    color: var(--wf-text);
+    min-width: 0; flex-wrap: wrap;
+  }
+  .scope-crumbs .sep { color: var(--wf-text-lighter); }
+  .scope-crumbs .cur { font-weight: 600; }
+  .scope-count { margin-left: auto; font-size: var(--wf-font-size-sm); color: var(--wf-text); white-space: nowrap; }
+
+  /* Right pane: toolbar */
+  .detail-toolbar {
+    display: flex; align-items: center; gap: var(--wf-space-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--wf-space-md);
+  }
+  .detail-title {
+    font-size: var(--wf-font-size-md);
+    color: var(--wf-text);
+    min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .detail-actions { margin-left: auto; display: flex; align-items: center; gap: var(--wf-space-sm); }
+
+  /* ---------------- Diff cards ---------------- */
+  .diff-file {
+    background: var(--wf-surface);
+    border: var(--wf-border-style);
+    border-radius: var(--wf-radius-lg);
+    box-shadow: var(--wf-shadow);
+    margin-bottom: var(--wf-space-md);
+    overflow: hidden;
+  }
+  .diff-file__head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px var(--wf-space-md);
+    background: var(--wf-fill);
+    border-bottom: var(--wf-border-style);
+    font-family: var(--wf-font-mono);
+    font-size: var(--wf-font-size-xs);
+  }
+  .diff-file__path { color: var(--wf-text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .diff-file__hunk { color: var(--wf-text-lighter); }
+  .diff-file__menu {
+    color: var(--wf-text-light);
+    font-family: var(--wf-font);
+    font-size: var(--wf-font-size-sm);
+    padding: 0 6px; cursor: pointer;
+  }
+  .diff-file--collapsed .diff-body { display: none; }
+
+  .diff-body {
+    font-family: var(--wf-font-mono);
+    font-size: var(--wf-font-size-xs);
+    line-height: 1.75;
+    overflow-x: auto;
+  }
+  .diff-line { display: flex; min-width: max-content; }
+  .diff-gutter {
+    display: flex;
+    color: var(--wf-text-lighter);
+    background: var(--wf-bg);
+    user-select: none;
+    border-right: 1px solid var(--wf-fill-dark);
+  }
+  .diff-gutter .n { width: 38px; text-align: right; padding: 0 8px; }
+  .diff-sign { width: 18px; text-align: center; color: var(--wf-text-lighter); user-select: none; }
+  .diff-code { padding: 0 14px; white-space: pre; color: var(--wf-text); }
+  .diff-line--del { background: color-mix(in srgb, var(--wf-error) 14%, transparent); }
+  .diff-line--del .diff-gutter { background: color-mix(in srgb, var(--wf-error) 22%, transparent); }
+  .diff-line--del .diff-sign { color: var(--wf-error-text); }
+  .diff-line--add { background: color-mix(in srgb, var(--wf-success) 14%, transparent); }
+  .diff-line--add .diff-gutter { background: color-mix(in srgb, var(--wf-success) 22%, transparent); }
+  .diff-line--add .diff-sign { color: var(--wf-success-text); }
+
+  /* Detail pane empty state (before any scope is selected) */
+  .detail-empty {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    height: 100%; min-height: 320px;
+    border: 1.5px dashed var(--wf-border);
+    border-radius: var(--wf-radius-lg);
+    background: var(--wf-surface);
+    color: var(--wf-text-light);
+    padding: var(--wf-space-xl);
+    gap: var(--wf-space-md);
+  }
+  .detail-empty .ic {
+    width: 56px; height: 56px;
+    border: 1.5px solid var(--wf-border);
+    border-radius: var(--wf-radius-lg);
+    background: var(--wf-fill);
+    background-image: var(--wf-crosshatch);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 22px; color: var(--wf-text-light);
+  }
+  .detail-empty .et { font-size: var(--wf-font-size-sm); max-width: 320px; line-height: 1.4; }
+
+  /* Repo-level "no results" right pane */
+  .detail-no-results {
+    background: var(--wf-surface);
+    border: var(--wf-border-style);
+    border-radius: var(--wf-radius-lg);
+    padding: var(--wf-space-md);
+    box-shadow: var(--wf-shadow);
+  }
+  .detail-no-results__title { font-size: var(--wf-font-size-md); margin-bottom: 4px; }
+  .detail-no-results__sub { font-size: var(--wf-font-size-sm); color: var(--wf-text-light); }
+
+  /* Toast (commit feedback) */
+  .toast-stack {
+    position: fixed;
+    right: var(--wf-space-lg);
+    bottom: var(--wf-space-lg);
+    display: flex; flex-direction: column;
+    gap: var(--wf-space-sm);
+    z-index: 1100;
+  }
+</style>
+</head>
+<body class="wf-kit">
+
+<div class="wf-app-shell">
+
+  <!-- Left icon rail -->
+  <wf-rail
+    brand="M"
+    brand-badge="v2"
+    items="Moddy,DevCenter,Marketplace,Builder,Activity,Changelog,Repositories,Deploy"
+    icons="sparkles,compass,store,layout-grid,activity,git-pull-request-arrow,folder-git-2,rocket"
+    active="1"
+    tenant="Acme Bank">
+  </wf-rail>
+
+  <!-- Global topbar -->
+  <wf-topbar
+    org="Acme International Financial Trust and Enterprise Risk Management Solutions"
+    search-placeholder="Search recipes"
+    actions="Settings,Help"
+    user="L">
+  </wf-topbar>
+
+  <!-- Main app area -->
+  <div class="wf-app-shell__main">
+
+  <div class="pg">
+
+  <!-- Page header -->
+  <div class="page-top">
+    <div class="crumbs">
+      <a>DevCenter</a>
+      <span>/</span>
+      <a>Runs</a>
+      <span>/</span>
+      <span>Acme Q1 2026</span>
+    </div>
+    <h1 class="run-title">DevCenter — Acme International Financial Trust Q1 2026</h1>
+    <div class="run-subhead">Results for Acme International Financial Trust and Enterprise Risk Management Solutions</div>
+    <div class="status-row">
+      <span class="status-pill status-pill--ok"><i data-lucide="circle-check"></i> Completed</span>
+      <span class="status-pill"><i data-lucide="clock"></i> 80 hours estimated time savings</span>
+      <span class="run-meta">241 repositories · finished in 6m 12s · 7 days ago</span>
+    </div>
+    <div style="display:flex;align-items:flex-end;">
+      <wf-tabs items="Results,Repository status,Visualizations,Data tables" active="0"></wf-tabs>
+      <div class="tabs-actions">
+        <button class="wf-button wf-button--tertiary" title="Refresh"><i data-lucide="refresh-cw"></i></button>
+        <button class="wf-button wf-button--tertiary" title="Share"><i data-lucide="share-2"></i></button>
+        <button class="wf-button wf-button--tertiary" title="API explorer"><i data-lucide="code-xml"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-pane results -->
+  <div class="pane">
+
+    <!-- ================ LEFT PANE ================ -->
+    <div class="left-pane">
+
+      <!-- Summary + Options card -->
+      <wf-card title="Summary + Options ▾">
+        <div class="opt-row">
+          <wf-tag>scope: runtime</wf-tag>
+          <wf-tag>overrideTransitive: true</wf-tag>
+          <wf-tag>maximumUpgradeDelta: minor</wf-tag>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-row"><span class="k">Files changed</span><span class="v link">5,392</span></div>
+          <div class="summary-row"><span class="k">Repositories with results</span><span class="v link">234</span></div>
+          <div class="summary-row"><span class="k">Files searched</span><span class="v">33,377</span></div>
+          <div class="summary-row"><span class="k">Files examined</span><span class="v">1,284,902</span></div>
+        </div>
+      </wf-card>
+
+      <!-- Filter row -->
+      <div class="filter-row">
+        <div class="wf-button-tab" role="tablist">
+          <button class="wf-button-tab__item wf-button-tab__item--active seg-btn seg-btn--active" data-filter="all">All <span class="count">0</span></button>
+          <button class="wf-button-tab__item seg-btn" data-filter="results">Has results <span class="count">0</span></button>
+          <button class="wf-button-tab__item seg-btn" data-filter="error">Errors <span class="count">0</span></button>
+        </div>
+        <div class="wf-search">
+          <span class="wf-search__icon"><i data-lucide="search"></i></span>
+          <input id="repo-search" class="wf-search__input" type="search" placeholder="Filter repositories…" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+
+      <!-- Hierarchical tree -->
+      <div class="htree">
+        <div class="htree__head">
+          <span>Hierarchy</span>
+          <span class="trailing">Results</span>
+        </div>
+
+        <div id="org-row"></div>
+        <div id="repo-list"></div>
+      </div>
+
+      <div class="footer-summary" id="footer-summary">Showing 15 of 241 repositories</div>
+
+      <!-- Sticky commit bar -->
+      <div class="commit-bar">
+        <button class="commit-btn" id="commit-btn">
+          <i data-lucide="check-check"></i> Commit selected files <span class="pill" id="commit-count">234</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================ RIGHT PANE ================ -->
+    <div class="right-pane">
+
+      <div id="detail-slot">
+        <div class="detail-empty">
+          <span class="ic"><i data-lucide="folder-search"></i></span>
+          <div class="et">Select any level — repository, package, class, or method — to view its results</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="wireframe-kit/wireframe-kit.js?v=3"></script>
+<script>
+/* ============================================================
+   Hierarchical selection — interactivity (lo-fi port)
+   Ports the essential behavior from results-hierarchical-selection.html:
+   tree expansion, scope click, checkbox cascade, filter segments,
+   search, load-more, diff card collapse/expand, and commit toast.
+   ============================================================ */
+
+/* ---------- Data: repos ---------- */
+const REPOS = [
+  { name: 'kotlin', branch: 'master', results: 412 },
+  { name: 'intellij-community', branch: 'master', results: 386 },
+  { name: 'Exposed', branch: 'main', results: 168 },
+  { name: 'ktor', branch: 'main', results: 142 },
+  { name: 'kotlinx.coroutines', branch: 'master', results: 96 },
+  { name: 'compose-multiplatform', branch: 'master', results: 74 },
+  { name: 'kotlinx.serialization', branch: 'master', results: 58 },
+  { name: 'kotlin-playground', branch: 'master', results: 31 },
+  { name: 'qodana', branch: 'main', results: 24 },
+  { name: 'datalore-sdk', branch: 'master', results: 12 },
+  { name: 'teamcity-rest-client', branch: 'main', results: 3 },
+  { name: 'youtrack-client', branch: 'main', results: 1 },
+  { name: 'space-sdk', branch: 'main', results: 0, error: true },
+  { name: 'rider-fs', branch: 'main', results: 0 },
+  { name: 'fleet-plugin-template', branch: 'main', results: 0 },
+];
+/* Pad to 241 total: 234 with results, 4 errored, 3 no LST. */
+const PRE = ['kotlin','intellij','ktor','space','fleet','rider','clion','webstorm','datalore','qodana','teamcity','youtrack','hub','toolbox','mps','resharper','dataspell','aqua','rustrover','writerside','grazie','kover','dokka','arrow','koin','ktlint','detekt','okio','skija','compose','spek','mockk','klock','kodein','ktorm','jackson','guava','netty','okhttp','retrofit'];
+const SUF = ['core','api','gradle-plugin','cli','client','sdk','common','runtime','compiler','tools','ui','server','db','utils','testkit','samples','docs','playground','bench','ide','plugin','android','jvm','native','web','dsl'];
+const BR  = ['main','master','develop','trunk'];
+(function () {
+  let k = 0;
+  const nm = () => { const n = PRE[k % PRE.length] + '-' + SUF[Math.floor(k / PRE.length) % SUF.length]; k++; return n; };
+  for (let j = 0; j < 222; j++) REPOS.push({ name: nm(), branch: BR[j % 4], results: 1 + ((j * 17 + 5) % 59) });
+  for (let j = 0; j < 3; j++)   REPOS.push({ name: nm(), branch: BR[j % 4], results: 0, error: true });
+  REPOS.push({ name: nm(), branch: BR[0], results: 0 });
+})();
+function statusOf(r) { return r.error ? 'err' : (r.results > 0 ? 'ok' : 'none'); }
+const STATUS_RANK = { none: 0, err: 1, ok: 2 };
+REPOS.sort((a, b) => (STATUS_RANK[statusOf(a)] - STATUS_RANK[statusOf(b)]) || (b.results - a.results));
+REPOS.forEach((r, i) => { r.id = 'r' + i; });
+
+/* ---------- Data: shared package/file/class/method hierarchy ---------- */
+const HTREE = [
+  { pkg: 'org.jetbrains.model', files: [
+    { file: 'src/main/java/org/jetbrains/model/BaseEntity.java', classes: [
+      { cls: 'BaseEntity', hunk: 0, methods: [
+        { m: 'persistence imports', count: 4 },
+        { m: '@MappedSuperclass', count: 2 },
+      ]},
+    ]},
+    { file: 'src/main/java/org/jetbrains/visit/Visit.java', classes: [
+      { cls: 'Visit', hunk: 0, methods: [
+        { m: 'getDate()', count: 1 },
+        { m: 'getDescription()', count: 1 },
+      ]},
+      { cls: 'VisitType', hunk: 2, methods: [
+        { m: 'displayName()', count: 1 },
+      ]},
+    ]},
+  ]},
+  { pkg: 'org.jetbrains.owner', files: [
+    { file: 'src/main/java/org/jetbrains/owner/Owner.java', classes: [
+      { cls: 'Owner', hunk: 1, methods: [
+        { m: 'validation imports', count: 2 },
+        { m: 'getName()', count: 1 },
+      ]},
+    ]},
+    { file: 'src/main/java/org/jetbrains/repository/OwnerRepository.java', classes: [
+      { cls: 'OwnerRepository', hunk: 1, methods: [
+        { m: 'findById()', count: 1 },
+      ]},
+    ]},
+  ]},
+  { pkg: 'org.jetbrains.web', files: [
+    { file: 'src/main/java/org/jetbrains/vet/VetController.java', classes: [
+      { cls: 'VetController', hunk: 0, methods: [
+        { m: 'list()', count: 2 },
+        { m: 'handle()', count: 1 },
+      ]},
+    ]},
+    { file: 'src/main/java/org/jetbrains/system/CacheConfig.java', classes: [
+      { cls: 'CacheConfig', hunk: 1, methods: [
+        { m: 'cacheManager()', count: 1 },
+      ]},
+    ]},
+  ]},
+];
+const HCLASSES = [];
+HTREE.forEach(p => {
+  p.files.forEach(f => {
+    f.pkg = p.pkg;
+    f.classes.forEach(c => { c.pkg = p.pkg; c.file = f.file; c.count = c.methods.reduce((s, m) => s + m.count, 0); HCLASSES.push(c); });
+    f.count = f.classes.reduce((s, c) => s + c.count, 0);
+  });
+  p.count = p.files.reduce((s, f) => s + f.count, 0);
+});
+
+/* ---------- Diff hunks ---------- */
+const HUNKS = [
+  { header: '@@ -15,13 +15,13 @@', lines: [
+    ['ctx', 15, 15, '     */'],
+    ['ctx', 16, 16, '    package org.jetbrains.model;'],
+    ['ctx', 17, 17, ''],
+    ['del', 18, null, '    import javax.persistence.GeneratedValue;'],
+    ['del', 19, null, '    import javax.persistence.GenerationType;'],
+    ['del', 20, null, '    import javax.persistence.Id;'],
+    ['del', 21, null, '    import javax.persistence.MappedSuperclass;'],
+    ['add', null, 18, '    import jakarta.persistence.GeneratedValue;'],
+    ['add', null, 19, '    import jakarta.persistence.GenerationType;'],
+    ['add', null, 20, '    import jakarta.persistence.Id;'],
+    ['add', null, 21, '    import jakarta.persistence.MappedSuperclass;'],
+    ['ctx', 22, 22, ''],
+    ['ctx', 23, 23, '    @MappedSuperclass'],
+  ]},
+  { header: '@@ -8,9 +8,9 @@', lines: [
+    ['ctx', 8, 8, '    package org.jetbrains.owner;'],
+    ['ctx', 9, 9, ''],
+    ['del', 10, null, '    import javax.validation.constraints.NotBlank;'],
+    ['del', 11, null, '    import javax.persistence.Column;'],
+    ['add', null, 10, '    import jakarta.validation.constraints.NotBlank;'],
+    ['add', null, 11, '    import jakarta.persistence.Column;'],
+    ['ctx', 12, 12, ''],
+    ['ctx', 13, 13, '    public class Owner extends BaseEntity {'],
+    ['ctx', 14, 14, '        @NotBlank'],
+  ]},
+  { header: '@@ -58,3 +58,3 @@', lines: [
+    ['ctx', 58, 58, '    String displayName() {'],
+    ['del', 59, null, '        return javax.xml.bind.annotation.XmlEnumValue.value(this);'],
+    ['add', null, 59, '        return jakarta.xml.bind.annotation.XmlEnumValue.value(this);'],
+  ]},
+];
+
+/* ---------- Selection bookkeeping ---------- */
+const ckey = (rid, pkg, cls) => `${rid}|${pkg}|${cls}`;
+const repoClassKeys = (rid) => HCLASSES.map(c => ckey(rid, c.pkg, c.cls));
+const pkgClassKeys  = (rid, pkg) => HCLASSES.filter(c => c.pkg === pkg).map(c => ckey(rid, c.pkg, c.cls));
+const fileClassKeys = (rid, file) => HCLASSES.filter(c => c.file === file).map(c => ckey(rid, c.pkg, c.cls));
+
+const PAGE_INIT = 15, PAGE_INC = 25;
+const state = {
+  filter: 'all',
+  query: '',
+  expanded: new Set(),
+  shown: PAGE_INIT,
+  scope: null,         // { type, repoId, pkg, file, cls, method }
+  selFiles: new Set(), // class keys
+};
+REPOS.filter(r => r.results > 0).forEach(r => repoClassKeys(r.id).forEach(k => state.selFiles.add(k)));
+
+function rollup(keys) {
+  const n = keys.filter(k => state.selFiles.has(k)).length;
+  return n === 0 ? 'none' : (n === keys.length ? 'all' : 'some');
+}
+const repoSel = (rid) => rollup(repoClassKeys(rid));
+const pkgSel  = (rid, pkg) => rollup(pkgClassKeys(rid, pkg));
+const fileSel = (rid, file) => rollup(fileClassKeys(rid, file));
+
+function matches(r) {
+  if (state.filter === 'results' && !(r.results > 0)) return false;
+  if (state.filter === 'error' && !r.error) return false;
+  if (state.query) {
+    const q = state.query.toLowerCase();
+    if (!(`${r.name} ${r.branch}`.toLowerCase().includes(q))) return false;
+  }
+  return true;
+}
+
+/* ---------- HTML helpers ---------- */
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const icon = (name) => `<i data-lucide="${name}"></i>`;
+function chev(expanded) {
+  return `<button class="hn__chev" data-role="chev">${icon(expanded ? 'chevron-down' : 'chevron-right')}</button>`;
+}
+function ck(kind, id, sel) {
+  const checked = sel === 'all' || sel === true;
+  const ind = sel === 'some';
+  return `<input type="checkbox" class="wf-ck" data-cbk="${kind}" data-cid="${esc(id)}" ${checked ? 'checked' : ''} ${ind ? 'data-ind="1"' : ''}>`;
+}
+const STATUS_LABEL = { ok: 'Success', none: 'No LST', err: 'Errored' };
+
+/* ---------- Tree rendering ---------- */
+function repoRowHTML(r) {
+  const st = statusOf(r);
+  const expandable = r.results > 0;
+  const expanded = state.expanded.has(r.id);
+  const resTxt = r.error ? 'Error' : (r.results > 0 ? `${r.results.toLocaleString()} results` : 'No results');
+  const resCls = r.error ? 'hn__count--err' : (r.results > 0 ? '' : 'hn__count--zero');
+  const active = state.scope && state.scope.type === 'repo' && state.scope.repoId === r.id ? ' hn--active' : '';
+  let h = `<div class="hn hn--lvl2${active}" data-node="repo" data-rid="${r.id}">
+    ${expandable ? chev(expanded) : '<span class="hn__chev-spacer"></span>'}
+    ${ck('repo', r.id, expandable ? repoSel(r.id) : 'none')}
+    <span class="hn__status hn__status--${st}" title="${STATUS_LABEL[st]}"></span>
+    <span class="hn__name">${esc(r.name)} <span class="hn__branch">@ ${esc(r.branch)}</span></span>
+    <span class="hn__count ${resCls}">${resTxt}</span>
+  </div>`;
+  if (expandable && expanded) HTREE.forEach(p => h += pkgRowHTML(r.id, p));
+  return h;
+}
+function pkgRowHTML(rid, p) {
+  const key = `${rid}|${p.pkg}`;
+  const expanded = state.expanded.has(key);
+  const active = state.scope && state.scope.type === 'package' && state.scope.repoId === rid && state.scope.pkg === p.pkg ? ' hn--active' : '';
+  let h = `<div class="hn hn--lvl3${active}" data-node="package" data-rid="${rid}" data-pkg="${esc(p.pkg)}">
+    ${chev(expanded)}
+    ${ck('pkg', key, pkgSel(rid, p.pkg))}
+    ${icon('package')}
+    <span class="hn__name hn__mono">${esc(p.pkg)}</span>
+    <span class="hn__count">${p.count} matches</span>
+  </div>`;
+  if (expanded) p.files.forEach(f => h += fileRowHTML(rid, p.pkg, f));
+  return h;
+}
+function fileRowHTML(rid, pkg, f) {
+  const key = `${rid}|F|${f.file}`;
+  const expanded = state.expanded.has(key);
+  const nm = f.file.split('/').pop();
+  const active = state.scope && state.scope.type === 'file' && state.scope.repoId === rid && state.scope.file === f.file ? ' hn--active' : '';
+  const multi = f.classes.length > 1 ? ` <span style="font-size:var(--wf-font-size-xs);padding:1px 7px;border:1px solid var(--wf-border);border-radius:10px;color:var(--wf-text-light);background:var(--wf-fill);">${f.classes.length} classes</span>` : '';
+  let h = `<div class="hn hn--lvl4${active}" data-node="file" data-rid="${rid}" data-pkg="${esc(pkg)}" data-file="${esc(f.file)}">
+    ${chev(expanded)}
+    ${ck('file', `${rid}::${f.file}`, fileSel(rid, f.file))}
+    ${icon('file')}
+    <span class="hn__name hn__mono">${esc(nm)}${multi}</span>
+    <span class="hn__count">${f.count} ${f.count === 1 ? 'match' : 'matches'}</span>
+  </div>`;
+  if (expanded) f.classes.forEach(c => h += clsRowHTML(rid, pkg, f.file, c));
+  return h;
+}
+function clsRowHTML(rid, pkg, file, c) {
+  const key = ckey(rid, pkg, c.cls);
+  const expanded = state.expanded.has(`${rid}|C|${file}|${c.cls}`);
+  const active = state.scope && state.scope.type === 'class' && state.scope.repoId === rid && state.scope.file === file && state.scope.cls === c.cls ? ' hn--active' : '';
+  let h = `<div class="hn hn--lvl5${active}" data-node="class" data-rid="${rid}" data-pkg="${esc(pkg)}" data-file="${esc(file)}" data-cls="${esc(c.cls)}">
+    ${chev(expanded)}
+    ${ck('cls', key, state.selFiles.has(key))}
+    ${icon('braces')}
+    <span class="hn__name hn__mono">${esc(c.cls)}</span>
+    <span class="hn__count">${c.count} ${c.count === 1 ? 'match' : 'matches'}</span>
+  </div>`;
+  if (expanded) c.methods.forEach(m => h += methodRowHTML(rid, pkg, file, c, m));
+  return h;
+}
+function methodRowHTML(rid, pkg, file, c, m) {
+  const active = state.scope && state.scope.type === 'method' && state.scope.repoId === rid && state.scope.file === file && state.scope.cls === c.cls && state.scope.method === m.m ? ' hn--active' : '';
+  return `<div class="hn hn--lvl5${active}" style="padding-left:132px;" data-node="method" data-rid="${rid}" data-pkg="${esc(pkg)}" data-file="${esc(file)}" data-cls="${esc(c.cls)}" data-method="${esc(m.m)}">
+    <span class="hn__chev-spacer"></span>
+    <span class="hn__cb-spacer"></span>
+    ${icon('square-function')}
+    <span class="hn__name hn__method">${esc(m.m)}</span>
+    <span class="hn__count">${m.count} ${m.count === 1 ? 'match' : 'matches'}</span>
+  </div>`;
+}
+
+function orgRowHTML() {
+  const totalResults = REPOS.reduce((s, r) => s + r.results, 0);
+  // org rollup: all class keys across repos with results
+  const all = [];
+  REPOS.filter(r => r.results > 0).forEach(r => repoClassKeys(r.id).forEach(k => all.push(k)));
+  const sel = all.filter(k => state.selFiles.has(k)).length;
+  const orgSel = sel === 0 ? 'none' : (sel === all.length ? 'all' : 'some');
+  return `<div class="hn hn--lvl1" data-node="org">
+    <button class="hn__chev" data-role="chev">${icon('chevron-down')}</button>
+    ${ck('org', 'org', orgSel)}
+    ${icon('users')}
+    <span class="hn__name">jetbrains</span>
+    <span class="hn__count">${totalResults.toLocaleString()} results</span>
+  </div>`;
+}
+
+function renderTree() {
+  document.getElementById('org-row').innerHTML = orgRowHTML();
+  const list = REPOS.filter(matches);
+  const shown = Math.min(state.shown, list.length);
+  const page = list.slice(0, shown);
+  const remaining = list.length - shown;
+  const repoList = document.getElementById('repo-list');
+  repoList.innerHTML = (page.map(repoRowHTML).join('')
+    || `<div style="padding:16px;font-size:var(--wf-font-size-sm);color:var(--wf-text-lighter);">No repositories match this filter.</div>`)
+    + (remaining > 0 ? `<button class="load-more" id="load-more">Load ${Math.min(PAGE_INC, remaining)} more <span class="rest">${remaining.toLocaleString()} remaining</span></button>` : '');
+  // indeterminate state has to be set imperatively
+  document.querySelectorAll('.wf-ck[data-ind="1"]').forEach(c => c.indeterminate = true);
+  document.getElementById('footer-summary').textContent = `Showing ${shown.toLocaleString()} of ${list.length.toLocaleString()} repositories`;
+  document.getElementById('commit-count').textContent = state.selFiles.size.toLocaleString();
+  // filter counts
+  document.querySelector('[data-filter="all"] .count').textContent = REPOS.length;
+  document.querySelector('[data-filter="results"] .count').textContent = REPOS.filter(r => r.results > 0).length;
+  document.querySelector('[data-filter="error"] .count').textContent = REPOS.filter(r => r.error).length;
+  if (window.wfRefreshIcons) wfRefreshIcons();
+}
+
+/* ---------- Right pane (detail) ---------- */
+function scopeFiles() {
+  const s = state.scope;
+  if (!s) return [];
+  if (s.type === 'class' || s.type === 'method') return HCLASSES.filter(c => c.file === s.file && c.cls === s.cls);
+  if (s.type === 'file') return HCLASSES.filter(c => c.file === s.file);
+  if (s.type === 'package') return HCLASSES.filter(c => c.pkg === s.pkg);
+  return HCLASSES.slice();
+}
+function scopeCount() {
+  const s = state.scope;
+  if (s.type === 'method') { const c = scopeFiles()[0]; const m = c && c.methods.find(x => x.m === s.method); return m ? m.count : 0; }
+  return scopeFiles().reduce((a, c) => a + c.count, 0);
+}
+function scopeCrumbs() {
+  const s = state.scope; const out = [];
+  out.push((REPOS.find(r => r.id === s.repoId) || {}).name || '');
+  if (s.pkg) out.push(s.pkg);
+  if (s.file) out.push(s.file.split('/').pop());
+  if ((s.type === 'class' || s.type === 'method') && s.cls) out.push(s.cls);
+  if (s.method) out.push(s.method);
+  return out.filter(Boolean);
+}
+const LEVEL_LABEL = { repo: 'Repository', package: 'Package', file: 'File', class: 'Class', method: 'Method' };
+
+function diffCardHTML(c, hunk, scopeBadge) {
+  if (typeof hunk === 'number') hunk = HUNKS[hunk % HUNKS.length];
+  return `<div class="diff-file">
+    <div class="diff-file__head">
+      <input type="checkbox" class="wf-ck" checked title="Include this file in the commit">
+      <span data-role="card-chev" style="cursor:pointer;">${icon('chevron-down')}</span>
+      ${icon('file-code-2')}
+      <span class="diff-file__path">${esc(c.file)}</span>
+      ${scopeBadge ? `<span style="font-size:var(--wf-font-size-xs);padding:1px 8px;border:1px solid var(--wf-border);border-radius:10px;background:var(--wf-fill);color:var(--wf-text);">${esc(scopeBadge)}</span>` : ''}
+      <span class="diff-file__hunk">${esc(hunk.header)}</span>
+      <span class="diff-file__menu" data-role="card-menu">${icon('more-horizontal')}</span>
+    </div>
+    <div class="diff-body">
+      ${hunk.lines.map(([t, o, n, code]) => `<div class="diff-line${t === 'del' ? ' diff-line--del' : t === 'add' ? ' diff-line--add' : ''}">
+        <span class="diff-gutter"><span class="n">${o ?? ''}</span><span class="n">${n ?? ''}</span></span>
+        <span class="diff-sign">${t === 'del' ? '-' : t === 'add' ? '+' : ''}</span>
+        <span class="diff-code">${esc(code)}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderDetail() {
+  const slot = document.getElementById('detail-slot');
+  const s = state.scope;
+  if (!s) {
+    slot.innerHTML = `<div class="detail-empty">
+      <span class="ic">${icon('folder-search')}</span>
+      <div class="et">Select any level — repository, package, class, or method — to view its results</div>
+    </div>`;
+    if (window.wfRefreshIcons) wfRefreshIcons();
+    return;
+  }
+  const r = REPOS.find(x => x.id === s.repoId);
+  if (s.type === 'repo' && r && r.results === 0) {
+    slot.innerHTML = `<div class="detail-no-results">
+      <div class="detail-no-results__title">${esc(r.name)} <span class="hn__branch">@ ${esc(r.branch)}</span></div>
+      <div class="detail-no-results__sub">${r.error ? 'The recipe errored on this repository.' : 'No results were produced for this repository.'}</div>
+    </div>`;
+    return;
+  }
+  const files = scopeFiles();
+  const crumbs = scopeCrumbs();
+  const cnt = scopeCount();
+  const crumbHTML = crumbs.map((x, i) => `<span class="${i === crumbs.length - 1 ? 'cur' : ''}">${esc(x)}</span>`).join('<span class="sep">›</span>');
+  const titleMain = r ? `${esc(r.name)} <span class="hn__branch">@ ${esc(r.branch)}</span>` : 'All repositories';
+  let body;
+  if (s.type === 'method') {
+    const c = files[0]; const meth = c && c.methods.find(x => x.m === s.method);
+    body = (c && meth) ? diffCardHTML(c, HUNKS[(c.hunk || 0) % HUNKS.length], s.method) : '';
+  } else {
+    body = files.map(c => diffCardHTML(c, c.hunk, c.cls)).join('');
+  }
+  slot.innerHTML = `
+    <div class="scope-bar">
+      <span class="scope-level">${LEVEL_LABEL[s.type] || 'Scope'}</span>
+      <div class="scope-crumbs">${crumbHTML}</div>
+      <span class="scope-count">${cnt.toLocaleString()} ${cnt === 1 ? 'result' : 'results'}</span>
+    </div>
+    <div class="detail-toolbar">
+      <div class="detail-title">${titleMain}</div>
+      <div class="detail-actions">
+        <button class="wf-button wf-button--primary" id="commit-selected">${icon('check-check')}<span class="wf-button__label">Commit selected results</span>${icon('chevron-down')}</button>
+        <button class="wf-button wf-button--tertiary" id="collapse-toggle" title="Collapse all">${icon('chevrons-down-up')}</button>
+        <button class="wf-button wf-button--tertiary" title="More">${icon('more-horizontal')}</button>
+      </div>
+    </div>
+    <div id="diff-list">${body}</div>`;
+  if (window.wfRefreshIcons) wfRefreshIcons();
+}
+
+/* ---------- Event wiring ---------- */
+function render() { renderTree(); }
+
+const repoListEl = document.getElementById('repo-list');
+const orgRowEl   = document.getElementById('org-row');
+
+/* Checkbox cascade (works on both repo-list and org-row containers) */
+function onCheckboxChange(e) {
+  const cb = e.target.closest('.wf-ck'); if (!cb) return;
+  const kind = cb.dataset.cbk, id = cb.dataset.cid, on = cb.checked;
+  let keys = [];
+  if (kind === 'org') {
+    REPOS.filter(r => r.results > 0).forEach(r => repoClassKeys(r.id).forEach(k => keys.push(k)));
+  } else if (kind === 'repo') {
+    keys = repoClassKeys(id);
+  } else if (kind === 'pkg') {
+    const i = id.indexOf('|'); keys = pkgClassKeys(id.slice(0, i), id.slice(i + 1));
+  } else if (kind === 'file') {
+    const i = id.indexOf('::'); keys = fileClassKeys(id.slice(0, i), id.slice(i + 2));
+  } else if (kind === 'cls') {
+    keys = [id];
+  }
+  keys.forEach(k => on ? state.selFiles.add(k) : state.selFiles.delete(k));
+  render();
+}
+repoListEl.addEventListener('change', onCheckboxChange);
+orgRowEl.addEventListener('change', onCheckboxChange);
+
+/* Click handler: chevron toggles expand, body sets scope + also toggles */
+function expandKey(row) {
+  const t = row.dataset.node, rid = row.dataset.rid;
+  if (t === 'package') return `${rid}|${row.dataset.pkg}`;
+  if (t === 'file')    return `${rid}|F|${row.dataset.file}`;
+  if (t === 'class')   return `${rid}|C|${row.dataset.file}|${row.dataset.cls}`;
+  return rid;
+}
+function onTreeClick(e) {
+  if (e.target.closest('#load-more')) { state.shown += PAGE_INC; render(); return; }
+  if (e.target.closest('.wf-ck')) return;
+  const chevBtn = e.target.closest('[data-role="chev"]');
+  if (chevBtn) {
+    const row = chevBtn.closest('.hn'); const key = expandKey(row);
+    if (state.expanded.has(key)) state.expanded.delete(key); else state.expanded.add(key);
+    render();
+    return;
+  }
+  const row = e.target.closest('.hn'); if (!row) return;
+  const node = row.dataset.node, rid = row.dataset.rid;
+  if (node === 'org') return; // org row body doesn't scope or toggle here
+  state.scope = {
+    type: node,
+    repoId: rid,
+    pkg: row.dataset.pkg,
+    file: row.dataset.file,
+    cls: row.dataset.cls,
+    method: row.dataset.method,
+  };
+  // body click also toggles expand (matches the original prototype's behavior)
+  if (node !== 'method') {
+    const repo = REPOS.find(x => x.id === rid);
+    const expandable = node !== 'repo' || (repo && repo.results > 0);
+    if (expandable) {
+      const key = expandKey(row);
+      if (state.expanded.has(key)) state.expanded.delete(key); else state.expanded.add(key);
+    }
+  }
+  renderDetail();
+  render();
+}
+repoListEl.addEventListener('click', onTreeClick);
+
+/* Filter segments */
+document.querySelectorAll('.seg-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('wf-button-tab__item--active'));
+    btn.classList.add('wf-button-tab__item--active');
+    state.filter = btn.dataset.filter;
+    state.shown = PAGE_INIT;
+    render();
+  });
+});
+
+/* Search */
+document.getElementById('repo-search').addEventListener('input', (e) => {
+  state.query = e.target.value;
+  state.shown = PAGE_INIT;
+  render();
+});
+
+/* Diff card collapse/expand + global collapse toggle */
+document.getElementById('detail-slot').addEventListener('click', (e) => {
+  const ct = e.target.closest('#collapse-toggle');
+  if (ct) {
+    const cards = [...document.querySelectorAll('#diff-list .diff-file')];
+    const anyOpen = cards.some(c => !c.classList.contains('diff-file--collapsed'));
+    cards.forEach(c => c.classList.toggle('diff-file--collapsed', anyOpen));
+    ct.title = anyOpen ? 'Expand all' : 'Collapse all';
+    return;
+  }
+  if (e.target.closest('#commit-selected')) {
+    const n = document.querySelectorAll('#diff-list .wf-ck:checked').length;
+    toast(`Committing ${n} selected file${n === 1 ? '' : 's'}…`);
+    return;
+  }
+  const head = e.target.closest('.diff-file__head');
+  if (head && !e.target.closest('.wf-ck') && !e.target.closest('[data-role="card-menu"]')) {
+    head.parentElement.classList.toggle('diff-file--collapsed');
+  }
+});
+
+/* Commit button (sticky bar) */
+document.getElementById('commit-btn').addEventListener('click', () => {
+  const n = state.selFiles.size;
+  toast(`Committing ${n.toLocaleString()} selected file${n === 1 ? '' : 's'}…`);
+});
+
+function toast(msg) {
+  const stack = document.getElementById('toast-stack');
+  const el = document.createElement('div');
+  el.className = 'wf-toast';
+  el.textContent = '✓ ' + msg;
+  stack.appendChild(el);
+  setTimeout(() => el.remove(), 2600);
+}
+
+/* First render */
+render();
+</script>
+</body>
+</html>

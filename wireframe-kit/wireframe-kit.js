@@ -142,19 +142,41 @@ class WfBreadcrumb extends WfBase {
 }
 
 // --- Button ---
+// Maps to the Neo Figma Button (node 4086:7590).
+// Attributes:
+//   hierarchy = primary | secondary | tertiary | destructive    (default: primary)
+//   size      = small | medium                                  (default: small)
+//   state     = default | hover | pressed | focused | disabled | loading
+//   disabled  = boolean (alias for state="disabled")
+//   loading   = boolean (alias for state="loading")
+// Legacy attribute `variant` is still accepted and maps to hierarchy.
+// Inner HTML is preserved so callers can mix icons + text:
+//   <wf-button hierarchy="primary"><i data-lucide="plus"></i> Button</wf-button>
 class WfButton extends WfBase {
   render() {
-    const variant = this.attr('variant');
+    const hierarchy = this.attr('hierarchy') || this.attr('variant');
     const size = this.attr('size');
-    const disabled = this.boolAttr('disabled');
-    const text = this.textContent || 'Button';
-    this.innerHTML = '';
+    const state = this.attr('state');
+    const disabled = this.boolAttr('disabled') || state === 'disabled';
+    const loading = this.boolAttr('loading') || state === 'loading';
+    const focused = state === 'focused';
+
+    const inner = this.innerHTML.trim() || 'Button';
+
     let cls = 'wf-button';
-    if (variant) cls += ` wf-button--${variant}`;
-    if (size) cls += ` wf-button--${size}`;
+    if (hierarchy) cls += ` wf-button--${hierarchy}`;
+    if (size === 'medium' || size === 'md') cls += ' wf-button--md';
+    else if (size === 'lg') cls += ' wf-button--lg';
+    else if (size === 'sm' || size === 'small') cls += ' wf-button--sm';
     if (disabled) cls += ' wf-button--disabled';
-    this.className = '';
-    const btn = h('button', { className: cls, ...(disabled ? { disabled: '' } : {}) }, text);
+    if (loading) cls += ' wf-button--loading';
+    if (focused) cls += ' wf-button--focused';
+
+    const btn = document.createElement('button');
+    btn.className = cls;
+    btn.innerHTML = inner;
+    if (disabled) btn.disabled = true;
+
     this.replaceWith(btn);
   }
 }
@@ -237,14 +259,13 @@ class WfStatCard extends WfBase {
 // --- Checkbox ---
 class WfCheckbox extends WfBase {
   render() {
-    const label = this.attr('label', this.textContent || 'Checkbox');
+    // Empty content with no label attribute = box only, no label span.
+    const label = this.getAttribute('label') ?? this.textContent.trim();
     const checked = this.boolAttr('checked');
     this.innerHTML = '';
     this.className = `wf-checkbox${checked ? ' wf-checkbox--checked' : ''}`;
-    this.append(
-      h('span', { className: 'wf-checkbox__box' }),
-      h('span', {}, label)
-    );
+    this.append(h('span', { className: 'wf-checkbox__box' }));
+    if (label) this.append(h('span', {}, label));
     this.addEventListener('click', () => {
       this.classList.toggle('wf-checkbox--checked');
     });
@@ -799,6 +820,96 @@ class WfSidebar extends WfBase {
   }
 }
 
+// --- Lucide icon helper ---
+// Returns an <i data-lucide="..."> element. Lucide's createIcons()
+// replaces it with the actual <svg> once the library has loaded.
+function wfIcon(name) { return h('i', { 'data-lucide': name }); }
+
+// --- Topbar (global app bar with org selector, search, actions) ---
+class WfTopbar extends WfBase {
+  render() {
+    const org = this.attr('org', 'Organization');
+    const searchPlc = this.attr('search-placeholder', 'Search...');
+    const actions = this.attr('actions', 'Settings,Help')
+      .split(',').map(s => s.trim()).filter(Boolean);
+    const user = this.attr('user', '?');
+    this.innerHTML = '';
+    this.className = 'wf-topbar';
+
+    this.append(h('div', { className: 'wf-topbar__org', title: org },
+      h('span', { className: 'wf-topbar__org-icon' }, wfIcon('building-2')),
+      h('span', { className: 'wf-topbar__org-name' }, org),
+      h('span', { className: 'wf-topbar__org-caret' }, wfIcon('chevron-down'))
+    ));
+
+    this.append(h('span', { className: 'wf-topbar__spacer' }));
+
+    this.append(h('div', { className: 'wf-topbar__search' },
+      h('span', { className: 'wf-topbar__search-icon' }, wfIcon('search')),
+      h('span', { className: 'wf-topbar__search-text' }, searchPlc),
+      h('span', { className: 'wf-topbar__kbd' },
+        h('kbd', {}, '⌘'),
+        h('kbd', {}, 'K')
+      )
+    ));
+
+    // Maps friendly names → lucide icon ids. Unknown names render a
+    // generic square so the layout still works.
+    const iconMap = { Settings: 'settings', Help: 'circle-help', Notifications: 'bell', Inbox: 'inbox' };
+    const actionsEl = h('div', { className: 'wf-topbar__actions' });
+    actions.forEach(name => {
+      actionsEl.append(h('button', { className: 'wf-topbar__action', title: name },
+        wfIcon(iconMap[name] || 'square')));
+    });
+    actionsEl.append(h('span', { className: 'wf-topbar__avatar' }, user));
+    this.append(actionsEl);
+  }
+}
+
+// --- Rail (left icon navigation rail) ---
+class WfRail extends WfBase {
+  render() {
+    const brand = this.attr('brand', 'M');
+    const brandBadge = this.attr('brand-badge');
+    const items = this.attr('items', 'Item 1,Item 2,Item 3')
+      .split(',').map(s => s.trim()).filter(Boolean);
+    const icons = this.attr('icons', '')
+      .split(',').map(s => s.trim());
+    const active = this.numAttr('active', -1);
+    const tenant = this.attr('tenant');
+    this.innerHTML = '';
+    this.className = 'wf-rail';
+
+    const top = h('div', { className: 'wf-rail__top' });
+    const brandWrap = h('div', { className: 'wf-rail__brand' },
+      h('span', { className: 'wf-rail__brand-mark' }, brand)
+    );
+    if (brandBadge) brandWrap.append(h('span', { className: 'wf-rail__brand-badge' }, brandBadge));
+    top.append(brandWrap);
+
+    const itemsEl = h('div', { className: 'wf-rail__items' });
+    items.forEach((label, i) => {
+      const isActive = i === active;
+      const iconName = icons[i] || 'square';
+      itemsEl.append(h('a', {
+        className: `wf-rail__item${isActive ? ' wf-rail__item--active' : ''}`,
+        title: label
+      },
+        h('span', { className: 'wf-rail__icon' }, wfIcon(iconName)),
+        h('span', { className: 'wf-rail__label' }, label)
+      ));
+    });
+    top.append(itemsEl);
+    this.append(top);
+
+    if (tenant) {
+      this.append(h('div', { className: 'wf-rail__tenant' },
+        h('span', { className: 'wf-rail__tenant-mark' }, tenant)
+      ));
+    }
+  }
+}
+
 // ============================================
 // REGISTER ALL COMPONENTS
 // ============================================
@@ -840,6 +951,8 @@ const components = {
   'wf-empty-state': WfEmptyState,
   'wf-navbar': WfNavbar,
   'wf-sidebar': WfSidebar,
+  'wf-topbar': WfTopbar,
+  'wf-rail': WfRail,
 };
 
 for (const [name, cls] of Object.entries(components)) {
@@ -849,3 +962,14 @@ for (const [name, cls] of Object.entries(components)) {
 }
 
 console.log(`[wireframe-kit] ${Object.keys(components).length} components registered`);
+
+// --- Lucide icon hookup ---
+// If the page loaded the lucide library, replace any <i data-lucide="...">
+// markers with their SVG equivalents. Safe to call multiple times — pages
+// should re-run wfRefreshIcons() after rendering new content.
+window.wfRefreshIcons = function () {
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
+  }
+};
+window.wfRefreshIcons();
