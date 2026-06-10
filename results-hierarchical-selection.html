@@ -996,8 +996,15 @@ repoList.addEventListener('click',e=>{
     return;
   }
   const row=e.target.closest('.hn-row'); if(!row)return;
-  state.scope={ type:row.dataset.node, repoId:row.dataset.rid, pkg:row.dataset.pkg, cls:row.dataset.cls, file:row.dataset.file, method:row.dataset.method };
-  state.activeRepo = (row.dataset.rid && row.dataset.rid!=='ALL') ? row.dataset.rid : null;
+  const node=row.dataset.node, rid=row.dataset.rid;
+  state.scope={ type:node, repoId:rid, pkg:row.dataset.pkg, cls:row.dataset.cls, file:row.dataset.file, method:row.dataset.method };
+  state.activeRepo = (rid && rid!=='ALL') ? rid : null;
+  // clicking the row body also toggles expand for expandable, non-leaf, non-group rows
+  if(rid!=='ALL' && node!=='method'){
+    const repo = REPOS.find(x=>x.id===rid);
+    const expandable = node!=='repo' || (repo && repo.results>0);
+    if(expandable){ const key=expandKey(row); if(state.expanded.has(key)) state.expanded.delete(key); else state.expanded.add(key); }
+  }
   renderDetail();
   render();
 });
