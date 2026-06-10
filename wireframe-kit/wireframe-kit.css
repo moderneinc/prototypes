@@ -71,6 +71,7 @@
 
   /* Surfaces  (Neo collection: Color → surfaces/*) */
   --wf-surface-page: var(--wf-bg);                /* → surfaces/page */
+  --wf-surface-chrome: var(--wf-bg);              /* → surfaces/page (rail + topbar use page color, so chrome reads as one piece) */
   --wf-surface-card: var(--wf-surface);            /* → surfaces/card */
   --wf-surface-white: var(--wf-surface);           /* → surfaces/white */
   --wf-surface-hover: var(--wf-fill);              /* → surfaces/list-hover */
@@ -81,6 +82,7 @@
   --wf-surface-input: var(--wf-surface);           /* → input/background */
   --wf-surface-datagrid: var(--wf-surface);        /* → surfaces/data-grid/background */
   --wf-surface-tab-secondary: var(--wf-fill);      /* → surfaces/tab-secondary-background */
+  --wf-surface-nav-active: var(--wf-fill-dark);    /* → buttons/navigation active */
 
   /* Borders  (Neo collection: Color → border/*) */
   --wf-border-primary: var(--wf-border-dark);      /* → border/primary */
@@ -97,6 +99,8 @@
   --wf-type-success: var(--wf-success-dark);       /* → typography/success */
   --wf-type-warning: var(--wf-warning-dark);       /* → typography/warning */
   --wf-type-link: var(--wf-accent);                /* → typography/link/default */
+  --wf-type-navigation: var(--wf-text-light);      /* → typography/navigation/default */
+  --wf-type-navigation-selected: var(--wf-text);   /* → typography/navigation/selected */
 
   /* Shadows  (Neo collection: Shadow) */
   --wf-shadow-card: var(--wf-shadow);              /* → Card/Shadow */
@@ -167,37 +171,118 @@ svg.wf-filters {
 .wf-placeholder--long { width: 95%; }
 
 /* --- Page Layout --- */
+/* L-shape app shell:
+   - Left rail spans full height (grid rows 1-2)
+   - Top bar sits only over the main content column
+   - Main content "floats" inside the chrome with a rounded top-left corner
+   Matches the shell used in trigrep.html / results.html. */
 .wf-page {
   display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto 1fr;
-  min-height: 100vh;
+  grid-template-columns: 88px 1fr;
+  grid-template-rows: 56px 1fr;
+  grid-template-areas:
+    "nav topbar"
+    "nav main";
+  /* Lock the shell to the viewport so the rail + topbar stay pinned and only
+     the main column scrolls — matches results.html / trigrep.html shells. */
+  height: 100vh;
+  overflow: hidden;
+  background: var(--wf-surface-chrome);
 }
 
 .wf-page--no-sidebar {
   grid-template-columns: 1fr;
+  grid-template-areas:
+    "topbar"
+    "main";
 }
 
-/* --- Navbar --- */
+/* --- Navbar (top bar — only over main column) --- */
 .wf-navbar {
-  grid-column: 1 / -1;
+  grid-area: topbar;
   display: flex;
   align-items: center;
-  gap: var(--wf-space-md);
-  padding: var(--wf-space-sm) var(--wf-space-lg);
+  gap: var(--wf-space-sm);
+  padding: 10px var(--wf-space-lg);
+  background: var(--wf-surface-chrome);
+  height: 56px;
+}
+
+.wf-navbar__org {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: var(--wf-font-size-sm);
+  border: 1.5px solid var(--wf-border);
+  border-radius: 999px;
   background: var(--wf-surface);
-  border-bottom: var(--wf-border-style);
-  box-shadow: var(--wf-shadow);
-  height: 52px;
-}
-
-.wf-navbar__brand {
-  font-size: var(--wf-font-size-lg);
   color: var(--wf-text);
-  margin-right: auto;
-  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wf-navbar__org:hover { background: var(--wf-fill); }
+
+.wf-navbar__spacer { flex: 1; }
+
+.wf-navbar__search {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--wf-space-sm);
+  height: 36px;
+  padding: 0 14px;
+  width: 260px;
+  font-size: var(--wf-font-size-sm);
+  border: 1.5px solid var(--wf-border);
+  border-radius: 999px;
+  background: var(--wf-surface);
+  color: var(--wf-text-light);
+  cursor: text;
+}
+.wf-navbar__search-icon { color: var(--wf-text-lighter); font-size: 14px; }
+.wf-navbar__search-kbd {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 2px;
+}
+.wf-navbar__search-kbd kbd {
+  font-family: var(--wf-font-mono);
+  font-size: 10px;
+  padding: 1px 5px;
+  background: var(--wf-fill);
+  border: 1px solid var(--wf-border);
+  border-radius: 3px;
+  color: var(--wf-text-light);
+  line-height: 1;
 }
 
+.wf-navbar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.wf-navbar__action {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--wf-text-light);
+  cursor: pointer;
+  font-family: var(--wf-font);
+  font-size: var(--wf-font-size-md);
+}
+.wf-navbar__action:hover { background: var(--wf-fill); color: var(--wf-text); }
+
+/* Legacy top-bar link list — retained for backward compat with prototypes that
+   used the old <wf-navbar items="..."> shape, but de-emphasized. New prototypes
+   should put primary nav in the rail. */
 .wf-navbar__items {
   display: flex;
   gap: var(--wf-space-md);
@@ -206,55 +291,142 @@ svg.wf-filters {
   margin: 0;
   padding: 0;
 }
-
 .wf-navbar__item {
-  color: var(--wf-text-light);
+  color: var(--wf-type-navigation);
   cursor: pointer;
   text-decoration: none;
   font-size: var(--wf-font-size-sm);
 }
 .wf-navbar__item:hover,
-.wf-navbar__item--active { color: var(--wf-text); }
+.wf-navbar__item--active { color: var(--wf-type-navigation-selected); }
 
-/* --- Sidebar --- */
+/* Legacy brand slot — new prototypes put the brand on the rail (wf-sidebar__home). */
+.wf-navbar__brand {
+  font-size: var(--wf-font-size-lg);
+  color: var(--wf-text);
+  margin-right: auto;
+  text-decoration: none;
+}
+
+/* --- Sidebar (left rail) --- */
 .wf-sidebar {
-  width: 240px;
-  background: var(--wf-surface);
-  border-right: var(--wf-border-style);
-  padding: var(--wf-space-md);
+  grid-area: nav;
+  width: 88px;
+  background: var(--wf-surface-chrome);
+  padding: 8px 6px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
   overflow-y: auto;
 }
 
-.wf-sidebar__section {
-  margin-bottom: var(--wf-space-lg);
+.wf-sidebar__home,
+.wf-sidebar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: var(--wf-radius-lg);
+  color: var(--wf-type-navigation);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: var(--wf-font-size-xs);
+  line-height: 1.1;
+  text-align: center;
+  background: transparent;
+  border: none;
+  font-family: var(--wf-font);
 }
 
-.wf-sidebar__title {
+.wf-sidebar__item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  border: 1px solid transparent;
+  border-radius: var(--wf-radius-lg);
+  background: transparent;
+  color: var(--wf-text);
+  font-size: var(--wf-font-size-md);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.wf-sidebar__item:hover .wf-sidebar__item-icon,
+.wf-sidebar__item--active .wf-sidebar__item-icon,
+.wf-sidebar__home:hover .wf-sidebar__item-icon {
+  background: var(--wf-surface-nav-active);
+  border-color: var(--wf-border);
+}
+
+.wf-sidebar__item-label {
   font-size: var(--wf-font-size-xs);
+  color: var(--wf-type-navigation);
+}
+.wf-sidebar__item--active .wf-sidebar__item-label,
+.wf-sidebar__home .wf-sidebar__item-label {
+  color: var(--wf-type-navigation-selected);
+  /* Default-vs-selected typographic step (mirrors Neo's
+     Body/Navigation/Default vs Body/Navigation/selected text styles). */
+  font-weight: 600;
+}
+
+.wf-sidebar__footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--wf-space-sm);
+  padding-top: var(--wf-space-sm);
+}
+
+.wf-sidebar__tenant {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--wf-radius-lg);
+  background: var(--wf-text);
+  color: var(--wf-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--wf-font-size-xs);
+  text-align: center;
+  line-height: 1.1;
+  padding: 4px;
+  background-image: var(--wf-crosshatch);
+}
+
+/* Optional section grouping (kept; rail items can be wrapped in __section
+   with an __title for grouped rails like Workspace / Settings). */
+.wf-sidebar__section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--wf-space-sm);
+}
+.wf-sidebar__title {
+  font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--wf-text-lighter);
-  margin-bottom: var(--wf-space-sm);
+  text-align: center;
+  padding: 4px 0 2px;
 }
-
-.wf-sidebar__item {
-  display: flex;
-  align-items: center;
-  gap: var(--wf-space-sm);
-  padding: 6px var(--wf-space-sm);
-  border-radius: var(--wf-radius);
-  color: var(--wf-text-light);
-  cursor: pointer;
-  font-size: var(--wf-font-size-sm);
-  text-decoration: none;
-}
-.wf-sidebar__item:hover { background: var(--wf-fill); color: var(--wf-text); }
-.wf-sidebar__item--active { background: var(--wf-fill-dark); color: var(--wf-text); }
 
 /* --- Main Content --- */
 .wf-main {
+  grid-area: main;
   padding: var(--wf-space-xl);
   overflow-y: auto;
+  background: var(--wf-surface);
+  border-top-left-radius: 14px 16px;
+  box-shadow: var(--wf-shadow);
+}
+.wf-page--no-sidebar .wf-main {
+  border-top-left-radius: 0;
 }
 
 .wf-main__header {

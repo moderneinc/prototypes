@@ -52,7 +52,7 @@ To use the kit in a new prototype:
 
 ```html
 <link rel="stylesheet" href="wireframe-kit/wireframe-kit.css">
-<script type="module" src="wireframe-kit/wireframe-kit.js"></script>
+<script src="wireframe-kit/wireframe-kit.js"></script>
 ```
 
 ## Folders
