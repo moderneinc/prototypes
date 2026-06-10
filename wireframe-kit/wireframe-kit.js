@@ -759,14 +759,33 @@ class WfEmptyState extends WfBase {
   }
 }
 
-// --- Navbar (convenience) ---
+// --- Navbar (global top bar that sits over the main column) ---
+// Mirrors the real Moderne shell (results.html / trigrep.html):
+// optional org-selector pill, flex spacer, search, icon-actions, avatar.
+// Primary nav lives in the rail (<wf-sidebar>), not here.
 class WfNavbar extends WfBase {
   render() {
-    const brand = this.attr('brand', 'App Name');
-    const items = this.attr('items', '');
+    const org = this.attr('org', '');
+    const search = this.attr('search', '');
+    const actions = this.attr('actions', '');          // comma-separated icon glyphs
+    const avatar = this.attr('avatar', '');             // initials; empty = no avatar
+    const items = this.attr('items', '');               // legacy text link list
+    const brand = this.attr('brand', '');               // legacy brand label
     this.innerHTML = '';
     this.className = 'wf-navbar';
-    this.append(h('span', { className: 'wf-navbar__brand' }, brand));
+
+    if (brand) {
+      this.append(h('span', { className: 'wf-navbar__brand' }, brand));
+    }
+
+    if (org) {
+      this.append(h('button', { className: 'wf-navbar__org' },
+        h('span', { className: 'wf-icon' }, '◇'),
+        h('span', {}, org),
+        h('span', { className: 'wf-icon wf-icon--sm' }, '▾')
+      ));
+    }
+
     if (items) {
       const nav = h('nav', { className: 'wf-navbar__items' });
       items.split(',').forEach(item => {
@@ -774,28 +793,76 @@ class WfNavbar extends WfBase {
       });
       this.append(nav);
     }
-    this.append(h('span', { className: 'wf-avatar wf-avatar--sm' }, '?'));
+
+    this.append(h('span', { className: 'wf-navbar__spacer' }));
+
+    if (search) {
+      this.append(h('div', { className: 'wf-navbar__search' },
+        h('span', { className: 'wf-navbar__search-icon' }, '⌕'),
+        h('span', {}, search),
+        h('span', { className: 'wf-navbar__search-kbd' },
+          h('kbd', {}, '⌘'),
+          h('kbd', {}, 'K')
+        )
+      ));
+    }
+
+    if (actions) {
+      const group = h('div', { className: 'wf-navbar__actions' });
+      actions.split(',').forEach(glyph => {
+        group.append(h('button', { className: 'wf-navbar__action' }, glyph.trim()));
+      });
+      this.append(group);
+    }
+
+    if (avatar) {
+      this.append(h('span', { className: 'wf-avatar wf-avatar--sm' }, avatar));
+    }
   }
 }
 
-// --- Sidebar (convenience) ---
+// --- Sidebar (left rail — 88px, icon + label stacked) ---
+// Items accept "Label|icon" pairs (icon optional). Active state bolds the
+// label and highlights the icon pill — mirrors Neo's Body/Navigation/selected
+// typographic step + buttons/navigation active fill.
 class WfSidebar extends WfBase {
   render() {
-    const items = this.attr('items', 'Dashboard,Recipes,Settings').split(',');
+    const itemsAttr = this.attr('items', 'Dashboard|◇,Recipes|▤,Activity|↻,Settings|⚙');
     const active = this.numAttr('active', 0);
     const title = this.attr('title');
+    const home = this.attr('home', '');           // home/brand label, e.g. "Moderne"
+    const homeIcon = this.attr('home-icon', '◆');
+    const tenant = this.attr('tenant', '');        // tenant initials/short label
+
     this.innerHTML = '';
     this.className = 'wf-sidebar';
+
+    if (home) {
+      this.append(h('a', { className: 'wf-sidebar__home' },
+        h('span', { className: 'wf-sidebar__item-icon' }, homeIcon),
+        h('span', { className: 'wf-sidebar__item-label' }, home)
+      ));
+    }
 
     if (title) {
       this.append(h('div', { className: 'wf-sidebar__title' }, title));
     }
 
-    items.forEach((item, i) => {
+    itemsAttr.split(',').forEach((raw, i) => {
+      const [label, icon = '◇'] = raw.split('|').map(s => s.trim());
       this.append(h('a', {
         className: `wf-sidebar__item${i === active ? ' wf-sidebar__item--active' : ''}`
-      }, item.trim()));
+      },
+        h('span', { className: 'wf-sidebar__item-icon' }, icon),
+        h('span', { className: 'wf-sidebar__item-label' }, label)
+      ));
     });
+
+    if (tenant) {
+      this.append(h('div', { className: 'wf-sidebar__footer' },
+        h('div', { className: 'wf-sidebar__tenant' }, tenant)
+      ));
+    }
   }
 }
 

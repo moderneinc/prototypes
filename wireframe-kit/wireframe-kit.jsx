@@ -77,9 +77,31 @@ export const Row = ({ children, spread, className, ...props }) => (
 // NAVIGATION
 // ============================================
 
-export const Navbar = ({ brand = 'App Name', items = [], children, className, ...props }) => (
+// Global top bar that sits over the main column. Primary nav lives in the
+// rail (<Sidebar>), not here. Optional: org-selector pill, search, icon
+// actions, avatar. Pass JSX children to override any slot. The legacy
+// `brand` + text `items` props are still accepted for backward compat but
+// shouldn't be used in new prototypes.
+export const Navbar = ({
+  org,
+  search,
+  actions = [],
+  avatar,
+  brand,
+  items = [],
+  children,
+  className,
+  ...props
+}) => (
   <nav className={cn('wf-navbar', className)} {...props}>
-    <span className="wf-navbar__brand">{brand}</span>
+    {brand && <span className="wf-navbar__brand">{brand}</span>}
+    {org && (
+      <button className="wf-navbar__org">
+        <span className="wf-icon">◇</span>
+        <span>{org}</span>
+        <span className="wf-icon wf-icon--sm">▾</span>
+      </button>
+    )}
     {items.length > 0 && (
       <nav className="wf-navbar__items">
         {items.map((item, i) => (
@@ -87,20 +109,72 @@ export const Navbar = ({ brand = 'App Name', items = [], children, className, ..
         ))}
       </nav>
     )}
+    <span className="wf-navbar__spacer" />
+    {search && (
+      <div className="wf-navbar__search">
+        <span className="wf-navbar__search-icon">⌕</span>
+        <span>{search}</span>
+        <span className="wf-navbar__search-kbd">
+          <kbd>⌘</kbd>
+          <kbd>K</kbd>
+        </span>
+      </div>
+    )}
+    {actions.length > 0 && (
+      <div className="wf-navbar__actions">
+        {actions.map((glyph, i) => (
+          <button key={i} className="wf-navbar__action">{glyph}</button>
+        ))}
+      </div>
+    )}
     {children}
-    <Avatar size="sm" />
+    {avatar && <Avatar size="sm" initials={avatar} />}
   </nav>
 );
 
-export const Sidebar = ({ items = ['Dashboard', 'Settings'], active = 0, title, children, className, ...props }) => (
+// Left rail (88px). Items accept either strings ('Dashboard') or
+// { label, icon } objects. Active state bolds the label and highlights the
+// icon pill, mirroring Neo's Body/Navigation/selected typographic step plus
+// the buttons/navigation active fill.
+export const Sidebar = ({
+  items = [
+    { label: 'Dashboard', icon: '◇' },
+    { label: 'Recipes', icon: '▤' },
+    { label: 'Activity', icon: '↻' },
+    { label: 'Settings', icon: '⚙' },
+  ],
+  active = 0,
+  title,
+  home,
+  homeIcon = '◆',
+  tenant,
+  children,
+  className,
+  ...props
+}) => (
   <aside className={cn('wf-sidebar', className)} {...props}>
-    {title && <div className="wf-sidebar__title">{title}</div>}
-    {items.map((item, i) => (
-      <a key={i} className={cn('wf-sidebar__item', i === active && 'wf-sidebar__item--active')}>
-        {item}
+    {home && (
+      <a className="wf-sidebar__home">
+        <span className="wf-sidebar__item-icon">{homeIcon}</span>
+        <span className="wf-sidebar__item-label">{home}</span>
       </a>
-    ))}
+    )}
+    {title && <div className="wf-sidebar__title">{title}</div>}
+    {items.map((raw, i) => {
+      const { label, icon = '◇' } = typeof raw === 'string' ? { label: raw } : raw;
+      return (
+        <a key={i} className={cn('wf-sidebar__item', i === active && 'wf-sidebar__item--active')}>
+          <span className="wf-sidebar__item-icon">{icon}</span>
+          <span className="wf-sidebar__item-label">{label}</span>
+        </a>
+      );
+    })}
     {children}
+    {tenant && (
+      <div className="wf-sidebar__footer">
+        <div className="wf-sidebar__tenant">{tenant}</div>
+      </div>
+    )}
   </aside>
 );
 

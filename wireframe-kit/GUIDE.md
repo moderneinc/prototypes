@@ -16,13 +16,13 @@ Create an `.html` file and add two imports:
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="wireframe-kit/wireframe-kit.css">
-  <script type="module" src="wireframe-kit/wireframe-kit.js"></script>
+  <script src="wireframe-kit/wireframe-kit.js"></script>
 </head>
 <body class="wf-kit">
 
   <div class="wf-page">
-    <wf-navbar brand="Moderne" items="Recipes,Repos,Activity"></wf-navbar>
-    <wf-sidebar items="Dashboard,Settings" active="0"></wf-sidebar>
+    <wf-sidebar home="Moderne" items="Dashboard|◇,Recipes|▤,Activity|↻" active="0" tenant="MOD"></wf-sidebar>
+    <wf-navbar org="Moderne, Inc." search="Search…" actions="✦,?" avatar="AC"></wf-navbar>
     <main class="wf-main">
       <h1 class="wf-h1">Hello Wireframe</h1>
       <wf-card title="My Card">
@@ -35,7 +35,7 @@ Create an `.html` file and add two imports:
 </html>
 ```
 
-Key things to note: the `wf-kit` class on `<body>` activates the sketch font and background. The `wf-page` wrapper sets up the CSS Grid layout (navbar across the top, sidebar + main below). All web components auto-register when the script loads.
+Key things to note: the `wf-kit` class on `<body>` activates the sketch font and background. The `wf-page` wrapper sets up an **L-shaped grid** — an 88px rail on the left that spans the full height, plus a 56px top bar that only sits over the main column. This mirrors the shell used in `trigrep.html` / `results.html`. Primary navigation lives in the rail; the top bar carries the tenant switcher, global search, and account/action icons. All web components auto-register when the script loads.
 
 ### React
 
@@ -46,8 +46,17 @@ import { Page, Navbar, Sidebar, Main, Card } from './wireframe-kit';
 export default function App() {
   return (
     <Page>
-      <Navbar brand="Moderne" items={['Recipes', 'Repos', 'Activity']} />
-      <Sidebar items={['Dashboard', 'Settings']} active={0} />
+      <Sidebar
+        home="Moderne"
+        items={[
+          { label: 'Dashboard', icon: '◇' },
+          { label: 'Recipes', icon: '▤' },
+          { label: 'Activity', icon: '↻' },
+        ]}
+        active={0}
+        tenant="MOD"
+      />
+      <Navbar org="Moderne, Inc." search="Search…" actions={['✦', '?']} avatar="AC" />
       <Main>
         <h1 className="wf-h1">Hello Wireframe</h1>
         <Card title="My Card">
@@ -83,21 +92,23 @@ wireframe-kit/
 
 ### Page Shell
 
-Every prototype starts with a page shell: a navbar across the top, an optional sidebar, and a main content area.
+Every prototype starts with an L-shaped page shell: an 88px **left rail** that spans the full height, a 56px **top bar** that sits only over the main column, and a main content area that "floats" inside the chrome with a rounded top-left corner. Both the rail and the top bar are page-colored, so they read as one continuous chrome surface — this matches how `trigrep.html` and `results.html` lay out the real Moderne shell.
+
+Primary navigation lives in the rail. The top bar carries tenant/global context: org switcher, global search, action icons, account avatar.
 
 **HTML:**
 ```html
-<div class="wf-page">              <!-- grid: sidebar + main -->
-  <wf-navbar brand="App" items="Nav1,Nav2"></wf-navbar>
-  <wf-sidebar items="Link1,Link2" active="0"></wf-sidebar>
+<div class="wf-page">
+  <wf-sidebar home="App" items="Dashboard|◇,Settings|⚙" active="0" tenant="MOD"></wf-sidebar>
+  <wf-navbar org="Org name" search="Search…" actions="✦,?" avatar="AC"></wf-navbar>
   <main class="wf-main">...</main>
 </div>
 ```
 
-For pages without a sidebar, add `wf-page--no-sidebar`:
+For pages without a rail (e.g. a catalog or auth page), add `wf-page--no-sidebar`:
 ```html
 <div class="wf-page wf-page--no-sidebar">
-  <wf-navbar brand="App"></wf-navbar>
+  <wf-navbar org="Org name"></wf-navbar>
   <main class="wf-main">...</main>
 </div>
 ```
@@ -105,8 +116,13 @@ For pages without a sidebar, add `wf-page--no-sidebar`:
 **React:**
 ```jsx
 <Page>                              {/* or <Page noSidebar> */}
-  <Navbar brand="App" items={['Nav1', 'Nav2']} />
-  <Sidebar items={['Link1', 'Link2']} active={0} />
+  <Sidebar
+    home="App"
+    items={[{ label: 'Dashboard', icon: '◇' }, { label: 'Settings', icon: '⚙' }]}
+    active={0}
+    tenant="MOD"
+  />
+  <Navbar org="Org name" search="Search…" actions={['✦', '?']} avatar="AC" />
   <Main>...</Main>
 </Page>
 ```
@@ -268,18 +284,53 @@ Tables and data grids auto-fill with sample data (names, statuses, dates) when n
 
 | Component | HTML Tag | Key Attributes / Props |
 |---|---|---|
-| Navbar | `<wf-navbar>` | `brand`, `items` (comma-separated) |
-| Sidebar | `<wf-sidebar>` | `items`, `active` (0-based index), `title` |
+| Navbar (top bar) | `<wf-navbar>` | `org`, `search`, `actions` (comma-separated glyphs), `avatar` (initials) |
+| Sidebar (rail) | `<wf-sidebar>` | `items` (`Label\|icon` pairs, comma-separated), `active` (0-based index), `home`, `home-icon`, `tenant`, `title` |
 | Logo | `<wf-logo>` | `text` (default "Moderne"), `size` (sm, md, lg) |
 | Breadcrumb | `<wf-breadcrumb>` | `items` (comma-separated) |
 | Tabs | `<wf-tabs>` | `items`, `active` (0-based index) |
 | Pagination | `<wf-pagination>` | `pages`, `active` (1-based page number) |
 
+**Rail items** use a pipe-separated `Label|icon` shape so each item can render an icon above its label. Icon characters are stand-ins for Neo's Lucide icons. The active rail item bolds its label and highlights the icon pill — mirroring Neo's `Body/Navigation/selected` text style and `buttons/navigation active` color token.
+
 ```html
+<wf-sidebar
+  home="Moderne"
+  items="Dashboard|◇,Recipes|▤,Activity|↻,Settings|⚙"
+  active="0"
+  tenant="MOD">
+</wf-sidebar>
+
+<wf-navbar
+  org="Moderne, Inc."
+  search="Search recipes, repos, runs…"
+  actions="✦,?,◐"
+  avatar="AC">
+</wf-navbar>
+
 <wf-breadcrumb items="Home,Recipes,Spring Boot Migration"></wf-breadcrumb>
 <wf-tabs items="Overview,Code Changes,History" active="0"></wf-tabs>
 <wf-pagination pages="12" active="3"></wf-pagination>
 ```
+
+**React** sidebar items accept either a string or `{ label, icon }`:
+
+```jsx
+<Sidebar
+  home="Moderne"
+  items={[
+    { label: 'Dashboard', icon: '◇' },
+    { label: 'Recipes', icon: '▤' },
+    'Settings',
+  ]}
+  active={0}
+  tenant="MOD"
+/>
+
+<Navbar org="Moderne, Inc." search="Search…" actions={['✦', '?', '◐']} avatar="AC" />
+```
+
+The legacy `brand` + text `items` props on Navbar still work for documentation/catalog pages that need a simple text link list (see `examples/components.html`), but new product prototypes should keep primary nav in the rail.
 
 ### Feedback
 
@@ -458,8 +509,10 @@ The kit includes a layer of semantic tokens that mirror Neo's Figma variable col
 | Wireframe token | Maps to Neo variable | Collection |
 |---|---|---|
 | `--wf-surface-page` | `surfaces/page` | Color |
+| `--wf-surface-chrome` | `surfaces/page` (rail + topbar share page color) | Color |
 | `--wf-surface-card` | `surfaces/card` | Color |
 | `--wf-surface-hover` | `surfaces/list-hover` | Color |
+| `--wf-surface-nav-active` | `buttons/navigation active` | Color |
 | `--wf-surface-tooltip` | `surfaces/tooltip` | Color |
 | `--wf-surface-code` | `code/background` | Color |
 | `--wf-surface-input` | `input/background` | Color |
@@ -473,6 +526,8 @@ The kit includes a layer of semantic tokens that mirror Neo's Figma variable col
 | `--wf-type-success` | `typography/success` | Color |
 | `--wf-type-warning` | `typography/warning` | Color |
 | `--wf-type-link` | `typography/link/default` | Color |
+| `--wf-type-navigation` | `typography/navigation/default` | Color |
+| `--wf-type-navigation-selected` | `typography/navigation/selected` | Color |
 | `--wf-shadow-card` | `Card/Shadow` | Shadow |
 | `--wf-shadow-modal` | `Modal/Shadow` | Shadow |
 | `--wf-shadow-dropdown` | `Dropdown/Shadow` | Shadow |

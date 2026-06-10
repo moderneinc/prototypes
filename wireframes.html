@@ -6,7 +6,7 @@
   <title>Wireframe Kit — Component Catalog</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap">
   <link rel="stylesheet" href="wireframe-kit/wireframe-kit.css">
-  <script type="module" src="wireframe-kit/wireframe-kit.js"></script>
+  <script src="wireframe-kit/wireframe-kit.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: var(--wf-bg); color: var(--wf-text); }
@@ -115,8 +115,8 @@
     }
     .component__header {
       display: flex;
-      align-items: baseline;
-      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
       margin-bottom: 12px;
     }
     .component__name {
@@ -130,10 +130,36 @@
       padding: 1px 8px;
       border-radius: 3px;
     }
+    /* Inline copy-code button. Stays muted until hover. */
+    .component__copy-btn {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--wf-text-light);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .component__copy-btn:hover {
+      background: var(--wf-fill);
+      border-color: var(--wf-border);
+      color: var(--wf-text);
+    }
+    .component__copy-btn svg { display: block; }
+    /* Hidden code source — read by copyCode(). Kept in DOM (not in a data
+       attribute) so multi-line / quote-heavy snippets stay readable in the
+       file source. */
+    .component__code { display: none; }
     .component__preview {
       background: var(--wf-bg);
       border: 1.5px solid var(--wf-border);
-      border-radius: 5px 7px 0 0;
+      border-radius: 5px 7px 6px 8px;
       padding: 24px;
       display: flex;
       flex-wrap: wrap;
@@ -146,57 +172,6 @@
     .component__preview--full {
       display: block;
     }
-    .component__code-wrapper {
-      position: relative;
-      border: 1.5px solid var(--wf-border);
-      border-top: none;
-      border-radius: 0 0 6px 8px;
-      overflow: hidden;
-    }
-    .component__code-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 16px;
-      background: var(--wf-fill);
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      color: var(--wf-text-light);
-      cursor: pointer;
-      border: none;
-      width: 100%;
-      text-align: left;
-    }
-    .component__code-toggle:hover { background: var(--wf-fill-dark); }
-    .component__code {
-      display: none;
-      background: var(--wf-text);
-      color: #d0d0d0;
-      font-family: var(--wf-font-mono);
-      font-size: 12px;
-      line-height: 1.6;
-      padding: 16px;
-      overflow-x: auto;
-      white-space: pre;
-    }
-    .component__code.open { display: block; }
-    .component__copy {
-      position: absolute;
-      top: 40px;
-      right: 12px;
-      padding: 3px 10px;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      border: 1px solid #4a4a4a;
-      border-radius: 3px;
-      background: #2a2a2a;
-      color: #858585;
-      cursor: pointer;
-      display: none;
-      z-index: 10;
-    }
-    .component__code.open ~ .component__copy { display: block; }
-    .component__copy:hover { background: #3a3a3a; }
 
     /* Template cards */
     .template-grid {
@@ -227,21 +202,34 @@
       position: relative;
       overflow: hidden;
     }
+    /* Mini app-shell preview — L-shape: rail spans full height (rows 1-2),
+       top bar sits only over the main column. Mirrors .wf-page. */
     .template-card__mini {
       width: 80%;
       height: 80%;
-      background: var(--wf-surface);
+      background: var(--wf-fill);
       border: 1px solid var(--wf-border);
       border-radius: 3px;
       display: grid;
-      grid-template-columns: 40px 1fr;
-      grid-template-rows: 16px 1fr;
+      grid-template-columns: 22px 1fr;
+      grid-template-rows: 14px 1fr;
       gap: 1px;
       overflow: hidden;
     }
-    .template-card__mini-nav { grid-column: 1/-1; background: var(--wf-fill-dark); }
-    .template-card__mini-side { background: var(--wf-fill); }
-    .template-card__mini-main { background: var(--wf-surface); padding: 4px; }
+    .template-card__mini-side {
+      grid-column: 1; grid-row: 1 / -1;
+      background: var(--wf-fill);
+    }
+    .template-card__mini-nav {
+      grid-column: 2; grid-row: 1;
+      background: var(--wf-fill);
+    }
+    .template-card__mini-main {
+      grid-column: 2; grid-row: 2;
+      background: var(--wf-surface);
+      border-top-left-radius: 4px;
+      padding: 4px;
+    }
     .template-card__mini-block { background: var(--wf-fill-dark); border-radius: 1px; height: 8px; margin-bottom: 3px; }
     .template-card__mini-block:nth-child(2) { width: 60%; }
     .template-card__body {
@@ -363,12 +351,24 @@
       <div class="section__title">Setup &amp; usage</div>
       <p style="font-size:14px;color:var(--wf-text-light);margin-bottom:16px">Add these two lines to any HTML file in your prototype repo:</p>
       <div class="getting-started-code">&lt;link rel="stylesheet" href="wireframe-kit/wireframe-kit.css"&gt;
-&lt;script type="module" src="wireframe-kit/wireframe-kit.js"&gt;&lt;/script&gt;</div>
+&lt;script src="wireframe-kit/wireframe-kit.js"&gt;&lt;/script&gt;</div>
       <p style="font-size:14px;color:var(--wf-text-light);margin-bottom:16px">Then use web components directly in your HTML. Wrap everything in <code style="font-family:var(--wf-font-mono);font-size:12px;background:var(--wf-fill-dark);padding:2px 6px;border-radius:3px">class="wf-kit"</code> for base styles:</p>
       <div class="getting-started-code">&lt;body class="wf-kit"&gt;
   &lt;div class="wf-page"&gt;
-    &lt;wf-navbar brand="My App" items="Page 1,Page 2"&gt;&lt;/wf-navbar&gt;
-    &lt;wf-sidebar items="Dashboard,Settings" active="0"&gt;&lt;/wf-sidebar&gt;
+    &lt;!-- Left rail: home + primary nav + tenant logo --&gt;
+    &lt;wf-sidebar
+      home="My App"
+      items="Dashboard|◇,Recipes|▤,Activity|↻,Settings|⚙"
+      active="0"
+      tenant="ACM"&gt;&lt;/wf-sidebar&gt;
+
+    &lt;!-- Top bar: org switcher, search, action icons, avatar --&gt;
+    &lt;wf-navbar
+      org="Acme, Inc."
+      search="Search…"
+      actions="✦,?"
+      avatar="AC"&gt;&lt;/wf-navbar&gt;
+
     &lt;main class="wf-main"&gt;
       &lt;wf-card title="Hello"&gt;Your content here&lt;/wf-card&gt;
     &lt;/main&gt;
@@ -400,29 +400,32 @@
         </a>
         <a class="template-card" href="wireframe-kit/examples/recipe-detail.html">
           <div class="template-card__preview">
-            <div class="template-card__mini" style="grid-template-columns: 40px 1fr 60px;">
-              <div class="template-card__mini-nav" style="grid-column:1/-1"></div>
+            <div class="template-card__mini">
               <div class="template-card__mini-side"></div>
-              <div class="template-card__mini-main">
-                <div class="template-card__mini-block"></div>
-                <div class="template-card__mini-block"></div>
-              </div>
-              <div style="background:var(--wf-fill);padding:3px;">
-                <div class="template-card__mini-block" style="height:5px"></div>
-                <div class="template-card__mini-block" style="height:5px;width:70%"></div>
+              <div class="template-card__mini-nav"></div>
+              <div class="template-card__mini-main" style="display:grid;grid-template-columns:1fr 30px;gap:3px;">
+                <div>
+                  <div class="template-card__mini-block"></div>
+                  <div class="template-card__mini-block"></div>
+                </div>
+                <div style="background:var(--wf-fill);padding:2px;border-radius:2px;">
+                  <div class="template-card__mini-block" style="height:4px"></div>
+                  <div class="template-card__mini-block" style="height:4px;width:70%"></div>
+                </div>
               </div>
             </div>
           </div>
           <div class="template-card__body">
             <div class="template-card__name">Detail page</div>
-            <div class="template-card__desc">Recipe view with sidebar metadata</div>
+            <div class="template-card__desc">Recipe view with metadata column</div>
           </div>
         </a>
         <a class="template-card" href="wireframe-kit/examples/components.html">
           <div class="template-card__preview">
+            <!-- No-rail variant: top bar spans full width, no left rail -->
             <div class="template-card__mini" style="grid-template-columns: 1fr;">
-              <div class="template-card__mini-nav"></div>
-              <div class="template-card__mini-main">
+              <div class="template-card__mini-nav" style="grid-column:1"></div>
+              <div class="template-card__mini-main" style="grid-column:1;border-top-left-radius:0;">
                 <div class="template-card__mini-block"></div>
                 <div class="template-card__mini-block" style="width:80%"></div>
                 <div class="template-card__mini-block" style="width:50%"></div>
@@ -442,58 +445,58 @@
     <div class="section" id="navbar">
       <div class="section__title">Layout</div>
       <div class="component">
-        <div class="component__header"><span class="component__name">Navbar</span><span class="component__tag">&lt;wf-navbar&gt;</span></div>
-        <div class="component__preview component__preview--full">
-          <wf-navbar brand="Moderne" items="Recipes,Repositories,Activity"></wf-navbar>
-        </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-navbar brand="Moderne" items="Recipes,Repositories,Activity"&gt;&lt;/wf-navbar&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
+        <div class="component__header"><span class="component__name">Navbar</span><span class="component__tag">&lt;wf-navbar&gt; — top bar over main</span><pre class="component__code">&lt;!-- Top bar slots: org switcher, search, action icons, avatar --&gt;
+&lt;wf-navbar
+  org="Moderne, Inc."
+  search="Search recipes, repos, runs…"
+  actions="✦,?,◐"
+  avatar="AC"&gt;
+&lt;/wf-navbar&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
+        <div class="component__preview component__preview--full" style="background:var(--wf-surface-chrome);padding:0;">
+          <wf-navbar org="Moderne, Inc." search="Search recipes, repos, runs…" actions="✦,?,◐" avatar="AC"></wf-navbar>
         </div>
       </div>
       <div class="component" id="sidebar">
-        <div class="component__header"><span class="component__name">Sidebar</span><span class="component__tag">&lt;wf-sidebar&gt;</span></div>
-        <div class="component__preview" style="background:var(--wf-surface);max-width:260px;">
-          <wf-sidebar title="NAVIGATION" items="Dashboard,Recipe Builder,Run History,Settings" active="0"></wf-sidebar>
-        </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-sidebar
-  title="NAVIGATION"
-  items="Dashboard,Recipe Builder,Run History,Settings"
-  active="0"&gt;
-&lt;/wf-sidebar&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
+        <div class="component__header"><span class="component__name">Sidebar</span><span class="component__tag">&lt;wf-sidebar&gt; — 88px left rail</span><pre class="component__code">&lt;!-- Rail slots: home (top), items (Label|icon pairs), tenant (bottom) --&gt;
+&lt;wf-sidebar
+  home="Moderne"
+  items="Dashboard|◇,Recipes|▤,Repositories|⌥,Activity|↻,Settings|⚙"
+  active="0"
+  tenant="MOD"&gt;
+&lt;/wf-sidebar&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
+        <div class="component__preview component__preview--full" style="background:var(--wf-surface-chrome);padding:0;height:520px;display:flex;align-items:stretch;">
+          <wf-sidebar
+            home="Moderne"
+            items="Dashboard|◇,Recipes|▤,Repositories|⌥,Activity|↻,Settings|⚙"
+            active="0"
+            tenant="MOD"
+            style="height:520px;"></wf-sidebar>
         </div>
       </div>
       <div class="component" id="page">
-        <div class="component__header"><span class="component__name">Page / Grid</span><span class="component__tag">CSS classes</span></div>
+        <div class="component__header"><span class="component__name">Page / Grid</span><span class="component__tag">CSS classes</span><pre class="component__code">&lt;!-- L-shape app shell: rail on left (full height), top bar over main only --&gt;
+&lt;div class="wf-page"&gt;
+  &lt;wf-sidebar home="App" items="Dashboard|◇,Settings|⚙" active="0" tenant="ACM"&gt;&lt;/wf-sidebar&gt;
+  &lt;wf-navbar org="Org name" search="Search…" actions="✦,?" avatar="AC"&gt;&lt;/wf-navbar&gt;
+  &lt;main class="wf-main"&gt;...&lt;/main&gt;
+&lt;/div&gt;
+
+&lt;!-- No-rail variant for catalog/auth pages --&gt;
+&lt;div class="wf-page wf-page--no-sidebar"&gt;
+  &lt;wf-navbar org="Org name"&gt;&lt;/wf-navbar&gt;
+  &lt;main class="wf-main"&gt;...&lt;/main&gt;
+&lt;/div&gt;
+
+&lt;!-- Inside main: Grid (2/3/4 cols), Stack (vertical), Row (horizontal) --&gt;
+&lt;div class="wf-grid wf-grid--3"&gt;...&lt;/div&gt;
+&lt;div class="wf-stack"&gt;...&lt;/div&gt;
+&lt;div class="wf-row"&gt;...&lt;/div&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--col" style="gap:8px">
           <div class="wf-grid wf-grid--3" style="width:100%">
             <div style="background:var(--wf-fill-dark);padding:16px;border-radius:4px;text-align:center;font-size:13px;color:var(--wf-text-light)">1/3</div>
             <div style="background:var(--wf-fill-dark);padding:16px;border-radius:4px;text-align:center;font-size:13px;color:var(--wf-text-light)">1/3</div>
             <div style="background:var(--wf-fill-dark);padding:16px;border-radius:4px;text-align:center;font-size:13px;color:var(--wf-text-light)">1/3</div>
           </div>
-        </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;!-- Page with sidebar --&gt;
-&lt;div class="wf-page"&gt;
-  &lt;wf-navbar&gt;&lt;/wf-navbar&gt;
-  &lt;wf-sidebar&gt;&lt;/wf-sidebar&gt;
-  &lt;main class="wf-main"&gt;...&lt;/main&gt;
-&lt;/div&gt;
-
-&lt;!-- Grid: 2, 3, or 4 columns --&gt;
-&lt;div class="wf-grid wf-grid--3"&gt;...&lt;/div&gt;
-
-&lt;!-- Stack (vertical) --&gt;
-&lt;div class="wf-stack"&gt;...&lt;/div&gt;
-
-&lt;!-- Row (horizontal) --&gt;
-&lt;div class="wf-row"&gt;...&lt;/div&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
         </div>
       </div>
     </div>
@@ -502,7 +505,13 @@
     <div class="section" id="button">
       <div class="section__title">Buttons</div>
       <div class="component">
-        <div class="component__header"><span class="component__name">Button</span><span class="component__tag">&lt;wf-button&gt;</span></div>
+        <div class="component__header"><span class="component__name">Button</span><span class="component__tag">&lt;wf-button&gt;</span><pre class="component__code">&lt;wf-button&gt;Default&lt;/wf-button&gt;
+&lt;wf-button variant="primary"&gt;Primary&lt;/wf-button&gt;
+&lt;wf-button variant="secondary"&gt;Secondary&lt;/wf-button&gt;
+&lt;wf-button variant="ghost"&gt;Ghost&lt;/wf-button&gt;
+&lt;wf-button variant="destructive"&gt;Destructive&lt;/wf-button&gt;
+&lt;wf-button size="sm"&gt;Small&lt;/wf-button&gt;
+&lt;wf-button size="lg"&gt;Large&lt;/wf-button&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <button class="wf-button">Default</button>
           <button class="wf-button wf-button--primary">Primary</button>
@@ -512,38 +521,17 @@
           <button class="wf-button wf-button--sm">Small</button>
           <button class="wf-button wf-button--lg">Large</button>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-button&gt;Default&lt;/wf-button&gt;
-&lt;wf-button variant="primary"&gt;Primary&lt;/wf-button&gt;
-&lt;wf-button variant="secondary"&gt;Secondary&lt;/wf-button&gt;
-&lt;wf-button variant="ghost"&gt;Ghost&lt;/wf-button&gt;
-&lt;wf-button variant="destructive"&gt;Destructive&lt;/wf-button&gt;
-&lt;wf-button size="sm"&gt;Small&lt;/wf-button&gt;
-&lt;wf-button size="lg"&gt;Large&lt;/wf-button&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="button-group">
-        <div class="component__header"><span class="component__name">ButtonGroup</span><span class="component__tag">&lt;wf-button-group&gt;</span></div>
+        <div class="component__header"><span class="component__name">ButtonGroup</span><span class="component__tag">&lt;wf-button-group&gt;</span><pre class="component__code">&lt;wf-button-group items="Day,Week,Month"&gt;&lt;/wf-button-group&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <wf-button-group items="Day,Week,Month"></wf-button-group>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-button-group items="Day,Week,Month"&gt;&lt;/wf-button-group&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="button-tab">
-        <div class="component__header"><span class="component__name">ButtonTab</span><span class="component__tag">&lt;wf-button-tab&gt;</span></div>
+        <div class="component__header"><span class="component__name">ButtonTab</span><span class="component__tag">&lt;wf-button-tab&gt;</span><pre class="component__code">&lt;wf-button-tab items="Overview,Details,History" active="0"&gt;&lt;/wf-button-tab&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <wf-button-tab items="Overview,Details,History" active="0"></wf-button-tab>
-        </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-button-tab items="Overview,Details,History" active="0"&gt;&lt;/wf-button-tab&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
         </div>
       </div>
     </div>
@@ -552,108 +540,63 @@
     <div class="section" id="input">
       <div class="section__title">Form controls</div>
       <div class="component">
-        <div class="component__header"><span class="component__name">Input</span><span class="component__tag">&lt;wf-input&gt;</span></div>
+        <div class="component__header"><span class="component__name">Input</span><span class="component__tag">&lt;wf-input&gt;</span><pre class="component__code">&lt;wf-input label="Email address" placeholder="you@example.com"&gt;&lt;/wf-input&gt;
+&lt;wf-input label="With error" error="This field is required"&gt;&lt;/wf-input&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview" style="max-width:320px">
           <wf-input label="Email address" placeholder="you@example.com"></wf-input>
           <wf-input label="With error" placeholder="..." error="This field is required"></wf-input>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-input label="Email address" placeholder="you@example.com"&gt;&lt;/wf-input&gt;
-&lt;wf-input label="With error" error="This field is required"&gt;&lt;/wf-input&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="textarea">
-        <div class="component__header"><span class="component__name">Textarea</span><span class="component__tag">&lt;wf-textarea&gt;</span></div>
+        <div class="component__header"><span class="component__name">Textarea</span><span class="component__tag">&lt;wf-textarea&gt;</span><pre class="component__code">&lt;wf-textarea label="Description" placeholder="Enter a description..."&gt;&lt;/wf-textarea&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview" style="max-width:320px">
           <wf-textarea label="Description" placeholder="Enter a description..."></wf-textarea>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-textarea label="Description" placeholder="Enter a description..."&gt;&lt;/wf-textarea&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="select">
-        <div class="component__header"><span class="component__name">Select</span><span class="component__tag">&lt;wf-select&gt;</span></div>
+        <div class="component__header"><span class="component__name">Select</span><span class="component__tag">&lt;wf-select&gt;</span><pre class="component__code">&lt;wf-select placeholder="Choose option..."&gt;&lt;/wf-select&gt;
+&lt;wf-select value="Selected value"&gt;&lt;/wf-select&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <wf-select placeholder="Choose option..."></wf-select>
           <wf-select value="Selected value"></wf-select>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-select placeholder="Choose option..."&gt;&lt;/wf-select&gt;
-&lt;wf-select value="Selected value"&gt;&lt;/wf-select&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="search-comp">
-        <div class="component__header"><span class="component__name">Search</span><span class="component__tag">&lt;wf-search&gt;</span></div>
+        <div class="component__header"><span class="component__name">Search</span><span class="component__tag">&lt;wf-search&gt;</span><pre class="component__code">&lt;wf-search placeholder="Search recipes..."&gt;&lt;/wf-search&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview" style="max-width:300px"><wf-search placeholder="Search recipes..."></wf-search></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-search placeholder="Search recipes..."&gt;&lt;/wf-search&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="datepicker">
-        <div class="component__header"><span class="component__name">DatePicker</span><span class="component__tag">&lt;wf-datepicker&gt;</span></div>
+        <div class="component__header"><span class="component__name">DatePicker</span><span class="component__tag">&lt;wf-datepicker&gt;</span><pre class="component__code">&lt;wf-datepicker value="Jun 4, 2026"&gt;&lt;/wf-datepicker&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview"><wf-datepicker value="Jun 4, 2026"></wf-datepicker></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-datepicker value="Jun 4, 2026"&gt;&lt;/wf-datepicker&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="checkbox">
-        <div class="component__header"><span class="component__name">Checkbox</span><span class="component__tag">&lt;wf-checkbox&gt;</span></div>
+        <div class="component__header"><span class="component__name">Checkbox</span><span class="component__tag">&lt;wf-checkbox&gt;</span><pre class="component__code">&lt;wf-checkbox label="Option A"&gt;&lt;/wf-checkbox&gt;
+&lt;wf-checkbox label="Option B" checked&gt;&lt;/wf-checkbox&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <wf-checkbox label="Unchecked"></wf-checkbox>
           <wf-checkbox label="Checked" checked></wf-checkbox>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-checkbox label="Option A"&gt;&lt;/wf-checkbox&gt;
-&lt;wf-checkbox label="Option B" checked&gt;&lt;/wf-checkbox&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="radio">
-        <div class="component__header"><span class="component__name">Radio</span><span class="component__tag">&lt;wf-radio&gt;</span></div>
+        <div class="component__header"><span class="component__name">Radio</span><span class="component__tag">&lt;wf-radio&gt;</span><pre class="component__code">&lt;wf-radio label="Option A" selected&gt;&lt;/wf-radio&gt;
+&lt;wf-radio label="Option B"&gt;&lt;/wf-radio&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <wf-radio label="Option A" selected></wf-radio>
           <wf-radio label="Option B"></wf-radio>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-radio label="Option A" selected&gt;&lt;/wf-radio&gt;
-&lt;wf-radio label="Option B"&gt;&lt;/wf-radio&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="toggle">
-        <div class="component__header"><span class="component__name">Toggle</span><span class="component__tag">&lt;wf-toggle&gt;</span></div>
+        <div class="component__header"><span class="component__name">Toggle</span><span class="component__tag">&lt;wf-toggle&gt;</span><pre class="component__code">&lt;wf-toggle label="Dark mode"&gt;&lt;/wf-toggle&gt;
+&lt;wf-toggle label="Enabled" on&gt;&lt;/wf-toggle&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <wf-toggle label="Off"></wf-toggle>
           <wf-toggle label="On" on></wf-toggle>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-toggle label="Dark mode"&gt;&lt;/wf-toggle&gt;
-&lt;wf-toggle label="Enabled" on&gt;&lt;/wf-toggle&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="dropdown">
-        <div class="component__header"><span class="component__name">Dropdown</span><span class="component__tag">&lt;wf-dropdown&gt;</span></div>
+        <div class="component__header"><span class="component__name">Dropdown</span><span class="component__tag">&lt;wf-dropdown&gt;</span><pre class="component__code">&lt;wf-dropdown items="Edit,Duplicate,Archive,Delete" label="Actions"&gt;&lt;/wf-dropdown&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview" style="min-height:40px">
           <wf-dropdown items="Edit,Duplicate,Archive,Delete" label="Actions"></wf-dropdown>
-        </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-dropdown items="Edit,Duplicate,Archive,Delete" label="Actions"&gt;&lt;/wf-dropdown&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
         </div>
       </div>
     </div>
@@ -662,112 +605,62 @@
     <div class="section" id="badge">
       <div class="section__title">Data display</div>
       <div class="component">
-        <div class="component__header"><span class="component__name">Badge</span><span class="component__tag">&lt;wf-badge&gt;</span></div>
+        <div class="component__header"><span class="component__name">Badge</span><span class="component__tag">&lt;wf-badge&gt;</span><pre class="component__code">&lt;wf-badge&gt;Default&lt;/wf-badge&gt;
+&lt;wf-badge filled&gt;Filled&lt;/wf-badge&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <span class="wf-badge">Default</span>
           <wf-badge filled>Filled</wf-badge>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-badge&gt;Default&lt;/wf-badge&gt;
-&lt;wf-badge filled&gt;Filled&lt;/wf-badge&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="tag">
-        <div class="component__header"><span class="component__name">Tag</span><span class="component__tag">&lt;wf-tag&gt;</span></div>
+        <div class="component__header"><span class="component__name">Tag</span><span class="component__tag">&lt;wf-tag&gt;</span><pre class="component__code">&lt;wf-tag&gt;Java&lt;/wf-tag&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview"><wf-tag>Java</wf-tag> <wf-tag>Spring</wf-tag> <wf-tag>Migration</wf-tag></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-tag&gt;Java&lt;/wf-tag&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="chip">
-        <div class="component__header"><span class="component__name">Chip</span><span class="component__tag">&lt;wf-chip&gt;</span></div>
+        <div class="component__header"><span class="component__name">Chip</span><span class="component__tag">&lt;wf-chip&gt;</span><pre class="component__code">&lt;wf-chip&gt;Filter&lt;/wf-chip&gt;
+&lt;wf-chip removable&gt;Removable&lt;/wf-chip&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview"><wf-chip>Filter</wf-chip> <wf-chip removable>Removable</wf-chip></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-chip&gt;Filter&lt;/wf-chip&gt;
-&lt;wf-chip removable&gt;Removable&lt;/wf-chip&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="avatar">
-        <div class="component__header"><span class="component__name">Avatar</span><span class="component__tag">&lt;wf-avatar&gt;</span></div>
+        <div class="component__header"><span class="component__name">Avatar</span><span class="component__tag">&lt;wf-avatar&gt;</span><pre class="component__code">&lt;wf-avatar initials="AC"&gt;&lt;/wf-avatar&gt;
+&lt;wf-avatar size="sm" initials="S"&gt;&lt;/wf-avatar&gt;
+&lt;wf-avatar size="lg" initials="LG"&gt;&lt;/wf-avatar&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <wf-avatar size="sm" initials="S"></wf-avatar>
           <wf-avatar initials="MD"></wf-avatar>
           <wf-avatar size="lg" initials="LG"></wf-avatar>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-avatar initials="AC"&gt;&lt;/wf-avatar&gt;
-&lt;wf-avatar size="sm" initials="S"&gt;&lt;/wf-avatar&gt;
-&lt;wf-avatar size="lg" initials="LG"&gt;&lt;/wf-avatar&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="kv">
-        <div class="component__header"><span class="component__name">KeyValuePair</span><span class="component__tag">&lt;wf-kv&gt;</span></div>
+        <div class="component__header"><span class="component__name">KeyValuePair</span><span class="component__tag">&lt;wf-kv&gt;</span><pre class="component__code">&lt;wf-kv key="Author" value="Moderne Team"&gt;&lt;/wf-kv&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--col" style="max-width:360px">
           <wf-kv key="Author" value="Moderne Team"></wf-kv>
           <wf-kv key="Category" value="Java / Spring"></wf-kv>
           <wf-kv key="Last Updated" value="Jun 2, 2026"></wf-kv>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-kv key="Author" value="Moderne Team"&gt;&lt;/wf-kv&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="list-item">
-        <div class="component__header"><span class="component__name">ListItem</span><span class="component__tag">&lt;wf-list-item&gt;</span></div>
+        <div class="component__header"><span class="component__name">ListItem</span><span class="component__tag">&lt;wf-list-item&gt;</span><pre class="component__code">&lt;wf-list-item title="Spring Boot Migration" subtitle="Java - 342 runs" trailing="2m ago"&gt;&lt;/wf-list-item&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--col" style="padding:0;background:var(--wf-surface)">
           <wf-list-item title="Spring Boot Migration" subtitle="Java - 342 runs" trailing="2m ago"></wf-list-item>
           <wf-list-item title="Dependency Update" subtitle="Maven - 128 runs" trailing="1h ago"></wf-list-item>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-list-item title="Spring Boot Migration" subtitle="Java - 342 runs" trailing="2m ago"&gt;&lt;/wf-list-item&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="table">
-        <div class="component__header"><span class="component__name">Table</span><span class="component__tag">&lt;wf-table&gt;</span></div>
+        <div class="component__header"><span class="component__name">Table</span><span class="component__tag">&lt;wf-table&gt;</span><pre class="component__code">&lt;wf-table rows="5" cols="4" headers="Name,Status,Role,Date"&gt;&lt;/wf-table&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full"><wf-table rows="3" cols="3" headers="Name,Status,Date"></wf-table></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-table rows="5" cols="4" headers="Name,Status,Role,Date"&gt;&lt;/wf-table&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="datagrid">
-        <div class="component__header"><span class="component__name">DataGrid</span><span class="component__tag">&lt;wf-data-grid&gt;</span></div>
+        <div class="component__header"><span class="component__name">DataGrid</span><span class="component__tag">&lt;wf-data-grid&gt;</span><pre class="component__code">&lt;wf-data-grid rows="5" cols="4" headers="Recipe,Status,Repos,Date"&gt;&lt;/wf-data-grid&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full"><wf-data-grid rows="3" cols="3" headers="Recipe,Status,Date"></wf-data-grid></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-data-grid rows="5" cols="4" headers="Recipe,Status,Repos,Date"&gt;&lt;/wf-data-grid&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="progress">
-        <div class="component__header"><span class="component__name">Progress</span><span class="component__tag">&lt;wf-progress&gt;</span></div>
+        <div class="component__header"><span class="component__name">Progress</span><span class="component__tag">&lt;wf-progress&gt;</span><pre class="component__code">&lt;wf-progress value="72"&gt;&lt;/wf-progress&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview" style="max-width:360px"><wf-progress value="72"></wf-progress></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-progress value="72"&gt;&lt;/wf-progress&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="diffstat">
-        <div class="component__header"><span class="component__name">DiffStat</span><span class="component__tag">&lt;wf-diffstat&gt;</span></div>
+        <div class="component__header"><span class="component__name">DiffStat</span><span class="component__tag">&lt;wf-diffstat&gt;</span><pre class="component__code">&lt;wf-diffstat additions="24" deletions="8"&gt;&lt;/wf-diffstat&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview"><wf-diffstat additions="24" deletions="8"></wf-diffstat></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-diffstat additions="24" deletions="8"&gt;&lt;/wf-diffstat&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
     </div>
 
@@ -775,31 +668,16 @@
     <div class="section" id="breadcrumb">
       <div class="section__title">Navigation</div>
       <div class="component">
-        <div class="component__header"><span class="component__name">Breadcrumb</span><span class="component__tag">&lt;wf-breadcrumb&gt;</span></div>
+        <div class="component__header"><span class="component__name">Breadcrumb</span><span class="component__tag">&lt;wf-breadcrumb&gt;</span><pre class="component__code">&lt;wf-breadcrumb items="Home,Recipes,Java,Spring Boot"&gt;&lt;/wf-breadcrumb&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview"><wf-breadcrumb items="Home,Recipes,Java,Spring Boot"></wf-breadcrumb></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-breadcrumb items="Home,Recipes,Java,Spring Boot"&gt;&lt;/wf-breadcrumb&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="tabs">
-        <div class="component__header"><span class="component__name">Tabs</span><span class="component__tag">&lt;wf-tabs&gt;</span></div>
+        <div class="component__header"><span class="component__name">Tabs</span><span class="component__tag">&lt;wf-tabs&gt;</span><pre class="component__code">&lt;wf-tabs items="Overview,Code Changes,History,Settings" active="0"&gt;&lt;/wf-tabs&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full"><wf-tabs items="Overview,Code Changes,History,Settings" active="0"></wf-tabs></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-tabs items="Overview,Code Changes,History,Settings" active="0"&gt;&lt;/wf-tabs&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="pagination">
-        <div class="component__header"><span class="component__name">Pagination</span><span class="component__tag">&lt;wf-pagination&gt;</span></div>
+        <div class="component__header"><span class="component__name">Pagination</span><span class="component__tag">&lt;wf-pagination&gt;</span><pre class="component__code">&lt;wf-pagination pages="12" active="3"&gt;&lt;/wf-pagination&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview"><wf-pagination pages="12" active="3"></wf-pagination></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-pagination pages="12" active="3"&gt;&lt;/wf-pagination&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
     </div>
 
@@ -807,42 +685,29 @@
     <div class="section" id="alert">
       <div class="section__title">Feedback</div>
       <div class="component">
-        <div class="component__header"><span class="component__name">Alert</span><span class="component__tag">&lt;wf-alert&gt;</span></div>
+        <div class="component__header"><span class="component__name">Alert</span><span class="component__tag">&lt;wf-alert&gt;</span><pre class="component__code">&lt;wf-alert variant="info" title="Info"&gt;Message here.&lt;/wf-alert&gt;
+&lt;wf-alert variant="success" title="Done"&gt;All good.&lt;/wf-alert&gt;
+&lt;wf-alert variant="warning" title="Heads up"&gt;Check this.&lt;/wf-alert&gt;
+&lt;wf-alert variant="error" title="Error"&gt;Failed.&lt;/wf-alert&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--col">
           <wf-alert variant="info" title="Info">Informational message.</wf-alert>
           <wf-alert variant="success" title="Success">Operation completed.</wf-alert>
           <wf-alert variant="warning" title="Warning">Review before continuing.</wf-alert>
           <wf-alert variant="error" title="Error">Something went wrong.</wf-alert>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-alert variant="info" title="Info"&gt;Message here.&lt;/wf-alert&gt;
-&lt;wf-alert variant="success" title="Done"&gt;All good.&lt;/wf-alert&gt;
-&lt;wf-alert variant="warning" title="Heads up"&gt;Check this.&lt;/wf-alert&gt;
-&lt;wf-alert variant="error" title="Error"&gt;Failed.&lt;/wf-alert&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="banner">
-        <div class="component__header"><span class="component__name">Banner</span><span class="component__tag">&lt;wf-banner&gt;</span></div>
+        <div class="component__header"><span class="component__name">Banner</span><span class="component__tag">&lt;wf-banner&gt;</span><pre class="component__code">&lt;wf-banner&gt;Your message here.&lt;/wf-banner&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full"><wf-banner>System maintenance tonight at 11pm ET.</wf-banner></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-banner&gt;Your message here.&lt;/wf-banner&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="toast">
-        <div class="component__header"><span class="component__name">Toast</span><span class="component__tag">&lt;wf-toast&gt;</span></div>
+        <div class="component__header"><span class="component__name">Toast</span><span class="component__tag">&lt;wf-toast&gt;</span><pre class="component__code">&lt;wf-toast&gt;Recipe run completed&lt;/wf-toast&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview"><wf-toast>Recipe run completed</wf-toast></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-toast&gt;Recipe run completed&lt;/wf-toast&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="modal">
-        <div class="component__header"><span class="component__name">Modal</span><span class="component__tag">&lt;wf-modal&gt;</span></div>
+        <div class="component__header"><span class="component__name">Modal</span><span class="component__tag">&lt;wf-modal&gt;</span><pre class="component__code">&lt;wf-modal title="Confirm action" open&gt;
+  &lt;p&gt;Are you sure?&lt;/p&gt;
+&lt;/wf-modal&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full" style="min-height:220px;position:relative;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.08)">
           <div class="wf-modal" style="position:relative;box-shadow:3px 4px 0px rgba(0,0,0,0.1)">
             <div class="wf-modal__header"><span class="wf-modal__title">Confirm action</span><button class="wf-modal__close">x</button></div>
@@ -850,42 +715,25 @@
             <div class="wf-modal__footer"><button class="wf-button">Cancel</button><button class="wf-button wf-button--primary">Confirm</button></div>
           </div>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-modal title="Confirm action" open&gt;
-  &lt;p&gt;Are you sure?&lt;/p&gt;
-&lt;/wf-modal&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="spinner">
-        <div class="component__header"><span class="component__name">Spinner</span><span class="component__tag">CSS class</span></div>
+        <div class="component__header"><span class="component__name">Spinner</span><span class="component__tag">CSS class</span><pre class="component__code">&lt;span class="wf-spinner"&gt;&lt;/span&gt;
+&lt;span class="wf-spinner wf-spinner--sm"&gt;&lt;/span&gt;
+&lt;span class="wf-spinner wf-spinner--lg"&gt;&lt;/span&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <span class="wf-spinner wf-spinner--sm"></span>
           <span class="wf-spinner"></span>
           <span class="wf-spinner wf-spinner--lg"></span>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;span class="wf-spinner"&gt;&lt;/span&gt;
-&lt;span class="wf-spinner wf-spinner--sm"&gt;&lt;/span&gt;
-&lt;span class="wf-spinner wf-spinner--lg"&gt;&lt;/span&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="empty-state">
-        <div class="component__header"><span class="component__name">EmptyState</span><span class="component__tag">&lt;wf-empty-state&gt;</span></div>
-        <div class="component__preview component__preview--full" style="background:var(--wf-surface)">
-          <wf-empty-state title="No recipes found" message="Try adjusting your search or create a new recipe" action="Create Recipe"></wf-empty-state>
-        </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-empty-state
+        <div class="component__header"><span class="component__name">EmptyState</span><span class="component__tag">&lt;wf-empty-state&gt;</span><pre class="component__code">&lt;wf-empty-state
   title="No recipes found"
   message="Try adjusting your search"
   action="Create Recipe"&gt;
-&lt;/wf-empty-state&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
+&lt;/wf-empty-state&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
+        <div class="component__preview component__preview--full" style="background:var(--wf-surface)">
+          <wf-empty-state title="No recipes found" message="Try adjusting your search or create a new recipe" action="Create Recipe"></wf-empty-state>
         </div>
       </div>
     </div>
@@ -894,38 +742,23 @@
     <div class="section" id="card">
       <div class="section__title">Cards &amp; charts</div>
       <div class="component">
-        <div class="component__header"><span class="component__name">Card</span><span class="component__tag">&lt;wf-card&gt;</span></div>
+        <div class="component__header"><span class="component__name">Card</span><span class="component__tag">&lt;wf-card&gt;</span><pre class="component__code">&lt;wf-card title="Card Title" footer&gt;
+  Your content here
+&lt;/wf-card&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full">
           <wf-card title="Card with footer" footer></wf-card>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-card title="Card Title" footer&gt;
-  Your content here
-&lt;/wf-card&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="stat-card">
-        <div class="component__header"><span class="component__name">StatCard</span><span class="component__tag">&lt;wf-stat-card&gt;</span></div>
+        <div class="component__header"><span class="component__name">StatCard</span><span class="component__tag">&lt;wf-stat-card&gt;</span><pre class="component__code">&lt;wf-stat-card label="Active Recipes" value="247" change="+12 this week"&gt;&lt;/wf-stat-card&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview">
           <wf-stat-card label="Active Recipes" value="247" change="+12 this week"></wf-stat-card>
           <wf-stat-card label="Success Rate" value="94.2%"></wf-stat-card>
         </div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-stat-card label="Active Recipes" value="247" change="+12 this week"&gt;&lt;/wf-stat-card&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="chart">
-        <div class="component__header"><span class="component__name">Chart</span><span class="component__tag">&lt;wf-chart&gt;</span></div>
+        <div class="component__header"><span class="component__name">Chart</span><span class="component__tag">&lt;wf-chart&gt;</span><pre class="component__code">&lt;wf-chart title="Weekly Recipe Runs" bars="7"&gt;&lt;/wf-chart&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full"><wf-chart title="Weekly Recipe Runs" bars="7"></wf-chart></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-chart title="Weekly Recipe Runs" bars="7"&gt;&lt;/wf-chart&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
     </div>
 
@@ -933,29 +766,19 @@
     <div class="section" id="code-snippet">
       <div class="section__title">Developer</div>
       <div class="component">
-        <div class="component__header"><span class="component__name">CodeSnippet</span><span class="component__tag">&lt;wf-code-snippet&gt;</span></div>
-        <div class="component__preview component__preview--full"><wf-code-snippet language="yaml" lines="5"></wf-code-snippet></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-code-snippet language="yaml" lines="5"&gt;&lt;/wf-code-snippet&gt;
+        <div class="component__header"><span class="component__name">CodeSnippet</span><span class="component__tag">&lt;wf-code-snippet&gt;</span><pre class="component__code">&lt;wf-code-snippet language="yaml" lines="5"&gt;&lt;/wf-code-snippet&gt;
 
 &lt;!-- Or with real content: --&gt;
 &lt;wf-code-snippet language="java"&gt;
 public class Main {
   public static void main(String[] args) {}
 }
-&lt;/wf-code-snippet&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
+&lt;/wf-code-snippet&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
+        <div class="component__preview component__preview--full"><wf-code-snippet language="yaml" lines="5"></wf-code-snippet></div>
       </div>
       <div class="component" id="tree">
-        <div class="component__header"><span class="component__name">Tree</span><span class="component__tag">&lt;wf-tree&gt;</span></div>
+        <div class="component__header"><span class="component__name">Tree</span><span class="component__tag">&lt;wf-tree&gt;</span><pre class="component__code">&lt;wf-tree depth="3" items="4"&gt;&lt;/wf-tree&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview" style="max-width:320px;background:var(--wf-surface)"><wf-tree depth="3" items="3"></wf-tree></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-tree depth="3" items="4"&gt;&lt;/wf-tree&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
     </div>
 
@@ -963,40 +786,20 @@ public class Main {
     <div class="section" id="card-table">
       <div class="section__title">Assemblies</div>
       <div class="component">
-        <div class="component__header"><span class="component__name">CardTable</span><span class="component__tag">&lt;wf-card-table&gt;</span></div>
+        <div class="component__header"><span class="component__name">CardTable</span><span class="component__tag">&lt;wf-card-table&gt;</span><pre class="component__code">&lt;wf-card-table title="Recipe Runs" rows="4"&gt;&lt;/wf-card-table&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full"><wf-card-table title="Recipe Runs" rows="4"></wf-card-table></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-card-table title="Recipe Runs" rows="4"&gt;&lt;/wf-card-table&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="filter-results">
-        <div class="component__header"><span class="component__name">FilterResults</span><span class="component__tag">&lt;wf-filter-results&gt;</span></div>
+        <div class="component__header"><span class="component__name">FilterResults</span><span class="component__tag">&lt;wf-filter-results&gt;</span><pre class="component__code">&lt;wf-filter-results rows="4" headers="Repository,Status,Changes,Date" filters="Status,Language"&gt;&lt;/wf-filter-results&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full"><wf-filter-results rows="4" headers="Repository,Status,Changes,Date" filters="Status,Language"></wf-filter-results></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-filter-results rows="4" headers="Repository,Status,Changes,Date" filters="Status,Language"&gt;&lt;/wf-filter-results&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="data-table-layout">
-        <div class="component__header"><span class="component__name">DataTableLayout</span><span class="component__tag">&lt;wf-data-table-layout&gt;</span></div>
+        <div class="component__header"><span class="component__name">DataTableLayout</span><span class="component__tag">&lt;wf-data-table-layout&gt;</span><pre class="component__code">&lt;wf-data-table-layout rows="5" headers="Name,Status,Type,Modified"&gt;&lt;/wf-data-table-layout&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full"><wf-data-table-layout rows="5" headers="Name,Status,Type,Modified"></wf-data-table-layout></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-data-table-layout rows="5" headers="Name,Status,Type,Modified"&gt;&lt;/wf-data-table-layout&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="changelog-feed">
-        <div class="component__header"><span class="component__name">ChangelogFeed</span><span class="component__tag">&lt;wf-changelog-feed&gt;</span></div>
+        <div class="component__header"><span class="component__name">ChangelogFeed</span><span class="component__tag">&lt;wf-changelog-feed&gt;</span><pre class="component__code">&lt;wf-changelog-feed entries="4"&gt;&lt;/wf-changelog-feed&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full"><wf-changelog-feed entries="4"></wf-changelog-feed></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-changelog-feed entries="4"&gt;&lt;/wf-changelog-feed&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
     </div>
 
@@ -1004,24 +807,14 @@ public class Main {
     <div class="section" id="recipe-results">
       <div class="section__title">Compositions</div>
       <div class="component">
-        <div class="component__header"><span class="component__name">RecipeResults</span><span class="component__tag">&lt;wf-recipe-results&gt;</span></div>
+        <div class="component__header"><span class="component__name">RecipeResults</span><span class="component__tag">&lt;wf-recipe-results&gt;</span><pre class="component__code">&lt;wf-recipe-results recipe="Migrate to Java 17" status="completed" repos="24" changes="18" errors="2"&gt;&lt;/wf-recipe-results&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
         <div class="component__preview component__preview--full"><wf-recipe-results recipe="Migrate to Java 17" status="completed" repos="24" changes="18" errors="2"></wf-recipe-results></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-recipe-results recipe="Migrate to Java 17" status="completed" repos="24" changes="18" errors="2"&gt;&lt;/wf-recipe-results&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
       </div>
       <div class="component" id="activation">
-        <div class="component__header"><span class="component__name">Activation</span><span class="component__tag">&lt;wf-activation&gt;</span></div>
-        <div class="component__preview component__preview--full"><wf-activation headline="Welcome to Moderne" cta="Run your first recipe"></wf-activation></div>
-        <div class="component__code-wrapper">
-          <button class="component__code-toggle" onclick="this.nextElementSibling.classList.toggle('open')">Show code <span>&#9662;</span></button>
-          <div class="component__code">&lt;wf-activation headline="Welcome to Moderne" cta="Run your first recipe"
+        <div class="component__header"><span class="component__name">Activation</span><span class="component__tag">&lt;wf-activation&gt;</span><pre class="component__code">&lt;wf-activation headline="Welcome to Moderne" cta="Run your first recipe"
   prereqs="Connect an SCM:done,Add repositories:done,Run first recipe:pending"&gt;
-&lt;/wf-activation&gt;</div>
-          <button class="component__copy" onclick="copyCode(this)">Copy</button>
-        </div>
+&lt;/wf-activation&gt;</pre><button class="component__copy-btn" onclick="copyCode(this)" aria-label="Copy code"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy code</button></div>
+        <div class="component__preview component__preview--full"><wf-activation headline="Welcome to Moderne" cta="Run your first recipe"></wf-activation></div>
       </div>
     </div>
 
@@ -1066,10 +859,12 @@ public class Main {
 
   // Copy code
   function copyCode(btn) {
-    const code = btn.previousElementSibling;
+    const code = btn.parentElement.querySelector('.component__code');
+    if (!code) return;
     navigator.clipboard.writeText(code.textContent.trim());
+    const orig = btn.innerHTML;
     btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 1500);
+    setTimeout(() => { btn.innerHTML = orig; }, 1500);
   }
 </script>
 
