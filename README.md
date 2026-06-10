@@ -32,6 +32,8 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | [`results.html`](https://moderneinc.github.io/prototypes/results.html) | Recipe run Results tab |
 | [`results-view-summary.html`](https://moderneinc.github.io/prototypes/results-view-summary.html) | Results Summary + options panel: show/hide + container-query responsiveness |
 | [`results-hierarchical-selection.html`](https://moderneinc.github.io/prototypes/results-hierarchical-selection.html) | Results hierarchy: drill repo → package → file → class → method (tree vs group-by) |
+| [`results-hierarchical-selection-v2.html`](https://moderneinc.github.io/prototypes/results-hierarchical-selection-v2.html) | Hierarchy v2: roll up above repo to VCS org / Moderne org (nested sub-orgs, shared repos) |
+| [`results-faceted-filter.html`](https://moderneinc.github.io/prototypes/results-faceted-filter.html) | Faceted filter bar (org/vcs/branch/status chips + free text) applied across the hierarchy & roll-ups |
 | [`why-did-this-change-results-view.html`](https://moderneinc.github.io/prototypes/why-did-this-change-results-view.html) | Recipe attribution on Results + Moddy "why did this change?" chat |
 | [`data-tables-download.html`](https://moderneinc.github.io/prototypes/data-tables-download.html) | Data tables with download + MVP vs AI-enhanced toggle |
 | [`data-tables-download-v2.html`](https://moderneinc.github.io/prototypes/data-tables-download-v2.html) | Data tables download (v2) |
