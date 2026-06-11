@@ -1702,10 +1702,10 @@ body.mvp .filters-meta { display: none; }
               <input id="search" type="search" placeholder="Filter tables…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="data-tables-filter">
             </div>
             <div class="view-toggle" role="tablist" aria-label="View mode">
-              <button class="view-toggle-btn active" data-view="cards" title="Card view" aria-pressed="true">
+              <button class="view-toggle-btn" data-view="cards" title="Card view" aria-pressed="false">
                 <svg viewBox="0 0 24 24" class="svg-stroke"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
               </button>
-              <button class="view-toggle-btn" data-view="table" title="Table view" aria-pressed="false">
+              <button class="view-toggle-btn active" data-view="table" title="Table view" aria-pressed="true">
                 <svg viewBox="0 0 24 24" class="svg-stroke"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
               </button>
             </div>
@@ -1837,9 +1837,9 @@ body.mvp .filters-meta { display: none; }
 <!-- Floating demo dataset switcher -->
 <div class="demo-bar" role="group" aria-label="Demo dataset">
   <span class="demo-bar-label">Demo</span>
-  <button class="demo-btn" data-dataset="one">1 table · card</button>
-  <button class="demo-btn active" data-dataset="small">6 tables · cards</button>
-  <button class="demo-btn" data-dataset="full">11 tables · list</button>
+  <button class="demo-btn" data-dataset="one">1 table</button>
+  <button class="demo-btn active" data-dataset="small">6 tables</button>
+  <button class="demo-btn" data-dataset="full">11 tables</button>
   <span class="demo-divider"></span>
   <span class="demo-bar-label">Buttons</span>
   <button class="demo-btn active" data-btnstyle="pill">Pill</button>
@@ -2274,7 +2274,7 @@ const state = {
   format: 'CSV',
   filter: 'all',
   query: '',
-  view: 'cards',
+  view: 'table',
   dataset: 'small', // 'small' = 6 tables, 'full' = all 11
 };
 
@@ -3128,8 +3128,8 @@ function setDataset(name) {
   TABLES = name === 'one' ? ALL_TABLES.slice(0, 1)
          : name === 'small' ? ALL_TABLES.slice(0, 6)
          : ALL_TABLES;
-  // 1 and 6 default to cards; 11 defaults to the table list
-  state.view = name === 'full' ? 'table' : 'cards';
+  // list is the default view for every dataset size
+  state.view = 'table';
   state.selected.clear();
   document.querySelectorAll('.demo-btn[data-dataset]').forEach(b => {
     b.classList.toggle('active', b.dataset.dataset === name);
