@@ -184,7 +184,7 @@ A flex row for page title + action buttons:
 
 | Component | HTML Tag | Key Attributes / Props |
 |---|---|---|
-| Button | `<wf-button>` | `variant` (primary, secondary, ghost, destructive), `size` (sm, lg), `disabled` |
+| Button | `<wf-button>` | `variant` (primary, secondary, tertiary/ghost, destructive), `size` (sm, lg), `icon` (lucide name), `label` (text — preferred over child text), `disabled`, `loading`, `pressed` |
 | ButtonGroup | `<wf-button-group>` | `items` (comma-separated labels) |
 | ButtonTab | `<wf-button-tab>` | `items`, `active` (0-based index) |
 
@@ -338,6 +338,7 @@ The legacy `brand` + text `items` props on Navbar still work for documentation/c
 |---|---|---|
 | Alert | `<wf-alert>` | `variant` (info, success, warning, error), `title`; text content is the message |
 | Banner | `<wf-banner>` | text content is the message |
+| Disclaimer | `<wf-disclaimer>` | `title`, `note`, `icon` (lucide name); flags a page as wireframe, not working software |
 | Toast | `<wf-toast>` | text content is the message |
 | Modal | `<wf-modal>` | `title`, `open` (boolean attr) |
 | Spinner | `<wf-spinner>` | `size` (sm, md, lg) |
@@ -347,6 +348,7 @@ The legacy `brand` + text `items` props on Navbar still work for documentation/c
 ```html
 <wf-alert variant="warning" title="Caution">Check your config.</wf-alert>
 <wf-banner>System maintenance tonight at 11pm.</wf-banner>
+<wf-disclaimer note="Interactions and data are illustrative; nothing here connects to a real system."></wf-disclaimer>
 <wf-toast>Recipe run completed</wf-toast>
 <wf-modal title="Confirm Action" open>...</wf-modal>
 <wf-spinner size="lg"></wf-spinner>

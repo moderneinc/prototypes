@@ -586,6 +586,41 @@ svg.wf-filters {
   font-size: var(--wf-font-size-md);
 }
 
+/* --- Disclaimer ---
+   Sits at the top of a wireframe to remind viewers that the page is a
+   prototype, not working software. Intentionally loud (dashed border,
+   crosshatch fill) so it can't be mistaken for product chrome. */
+.wf-disclaimer {
+  display: flex;
+  align-items: center;
+  gap: var(--wf-space-md);
+  padding: var(--wf-space-sm) var(--wf-space-lg);
+  border: 2px dashed var(--wf-border-dark);
+  border-radius: var(--wf-radius);
+  background: var(--wf-warning-light);
+  background-image: var(--wf-crosshatch);
+  color: var(--wf-text);
+  font-size: var(--wf-font-size-sm);
+}
+.wf-disclaimer__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--wf-warning-dark);
+}
+.wf-disclaimer__content { flex: 1; min-width: 0; }
+.wf-disclaimer__title {
+  font-size: var(--wf-font-size-md);
+  color: var(--wf-text);
+  line-height: 1.2;
+}
+.wf-disclaimer__note {
+  font-size: var(--wf-font-size-sm);
+  color: var(--wf-text-light);
+  margin-top: 2px;
+}
+
 /* --- Breadcrumb --- */
 .wf-breadcrumb {
   display: flex;
@@ -615,7 +650,6 @@ svg.wf-filters {
   background: var(--wf-surface);
   color: var(--wf-text);
   cursor: pointer;
-  box-shadow: var(--wf-shadow);
   transition: background 0.15s;
   line-height: 1.4;
 }
@@ -633,12 +667,14 @@ svg.wf-filters {
   border-color: var(--wf-border);
 }
 
-.wf-button--ghost {
+/* Neo's "Tertiary" hierarchy. `ghost` kept as alias for older prototypes. */
+.wf-button--ghost,
+.wf-button--tertiary {
   background: transparent;
   border-color: transparent;
-  box-shadow: none;
 }
-.wf-button--ghost:hover { background: var(--wf-fill); }
+.wf-button--ghost:hover,
+.wf-button--tertiary:hover { background: var(--wf-fill); }
 
 .wf-button--destructive {
   border-color: var(--wf-error);
@@ -651,6 +687,27 @@ svg.wf-filters {
 .wf-button:disabled, .wf-button--disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.wf-button--pressed { background: var(--wf-fill-dark); }
+.wf-button--primary.wf-button--pressed { background: #1f1f1f; }
+
+.wf-button--loading {
+  cursor: progress;
+  pointer-events: none;
+}
+.wf-button__spinner {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: wf-spin 0.8s linear infinite;
+  opacity: 0.7;
+}
+.wf-button__icon {
+  display: inline-flex;
+  align-items: center;
 }
 
 /* --- ButtonGroup --- */
