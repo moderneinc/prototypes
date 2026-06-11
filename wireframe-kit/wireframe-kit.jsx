@@ -340,18 +340,35 @@ export const Pagination = ({ pages = 5, active = 1, className, ...props }) => (
 // BUTTONS
 // ============================================
 
-export const Button = ({ children = 'Button', variant, size, disabled, className, ...props }) => (
+export const Button = ({
+  children = 'Button',
+  variant,
+  size,
+  icon,
+  disabled,
+  loading,
+  pressed,
+  className,
+  ...props
+}) => (
   <button
     className={cn(
       'wf-button',
       variant && `wf-button--${variant}`,
       size && `wf-button--${size}`,
       disabled && 'wf-button--disabled',
+      loading && 'wf-button--loading',
+      pressed && 'wf-button--pressed',
       className
     )}
-    disabled={disabled}
+    disabled={disabled || loading}
     {...props}
   >
+    {loading ? (
+      <span className="wf-button__spinner" aria-hidden />
+    ) : icon ? (
+      <span className="wf-button__icon"><Lucide name={icon} size={14} /></span>
+    ) : null}
     {children}
   </button>
 );
@@ -672,6 +689,23 @@ export const Banner = ({ children = 'Banner message', onDismiss, className, ...p
   <div className={cn('wf-banner', className)} {...props}>
     <span>{children}</span>
     <button className="wf-banner__dismiss" onClick={onDismiss}>×</button>
+  </div>
+);
+
+export const Disclaimer = ({
+  title = 'Wireframe — not working software',
+  note,
+  icon = 'alert-triangle',
+  children,
+  className,
+  ...props
+}) => (
+  <div className={cn('wf-disclaimer', className)} {...props}>
+    <div className="wf-disclaimer__icon"><Lucide name={icon} size={20} /></div>
+    <div className="wf-disclaimer__content">
+      <div className="wf-disclaimer__title">{title}</div>
+      {(note || children) && <div className="wf-disclaimer__note">{note || children}</div>}
+    </div>
   </div>
 );
 

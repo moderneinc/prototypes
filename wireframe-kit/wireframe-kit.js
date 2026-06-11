@@ -228,6 +228,29 @@ class WfBanner extends WfBase {
   }
 }
 
+// --- Disclaimer ---
+class WfDisclaimer extends WfBase {
+  render() {
+    const title = this.attr('title', 'Wireframe — not working software');
+    const note = this.attr('note', '');
+    const iconName = this.attr('icon', 'alert-triangle');
+    const text = this.textContent.trim();
+    this.innerHTML = '';
+    this.className = 'wf-disclaimer';
+    const content = h('div', { className: 'wf-disclaimer__content' },
+      h('div', { className: 'wf-disclaimer__title' }, title)
+    );
+    const subtext = note || text;
+    if (subtext) {
+      content.append(h('div', { className: 'wf-disclaimer__note' }, subtext));
+    }
+    this.append(
+      h('div', { className: 'wf-disclaimer__icon' }, lucide(iconName, 20)),
+      content
+    );
+  }
+}
+
 // --- Breadcrumb ---
 class WfBreadcrumb extends WfBase {
   render() {
@@ -245,19 +268,40 @@ class WfBreadcrumb extends WfBase {
 }
 
 // --- Button ---
+// HTML parsing fires connectedCallback before text children are parsed, so
+// textContent is unreliable here. Prefer the `label` attribute; fall back to
+// textContent read in the next microtask (by then children have been parsed).
 class WfButton extends WfBase {
+  connectedCallback() {
+    if (this._rendered) return;
+    this._rendered = true;
+    queueMicrotask(() => this.render());
+  }
   render() {
     const variant = this.attr('variant');
     const size = this.attr('size');
+    const iconName = this.attr('icon');
     const disabled = this.boolAttr('disabled');
-    const text = this.textContent || 'Button';
-    this.innerHTML = '';
+    const loading = this.boolAttr('loading');
+    const pressed = this.boolAttr('pressed');
+    const text = this.attr('label') || this.textContent.trim() || 'Button';
     let cls = 'wf-button';
     if (variant) cls += ` wf-button--${variant}`;
     if (size) cls += ` wf-button--${size}`;
     if (disabled) cls += ' wf-button--disabled';
-    this.className = '';
-    const btn = h('button', { className: cls, ...(disabled ? { disabled: '' } : {}) }, text);
+    if (loading) cls += ' wf-button--loading';
+    if (pressed) cls += ' wf-button--pressed';
+    const children = [];
+    if (loading) {
+      children.push(h('span', { className: 'wf-button__spinner', 'aria-hidden': 'true' }));
+    } else if (iconName) {
+      children.push(h('span', { className: 'wf-button__icon' }, lucide(iconName, 14)));
+    }
+    children.push(document.createTextNode(text));
+    const btn = h('button', {
+      className: cls,
+      ...(disabled || loading ? { disabled: '' } : {}),
+    }, ...children);
     this.replaceWith(btn);
   }
 }
@@ -1299,6 +1343,7 @@ const components = {
   'wf-badge': WfBadge,
   'wf-banner': WfBanner,
   'wf-breadcrumb': WfBreadcrumb,
+  'wf-disclaimer': WfDisclaimer,
   'wf-button': WfButton,
   'wf-button-group': WfButtonGroup,
   'wf-button-tab': WfButtonTab,
