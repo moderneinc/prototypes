@@ -34,6 +34,109 @@ const h = (tag, attrs = {}, ...children) => {
 const placeholder = (variant = 'long') =>
   h('div', { className: `wf-placeholder wf-placeholder--${variant}` });
 
+// ============================================
+// LUCIDE ICONS
+// Inline SVG icons matching the set used in moderneui / neodesign.
+// Names follow lucide.dev. Keep this map alphabetised so swap-outs are easy.
+// ============================================
+const LUCIDE_ICONS = {
+  'activity':         '<path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.5.5 0 0 1-.96 0L9.68 2.18a.5.5 0 0 0-.96 0l-2.35 8.36A2 2 0 0 1 4.45 12H2"/>',
+  'alert-circle':     '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+  'alert-triangle':   '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  'arrow-left':       '<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+  'arrow-right':      '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+  'bar-chart-2':      '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+  'bell':             '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  'blocks':           '<rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>',
+  'book-open':        '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  'calendar':         '<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+  'check':            '<polyline points="20 6 9 17 4 12"/>',
+  'check-circle':     '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+  'chevron-down':     '<polyline points="6 9 12 15 18 9"/>',
+  'chevron-left':     '<polyline points="15 18 9 12 15 6"/>',
+  'chevron-right':    '<polyline points="9 18 15 12 9 6"/>',
+  'chevron-up':       '<polyline points="18 15 12 9 6 15"/>',
+  'circle':           '<circle cx="12" cy="12" r="10"/>',
+  'columns':          '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/>',
+  'copy':             '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  'diamond':          '<path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41L13.7 2.71a2.41 2.41 0 0 0-3.41 0Z"/>',
+  'download':         '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+  'ellipsis-vertical':'<circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>',
+  'external-link':    '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>',
+  'eye':              '<path d="M2.06 12.5C3.7 7.83 7.5 5 12 5s8.3 2.83 9.94 7.5C20.3 17.17 16.5 20 12 20S3.7 17.17 2.06 12.5z"/><circle cx="12" cy="12" r="3"/>',
+  'file':             '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
+  'file-code':        '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="m10 13-2 2 2 2"/><path d="m14 17 2-2-2-2"/>',
+  'filter':           '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>',
+  'folder':           '<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>',
+  'git-commit':       '<circle cx="12" cy="12" r="3"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/>',
+  'git-pull-request': '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/>',
+  'globe':            '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  'folder-git':       '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/>',
+  'help-circle':      '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+  'history':          '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+  'home':             '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  'inbox':            '<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+  'info':             '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+  'layers':           '<path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',
+  'layout-dashboard': '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+  'mail':             '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>',
+  'message-circle':   '<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>',
+  'more-horizontal':  '<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
+  'package':          '<path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>',
+  'pie-chart':        '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>',
+  'play':             '<polygon points="6 3 20 12 6 21 6 3"/>',
+  'play-circle':      '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>',
+  'plus':             '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  'refresh-cw':       '<polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>',
+  'rocket':           '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+  'search':           '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+  'settings':         '<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/><circle cx="12" cy="12" r="3"/>',
+  'share':            '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',
+  'sparkles':         '<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/>',
+  'users':            '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  'x':                '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+  'x-circle':         '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>',
+  'zap':              '<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+};
+
+// Build an SVG DOM node for a lucide icon, or null if unknown.
+// `size` is optional; pass a px number for fixed-pixel icons, omit for 1em.
+const lucide = (name, size) => {
+  const inner = LUCIDE_ICONS[name];
+  if (!inner) return null;
+  const dim = size != null ? `${size}` : '1em';
+  const wrap = document.createElement('span');
+  wrap.innerHTML = `<svg class="wf-lucide" viewBox="0 0 24 24" width="${dim}" height="${dim}" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+  return wrap.firstChild;
+};
+
+// Render a lucide SVG when `value` matches a known name; otherwise fall back
+// to the literal glyph (or `fallback` when `value` is empty). Lets components
+// keep accepting user-passed glyphs like '◆' alongside lucide names like 'home'.
+const iconNode = (value, fallback, size) => {
+  const svg = value ? lucide(value, size) : null;
+  if (svg) return svg;
+  const text = value || fallback || '';
+  return document.createTextNode(text);
+};
+
+// Legacy glyph → lucide name aliases. Lets prototypes written before the
+// icon swap (e.g. `home-icon="◆"`, `items="Dashboard|◇,Recipes|▤"`) keep
+// working without being rewritten — the wireframe kit still renders Lucide.
+// Mappings chosen to mirror trigrep.html's nav set: ↻ → history (clock+rewind,
+// trigrep's "Activity"), ⌥ → folder-git (trigrep's "Repositories"), etc.
+const GLYPH_TO_LUCIDE = {
+  '◆': 'diamond', '◈': 'diamond',
+  '◇': 'layout-dashboard', '▤': 'file-code', '⌥': 'folder-git',
+  '☷': 'columns', '↻': 'history', '⚙': 'settings',
+  '✦': 'sparkles', '?': 'help-circle', '◐': 'bell',
+  '▶': 'play', '⊙': 'git-commit', '◉': 'bar-chart-2', '↓': 'download', '⟳': 'refresh-cw',
+  '▾': 'chevron-down', '▴': 'chevron-up', '‹': 'chevron-left', '›': 'chevron-right',
+  '✓': 'check', '✕': 'x', '○': 'circle', '∅': 'inbox', '⌕': 'search', '📅': 'calendar',
+  '⋮': 'ellipsis-vertical', '⋯': 'more-horizontal', '…': 'more-horizontal',
+};
+const resolveIcon = (raw) => GLYPH_TO_LUCIDE[raw] || raw;
+
 const loremWords = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'.split(' ');
 const lorem = (n = 5) => {
   const words = [];
@@ -77,10 +180,10 @@ class WfAlert extends WfBase {
   render() {
     const variant = this.attr('variant', 'info');
     const title = this.attr('title', 'Alert title');
-    const icons = { info: 'i', success: '✓', warning: '!', error: '✕' };
+    const iconName = { info: 'info', success: 'check-circle', warning: 'alert-triangle', error: 'x-circle' }[variant] || 'info';
     this.className = `wf-alert wf-alert--${variant}`;
     this.append(
-      h('div', { className: 'wf-alert__icon' }, icons[variant] || 'i'),
+      h('div', { className: 'wf-alert__icon' }, lucide(iconName, 14)),
       h('div', { className: 'wf-alert__content' },
         h('div', { className: 'wf-alert__title' }, title),
         h('div', { className: 'wf-alert__message' }, this.textContent || 'Alert description goes here')
@@ -351,7 +454,7 @@ class WfDataGrid extends WfBase {
     // Toolbar
     const toolbar = h('div', { className: 'wf-datagrid__toolbar' },
       h('div', { className: 'wf-search', style: { flex: '0 0 200px' } },
-        h('span', { className: 'wf-search__icon' }, '⌕'),
+        h('span', { className: 'wf-search__icon' }, lucide('search', 14)),
         h('input', { className: 'wf-search__input', placeholder: 'Filter...', type: 'text' })
       ),
       h('button', { className: 'wf-button wf-button--ghost wf-button--sm' }, 'Filters'),
@@ -401,7 +504,7 @@ class WfDatePicker extends WfBase {
     this.innerHTML = '';
     this.className = 'wf-datepicker';
     this.append(
-      h('span', { className: 'wf-datepicker__icon' }, '📅'),
+      h('span', { className: 'wf-datepicker__icon' }, lucide('calendar', 14)),
       h('span', {}, value)
     );
   }
@@ -439,7 +542,7 @@ class WfDropdown extends WfBase {
     this.innerHTML = '';
     this.className = 'wf-dropdown';
 
-    const trigger = h('button', { className: 'wf-button' }, label, ' ▾');
+    const trigger = h('button', { className: 'wf-button' }, iconNode(resolveIcon(label), label, 14), ' ', lucide('chevron-down', 12));
     const menu = h('div', { className: 'wf-dropdown__menu' });
     menu.style.display = 'none';
 
@@ -601,7 +704,7 @@ class WfSearch extends WfBase {
     this.innerHTML = '';
     this.className = 'wf-search';
     this.append(
-      h('span', { className: 'wf-search__icon' }, '⌕'),
+      h('span', { className: 'wf-search__icon' }, lucide('search', 14)),
       h('input', { className: 'wf-search__input', placeholder: plc, type: 'text' })
     );
   }
@@ -616,7 +719,7 @@ class WfSelect extends WfBase {
     this.className = `wf-select${!value ? ' wf-select--placeholder' : ''}`;
     this.append(
       h('span', {}, value || plc),
-      h('span', { className: 'wf-select__arrow' }, '▾')
+      h('span', { className: 'wf-select__arrow' }, lucide('chevron-down', 14))
     );
   }
 }
@@ -705,8 +808,8 @@ class WfTree extends WfBase {
         const hasChildren = d > 1 && i < 2;
         const item = h('div', { className: 'wf-tree-item' },
           h('div', { className: 'wf-tree-item__row' },
-            h('span', { className: 'wf-tree-item__toggle' }, hasChildren ? '▾' : ''),
-            h('span', { className: 'wf-tree-item__icon' }, d > 1 ? '▤' : '◇'),
+            h('span', { className: 'wf-tree-item__toggle' }, hasChildren ? lucide('chevron-down', 10) : ''),
+            h('span', { className: 'wf-tree-item__icon' }, lucide(d > 1 ? 'folder' : 'file', 11)),
             h('span', {}, `${d > 1 ? 'Folder' : 'Item'} ${i + 1}`)
           )
         );
@@ -749,7 +852,7 @@ class WfEmptyState extends WfBase {
     this.innerHTML = '';
     this.className = 'wf-empty-state';
     this.append(
-      h('div', { className: 'wf-empty-state__icon' }, '∅'),
+      h('div', { className: 'wf-empty-state__icon' }, lucide('inbox', 28)),
       h('div', { className: 'wf-empty-state__title' }, title),
       h('div', { className: 'wf-empty-state__message' }, message)
     );
@@ -779,10 +882,11 @@ class WfNavbar extends WfBase {
     }
 
     if (org) {
+      // `users` icon matches trigrep's org-selector glyph (people figure).
       this.append(h('button', { className: 'wf-navbar__org' },
-        h('span', { className: 'wf-icon' }, '◇'),
+        h('span', { className: 'wf-icon' }, lucide('users', 14)),
         h('span', {}, org),
-        h('span', { className: 'wf-icon wf-icon--sm' }, '▾')
+        h('span', { className: 'wf-icon wf-icon--sm' }, lucide('chevron-down', 12))
       ));
     }
 
@@ -798,7 +902,7 @@ class WfNavbar extends WfBase {
 
     if (search) {
       this.append(h('div', { className: 'wf-navbar__search' },
-        h('span', { className: 'wf-navbar__search-icon' }, '⌕'),
+        h('span', { className: 'wf-navbar__search-icon' }, lucide('search', 14)),
         h('span', {}, search),
         h('span', { className: 'wf-navbar__search-kbd' },
           h('kbd', {}, '⌘'),
@@ -809,8 +913,9 @@ class WfNavbar extends WfBase {
 
     if (actions) {
       const group = h('div', { className: 'wf-navbar__actions' });
-      actions.split(',').forEach(glyph => {
-        group.append(h('button', { className: 'wf-navbar__action' }, glyph.trim()));
+      actions.split(',').forEach(raw => {
+        const token = raw.trim();
+        group.append(h('button', { className: 'wf-navbar__action' }, iconNode(resolveIcon(token), token, 18)));
       });
       this.append(group);
     }
@@ -827,11 +932,13 @@ class WfNavbar extends WfBase {
 // typographic step + buttons/navigation active fill.
 class WfSidebar extends WfBase {
   render() {
-    const itemsAttr = this.attr('items', 'Dashboard|◇,Recipes|▤,Activity|↻,Settings|⚙');
+    // Default items mirror trigrep.html's NAV_ITEMS so the rail looks like the
+    // real Moderne shell out of the box. Override `items` per prototype.
+    const itemsAttr = this.attr('items', 'Moddy|sparkles,DevCenter|pie-chart,Trigrep|search,Artifacts|package,Marketplace|globe,Builder|blocks,Activity|history,Changelog|activity');
     const active = this.numAttr('active', 0);
     const title = this.attr('title');
     const home = this.attr('home', '');           // home/brand label, e.g. "Moderne"
-    const homeIcon = this.attr('home-icon', '◆');
+    const homeIcon = this.attr('home-icon', 'diamond');
     const tenant = this.attr('tenant', '');        // tenant initials/short label
 
     this.innerHTML = '';
@@ -839,7 +946,7 @@ class WfSidebar extends WfBase {
 
     if (home) {
       this.append(h('a', { className: 'wf-sidebar__home' },
-        h('span', { className: 'wf-sidebar__item-icon' }, homeIcon),
+        h('span', { className: 'wf-sidebar__item-icon' }, iconNode(resolveIcon(homeIcon), homeIcon, 22)),
         h('span', { className: 'wf-sidebar__item-label' }, home)
       ));
     }
@@ -849,11 +956,11 @@ class WfSidebar extends WfBase {
     }
 
     itemsAttr.split(',').forEach((raw, i) => {
-      const [label, icon = '◇'] = raw.split('|').map(s => s.trim());
+      const [label, icon = 'layout-dashboard'] = raw.split('|').map(s => s.trim());
       this.append(h('a', {
         className: `wf-sidebar__item${i === active ? ' wf-sidebar__item--active' : ''}`
       },
-        h('span', { className: 'wf-sidebar__item-icon' }, icon),
+        h('span', { className: 'wf-sidebar__item-icon' }, iconNode(resolveIcon(icon), icon, 22)),
         h('span', { className: 'wf-sidebar__item-label' }, label)
       ));
     });
@@ -877,12 +984,16 @@ class WfDivider extends WfBase {
 }
 
 // --- Icon ---
+// `name` accepts a lucide icon name (e.g. "search") or a literal glyph for
+// backwards compat. Lucide names render as inline SVG; unknown values render
+// as text so existing prototypes that pass '◇' / '◆' still work.
 class WfIcon extends WfBase {
   render() {
-    const name = this.attr('name', '◇');
+    const name = this.attr('name', 'layout-dashboard');
     const size = this.attr('size', 'md');
+    this.innerHTML = '';
     this.className = `wf-icon${size !== 'md' ? ` wf-icon--${size}` : ''}`;
-    this.textContent = name;
+    this.append(iconNode(name, name));
   }
 }
 
@@ -893,7 +1004,7 @@ class WfLogo extends WfBase {
     const text = this.attr('text', 'Moderne');
     this.className = `wf-logo${size !== 'md' ? ` wf-logo--${size}` : ''}`;
     this.append(
-      h('span', { className: 'wf-logo__mark' }, '◈'),
+      h('span', { className: 'wf-logo__mark' }, lucide('diamond', 22)),
       h('span', { className: 'wf-logo__text' }, text)
     );
   }
@@ -997,7 +1108,7 @@ class WfCardTable extends WfBase {
           h('div', { className: 'wf-card-table__row-secondary' }, `${sampleNames[i % sampleNames.length]} · ${sampleDates[i % sampleDates.length]} · ${3 + i} repositories`)
         ),
         h('div', { className: 'wf-card-table__row-actions' },
-          h('wf-button', { variant: 'ghost', size: 'sm' }, '⋮')
+          h('button', { className: 'wf-button wf-button--ghost wf-button--sm' }, lucide('ellipsis-vertical', 16))
         )
       );
       this.append(row);
@@ -1045,8 +1156,8 @@ class WfDataTableLayout extends WfBase {
     const toolbar = h('div', { className: 'wf-data-table-layout__toolbar' },
       h('div', { className: 'wf-data-table-layout__toolbar-left' },
         h('wf-search', { placeholder: 'Search…', size: 'sm' }),
-        h('wf-button', { size: 'sm' }, '⧩ Filter'),
-        h('wf-button', { size: 'sm' }, '⊞ Columns')
+        h('button', { className: 'wf-button wf-button--sm' }, lucide('filter', 14), ' Filter'),
+        h('button', { className: 'wf-button wf-button--sm' }, lucide('columns', 14), ' Columns')
       ),
       h('div', { className: 'wf-data-table-layout__toolbar-right' },
         h('wf-button', { size: 'sm' }, 'Bulk actions')
@@ -1067,7 +1178,7 @@ class WfChangelogFeed extends WfBase {
     const count = this.numAttr('entries', 5);
     const showFilters = !this.boolAttr('no-filters');
     const eventTypes = ['Recipe Run', 'Commit', 'Visualization', 'Ingestion', 'Migration'];
-    const eventIcons = ['▶', '⊙', '◉', '↓', '⟳'];
+    const eventIcons = ['play', 'git-commit', 'bar-chart-2', 'download', 'refresh-cw'];
     const titles = [
       'Migrate to Java 17 completed',
       'Pushed formatting fixes to spring-petclinic',
@@ -1088,7 +1199,7 @@ class WfChangelogFeed extends WfBase {
     const list = h('div', { className: 'wf-changelog-feed__list' });
     for (let i = 0; i < count; i++) {
       const entry = h('div', { className: 'wf-changelog-entry' },
-        h('div', { className: 'wf-changelog-entry__icon' }, eventIcons[i % eventIcons.length]),
+        h('div', { className: 'wf-changelog-entry__icon' }, lucide(eventIcons[i % eventIcons.length], 16)),
         h('div', { className: 'wf-changelog-entry__body' },
           h('div', { className: 'wf-changelog-entry__header' },
             h('wf-badge', {}, eventTypes[i % eventTypes.length]),
@@ -1151,11 +1262,11 @@ class WfActivation extends WfBase {
     const headline = this.attr('headline', 'Welcome to Moderne');
     const description = this.attr('description', 'Run large-scale code transformations across all your repositories. Start by connecting your source code manager and running your first recipe.');
     const cta = this.attr('cta', 'Run your first recipe');
-    const illustration = this.attr('illustration', '◈');
+    const illustration = this.attr('illustration', 'rocket');
     const prereqsAttr = this.attr('prereqs', 'Connect an SCM:done,Add repositories:done,Run first recipe:pending');
 
     this.className = 'wf-activation';
-    const illus = h('div', { className: 'wf-activation__illustration' }, illustration);
+    const illus = h('div', { className: 'wf-activation__illustration' }, iconNode(illustration, illustration, 40));
     const head = h('div', { className: 'wf-activation__headline' }, headline);
     const desc = h('div', { className: 'wf-activation__description' }, description);
 
@@ -1164,7 +1275,7 @@ class WfActivation extends WfBase {
       const [label, state] = p.split(':');
       const isDone = state?.trim() === 'done';
       const prereq = h('div', { className: `wf-activation__prereq wf-activation__prereq--${isDone ? 'done' : 'pending'}` },
-        h('span', { className: 'wf-activation__prereq-icon' }, isDone ? '✓' : '○'),
+        h('span', { className: 'wf-activation__prereq-icon' }, lucide(isDone ? 'check' : 'circle', 12)),
         h('span', {}, label.trim())
       );
       prereqList.append(prereq);

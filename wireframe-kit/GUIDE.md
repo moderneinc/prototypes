@@ -21,7 +21,7 @@ Create an `.html` file and add two imports:
 <body class="wf-kit">
 
   <div class="wf-page">
-    <wf-sidebar home="Moderne" items="Dashboard|◇,Recipes|▤,Activity|↻" active="0" tenant="MOD"></wf-sidebar>
+    <wf-sidebar home="Moderne" items="Moddy|sparkles,DevCenter|pie-chart,Trigrep|search" active="0" tenant="MOD"></wf-sidebar>
     <wf-navbar org="Moderne, Inc." search="Search…" actions="✦,?" avatar="AC"></wf-navbar>
     <main class="wf-main">
       <h1 class="wf-h1">Hello Wireframe</h1>
@@ -99,7 +99,7 @@ Primary navigation lives in the rail. The top bar carries tenant/global context:
 **HTML:**
 ```html
 <div class="wf-page">
-  <wf-sidebar home="App" items="Dashboard|◇,Settings|⚙" active="0" tenant="MOD"></wf-sidebar>
+  <wf-sidebar home="App" items="Moddy|sparkles,Trigrep|search" active="0" tenant="MOD"></wf-sidebar>
   <wf-navbar org="Org name" search="Search…" actions="✦,?" avatar="AC"></wf-navbar>
   <main class="wf-main">...</main>
 </div>
@@ -296,7 +296,7 @@ Tables and data grids auto-fill with sample data (names, statuses, dates) when n
 ```html
 <wf-sidebar
   home="Moderne"
-  items="Dashboard|◇,Recipes|▤,Activity|↻,Settings|⚙"
+  items="Moddy|sparkles,DevCenter|pie-chart,Trigrep|search,Artifacts|package,Marketplace|globe,Builder|blocks,Activity|history,Changelog|activity"
   active="0"
   tenant="MOD">
 </wf-sidebar>
@@ -402,18 +402,21 @@ public class App {
 
 | Component | HTML Tag | Key Attributes / Props |
 |---|---|---|
-| Icon | `<wf-icon>` | `name` (character/symbol, default ◇), `size` (sm, md, lg) |
+| Icon | `<wf-icon>` | `name` (lucide name, default `layout-dashboard`), `size` (sm, md, lg) |
 | Divider | `<wf-divider>` | `dashed` (boolean attr) |
 | Placeholder | CSS class | `.wf-placeholder` + `--short`, `--medium`, `--long` |
 
 ```html
-<wf-icon name="◆" size="lg"></wf-icon>
+<wf-icon name="search"></wf-icon>
+<wf-icon name="layout-dashboard" size="lg"></wf-icon>
 <wf-divider></wf-divider>
 <wf-divider dashed></wf-divider>
 <div class="wf-placeholder wf-placeholder--long"></div>
 ```
 
-Icons use text symbols as placeholders for Neo's Lucide icons. In production, replace with actual icon components.
+Icons use [Lucide](https://lucide.dev) — the same set used in `moderneui` and `neodesign`. Names are kebab-case (`chevron-down`, `bar-chart-2`, `git-commit`). Available out of the box: `activity`, `alert-circle`, `alert-triangle`, `bar-chart-2`, `bell`, `blocks`, `book-open`, `calendar`, `check`, `check-circle`, `chevron-down`/`-left`/`-right`/`-up`, `circle`, `columns`, `copy`, `diamond`, `download`, `ellipsis-vertical`, `external-link`, `eye`, `file`, `file-code`, `filter`, `folder`, `folder-git`, `git-commit`, `git-pull-request`, `globe`, `help-circle`, `history`, `home`, `inbox`, `info`, `layers`, `layout-dashboard`, `mail`, `message-circle`, `more-horizontal`, `package`, `pie-chart`, `play`, `play-circle`, `plus`, `refresh-cw`, `rocket`, `search`, `settings`, `share`, `sparkles`, `users`, `x`, `x-circle`, `zap`. To add more, drop the path markup into `LUCIDE_ICONS` in `wireframe-kit.js` (and `wireframe-kit.jsx`). Unknown names render as literal text so glyph passthrough still works.
+
+The `<wf-sidebar>` default `items` mirrors **trigrep.html**'s nav set (Moddy/DevCenter/Trigrep/Artifacts/Marketplace/Builder/Activity/Changelog) so the rail looks like the real Moderne shell. Override `items` to swap in your own labels and icons. The `<wf-navbar org>` selector uses `users` (matching trigrep's people-figure org glyph).
 
 ### Typography Classes
 

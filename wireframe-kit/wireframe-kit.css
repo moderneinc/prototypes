@@ -11,13 +11,16 @@
   /* Typography */
   --wf-font: 'Handlee', cursive;
   --wf-font-mono: 'Fira Code', monospace;
+  /* Sizes tuned so the handwritten font's optical weight mimics Neo's Inter
+     ramp (caption 11, body 14, pageHeader 21). Handwritten fonts read ~1px
+     larger per step than Inter at the same px, so the scale is trimmed. */
   --wf-font-size-xs: 11px;
-  --wf-font-size-sm: 13px;
-  --wf-font-size-md: 15px;
-  --wf-font-size-lg: 18px;
-  --wf-font-size-xl: 22px;
-  --wf-font-size-2xl: 28px;
-  --wf-line-height: 1.6;
+  --wf-font-size-sm: 12px;
+  --wf-font-size-md: 14px;
+  --wf-font-size-lg: 16px;
+  --wf-font-size-xl: 20px;
+  --wf-font-size-2xl: 26px;
+  --wf-line-height: 1.45;
 
   /* Colors — cool grays (aligned with Neo neutrals) */
   --wf-white: #fafafa;
@@ -135,6 +138,35 @@ svg.wf-filters {
 /* --- Base / Reset --- */
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+/* --- Lucide icons ---
+   Inline SVGs sized via the `width`/`height` attributes set in JS (1em by
+   default, or a px override). Stroke uses currentColor so icons inherit the
+   container's text colour. */
+.wf-lucide {
+  display: inline-block;
+  vertical-align: -0.15em;
+  flex-shrink: 0;
+}
+/* Inside circular icon "pills" (alert/changelog/prereq) the SVG should never
+   bleed past the container; the JS sets px sizes, but guard against the rare
+   case a caller passes a too-large 1em icon. */
+.wf-alert__icon .wf-lucide,
+.wf-tree-item__icon .wf-lucide,
+.wf-tree-item__toggle .wf-lucide,
+.wf-activation__prereq-icon .wf-lucide,
+.wf-changelog-entry__icon .wf-lucide,
+.wf-empty-state__icon .wf-lucide,
+.wf-sidebar__item-icon .wf-lucide,
+.wf-navbar__action .wf-lucide,
+.wf-navbar__search-icon .wf-lucide,
+.wf-search__icon .wf-lucide,
+.wf-datepicker__icon .wf-lucide,
+.wf-select__arrow .wf-lucide,
+.wf-icon .wf-lucide,
+.wf-logo__mark .wf-lucide {
+  vertical-align: middle;
 }
 
 .wf-kit, .wf-kit * {
