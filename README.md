@@ -41,6 +41,7 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | [`visualizations-results-inline.html`](https://moderneinc.github.io/prototypes/visualizations-results-inline.html) | Inline-config visualizations demo |
 | [`visualizations-tab-results-view.html`](https://moderneinc.github.io/prototypes/visualizations-tab-results-view.html) | Visualizations tab: master-detail picker with Configure panel |
 | [`CLI-rewrites.html`](https://moderneinc.github.io/prototypes/CLI-rewrites.html) | CLI / terminal label rewrites |
+| [`status-audit.html`](https://moderneinc.github.io/prototypes/status-audit.html) | Status reference by artifact — every repository status with SaaS chip (label + where) and CLI trigger side by side |
 | [`brand-guidelines.html`](https://moderneinc.github.io/prototypes/brand-guidelines.html) | Brand guidelines, including Product Symbols |
 
 ## Wireframe kit

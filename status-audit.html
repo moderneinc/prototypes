@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderne — Status reference · by artifact</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/colors.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/semantic-colors.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/border-radius.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/shadows.css">
+<style>
+:root{
+  --bg-page:var(--neo-surfaces-page);
+  --bg-card:var(--neo-surfaces-white);
+  --bg-mock:#FAFBFC;
+  --text:var(--neo-grey-800);
+  --text-2:var(--neo-grey-600);
+  --text-3:var(--neo-grey-500);
+  --border:var(--neo-grey-200);
+  --border-2:var(--neo-grey-300);
+
+  /* Semantic — full Neo --neo-status-*-{light,medium,dark} triple. */
+  --info-bg:var(--neo-status-info-light);
+  --info-fg:var(--neo-status-info-dark);
+  --info-bd:var(--neo-status-info-medium);
+
+  --warn-bg:var(--neo-status-warning-light);
+  --warn-fg:var(--neo-status-warning-dark);
+  --warn-bd:var(--neo-status-warning-medium);
+
+  --err-bg:var(--neo-status-error-light);
+  --err-fg:var(--neo-status-error-dark);
+  --err-bd:var(--neo-status-error-medium);
+
+  --ok-bg:var(--neo-status-success-light);
+  --ok-fg:var(--neo-status-success-dark);
+  --ok-bd:var(--neo-status-success-medium);
+
+  --un-bg:var(--neo-status-neutral-light);
+  --un-fg:var(--neo-status-neutral-dark);
+  --un-bd:var(--neo-status-neutral-medium);
+
+  --cncl-bg:#FEF6E3;
+  --cncl-fg:#7A5A0F;
+  --cncl-bd:#F8BC3B;
+
+  --run-bg:var(--neo-status-info-light);
+  --run-fg:var(--neo-status-info-dark);
+  --run-bd:var(--neo-status-info-medium);
+
+  --q-bg:var(--neo-status-neutral-light);
+  --q-fg:var(--neo-status-neutral-dark);
+  --q-bd:var(--neo-status-neutral-medium);
+
+  --merged-bg:var(--neo-violet-100);
+  --merged-fg:var(--neo-violet-800);
+  --merged-bd:var(--neo-violet-500);
+
+  --radius-sm:6px;
+  --radius-md:8px;
+  --radius-lg:12px;
+  --radius-pill:999px;
+  --shadow-card:var(--neo-shadow-card);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  background:var(--bg-page);
+  color:var(--text);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding:32px 24px 80px;
+}
+.wrap{max-width:1240px;margin:0 auto;}
+code,.mono{font-family:'JetBrains Mono',monospace;}
+
+/* Header */
+.page-head{margin-bottom:24px;}
+.page-eyebrow{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;}
+.page-head h1{font-size:28px;font-weight:600;line-height:1.2;letter-spacing:-.01em;margin-bottom:8px;}
+.page-head p{font-size:14.5px;color:var(--text-2);max-width:780px;}
+
+.disclaimer{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#FFF8E5;border:1px solid #FFE6B0;border-radius:var(--radius-md);font-size:12.5px;color:var(--text-2);margin-bottom:20px;}
+.disclaimer svg{width:16px;height:16px;color:var(--warn-fg);flex-shrink:0;}
+
+/* TOC */
+.toc{margin-bottom:24px;padding:14px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);}
+.toc-title{font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px;}
+.toc ol{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 14px;counter-reset:art;}
+.toc li{font-size:13px;counter-increment:art;}
+.toc li::before{content:counter(art) ".";color:var(--text-3);margin-right:6px;font-family:'JetBrains Mono',monospace;font-size:11.5px;}
+.toc a{color:var(--text);text-decoration:none;border-bottom:1px dotted var(--border-2);}
+.toc a:hover{color:var(--info-fg);border-bottom-color:var(--info-fg);}
+
+/* Legend */
+.legend{margin-bottom:32px;padding:14px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);}
+.legend-title{font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px;}
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px 16px;}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-2);}
+.legend-item code{font-size:11.5px;color:var(--text-3);}
+
+/* Artifact section */
+.artifact{margin-top:34px;}
+.artifact-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;}
+.artifact-num{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:var(--radius-md);background:var(--neo-grey-800);color:#fff;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;margin-top:2px;}
+.artifact-head h2{font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.25;}
+.artifact-head .eyebrow{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:2px;}
+.artifact-head .scope{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-3);margin-top:4px;}
+.artifact-head .scope .pill{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:var(--text-2);background:var(--neo-grey-100);border:1px solid var(--border);padding:1px 7px;border-radius:var(--radius-sm);}
+.artifact-head .scope .pill.saas-only{color:var(--info-fg);background:var(--info-bg);border-color:var(--info-bd);}
+.artifact-head .scope .pill.cli-only{color:var(--text);background:var(--neo-grey-100);border-color:var(--border-2);}
+
+/* Artifact sub-heading (when an artifact has more than one lifecycle) */
+.artifact-sub{margin-top:18px;margin-bottom:8px;display:flex;align-items:baseline;gap:10px;}
+.artifact-sub h3{font-size:15px;font-weight:600;letter-spacing:-.005em;color:var(--text);}
+.artifact-sub .sub-tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:var(--text-2);background:var(--neo-grey-100);border:1px solid var(--border);padding:1px 7px;border-radius:var(--radius-sm);}
+.artifact-sub .sub-side{font-size:12px;color:var(--text-3);}
+.artifact-sub:first-of-type{margin-top:8px;}
+
+/* Artifact table */
+.tbl{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg-card);box-shadow:var(--shadow-card);font-size:13px;table-layout:fixed;}
+.tbl col.col-sit{width:22%;}
+.tbl col.col-saas{width:42%;}
+.tbl col.col-cli{width:36%;}
+.tbl th{background:var(--bg-mock);font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+.tbl th .h-sub{display:block;font-size:10.5px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-3);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+.tbl td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr.row-sub td{padding-top:6px;background:#FCFCFD;}
+.tbl tr.row-sub td:first-child{padding-left:34px;color:var(--text-2);font-size:12.5px;}
+.tbl tr.row-sub td:first-child::before{content:'└';margin-right:6px;color:var(--text-3);font-family:'JetBrains Mono',monospace;}
+.tbl tr.row-note td{background:#FFFCF3;font-size:12px;color:var(--text-2);}
+.tbl tr.row-note td .quirk{font-weight:600;color:var(--warn-fg);margin-right:6px;}
+.tbl tr.row-note td svg{width:12px;height:12px;color:var(--warn-fg);vertical-align:-1.5px;margin-right:4px;}
+.tbl .situation{font-size:13px;font-weight:500;color:var(--text);}
+.tbl .situation .sit-sub{display:block;font-size:11.5px;color:var(--text-3);font-weight:400;margin-top:2px;}
+
+/* SaaS cell — chip + where caption (can stack multiple) */
+.saas-cell{display:flex;flex-direction:column;gap:10px;}
+.saas-row{display:flex;flex-direction:column;gap:4px;}
+.saas-row + .saas-row{padding-top:10px;border-top:1px dashed var(--border);}
+.saas-row .chip-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+.saas-row .where{font-size:11.5px;color:var(--text-3);line-height:1.45;}
+.saas-row .src-label{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-2);margin-bottom:6px;display:flex;align-items:baseline;gap:8px;}
+.saas-row .src-label .src-enum{font-weight:500;text-transform:none;letter-spacing:0;color:var(--text-3);font-size:10.5px;}
+.saas-row .src-label .src-enum code{font-size:10.5px;background:var(--neo-grey-100);padding:1px 5px;border-radius:3px;}
+.saas-row .where b{color:var(--text-2);font-weight:600;}
+.saas-row .where code{font-size:10.5px;background:var(--neo-grey-100);padding:1px 5px;border-radius:3px;color:var(--text-2);}
+.saas-cell.empty{color:var(--text-3);font-family:'JetBrains Mono',monospace;font-size:13px;}
+.saas-cell.empty .em-note{display:block;font-family:'Inter',sans-serif;font-size:11.5px;color:var(--text-3);margin-top:2px;font-style:italic;}
+
+/* CLI cell — mono terminal-ish text */
+.cli-cell{display:flex;flex-direction:column;gap:10px;}
+.cli-row{display:flex;flex-direction:column;gap:3px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text);}
+.cli-row + .cli-row{padding-top:10px;border-top:1px dashed var(--border);}
+.cli-row .cli-state{font-weight:600;color:var(--text);}
+.cli-row .cli-state .cli-icon{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;margin-left:4px;vertical-align:-2.5px;}
+.cli-row .cli-state .cli-icon svg{width:14px;height:14px;}
+.cli-row .cli-state .cli-icon.ok{color:var(--ok-fg);}
+.cli-row .cli-state .cli-icon.err{color:var(--err-fg);}
+.cli-row .cli-state .cli-icon.warn{color:var(--warn-fg);}
+.cli-row .cli-cmd{font-size:11px;color:var(--text-3);}
+.cli-row .cli-cmd .tok-cmd{color:var(--info-fg);}
+.cli-cell.empty{color:var(--text-3);font-family:'JetBrains Mono',monospace;font-size:13px;}
+
+/* Footnote inside section */
+.foot{font-size:11.5px;color:var(--text-3);margin-top:10px;font-style:italic;}
+.foot code{font-style:normal;font-size:11px;background:var(--neo-grey-100);padding:1px 5px;border-radius:3px;color:var(--text-2);}
+
+/* Chip */
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px 0 8px;border-radius:var(--radius-pill);font-size:12px;font-weight:600;line-height:1;white-space:nowrap;border:1px solid transparent;}
+.chip svg{width:14px;height:14px;flex-shrink:0;}
+.chip.info{background:var(--info-bg);color:var(--info-fg);border-color:var(--info-bd);}
+.chip.warning{background:var(--warn-bg);color:var(--warn-fg);border-color:var(--warn-bd);}
+.chip.error{background:var(--err-bg);color:var(--err-fg);border-color:var(--err-bd);}
+.chip.success{background:var(--ok-bg);color:var(--ok-fg);border-color:var(--ok-bd);}
+.chip.unavailable{background:var(--un-bg);color:var(--un-fg);border-color:var(--un-bd);}
+.chip.canceled{background:var(--cncl-bg);color:var(--cncl-fg);border-color:var(--cncl-bd);}
+.chip.running{background:var(--run-bg);color:var(--run-fg);border-color:var(--run-bd);}
+.chip.queued{background:var(--q-bg);color:var(--q-fg);border-color:var(--q-bd);}
+.chip.merged{background:var(--merged-bg);color:var(--merged-fg);border-color:var(--merged-bd);}
+/* Same enum, different SaaS treatment — Sync column renders CANCELED as neutral grey */
+.chip.canceled-grey{background:var(--un-bg);color:var(--un-fg);border-color:var(--un-bd);}
+
+/* Animated dots */
+.dot-ripple{position:relative;width:10px;height:10px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dot-ripple::before{content:'';position:absolute;inset:1px;border-radius:50%;background:currentColor;}
+.dot-ripple::after{content:'';position:absolute;inset:0;border-radius:50%;background:currentColor;opacity:.35;animation:ripple 1.4s ease-out infinite;}
+@keyframes ripple{0%{transform:scale(.4);opacity:.6;}100%{transform:scale(1.6);opacity:0;}}
+.dot-vibrate{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;animation:vibrate 1.2s ease-in-out infinite;}
+@keyframes vibrate{0%,100%{transform:scale(1);opacity:.7;}50%{transform:scale(1.15);opacity:1;}}
+
+/* Progress bar mini (for live CLI rows) */
+.cli-progress{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-2);}
+.cli-progress-bar{width:80px;height:6px;background:var(--neo-grey-200);border-radius:3px;overflow:hidden;position:relative;}
+.cli-progress-bar::after{content:'';position:absolute;inset:0;width:55%;background:var(--info-fg);border-radius:3px;}
+
+/* Notes section */
+.notes{margin-top:36px;padding:18px 20px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);}
+.notes h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px;}
+.notes ul{list-style:none;padding:0;margin:0;display:grid;gap:6px;}
+.notes li{font-size:13px;color:var(--text);display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.notes li::before{content:'•';color:var(--text-3);margin-right:0;}
+.notes li code{font-size:11.5px;background:var(--neo-grey-100);padding:1px 5px;border-radius:3px;color:var(--text-2);}
+.notes .ref{display:block;font-size:11.5px;color:var(--text-3);font-style:italic;margin-top:14px;}
+
+.em{color:var(--text-3);}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+</style>
+</head>
+<body>
+
+<!-- icon defs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 9l6 6M15 9l-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2L12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5M12 18v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-unavailable" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-cancel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.5 5.5l13 13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-skip" viewBox="0 0 24 24"><path d="M4 5l8 7-8 7V5zM14 5l8 7-8 7V5z" fill="currentColor"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-pr" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 8.5v7M18 6v9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 4l2 2-2 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-merged" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 8.5c0 5 4 7 9 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-draft" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 2"/><path d="M6 8.5v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-closed-pr" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 8.5v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 4l8 8M22 4l-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-block" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-thumbsup" viewBox="0 0 24 24"><path d="M7 11v9H4v-9h3zm0 0l4-8a2 2 0 014 2v4h5a2 2 0 012 2l-1 7a2 2 0 01-2 1.7H7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-thumbsdown" viewBox="0 0 24 24"><path d="M7 13V4H4v9h3zm0 0l4 8a2 2 0 004-2v-4h5a2 2 0 002-2l-1-7a2 2 0 00-2-1.7H7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <header class="page-head">
+    <div class="page-eyebrow">Internal · design review aid</div>
+    <h1>Status reference — by artifact</h1>
+    <p>Every repository status the product surfaces, grouped by the artifact or action it describes. Each row shows where SaaS renders it (label, page, element) and what triggers the equivalent CLI string. The CLI is the fixed reference.</p>
+  </header>
+
+  <div class="disclaimer">
+    <svg><use href="#i-info"/></svg>
+    <div>SaaS chips here are replicas driven by Neo's <code>--neo-status-*-{light,medium,dark}</code> tokens. Production pulls colors/icons from <code>icons/icon-assets.ts</code>; CLI strings come from <code>modernecli</code> source files cited beneath each section.</div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc" aria-label="Artifacts">
+    <div class="toc-title">Artifacts</div>
+    <ol>
+      <li><a href="#a-lst">LST</a></li>
+      <li><a href="#a-recipe">Recipe run (per repository)</a></li>
+      <li><a href="#a-search">Search index</a></li>
+      <li><a href="#a-localrepo">Local repository (CLI git sync)</a></li>
+      <li><a href="#a-commit">Commit</a></li>
+      <li><a href="#a-pr">Pull request</a></li>
+      <li><a href="#a-viz">Visualization</a></li>
+      <li><a href="#a-authz">Repository authorization</a></li>
+      <li><a href="#a-activity">Activity feed</a></li>
+    </ol>
+  </nav>
+
+  <!-- Legend -->
+  <section class="legend" aria-label="Color bucket legend">
+    <div class="legend-title">Color buckets · from <code>icons/icon-assets.ts</code></div>
+    <div class="legend-grid">
+      <div class="legend-item"><span class="chip info"><svg><use href="#i-info"/></svg>Info</span><code>info · blue</code></div>
+      <div class="legend-item"><span class="chip warning"><svg><use href="#i-warn"/></svg>Warning</span><code>warning · amber</code></div>
+      <div class="legend-item"><span class="chip error"><svg><use href="#i-x"/></svg>Error</span><code>error · red</code></div>
+      <div class="legend-item"><span class="chip success"><svg><use href="#i-check"/></svg>Success</span><code>success · green</code></div>
+      <div class="legend-item"><span class="chip unavailable"><svg><use href="#i-unavailable"/></svg>Unavailable</span><code>unavailable · grey</code></div>
+      <div class="legend-item"><span class="chip canceled"><svg><use href="#i-cancel"/></svg>Canceled</span><code>canceled · #F8BC3B</code></div>
+      <div class="legend-item"><span class="chip running"><span class="dot-ripple"></span>Running</span><code>running · primary blue</code></div>
+      <div class="legend-item"><span class="chip queued"><span class="dot-vibrate"></span>Queued</span><code>queued · grey</code></div>
+      <div class="legend-item"><span class="chip merged"><svg><use href="#i-merged"/></svg>Merged</span><code>merged · violet</code></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 1 — LST -->
+  <!-- ============================================================ -->
+  <section class="artifact" id="a-lst">
+    <header class="artifact-head">
+      <span class="artifact-num">1</span>
+      <div>
+        <div class="eyebrow">Artifact</div>
+        <h2>LST — the analyzed source artifact</h2>
+        <div class="scope"><span class="pill">SaaS + CLI</span></div>
+      </div>
+    </header>
+
+    <!-- Build sub-table -->
+    <div class="artifact-sub">
+      <h3>Build LST</h3>
+      <span class="sub-tag">CLI · mod build</span>
+      <span class="sub-side">produces the artifact in the store</span>
+    </div>
+
+    <table class="tbl">
+      <colgroup><col class="col-sit"><col class="col-saas"><col class="col-cli"></colgroup>
+      <thead>
+        <tr>
+          <th>Situation</th>
+          <th>SaaS<span class="h-sub">label · where</span></th>
+          <th>CLI<span class="h-sub">trigger · command</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="situation">Not started<span class="sit-sub">no build attempted yet</span></td>
+          <td><div class="saas-cell empty">—<span class="em-note">SaaS doesn't surface CLI build state</span></div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">NOT_STARTED</div>
+              <div class="cli-cmd"><span class="tok-cmd">lst_status</span> · tray icon</div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Building</td>
+          <td><div class="saas-cell empty">—</div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">BUILDING</div>
+              <div class="cli-cmd"><span class="tok-cmd">lst_status</span> during <span class="tok-cmd">mod build</span> · tray <b>◐</b></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Built &amp; available</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip success"><svg><use href="#i-check"/></svg>LST available</span></div>
+              <div class="where"><b>Organizations &amp; repositories</b> · LST available column</div>
+            </div></div>
+          </td>
+          <td>
+            <div class="cli-cell">
+              <div class="cli-row">
+                <div class="cli-state">READY</div>
+                <div class="cli-cmd"><span class="tok-cmd">lst_status</span></div>
+              </div>
+              <div class="cli-row">
+                <div class="cli-state">available: true</div>
+                <div class="cli-cmd"><span class="tok-cmd">build_status</span></div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Partially built</td>
+          <td><div class="saas-cell empty">—<span class="em-note">no SaaS concept</span></div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">PARTIALLY_READY</div>
+              <div class="cli-cmd"><span class="tok-cmd">lst_status</span> · <span class="em">defined but never emitted</span></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Build failed</td>
+          <td><div class="saas-cell empty">—<span class="em-note">surfaces downstream as "Missing"</span></div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">FAILED <span class="cli-icon err"><svg><use href="#i-x"/></svg></span></div>
+              <div class="cli-cmd">cache clear / orchestrator threw · <span class="tok-cmd">lst_status</span></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Missing / never built<span class="sit-sub">no LST artifact exists for this repo</span></td>
+          <td>
+            <div class="saas-cell">
+              <div class="saas-row">
+                <div class="chip-line"><span class="chip info"><svg><use href="#i-info"/></svg>Unknown</span></div>
+                <div class="where"><b>Organizations &amp; repositories</b> · LST available column</div>
+              </div>
+              <div class="saas-row">
+                <div class="chip-line"><span class="chip warning"><svg><use href="#i-warn"/></svg>No LST</span></div>
+                <div class="where"><b>Run results</b> · Status column · <b>Visualizations</b> page</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">"…type-blind…" / "no build step produced an LST"</div>
+              <div class="cli-cmd"><span class="tok-cmd">lst_status</span>, <span class="tok-cmd">mod build</span></div>
+            </div></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Sync sub-table -->
+    <div class="artifact-sub">
+      <h3>Sync LST</h3>
+      <span class="sub-tag">SaaS · Run results</span>
+      <span class="sub-side">pulls a built artifact into a run</span>
+    </div>
+
+    <table class="tbl">
+      <colgroup><col class="col-sit"><col class="col-saas"><col class="col-cli"></colgroup>
+      <thead>
+        <tr>
+          <th>Situation</th>
+          <th>SaaS<span class="h-sub">label · where</span></th>
+          <th>CLI<span class="h-sub">trigger · command</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="situation">Not started</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip queued"><span class="dot-vibrate"></span>Pending</span></div>
+              <div class="where"><b>Run results</b> · Sync column</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—<span class="em">CLI owns the artifact locally · no sync</span></div></td>
+        </tr>
+        <tr>
+          <td class="situation">Syncing</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip running"><span class="dot-ripple"></span>Syncing</span></div>
+              <div class="where"><b>Run results</b> · Sync column · run header</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Synced</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip success"><svg><use href="#i-check"/></svg>Synced</span></div>
+              <div class="where"><b>Run results</b> · Sync column</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Sync failed</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line">
+                <span class="chip error"><svg><use href="#i-x"/></svg>Failed</span>
+                <span class="chip error"><svg><use href="#i-x"/></svg>Sync failed</span>
+              </div>
+              <div class="where"><b>Run results</b> · Sync column</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Canceled</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip canceled-grey"><svg><use href="#i-cancel"/></svg>Canceled</span></div>
+              <div class="where"><b>Run results</b> · Sync column · <span class="em" style="font-style:italic">renders neutral grey here vs gold in Status column</span></div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="foot">CLI strings: <code>mcp/LstManager.java</code>, <code>mcp/LstStatusTool.java</code></div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 2 — Recipe run -->
+  <!-- ============================================================ -->
+  <section class="artifact" id="a-recipe">
+    <header class="artifact-head">
+      <span class="artifact-num">2</span>
+      <div>
+        <div class="eyebrow">Artifact</div>
+        <h2>Recipe run (per repository)</h2>
+        <div class="scope"><span class="pill">SaaS + CLI</span></div>
+      </div>
+    </header>
+
+    <table class="tbl">
+      <colgroup><col class="col-sit"><col class="col-saas"><col class="col-cli"></colgroup>
+      <thead><tr><th>Situation</th><th>SaaS<span class="h-sub">label · where</span></th><th>CLI<span class="h-sub">trigger · command</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="situation">Queued</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip queued"><span class="dot-vibrate"></span>Queued</span></div>
+              <div class="where"><b>Run results</b> · Status column</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">— <span class="em">CLI runs synchronously</span></div></td>
+        </tr>
+        <tr>
+          <td class="situation">Running</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip running"><span class="dot-ripple"></span>Running</span></div>
+              <div class="where"><b>Run results</b> · Status column</div>
+            </div></div>
+          </td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state"><span class="cli-progress"><span class="cli-progress-bar"></span> 12 / 24</span></div>
+              <div class="cli-cmd">live progress bar · <span class="tok-cmd">mod run</span>, <span class="tok-cmd">mod build</span></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Still syncing<span class="sit-sub">sync precedence overrides changeset</span></td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip running"><span class="dot-ripple"></span>Syncing</span></div>
+              <div class="where"><b>Run results</b> · Status column</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">— <span class="em">see LST → Being prepared</span></div></td>
+        </tr>
+        <tr>
+          <td class="situation">Succeeded</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip success"><svg><use href="#i-check"/></svg>Finished</span></div>
+              <div class="where"><b>Run results</b> · Status column</div>
+            </div></div>
+          </td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">SUCCEEDED <span class="cli-icon ok"><svg><use href="#i-check"/></svg></span></div>
+              <div class="cli-cmd">"Built (…)" · <span class="tok-cmd">mod run</span>, <span class="tok-cmd">mod build</span> · <i>Succeeded</i> row in trace</div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Succeeded, with markers<span class="sit-sub">icon recolored by worst marker</span></td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line">
+                <span class="chip info"><svg><use href="#i-info"/></svg>Finished</span>
+                <span class="chip warning"><svg><use href="#i-warn"/></svg>Finished</span>
+                <span class="chip error"><svg><use href="#i-x"/></svg>Finished</span>
+              </div>
+              <div class="where"><b>Run results</b> · Status column · same label, icon + color shift to worst marker (info → warn → error) · hover shows counts</div>
+            </div></div>
+          </td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">markers in <i>changes.json</i></div>
+              <div class="cli-cmd">produced by <span class="tok-cmd">mod run</span>, read by <span class="tok-cmd">mod report</span> · <span class="em">not shown in terminal</span></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Ran, no matches / no output</td>
+          <td><div class="saas-cell empty">—<span class="em-note">no distinct SaaS run-state</span></div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">Skipped <span class="cli-icon warn"><svg><use href="#i-warn"/></svg></span></div>
+              <div class="cli-cmd"><span class="tok-cmd">mod run</span> · also covers dry-run &amp; preconditions</div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Failed</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip error"><svg><use href="#i-x"/></svg>Error</span></div>
+              <div class="where"><b>Run results</b> · Status column</div>
+            </div></div>
+          </td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">FAILED <span class="cli-icon err"><svg><use href="#i-x"/></svg></span></div>
+              <div class="cli-cmd"><span class="tok-cmd">mod run</span>, <span class="tok-cmd">mod build</span> · <i>Failed</i> row in trace</div>
+            </div></div>
+          </td>
+        </tr>
+        <tr class="row-sub">
+          <td>reason: LST load failed</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip error"><svg><use href="#i-x"/></svg>LST loading failed</span><code style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-3);background:var(--neo-grey-100);padding:1px 5px;border-radius:3px">FAILED_LOAD_AST</code></div>
+              <div class="where">hover + Details column</div>
+            </div></div>
+          </td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">"…type-blind…"</div>
+              <div class="cli-cmd"><span class="tok-cmd">lst_status</span> <i>failureReason</i></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr class="row-sub">
+          <td>reason: recipe load failed</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip error"><svg><use href="#i-x"/></svg>Recipe loading failed</span><code style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-3);background:var(--neo-grey-100);padding:1px 5px;border-radius:3px">FAILED_LOAD_RECIPE</code></div>
+              <div class="where">hover + Details column</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">— <span class="em">no distinct value</span></div></td>
+        </tr>
+        <tr class="row-sub">
+          <td>reason: recipe threw</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip error"><svg><use href="#i-x"/></svg>Recipe error</span><code style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-3);background:var(--neo-grey-100);padding:1px 5px;border-radius:3px">RECIPE_ERROR</code></div>
+              <div class="where">hover + Details column</div>
+            </div></div>
+          </td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">stacktrace tail</div>
+              <div class="cli-cmd"><span class="tok-cmd">mod run</span> log</div>
+            </div></div>
+          </td>
+        </tr>
+        <tr class="row-sub">
+          <td>reason: timeout</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip error"><svg><use href="#i-x"/></svg>Timeout</span><code style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-3);background:var(--neo-grey-100);padding:1px 5px;border-radius:3px">TIMEOUT</code></div>
+              <div class="where">hover + Details column</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">— <span class="em">no timeout state</span></div></td>
+        </tr>
+        <tr>
+          <td class="situation">Canceled</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip canceled"><svg><use href="#i-cancel"/></svg>Canceled</span></div>
+              <div class="where"><b>Run results</b> · Status column</div>
+            </div></div>
+          </td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">Canceled</div>
+              <div class="cli-cmd">Ctrl-C · in trace · <span class="em">no glyph / rollup bucket</span></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Unknown / fallback<span class="sit-sub">typename fallback</span></td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip unavailable"><svg><use href="#i-unavailable"/></svg>Unknown</span></div>
+              <div class="where"><b>Run results</b> · Status column</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Whole-run rollup</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line">
+                <span class="chip queued"><span class="dot-vibrate"></span>Queued</span>
+                <span class="chip running"><span class="dot-ripple"></span>Syncing</span>
+                <span class="chip running"><span class="dot-ripple"></span>Running</span>
+                <span class="chip success"><svg><use href="#i-check"/></svg>Finished</span>
+                <span class="chip canceled"><svg><use href="#i-cancel"/></svg>Canceled</span>
+                <span class="chip error"><svg><use href="#i-x"/></svg>Error</span>
+              </div>
+              <div class="where">run header · <b>Recent activity</b></div>
+            </div></div>
+          </td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">"Processed N/M repos (X successful, Y skipped, Z failed)"</div>
+              <div class="cli-cmd">end of <span class="tok-cmd">mod run</span> / <span class="tok-cmd">mod build</span></div>
+            </div></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="foot">CLI strings: glyphs <code>ui/Icons.java</code> · outcomes + rollup <code>ui/AnimatedProgressBar.java</code> · per-repo lines <code>commands/build/Build.java</code>, <code>commands/run/Run.java</code> · trace <code>trace/Outcome.java</code> · failure reasons <code>mcp/LstStatusTool.java</code></div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 3 — Search index -->
+  <!-- ============================================================ -->
+  <section class="artifact" id="a-search">
+    <header class="artifact-head">
+      <span class="artifact-num">3</span>
+      <div>
+        <div class="eyebrow">Artifact</div>
+        <h2>Search index — trigram / structural search</h2>
+        <div class="scope"><span class="pill cli-only">CLI only</span></div>
+      </div>
+    </header>
+
+    <table class="tbl">
+      <colgroup><col class="col-sit"><col class="col-saas"><col class="col-cli"></colgroup>
+      <thead><tr><th>Situation</th><th>SaaS<span class="h-sub">label · where</span></th><th>CLI<span class="h-sub">trigger · command</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="situation">Index readiness</td>
+          <td><div class="saas-cell empty">—<span class="em-note">server-side, not surfaced</span></div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">available: true / false</div>
+              <div class="cli-cmd"><span class="tok-cmd">build_status</span> MCP tool</div>
+            </div></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="foot">CLI strings: <code>mcp/BuildStatusTool.java</code></div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 4 — Local repository (CLI git sync) -->
+  <!-- ============================================================ -->
+  <section class="artifact" id="a-localrepo">
+    <header class="artifact-head">
+      <span class="artifact-num">4</span>
+      <div>
+        <div class="eyebrow">Artifact</div>
+        <h2>Local repository (CLI git sync, on disk)</h2>
+        <div class="scope"><span class="pill cli-only">CLI only</span></div>
+      </div>
+    </header>
+
+    <table class="tbl">
+      <colgroup><col class="col-sit"><col class="col-saas"><col class="col-cli"></colgroup>
+      <thead><tr><th>Situation</th><th>SaaS<span class="h-sub">label · where</span></th><th>CLI<span class="h-sub">trigger · command</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="situation">Already on disk</td>
+          <td><div class="saas-cell empty">—</div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">"Repository already exists" <span class="cli-icon warn"><svg><use href="#i-warn"/></svg></span></div>
+              <div class="cli-cmd">Skipped · <span class="tok-cmd">mod git sync</span></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Checked out</td>
+          <td><div class="saas-cell empty">—</div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">"Checked out {sha7} on branch {branch}" <span class="cli-icon ok"><svg><use href="#i-check"/></svg></span></div>
+              <div class="cli-cmd">Succeeded · <span class="tok-cmd">mod git sync</span></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Working tree dirty</td>
+          <td><div class="saas-cell empty">—</div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">uncommitted-changes message <span class="cli-icon err"><svg><use href="#i-x"/></svg></span></div>
+              <div class="cli-cmd">Failed · <span class="tok-cmd">mod git sync</span></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Clone / checkout failed</td>
+          <td><div class="saas-cell empty">—</div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">exception message <span class="cli-icon err"><svg><use href="#i-x"/></svg></span></div>
+              <div class="cli-cmd">Failed · <span class="tok-cmd">mod git sync</span></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">LST file corrupt</td>
+          <td><div class="saas-cell empty">—</div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">"re-download queued" <span class="cli-icon warn"><svg><use href="#i-warn"/></svg></span></div>
+              <div class="cli-cmd">warning · <span class="tok-cmd">mod git sync</span></div>
+            </div></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="situation">Dry run</td>
+          <td><div class="saas-cell empty">—</div></td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">"Dry run — skipped"</div>
+              <div class="cli-cmd"><span class="tok-cmd">mod build --dry-run</span></div>
+            </div></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="foot">CLI strings: <code>RepositoryCloneTask</code>, <code>RepositoryCheckoutTask</code>, <code>LstDownloadTask</code> (<span class="mono">mod git sync</span>) · dry-run <code>commands/build/Build.java</code></div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 5 — Commit -->
+  <!-- ============================================================ -->
+  <section class="artifact" id="a-commit">
+    <header class="artifact-head">
+      <span class="artifact-num">5</span>
+      <div>
+        <div class="eyebrow">Artifact</div>
+        <h2>Commit — results written back to SCM</h2>
+        <div class="scope"><span class="pill saas-only">SaaS only</span></div>
+      </div>
+    </header>
+
+    <table class="tbl">
+      <colgroup><col class="col-sit"><col class="col-saas"><col class="col-cli"></colgroup>
+      <thead><tr><th>Situation</th><th>SaaS<span class="h-sub">label · where</span></th><th>CLI<span class="h-sub">trigger · command</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="situation">Queued</td>
+          <td><div class="saas-cell"><div class="saas-row"><div class="chip-line"><span class="chip queued"><span class="dot-vibrate"></span>Queued</span></div><div class="where"><b>Commit jobs &amp; PRs</b> · commit grid</div></div></div></td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Processing</td>
+          <td><div class="saas-cell"><div class="saas-row"><div class="chip-line"><span class="chip running"><span class="dot-ripple"></span>Processing</span></div><div class="where"><b>Commit jobs &amp; PRs</b> · commit grid</div></div></div></td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Completed<span class="sit-sub">sub-types: Direct / PR / Fork / Fork+PR</span></td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line">
+                <span class="chip success"><svg><use href="#i-check"/></svg>Completed · Direct</span>
+                <span class="chip success"><svg><use href="#i-check"/></svg>Completed · PR</span>
+                <span class="chip success"><svg><use href="#i-check"/></svg>Completed · Fork</span>
+                <span class="chip success"><svg><use href="#i-check"/></svg>Completed · Fork + PR</span>
+              </div>
+              <div class="where"><b>Commit jobs &amp; PRs</b> · commit grid</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">No changes to commit</td>
+          <td><div class="saas-cell"><div class="saas-row"><div class="chip-line"><span class="chip success"><svg><use href="#i-check"/></svg>No changes</span></div><div class="where"><b>Commit jobs &amp; PRs</b> · commit grid</div></div></div></td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Failed</td>
+          <td><div class="saas-cell"><div class="saas-row"><div class="chip-line"><span class="chip error"><svg><use href="#i-x"/></svg>Failed</span></div><div class="where"><b>Commit jobs &amp; PRs</b> · commit grid</div></div></div></td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Canceled</td>
+          <td><div class="saas-cell"><div class="saas-row"><div class="chip-line"><span class="chip canceled"><svg><use href="#i-cancel"/></svg>Canceled</span></div><div class="where"><b>Commit jobs &amp; PRs</b> · commit grid</div></div></div></td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr class="row-note">
+          <td colspan="3"><span class="quirk">Quirk</span><svg><use href="#i-warn"/></svg>"Queued" commits are filed under the <code>running</code> display bucket — they count as active in the grid filter / grouping. (<code>commit-job.helper.ts:43</code>)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 6 — Pull request -->
+  <!-- ============================================================ -->
+  <section class="artifact" id="a-pr">
+    <header class="artifact-head">
+      <span class="artifact-num">6</span>
+      <div>
+        <div class="eyebrow">Artifact</div>
+        <h2>Pull request</h2>
+        <div class="scope"><span class="pill saas-only">SaaS only</span></div>
+      </div>
+    </header>
+
+    <table class="tbl">
+      <colgroup><col class="col-sit"><col class="col-saas"><col class="col-cli"></colgroup>
+      <thead><tr><th>Situation</th><th>SaaS<span class="h-sub">label · where</span></th><th>CLI<span class="h-sub">trigger · command</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="situation">PR state</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line">
+                <span class="chip info"><svg><use href="#i-pr"/></svg>Open</span>
+                <span class="chip unavailable"><svg><use href="#i-draft"/></svg>Draft</span>
+                <span class="chip error"><svg><use href="#i-closed-pr"/></svg>Closed</span>
+                <span class="chip merged"><svg><use href="#i-merged"/></svg>Merged</span>
+                <span class="chip error"><svg><use href="#i-block"/></svg>Blocked</span>
+              </div>
+              <div class="where"><b>Commit jobs &amp; PRs</b> · PR column · <b>Changelog</b> filter</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Mergeability</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line">
+                <span class="chip success"><svg><use href="#i-check"/></svg>Mergeable</span>
+                <span class="chip error"><svg><use href="#i-block"/></svg>Blocked</span>
+              </div>
+              <div class="where"><b>Commit jobs &amp; PRs</b> · PR popover</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">CI checks</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line">
+                <span class="chip queued"><span class="dot-vibrate"></span>Pending</span>
+                <span class="chip running"><span class="dot-ripple"></span>In progress</span>
+                <span class="chip success"><svg><use href="#i-check"/></svg>Success</span>
+                <span class="chip error"><svg><use href="#i-x"/></svg>Failure</span>
+                <span class="chip warning"><svg><use href="#i-skip"/></svg>Skipped</span>
+                <span class="chip unavailable"><svg><use href="#i-minus"/></svg>Not required</span>
+              </div>
+              <div class="where">PR popover · <b>Changelog</b> filter</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Review decision</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line">
+                <span class="chip queued"><svg><use href="#i-clock"/></svg>Needs approval</span>
+                <span class="chip success"><svg><use href="#i-thumbsup"/></svg>Approved</span>
+                <span class="chip error"><svg><use href="#i-thumbsdown"/></svg>Changes requested</span>
+                <span class="chip unavailable"><svg><use href="#i-minus"/></svg>Not required</span>
+              </div>
+              <div class="where">PR popover · <b>Changelog</b> filter</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 7 — Visualization -->
+  <!-- ============================================================ -->
+  <section class="artifact" id="a-viz">
+    <header class="artifact-head">
+      <span class="artifact-num">7</span>
+      <div>
+        <div class="eyebrow">Artifact</div>
+        <h2>Visualization</h2>
+        <div class="scope"><span class="pill saas-only">SaaS only</span></div>
+      </div>
+    </header>
+
+    <table class="tbl">
+      <colgroup><col class="col-sit"><col class="col-saas"><col class="col-cli"></colgroup>
+      <thead><tr><th>Situation</th><th>SaaS<span class="h-sub">label · where</span></th><th>CLI<span class="h-sub">trigger · command</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="situation">Per-repo</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line">
+                <span class="chip queued"><span class="dot-vibrate"></span>Queued</span>
+                <span class="chip running"><span class="dot-ripple"></span>Processing</span>
+                <span class="chip success"><svg><use href="#i-check"/></svg>Finished</span>
+                <span class="chip error"><svg><use href="#i-x"/></svg>Finished empty</span>
+                <span class="chip warning"><svg><use href="#i-warn"/></svg>No LST</span>
+                <span class="chip error"><svg><use href="#i-x"/></svg>Error</span>
+              </div>
+              <div class="where"><b>Visualizations</b> · run grid</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Whole visualization</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line">
+                <span class="chip info"><svg><use href="#i-info"/></svg>Available</span>
+                <span class="chip running"><span class="dot-ripple"></span>Processing</span>
+                <span class="chip success"><svg><use href="#i-check"/></svg>Finished</span>
+                <span class="chip error"><svg><use href="#i-x"/></svg>Finished empty</span>
+                <span class="chip error"><svg><use href="#i-x"/></svg>Error</span>
+              </div>
+              <div class="where"><b>Visualizations</b> · header · <b>Recent activity</b></div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 8 — Repository authorization -->
+  <!-- ============================================================ -->
+  <section class="artifact" id="a-authz">
+    <header class="artifact-head">
+      <span class="artifact-num">8</span>
+      <div>
+        <div class="eyebrow">Artifact</div>
+        <h2>Repository authorization</h2>
+        <div class="scope"><span class="pill saas-only">SaaS only</span></div>
+      </div>
+    </header>
+
+    <table class="tbl">
+      <colgroup><col class="col-sit"><col class="col-saas"><col class="col-cli"></colgroup>
+      <thead><tr><th>Situation</th><th>SaaS<span class="h-sub">label · where</span></th><th>CLI<span class="h-sub">trigger · command</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="situation">Allowed</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="em" style="font-size:12px;font-style:italic">renders content</span></div>
+              <div class="where">result-diff pages &amp; PR action buttons</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">— <span class="em">CLI uses local git access</span></div></td>
+        </tr>
+        <tr>
+          <td class="situation">Not authenticated</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip info"><svg><use href="#i-lock"/></svg>Authorize</span></div>
+              <div class="where">prompt · result-diff pages</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+        <tr>
+          <td class="situation">Denied</td>
+          <td>
+            <div class="saas-cell"><div class="saas-row">
+              <div class="chip-line"><span class="chip unavailable"><svg><use href="#i-lock"/></svg>You don't have access</span></div>
+              <div class="where">EmptyState · result-diff pages</div>
+            </div></div>
+          </td>
+          <td><div class="cli-cell empty">—</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 9 — Activity feed -->
+  <!-- ============================================================ -->
+  <section class="artifact" id="a-activity">
+    <header class="artifact-head">
+      <span class="artifact-num">9</span>
+      <div>
+        <div class="eyebrow">Artifact</div>
+        <h2>Activity feed (cross-object rollup)</h2>
+        <div class="scope"><span class="pill">SaaS + CLI</span></div>
+      </div>
+    </header>
+
+    <table class="tbl">
+      <colgroup><col class="col-sit"><col class="col-saas"><col class="col-cli"></colgroup>
+      <thead><tr><th>Situation</th><th>SaaS<span class="h-sub">label · where</span></th><th>CLI<span class="h-sub">trigger · command</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="situation">Mixed run / commit / viz outcomes<span class="sit-sub"><code>getStatusBadgeColor</code> accepts many synonyms</span></td>
+          <td>
+            <div class="saas-cell">
+              <div class="saas-row">
+                <div class="src-label">Recipe run<span class="src-enum"><code>ChangesetStatus</code></span></div>
+                <div class="chip-line">
+                  <span class="chip success"><svg><use href="#i-check"/></svg>Finished</span>
+                  <span class="chip running"><span class="dot-ripple"></span>Running</span>
+                  <span class="chip running"><span class="dot-ripple"></span>Syncing</span>
+                  <span class="chip queued"><span class="dot-vibrate"></span>Queued</span>
+                  <span class="chip error"><svg><use href="#i-x"/></svg>Error</span>
+                  <span class="chip canceled"><svg><use href="#i-cancel"/></svg>Canceled</span>
+                </div>
+              </div>
+              <div class="saas-row">
+                <div class="src-label">Commit<span class="src-enum"><code>RepositoryCommitStatus</code></span></div>
+                <div class="chip-line">
+                  <span class="chip success"><svg><use href="#i-check"/></svg>Completed</span>
+                  <span class="chip success"><svg><use href="#i-check"/></svg>No changes</span>
+                  <span class="chip running"><span class="dot-ripple"></span>Processing</span>
+                  <span class="chip queued"><span class="dot-vibrate"></span>Pending</span>
+                  <span class="chip error"><svg><use href="#i-x"/></svg>Failed</span>
+                  <span class="chip canceled"><svg><use href="#i-cancel"/></svg>Canceled</span>
+                </div>
+              </div>
+              <div class="saas-row">
+                <div class="src-label">Visualization<span class="src-enum"><code>VisualizationState</code> (aggregate)</span></div>
+                <div class="chip-line">
+                  <span class="chip success"><svg><use href="#i-check"/></svg>Success</span>
+                  <span class="chip running"><span class="dot-ripple"></span>Processing</span>
+                  <span class="chip error"><svg><use href="#i-x"/></svg>Finished empty</span>
+                  <span class="chip error"><svg><use href="#i-x"/></svg>Error</span>
+                </div>
+              </div>
+              <div class="where" style="margin-top:10px">rolled-up status badge · <b>Recent activity</b> / dashboard · <code>getStatusBadgeColor</code> normalizes the synonyms above into one color bucket per row</div>
+            </div>
+          </td>
+          <td>
+            <div class="cli-cell"><div class="cli-row">
+              <div class="cli-state">per-row Outcome in trace</div>
+              <div class="cli-cmd"><span class="tok-cmd">mod trace</span>, <span class="tok-cmd">mod report</span></div>
+            </div></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="foot">CLI strings: <code>trace/Outcome.java</code> · Commit, PR, Visualization, and Authorization have no CLI source.</div>
+  </section>
+
+  <!-- Notes -->
+  <section class="notes" id="notes">
+    <h3>Notes · v2-sandbox vs main</h3>
+    <ul>
+      <li><div>"Draft" (PR), enumerated CI/review states, and the authorization enum are <code>v2-sandbox</code>-only.</div></li>
+      <li><div><code>lstArtifact.available=false</code> → blue "Unknown" replaced <code>main</code>'s "No LST" warning badge.</div></li>
+      <li><div>Commit statuses "Orphaned" and "Queued (rate-limited)" were removed.</div></li>
+      <li><div>Error reason <code>FAILED_LOAD_SYMMETRIC_KEY</code> was folded into <code>FAILED_LOAD_AST</code>.</div></li>
+    </ul>
+    <span class="ref">Exact source file + line references for each status live in the spreadsheet — CLI Inventory and SaaS Inventory tabs.</span>
+  </section>
+
+</div>
+
+</body>
+</html>
