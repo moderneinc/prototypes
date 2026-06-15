@@ -761,6 +761,13 @@
     gap: 16px;
     min-height: 18px;
   }
+  /* Collapse the row when there's nothing to show (no result stats yet)
+     so the empty state and results pane sit tight under the assist row. */
+  .search-help-row:has(> .search-help-stats:empty),
+  .search-help-row:not(:has(*:not(:empty))) {
+    margin-top: 0;
+    min-height: 0;
+  }
   .search-help {
     font-size: 12px;
     color: var(--grey-500);
@@ -1415,6 +1422,256 @@
   }
   .trigrep-empty-title { font-size: 15px; font-weight: 600; color: var(--grey-700); }
   .trigrep-empty-desc { font-size: 13px; color: var(--grey-600); max-width: 360px; line-height: 1.5; }
+
+  /* =====================================================================
+     Trigrep NL-Assist — chip strip, suggestions, catalog, autocomplete
+     ===================================================================== */
+  .tg-assist-row {
+    margin-top: 8px;
+    display: flex; align-items: flex-start;
+    gap: 8px;
+  }
+  .tg-chip-strip {
+    flex: 1 1 auto;
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 4px;
+    min-height: 22px;
+  }
+  .tg-chip-strip:empty::before {
+    content: "Start typing — words become filters. Try \201Cpublic java methods that throw IOException\201D.";
+    color: var(--grey-500); font-size: 12px;
+  }
+  .tg-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--grey-50);
+    color: var(--grey-700);
+    border: 1px solid var(--grey-100);
+    border-radius: 6px;
+    padding: 2px 4px 2px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    cursor: default;
+  }
+  .tg-chip strong { color: var(--grey-500); font-weight: 500; margin-right: 1px; }
+  .tg-chip.is-op { background: transparent; border-color: transparent; color: var(--grey-500); padding: 2px 4px; }
+  .tg-chip.is-term { background: #fff; border-style: dashed; }
+  .tg-chip.is-regex { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
+  .tg-chip.is-structural { background: #f5f3ff; border-color: #ddd6fe; color: #5b21b6; }
+  .tg-chip.status-unverified { background: var(--brand-orange-100); border-color: var(--brand-orange-600); color: var(--brand-orange-800); }
+  .tg-chip.status-invalid    { background: var(--brand-red-100);    border-color: var(--brand-red-500);    color: var(--brand-red-700); text-decoration: underline wavy; }
+  .tg-chip.status-suggested  { background: var(--alias-primary-100, #F2F3FF); border-color: var(--neo-digital-blue-300); color: var(--neo-digital-blue-500); border-style: dashed; }
+  .tg-chip-x {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    border: none; background: transparent;
+    color: inherit; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; line-height: 1;
+  }
+  .tg-chip-x:hover { background: rgba(0,0,0,0.08); }
+  .tg-mode-badge {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--grey-50);
+    color: var(--grey-600);
+    border: 1px solid var(--grey-100);
+    cursor: pointer;
+    font-family: var(--brand-font-family-sans);
+  }
+  .tg-mode-badge.mode-regex { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
+  .tg-mode-badge.mode-structural { background: #f5f3ff; border-color: #ddd6fe; color: #5b21b6; }
+  .tg-mode-badge.mode-mixed { background: var(--alias-primary-100, #F2F3FF); border-color: var(--neo-digital-blue-300); color: var(--neo-digital-blue-500); }
+  .tg-raw-toggle {
+    flex-shrink: 0;
+    font-size: 11px; color: var(--grey-600);
+    background: transparent; border: 1px solid var(--grey-200);
+    border-radius: 6px;
+    padding: 2px 8px;
+    cursor: pointer;
+  }
+  .tg-raw-toggle:hover { background: var(--grey-50); }
+  .tg-raw-toggle.is-on { background: var(--neo-digital-blue-500); color: #fff; border-color: var(--neo-digital-blue-500); }
+  .tg-catalog-btn {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; color: var(--grey-600);
+    background: transparent; border: 1px solid var(--grey-200);
+    border-radius: 6px;
+    padding: 2px 8px;
+    cursor: pointer;
+  }
+  .tg-catalog-btn:hover { background: var(--grey-50); color: var(--neo-digital-blue-500); }
+
+  .tg-suggest-banner {
+    margin-top: 6px;
+    padding: 6px 10px;
+    background: var(--alias-primary-100, #F2F3FF);
+    border: 1px solid var(--neo-digital-blue-300);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--grey-800);
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 8px;
+  }
+  .tg-suggest-banner:empty { display: none; }
+  .tg-suggest-banner code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    background: #fff;
+    border: 1px solid var(--grey-100);
+    padding: 0 4px;
+    border-radius: 3px;
+    color: var(--grey-800);
+  }
+  .tg-suggest-banner button {
+    background: var(--neo-digital-blue-500); color: #fff;
+    border: 0; border-radius: 4px;
+    padding: 2px 8px;
+    font: 500 11px/1.4 var(--brand-font-family-sans);
+    cursor: pointer;
+  }
+  .tg-suggest-banner button.is-secondary {
+    background: #fff; color: var(--grey-700); border: 1px solid var(--grey-200);
+  }
+  .tg-explain {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--grey-600);
+    line-height: 1.5;
+  }
+  .tg-explain:empty { display: none; }
+  .tg-explain b { color: var(--grey-800); font-weight: 600; }
+
+  /* Autocomplete dropdown anchored under the input */
+  .tg-autocomplete {
+    position: absolute;
+    background: #fff;
+    border: 1px solid var(--grey-200);
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+    z-index: 40;
+    min-width: 200px; max-width: 320px;
+    padding: 4px;
+    max-height: 240px; overflow: auto;
+  }
+  .tg-autocomplete[hidden] { display: none; }
+  .tg-ac-item {
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--grey-800);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tg-ac-item small { color: var(--grey-500); font-family: var(--brand-font-family-sans); font-size: 11px; }
+  .tg-ac-item:hover, .tg-ac-item.is-active { background: var(--alias-primary-100, #F2F3FF); color: var(--neo-digital-blue-500); }
+
+  /* Catalog modal */
+  .tg-modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(17, 24, 39, 0.35);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+  }
+  .tg-modal-backdrop[hidden] { display: none; }
+  .tg-modal {
+    width: min(720px, 92vw);
+    max-height: 80vh;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .tg-modal-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--grey-100);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .tg-modal-head h3 { font-size: 14px; font-weight: 600; color: var(--grey-900); margin: 0; }
+  .tg-modal-head input {
+    flex: 1;
+    border: 1px solid var(--grey-200);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+  }
+  .tg-modal-head input:focus { border-color: var(--neo-digital-blue-500); }
+  .tg-modal-close {
+    border: 0; background: transparent; cursor: pointer; font-size: 18px; color: var(--grey-500);
+    padding: 4px 8px;
+  }
+  .tg-modal-body {
+    overflow: auto;
+    padding: 8px 12px 16px;
+  }
+  .tg-cat-entry {
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .tg-cat-entry:hover { background: var(--grey-50); border-color: var(--grey-100); }
+  .tg-cat-entry-head { display: flex; align-items: center; gap: 8px; }
+  .tg-cat-entry-kind {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 1px 6px; border-radius: 3px;
+    background: var(--grey-100); color: var(--grey-700);
+  }
+  .tg-cat-entry-kind.k-filter     { background: var(--alias-primary-100, #F2F3FF); color: var(--neo-digital-blue-500); }
+  .tg-cat-entry-kind.k-regex      { background: #fff7ed; color: #9a3412; }
+  .tg-cat-entry-kind.k-structural { background: #f5f3ff; color: #5b21b6; }
+  .tg-cat-entry-name { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--grey-900); }
+  .tg-cat-entry-desc { font-size: 12px; color: var(--grey-600); }
+  .tg-cat-entry-tags { font-size: 11px; color: var(--grey-500); font-style: italic; }
+
+  /* Scope-it-down panel (shown after Search when a theme is detected) */
+  .trigrep-empty.tg-scope { padding-top: 56px; }
+  .tg-scope-list {
+    margin-top: 4px;
+    width: min(560px, 100%);
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .tg-scope-option {
+    text-align: left;
+    background: #fff;
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex; flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    font: inherit;
+  }
+  .tg-scope-option:hover {
+    border-color: var(--neo-digital-blue-500);
+    background: var(--alias-primary-100, #F2F3FF);
+  }
+  .tg-scope-label { font-size: 13px; font-weight: 600; color: var(--grey-900); }
+  .tg-scope-desc  { font-size: 12px; color: var(--grey-600); }
+  .tg-scope-option code {
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--grey-700);
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    padding: 2px 6px;
+    border-radius: 4px;
+    align-self: flex-start;
+  }
+
 </style>
 </head>
 <body>
@@ -2108,7 +2365,7 @@ function buildTrigrepLandingHTML() {
       <div class="trigrep-page-title">TriGrep</div>
     </div>
     <div class="trigrep-head" id="trigrep-head">
-      <div class="trigrep-search-row">
+      <div class="trigrep-search-row" style="position: relative;">
         <div class="trigrep-search-box" id="trigrep-search-box">
           <div class="syntax-selector" id="syntax-selector">
             <button type="button" class="syntax-selector-btn" aria-haspopup="listbox" aria-expanded="false">
@@ -2144,10 +2401,31 @@ function buildTrigrepLandingHTML() {
           <input class="trigrep-query" id="trigrep-query-input" placeholder="${escapeHtml(PLACEHOLDERS.sourcegraph)}" spellcheck="false">
         </div>
         <button class="btn-search" id="trigrep-search-btn">Search</button>
+        <div class="tg-autocomplete" id="tg-autocomplete" hidden></div>
       </div>
+      <div class="tg-assist-row" id="tg-assist-row">
+        <div class="tg-chip-strip" id="tg-chip-strip"></div>
+        <button type="button" class="tg-mode-badge" id="tg-mode-badge" title="Click to insert patternType:">literal</button>
+        <button type="button" class="tg-raw-toggle" id="tg-raw-toggle" aria-pressed="false">Raw</button>
+        <button type="button" class="tg-catalog-btn" id="tg-catalog-btn" title="Browse syntax catalog">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          What can I search?
+        </button>
+      </div>
+      <div class="tg-suggest-banner" id="tg-suggest-banner"></div>
+      <div class="tg-explain" id="tg-explain"></div>
       <div class="search-help-row">
-        <div class="search-help" id="search-help"></div>
         <div class="search-help-stats" id="search-help-stats"></div>
+      </div>
+    </div>
+    <div class="tg-modal-backdrop" id="tg-catalog-modal" hidden>
+      <div class="tg-modal" role="dialog" aria-label="TriGrep syntax catalog">
+        <div class="tg-modal-head">
+          <h3>What can I search?</h3>
+          <input type="text" id="tg-catalog-search" placeholder="Search filters, regex, structural patterns…" spellcheck="false">
+          <button type="button" class="tg-modal-close" id="tg-catalog-close" aria-label="Close">&times;</button>
+        </div>
+        <div class="tg-modal-body" id="tg-catalog-body"></div>
       </div>
     </div>
 
@@ -2196,12 +2474,6 @@ function setNavActive(id) {
   });
 }
 
-function renderHelpText(mode) {
-  const slot = trigrepPanel.querySelector('#search-help');
-  if (!slot) return;
-  slot.innerHTML = `<span>${HELP_TEXT[mode] || ''}</span>`;
-}
-
 function setSyntaxMode(mode) {
   trigrepCurrentMode = mode;
   const label = trigrepPanel.querySelector('.syntax-selector-label');
@@ -2215,7 +2487,6 @@ function setSyntaxMode(mode) {
   }
   const input = trigrepPanel.querySelector('#trigrep-query-input');
   if (input) input.placeholder = PLACEHOLDERS[mode] || '';
-  renderHelpText(mode);
 }
 
 function wireSyntaxSelector() {
@@ -2238,7 +2509,9 @@ function wireSyntaxSelector() {
   });
   menu.querySelectorAll('li[role="option"]').forEach(li => {
     li.addEventListener('click', () => {
-      setSyntaxMode(li.dataset.value);
+      const mode = li.dataset.value;
+      setSyntaxMode(mode);
+      tgApplySyntaxMode(mode);
       closeMenu();
     });
   });
@@ -2282,9 +2555,20 @@ function wireTrigrepSearchBar() {
   const submit = () => {
     const text = (input.value || '').trim();
     if (!text) return;
-    // Match against example queries (happy paths)
+    // 1) Exact canned syntax-example match (preserves original cards)
     const syntaxMatch = Object.entries(SYNTAX_EXAMPLES).find(([, t]) => t.toLowerCase() === text.toLowerCase());
     if (syntaxMatch) { executeSearch(syntaxMatch[0]); return; }
+    // 2) Natural-language phrase routing → canned query on a happy path
+    const phraseHit = tgRoutePhrase(text);
+    if (phraseHit) { tgRunCanned(phraseHit.query, phraseHit.flow); return; }
+    // 3) Canonical signature routing — token shape matches a happy-path query
+    const parsed = (TGState && TGState.tokens && TGState.tokens.length) ? TGState.tokens : tgParseNL(text).tokens;
+    const sigHit = tgRouteSignature(parsed);
+    if (sigHit) { tgRunCanned(sigHit.query, sigHit.flow); return; }
+    // 4) Broad theme detected but no specific scope → scope-it-down chips
+    const theme = tgDetectTheme(text, parsed);
+    if (theme) { tgShowScope(theme); return; }
+    // 5) Honest empty state — this prototype only has scripted fixtures
     showSearchFallback();
   };
 
@@ -2681,6 +2965,1530 @@ function buildFileDetailHTML(file) {
 }
 
 // ===================================================================
+// =====  TRIGREP NL-ASSIST  =========================================
+// Deterministic, offline natural-language → TriGrep query layer.
+// No AI / no network. Lexer + dictionary + trigger rules + concept
+// index + fuzzy matching. The text input and a chip strip are both
+// views of a single token array (the source of truth).
+// ===================================================================
+
+// === Canonical filters (Appendix A) =================================
+const TG_FILTERS = {
+  'file':        { aliases: ['f','path'],    value: 'path' },
+  'repo':        { aliases: ['r'],           value: 'name' },
+  'branch':      { aliases: ['b'],           value: 'name' },
+  'rev':         { aliases: ['revision'],    value: 'name' },
+  'lang':        { aliases: ['language','l'],value: 'enum:lang' },
+  'case':        { aliases: [],              value: 'enum:yesno' },
+  'type':        { aliases: [],              value: 'enum:type' },
+  'sym':         { aliases: ['symbol'],      value: 'identifier' },
+  'select':      { aliases: [],              value: 'enum:select' },
+  'count':       { aliases: [],              value: 'integer' },
+  'content':     { aliases: [],              value: 'quoted' },
+  'patternType': { aliases: [],              value: 'enum:patternType' },
+  'visibility':  { aliases: [],              value: 'enum:visibility' },
+  'static':      { aliases: [],              value: 'enum:yesno' },
+  'final':       { aliases: [],              value: 'enum:yesno' },
+  'abstract':    { aliases: [],              value: 'enum:yesno' },
+  'extends':     { aliases: [],              value: 'identifier' },
+  'implements':  { aliases: [],              value: 'identifier' },
+  'returns':     { aliases: [],              value: 'identifier' },
+  'throws':      { aliases: [],              value: 'identifier' },
+};
+const TG_ALIAS_TO_CANON = {};
+for (const [c, def] of Object.entries(TG_FILTERS)) {
+  TG_ALIAS_TO_CANON[c] = c;
+  def.aliases.forEach(a => TG_ALIAS_TO_CANON[a] = c);
+}
+
+// === Curated vocabulary for validation + autocomplete (Appendix F) ==
+// Note: semantic filters (visibility/static/final/abstract/extends/
+// implements/returns/throws) work across LST-backed languages —
+// Java, Kotlin, Groovy, C# — not Java-only.
+const TG_VOCAB = {
+  'enum:lang': ['java','kotlin','groovy','csharp','python','javascript','typescript','go','ruby','scala','rust','php','c','cpp','swift'],
+  'enum:yesno': ['yes','no'],
+  'enum:type': ['file','path','symbol'],
+  'enum:select': ['symbol.class','symbol.interface','symbol.enum','symbol.method','symbol.constructor','symbol.field'],
+  'enum:patternType': ['keyword','literal','regexp','structural'],
+  'enum:visibility': ['public','private','protected','package','package-private','any'],
+  'throws':     ['IOException','RuntimeException','IllegalArgumentException','IllegalStateException','NullPointerException','SQLException','InterruptedException','FileNotFoundException','IllegalAccessException','ClassNotFoundException','Exception'],
+  'extends':    ['AbstractController','BaseService','AbstractService','WebSecurityConfigurerAdapter','OncePerRequestFilter','AbstractRepository','HttpServlet','Thread','RuntimeException'],
+  'implements': ['Repository','Serializable','Comparable','Runnable','Callable','List','Map','Set','Iterable','CrudRepository','JpaRepository','UserDetailsService'],
+  'returns':    ['List','Map','Set','Optional','String','ResponseEntity','void','Mono','Flux','CompletableFuture'],
+  'file':       ['src/**/*.java','**/*Test.java','**/*.kt','**/*.py','**/*.ts','**/application*.yml'],
+};
+
+// SWAP POINT: replace with live index lookup
+function tgValueLookup(filterKey, prefix='') {
+  const f = TG_FILTERS[filterKey];
+  if (!f) return [];
+  let pool = [];
+  if (f.value.startsWith('enum:')) pool = TG_VOCAB[f.value] || [];
+  else if (TG_VOCAB[filterKey]) pool = TG_VOCAB[filterKey];
+  const p = (prefix || '').toLowerCase();
+  if (!p) return pool.slice(0, 12);
+  const starts = pool.filter(v => v.toLowerCase().startsWith(p));
+  const contains = pool.filter(v => !v.toLowerCase().startsWith(p) && v.toLowerCase().includes(p));
+  const fuzzy = pool.filter(v => !v.toLowerCase().includes(p) && tgLev(v.toLowerCase(), p) <= 2);
+  return [...starts, ...contains, ...fuzzy].slice(0, 12);
+}
+function tgValidateValue(filterKey, value) {
+  const f = TG_FILTERS[filterKey];
+  if (!f) return 'unverified';
+  if (!value) return 'invalid';
+  if (f.value.startsWith('enum:')) {
+    const list = TG_VOCAB[f.value] || [];
+    return list.includes(value.toLowerCase()) ? 'valid' : 'unverified';
+  }
+  if (TG_VOCAB[filterKey] && TG_VOCAB[filterKey].some(v => v.toLowerCase() === value.toLowerCase())) return 'valid';
+  if (f.value === 'integer') return /^\d+$/.test(value) ? 'valid' : 'invalid';
+  return 'unverified';
+}
+
+// === Language enum + aliases (Appendix B) ===========================
+const TG_LANG_ALIASES = {
+  'kt':'kotlin','c#':'csharp','cs':'csharp','c-sharp':'csharp',
+  'py':'python','js':'javascript','node':'javascript','ts':'typescript',
+  'golang':'go','rb':'ruby','rs':'rust','c++':'cpp','cplusplus':'cpp',
+};
+
+// === Closed-set dictionary (Appendix B value mappings) ==============
+const TG_DICT = {};
+TG_VOCAB['enum:lang'].forEach(l => { TG_DICT[l] = ['lang', l]; });
+Object.entries(TG_LANG_ALIASES).forEach(([a, c]) => { TG_DICT[a] = ['lang', c]; });
+['public','private','protected','package'].forEach(v => { TG_DICT[v] = ['visibility', v]; });
+TG_DICT['package-private'] = ['visibility','package-private'];
+TG_DICT['static']   = ['static','yes'];
+TG_DICT['final']    = ['final','yes'];
+TG_DICT['abstract'] = ['abstract','yes'];
+const TG_SELECT_WORDS = {
+  'class':'symbol.class','classes':'symbol.class',
+  'method':'symbol.method','methods':'symbol.method',
+  'function':'symbol.method','functions':'symbol.method',
+  'field':'symbol.field','fields':'symbol.field',
+  'interface':'symbol.interface','interfaces':'symbol.interface',
+  'enum':'symbol.enum','enums':'symbol.enum',
+  'constructor':'symbol.constructor','constructors':'symbol.constructor',
+};
+Object.entries(TG_SELECT_WORDS).forEach(([w, v]) => { TG_DICT[w] = ['select', v]; });
+
+// === Trigger-word patterns (Appendix C) =============================
+const TG_TRIGGERS = [
+  { key: 'throws',     words: ['throw','throws','throwing','thrown','raises','raising'],          phrases: [] },
+  { key: 'extends',    words: ['extends','extend','subclasses','subclass','superclass','inherits'],phrases: ['subclass of','inherits from','derived from','child of'] },
+  { key: 'implements', words: ['implements','implementing'],                                       phrases: ['implementation of','conforms to'] },
+  { key: 'returns',    words: ['returns','returning'],                                             phrases: ['that return','gives back'] },
+  { key: 'file',       words: [],                                                                  phrases: ['in file','in path','in files'] },
+  { key: 'repo',       words: [],                                                                  phrases: ['in repo','in repository','in project'] },
+  { key: 'branch',     words: ['branch'],                                                          phrases: ['on branch'] },
+];
+
+// === Stopwords (Appendix D) — applied AFTER dict / trigger / fuzzy ==
+const TG_STOPWORDS = new Set(
+  'find show me give all any the a an that which when with for of in to are is do does code list get search look looking want need please across every some only just how we our my their there'.split(/\s+/)
+);
+
+// === Concept / association index (Appendix E) =======================
+const TG_CONCEPTS = {
+  'throws': [
+    ['exception',0.8],['exceptions',0.8],['error',0.7],['errors',0.7],['fail',0.7],['fails',0.7],['failing',0.7],['failure',0.8],
+    ['crash',0.8],['crashes',0.8],['blow up',1.0],['blows up',1.0],['raise',0.8],['raises',0.8],['propagate',0.6],
+    ['io problems',0.9],['catch errors',1.0],
+  ],
+  'extends': [
+    ['subclass',1.0],['subclasses',1.0],['child of',1.0],['inherit',0.9],['inherits',0.9],['inheriting',0.9],
+    ['derived from',1.0],['base class',0.8],['superclass',1.0],['parent',0.6],['extends from',1.0],
+  ],
+  'implements': [
+    ['interface',0.7],['implements interface',1.0],['implement',0.8],['implementing',0.9],['conforms to',1.0],['realizes',0.7],
+  ],
+  'returns': [
+    ['return',0.7],['returning',0.9],['gives back',1.0],['returns a',1.0],['return type',1.0],['produces',0.6],['yields',0.6],
+  ],
+  'visibility': [['public',1.0],['private',1.0],['protected',1.0],['package private',1.0],['access',0.6],['accessible',0.6],['access modifier',0.9],['visible',0.6],['public-facing',1.0],['public facing',1.0],['exposed',0.8],['exposed services',1.0]],
+  'static':     [['static',1.0],['class level',0.8],['class method',0.8]],
+  'final':      [['final',1.0],['immutable',0.7],['constant',0.6],['cannot be overridden',0.9]],
+  'abstract':   [['abstract',1.0],['not implemented',0.7],['must override',0.7]],
+  'file':       [['file',0.6],['files',0.6],['path',0.6],['paths',0.6],['directory',0.6],['folder',0.6],['in the file',1.0],['filename',0.8]],
+  'repo':       [['repo',1.0],['repository',1.0],['repositories',0.9],['project',0.6],['microservice',0.6]],
+  'branch':     [['branch',1.0],['branches',0.9]],
+  'lang':       [['language',0.8],['written in',1.0],['in java',0.9],['in python',0.9]],
+  'select':     [['class',0.7],['classes',0.7],['method',0.7],['methods',0.7],['function',0.7],['functions',0.7],['field',0.7],['fields',0.7],['interface',0.7],['interfaces',0.7],['enum',0.7],['enums',0.7],['constructor',0.7],['constructors',0.7],['symbol',0.6]],
+  'patternType':[['pattern',0.6],['regular expression',1.0],['regex',1.0],['matches',0.5],['matching',0.5]],
+  'struct':     [['code shape',1.0],['structural',1.0],['balanced',0.7],['nested',0.7],['method body',0.8],['catch block',1.0],['catch errors',0.8]],
+};
+
+// === Levenshtein (capped fuzzy match) ===============================
+function tgLev(a, b) {
+  if (a === b) return 0;
+  const m = a.length, n = b.length;
+  if (!m) return n; if (!n) return m;
+  if (Math.abs(m - n) > 3) return 99;
+  let prev = new Array(n + 1), curr = new Array(n + 1);
+  for (let j = 0; j <= n; j++) prev[j] = j;
+  for (let i = 1; i <= m; i++) {
+    curr[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i-1] === b[j-1] ? 0 : 1;
+      curr[j] = Math.min(curr[j-1] + 1, prev[j] + 1, prev[j-1] + cost);
+    }
+    [prev, curr] = [curr, prev];
+  }
+  return prev[n];
+}
+
+// === Tiny Porter-lite stemmer =======================================
+function tgStem(w) {
+  w = String(w).toLowerCase();
+  const suffixes = ['ingly','edly','ings','ied','ies','ing','ers','ed','es','er','s','y'];
+  for (const s of suffixes) if (w.endsWith(s) && w.length - s.length >= 3) return w.slice(0, -s.length);
+  return w;
+}
+
+// === Lexer — split raw query into atoms while preserving syntactic
+// units (key:value, /regex/, "quoted", parens, ops, identifiers). ====
+function tgLexRaw(s) {
+  const out = [];
+  const re = /(\()|(\))|(\/(?:\\.|[^/\\])+\/)|(struct(?:ural)?:'(?:\\.|[^'\\])*')|([A-Za-z_][\w-]*:(?:"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[^\s()]+))|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(-?[^\s()]+)/g;
+  let m;
+  while ((m = re.exec(s))) {
+    const tok = m[0];
+    if (!tok.trim()) continue;
+    out.push(tok);
+  }
+  return out;
+}
+
+// === Raw → tokens (round-trip with serialize) =======================
+function tgParseRaw(s) {
+  const atoms = tgLexRaw(s || '');
+  const tokens = [];
+  for (const a of atoms) {
+    const low = a.toLowerCase();
+    if (a === '(' || a === ')') { tokens.push({ kind:'op', value:a }); continue; }
+    if (low === 'or' || low === 'and') { tokens.push({ kind:'op', value: low }); continue; }
+    if (a.startsWith('-') && a.length > 1) {
+      const rest = a.slice(1);
+      const rc = rest.indexOf(':');
+      if (rc > 0 && /^[A-Za-z_][\w-]*$/.test(rest.slice(0, rc))) {
+        // -key:value → NOT op + filter token
+        tokens.push({ kind:'op', value:'not' });
+        const rawKey = rest.slice(0, rc);
+        const value = rest.slice(rc + 1);
+        const canon = TG_ALIAS_TO_CANON[rawKey.toLowerCase()] || rawKey;
+        const status = TG_FILTERS[canon] ? tgValidateValue(canon, value) : 'unverified';
+        tokens.push({ kind:'filter', key:canon, value, raw:rest, status, confidence:1 });
+        continue;
+      }
+      if (!rest.includes(':')) {
+        tokens.push({ kind:'op', value:'not' });
+        tokens.push({ kind:'term', value: rest, mode:'literal' });
+        continue;
+      }
+    }
+    if (/^\/.+\/$/.test(a)) { tokens.push({ kind:'term', value:a, mode:'regex' }); continue; }
+    if (/^struct(ural)?:/.test(a)) { tokens.push({ kind:'term', value:a, mode:'structural' }); continue; }
+    const colon = a.indexOf(':');
+    if (colon > 0 && /^[A-Za-z_][\w-]*$/.test(a.slice(0, colon))) {
+      const rawKey = a.slice(0, colon);
+      const value = a.slice(colon + 1);
+      const canon = TG_ALIAS_TO_CANON[rawKey.toLowerCase()] || rawKey;
+      const status = TG_FILTERS[canon] ? tgValidateValue(canon, value) : 'unverified';
+      tokens.push({ kind:'filter', key:canon, value, raw:a, status, confidence:1 });
+      continue;
+    }
+    tokens.push({ kind:'term', value:a, mode:'literal' });
+  }
+  return tokens;
+}
+
+// === Tokens → raw =====================================================
+function tgSerialize(tokens) {
+  const parts = [];
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (t.kind === 'op') {
+      if (t.value === 'not') parts.push('-NEG');
+      else parts.push(t.value);
+    } else if (t.kind === 'filter') {
+      parts.push(`${t.key}:${t.value}`);
+    } else {
+      parts.push(t.value);
+    }
+  }
+  return parts.join(' ').replace(/-NEG\s+/g, '-').replace(/\s+/g, ' ').trim();
+}
+
+// === Natural-language recognition pipeline ==========================
+// Order: filter syntax → regex/quoted → phrase triggers → dictionary
+//        → single-word triggers → .ext glob → stemmer → fuzzy filter
+//        key → stopword → concept index (suggestion-on-miss) → literal.
+function tgParseNL(s) {
+  const atoms = tgLexRaw(s || '');
+  const out = [];
+  const consumed = new Array(atoms.length).fill(false);
+  const misses = [];
+  const suggestedKeys = new Set();
+
+  function isTriggerWord(low) {
+    for (const t of TG_TRIGGERS) if (t.words.includes(low)) return t;
+    return null;
+  }
+  function nextValueIndex(from) {
+    for (let i = from; i < atoms.length; i++) {
+      if (consumed[i]) continue;
+      const a = atoms[i];
+      if (a === '(' || a === ')') return -1;
+      const low = a.toLowerCase();
+      if (low === 'or' || low === 'and') return -1;
+      if (isTriggerWord(low)) return -1;
+      if (TG_STOPWORDS.has(low)) continue;
+      return i;
+    }
+    return -1;
+  }
+  function matchPhraseTrigger(i) {
+    for (const t of TG_TRIGGERS) {
+      for (const phrase of t.phrases) {
+        const words = phrase.split(/\s+/);
+        let ok = true;
+        for (let k = 0; k < words.length; k++) {
+          if (i + k >= atoms.length || consumed[i + k]) { ok = false; break; }
+          if (atoms[i + k].toLowerCase() !== words[k]) { ok = false; break; }
+        }
+        if (ok) return { trigger: t, span: words.length };
+      }
+    }
+    return null;
+  }
+  function fuzzyFilterKey(low) {
+    // Check both canonical names AND aliases — `langauge` is a typo of the
+    // `language` alias (→ `lang`), not of `lang` itself.
+    let best = null;
+    for (const k of Object.keys(TG_ALIAS_TO_CANON)) {
+      const d = tgLev(low, k);
+      if (d > 0 && d <= 2 && (!best || d < best.d)) best = { canon: TG_ALIAS_TO_CANON[k], d };
+    }
+    return best ? best.canon : null;
+  }
+  function conceptScore(i) {
+    for (const span of [3, 2, 1]) {
+      if (i + span > atoms.length) continue;
+      // skip if any atom in span is already consumed
+      let skip = false;
+      for (let k = 0; k < span; k++) if (consumed[i+k]) { skip = true; break; }
+      if (skip) continue;
+      const phrase = atoms.slice(i, i + span).map(s => s.toLowerCase()).join(' ');
+      let best = null;
+      for (const [key, entries] of Object.entries(TG_CONCEPTS)) {
+        for (const [w, weight] of entries) {
+          if (w === phrase) {
+            if (!best || weight > best.score) best = { key, score: weight, span };
+          } else if (span === 1 && Math.abs(w.length - phrase.length) <= 2 && !w.includes(' ')) {
+            const d = tgLev(w, phrase);
+            if (d <= 1) {
+              const sc = weight * 0.85;
+              if (!best || sc > best.score) best = { key, score: sc, span };
+            }
+          }
+        }
+      }
+      if (best) return best;
+    }
+    return null;
+  }
+
+  for (let i = 0; i < atoms.length; i++) {
+    if (consumed[i]) continue;
+    const a = atoms[i];
+    const low = a.toLowerCase();
+
+    // (1) Already-valid filter syntax
+    const colon = a.indexOf(':');
+    if (colon > 0 && /^[A-Za-z_][\w-]*$/.test(a.slice(0, colon)) && !/^\/.+\/$/.test(a)) {
+      const rawKey = a.slice(0, colon);
+      const value = a.slice(colon + 1);
+      let canon = TG_ALIAS_TO_CANON[rawKey.toLowerCase()];
+      let didYouMean = null;
+      if (!canon) {
+        const fk = fuzzyFilterKey(rawKey.toLowerCase());
+        if (fk) { canon = fk; didYouMean = fk; } else canon = rawKey;
+      }
+      const status = TG_FILTERS[canon] ? tgValidateValue(canon, value) : 'unverified';
+      let suggestion = null;
+      if (didYouMean) suggestion = { type:'key', value:`${didYouMean}:${value}` };
+      else if (status === 'unverified' && TG_FILTERS[canon]) {
+        const pool = tgValueLookup(canon, '');
+        let best = null;
+        for (const v of pool) {
+          const d = tgLev(v.toLowerCase(), value.toLowerCase());
+          if (d <= 2 && (!best || d < best.d)) best = { v, d };
+        }
+        if (best) suggestion = { type:'value', value:`${canon}:${best.v}` };
+      }
+      out.push({ kind:'filter', key:canon, value, raw:a, status, confidence:1, suggestion });
+      consumed[i] = true;
+      continue;
+    }
+
+    // (1b) /regex/, "quoted"
+    if (/^\/.+\/$/.test(a)) { out.push({ kind:'term', value:a, mode:'regex' }); consumed[i] = true; continue; }
+    if (/^"[^"]*"$/.test(a) || /^'[^']*'$/.test(a)) { out.push({ kind:'term', value:a, mode:'literal' }); consumed[i] = true; continue; }
+    if (/^struct(ural)?:/.test(a)) { out.push({ kind:'term', value:a, mode:'structural' }); consumed[i] = true; continue; }
+
+    if (a === '(' || a === ')') { out.push({ kind:'op', value:a }); consumed[i] = true; continue; }
+    if (low === 'or' || low === 'and') { out.push({ kind:'op', value: low }); consumed[i] = true; continue; }
+
+    // (1c) Negation: `-foo` → NOT term, `-key:value` → NOT + filter
+    if (a.startsWith('-') && a.length > 1) {
+      const rest = a.slice(1);
+      const rc = rest.indexOf(':');
+      if (rc > 0 && /^[A-Za-z_][\w-]*$/.test(rest.slice(0, rc))) {
+        const rawKey = rest.slice(0, rc);
+        const value = rest.slice(rc + 1);
+        const canon = TG_ALIAS_TO_CANON[rawKey.toLowerCase()] || rawKey;
+        const status = TG_FILTERS[canon] ? tgValidateValue(canon, value) : 'unverified';
+        out.push({ kind:'op', value:'not' });
+        out.push({ kind:'filter', key:canon, value, raw:rest, status, confidence:1 });
+        consumed[i] = true;
+        continue;
+      }
+      if (!rest.includes(':')) {
+        out.push({ kind:'op', value:'not' });
+        out.push({ kind:'term', value: rest, mode:'literal' });
+        consumed[i] = true;
+        continue;
+      }
+    }
+
+    // (2) Phrase trigger (multi-word, before dict so "in file" beats "file")
+    const pt = matchPhraseTrigger(i);
+    if (pt) {
+      for (let k = i; k < i + pt.span; k++) consumed[k] = true;
+      const vi = nextValueIndex(i + pt.span);
+      if (vi >= 0) {
+        const value = atoms[vi]; consumed[vi] = true;
+        const status = tgValidateValue(pt.trigger.key, value);
+        out.push({ kind:'filter', key:pt.trigger.key, value, raw:`${pt.trigger.key}:${value}`, status, confidence:0.9 });
+      } else {
+        out.push({ kind:'filter', key:pt.trigger.key, value:'', raw:`${pt.trigger.key}:`, status:'invalid', confidence:0.5 });
+      }
+      continue;
+    }
+
+    // (3) Closed-set dictionary
+    if (TG_DICT[low]) {
+      const [k, v] = TG_DICT[low];
+      out.push({ kind:'filter', key:k, value:v, raw:`${k}:${v}`, status:'valid', confidence:1 });
+      consumed[i] = true;
+      continue;
+    }
+
+    // (4) Single-word trigger
+    const tw = isTriggerWord(low);
+    if (tw) {
+      consumed[i] = true;
+      const vi = nextValueIndex(i + 1);
+      if (vi >= 0) {
+        const value = atoms[vi]; consumed[vi] = true;
+        const status = tgValidateValue(tw.key, value);
+        out.push({ kind:'filter', key:tw.key, value, raw:`${tw.key}:${value}`, status, confidence:0.9 });
+      } else {
+        out.push({ kind:'filter', key:tw.key, value:'', raw:`${tw.key}:`, status:'invalid', confidence:0.5 });
+      }
+      continue;
+    }
+
+    // (5) .ext glob heuristic (e.g. PaymentService.java, *.kt)
+    if (/^[*A-Za-z_/][\w\-*./]*\.[A-Za-z]{1,5}$/.test(a) && !TG_STOPWORDS.has(low)) {
+      out.push({ kind:'filter', key:'file', value:a, raw:`file:${a}`, status:'unverified', confidence:0.8 });
+      consumed[i] = true;
+      continue;
+    }
+
+    // (6) Stemmer normalization → dictionary or trigger
+    const stem = tgStem(low);
+    if (stem !== low && TG_DICT[stem]) {
+      const [k, v] = TG_DICT[stem];
+      out.push({ kind:'filter', key:k, value:v, raw:`${k}:${v}`, status:'valid', confidence:0.9 });
+      consumed[i] = true;
+      continue;
+    }
+    const stw = isTriggerWord(stem);
+    if (stem !== low && stw) {
+      consumed[i] = true;
+      const vi = nextValueIndex(i + 1);
+      if (vi >= 0) {
+        const value = atoms[vi]; consumed[vi] = true;
+        const status = tgValidateValue(stw.key, value);
+        out.push({ kind:'filter', key:stw.key, value, raw:`${stw.key}:${value}`, status, confidence:0.85 });
+      }
+      continue;
+    }
+
+    // (7) Fuzzy filter-key (e.g. "implments Repository" → implements:Repository)
+    //     Guard: don't fuzzy-map a token that looks like a real code identifier
+    //     (any internal capital or trailing digits → it's a name, not a typo).
+    if (!TG_STOPWORDS.has(low) && low.length >= 4 && !/[A-Z]/.test(a.slice(1)) && !/\d$/.test(a)) {
+      const fk = fuzzyFilterKey(low);
+      const nextI = i + 1;
+      if (fk && nextI < atoms.length && !consumed[nextI] && /^[A-Z][\w]*$/.test(atoms[nextI])) {
+        const value = atoms[nextI];
+        const status = tgValidateValue(fk, value);
+        out.push({ kind:'filter', key:fk, value, raw:`${fk}:${value}`, status, confidence:0.7, suggestion:{ type:'key', value:`${fk}:${value}` } });
+        consumed[i] = true; consumed[nextI] = true;
+        continue;
+      }
+    }
+
+    // (8) Stopword (after dict/trigger/fuzzy)
+    if (TG_STOPWORDS.has(low)) { consumed[i] = true; continue; }
+
+    // (9) Concept index — suggestion-on-miss
+    const ch = conceptScore(i);
+    if (ch && ch.score >= 0.7 && !suggestedKeys.has(ch.key)) {
+      for (let k = i; k < i + ch.span; k++) consumed[k] = true;
+      // Look for a curated value somewhere in the remaining text.
+      const pool = TG_VOCAB[ch.key] || [];
+      let foundValue = '';
+      for (let j = 0; j < atoms.length; j++) {
+        if (consumed[j]) continue;
+        const ajLow = atoms[j].toLowerCase();
+        for (const cand of pool) {
+          const cLow = cand.toLowerCase();
+          if (cLow === ajLow || cLow.startsWith(ajLow) || tgLev(cLow, ajLow) <= 1) {
+            foundValue = cand; consumed[j] = true; break;
+          }
+        }
+        if (foundValue) break;
+      }
+      const phrase = atoms.slice(i, i + ch.span).join(' ');
+      suggestedKeys.add(ch.key);
+      out.push({
+        kind:'term', value: phrase, mode:'literal',
+        suggestion: { type:'concept', filter: ch.key, value: foundValue, score: ch.score, source: phrase },
+      });
+      misses.push(phrase);
+      continue;
+    }
+
+    // (10) Literal fallback
+    out.push({ kind:'term', value:a, mode:'literal' });
+    consumed[i] = true;
+    misses.push(a);
+  }
+  return { tokens: out, misses };
+}
+
+// === Mode detection =================================================
+function tgDetectMode(tokens) {
+  const modes = new Set();
+  for (const t of tokens) {
+    if (t.kind === 'term') modes.add(t.mode);
+    if (t.kind === 'filter' && t.key === 'patternType') modes.add(t.value);
+  }
+  if (modes.size === 0) return 'literal';
+  if (modes.size === 1) return [...modes][0];
+  return 'mixed';
+}
+
+// === Explain a token in plain English (also used in catalog) ========
+function tgExplainToken(t) {
+  if (t.kind === 'op') {
+    if (t.value === 'or') return 'OR — either side may match';
+    if (t.value === 'and') return 'AND — both sides must match';
+    if (t.value === 'not') return 'NOT — exclude the next term';
+    return `Grouping ${t.value}`;
+  }
+  if (t.kind === 'term') {
+    if (t.mode === 'regex') return `Regex pattern ${t.value}`;
+    if (t.mode === 'structural') return `Structural pattern ${t.value}`;
+    return `Literal text "${t.value}"`;
+  }
+  const desc = TG_CATALOG_BY_KEY[t.key + ':'];
+  return (desc ? desc.desc + ' ' : '') + `Match where ${t.key} = ${t.value || '?'}.`;
+}
+
+// === Catalog seed (Appendix G + Appendix A) =========================
+const TG_CATALOG = [
+  // Filters
+  { kind:'filter', name:'lang:',        desc:'Filter results by programming language.',                example:'lang:java',                                  tags:['language','written in','java','python','kotlin'] },
+  { kind:'filter', name:'visibility:',  desc:'Filter symbols by access modifier (public/private/…).', example:'visibility:public',                          tags:['public','private','protected','access','modifier','visible'] },
+  { kind:'filter', name:'select:',      desc:'Restrict to a kind of symbol — class, method, etc.',    example:'select:symbol.method',                       tags:['class','method','field','interface','enum','constructor'] },
+  { kind:'filter', name:'extends:',     desc:'Find subclasses of a base type.',                       example:'extends:AbstractController',                 tags:['subclass','inherit','parent','child of','base class','superclass'] },
+  { kind:'filter', name:'implements:',  desc:'Find classes implementing an interface.',               example:'implements:Repository',                      tags:['interface','conforms to','realizes'] },
+  { kind:'filter', name:'returns:',     desc:'Find methods that return a given type.',                example:'returns:Optional',                           tags:['return','gives back','yields','return type'] },
+  { kind:'filter', name:'throws:',      desc:'Find code that throws / catches a given exception.',    example:'throws:IOException',                         tags:['exception','error','catch','blow up','crash','fail','catch errors','where do we catch errors'] },
+  { kind:'filter', name:'static:',      desc:'Filter on static modifier.',                            example:'static:yes',                                 tags:['static','class level','class method'] },
+  { kind:'filter', name:'final:',       desc:'Filter on final modifier.',                             example:'final:yes',                                  tags:['final','immutable','constant'] },
+  { kind:'filter', name:'abstract:',    desc:'Filter on abstract modifier.',                          example:'abstract:yes',                               tags:['abstract','must override','not implemented'] },
+  { kind:'filter', name:'file:',        desc:'Filter by file path or glob.',                          example:'file:src/**/*.java',                         tags:['path','folder','directory','glob','filename'] },
+  { kind:'filter', name:'repo:',        desc:'Filter by repository (supports name@branch).',          example:'repo:moderne-io/rewrite',                    tags:['repo','project','service','microservice'] },
+  { kind:'filter', name:'branch:',      desc:'Filter by branch glob.',                                example:'branch:main',                                tags:['branch'] },
+  { kind:'filter', name:'rev:',         desc:'Filter by revision (tag or branch).',                   example:'rev:v1.0',                                   tags:['revision','tag','release'] },
+  { kind:'filter', name:'case:',        desc:'Match case-sensitively.',                               example:'case:yes',                                   tags:['case','sensitive'] },
+  { kind:'filter', name:'type:',        desc:'Restrict to file, path, or symbol matches.',            example:'type:symbol',                                tags:['file','path','symbol'] },
+  { kind:'filter', name:'sym:',         desc:'Match a fully-qualified name substring.',               example:'sym:UserService.login',                      tags:['symbol','fqn','fully qualified'] },
+  { kind:'filter', name:'count:',       desc:'Cap result count.',                                     example:'count:50',                                   tags:['limit','count'] },
+  { kind:'filter', name:'content:',     desc:'Match quoted literal content.',                         example:'content:"TODO"',                             tags:['text','quoted','literal'] },
+  { kind:'filter', name:'patternType:', desc:'Switch the pattern engine (literal/regexp/structural).',example:'patternType:structural',                     tags:['regex','structural','literal','engine'] },
+
+  // Literals (Appendix G)
+  { kind:'literal', name:'@Autowired',          desc:'Spring dependency-injection annotation.',  example:'@Autowired',         tags:['injection','spring','di'] },
+  { kind:'literal', name:'@PreAuthorize',       desc:'Spring Security authorization guard.',     example:'@PreAuthorize',      tags:['security','authorization'] },
+  { kind:'literal', name:'System.out.println',  desc:'Java println — find debug statements.',    example:'System.out.println', tags:['logging','debug','println'] },
+  { kind:'literal', name:'KafkaTemplate',       desc:'Spring Kafka producer template.',          example:'KafkaTemplate',      tags:['kafka','messaging'] },
+
+  // Regex (Appendix G)
+  { kind:'regex', name:'/log\\.(trace|debug|info|warn|error)\\(/', desc:'Logger calls at any level.',                example:'/log\\.(trace|debug|info|warn|error)\\(/', tags:['logging','log levels'] },
+  { kind:'regex', name:'/@(Get|Post|Put|Delete|Patch)Mapping/',    desc:'Spring REST endpoint annotations.',         example:'/@(Get|Post|Put|Delete|Patch)Mapping/',    tags:['rest','spring','endpoint'] },
+  { kind:'regex', name:'/password\\s*=\\s*"[^"]+"/',               desc:'Hardcoded password assignments in source.', example:'/password\\s*=\\s*"[^"]+"/',               tags:['secret','password','hardcoded'] },
+
+  // Structural (Appendix G)
+  { kind:'structural', name:"struct:'logger.:[level](:[msg] + :[rest])'",                       desc:'String concatenation inside a log call.', example:"struct:'logger.:[level](:[msg] + :[rest])'",                       tags:['logging','concatenation'] },
+  { kind:'structural', name:"struct:'catch (:[ex:e] :[var:id]) { :[_].printStackTrace() }'",   desc:'Swallowed exceptions (printStackTrace in catch block).', example:"struct:'catch (:[ex:e] :[var:id]) { :[_].printStackTrace() }'",   tags:['catch block','error handling','exception','catch errors','swallowed','where do we catch errors'] },
+  { kind:'structural', name:"struct:'@RequestMapping(:[attrs:e])'",                             desc:'Spring @RequestMapping usages.',            example:"struct:'@RequestMapping(:[attrs:e])'",                             tags:['spring','rest'] },
+  { kind:'structural', name:"struct:'ResponseEntity<:[type:g]>'",                               desc:'ResponseEntity generic types.',             example:"struct:'ResponseEntity<:[type:g]>'",                               tags:['spring','generics'] },
+];
+const TG_CATALOG_BY_KEY = {};
+TG_CATALOG.forEach(e => { TG_CATALOG_BY_KEY[e.name] = e; });
+
+function tgCatalogSearch(q) {
+  q = (q || '').toLowerCase().trim();
+  if (!q) return TG_CATALOG.slice();
+  const words = q.split(/\s+/);
+  const scored = TG_CATALOG.map(e => {
+    const hay = `${e.name} ${e.desc} ${(e.tags || []).join(' ')}`.toLowerCase();
+    let score = 0;
+    for (const w of words) {
+      if (!w) continue;
+      if (hay.includes(w)) { score += 2; continue; }
+      // fuzzy single word against any tag
+      for (const tag of e.tags || []) {
+        const tw = tag.toLowerCase();
+        if (tw === w) { score += 2; break; }
+        if (tw.includes(w) || w.includes(tw)) { score += 1; break; }
+        if (Math.abs(tw.length - w.length) <= 2 && tgLev(tw, w) <= 1) { score += 1; break; }
+      }
+      // also tag matches against concept index → boost when query expresses a concept
+      for (const [key, entries] of Object.entries(TG_CONCEPTS)) {
+        for (const [ww] of entries) {
+          if (ww === w || ww.includes(w)) {
+            if (e.name === key + ':' || (e.tags || []).some(t => t.includes(key))) { score += 1; break; }
+          }
+        }
+      }
+    }
+    // exact-phrase boost
+    if (hay.includes(q)) score += 3;
+    return { e, score };
+  }).filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score);
+  return scored.map(x => x.e);
+}
+
+// === Rendering ======================================================
+const TGState = {
+  tokens: [],
+  rawMode: false,
+  explain: false,
+  misses: [],
+  ac: { open: false, items: [], active: 0, filterKey: null, valuePrefix: '' },
+};
+window.__trigrepMisses = [];
+
+function tgEscape(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function tgRenderChips() {
+  const strip = document.getElementById('tg-chip-strip');
+  if (!strip) return;
+  strip.innerHTML = TGState.tokens.map((t, idx) => {
+    if (t.kind === 'op') {
+      return `<span class="tg-chip is-op" data-idx="${idx}">${tgEscape(t.value)}</span>`;
+    }
+    if (t.kind === 'term') {
+      const modeCls = t.mode === 'regex' ? 'is-regex' : (t.mode === 'structural' ? 'is-structural' : 'is-term');
+      const sug = t.suggestion ? ' status-suggested' : '';
+      const title = t.suggestion ? `Maybe you meant a ${t.suggestion.filter}: filter? Click to convert.` : tgExplainToken(t);
+      return `<span class="tg-chip ${modeCls}${sug}" data-idx="${idx}" title="${tgEscape(title)}">${tgEscape(t.value)}<button class="tg-chip-x" data-x="${idx}" title="Remove">&times;</button></span>`;
+    }
+    const statusCls = t.status === 'valid' ? '' : ` status-${t.status}`;
+    const title = tgExplainToken(t);
+    return `<span class="tg-chip${statusCls}" data-idx="${idx}" title="${tgEscape(title)}"><strong>${tgEscape(t.key)}:</strong>${tgEscape(t.value)}<button class="tg-chip-x" data-x="${idx}" title="Remove">&times;</button></span>`;
+  }).join('');
+  // wire removal
+  strip.querySelectorAll('.tg-chip-x').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.x, 10);
+      TGState.tokens.splice(idx, 1);
+      const raw = tgSerialize(TGState.tokens);
+      const input = document.getElementById('trigrep-query-input');
+      if (input) input.value = raw;
+      tgRenderAll();
+    });
+  });
+}
+
+function tgRenderModeBadge() {
+  const el = document.getElementById('tg-mode-badge');
+  if (!el) return;
+  const mode = tgDetectMode(TGState.tokens);
+  el.className = `tg-mode-badge mode-${mode}`;
+  el.textContent = mode;
+}
+
+function tgRenderSuggestions() {
+  const banner = document.getElementById('tg-suggest-banner');
+  if (!banner) return;
+  const parts = [];
+  TGState.tokens.forEach((t, idx) => {
+    if (t.kind === 'term' && t.suggestion && t.suggestion.type === 'concept') {
+      const sg = t.suggestion;
+      const safe = tgEscape(sg.source);
+      const valLabel = sg.value ? `${sg.filter}:${sg.value}` : `${sg.filter}:?`;
+      parts.push(`
+        <div class="tg-suggest-row">
+          <code>${safe}</code> → search as text ·
+          use <code>${tgEscape(valLabel)}</code>?
+          <button data-convert="${idx}">Use ${tgEscape(sg.filter)}:</button>
+        </div>`);
+    } else if (t.kind === 'filter' && t.suggestion) {
+      parts.push(`
+        <div class="tg-suggest-row">
+          <code>${tgEscape(t.raw)}</code> — did you mean <code>${tgEscape(t.suggestion.value)}</code>?
+          <button data-fix="${idx}">Fix</button>
+        </div>`);
+    }
+  });
+  banner.innerHTML = parts.join('');
+  banner.querySelectorAll('[data-convert]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.convert, 10);
+      const t = TGState.tokens[idx];
+      if (!t || !t.suggestion) return;
+      const sg = t.suggestion;
+      const value = sg.value || prompt(`Value for ${sg.filter}:`) || '';
+      if (!value) return;
+      const status = tgValidateValue(sg.filter, value);
+      TGState.tokens[idx] = { kind:'filter', key: sg.filter, value, raw:`${sg.filter}:${value}`, status, confidence: 0.85 };
+      const raw = tgSerialize(TGState.tokens);
+      const input = document.getElementById('trigrep-query-input');
+      if (input) input.value = raw;
+      tgRenderAll();
+    });
+  });
+  banner.querySelectorAll('[data-fix]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.fix, 10);
+      const t = TGState.tokens[idx];
+      if (!t || !t.suggestion) return;
+      const [key, ...rest] = t.suggestion.value.split(':');
+      const value = rest.join(':');
+      TGState.tokens[idx] = { kind:'filter', key, value, raw: t.suggestion.value, status: tgValidateValue(key, value), confidence: 1 };
+      const raw = tgSerialize(TGState.tokens);
+      const input = document.getElementById('trigrep-query-input');
+      if (input) input.value = raw;
+      tgRenderAll();
+    });
+  });
+}
+
+function tgRenderExplain() {
+  const el = document.getElementById('tg-explain');
+  if (!el) return;
+  if (!TGState.explain) { el.innerHTML = ''; return; }
+  if (!TGState.tokens.length) { el.innerHTML = '<i>Type to see the query explained in English.</i>'; return; }
+  const parts = TGState.tokens.map(t => `<b>${tgEscape(t.kind === 'filter' ? `${t.key}:${t.value}` : (t.value || t.kind))}</b> — ${tgEscape(tgExplainToken(t))}`);
+  el.innerHTML = parts.join(' · ');
+}
+
+// === Autocomplete (filter-value position) ===========================
+function tgCaretContext(input) {
+  const v = input.value;
+  const pos = input.selectionStart || v.length;
+  // walk back to last whitespace
+  let start = pos;
+  while (start > 0 && !/\s/.test(v[start - 1])) start--;
+  const tokenSoFar = v.slice(start, pos);
+  const colon = tokenSoFar.indexOf(':');
+  if (colon < 0) return null;
+  const key = tokenSoFar.slice(0, colon);
+  const prefix = tokenSoFar.slice(colon + 1);
+  const canon = TG_ALIAS_TO_CANON[key.toLowerCase()];
+  if (!canon) return null;
+  return { canon, prefix, start, pos };
+}
+function tgRenderAutocomplete() {
+  const ac = document.getElementById('tg-autocomplete');
+  const input = document.getElementById('trigrep-query-input');
+  if (!ac || !input) return;
+  const ctx = tgCaretContext(input);
+  if (!ctx) { ac.hidden = true; TGState.ac.open = false; return; }
+  const items = tgValueLookup(ctx.canon, ctx.prefix);
+  if (!items.length) { ac.hidden = true; TGState.ac.open = false; return; }
+  TGState.ac = { open: true, items, active: 0, filterKey: ctx.canon, valuePrefix: ctx.prefix, ctx };
+  ac.innerHTML = items.map((v, i) =>
+    `<div class="tg-ac-item${i === 0 ? ' is-active' : ''}" data-i="${i}">
+       <span>${tgEscape(v)}</span><small>${tgEscape(ctx.canon)}</small>
+     </div>`).join('');
+  // position
+  const box = document.getElementById('trigrep-search-box');
+  if (box) {
+    const r = box.getBoundingClientRect();
+    const pr = box.offsetParent ? box.offsetParent.getBoundingClientRect() : { left: 0, top: 0 };
+    ac.style.left = (box.offsetLeft + 120) + 'px';
+    ac.style.top = (box.offsetTop + box.offsetHeight + 4) + 'px';
+  }
+  ac.hidden = false;
+  ac.querySelectorAll('.tg-ac-item').forEach(el => {
+    el.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const i = parseInt(el.dataset.i, 10);
+      tgAcCommit(i);
+    });
+  });
+}
+function tgAcCommit(i) {
+  const ac = document.getElementById('tg-autocomplete');
+  const input = document.getElementById('trigrep-query-input');
+  if (!ac || !input || !TGState.ac.open) return;
+  const item = TGState.ac.items[i];
+  const ctx = TGState.ac.ctx;
+  const before = input.value.slice(0, ctx.start);
+  const after = input.value.slice(ctx.pos);
+  const newToken = `${ctx.canon}:${item}`;
+  input.value = before + newToken + after;
+  const newPos = (before + newToken).length;
+  input.setSelectionRange(newPos, newPos);
+  ac.hidden = true;
+  TGState.ac.open = false;
+  tgSyncFromInput();
+}
+
+// === Searchable syntax catalog modal ================================
+function tgRenderCatalog(q='') {
+  const body = document.getElementById('tg-catalog-body');
+  if (!body) return;
+  const entries = tgCatalogSearch(q);
+  if (!entries.length) {
+    body.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--grey-500); font-size: 13px;">No matches — try simpler words like “regex”, “class”, or “catch”.</div>';
+    return;
+  }
+  body.innerHTML = entries.map((e, i) => `
+    <div class="tg-cat-entry" data-i="${i}" data-example="${tgEscape(e.example)}">
+      <div class="tg-cat-entry-head">
+        <span class="tg-cat-entry-kind k-${e.kind}">${tgEscape(e.kind)}</span>
+        <span class="tg-cat-entry-name">${tgEscape(e.name)}</span>
+      </div>
+      <div class="tg-cat-entry-desc">${tgEscape(e.desc)}</div>
+      ${e.tags && e.tags.length ? `<div class="tg-cat-entry-tags">tags: ${tgEscape(e.tags.slice(0,6).join(', '))}</div>` : ''}
+    </div>
+  `).join('');
+  body.querySelectorAll('.tg-cat-entry').forEach(el => {
+    el.addEventListener('click', () => {
+      const example = el.dataset.example;
+      const input = document.getElementById('trigrep-query-input');
+      if (!input) return;
+      tgCloseCatalog();
+      tgInsertTemplateAt(input, example);
+      tgSyncFromInput();
+    });
+  });
+}
+function tgOpenCatalog() {
+  const m = document.getElementById('tg-catalog-modal');
+  const q = document.getElementById('tg-catalog-search');
+  if (!m) return;
+  m.hidden = false;
+  tgRenderCatalog(q ? q.value : '');
+  setTimeout(() => q && q.focus(), 0);
+}
+function tgCloseCatalog() {
+  const m = document.getElementById('tg-catalog-modal');
+  if (m) m.hidden = true;
+}
+
+// === Glue: input → tokens → views ===================================
+function tgRenderAll() {
+  tgRenderChips();
+  tgRenderModeBadge();
+  tgRenderSuggestions();
+  tgRenderExplain();
+}
+let tgDebounce = null;
+function tgSyncFromInput() {
+  const input = document.getElementById('trigrep-query-input');
+  if (!input) return;
+  if (tgDebounce) clearTimeout(tgDebounce);
+  tgDebounce = setTimeout(() => {
+    const v = input.value;
+    let result;
+    if (TGState.rawMode) {
+      result = { tokens: tgParseRaw(v), misses: [] };
+    } else {
+      result = tgParseNL(v);
+    }
+    TGState.tokens = result.tokens;
+    TGState.misses = result.misses;
+    if (result.misses.length) {
+      const ts = Date.now();
+      for (const tok of result.misses) {
+        window.__trigrepMisses.push({ token: tok, query: v, ts });
+      }
+      try { console.log('[trigrep] unmapped tokens:', result.misses, 'in', v); } catch (_) {}
+    }
+    tgRenderAll();
+    tgRenderAutocomplete();
+    tgSyncSyntaxModeFromTokens();
+  }, 200);
+}
+
+function tgWireAll() {
+  const input = document.getElementById('trigrep-query-input');
+  const badge = document.getElementById('tg-mode-badge');
+  const rawBtn = document.getElementById('tg-raw-toggle');
+  const catBtn = document.getElementById('tg-catalog-btn');
+  const ac = document.getElementById('tg-autocomplete');
+  const catModal = document.getElementById('tg-catalog-modal');
+  const catClose = document.getElementById('tg-catalog-close');
+  const catSearch = document.getElementById('tg-catalog-search');
+  if (!input) return;
+
+  input.addEventListener('input', tgSyncFromInput);
+  input.addEventListener('keydown', (e) => {
+    if (TGState.ac.open) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); tgAcMove(1); return; }
+      if (e.key === 'ArrowUp')   { e.preventDefault(); tgAcMove(-1); return; }
+      if (e.key === 'Tab' || (e.key === 'Enter' && TGState.ac.items.length)) {
+        e.preventDefault(); tgAcCommit(TGState.ac.active); return;
+      }
+      if (e.key === 'Escape') { ac.hidden = true; TGState.ac.open = false; return; }
+    }
+  });
+  input.addEventListener('click', tgRenderAutocomplete);
+  input.addEventListener('keyup', () => { if (!TGState.ac.open) tgRenderAutocomplete(); });
+  input.addEventListener('blur', () => setTimeout(() => { if (ac) ac.hidden = true; TGState.ac.open = false; }, 150));
+
+  if (badge) badge.addEventListener('click', () => {
+    const mode = tgDetectMode(TGState.tokens);
+    const next = mode === 'literal' ? 'regexp' : (mode === 'regexp' || mode === 'regex' ? 'structural' : 'literal');
+    // insert / update patternType: filter
+    const existing = TGState.tokens.findIndex(t => t.kind === 'filter' && t.key === 'patternType');
+    const tok = { kind:'filter', key:'patternType', value: next, raw:`patternType:${next}`, status:'valid', confidence:1 };
+    if (existing >= 0) TGState.tokens[existing] = tok; else TGState.tokens.push(tok);
+    input.value = tgSerialize(TGState.tokens);
+    tgRenderAll();
+  });
+  if (rawBtn) rawBtn.addEventListener('click', () => {
+    TGState.rawMode = !TGState.rawMode;
+    rawBtn.classList.toggle('is-on', TGState.rawMode);
+    rawBtn.setAttribute('aria-pressed', String(TGState.rawMode));
+    rawBtn.textContent = TGState.rawMode ? 'Raw ✓' : 'Raw';
+    tgSyncFromInput();
+  });
+  if (catBtn) catBtn.addEventListener('click', tgOpenCatalog);
+  if (catClose) catClose.addEventListener('click', tgCloseCatalog);
+  if (catModal) catModal.addEventListener('click', (e) => { if (e.target === catModal) tgCloseCatalog(); });
+  if (catSearch) catSearch.addEventListener('input', () => tgRenderCatalog(catSearch.value));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && catModal && !catModal.hidden) tgCloseCatalog();
+  });
+}
+function tgAcMove(delta) {
+  const ac = document.getElementById('tg-autocomplete');
+  if (!ac) return;
+  const n = TGState.ac.items.length;
+  TGState.ac.active = ((TGState.ac.active + delta) % n + n) % n;
+  ac.querySelectorAll('.tg-ac-item').forEach((el, i) => el.classList.toggle('is-active', i === TGState.ac.active));
+}
+
+function tgQueryIsMeaningful(tokens) {
+  return tokens.some(t => t.kind === 'filter' || t.kind === 'term');
+}
+
+// === Syntax dropdown ⇄ patternType: ===================================
+// The header dropdown picks the dialect; map it to TriGrep's patternType:
+// filter so the query is the source of truth for the engine.
+// sourcegraph → no patternType: (default)
+// comby       → patternType:structural
+// regex       → patternType:regexp
+const TG_MODE_TO_PATTERNTYPE = { sourcegraph: null, comby: 'structural', regex: 'regexp' };
+const TG_PATTERNTYPE_TO_MODE = { structural: 'comby', regexp: 'regex' };
+
+function tgApplySyntaxMode(mode) {
+  const desired = TG_MODE_TO_PATTERNTYPE[mode] || null;
+  // Strip any existing patternType: filter.
+  TGState.tokens = TGState.tokens.filter(t => !(t.kind === 'filter' && t.key === 'patternType'));
+  // Add the one this mode implies (sourcegraph adds nothing).
+  if (desired) {
+    TGState.tokens.push({ kind:'filter', key:'patternType', value: desired, raw:`patternType:${desired}`, status:'valid', confidence: 1 });
+  }
+  const input = document.getElementById('trigrep-query-input');
+  if (input) input.value = tgSerialize(TGState.tokens);
+  tgRenderAll();
+}
+
+// Push the dropdown to match an explicit patternType: in the tokens —
+// avoids drift after the user types/edits the raw query directly.
+function tgSyncSyntaxModeFromTokens() {
+  const pt = TGState.tokens.find(t => t.kind === 'filter' && t.key === 'patternType');
+  let target = 'sourcegraph';
+  if (pt && TG_PATTERNTYPE_TO_MODE[pt.value]) target = TG_PATTERNTYPE_TO_MODE[pt.value];
+  if (typeof trigrepCurrentMode !== 'undefined' && trigrepCurrentMode !== target) {
+    setSyntaxMode(target);
+  }
+}
+
+// === Canonicalizer ===================================================
+// This prototype is a scripted demo: results live in FLOWS a/b/c only.
+// We canonicalize a serialized query (alias-normalized at parse time, but
+// possibly built in any token order) so signature routing can recognize
+// when the user has assembled an Appendix-A fixture key by any path.
+function tgCanonical(input) {
+  const tokens = typeof input === 'string' ? tgParseRaw(input) : input;
+  const bag = { terms: [], filters: [], ops: [] };
+  for (const t of tokens) {
+    if (t.kind === 'filter') bag.filters.push(`${t.key}:${t.value}`);
+    else if (t.kind === 'term') bag.terms.push(t.value);
+    else if (t.kind === 'op' && (t.value === 'or' || t.value === 'not')) bag.ops.push(t.value);
+  }
+  bag.terms.sort();
+  bag.filters.sort();
+  bag.ops.sort();
+  return [...bag.terms, ...bag.filters, ...bag.ops].join(' ');
+}
+
+// === Theme routing ===================================================
+// Appendix A queries → fixture flow id. The signature matcher inspects
+// the parsed tokens; the phrase matcher peeks at the raw text so vague
+// English ("just public-facing services") lands on a canned query too.
+const TG_HAPPY_QUERIES = {
+  // Authentication
+  authOpt1: { flow: 'a', query: '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public lang:java' },
+  authOpt2: { flow: 'a', query: 'implements:AuthenticationEntryPoint' },
+  authOpt3: { flow: 'a', query: 'visibility:public' },
+  // Logging
+  logOpt1:  { flow: 'b', query: '/log\\.(error|warn)\\(/' },
+  logOpt2:  { flow: 'b', query: 'Logger type:symbol' },
+  logOpt3:  { flow: 'b', query: 'Logger type:symbol -file:**/test/**' },
+  // REST APIs
+  restOpt1: { flow: 'c', query: '@RestController lang:java' },
+  restOpt2: { flow: 'c', query: 'type:symbol RestTemplate or type:symbol WebClient or type:symbol RestClient lang:java' },
+};
+
+function tgRouteSignature(tokens) {
+  const tag = (s) => s.toLowerCase();
+  const literals = tokens.filter(t => t.kind === 'term' && t.mode === 'literal').map(t => t.value);
+  const regexes  = tokens.filter(t => t.kind === 'term' && t.mode === 'regex').map(t => t.value);
+  const filters  = tokens.filter(t => t.kind === 'filter');
+  const hasFilter = (k, v) => filters.some(f => f.key === k && (v == null || tag(f.value) === tag(v)));
+  const hasNegFile = (glob) => {
+    for (let i = 0; i < tokens.length - 1; i++) {
+      if (tokens[i].kind === 'op' && tokens[i].value === 'not'
+          && tokens[i+1].kind === 'term' && tokens[i+1].value === `file:${glob}`) return true;
+    }
+    // Direct `-file:**/test/**` as a single atom is parsed differently —
+    // ParseRaw recognizes leading `-` and splits, so the negation form
+    // above covers it. Also accept a filter token with key='file' AND a
+    // sibling NOT token.
+    return filters.some(f => f.key === 'file' && f.value === glob)
+        && tokens.some(t => t.kind === 'op' && t.value === 'not');
+  };
+
+  // Auth Opt 1
+  if (literals.some(v => /^@(PreAuthorize|Secured|RolesAllowed)$/.test(v))
+      && (hasFilter('visibility','public') || hasFilter('lang','java'))) return TG_HAPPY_QUERIES.authOpt1;
+  // Auth Opt 2
+  if (hasFilter('implements','AuthenticationEntryPoint')) return TG_HAPPY_QUERIES.authOpt2;
+  // Auth Opt 3 — only visibility:public, nothing else meaningful
+  if (filters.length === 1 && hasFilter('visibility','public') && literals.length === 0 && regexes.length === 0) return TG_HAPPY_QUERIES.authOpt3;
+
+  // Logging Opt 1 — a regex over log.(error|warn) or log.(warn|error)
+  if (regexes.some(r => /log\\?\.\(\s*(error\s*\|\s*warn|warn\s*\|\s*error)\s*\)\\?\(/.test(r))) return TG_HAPPY_QUERIES.logOpt1;
+  // Logging Opt 3 / Opt 2
+  const isLoggerByType = literals.includes('Logger') && hasFilter('type','symbol');
+  if (isLoggerByType && hasNegFile('**/test/**')) return TG_HAPPY_QUERIES.logOpt3;
+  if (isLoggerByType) return TG_HAPPY_QUERIES.logOpt2;
+
+  // REST Opt 2 — multiple `type:symbol <Client>` joined by or
+  if (hasFilter('type','symbol') && literals.some(v => /^(RestTemplate|WebClient|RestClient)$/.test(v))) return TG_HAPPY_QUERIES.restOpt2;
+  // REST Opt 1
+  if (literals.includes('@RestController')) return TG_HAPPY_QUERIES.restOpt1;
+
+  return null;
+}
+
+// Natural-language phrase routing. Each entry maps a phrase pattern to
+// a canned happy-path query. Order matters: more specific first.
+const TG_PHRASE_ROUTES = [
+  // Logging
+  { rx: /\b(production code only|exclude tests?|no tests?|skip tests?)\b/i,                    key: 'logOpt3' },
+  { rx: /\b(logger declarations?|what loggers do we use|logger types?|loggers\b)\b/i,          key: 'logOpt2' },
+  { rx: /\b(error logging|where do we log errors?|log errors?|warnings?|error\/warn)\b/i,      key: 'logOpt1' },
+  // Authentication
+  { rx: /\b(public[- ]?facing|public only|just public|exposed services?)\b/i,                  key: 'authOpt3' },
+  { rx: /\b(auth(entication)? entry points?|where authentication starts|entry points?)\b/i,    key: 'authOpt2' },
+  { rx: /\b(@PreAuthorize|@Secured|@RolesAllowed|public authorization|authorization rules?)\b/i, key: 'authOpt1' },
+  // REST
+  { rx: /\b(outbound|client calls?|http clients?|RestTemplate|WebClient|RestClient)\b/i,       key: 'restOpt2' },
+  { rx: /\b(server[- ]?side controllers?|rest controllers?|@RestController|REST APIs?)\b/i,    key: 'restOpt1' },
+];
+function tgRoutePhrase(text) {
+  for (const r of TG_PHRASE_ROUTES) {
+    if (r.rx.test(text)) return TG_HAPPY_QUERIES[r.key];
+  }
+  return null;
+}
+
+// Theme detection from concept words (Appendix B). Returns the theme id
+// for the scope-it-down panel — fired only when nothing more specific
+// matched but the user is clearly asking an in-story question.
+const TG_THEME_WORDS = {
+  auth:    /\b(authentication|auth|login|security|authorize|authorization|@PreAuthorize|@Secured|@RolesAllowed|entry points?|public[- ]?facing)\b/i,
+  logging: /\b(logging|log|logger|loggers|slf4j|log4j|error logging|warnings?|audit log)\b/i,
+  rest:    /\b(rest|api|apis|endpoints?|controllers?|@RestController|outbound|client|RestTemplate|WebClient|RestClient)\b/i,
+};
+function tgDetectTheme(text, tokens) {
+  for (const [theme, rx] of Object.entries(TG_THEME_WORDS)) {
+    if (rx.test(text)) return theme;
+  }
+  return null;
+}
+
+// Scope-it-down panel — themed Moddy-style options, each a one-click
+// editable-token chip that loads its canned query.
+const TG_THEMES = {
+  auth:    { title: 'Authentication', question: 'How is authentication handled?', options: [
+    { label: 'Public authorization rules',  desc: '@PreAuthorize / @Secured / @RolesAllowed on public methods', key: 'authOpt1' },
+    { label: 'Auth entry points',           desc: 'Classes that implement AuthenticationEntryPoint',           key: 'authOpt2' },
+    { label: 'Just public-facing services', desc: 'Anything tagged visibility:public',                          key: 'authOpt3' },
+  ]},
+  logging: { title: 'Logging', question: 'How is logging done across our services?', options: [
+    { label: 'Error logging',                       desc: 'Regex over log.error / log.warn calls', key: 'logOpt1' },
+    { label: 'Logger declarations',                 desc: 'All Logger symbol declarations',         key: 'logOpt2' },
+    { label: 'Production code only (exclude tests)', desc: 'Loggers, excluding **/test/** paths',   key: 'logOpt3' },
+  ]},
+  rest:    { title: 'REST APIs', question: 'How are our REST APIs structured?', options: [
+    { label: 'REST controllers (server side)', desc: '@RestController in Java',                  key: 'restOpt1' },
+    { label: 'Outbound REST calls (client)',   desc: 'RestTemplate / WebClient / RestClient',    key: 'restOpt2' },
+  ]},
+};
+function tgShowScope(themeId) {
+  const theme = TG_THEMES[themeId];
+  const results = document.getElementById('trigrep-results') || trigrepPanel.querySelector('#trigrep-results');
+  if (!theme || !results) { showSearchFallback(); return; }
+  results.innerHTML = `
+    <div class="trigrep-empty tg-scope">
+      <div class="trigrep-empty-title">Looking for ${tgEscape(theme.title)}?</div>
+      <div class="trigrep-empty-desc">${tgEscape(theme.question)} Pick a way to scope it down:</div>
+      <div class="tg-scope-list">
+        ${theme.options.map((o, i) => {
+          const q = TG_HAPPY_QUERIES[o.key].query;
+          return `<button class="tg-scope-option" data-i="${i}" type="button">
+            <span class="tg-scope-label">${tgEscape(o.label)}</span>
+            <span class="tg-scope-desc">${tgEscape(o.desc)}</span>
+            <code>${tgEscape(q)}</code>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+  results.querySelectorAll('.tg-scope-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const opt = theme.options[parseInt(btn.dataset.i, 10)];
+      const h = TG_HAPPY_QUERIES[opt.key];
+      tgRunCanned(h.query, h.flow);
+    });
+  });
+}
+
+// Run a canned query against an existing FLOWS fixture — preserve the
+// scripted headline / breakdown / sample matches by routing through the
+// existing renderer. We set input.value to the routed canonical query so
+// chips reflect what the user clicked, not the fixture's stored string.
+function tgRunCanned(query, flowId) {
+  const flow = FLOWS[flowId];
+  if (!flow) return;
+  currentFlow = flowId;
+  const input = document.getElementById('trigrep-query-input');
+  if (input) input.value = query;
+  setSyntaxMode('sourcegraph');
+  renderTrigrepResults(flow);
+  // Re-render chips for the routed query.
+  if (typeof tgSyncFromInput === 'function') tgSyncFromInput();
+}
+
+// === Catalog template insertion with tab-stop placeholders ============
+// A "tab stop" is any `:[name]` hole or any value-position word ending in a
+// `?` such as `Identifier?`. We replace the first `:[…]` with the same text
+// but select that range so the user can type over it.
+function tgInsertTemplateAt(input, template) {
+  const start = input.value.length ? input.value.length + 1 : 0;
+  input.value = input.value.length ? `${input.value} ${template}` : template;
+  // Find first hole
+  const holeRe = /:\[[^\]]+\]/;
+  const m = template.match(holeRe);
+  if (m) {
+    const at = start + m.index;
+    input.setSelectionRange(at, at + m[0].length);
+  } else {
+    const colon = template.indexOf(':');
+    if (colon >= 0) {
+      const valStart = start + colon + 1;
+      input.setSelectionRange(valStart, start + template.length);
+    } else {
+      input.setSelectionRange(start, start + template.length);
+    }
+  }
+  input.focus();
+}
+
+// === Self-tests (run via window.__trigrepTests()) ===================
+window.__trigrepTests = function tgRunTests() {
+  // ----- helpers --------------------------------------------------
+  const roundTrips = (q) => {
+    const a = tgParseNL(q).tokens;
+    const s1 = tgSerialize(a);
+    const b = tgParseRaw(s1);
+    return tgSerialize(b) === s1;
+  };
+  const cases = [
+    // === Section 0 — original acceptance ==========================
+    { section:'acceptance', name: 'public java methods throwing IOException in PaymentService.java',
+      input: 'find public java methods that throw IOException in PaymentService.java',
+      expect: 'visibility:public lang:java select:symbol.method throws:IOException file:PaymentService.java' },
+    { section:'acceptance', name: 'classes that extend AbstractController',
+      input: 'classes that extend AbstractController',
+      expect: 'select:symbol.class extends:AbstractController' },
+    { section:'acceptance', name: 'public alone',
+      input: 'public',
+      expect: 'visibility:public' },
+    { section:'acceptance', name: 'lang:jaava unverified + did-you-mean',
+      input: 'lang:jaava',
+      check: r => r.serialized === 'lang:jaava' && r.tokens[0].status === 'unverified' && r.tokens[0].suggestion && r.tokens[0].suggestion.value === 'lang:java' },
+    { section:'acceptance', name: 'implments Repository → implements:Repository',
+      input: 'implments Repository',
+      expect: 'implements:Repository' },
+    { section:'acceptance', name: 'regex token + mode=regex',
+      input: '/log\\.(warn|error)\\(/',
+      check: r => r.tokens.length === 1 && r.tokens[0].kind === 'term' && r.tokens[0].mode === 'regex' && tgDetectMode(r.tokens) === 'regex' },
+    { section:'acceptance', name: 'subclasses of BaseService blow up → extends + suggested throws',
+      input: 'subclasses of BaseService that blow up with IO problems',
+      check: r => r.tokens.some(t => t.kind === 'filter' && t.key === 'extends' && t.value === 'BaseService')
+                && r.tokens.some(t => t.kind === 'term' && t.suggestion && t.suggestion.filter === 'throws') },
+    { section:'acceptance', name: 'catalog: "where do we catch errors" → throws + catch structural',
+      check: () => {
+        const res = tgCatalogSearch('where do we catch errors').slice(0, 6);
+        return res.some(e => e.name === 'throws:') && res.some(e => e.kind === 'structural' && /catch/.test(e.name));
+      } },
+
+    // === Section 1 — recognition tuning ===========================
+    { section:'tuning', name: 'find all public methods → visibility:public select:symbol.method',
+      input: 'find all public methods',
+      expect: 'visibility:public select:symbol.method' },
+    { section:'tuning', name: 'throwing IOException → throws:IOException (stem)',
+      input: 'throwing IOException',
+      expect: 'throws:IOException' },
+    { section:'tuning', name: 'langauge:java did-you-mean lang:',
+      input: 'langauge:java',
+      check: r => r.tokens[0].kind === 'filter' && r.tokens[0].key === 'lang' && r.tokens[0].suggestion && r.tokens[0].suggestion.value === 'lang:java' },
+    { section:'tuning', name: 'fuzzy guard: KafkaTemplate is a literal, not a typo',
+      input: 'KafkaTemplate',
+      expect: 'KafkaTemplate' },
+    { section:'tuning', name: 'greedy capture stops at "in" trigger boundary',
+      input: 'methods that throw IOException in PaymentService.java',
+      expect: 'select:symbol.method throws:IOException file:PaymentService.java' },
+
+    // === Section 2 — round-trip stability =========================
+    { section:'roundtrip', name: 'visibility/lang/select/throws roundtrip',
+      check: () => roundTrips('visibility:public lang:java select:symbol.method throws:IOException') },
+    { section:'roundtrip', name: 'regex roundtrip',
+      check: () => roundTrips('/log\\.(warn|error)\\(/') },
+    { section:'roundtrip', name: 'structural roundtrip',
+      check: () => roundTrips("struct:'catch (:[ex:e] :[var:id]) { :[_].printStackTrace() }'") },
+    { section:'roundtrip', name: 'grouping + or roundtrip',
+      check: () => roundTrips('(@PreAuthorize or @Secured) lang:java') },
+    { section:'roundtrip', name: 'negation roundtrip',
+      check: () => roundTrips('@RestController -test') },
+    { section:'roundtrip', name: 'mid-edit: trailing lang: with no value parses, does not crash',
+      check: () => {
+        try {
+          const r = tgParseNL('lang:');
+          return r.tokens.length === 1 && r.tokens[0].kind === 'filter' && r.tokens[0].key === 'lang' && r.tokens[0].value === '';
+        } catch (_) { return false; }
+      } },
+
+    // === Section 3 — syntax edge cases ============================
+    { section:'syntax', name: 'quoted content stays one token',
+      input: 'content:"text with spaces"',
+      check: r => r.tokens.length === 1 && r.tokens[0].kind === 'filter' && r.tokens[0].key === 'content' && r.tokens[0].value === '"text with spaces"' },
+    { section:'syntax', name: '"@Service" or "@Controller" keeps the or operator',
+      check: () => {
+        const t = tgParseNL('"@Service" or "@Controller"').tokens;
+        return t.length === 3 && t[0].kind === 'term' && t[1].kind === 'op' && t[1].value === 'or' && t[2].kind === 'term';
+      } },
+    { section:'syntax', name: 'negation → NOT op + term',
+      check: () => {
+        const t = tgParseNL('@RestController -test').tokens;
+        const hasNot = t.some(x => x.kind === 'op' && x.value === 'not');
+        const hasTest = t.some(x => x.kind === 'term' && x.value === 'test');
+        return hasNot && hasTest;
+      } },
+    { section:'syntax', name: 'grouping preserves parens + precedence',
+      check: () => {
+        const t = tgParseNL('(@PreAuthorize or @Secured) lang:java').tokens;
+        return t[0].value === '(' && t[t.length-2].value === ')' && t.some(x => x.kind === 'filter' && x.key === 'lang');
+      } },
+    { section:'syntax', name: 'regex internals not split as operators',
+      check: () => {
+        const t = tgParseNL('/log\\.(warn|error)\\(/').tokens;
+        return t.length === 1 && t[0].mode === 'regex';
+      } },
+    { section:'syntax', name: 'structural with constrained holes stays one unit',
+      check: () => {
+        const q = "struct:':[port:1..65535] :[m~get.*] :[x:!a,b] :[y?]'";
+        const t = tgParseRaw(q);
+        return t.length === 1 && t[0].mode === 'structural' && t[0].value === q;
+      } },
+    { section:'syntax', name: 'alias normalization: l:java → lang:java',
+      check: () => {
+        const t = tgParseRaw('l:java');
+        return t[0].key === 'lang' && t[0].value === 'java';
+      } },
+    { section:'syntax', name: 'alias normalization: path:*.java → file:*.java',
+      check: () => {
+        const t = tgParseRaw('path:*.java');
+        return t[0].key === 'file' && t[0].value === '*.java';
+      } },
+    { section:'syntax', name: 'alias normalization: r:foo → repo:foo, symbol:Bar → sym:Bar',
+      check: () => {
+        const t1 = tgParseRaw('r:foo')[0];
+        const t2 = tgParseRaw('symbol:Bar')[0];
+        return t1.key === 'repo' && t1.value === 'foo' && t2.key === 'sym' && t2.value === 'Bar';
+      } },
+
+    // === Section 4 — mode detection / badge =======================
+    { section:'mode', name: 'bare term → literal',
+      check: () => tgDetectMode(tgParseNL('KafkaTemplate').tokens) === 'literal' },
+    { section:'mode', name: '/regex/ → regex',
+      check: () => tgDetectMode(tgParseNL('/abc/').tokens) === 'regex' },
+    { section:'mode', name: "struct:'...' → structural",
+      check: () => tgDetectMode(tgParseRaw("struct:'if (:[c]) { :[b] }'")) === 'structural' },
+    { section:'mode', name: 'mixed → mixed',
+      check: () => tgDetectMode(tgParseRaw("KafkaTemplate struct:'if (:[c]) { :[b] }'")) === 'mixed' },
+
+    // === Section 5 — catalog + explain ============================
+    { section:'catalog', name: 'catalog "hardcoded password" surfaces password regex',
+      check: () => tgCatalogSearch('hardcoded password').some(e => /password/.test(e.name)) },
+    { section:'catalog', name: 'catalog "catch errors" surfaces structural catch entry',
+      check: () => tgCatalogSearch('catch errors').some(e => e.kind === 'structural' && /catch/.test(e.name)) },
+    { section:'catalog', name: 'tab-stop insertion: template with :[ex] gets cursor selection on the hole',
+      check: () => {
+        const inp = { value: '', setSelectionRange(a, b) { this._a = a; this._b = b; }, focus() {} };
+        tgInsertTemplateAt(inp, "struct:'catch (:[ex] :[v]) { :[_].x() }'");
+        return inp._a < inp._b && inp.value.slice(inp._a, inp._b).startsWith(':[');
+      } },
+    { section:'catalog', name: 'explain renders English for filter token',
+      check: () => /lang/.test(tgExplainToken({ kind:'filter', key:'lang', value:'java' })) },
+
+    // === Section 7 — telemetry sanity =============================
+    { section:'telemetry', name: 'mapped query "find all public java methods" logs no misses',
+      check: () => tgParseNL('find all public java methods').misses.length === 0 },
+    { section:'telemetry', name: 'literal terms in a mapped+literal query are NOT logged as misses',
+      check: () => tgParseNL('lang:java KafkaTemplate').misses.length === 0
+                || tgParseNL('lang:java KafkaTemplate').misses.every(m => m === 'KafkaTemplate') },
+
+    // === Happy-path signature routing =============================
+    { section:'happy', name: 'Auth Opt 1 signature → flow a',
+      check: () => tgRouteSignature(tgParseRaw('(@PreAuthorize or @Secured or @RolesAllowed) visibility:public lang:java'))?.flow === 'a' },
+    { section:'happy', name: 'Auth Opt 2 signature → flow a',
+      check: () => tgRouteSignature(tgParseRaw('implements:AuthenticationEntryPoint'))?.flow === 'a' },
+    { section:'happy', name: 'Auth Opt 3 signature → flow a',
+      check: () => tgRouteSignature(tgParseRaw('visibility:public'))?.flow === 'a' },
+    { section:'happy', name: 'Logging Opt 1 (regex) → flow b',
+      check: () => tgRouteSignature(tgParseRaw('/log\\.(error|warn)\\(/'))?.flow === 'b' },
+    { section:'happy', name: 'Logging Opt 2 (Logger type:symbol) → logOpt2',
+      check: () => tgRouteSignature(tgParseRaw('Logger type:symbol'))?.query === TG_HAPPY_QUERIES.logOpt2.query },
+    { section:'happy', name: 'Logging Opt 3 (exclude tests) → logOpt3',
+      check: () => tgRouteSignature(tgParseRaw('Logger type:symbol -file:**/test/**'))?.query === TG_HAPPY_QUERIES.logOpt3.query },
+    { section:'happy', name: 'REST Opt 1 → flow c',
+      check: () => tgRouteSignature(tgParseRaw('@RestController lang:java'))?.flow === 'c' },
+    { section:'happy', name: 'REST Opt 2 (outbound) → flow c',
+      check: () => tgRouteSignature(tgParseRaw('type:symbol RestTemplate or type:symbol WebClient or type:symbol RestClient lang:java'))?.flow === 'c' },
+
+    // === Phrase routing (Appendix B + §1 examples) =================
+    { section:'phrase', name: '"just public-facing services" → Auth Opt 3',
+      check: () => tgRoutePhrase('just public-facing services')?.query === 'visibility:public' },
+    { section:'phrase', name: '"public only" → Auth Opt 3',
+      check: () => tgRoutePhrase('public only')?.query === 'visibility:public' },
+    { section:'phrase', name: '"auth entry points" → Auth Opt 2',
+      check: () => tgRoutePhrase('auth entry points')?.query === 'implements:AuthenticationEntryPoint' },
+    { section:'phrase', name: '"where do we log errors" → Logging Opt 1',
+      check: () => /^\/log\\\.\(error\|warn\)/.test(tgRoutePhrase('where do we log errors')?.query || '') },
+    { section:'phrase', name: '"what loggers do we use" → Logging Opt 2',
+      check: () => tgRoutePhrase('what loggers do we use')?.query === 'Logger type:symbol' },
+    { section:'phrase', name: '"exclude tests" → Logging Opt 3',
+      check: () => /test/.test(tgRoutePhrase('exclude tests')?.query || '') && tgRoutePhrase('exclude tests')?.flow === 'b' },
+    { section:'phrase', name: '"server side controllers" → REST Opt 1',
+      check: () => tgRoutePhrase('server side controllers')?.query === '@RestController lang:java' },
+    { section:'phrase', name: '"outbound client calls" → REST Opt 2',
+      check: () => tgRoutePhrase('outbound client calls')?.flow === 'c' && /RestTemplate/.test(tgRoutePhrase('outbound client calls').query) },
+
+    // === Theme detection (broad question → scope panel) =============
+    { section:'theme', name: '"How is authentication handled?" → auth',
+      check: () => tgDetectTheme('How is authentication handled?', []) === 'auth' },
+    { section:'theme', name: '"How is logging done across services?" → logging',
+      check: () => tgDetectTheme('How is logging done across our services?', []) === 'logging' },
+    { section:'theme', name: '"How are our REST APIs structured?" → rest',
+      check: () => tgDetectTheme('How are our REST APIs structured?', []) === 'rest' },
+    { section:'theme', name: '"payment processing" (off-theme) → null',
+      check: () => tgDetectTheme('payment processing', []) === null },
+
+    // === Canonicalizer ============================================
+    { section:'canon', name: 'token-order independence: same canonical form regardless of order',
+      check: () => tgCanonical('lang:java visibility:public @PreAuthorize') === tgCanonical('@PreAuthorize visibility:public lang:java') },
+    { section:'canon', name: 'alias normalization affects canonical form',
+      check: () => tgCanonical('l:java path:*.java') === tgCanonical('lang:java file:*.java') },
+
+    // === Syntax dropdown ⇄ patternType: ============================
+    { section:'dialect', name: 'apply Comby → tokens gain patternType:structural',
+      check: () => {
+        TGState.tokens = tgParseRaw('lang:java');
+        tgApplySyntaxMode('comby');
+        return TGState.tokens.some(t => t.kind==='filter' && t.key==='patternType' && t.value==='structural');
+      } },
+    { section:'dialect', name: 'apply Regex → tokens gain patternType:regexp',
+      check: () => {
+        TGState.tokens = tgParseRaw('lang:java');
+        tgApplySyntaxMode('regex');
+        return TGState.tokens.some(t => t.kind==='filter' && t.key==='patternType' && t.value==='regexp');
+      } },
+    { section:'dialect', name: 'apply Sourcegraph → patternType: removed',
+      check: () => {
+        TGState.tokens = tgParseRaw('lang:java patternType:structural');
+        tgApplySyntaxMode('sourcegraph');
+        return !TGState.tokens.some(t => t.kind==='filter' && t.key==='patternType');
+      } },
+    { section:'dialect', name: 'switching modes does not duplicate patternType:',
+      check: () => {
+        TGState.tokens = tgParseRaw('lang:java');
+        tgApplySyntaxMode('comby');
+        tgApplySyntaxMode('regex');
+        return TGState.tokens.filter(t => t.kind==='filter' && t.key==='patternType').length === 1;
+      } },
+  ];
+  const report = [];
+  let pass = 0;
+  const bySection = {};
+  for (const c of cases) {
+    let ok = false, got = '';
+    try {
+      let r = { tokens: [], serialized: '' };
+      if (c.input != null) {
+        const parsed = tgParseNL(c.input);
+        r.tokens = parsed.tokens;
+        r.serialized = tgSerialize(parsed.tokens);
+      }
+      if (c.expect) { ok = (r.serialized === c.expect); got = r.serialized; }
+      else if (c.check) { ok = !!c.check(r); got = r.serialized || '(custom check)'; }
+    } catch (e) { got = 'ERR: ' + e.message; }
+    if (ok) pass++;
+    report.push({ section: c.section || '-', name: c.name, ok, got, expected: c.expect });
+    const s = c.section || '-';
+    bySection[s] = bySection[s] || { pass: 0, total: 0 };
+    bySection[s].total++; if (ok) bySection[s].pass++;
+  }
+  console.group(`[trigrep] self-tests: ${pass}/${cases.length} passed`);
+  for (const [s, x] of Object.entries(bySection)) {
+    const tag = x.pass === x.total ? '✅' : '❌';
+    console.log(`  ${tag} ${s}: ${x.pass}/${x.total}`);
+  }
+  for (const r of report) {
+    const tag = r.ok ? '✅' : '❌';
+    if (r.ok) console.log(`${tag} [${r.section}] ${r.name}`);
+    else console.warn(`${tag} [${r.section}] ${r.name}\n   expected: ${r.expected || '(custom)'}\n   got:      ${r.got}`);
+  }
+  console.groupEnd();
+  return { pass, total: cases.length, bySection, report };
+};
+// Alias for the docstring's recommended name
+window.runSelfTests = window.__trigrepTests;
+
+// === Happy-path tests (callable as runHappyPathTests()) ===============
+window.runHappyPathTests = function tgRunHappyPathTests() {
+  const cases = [
+    // (Appendix-A key, expected fixture flow, headline keyword that lives in FLOWS[flow])
+    { name: 'Auth Opt 1 → flow a (auth headline)',  query: '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public lang:java', flow: 'a', headline: '1,892' },
+    { name: 'Auth Opt 2 → flow a',                  query: 'implements:AuthenticationEntryPoint',                                    flow: 'a' },
+    { name: 'Auth Opt 3 → flow a',                  query: 'visibility:public',                                                      flow: 'a' },
+    { name: 'Logging Opt 1 → flow b',               query: '/log\\.(error|warn)\\(/',                                                  flow: 'b' },
+    { name: 'Logging Opt 2 → flow b (847 fixture)', query: 'Logger type:symbol',                                                     flow: 'b', headline: '847' },
+    { name: 'Logging Opt 3 → flow b',               query: 'Logger type:symbol -file:**/test/**',                                    flow: 'b' },
+    { name: 'REST Opt 1 → flow c (2,519 fixture)',  query: '@RestController lang:java',                                              flow: 'c', headline: '2,519' },
+    { name: 'REST Opt 2 → flow c',                  query: 'type:symbol RestTemplate or type:symbol WebClient or type:symbol RestClient lang:java', flow: 'c' },
+    // Routing examples from §1
+    { name: 'phrase: "just public-facing services" → Auth Opt 3', phrase: 'just public-facing services', flow: 'a' },
+    { name: 'phrase: "where do we log errors"       → Log Opt 1', phrase: 'where do we log errors',     flow: 'b' },
+    { name: 'phrase: "what loggers do we use"       → Log Opt 2', phrase: 'what loggers do we use',     flow: 'b' },
+    { name: 'phrase: "exclude tests"                → Log Opt 3', phrase: 'exclude tests',              flow: 'b' },
+    { name: 'phrase: "server side controllers"      → REST Opt 1', phrase: 'server side controllers',   flow: 'c' },
+    { name: 'phrase: "outbound client calls"        → REST Opt 2', phrase: 'outbound client calls',     flow: 'c' },
+    // Theme fallback
+    { name: 'theme: "How is authentication handled?" → auth scope', theme: 'How is authentication handled?', want: 'auth' },
+    { name: 'theme: "How is logging done across services?" → logging scope', theme: 'How is logging done across our services?', want: 'logging' },
+    { name: 'theme: "How are our REST APIs structured?" → rest scope', theme: 'How are our REST APIs structured?', want: 'rest' },
+    // Honest empty state
+    { name: 'off-script "payment processing" → empty state (no route, no theme)', empty: 'payment processing' },
+  ];
+
+  let pass = 0; const report = [];
+  for (const c of cases) {
+    let ok = false, detail = '';
+    try {
+      if (c.query) {
+        const hit = tgRouteSignature(tgParseRaw(c.query));
+        ok = !!hit && hit.flow === c.flow;
+        if (ok && c.headline) {
+          const flow = (typeof FLOWS !== 'undefined') ? FLOWS[c.flow] : null;
+          const txt = flow ? (flow.phase2.summary + ' ' + flow.overflow) : '';
+          ok = txt.includes(c.headline);
+        }
+        detail = hit ? `flow=${hit.flow}` : '(no route)';
+      } else if (c.phrase) {
+        const hit = tgRoutePhrase(c.phrase);
+        ok = !!hit && hit.flow === c.flow;
+        detail = hit ? `→ ${hit.query}` : '(no route)';
+      } else if (c.theme) {
+        const theme = tgDetectTheme(c.theme, []);
+        ok = theme === c.want;
+        detail = `theme=${theme}`;
+      } else if (c.empty) {
+        const parsed = tgParseNL(c.empty).tokens;
+        const sig = tgRouteSignature(parsed);
+        const phr = tgRoutePhrase(c.empty);
+        const thm = tgDetectTheme(c.empty, parsed);
+        ok = !sig && !phr && !thm;
+        detail = `sig=${!!sig} phrase=${!!phr} theme=${thm}`;
+      }
+    } catch (e) { detail = 'ERR: ' + e.message; }
+    if (ok) pass++;
+    report.push({ name: c.name, ok, detail });
+  }
+  console.group(`[trigrep] happy-path tests: ${pass}/${cases.length} passed`);
+  for (const r of report) {
+    const tag = r.ok ? '✅' : '❌';
+    if (r.ok) console.log(`${tag} ${r.name}`);
+    else console.warn(`${tag} ${r.name} — ${r.detail}`);
+  }
+  console.groupEnd();
+  return { pass, total: cases.length, report };
+};
+
+// ===================================================================
 // Boot
 // ===================================================================
 setNavActive('trigrep');
@@ -2689,6 +4497,10 @@ wireSyntaxSelector();
 wireTrigrepSearchBar();
 setSyntaxMode('sourcegraph');
 renderStartExamples();
+tgWireAll();
+tgRenderAll();
+try { window.__trigrepTests(); } catch (e) { console.warn('[trigrep] self-test error:', e); }
+try { window.runHappyPathTests(); } catch (e) { console.warn('[trigrep] happy-path test error:', e); }
 </script>
 </body>
 </html>
