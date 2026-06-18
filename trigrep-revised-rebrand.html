@@ -1,0 +1,3865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigrep</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ================================================
+   NEO DESIGN SYSTEM — BRAND TOKENS (Tier 1)
+   ================================================ */
+:root {
+  --brand-white: #FFFFFF;
+  --brand-black: #000000;
+  --brand-digital-blue-100: #F2F3FF;
+  --brand-digital-blue-200: #DCE0FF;
+  --brand-digital-blue-300: #B6BFFF;
+  --brand-digital-blue-400: #8D99FF;
+  --brand-digital-blue-500: #2F42FF;
+  --brand-digital-blue-600: #2637E6;
+  --brand-digital-blue-700: #1E2EC2;
+  --brand-digital-blue-800: #131E7A;
+  --brand-digital-blue-900: #000855;
+  --brand-green-100: #F3FFF5;
+  --brand-green-200: #CFFFD7;
+  --brand-green-500: #72E184;
+  --brand-green-600: #5EC46F;
+  --brand-green-700: #4CA75A;
+  --brand-green-800: #3B8948;
+  --brand-red-100: #FEF2F2;
+  --brand-red-400: #FCA5A5;
+  --brand-red-500: #F87171;
+  --brand-red-600: #CB3446;
+  --brand-red-700: #A92232;
+  --brand-red-800: #871421;
+  --brand-orange-100: #FFF8E5;
+  --brand-orange-600: #FFB800;
+  --brand-orange-700: #D69B00;
+  --brand-orange-800: #856000;
+  --brand-grey-100: #F9FAFB;
+  --brand-grey-200: #F3F4F6;
+  --brand-grey-300: #E5E7EB;
+  --brand-grey-400: #D1D5DB;
+  --brand-grey-500: #9CA3AF;
+  --brand-grey-600: #6B7280;
+  --brand-grey-700: #4B5563;
+  --brand-grey-800: #374151;
+  --brand-grey-900: #1F2937;
+  --brand-grey-1000: #111827;
+  --brand-violet-500: #AD59C7;
+  --brand-violet-600: #992FB9;
+  --brand-teal-600: #3BCCA6;
+  --brand-font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --brand-font-family-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --brand-font-weight-regular: 400;
+  --brand-font-weight-medium: 500;
+  --brand-font-weight-semibold: 600;
+  --brand-font-weight-bold: 700;
+  --brand-font-size-100: 10px;
+  --brand-font-size-200: 12px;
+  --brand-font-size-300: 14px;
+  --brand-font-size-400: 16px;
+  --brand-font-size-500: 18px;
+  --brand-font-size-600: 20px;
+  --brand-font-size-700: 24px;
+  --brand-font-size-800: 28px;
+  --brand-spacing-0: 0;
+  --brand-spacing-100: 4px;
+  --brand-spacing-200: 8px;
+  --brand-spacing-300: 12px;
+  --brand-spacing-400: 16px;
+  --brand-spacing-500: 20px;
+  --brand-spacing-600: 24px;
+  --brand-spacing-800: 32px;
+  --brand-spacing-1000: 40px;
+  --brand-radius-0: 0;
+  --brand-radius-100: 4px;
+  --brand-radius-200: 6px;
+  --brand-radius-300: 8px;
+  --brand-radius-400: 12px;
+  --brand-radius-500: 16px;
+  --brand-radius-full: 9999px;
+  --brand-shadow-100: 0 1px 3px rgba(31, 41, 55, 0.1);
+  --brand-shadow-200: 0 2px 4px rgba(31, 41, 55, 0.1);
+  --brand-shadow-300: 0 8px 15px rgba(31, 41, 55, 0.1);
+  --brand-shadow-400: 0 4px 4px rgba(31, 41, 55, 0.1), 0 8px 24px rgba(31, 41, 55, 0.1);
+  --brand-shadow-500: 0 8px 15px rgba(31, 41, 55, 0.1);
+  --brand-transition-fast: 150ms ease;
+  --brand-transition-base: 200ms ease;
+  --brand-line-height-200: 20px;
+  --brand-line-height-300: 24px;
+  --brand-line-height-400: 28px;
+}
+
+/* ================================================
+   NEO DESIGN SYSTEM — ALIAS TOKENS (Tier 2)
+   ================================================ */
+:root {
+  --alias-primary-100: var(--brand-digital-blue-100);
+  --alias-primary-200: var(--brand-digital-blue-200);
+  --alias-primary-300: var(--brand-digital-blue-300);
+  --alias-primary-500: var(--brand-digital-blue-500);
+  --alias-primary-600: var(--brand-digital-blue-600);
+  --alias-primary-700: var(--brand-digital-blue-700);
+  --alias-primary-800: var(--brand-digital-blue-800);
+  --alias-success-100: var(--brand-green-100);
+  --alias-success-600: var(--brand-green-600);
+  --alias-success-700: var(--brand-green-700);
+  --alias-error-100: var(--brand-red-100);
+  --alias-error-600: var(--brand-red-600);
+  --alias-error-700: var(--brand-red-700);
+  --alias-warning-100: var(--brand-orange-100);
+  --alias-warning-600: var(--brand-orange-600);
+  --alias-neutral-light-100: var(--brand-grey-100);
+  --alias-neutral-light-200: var(--brand-grey-200);
+  --alias-neutral-light-300: var(--brand-grey-300);
+  --alias-neutral-light-400: var(--brand-grey-400);
+  --alias-neutral-dark-500: var(--brand-grey-500);
+  --alias-neutral-dark-600: var(--brand-grey-600);
+  --alias-neutral-dark-700: var(--brand-grey-700);
+  --alias-neutral-dark-800: var(--brand-grey-800);
+  --alias-neutral-dark-900: var(--brand-grey-900);
+  --alias-neutral-dark-1000: var(--brand-grey-1000);
+  --alias-foundation-white: var(--brand-white);
+  --alias-foundation-black: var(--brand-black);
+  --alias-font-heading: var(--brand-font-family-sans);
+  --alias-font-body: var(--brand-font-family-sans);
+  --alias-font-code: var(--brand-font-family-mono);
+}
+
+/* ================================================
+   NEO DESIGN SYSTEM — MAPPED TOKENS (Tier 3)
+   ================================================ */
+:root {
+  --surface-primary: var(--alias-foundation-white);
+  --surface-page: #f4f4f4;
+  --surface-secondary: var(--alias-neutral-light-100);
+  --surface-tertiary: var(--alias-neutral-light-200);
+  --surface-disabled: var(--alias-neutral-light-200);
+  --surface-error: var(--alias-error-100);
+  --surface-success: var(--alias-success-100);
+  --surface-information: var(--alias-primary-100);
+  --surface-warning: var(--alias-warning-100);
+  --surface-primary-filled: var(--alias-primary-500);
+  --surface-error-filled: var(--alias-error-600);
+  --surface-success-filled: var(--alias-success-600);
+  --surface-primary-hover: var(--alias-primary-100);
+  --surface-primary-pressed: var(--alias-primary-200);
+  --surface-primary-filled-hover: var(--alias-primary-700);
+  --surface-primary-filled-pressed: var(--alias-primary-800);
+  --surface-primary-active: #3776F01A;
+  --surface-error-filled-hover: var(--alias-error-700);
+  --text-primary: var(--alias-neutral-dark-1000);
+  --text-secondary: var(--alias-neutral-dark-600);
+  --text-tertiary: var(--alias-neutral-dark-500);
+  --text-disabled: var(--alias-neutral-light-400);
+  --text-error: var(--alias-error-600);
+  --text-success: var(--alias-success-700);
+  --text-information: var(--alias-primary-700);
+  --text-on-primary: var(--alias-foundation-white);
+  --text-on-error: var(--alias-foundation-white);
+  --text-primary-hover: var(--alias-primary-700);
+  --icon-primary: var(--alias-neutral-dark-1000);
+  --icon-secondary: var(--alias-neutral-dark-600);
+  --icon-tertiary: var(--alias-neutral-dark-500);
+  --icon-on-primary: var(--alias-foundation-white);
+  --border-primary: var(--alias-neutral-light-300);
+  --border-secondary: var(--alias-neutral-light-400);
+  --border-hover: var(--alias-neutral-light-400);
+  --border-focus: var(--alias-primary-600);
+  --content-heading: var(--alias-neutral-dark-1000);
+  --content-body: var(--alias-neutral-dark-800);
+  --content-caption: var(--alias-neutral-dark-600);
+  --content-placeholder: var(--alias-neutral-dark-500);
+  --font-heading: var(--alias-font-heading);
+  --font-body: var(--alias-font-body);
+  --font-code: var(--alias-font-code);
+  --space-1: var(--brand-spacing-100);
+  --space-2: var(--brand-spacing-200);
+  --space-3: var(--brand-spacing-300);
+  --space-4: var(--brand-spacing-400);
+  --space-5: var(--brand-spacing-500);
+  --space-6: var(--brand-spacing-600);
+  --space-8: var(--brand-spacing-800);
+  --space-10: var(--brand-spacing-1000);
+  --radius-sm: var(--brand-radius-100);
+  --radius-md: var(--brand-radius-200);
+  --radius-lg: var(--brand-radius-300);
+  --radius-xl: var(--brand-radius-400);
+  --radius-2xl: var(--brand-radius-500);
+  --radius-full: var(--brand-radius-full);
+  --shadow-xs: var(--brand-shadow-100);
+  --shadow-sm: var(--brand-shadow-200);
+  --shadow-md: var(--brand-shadow-300);
+  --shadow-lg: var(--brand-shadow-400);
+  --shadow-xl: var(--brand-shadow-500);
+  --transition-fast: var(--brand-transition-fast);
+  --transition-base: var(--brand-transition-base);
+}
+
+/* Legacy tokens still consumed by the rest of this file */
+:root {
+    --grey-25:  #f9fafb;
+    --grey-50:  #f3f4f6;
+    --grey-100: #e5e7eb;
+    --grey-200: #d1d5db;
+    --grey-300: #9ca3af;
+    --grey-500: #6b7280;
+    --grey-600: #4b5563;
+    --grey-700: #374151;
+    --grey-800: #1f2937;
+    --grey-900: #111827;
+    --bg: #ffffff;
+
+    --neo-digital-blue-300: #8d99ff;
+    --neo-digital-blue-500: #2f42ff;
+    --neo-red-500: #cb3446;
+
+    --neo-red: #FF3232;
+    --roseate: #DB4197;
+    --violet: #461DDE;
+    --digital-blue: #2F42FF;
+    --digital-green: #3DDC84;
+
+    --highlight: #fbbf24;
+    --highlight-bg: #fef3c7;
+    --highlight-text: #78350f;
+    --java-dot: #e76f00;
+    --code-bg: #0d1117;
+
+    --code-near-black: #0A0F1E;
+    --code-cb: #7B9FFF;
+    --code-cs: #A0A4C0;
+    --code-cd: rgba(255,255,255,0.25);
+    --code-slate-mid: #636687;
+
+    /* Moderne UI palette (recipe results page) — used in Trigrep
+       to mirror FileDiffView / ResultExpansionPanel visuals. */
+    --mui-grey-100: #F8F9FA;
+    --mui-grey-150: #EDEFEF;
+    --mui-grey-200: #E9ECEF;
+    --mui-grey-300: #DEE2E6;
+    --mui-grey-400: #CED4DA;
+    --mui-grey-500: #ADB5BD;
+    --mui-grey-600: #6C757D;
+    --mui-grey-700: #495057;
+    --mui-grey-800: #343A40;
+    --mui-card-bg: #F4F4F4;
+    --mui-card-body-bg: #FFFFFF;
+    --mui-divider: #C1C1C1;
+    --mui-blue: #2F42FF;
+    --mui-blue-200: #9FA8FF;
+    --mui-gold: #FFC107;
+    --mui-gold-soft: #FFF3B0;
+  }
+
+  /* ================================================
+     MODERNE 2026 BRAND OVERRIDE — warm-dark + green
+     Last :root wins; cascades over all tokens above.
+     ================================================ */
+  :root {
+    /* Foundation */
+    --mod-bg:          #15120F;
+    --mod-bg2:         #100E0B;
+    --mod-bg-deep:     #070608;
+    --mod-panel:       #1D1A15;
+    --mod-code-bg:     #0C0B0F;
+    --mod-bone:        #F1ECE0;
+    --mod-bone-dim:    #C9BFA6;
+    --mod-muted:       #B3A78F;  /* AAA-tuned: 7.30:1 on --mod-panel */
+    --mod-green:       #33FF99;
+    --mod-green-ink:   #5FE6A8;
+    --mod-green-soft:  #99FFCC;
+    --mod-on-accent:   #10130D;
+    --mod-red:         #FF5A47;  /* alarm fill / dot color (3:1 graphical) */
+    --mod-red-ink:     #FFA398;  /* AAA-tuned red for text on dark */
+    --mod-spec-violet: #9B5CFF;
+    --mod-spec-violet-ink: #BFA3FF; /* AAA-tuned violet for text on dark */
+    --mod-spec-gold:   #FFE14D;
+    --mod-spec-pink:   #FF4DB8;
+    --mod-diff-add:    #AEFFDD;
+    --mod-diff-del:    #FFB5AC;  /* AAA-tuned on red-tint-22% removed-match bg */
+    --mod-hairline:    rgba(241,236,224,0.10);
+    --mod-hairline-2:  rgba(241,236,224,0.06);
+
+    /* Override Tier 1 — brand-* (Tier 2/3 resolve through these) */
+    --brand-digital-blue-100: rgba(51,255,153,0.10);
+    --brand-digital-blue-200: rgba(51,255,153,0.20);
+    --brand-digital-blue-300: var(--mod-green-soft);
+    --brand-digital-blue-400: var(--mod-green);
+    --brand-digital-blue-500: var(--mod-green);
+    --brand-digital-blue-600: var(--mod-green-ink);
+    --brand-digital-blue-700: var(--mod-green-ink);
+    --brand-digital-blue-800: var(--mod-green-ink);
+    --brand-digital-blue-900: var(--mod-green-soft);
+    --brand-green-100: rgba(51,255,153,0.10);
+    --brand-green-200: rgba(51,255,153,0.20);
+    --brand-green-500: var(--mod-green);
+    --brand-green-600: var(--mod-green-ink);
+    --brand-green-700: var(--mod-green-ink);
+    --brand-green-800: var(--mod-green-ink);
+    --brand-red-100: rgba(255,90,71,0.10);
+    --brand-red-400: var(--mod-red);          /* fill/border */
+    --brand-red-500: var(--mod-red);          /* fill */
+    --brand-red-600: var(--mod-red-ink);      /* text — AAA on dark */
+    --brand-red-700: var(--mod-red-ink);      /* text — AAA on dark */
+    --brand-red-800: var(--mod-red-ink);      /* text — AAA on dark */
+    --brand-orange-100: rgba(255,225,77,0.12);
+    --brand-orange-600: var(--mod-spec-gold);
+    --brand-orange-700: var(--mod-spec-gold);
+    --brand-orange-800: var(--mod-spec-gold);
+    --brand-grey-100: var(--mod-panel);
+    --brand-grey-200: var(--mod-bg2);
+    --brand-grey-300: var(--mod-hairline);
+    --brand-grey-400: rgba(241,236,224,0.18);
+    --brand-grey-500: var(--mod-muted);
+    --brand-grey-600: var(--mod-muted);
+    --brand-grey-700: var(--mod-bone-dim);
+    --brand-grey-800: var(--mod-bone-dim);
+    --brand-grey-900: var(--mod-bone);
+    --brand-grey-1000: var(--mod-bone);
+    --brand-violet-500: var(--mod-spec-violet);
+    --brand-violet-600: var(--mod-spec-violet);
+    --brand-teal-600: var(--mod-green-ink);
+
+    --brand-font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --mod-font-display: 'Poppins', 'Inter', sans-serif;
+
+    /* Tier 3 overrides where the mapping should change for dark mode */
+    --surface-page: var(--mod-bg);
+    --surface-primary: var(--mod-panel);
+    --surface-secondary: var(--mod-bg2);
+    --surface-tertiary: var(--mod-code-bg);
+    --surface-disabled: var(--mod-bg2);
+    --surface-primary-filled: var(--mod-green);
+    --surface-error-filled: var(--mod-red);
+    --surface-success-filled: var(--mod-green-ink);
+    --surface-primary-hover: rgba(51,255,153,0.10);
+    --surface-primary-pressed: rgba(51,255,153,0.20);
+    --surface-primary-filled-hover: var(--mod-green-soft);
+    --surface-primary-filled-pressed: var(--mod-green-soft);
+    --surface-primary-active: rgba(51,255,153,0.10);
+    --surface-error-filled-hover: var(--mod-red);
+    --text-primary: var(--mod-bone);
+    --text-secondary: var(--mod-bone-dim);
+    --text-tertiary: var(--mod-muted);
+    --text-on-primary: var(--mod-on-accent);
+    --text-on-error: var(--mod-bone);
+    --text-error: var(--mod-red-ink);
+    --text-success: var(--mod-green-ink);
+    --text-information: var(--mod-green-ink);
+    --text-primary-hover: var(--mod-green-soft);
+    --icon-primary: var(--mod-bone);
+    --icon-secondary: var(--mod-bone-dim);
+    --icon-tertiary: var(--mod-muted);
+    --icon-on-primary: var(--mod-on-accent);
+    --border-primary: var(--mod-hairline);
+    --border-secondary: var(--mod-hairline);
+    --border-hover: rgba(241,236,224,0.20);
+    --border-focus: var(--mod-green);
+    --content-heading: var(--mod-bone);
+    --content-body: var(--mod-bone-dim);
+    --content-caption: var(--mod-muted);
+    --content-placeholder: var(--mod-muted);
+
+    /* Override legacy palette tokens (raw hex earlier) */
+    --grey-25:  var(--mod-panel);
+    --grey-50:  var(--mod-bg2);
+    --grey-100: var(--mod-hairline);
+    --grey-200: var(--mod-hairline);
+    --grey-300: var(--mod-muted);
+    --grey-500: var(--mod-muted);
+    --grey-600: var(--mod-bone-dim);
+    --grey-700: var(--mod-bone-dim);
+    --grey-800: var(--mod-bone);
+    --grey-900: var(--mod-bone);
+    --bg: var(--mod-bg);
+
+    --neo-digital-blue-300: var(--mod-green-soft);
+    --neo-digital-blue-500: var(--mod-green);
+    --neo-red-500: var(--mod-red);
+    --neo-red: var(--mod-red);
+    --roseate: var(--mod-spec-pink);
+    --violet: var(--mod-spec-violet);
+    --digital-blue: var(--mod-green);
+    --digital-green: var(--mod-green-ink);
+
+    --highlight: var(--mod-spec-gold);
+    --highlight-bg: rgba(255,225,77,0.18);
+    --highlight-text: var(--mod-bone);
+    --java-dot: var(--mod-spec-gold);
+    /* --code-bg #0d1117 already dark — keep */
+
+    --code-near-black: var(--mod-code-bg);
+    --code-cb: var(--mod-green-soft);
+    --code-cs: var(--mod-muted);
+    --code-cd: rgba(241,236,224,0.30);
+    --code-slate-mid: var(--mod-muted);
+
+    --mui-grey-100: var(--mod-panel);
+    --mui-grey-150: var(--mod-bg2);
+    --mui-grey-200: var(--mod-bg2);
+    --mui-grey-300: var(--mod-hairline);
+    --mui-grey-400: var(--mod-hairline);
+    --mui-grey-500: var(--mod-muted);
+    --mui-grey-600: var(--mod-muted);
+    --mui-grey-700: var(--mod-bone-dim);
+    --mui-grey-800: var(--mod-bone-dim);
+    --mui-card-bg: var(--mod-bg2);
+    --mui-card-body-bg: var(--mod-panel);
+    --mui-divider: var(--mod-hairline);
+    --mui-blue: var(--mod-green);
+    --mui-blue-200: var(--mod-green-soft);
+    --mui-gold: var(--mod-spec-gold);
+    --mui-gold-soft: rgba(255,225,77,0.18);
+
+    /* Dark-mode shadow set */
+    --brand-shadow-100: 0 1px 3px rgba(0,0,0,0.4);
+    --brand-shadow-200: 0 2px 4px rgba(0,0,0,0.4);
+    --brand-shadow-300: 0 8px 15px rgba(0,0,0,0.5);
+    --brand-shadow-400: 0 4px 4px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.55);
+    --brand-shadow-500: 0 8px 15px rgba(0,0,0,0.5);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--mod-bg);
+    color: var(--mod-bone-dim);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+    line-height: 1.55;
+    overflow: hidden;
+  }
+  .mono { font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; }
+
+  /* ===== Shell ===== */
+  body { background: var(--surface-page); }
+  .shell { height: 100vh; display: flex; flex-direction: column; }
+  .grid {
+    display: grid;
+    grid-template-columns: 98px 1fr;
+    grid-template-areas: "nav content";
+    flex: 1;
+    overflow: hidden;
+    gap: 0;
+    background: var(--surface-page);
+  }
+
+/* ================================================
+   LEFT NAVIGATION RAIL (98px) — v2-sandbox spec
+   ================================================ */
+.left-nav {
+  grid-area: nav;
+  width: 98px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 2px 8px 24px;
+  gap: 0;
+  background: var(--surface-page);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  overflow: visible;
+}
+
+.left-nav-top {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: 4px;
+}
+
+.nav-item-home { padding: 0 4px; }
+.nav-item-home .nav-icon-container { padding: 4px; }
+
+.nav-item {
+  width: 100%;
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  background: transparent;
+}
+
+.nav-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  background: transparent;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.nav-item:hover .nav-icon-container,
+.nav-item.active .nav-icon-container {
+  background: var(--brand-digital-blue-100);
+  border-color: var(--brand-digital-blue-200);
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  color: var(--brand-grey-900);
+  flex-shrink: 0;
+}
+
+.nav-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--brand-font-weight-regular);
+  line-height: 1;
+  color: var(--brand-grey-900);
+  text-align: center;
+  white-space: normal;
+  width: 100%;
+  transition: color 150ms ease;
+}
+
+.nav-item:hover .nav-label { color: var(--brand-digital-blue-600); }
+.nav-item.active .nav-label {
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--brand-digital-blue-800);
+}
+
+.nav-badge {
+  font-size: 11px;
+  padding: 0 6px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--brand-grey-200);
+  color: var(--brand-grey-800);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: 1;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+.nav-home-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  padding: 4px 0;
+}
+
+.nav-version-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--brand-digital-blue-500) 0%, var(--brand-violet-500) 100%);
+  color: var(--brand-white);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--brand-font-weight-semibold);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.nav-more-wrapper { position: relative; margin-top: auto; }
+
+.nav-more-popover {
+  position: absolute;
+  left: calc(100% + 4px);
+  bottom: 0;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 96px;
+  z-index: 100;
+}
+
+.nav-more-popover[hidden] { display: none; }
+.nav-more-popover .nav-item { padding: 8px 4px; }
+
+/* ================================================
+   MAIN CONTENT AREA
+   ================================================ */
+.main-area {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+}
+
+/* ================================================
+   GLOBAL NAVIGATION BAR (65px toolbar)
+   ================================================ */
+.global-nav {
+  height: 65px;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+  width: 100%;
+}
+
+.global-nav::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  max-width: 90%;
+  height: 65px;
+  background: radial-gradient(ellipse at center, var(--brand-red-100) 0%, var(--brand-red-100) 40%, transparent 70%);
+  filter: blur(20px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.global-nav > * { position: relative; z-index: 1; }
+
+.org-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  background: var(--surface-primary);
+  border: 1px solid var(--border-secondary);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-transform: none;
+}
+
+.org-selector:hover {
+  background: var(--brand-grey-200);
+  border-color: var(--border-primary);
+}
+
+.org-selector.selected {
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-regular);
+}
+
+.org-selector-wrapper {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50vw;
+}
+
+.nav-spacer { flex: 1; }
+
+.search-input {
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-secondary);
+  padding: 10px 16px;
+  font-size: var(--brand-font-size-300);
+  color: var(--text-tertiary);
+  background: var(--surface-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.search-input:hover {
+  background: var(--brand-grey-200);
+  border-color: var(--border-primary);
+}
+
+.search-input > span:first-of-type { flex: 1; white-space: nowrap; }
+.search-input-keys { display: inline-flex; align-items: center; gap: 2px; }
+
+.search-input kbd {
+  font-size: var(--brand-font-size-100);
+  background: var(--surface-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--text-tertiary);
+  font-family: var(--font-body);
+  border: 1px solid var(--border-primary);
+  min-width: 18px;
+  text-align: center;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 64px;
+}
+
+.nav-action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform 200ms ease-in;
+  border: none;
+  background: transparent;
+  color: var(--brand-grey-900);
+  flex-shrink: 0;
+}
+
+.nav-action-btn:hover { background: var(--brand-grey-200); }
+.nav-action-btn.open { background: var(--surface-primary); box-shadow: var(--shadow-xs); }
+.nav-action-btn svg { width: 20px; height: 20px; }
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--mod-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--mod-on-accent);
+  flex-shrink: 0;
+}
+
+  /* ===== Page (full-width trigrep panel) ===== */
+  .page {
+    flex: 1;
+    background:
+      radial-gradient(ellipse 1100px 600px at 50% -10%,
+        rgba(255, 90, 71, 0.14) 0%,
+        rgba(255, 90, 71, 0.04) 35%,
+        transparent 65%),
+      radial-gradient(ellipse 900px 700px at 95% 105%,
+        rgba(95, 230, 168, 0.10) 0%,
+        rgba(95, 230, 168, 0.03) 40%,
+        transparent 70%),
+      var(--bg);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 8px 8px 0;
+    min-height: 0;
+    display: flex;
+    position: relative;
+  }
+  .trigrep-panel {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ===== Trigrep left panel ===== */
+  .trigrep-page-header {
+    padding: 20px 24px 12px;
+    background: var(--mod-panel);
+    flex-shrink: 0;
+  }
+  .trigrep-page-title {
+    font-family: var(--font-heading, 'Inter', sans-serif);
+    font-size: 21px;
+    font-weight: 400;
+    color: var(--grey-900, #111827);
+    line-height: 1.4;
+  }
+  .trigrep-page-subtitle {
+    font-size: 14px;
+    color: var(--grey-600, #6B7280);
+    margin-top: 2px;
+  }
+  .trigrep-head {
+    padding: 8px 24px 12px;
+    border-bottom: 1px solid var(--mui-divider);
+    flex-shrink: 0;
+    background: var(--mod-panel);
+  }
+  .trigrep-search-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .trigrep-search-box {
+    flex: 1;
+    display: flex; align-items: center; gap: 8px;
+    background: var(--mod-panel);
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 6px 10px 6px 12px;
+    min-height: 40px;
+  }
+  .trigrep-search-box:focus-within {
+    border-color: var(--neo-digital-blue-500);
+    box-shadow: 0 0 0 3px rgba(51, 255, 153, 0.18);
+  }
+  .trigrep-search-icon { width: 16px; height: 16px; color: var(--grey-500); flex-shrink: 0; }
+  /* Syntax selector */
+  .syntax-selector { position: relative; flex-shrink: 0; }
+  .syntax-selector-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: transparent; border: 0;
+    padding: 4px 6px;
+    font-size: 12px; color: var(--grey-600, #555);
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .syntax-selector-btn:hover { background: var(--grey-50, #f5f5f5); color: var(--grey-700, #2b2b2b); }
+  .syntax-selector-btn svg { width: 10px; height: 10px; color: var(--grey-500, #777); }
+  .syntax-selector[data-open="1"] .syntax-selector-btn svg { transform: rotate(180deg); }
+  .syntax-selector-divider {
+    width: 1px; height: 18px;
+    background: var(--grey-200, #e6e6e6);
+    flex-shrink: 0;
+    margin: 0 2px;
+  }
+  .syntax-selector-menu {
+    position: absolute;
+    top: calc(100% + 6px); left: 0;
+    margin: 0; padding: 4px;
+    list-style: none;
+    background: var(--mod-panel);
+    border: 1px solid var(--grey-200, #e6e6e6);
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    z-index: 30;
+    min-width: 260px;
+  }
+  .syntax-selector-menu li {
+    padding: 8px 10px;
+    font-size: 12px;
+    color: var(--grey-700, #2b2b2b);
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex; flex-direction: column;
+    gap: 2px;
+  }
+  .syntax-selector-menu li:hover { background: var(--grey-50, #f5f5f5); }
+  .syntax-selector-menu li[aria-selected="true"] {
+    color: var(--neo-digital-blue-500);
+    font-weight: 500;
+  }
+  .syntax-selector-menu .opt-label {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12.5px; font-weight: 500;
+    color: var(--grey-900);
+  }
+  .syntax-selector-menu .opt-label svg { width: 12px; height: 12px; color: var(--grey-500); }
+  .syntax-selector-menu .opt-desc {
+    font-size: 11px; color: var(--grey-500);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .syntax-selector-menu li[aria-selected="true"] .opt-label { color: var(--neo-digital-blue-500); }
+  .syntax-selector-menu li[aria-selected="true"] .opt-label svg { color: var(--neo-digital-blue-500); }
+  .trigrep-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--grey-50);
+    color: var(--grey-700);
+    border: 1px solid var(--grey-100);
+    border-radius: 6px;
+    padding: 3px 4px 3px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .trigrep-chip strong { color: var(--grey-500); font-weight: 500; margin-right: 1px; }
+  .trigrep-chip-x {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: none; background: transparent;
+    color: var(--grey-500); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .trigrep-chip-x:hover { background: var(--grey-200); color: var(--grey-900); }
+  .trigrep-chip-x svg { width: 10px; height: 10px; }
+  .trigrep-query {
+    flex: 1; min-width: 80px;
+    border: none; outline: none; background: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--grey-900);
+  }
+  .trigrep-query::placeholder {
+    font-family: var(--brand-font-family-sans);
+    font-size: 13.5px;
+    color: var(--grey-500);
+    opacity: 1;
+  }
+  .btn-search {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 40px;
+    background: var(--mod-green);
+    color: var(--mod-on-accent); border: none;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-search:hover { background: var(--mod-green-soft); }
+
+  /* Search-bar help text */
+  .search-help-row {
+    margin-top: 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    min-height: 18px;
+  }
+  /* Collapse the row when there's nothing to show (no result stats yet)
+     so the empty state and results pane sit tight under the assist row. */
+  .search-help-row:has(> .search-help-stats:empty),
+  .search-help-row:not(:has(*:not(:empty))) {
+    margin-top: 0;
+    min-height: 0;
+  }
+  .search-help {
+    font-size: 12px;
+    color: var(--grey-500);
+    line-height: 1.5;
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .search-help code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--grey-700);
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    padding: 0 4px;
+    border-radius: 3px;
+  }
+  .search-help-stats {
+    display: inline-flex; align-items: center;
+    gap: 14px;
+    font-size: 13px;
+    color: var(--mui-grey-600);
+    flex-shrink: 0;
+  }
+  .search-help-stats:empty { display: none; }
+  .results-toolbar-summary { color: var(--mui-grey-700); }
+  .results-toolbar-summary strong { color: var(--grey-900); font-weight: 600; }
+  .results-toolbar-recipes { color: var(--mui-grey-700); }
+  .results-toolbar-recipes strong { color: var(--grey-900); font-weight: 600; }
+  .results-toolbar-time {
+    color: var(--mui-grey-500);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .results-toolbar-export {
+    color: var(--neo-digital-blue-500);
+    text-decoration: none;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .results-toolbar-export:hover { text-decoration: underline; }
+  .results-toolbar-export svg { width: 11px; height: 11px; }
+
+  .trigrep-body {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+  }
+  /* Sidebar */
+  .trigrep-sidebar {
+    flex: 0 0 24%;
+    min-width: 0;
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--mui-grey-200);
+    background: var(--mod-panel);
+    font-size: 12px;
+    min-height: 0;
+  }
+  .trigrep-pane {
+    display: flex; flex-direction: column;
+    min-height: 0;
+  }
+  .trigrep-pane + .trigrep-pane {
+    border-top: 1px solid var(--mui-grey-200);
+  }
+  .trigrep-pane-filters { flex: 1 1 auto; }
+  .trigrep-pane-repos   { flex: 0 1 auto; max-height: 40%; }
+  .trigrep-pane-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px 8px;
+    font-size: 11px;
+    color: var(--mui-grey-600);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+  .trigrep-pane-head .pane-count {
+    color: var(--mui-grey-500);
+    font-weight: 600;
+    text-transform: none;
+    margin-left: 4px;
+  }
+  .trigrep-pane-head .collapse-all {
+    color: var(--mui-blue); cursor: pointer;
+    text-transform: none; letter-spacing: 0; font-weight: 500;
+    font-size: 11.5px;
+  }
+  .trigrep-pane-head .collapse-all:hover { text-decoration: underline; }
+  .trigrep-pane-body {
+    overflow-y: auto;
+    padding: 0 8px 12px;
+    min-height: 0;
+  }
+  .trigrep-pane-body::-webkit-scrollbar { width: 6px; }
+  .trigrep-pane-body::-webkit-scrollbar-thumb { background: var(--mui-grey-300); border-radius: 3px; }
+  .filter-group { margin: 4px 0 2px; }
+  .filter-group-head {
+    display: flex; align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px; font-weight: 700;
+    color: var(--mui-grey-800);
+  }
+  .filter-group-head:hover { background: var(--mui-grey-100); }
+  .filter-group-head svg {
+    width: 14px; height: 14px;
+    color: var(--mui-grey-600);
+    transition: transform 0.2s ease;
+    flex: 0 0 auto;
+  }
+  .filter-group.collapsed .filter-group-head svg { transform: rotate(-90deg); }
+  .filter-group.collapsed .filter-group-body { display: none; }
+  .filter-group-body { padding: 2px 0 6px 8px; margin-left: 12px; }
+  .filter-group-label {
+    padding: 10px 6px 4px;
+    font-size: 10px;
+    color: var(--mui-grey-500);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .topic-search {
+    width: calc(100% - 8px);
+    margin: 4px 0 6px;
+    padding: 5px 9px;
+    border: 1px solid var(--mui-grey-300);
+    border-radius: 4px;
+    font-family: inherit; font-size: 12px;
+    color: var(--mui-grey-800);
+    background: var(--mod-panel);
+    outline: none;
+  }
+  .topic-search:focus { border-color: var(--mui-blue); }
+  .filter-item {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    min-height: 28px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--mui-grey-800);
+  }
+  .filter-item:hover { background: var(--mui-grey-100); }
+  .filter-item .count {
+    color: var(--mui-grey-600);
+    font-size: 12px;
+    flex: 0 0 auto;
+  }
+  .filter-item.active {
+    background: rgba(51, 255, 153, 0.08);
+    color: var(--mui-blue);
+    font-weight: 500;
+  }
+  .filter-item.active .count { color: var(--mui-blue); font-weight: 500; }
+  .filter-item .lang-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: inline-block;
+    box-shadow: none;
+  }
+  .filter-item-name {
+    display: inline-flex; align-items: center;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .filter-item .filter-check {
+    width: 12px; height: 12px;
+    flex-shrink: 0;
+    color: transparent;
+    margin-right: 6px;
+  }
+  .filter-item.active .filter-check {
+    color: var(--mui-blue);
+  }
+  .filter-group.is-repo-list .filter-item .count {
+    color: var(--mui-blue);
+    font-weight: 500;
+  }
+  .filter-group.is-repo-list .filter-item.active .count { color: var(--mui-blue); }
+  .filter-more-link {
+    display: block;
+    background: transparent; border: 0;
+    padding: 4px 6px;
+    margin-top: 2px;
+    font-family: inherit; font-size: 12px;
+    color: var(--mui-blue);
+    cursor: pointer;
+    text-align: left;
+  }
+  .filter-more-link:hover { text-decoration: underline; }
+  .filter-group.is-repo-list.flat { margin: 4px 0 2px; }
+  .filter-group.is-repo-list.flat .repo-list-body {
+    padding: 4px 0 6px;
+    margin-left: 0;
+  }
+  .repo-search-wrap {
+    display: flex; align-items: center; gap: 6px;
+    margin: 4px 0 6px;
+    padding: 4px 9px;
+    border: 1px solid var(--mui-grey-300);
+    border-radius: 4px;
+    background: var(--mod-panel);
+  }
+  .repo-search-wrap:focus-within {
+    border-color: var(--mui-blue);
+  }
+  .repo-search-icon {
+    width: 12px; height: 12px;
+    color: var(--mui-grey-500);
+    flex-shrink: 0;
+  }
+  .repo-search {
+    flex: 1; min-width: 0;
+    border: 0; outline: none;
+    background: transparent;
+    font-family: inherit; font-size: 12px;
+    color: var(--mui-grey-800);
+  }
+  .repo-search::placeholder { color: var(--mui-grey-500); }
+
+  .trigrep-results {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow-y: auto;
+    padding: 16px 24px 32px;
+    background: transparent;
+  }
+  .trigrep-results::-webkit-scrollbar { width: 8px; }
+  .trigrep-results::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 4px; }
+
+  /* Result card */
+  .result-card {
+    background: var(--mui-card-bg);
+    border: 1px solid var(--mui-grey-300);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: none;
+  }
+  .result-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1px 8px 1px 12px;
+    background: var(--mui-card-bg);
+    min-height: 36px;
+  }
+  .result-card-file {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+    color: var(--mui-grey-800);
+    font-weight: 500;
+    min-width: 0;
+  }
+  .result-card-file .file-module {
+    color: var(--mui-grey-600); font-weight: 400;
+    font-family: inherit;
+    font-size: 13px;
+    margin-left: 2px;
+  }
+  .result-card-actions { display: inline-flex; align-items: center; gap: 2px; }
+  .result-card-meta {
+    font-size: 12px; color: var(--mui-grey-600); margin-right: 6px;
+  }
+  .icon-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: none; background: transparent;
+    color: var(--mui-grey-600);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:hover { background: var(--mui-grey-200); color: var(--mui-grey-800); }
+  .icon-btn svg { width: 14px; height: 14px; }
+  .chevron-btn svg { transition: transform 0.2s ease; }
+  .result-card.collapsed .chevron-btn svg { transform: rotate(-90deg); }
+  .result-card.collapsed .result-card-body { display: none; }
+  .result-card-body {
+    background: var(--mui-card-body-bg);
+    border-top: 1px solid var(--mui-grey-300);
+  }
+
+  /* Hunk-range header */
+  .hunk-label {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 14px;
+    background: var(--mui-card-bg);
+    border-top: 1px solid var(--mui-grey-300);
+    border-bottom: 1px solid var(--mui-grey-300);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: var(--mui-grey-600);
+  }
+  .hunk-label .hunk-text { color: var(--mui-grey-700); }
+  .hunk-label .icon-btn { width: 22px; height: 22px; }
+  .hunk-label .icon-btn svg { width: 12px; height: 12px; }
+
+  /* Code body */
+  .code-body {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--mui-grey-800);
+    background: var(--mui-card-body-bg);
+    overflow-x: auto;
+    padding: 4px 0;
+  }
+  .code-line {
+    display: grid;
+    grid-template-columns: 5ch 5ch 24px 1fr;
+    align-items: center;
+    min-height: 22px;
+  }
+  .code-line.simple { grid-template-columns: 5ch 1fr; }
+  .code-ln {
+    color: var(--mui-grey-500);
+    text-align: center;
+    padding: 0;
+    user-select: none;
+    font-size: 12px;
+  }
+  .code-marker {
+    text-align: center;
+    color: var(--mui-grey-500);
+    user-select: none;
+    font-weight: 600;
+  }
+  .code-text {
+    padding: 0 14px 0 8px;
+    white-space: pre;
+    color: var(--mui-grey-800);
+  }
+  .code-line.simple .code-text { padding-left: 12px; }
+  .code-line.is-hit { background: rgba(51, 255, 153, 0.08); }
+  .code-line:hover { background: rgba(241,236,224,0.025); }
+  .code-line.removed { background: rgba(255, 90, 71, 0.10); }
+  .code-line.removed .code-marker { color: var(--mod-red-ink); }
+  .code-line.added { background: rgba(51, 255, 153, 0.10); }
+  .code-line.added .code-marker { color: var(--mod-green-ink); }
+  .match {
+    background: rgba(255, 225, 77, 0.18);
+    color: var(--mod-bone);
+    padding: 0 2px;
+    border-radius: 2px;
+    box-shadow: inset 0 -2px 0 var(--mod-spec-gold);
+  }
+  .code-line.removed .match { background: rgba(255, 90, 71, 0.22); color: var(--mod-diff-del); box-shadow: none; }
+  .code-line.added .match { background: rgba(51, 255, 153, 0.22); color: var(--mod-diff-add); box-shadow: none; }
+
+  /* File detail drill-down */
+  .trigrep-body { transition: opacity 100ms ease; }
+  .trigrep-body.detail-mode > .trigrep-sidebar,
+  .trigrep-body.detail-mode > .trigrep-results { display: none; }
+  .trigrep-detail {
+    display: none;
+    flex: 1; flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    background: var(--mod-panel);
+  }
+  .trigrep-body.detail-mode > .trigrep-detail { display: flex; }
+  .result-card-file.is-clickable { cursor: pointer; }
+  .result-card-file.is-clickable:hover { color: var(--mui-blue); }
+
+  .detail-breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 24px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--grey-50);
+    background: var(--mod-panel);
+    flex-shrink: 0;
+  }
+  .detail-back {
+    background: none; border: none; padding: 2px 0;
+    color: var(--neo-digital-blue-500);
+    cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .detail-back:hover { text-decoration: underline; }
+  .detail-back svg { width: 12px; height: 12px; }
+  .detail-crumb-sep { color: var(--grey-300); }
+  .detail-crumb-current {
+    color: var(--grey-900); font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+  }
+  .detail-search-row {
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--grey-50);
+    background: var(--mod-panel);
+    flex-shrink: 0;
+  }
+  .detail-search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--mod-panel);
+    border: 1px solid var(--grey-200);
+    border-radius: 6px;
+    padding: 6px 12px;
+  }
+  .detail-search-box:focus-within {
+    border-color: var(--neo-digital-blue-500);
+    box-shadow: 0 0 0 3px rgba(51, 255, 153, 0.18);
+  }
+  .detail-search-box svg {
+    width: 14px; height: 14px;
+    color: var(--grey-500);
+    flex-shrink: 0;
+  }
+  .detail-search-box input {
+    flex: 1;
+    border: none; outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--grey-900);
+  }
+  .detail-search-box input::placeholder { color: var(--grey-500); }
+  .detail-search-box .kbd-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 1px 5px;
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    border-radius: 4px;
+    color: var(--grey-600);
+    flex-shrink: 0;
+  }
+
+  .detail-header {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--grey-50);
+    background: var(--mod-panel);
+    flex-shrink: 0;
+  }
+  .detail-header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .detail-file-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--grey-900);
+    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .detail-module {
+    color: var(--grey-600);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  .detail-code {
+    flex: 1;
+    overflow-y: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    background: var(--mod-panel);
+    padding: 12px 0;
+  }
+  .detail-code::-webkit-scrollbar { width: 8px; }
+  .detail-code::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 4px; }
+  .detail-code .code-line {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    align-items: center;
+    min-height: 22px;
+  }
+  .detail-code .code-line.has-match { background: rgba(255, 225, 77, 0.10); }
+  .detail-code .code-ln {
+    text-align: right;
+    color: var(--grey-300);
+    padding: 0 12px 0 0;
+    user-select: none;
+    font-size: 11.5px;
+  }
+  .detail-code .code-text {
+    padding: 0 14px;
+    white-space: pre;
+    color: var(--grey-900);
+  }
+  .detail-code .kw { color: var(--neo-digital-blue-500); }
+  .detail-code .str { color: var(--mod-spec-gold); }
+  .detail-code .ann { color: var(--mod-spec-violet-ink); }
+  .detail-code .cmt { color: var(--grey-500); font-style: italic; }
+  .detail-code .match {
+    background: var(--highlight-bg); color: var(--highlight-text);
+    padding: 0 2px; border-radius: 2px;
+  }
+
+  /* Lang dot */
+  .lang-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--java-dot);
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(231, 111, 0, 0.15);
+  }
+
+  /* ===== Trigrep start state (centered hero) ===== */
+  .trigrep-start-state {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 24px 64px;
+    background: transparent;
+    overflow-y: auto;
+  }
+  .trigrep-start-hero {
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%; max-width: 560px;
+    text-align: center;
+  }
+  .trigrep-start-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: rgba(51, 255, 153, 0.10);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--neo-digital-blue-500);
+  }
+  .trigrep-start-icon svg { width: 28px; height: 28px; }
+  .trigrep-start-title {
+    font-size: 22px; font-weight: 600;
+    color: var(--grey-900);
+    margin: 6px 0 0;
+  }
+  .trigrep-start-subtitle {
+    font-size: 14.5px;
+    color: var(--grey-600);
+    line-height: 1.55;
+    max-width: 480px;
+  }
+  .trigrep-start-examples-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    margin-top: 18px;
+  }
+  .trigrep-start-examples-list {
+    display: flex; flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .trigrep-start-example {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: var(--mod-panel);
+    border: 1px solid var(--grey-100);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    font-family: inherit;
+    width: 100%;
+  }
+  .trigrep-start-example:hover {
+    border-color: var(--neo-digital-blue-500);
+    background: rgba(51, 255, 153, 0.05);
+  }
+  .trigrep-start-example-text {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .trigrep-start-example-query {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--neo-digital-blue-500);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .trigrep-start-example-desc {
+    font-size: 12.5px;
+    color: var(--grey-500);
+  }
+  .trigrep-start-example-icon {
+    width: 16px; height: 16px;
+    color: var(--grey-400);
+    flex-shrink: 0;
+    transition: color 0.15s;
+  }
+  .trigrep-start-example:hover .trigrep-start-example-icon {
+    color: var(--neo-digital-blue-500);
+  }
+  .trigrep-start-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--grey-200);
+    margin-top: 14px;
+  }
+  .trigrep-start-reference-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 18px;
+    border: 1px solid var(--brand-digital-blue-200);
+    border-radius: 9999px;
+    color: var(--neo-digital-blue-500);
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--mod-panel);
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 14px;
+  }
+  .trigrep-start-reference-link:hover {
+    background: rgba(51, 255, 153, 0.06);
+    border-color: var(--neo-digital-blue-500);
+  }
+  .trigrep-start-reference-link svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+  /* Overflow indicator below results */
+  .results-overflow {
+    margin: 16px 0 4px;
+    padding: 12px 16px;
+    text-align: center;
+    color: var(--grey-600);
+    font-size: 13px;
+  }
+  .results-overflow strong { color: var(--grey-900); font-weight: 600; }
+  .results-overflow .show-more {
+    background: none; border: 0; padding: 0;
+    margin-left: 12px;
+    color: var(--neo-digital-blue-500);
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .results-overflow .show-more:hover { text-decoration: underline; }
+
+  /* Search-fallback empty state */
+  .trigrep-empty {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 12px;
+    text-align: center;
+    padding: 40px 24px;
+    background: var(--grey-25);
+  }
+  .trigrep-empty-title { font-size: 15px; font-weight: 600; color: var(--grey-700); }
+  .trigrep-empty-desc { font-size: 13px; color: var(--grey-600); max-width: 360px; line-height: 1.5; }
+
+  /* =====================================================================
+     Trigrep query bar — lean v1: filter pills, recognition autocomplete,
+     and a silent-reformulation banner. No prose parser, no catalog modal.
+     ===================================================================== */
+  .tg-assist-row {
+    margin-top: 8px;
+    display: flex; align-items: flex-start;
+    gap: 8px;
+  }
+  .tg-chip-strip {
+    flex: 1 1 auto;
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 4px;
+    min-height: 22px;
+  }
+  .tg-chip-strip:empty::before {
+    content: "Tip — start typing a filter like \201Clang:\201D or \201Cvisibility:\201D to see suggestions.";
+    color: var(--grey-500); font-size: 12px;
+  }
+  /* Filter pill: "filter: value" with a remove × and an optional NOT badge */
+  .tg-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--alias-primary-100, #F2F3FF);
+    color: var(--grey-800);
+    border: 1px solid var(--neo-digital-blue-300);
+    border-radius: 999px;
+    padding: 2px 4px 2px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .tg-pill .tg-pill-key { color: var(--neo-digital-blue-500); font-weight: 500; }
+  .tg-pill .tg-pill-op  { color: var(--grey-500); font-style: italic; font-family: var(--brand-font-family-sans); font-size: 11px; }
+  .tg-pill .tg-pill-val { color: var(--grey-900); }
+  .tg-pill.is-not { background: var(--brand-red-100); border-color: var(--brand-red-400); }
+  .tg-pill.is-not .tg-pill-key { color: var(--brand-red-700); }
+  .tg-pill.is-unverified { background: var(--brand-orange-100); border-color: var(--brand-orange-600); }
+  .tg-pill.is-unverified .tg-pill-key { color: var(--brand-orange-800); }
+  .tg-pill.is-unverified::after {
+    content: "·";
+    font-size: 14px;
+    color: var(--brand-orange-800);
+    margin-left: -2px;
+  }
+  /* Free-text tokens (literal / regex / structural) live alongside pills */
+  .tg-tok {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--mod-panel);
+    color: var(--grey-700);
+    border: 1px dashed var(--grey-200);
+    border-radius: 6px;
+    padding: 2px 4px 2px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .tg-tok.is-regex      { background: rgba(255, 225, 77, 0.10); border-color: rgba(255, 225, 77, 0.35); color: var(--mod-spec-gold); border-style: solid; }
+  .tg-tok.is-structural { background: rgba(155, 92, 255, 0.12); border-color: rgba(155, 92, 255, 0.40); color: var(--mod-spec-violet-ink); border-style: solid; }
+  .tg-op-chip {
+    display: inline-flex; align-items: center;
+    color: var(--grey-500); font-size: 11px;
+    padding: 0 4px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .tg-pill-x, .tg-tok-x {
+    width: 16px; height: 16px;
+    border-radius: 999px;
+    border: none; background: transparent;
+    color: inherit; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; line-height: 1;
+  }
+  .tg-pill-x:hover, .tg-tok-x:hover { background: rgba(0,0,0,0.08); }
+
+  /* Silent-reformulation banner — "Showing results for: <reformulated>" */
+  .tg-reform-banner {
+    margin-top: 6px;
+    padding: 6px 10px;
+    background: var(--brand-orange-100);
+    border: 1px solid var(--brand-orange-600);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--brand-orange-800);
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 8px;
+  }
+  .tg-reform-banner[hidden] { display: none; }
+  .tg-reform-banner code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    background: var(--mod-panel);
+    border: 1px solid var(--grey-100);
+    padding: 0 4px;
+    border-radius: 3px;
+    color: var(--grey-800);
+  }
+  .tg-reform-banner .tg-reform-action {
+    margin-left: auto;
+    background: transparent;
+    color: var(--neo-digital-blue-500);
+    border: 0;
+    cursor: pointer;
+    font-size: 12px;
+    text-decoration: underline;
+  }
+  .tg-reform-banner .tg-reform-dismiss {
+    border: 0; background: transparent; cursor: pointer;
+    color: var(--brand-orange-800);
+    font-size: 14px; line-height: 1;
+    padding: 0 4px;
+  }
+
+  /* Recognition-over-recall autocomplete dropdown */
+  .tg-autocomplete {
+    position: absolute;
+    background: var(--mod-panel);
+    border: 1px solid var(--grey-200);
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+    z-index: 40;
+    min-width: 280px; max-width: 420px;
+    padding: 4px;
+    max-height: 320px; overflow: auto;
+  }
+  .tg-autocomplete[hidden] { display: none; }
+  .tg-ac-section {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--grey-500);
+    padding: 8px 10px 4px;
+  }
+  .tg-ac-item {
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .tg-ac-item .tg-ac-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--grey-900);
+    flex: 0 0 auto;
+  }
+  .tg-ac-item .tg-ac-name b { color: var(--neo-digital-blue-500); font-weight: 600; }
+  .tg-ac-item .tg-ac-desc {
+    font-size: 11.5px; color: var(--grey-500);
+    flex: 1 1 auto; text-align: right;
+  }
+  .tg-ac-item.is-active, .tg-ac-item:hover {
+    background: var(--alias-primary-100, #F2F3FF);
+  }
+  .tg-ac-item.is-active .tg-ac-name, .tg-ac-item:hover .tg-ac-name {
+    color: var(--neo-digital-blue-500);
+  }
+
+  /* Scope-it-down panel (shown after Search when a theme is detected) */
+  .trigrep-empty.tg-scope { padding-top: 56px; }
+  .tg-scope-list {
+    margin-top: 4px;
+    width: min(560px, 100%);
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .tg-scope-option {
+    text-align: left;
+    background: var(--mod-panel);
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex; flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    font: inherit;
+  }
+  .tg-scope-option:hover {
+    border-color: var(--neo-digital-blue-500);
+    background: var(--alias-primary-100, #F2F3FF);
+  }
+  .tg-scope-label { font-size: 13px; font-weight: 600; color: var(--grey-900); }
+  .tg-scope-desc  { font-size: 12px; color: var(--grey-600); }
+  .tg-scope-option code {
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--grey-700);
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    padding: 2px 6px;
+    border-radius: 4px;
+    align-self: flex-start;
+  }
+
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="grid">
+    <!-- LEFT NAV RAIL (98px v2-sandbox structure) -->
+    <nav class="left-nav" aria-label="Platform">
+      <div class="left-nav-top">
+        <div class="nav-home-stack">
+          <div class="nav-item nav-item-home" aria-label="Home">
+            <div class="nav-icon-container">
+              <svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#F1ECE0" stroke="#F1ECE0" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+        <div id="left-nav-items" style="width:100%; display:flex; flex-direction:column; gap:4px;"></div>
+        <div class="nav-more-wrapper">
+          <div class="nav-item nav-item-more" id="nav-more-trigger" aria-label="More">
+            <div class="nav-icon-container">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </div>
+            <span class="nav-label">More</span>
+          </div>
+          <div class="nav-more-popover" id="nav-more-popover" hidden></div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="main-area">
+      <!-- GLOBAL NAV -->
+      <div class="global-nav">
+        <div class="org-selector-wrapper">
+          <div class="org-selector selected">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Acme Bank</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="nav-spacer"></div>
+        <div class="search-input">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span>Search recipes</span>
+          <span class="search-input-keys"><kbd>⌘</kbd><kbd>K</kbd></span>
+        </div>
+        <div class="nav-actions">
+          <button class="nav-action-btn" aria-label="Admin menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+          <button class="nav-action-btn" aria-label="Help menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+          <button class="nav-action-btn" aria-label="Account"><div class="avatar">A</div></button>
+        </div>
+      </div>
+
+      <!-- PAGE: full-width Trigrep panel -->
+      <div class="page" id="page">
+        <section class="trigrep-panel" id="trigrep-panel" aria-label="Trigrep search"></section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================================================================
+// Left nav data
+// ===================================================================
+const NAV_ITEMS = [
+  { id: 'devcenter',   label: 'DevCenter',
+    svg: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>' },
+  { id: 'trigrep',     label: 'Trigrep', active: true,
+    svg: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>' },
+  { id: 'artifacts',   label: 'Artifacts',
+    svg: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' },
+  { id: 'marketplace', label: 'Marketplace',
+    svg: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>' },
+  { id: 'builder',     label: 'Builder',
+    svg: '<rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>' },
+  { id: 'activity',    label: 'Activity',
+    svg: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>' },
+  { id: 'changelog',   label: 'Changelog',   badge: 'Beta',
+    svg: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>' },
+];
+
+const MORE_ITEMS = [
+  { id: 'recipe-queue', label: 'Recipe queue',
+    svg: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>' },
+  { id: 'repos',  label: 'Repositories',
+    svg: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/>' },
+  { id: 'deploy', label: 'Deploy',
+    svg: '<path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' },
+];
+
+function renderNavItem(item) {
+  const el = document.createElement('div');
+  el.className = 'nav-item' + (item.active ? ' active' : '');
+  el.innerHTML = `
+    <div class="nav-icon-container">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${item.svg}</svg>
+    </div>
+    <span class="nav-label">${item.label}</span>
+    ${item.badge ? `<span class="nav-badge">${item.badge}</span>` : ''}
+  `;
+  return el;
+}
+
+const navList = document.getElementById('left-nav-items');
+NAV_ITEMS.forEach(item => navList.appendChild(renderNavItem(item)));
+
+const morePopover = document.getElementById('nav-more-popover');
+MORE_ITEMS.forEach(item => morePopover.appendChild(renderNavItem(item)));
+
+const moreTrigger = document.getElementById('nav-more-trigger');
+moreTrigger.addEventListener('click', () => {
+  const isOpen = !morePopover.hasAttribute('hidden');
+  if (isOpen) {
+    morePopover.setAttribute('hidden', '');
+    moreTrigger.classList.remove('active');
+  } else {
+    morePopover.removeAttribute('hidden');
+    moreTrigger.classList.add('active');
+  }
+});
+document.addEventListener('click', (e) => {
+  if (!moreTrigger.contains(e.target) && !morePopover.contains(e.target)) {
+    morePopover.setAttribute('hidden', '');
+    moreTrigger.classList.remove('active');
+  }
+});
+
+// ===================================================================
+// Flow data — happy paths for the three example queries.
+// Each flow describes the trigrep results view: chips, query, filters,
+// result cards, plus the extra cards revealed by "Show more results".
+// ===================================================================
+const FLOWS = {
+  // ============== FLOW A — AUTHORIZATION ==============
+  a: {
+    id: 'a',
+    cards: [
+      { id: 'a-OrderController', file: 'OrderController.java', module: 'payments-api', count: 4, lines: [
+        { n: 12, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'ADMIN\')"</span>)' },
+        { n: 28, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'MANAGER\') or hasRole(\'ADMIN\')"</span>)' },
+        { n: 45, code: '<m>@Secured</m>(<span class="cs">"ROLE_USER"</span>)' },
+        { n: 67, code: '<m>@PreAuthorize</m>(<span class="cs">"#userId == authentication.principal.id"</span>)' },
+      ]},
+      { id: 'a-AdminController', file: 'AdminController.java', module: 'customer-portal', count: 2, lines: [
+        { n: 15, code: '<m>@PreAuthorize</m>(<span class="cs">"hasAuthority(\'ADMIN\')"</span>)' },
+        { n: 34, code: '<m>@RolesAllowed</m>({<span class="cs">"ADMIN"</span>, <span class="cs">"SUPER_ADMIN"</span>})' },
+      ]},
+    ],
+    overflow: 'Showing <strong>5 of 234</strong> files (1,892 matches)',
+    phase2: {
+      chips: [
+        { label: 'lang', value: 'java' },
+        { label: 'visibility', value: 'public' },
+      ],
+      query: '(@PreAuthorize or @Secured or @RolesAllowed)',
+      summary: '<span class="summary-count" id="summary-count">1,892</span> matches across <span class="summary-count" id="summary-files">234</span> files in <span class="mono">89ms</span>',
+      baseMatches: 1892,
+      baseFiles: 234,
+      filters: [
+        { id: 'annotation', title: 'By annotation', items: [
+          { name: '@PreAuthorize', count: 156 },
+          { name: '@Secured', count: 78 },
+          { name: '@RolesAllowed', count: 23 },
+        ]},
+        { id: 'lang', title: 'By language', items: [
+          { name: 'Java', count: 234, dot: '#e76f00' },
+        ]},
+        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 218, items: [
+          { name: 'payments-api',     count: 12 },
+          { name: 'customer-portal',  count: 9 },
+          { name: 'user-service',     count: 8 },
+          { name: 'admin-service',    count: 6 },
+          { name: 'orders-service',   count: 5 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'payments', count: 45 },
+          { name: 'customer-portal', count: 38 },
+          { name: 'user-service', count: 31 },
+          { name: 'admin', count: 28 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'a-UserController', file: 'UserController.java', module: 'user-service', count: 3, lines: [
+          { n: 22, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'USER\')"</span>)' },
+          { n: 41, code: '<m>@PreAuthorize</m>(<span class="cs">"#id == principal.id or hasRole(\'ADMIN\')"</span>)' },
+          { n: 58, code: '<m>@Secured</m>({<span class="cs">"ROLE_USER"</span>, <span class="cs">"ROLE_ADMIN"</span>})' },
+        ]},
+        { id: 'a-ReportsController', file: 'ReportsController.java', module: 'admin', count: 2, lines: [
+          { n: 18, code: '<m>@RolesAllowed</m>(<span class="cs">"ADMIN"</span>)' },
+          { n: 33, code: '<m>@PreAuthorize</m>(<span class="cs">"hasAuthority(\'REPORT_VIEW\')"</span>)' },
+        ]},
+        { id: 'a-BillingController', file: 'BillingController.java', module: 'payments-api', count: 2, lines: [
+          { n: 14, code: '<m>@PreAuthorize</m>(<span class="cs">"hasRole(\'BILLING\')"</span>)' },
+          { n: 29, code: '<m>@Secured</m>(<span class="cs">"ROLE_BILLING_ADMIN"</span>)' },
+        ]},
+      ],
+    },
+  },
+
+  // ============== FLOW B — LOGGING (Log4j) ==============
+  b: {
+    id: 'b',
+    cards: [
+      { id: 'b-PaymentProcessor', file: 'PaymentProcessor.java', module: 'payments-api', count: 3, lines: [
+        { n: 3,  code: 'import <m>org.apache.logging.log4j</m>.LogManager;' },
+        { n: 4,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+        { n: 12, code: 'private static final <m>Logger</m> logger = <m>LogManager</m>.getLogger(PaymentProcessor.class);' },
+      ]},
+      { id: 'b-NotificationService', file: 'NotificationService.java', module: 'notifications', count: 2, lines: [
+        { n: 5, code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+        { n: 9, code: 'private static final Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger();' },
+      ]},
+    ],
+    overflow: 'Showing <strong>5 of 54</strong> files (847 matches)',
+    phase2: {
+      chips: [
+        { label: 'lang', value: 'java' },
+      ],
+      query: 'org.apache.logging.log4j',
+      summary: '<span class="summary-count" id="summary-count">847</span> matches across <span class="summary-count" id="summary-files">54</span> files in <span class="mono">89ms</span>',
+      baseMatches: 847,
+      baseFiles: 54,
+      filters: [
+        { id: 'usage', title: 'By usage pattern', items: [
+          { name: 'Sole logger (Log4j only)', count: 38 },
+          { name: 'Mixed with SLF4J', count: 16 },
+        ]},
+        { id: 'lang', title: 'By language', items: [
+          { name: 'Java', count: 54, dot: '#e76f00' },
+        ]},
+        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 34, items: [
+          { name: 'payments-api',       count: 8 },
+          { name: 'notifications',      count: 5 },
+          { name: 'inventory-service',  count: 4 },
+          { name: 'legacy-batch',       count: 4 },
+          { name: 'common-logging',     count: 3 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'payments', count: 14 },
+          { name: 'billing', count: 11 },
+          { name: 'inventory', count: 9 },
+          { name: 'notifications', count: 8 },
+          { name: 'batch', count: 6 },
+          { name: 'common-logging', count: 6 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'b-LogConfig', file: 'LogConfig.java', module: 'common-logging', count: 3, lines: [
+          { n: 4,  code: 'import <m>org.apache.logging.log4j</m>.LogManager;' },
+          { n: 5,  code: 'import <m>org.apache.logging.log4j</m>.core.config.Configurator;' },
+          { n: 18, code: '<m>Configurator</m>.initialize(null, "log4j2.xml");' },
+        ]},
+        { id: 'b-StockAudit', file: 'StockAudit.java', module: 'inventory-service', count: 3, lines: [
+          { n: 3,  code: 'import <m>org.apache.logging.log4j</m>.LogManager;' },
+          { n: 4,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+          { n: 12, code: 'private static final Logger auditLog = <m>LogManager</m>.getLogger("stock.audit");' },
+        ]},
+        { id: 'b-BatchRunner', file: 'BatchRunner.java', module: 'legacy-batch', count: 2, lines: [
+          { n: 5,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+          { n: 11, code: 'private static final Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger(BatchRunner.class);' },
+        ]},
+        { id: 'b-InvoiceWriter', file: 'InvoiceWriter.java', module: 'billing-engine', count: 2, lines: [
+          { n: 6,  code: 'import <m>org.apache.logging.log4j</m>.Logger;' },
+          { n: 14, code: 'private final Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger(getClass());' },
+        ]},
+      ],
+    },
+  },
+
+  // ============== FLOW C — REST APIs ==============
+  c: {
+    id: 'c',
+    cards: [
+      { id: 'c-OrderController', file: 'OrderController.java', module: 'orders-service', count: 1, lines: [
+        { n: 5, code: '<m>@RestController</m>' },
+        { n: 6, code: '@RequestMapping(<span class="cs">"/api/orders"</span>)' },
+        { n: 7, code: 'public class OrderController {' },
+      ]},
+      { id: 'c-UserService', file: 'UserService.java', module: 'customer-portal', count: 1, lines: [
+        { n: 14, code: 'private final <m>RestTemplate</m> restTemplate;' },
+      ]},
+      { id: 'c-InvoiceClient', file: 'InvoiceClient.java', module: 'billing-service', count: 1, lines: [
+        { n: 12, code: 'private final <m>WebClient</m> webClient;' },
+      ]},
+    ],
+    overflow: 'Showing <strong>5 of 390</strong> files (2,519 matches)',
+    phase2: {
+      chips: [
+        { label: 'lang', value: 'java' },
+      ],
+      query: '@RestController',
+      summary: '<span class="summary-count" id="summary-count">2,519</span> matches across <span class="summary-count" id="summary-files">390</span> files in <span class="mono">143ms</span>',
+      baseMatches: 2519,
+      baseFiles: 390,
+      filters: [
+        { id: 'type', title: 'By type', items: [
+          { name: '@RestController', count: 187 },
+          { name: '@Controller + @ResponseBody', count: 47 },
+          { name: 'RestTemplate', count: 612 },
+          { name: 'WebClient', count: 187 },
+          { name: 'RestClient', count: 48 },
+        ]},
+        { id: 'role', title: 'By role', items: [
+          { name: 'Server only', count: 145 },
+          { name: 'Client only', count: 67 },
+          { name: 'Both', count: 89 },
+        ]},
+        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 380, items: [
+          { name: 'orders-service',     count: 14 },
+          { name: 'customer-portal',    count: 11 },
+          { name: 'billing-service',    count: 9 },
+          { name: 'payments-api',       count: 8 },
+          { name: 'inventory-service',  count: 7 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'orders', count: 52 },
+          { name: 'customer-portal', count: 41 },
+          { name: 'billing', count: 38 },
+          { name: 'inventory', count: 31 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'c-PaymentsController', file: 'PaymentsController.java', module: 'payments-api', count: 2, lines: [
+          { n: 8, code: '<m>@RestController</m>' },
+          { n: 9, code: '@RequestMapping(<span class="cs">"/api/payments"</span>)' },
+        ]},
+        { id: 'c-CatalogClient', file: 'CatalogClient.java', module: 'inventory-service', count: 1, lines: [
+          { n: 10, code: 'private final <m>RestClient</m> restClient;' },
+        ]},
+        { id: 'c-LegacyShipController', file: 'ShipmentController.java', module: 'shipping-legacy', count: 2, lines: [
+          { n: 7, code: '@Controller' },
+          { n: 8, code: '<m>@ResponseBody</m>' },
+        ]},
+      ],
+    },
+  },
+};
+
+// ===================================================================
+// File detail content (drill-down view)
+// ===================================================================
+const FILE_DETAILS = {
+  // ---- Flow A
+  'a-OrderController': {
+    name: 'OrderController.java',
+    path: 'payments-api/src/main/java/com/acme/payments/OrderController.java',
+    module: 'payments-api',
+    matchCount: 4,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.payments;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.annotation.Secured;' },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@RestController</span>' },
+      { n: 8,  code: '<span class="ann">@RequestMapping</span>(<span class="str">"/orders"</span>)' },
+      { n: 9,  code: '<span class="kw">public class</span> OrderController {' },
+      { n: 10, code: '' },
+      { n: 11, code: '    <span class="kw">@GetMapping</span>' },
+      { n: 12, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 13, code: '    <span class="kw">public</span> List&lt;Order&gt; listAll() { ... }' },
+      { n: 14, code: '' },
+      { n: 27, code: '    <span class="kw">@PostMapping</span>' },
+      { n: 28, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'MANAGER\') or hasRole(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 29, code: '    <span class="kw">public</span> Order approve(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 30, code: '' },
+      { n: 44, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/mine"</span>)' },
+      { n: 45, code: '    <m>@Secured</m>(<span class="str">"ROLE_USER"</span>)', hasMatch: true },
+      { n: 46, code: '    <span class="kw">public</span> List&lt;Order&gt; mine() { ... }' },
+      { n: 47, code: '' },
+      { n: 66, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/{userId}"</span>)' },
+      { n: 67, code: '    <m>@PreAuthorize</m>(<span class="str">"#userId == authentication.principal.id"</span>)', hasMatch: true },
+      { n: 68, code: '    <span class="kw">public</span> List&lt;Order&gt; forUser(<span class="kw">@PathVariable</span> String userId) { ... }' },
+      { n: 69, code: '}' },
+    ],
+  },
+  'a-AdminController': {
+    name: 'AdminController.java',
+    path: 'customer-portal/src/main/java/com/acme/portal/AdminController.java',
+    module: 'customer-portal',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.portal;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> jakarta.annotation.security.RolesAllowed;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 5,  code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 6,  code: '' },
+      { n: 7,  code: '<span class="ann">@RestController</span>' },
+      { n: 8,  code: '<span class="ann">@RequestMapping</span>(<span class="str">"/admin"</span>)' },
+      { n: 9,  code: '<span class="kw">public class</span> AdminController {' },
+      { n: 10, code: '' },
+      { n: 14, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/users"</span>)' },
+      { n: 15, code: '    <m>@PreAuthorize</m>(<span class="str">"hasAuthority(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 16, code: '    <span class="kw">public</span> List&lt;User&gt; users() { ... }' },
+      { n: 17, code: '' },
+      { n: 33, code: '    <span class="kw">@DeleteMapping</span>(<span class="str">"/users/{id}"</span>)' },
+      { n: 34, code: '    <m>@RolesAllowed</m>({<span class="str">"ADMIN"</span>, <span class="str">"SUPER_ADMIN"</span>})', hasMatch: true },
+      { n: 35, code: '    <span class="kw">public void</span> remove(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 36, code: '}' },
+    ],
+  },
+  'a-UserController': {
+    name: 'UserController.java',
+    path: 'user-service/src/main/java/com/acme/users/UserController.java',
+    module: 'user-service',
+    matchCount: 3,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.users;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.annotation.Secured;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@RestController</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> UserController {' },
+      { n: 21, code: '    <span class="kw">@GetMapping</span>' },
+      { n: 22, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'USER\')"</span>)', hasMatch: true },
+      { n: 23, code: '    <span class="kw">public</span> User me(Principal p) { ... }' },
+      { n: 40, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/{id}"</span>)' },
+      { n: 41, code: '    <m>@PreAuthorize</m>(<span class="str">"#id == principal.id or hasRole(\'ADMIN\')"</span>)', hasMatch: true },
+      { n: 42, code: '    <span class="kw">public</span> User get(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 57, code: '    <span class="kw">@PostMapping</span>(<span class="str">"/{id}/upgrade"</span>)' },
+      { n: 58, code: '    <m>@Secured</m>({<span class="str">"ROLE_USER"</span>, <span class="str">"ROLE_ADMIN"</span>})', hasMatch: true },
+      { n: 59, code: '    <span class="kw">public void</span> upgrade(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 60, code: '}' },
+    ],
+  },
+  'a-ReportsController': {
+    name: 'ReportsController.java',
+    path: 'admin/src/main/java/com/acme/reports/ReportsController.java',
+    module: 'admin',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.reports;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> jakarta.annotation.security.RolesAllowed;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@RestController</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> ReportsController {' },
+      { n: 17, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/daily"</span>)' },
+      { n: 18, code: '    <m>@RolesAllowed</m>(<span class="str">"ADMIN"</span>)', hasMatch: true },
+      { n: 19, code: '    <span class="kw">public</span> Report daily() { ... }' },
+      { n: 32, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/audit"</span>)' },
+      { n: 33, code: '    <m>@PreAuthorize</m>(<span class="str">"hasAuthority(\'REPORT_VIEW\')"</span>)', hasMatch: true },
+      { n: 34, code: '    <span class="kw">public</span> Report audit() { ... }' },
+      { n: 35, code: '}' },
+    ],
+  },
+  'a-BillingController': {
+    name: 'BillingController.java',
+    path: 'payments-api/src/main/java/com/acme/billing/BillingController.java',
+    module: 'payments-api',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.billing;' },
+      { n: 2,  code: '' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.security.access.prepost.PreAuthorize;' },
+      { n: 4,  code: '<span class="kw">import</span> org.springframework.security.access.annotation.Secured;' },
+      { n: 5,  code: '' },
+      { n: 6,  code: '<span class="ann">@RestController</span>' },
+      { n: 7,  code: '<span class="kw">public class</span> BillingController {' },
+      { n: 13, code: '    <span class="kw">@GetMapping</span>(<span class="str">"/invoices"</span>)' },
+      { n: 14, code: '    <m>@PreAuthorize</m>(<span class="str">"hasRole(\'BILLING\')"</span>)', hasMatch: true },
+      { n: 15, code: '    <span class="kw">public</span> List&lt;Invoice&gt; list() { ... }' },
+      { n: 28, code: '    <span class="kw">@PostMapping</span>(<span class="str">"/invoices/{id}/refund"</span>)' },
+      { n: 29, code: '    <m>@Secured</m>(<span class="str">"ROLE_BILLING_ADMIN"</span>)', hasMatch: true },
+      { n: 30, code: '    <span class="kw">public void</span> refund(<span class="kw">@PathVariable</span> Long id) { ... }' },
+      { n: 31, code: '}' },
+    ],
+  },
+
+  // ---- Flow B (Log4j variants)
+  'b-PaymentProcessor': {
+    name: 'PaymentProcessor.java',
+    path: 'payments-api/src/main/java/com/acme/payments/PaymentProcessor.java',
+    module: 'payments-api',
+    matchCount: 3,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.payments;' },
+      { n: 3,  code: '<span class="kw">import</span> <m>org.apache.logging.log4j</m>.LogManager;', hasMatch: true },
+      { n: 4,  code: '<span class="kw">import</span> <m>org.apache.logging.log4j</m>.Logger;', hasMatch: true },
+      { n: 12, code: '<span class="kw">private static final</span> <m>Logger</m> logger = <m>LogManager</m>.getLogger(PaymentProcessor.<span class="kw">class</span>);', hasMatch: true },
+      { n: 13, code: '' },
+      { n: 14, code: '<span class="kw">public void</span> charge(String txId, <span class="kw">double</span> amt) { ... }' },
+    ],
+  },
+  'b-NotificationService': {
+    name: 'NotificationService.java',
+    path: 'notifications/src/main/java/com/acme/notif/NotificationService.java',
+    module: 'notifications',
+    matchCount: 2,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.notif;' },
+      { n: 5, code: '<span class="kw">import</span> <m>org.apache.logging.log4j</m>.Logger;', hasMatch: true },
+      { n: 9, code: '<span class="kw">private static final</span> Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger();', hasMatch: true },
+    ],
+  },
+  'b-LogConfig': {
+    name: 'LogConfig.java',
+    path: 'common-logging/src/main/java/com/acme/logging/LogConfig.java',
+    module: 'common-logging',
+    matchCount: 3,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.logging;' },
+      { n: 4,  code: '<span class="kw">import</span> <m>org.apache.logging.log4j</m>.LogManager;', hasMatch: true },
+      { n: 5,  code: '<span class="kw">import</span> <m>org.apache.logging.log4j</m>.core.config.Configurator;', hasMatch: true },
+      { n: 18, code: '    <m>Configurator</m>.initialize(<span class="kw">null</span>, <span class="str">"log4j2.xml"</span>);', hasMatch: true },
+    ],
+  },
+  'b-StockAudit': {
+    name: 'StockAudit.java',
+    path: 'inventory-service/src/main/java/com/acme/inventory/StockAudit.java',
+    module: 'inventory-service',
+    matchCount: 3,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.inventory;' },
+      { n: 3,  code: '<span class="kw">import</span> <m>org.apache.logging.log4j</m>.LogManager;', hasMatch: true },
+      { n: 4,  code: '<span class="kw">import</span> <m>org.apache.logging.log4j</m>.Logger;', hasMatch: true },
+      { n: 12, code: '    <span class="kw">private static final</span> Logger auditLog = <m>LogManager</m>.getLogger(<span class="str">"stock.audit"</span>);', hasMatch: true },
+    ],
+  },
+  'b-BatchRunner': {
+    name: 'BatchRunner.java',
+    path: 'legacy-batch/src/main/java/com/acme/batch/BatchRunner.java',
+    module: 'legacy-batch',
+    matchCount: 2,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.batch;' },
+      { n: 5, code: '<span class="kw">import</span> <m>org.apache.logging.log4j</m>.Logger;', hasMatch: true },
+      { n: 11, code: '    <span class="kw">private static final</span> Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger(BatchRunner.<span class="kw">class</span>);', hasMatch: true },
+    ],
+  },
+  'b-InvoiceWriter': {
+    name: 'InvoiceWriter.java',
+    path: 'billing-engine/src/main/java/com/acme/billing/InvoiceWriter.java',
+    module: 'billing-engine',
+    matchCount: 2,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.billing;' },
+      { n: 6,  code: '<span class="kw">import</span> <m>org.apache.logging.log4j</m>.Logger;', hasMatch: true },
+      { n: 14, code: '    <span class="kw">private final</span> Logger log = <m>org.apache.logging.log4j</m>.LogManager.getLogger(getClass());', hasMatch: true },
+    ],
+  },
+
+  // ---- Flow C
+  'c-OrderController': {
+    name: 'OrderController.java',
+    path: 'orders-service/src/main/java/com/acme/orders/OrderController.java',
+    module: 'orders-service',
+    matchCount: 1,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.orders;' },
+      { n: 2, code: '' },
+      { n: 3, code: '<span class="kw">import</span> org.springframework.web.bind.annotation.*;' },
+      { n: 4, code: '' },
+      { n: 5, code: '<m>@RestController</m>', hasMatch: true },
+      { n: 6, code: '<span class="ann">@RequestMapping</span>(<span class="str">"/api/orders"</span>)' },
+      { n: 7, code: '<span class="kw">public class</span> OrderController {' },
+      { n: 8, code: '' },
+      { n: 9, code: '    <span class="kw">@GetMapping</span>' },
+      { n: 10, code: '    <span class="kw">public</span> List&lt;Order&gt; list() { ... }' },
+      { n: 11, code: '' },
+      { n: 12, code: '    <span class="kw">@PostMapping</span>' },
+      { n: 13, code: '    <span class="kw">public</span> Order create(<span class="kw">@RequestBody</span> NewOrder req) { ... }' },
+      { n: 14, code: '}' },
+    ],
+  },
+  'c-UserService': {
+    name: 'UserService.java',
+    path: 'customer-portal/src/main/java/com/acme/portal/UserService.java',
+    module: 'customer-portal',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.portal;' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.web.client.RestTemplate;' },
+      { n: 14, code: '    <span class="kw">private final</span> <m>RestTemplate</m> restTemplate;', hasMatch: true },
+    ],
+  },
+  'c-InvoiceClient': {
+    name: 'InvoiceClient.java',
+    path: 'billing-service/src/main/java/com/acme/billing/InvoiceClient.java',
+    module: 'billing-service',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.billing;' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.web.reactive.function.client.WebClient;' },
+      { n: 12, code: '    <span class="kw">private final</span> <m>WebClient</m> webClient;', hasMatch: true },
+    ],
+  },
+  'c-PaymentsController': {
+    name: 'PaymentsController.java',
+    path: 'payments-api/src/main/java/com/acme/payments/PaymentsController.java',
+    module: 'payments-api',
+    matchCount: 2,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.payments;' },
+      { n: 8, code: '<m>@RestController</m>', hasMatch: true },
+      { n: 9, code: '<m>@RequestMapping</m>(<span class="str">"/api/payments"</span>)', hasMatch: true },
+      { n: 10, code: '<span class="kw">public class</span> PaymentsController {' },
+      { n: 12, code: '    <span class="kw">@PostMapping</span>' },
+      { n: 13, code: '    <span class="kw">public</span> Receipt charge(<span class="kw">@RequestBody</span> Charge c) { ... }' },
+      { n: 14, code: '}' },
+    ],
+  },
+  'c-CatalogClient': {
+    name: 'CatalogClient.java',
+    path: 'inventory-service/src/main/java/com/acme/catalog/CatalogClient.java',
+    module: 'inventory-service',
+    matchCount: 1,
+    lines: [
+      { n: 1,  code: '<span class="kw">package</span> com.acme.catalog;' },
+      { n: 3,  code: '<span class="kw">import</span> org.springframework.web.client.RestClient;' },
+      { n: 10, code: '    <span class="kw">private final</span> <m>RestClient</m> restClient;', hasMatch: true },
+    ],
+  },
+  'c-LegacyShipController': {
+    name: 'ShipmentController.java',
+    path: 'shipping-legacy/src/main/java/com/acme/ship/ShipmentController.java',
+    module: 'shipping-legacy',
+    matchCount: 2,
+    lines: [
+      { n: 1, code: '<span class="kw">package</span> com.acme.ship;' },
+      { n: 7, code: '<span class="ann">@Controller</span>' },
+      { n: 8, code: '<m>@ResponseBody</m>', hasMatch: true },
+      { n: 9, code: '<span class="ann">@RequestMapping</span>(<span class="str">"/shipments"</span>)' },
+      { n: 10, code: '<span class="kw">public class</span> ShipmentController {' },
+    ],
+  },
+};
+
+// ===================================================================
+// DOM refs + state
+// ===================================================================
+const trigrepPanel = document.getElementById('trigrep-panel');
+let currentFlow = null;
+
+// ===================================================================
+// Trigrep entry: render the landing (empty state)
+// ===================================================================
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+const PLACEHOLDERS = {
+  sourcegraph: '(@PreAuthorize or @Secured) lang:java visibility:public',
+  comby: 'if (:[condition]) { :[body] }',
+  regex: '/log\\.(error|warn)\\(/',
+};
+
+const SYNTAX_LABELS = {
+  sourcegraph: 'Sourcegraph',
+  comby: 'Comby',
+  regex: 'Regex',
+};
+
+const HELP_TEXT = {
+  sourcegraph: `Syntax: <code>lang:</code> <code>visibility:</code> <code>type:</code> <code>extends:</code> <code>implements:</code> <code>returns:</code> <code>throws:</code> <code>file:</code>`,
+  comby: `Syntax: <code>:[hole]</code> matches any code — e.g. <code>if (:[cond]) { :[body] }</code>`,
+  regex: `Standard regex — e.g. <code>/log\\.(error|warn)\\(/</code>`,
+};
+
+let trigrepCurrentMode = 'sourcegraph'; // 'sourcegraph' | 'comby' | 'regex'
+
+// Map example query → flow id (Sourcegraph happy paths)
+const SYNTAX_EXAMPLES = {
+  a: '@PreAuthorize lang:java visibility:public',
+  b: 'org.apache.logging.log4j lang:java',
+  c: '@RestController lang:java',
+};
+
+const FINAL_QUERIES = {
+  a: '(@PreAuthorize or @Secured or @RolesAllowed)',
+  b: 'org.apache.logging.log4j',
+  c: '@RestController',
+};
+
+const START_EXAMPLES = [
+  { mode: 'sourcegraph', query: 'org.apache.logging.log4j lang:java',           desc: 'Find Log4j usage in Java files',      action: 'syntax-b' },
+  { mode: 'sourcegraph', query: '@PreAuthorize lang:java visibility:public',     desc: 'Find public authorization rules',     action: 'syntax-a' },
+  { mode: 'sourcegraph', query: '@RestController lang:java',                     desc: 'Find Spring REST controllers',        action: 'syntax-c' },
+  { mode: 'comby',       query: 'try { :[body] } catch (:[ex]) { :[handler] }',  desc: 'Match structural patterns',           action: 'fallback' },
+  { mode: 'regex',       query: '/log\\.(error|warn)\\(/',                       desc: 'Match with regular expressions',       action: 'fallback' },
+];
+
+function buildTrigrepLandingHTML() {
+  return `
+    <div class="trigrep-page-header">
+      <div class="trigrep-page-title">TriGrep</div>
+    </div>
+    <div class="trigrep-head" id="trigrep-head">
+      <div class="trigrep-search-row" style="position: relative;">
+        <div class="trigrep-search-box" id="trigrep-search-box">
+          <div class="syntax-selector" id="syntax-selector">
+            <button type="button" class="syntax-selector-btn" aria-haspopup="listbox" aria-expanded="false">
+              <span class="syntax-selector-label">Sourcegraph</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <ul class="syntax-selector-menu" role="listbox" hidden>
+              <li role="option" data-value="sourcegraph" aria-selected="true">
+                <span class="opt-label">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                  Sourcegraph
+                </span>
+                <span class="opt-desc">regex, filters, type:</span>
+              </li>
+              <li role="option" data-value="comby">
+                <span class="opt-label">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3"/><path d="M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3"/></svg>
+                  Comby
+                </span>
+                <span class="opt-desc">structural patterns</span>
+              </li>
+              <li role="option" data-value="regex">
+                <span class="opt-label">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 4v4M12 16v4M4 12h4M16 12h4M6.34 6.34l2.83 2.83M14.83 14.83l2.83 2.83M6.34 17.66l2.83-2.83M14.83 9.17l2.83-2.83"/></svg>
+                  Regex
+                </span>
+                <span class="opt-desc">regular expressions</span>
+              </li>
+            </ul>
+          </div>
+          <span class="syntax-selector-divider" aria-hidden="true"></span>
+          <svg class="trigrep-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="trigrep-query" id="trigrep-query-input" placeholder="${escapeHtml(PLACEHOLDERS.sourcegraph)}" spellcheck="false">
+        </div>
+        <button class="btn-search" id="trigrep-search-btn">Search</button>
+        <div class="tg-autocomplete" id="tg-autocomplete" hidden></div>
+      </div>
+      <div class="tg-assist-row" id="tg-assist-row">
+        <div class="tg-chip-strip" id="tg-chip-strip"></div>
+      </div>
+      <div class="tg-reform-banner" id="tg-reform-banner" hidden></div>
+      <div class="search-help-row">
+        <div class="search-help-stats" id="search-help-stats"></div>
+      </div>
+    </div>
+
+    <div class="trigrep-body" id="trigrep-body">
+      <aside class="trigrep-sidebar" aria-label="Filters and repositories">
+        <section class="trigrep-pane trigrep-pane-filters" aria-label="Filters">
+          <div class="trigrep-pane-head">
+            <span>Filters</span>
+          </div>
+          <div class="trigrep-pane-body" style="padding: 12px; color: var(--grey-500); font-size: 12px;">
+            Filters appear after a search.
+          </div>
+        </section>
+      </aside>
+
+      <div class="trigrep-results" id="trigrep-results">
+        <div class="trigrep-start-state">
+          <div class="trigrep-start-hero">
+            <div class="trigrep-start-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><polyline points="8.5 8 6 11 8.5 14"/><polyline points="13.5 8 16 11 13.5 14"/></svg>
+            </div>
+            <div class="trigrep-start-title">Start Your Code Search</div>
+            <div class="trigrep-start-subtitle">Use powerful filters and semantic search to find exactly what you're looking for across your entire codebase</div>
+            <div class="trigrep-start-examples-label">Try these examples</div>
+            <div class="trigrep-start-examples-list" id="trigrep-start-examples-list"></div>
+            <div class="trigrep-start-divider"></div>
+            <a class="trigrep-start-reference-link" href="#" onclick="return false;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Complete query reference
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setNavActive(id) {
+  document.querySelectorAll('#left-nav-items .nav-item, #nav-more-popover .nav-item').forEach(el => {
+    el.classList.remove('active');
+  });
+  const labelMap = { trigrep: 'Trigrep' };
+  const label = labelMap[id] || id;
+  document.querySelectorAll('#left-nav-items .nav-item').forEach(el => {
+    if (el.querySelector('.nav-label')?.textContent === label) el.classList.add('active');
+  });
+}
+
+function setSyntaxMode(mode) {
+  trigrepCurrentMode = mode;
+  const label = trigrepPanel.querySelector('.syntax-selector-label');
+  if (label) label.textContent = SYNTAX_LABELS[mode] || 'Sourcegraph';
+  const menu = trigrepPanel.querySelector('.syntax-selector-menu');
+  if (menu) {
+    menu.querySelectorAll('li[role="option"]').forEach(o => {
+      if (o.dataset.value === mode) o.setAttribute('aria-selected', 'true');
+      else o.removeAttribute('aria-selected');
+    });
+  }
+  const input = trigrepPanel.querySelector('#trigrep-query-input');
+  if (input) input.placeholder = PLACEHOLDERS[mode] || '';
+}
+
+function wireSyntaxSelector() {
+  const selector = trigrepPanel.querySelector('#syntax-selector');
+  if (!selector) return;
+  const btn = selector.querySelector('.syntax-selector-btn');
+  const menu = selector.querySelector('.syntax-selector-menu');
+  const closeMenu = () => {
+    menu.hidden = true;
+    selector.removeAttribute('data-open');
+    btn.setAttribute('aria-expanded', 'false');
+  };
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = !menu.hidden;
+    if (open) { closeMenu(); return; }
+    menu.hidden = false;
+    selector.setAttribute('data-open', '1');
+    btn.setAttribute('aria-expanded', 'true');
+  });
+  menu.querySelectorAll('li[role="option"]').forEach(li => {
+    li.addEventListener('click', () => {
+      setSyntaxMode(li.dataset.value);
+      closeMenu();
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (!selector.contains(e.target)) closeMenu();
+  });
+}
+
+function renderStartExamples() {
+  const slot = trigrepPanel.querySelector('#trigrep-start-examples-list');
+  if (!slot) return;
+  slot.innerHTML = START_EXAMPLES.map(ex => `
+    <button class="trigrep-start-example" type="button" data-action="${ex.action}" data-mode="${ex.mode}">
+      <span class="trigrep-start-example-text">
+        <span class="trigrep-start-example-query">${escapeHtml(ex.query)}</span>
+        <span class="trigrep-start-example-desc">${ex.desc}</span>
+      </span>
+      <svg class="trigrep-start-example-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+  `).join('');
+  slot.querySelectorAll('.trigrep-start-example').forEach(card => {
+    card.addEventListener('click', () => {
+      const mode = card.dataset.mode;
+      if (mode) setSyntaxMode(mode);
+      const action = card.dataset.action;
+      if (action === 'fallback') { showSearchFallback(); return; }
+      if (action && action.startsWith('syntax-')) {
+        const flowId = action.slice('syntax-'.length);
+        executeSearch(flowId);
+        return;
+      }
+    });
+  });
+}
+
+function wireTrigrepSearchBar() {
+  const input = trigrepPanel.querySelector('#trigrep-query-input');
+  const btn = trigrepPanel.querySelector('#trigrep-search-btn');
+  if (!input || !btn) return;
+
+  const submit = () => tgSubmit((input.value || '').trim());
+
+  btn.addEventListener('click', submit);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); }
+  });
+}
+
+function showSearchFallback() {
+  const results = trigrepPanel.querySelector('#trigrep-results');
+  if (!results) return;
+  results.innerHTML = `
+    <div class="trigrep-empty">
+      <div class="trigrep-empty-title">No matches in this prototype</div>
+      <div class="trigrep-empty-desc">This is a prototype — try one of the example queries on the empty state, or run one of the syntax-mode happy paths.</div>
+    </div>
+  `;
+}
+
+// ===================================================================
+// Execute a search — flip trigrep to results state for the given flow
+// ===================================================================
+function executeSearch(flowId) {
+  const flow = FLOWS[flowId];
+  if (!flow) return;
+  currentFlow = flowId;
+
+  const input = trigrepPanel.querySelector('#trigrep-query-input');
+  if (input) {
+    input.value = FINAL_QUERIES[flowId] || flow.phase2.query;
+    input.style.color = '';
+  }
+  setSyntaxMode('sourcegraph');
+
+  renderTrigrepResults(flow);
+}
+
+// Filters to pre-activate per flow — derived from the search query semantics
+const PRESET_ACTIVE_FILTERS = {
+  a: new Set(['Java']),
+  b: new Set(['Java', 'Sole logger (Log4j only)', 'Mixed with SLF4J']),
+  c: new Set(['Java']),
+};
+
+const CHECK_ICON_SVG = '<svg class="filter-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+function renderTrigrepResults(flow) {
+  const body = trigrepPanel.querySelector('#trigrep-body');
+  if (!body) return;
+
+  // Clear any inline stats from a previous search
+  const inlineStats = trigrepPanel.querySelector('#search-help-stats');
+  if (inlineStats) inlineStats.innerHTML = '';
+
+  // ----- Sidebar groups -----
+  const activeSet = PRESET_ACTIVE_FILTERS[currentFlow] || new Set();
+  const renderGroup = (group) => {
+    const repoClass = group.isRepoList ? ' is-repo-list' : '';
+    const overflow = group.overflowMore
+      ? `<button type="button" class="filter-more-link">+${group.overflowMore.toLocaleString()} more</button>`
+      : '';
+    const itemsHtml = group.items.map(it => {
+      const dot = it.dot ? `<span class="lang-dot" style="background:${it.dot};box-shadow:none;"></span>` : '';
+      const isActive = activeSet.has(it.name);
+      return `<div class="filter-item${isActive ? ' active' : ''}" data-count="${it.count}">
+        <span class="filter-item-name">${CHECK_ICON_SVG}${dot}${it.name}</span>
+        <span class="count">${it.count.toLocaleString()}</span>
+      </div>`;
+    }).join('');
+    if (group.isRepoList) {
+      return `
+      <div class="filter-group is-repo-list flat" data-group="${group.id}">
+        <div class="repo-search-wrap">
+          <svg class="repo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input class="repo-search" placeholder="Filter repos…">
+        </div>
+        <div class="filter-group-body repo-list-body">
+          ${itemsHtml}
+          ${overflow}
+        </div>
+      </div>`;
+    }
+    return `
+    <div class="filter-group${repoClass}" data-group="${group.id}">
+      <div class="filter-group-label">${group.title.replace(/^By\s+/i, '').toUpperCase()}</div>
+      <div class="filter-group-body" style="margin-left: 0; padding: 0;">
+        ${group.searchable ? '<input class="topic-search" placeholder="Search topics…">' : ''}
+        ${itemsHtml}
+        ${overflow}
+      </div>
+    </div>`;
+  };
+  const nonRepoFilters = flow.phase2.filters.filter(g => !g.isRepoList);
+  const repoFilters    = flow.phase2.filters.filter(g => g.isRepoList);
+  const nonRepoFiltersHtml = nonRepoFilters.map(renderGroup).join('');
+  const repoFiltersHtml    = repoFilters.map(renderGroup).join('');
+
+  const repoCount = flow.phase2.baseFiles || 0;
+
+  // ----- Result cards (cap initial display at 5) -----
+  const extraCards = flow.phase2.extraCards || [];
+  const extraSlice = Math.max(0, 5 - flow.cards.length);
+  const initialCards = [...flow.cards, ...extraCards.slice(0, extraSlice)];
+  const remainingCards = extraCards.slice(extraSlice);
+  const cardsHtml = initialCards.map(buildResultCardHTML).join('');
+  const overflowText = flow.overflow || '';
+
+  // ----- Results stats — inline on the right of the search-help row -----
+  const summaryRaw = flow.phase2.summary || '';
+  const nums = (summaryRaw.replace(/<[^>]+>/g, '').match(/[\d,]+/g) || []);
+  const matchCount = nums[0] || '';
+  const fileCount = nums[1] || '';
+  const timeMs = (summaryRaw.match(/([\d.]+ms)/) || [, ''])[1];
+  const statsHtml = `
+    <span class="results-toolbar-summary"><strong id="summary-count">${matchCount}</strong> matches across <strong id="summary-files">${fileCount}</strong> files</span>
+    <a class="results-toolbar-export" href="#" onclick="return false;" title="Export results as CSV">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export
+    </a>
+    <span class="results-toolbar-time">${timeMs}</span>
+  `;
+  if (inlineStats) inlineStats.innerHTML = statsHtml;
+
+  body.innerHTML = `
+    <aside class="trigrep-sidebar" aria-label="Repositories and filters">
+      ${repoFiltersHtml ? `
+      <section class="trigrep-pane trigrep-pane-repos" aria-label="Repositories">
+        <div class="trigrep-pane-head">
+          <span>Repositories <span class="pane-count">(${repoCount.toLocaleString()})</span></span>
+        </div>
+        <div class="trigrep-pane-body">
+          ${repoFiltersHtml}
+        </div>
+      </section>` : ''}
+      <section class="trigrep-pane trigrep-pane-filters" aria-label="Filters">
+        <div class="trigrep-pane-head">
+          <span>Filters</span>
+        </div>
+        <div class="trigrep-pane-body">
+          ${nonRepoFiltersHtml}
+        </div>
+      </section>
+    </aside>
+    <div class="trigrep-results" id="trigrep-results">
+      <div id="result-cards-list">${cardsHtml}</div>
+      <div class="results-overflow">
+        ${overflowText} <button class="show-more" id="show-more-btn">Show more results</button>
+      </div>
+    </div>
+  `;
+
+  wireResultsInteractions(flow, remainingCards);
+}
+
+function buildResultCardHTML(card) {
+  return `
+    <article class="result-card" data-card-id="${card.id}">
+      <div class="result-card-head">
+        <div class="result-card-file is-clickable">${card.file}<span class="file-module">— ${card.module}</span></div>
+        <div class="result-card-actions">
+          <span class="result-card-meta">${card.count} match${card.count === 1 ? '' : 'es'}</span>
+          <button class="icon-btn" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+          <button class="icon-btn chevron-btn" title="Collapse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+      </div>
+      <div class="result-card-body">
+        <div class="code-body">
+          ${card.lines.map(l => `<div class="code-line simple"><span class="code-ln">${l.n}</span><span class="code-text">${l.code.replace(/<m>/g, '<span class="match">').replace(/<\/m>/g, '</span>')}</span></div>`).join('')}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function wireResultsInteractions(flow, remainingCards) {
+  const baseMatches = flow.phase2.baseMatches;
+  const baseFiles = flow.phase2.baseFiles;
+  const activeFilters = new Map();
+  const summaryCount = trigrepPanel.querySelector('#summary-count');
+  const summaryFiles = trigrepPanel.querySelector('#summary-files');
+
+  // Filter group collapse
+  trigrepPanel.querySelectorAll('.filter-group-head').forEach(head => {
+    head.addEventListener('click', () => head.parentElement.classList.toggle('collapsed'));
+  });
+  const collapseAll = trigrepPanel.querySelector('#collapse-all');
+  if (collapseAll) {
+    collapseAll.addEventListener('click', () => {
+      const groups = trigrepPanel.querySelectorAll('.filter-group');
+      const anyOpen = [...groups].some(g => !g.classList.contains('collapsed'));
+      groups.forEach(g => g.classList.toggle('collapsed', anyOpen));
+      collapseAll.textContent = anyOpen ? 'Expand all' : 'Collapse all';
+    });
+  }
+
+  // Seed active filters from preset state so the summary reflects what's
+  // shown as "active" in the sidebar on first render.
+  trigrepPanel.querySelectorAll('.filter-item.active').forEach(item => {
+    const key = item.querySelector('.filter-item-name').textContent.trim();
+    const count = parseInt(item.dataset.count, 10) || 0;
+    activeFilters.set(key, count);
+  });
+
+  function recomputeSummary() {
+    if (activeFilters.size === 0) {
+      if (summaryCount) summaryCount.textContent = baseMatches.toLocaleString();
+      if (summaryFiles) summaryFiles.textContent = baseFiles.toLocaleString();
+    } else {
+      const total = [...activeFilters.values()].reduce((a, b) => a + b, 0);
+      if (summaryCount) summaryCount.textContent = total.toLocaleString();
+      if (summaryFiles) summaryFiles.textContent = Math.max(1, Math.ceil(total / 5.5)).toLocaleString();
+    }
+  }
+
+  trigrepPanel.querySelectorAll('.filter-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const key = item.querySelector('.filter-item-name').textContent.trim();
+      const count = parseInt(item.dataset.count, 10) || 0;
+      const wasActive = activeFilters.has(key);
+      if (wasActive) activeFilters.delete(key);
+      else activeFilters.set(key, count);
+      item.classList.toggle('active', !wasActive);
+      recomputeSummary();
+    });
+  });
+
+  // Chip removal
+  trigrepPanel.querySelectorAll('.trigrep-chip-x').forEach(btn => {
+    btn.addEventListener('click', (e) => { e.stopPropagation(); btn.closest('.trigrep-chip').remove(); });
+  });
+
+  // Topic search
+  const topicSearch = trigrepPanel.querySelector('.topic-search');
+  if (topicSearch) {
+    topicSearch.addEventListener('input', () => {
+      const q = topicSearch.value.toLowerCase().trim();
+      const group = topicSearch.closest('.filter-group-body');
+      group.querySelectorAll('.filter-item').forEach(item => {
+        const name = item.querySelector('.filter-item-name').textContent.toLowerCase();
+        item.style.display = (q === '' || name.includes(q)) ? '' : 'none';
+      });
+    });
+  }
+
+  // Repo search
+  const repoSearch = trigrepPanel.querySelector('.repo-search');
+  if (repoSearch) {
+    repoSearch.addEventListener('input', () => {
+      const q = repoSearch.value.toLowerCase().trim();
+      const list = repoSearch.closest('.filter-group').querySelector('.repo-list-body');
+      list.querySelectorAll('.filter-item').forEach(item => {
+        const name = item.querySelector('.filter-item-name').textContent.toLowerCase();
+        item.style.display = (q === '' || name.includes(q)) ? '' : 'none';
+      });
+    });
+  }
+
+  // Chevron collapse
+  trigrepPanel.querySelectorAll('.chevron-btn').forEach(btn => {
+    btn.addEventListener('click', () => btn.closest('.result-card').classList.toggle('collapsed'));
+  });
+
+  // File drill-down
+  trigrepPanel.querySelectorAll('.result-card .result-card-file').forEach(el => {
+    const card = el.closest('.result-card');
+    const id = card?.dataset.cardId;
+    if (id && FILE_DETAILS[id]) {
+      el.addEventListener('click', () => showFileDetail(FILE_DETAILS[id]));
+    } else {
+      el.classList.remove('is-clickable');
+    }
+  });
+
+  // Show more
+  const showMoreBtn = trigrepPanel.querySelector('#show-more-btn');
+  if (showMoreBtn) {
+    showMoreBtn.addEventListener('click', () => {
+      if (!remainingCards.length) {
+        showMoreBtn.style.display = 'none';
+        return;
+      }
+      const list = trigrepPanel.querySelector('#result-cards-list');
+      const toAdd = remainingCards.splice(0, 2);
+      const html = toAdd.map(buildResultCardHTML).join('');
+      list.insertAdjacentHTML('beforeend', html);
+      toAdd.forEach(card => {
+        const el = list.querySelector(`.result-card[data-card-id="${card.id}"]`);
+        if (!el) return;
+        el.querySelector('.chevron-btn').addEventListener('click', () => el.classList.toggle('collapsed'));
+        const fileEl = el.querySelector('.result-card-file');
+        if (FILE_DETAILS[card.id]) {
+          fileEl.addEventListener('click', () => showFileDetail(FILE_DETAILS[card.id]));
+        } else {
+          fileEl.classList.remove('is-clickable');
+        }
+      });
+      if (!remainingCards.length) showMoreBtn.style.display = 'none';
+    });
+  }
+}
+
+function showFileDetail(file) {
+  const body = trigrepPanel.querySelector('.trigrep-body');
+  if (!body) return;
+  let detail = body.querySelector('.trigrep-detail');
+  if (!detail) {
+    detail = document.createElement('div');
+    detail.className = 'trigrep-detail';
+    body.appendChild(detail);
+  }
+  detail.innerHTML = buildFileDetailHTML(file);
+  detail.querySelector('.detail-back').addEventListener('click', showResultsList);
+
+  body.style.opacity = '0';
+  setTimeout(() => {
+    body.classList.add('detail-mode');
+    body.style.opacity = '1';
+  }, 100);
+}
+
+function showResultsList() {
+  const body = trigrepPanel.querySelector('.trigrep-body');
+  if (!body) return;
+  body.style.opacity = '0';
+  setTimeout(() => {
+    body.classList.remove('detail-mode');
+    body.style.opacity = '1';
+  }, 100);
+}
+
+// Fillers used to expand sparse FILE_DETAILS data into a continuous file view —
+// the prototype only stores match-bearing lines, so gaps get plausible Java filler.
+const DETAIL_FILLERS = [
+  '',
+  '    <span class="cmt">// ...</span>',
+  '    <span class="kw">private final</span> Repository repo;',
+  '    <span class="kw">private final</span> Logger log = LoggerFactory.getLogger(getClass());',
+  '',
+  '    <span class="kw">public</span> Response handle(Request req) {',
+  '        <span class="kw">return</span> repo.find(req.getId());',
+  '    }',
+  '',
+  '    <span class="cmt">// validate request</span>',
+  '        <span class="kw">if</span> (req == <span class="kw">null</span>) <span class="kw">throw new</span> IllegalArgumentException();',
+  '',
+];
+
+function expandFileLines(lines) {
+  if (!lines.length) return lines;
+  const out = [];
+  let prev = 0;
+  for (const line of lines) {
+    while (prev + 1 < line.n) {
+      prev++;
+      out.push({ n: prev, code: DETAIL_FILLERS[prev % DETAIL_FILLERS.length] });
+    }
+    out.push(line);
+    prev = line.n;
+  }
+  return out;
+}
+
+function buildFileDetailHTML(file) {
+  const linesHtml = expandFileLines(file.lines).map(l => {
+    const code = (l.code || ' ').replace(/<m>/g, '<span class="match">').replace(/<\/m>/g, '</span>');
+    return `<div class="code-line ${l.hasMatch ? 'has-match' : ''}"><span class="code-ln">${l.n}</span><span class="code-text">${code}</span></div>`;
+  }).join('');
+  return `
+    <div class="detail-breadcrumb">
+      <button class="detail-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Search results
+      </button>
+      <span class="detail-crumb-sep">/</span>
+      <span class="detail-crumb-current">${file.name}</span>
+    </div>
+    <div class="detail-search-row">
+      <label class="detail-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search in file…" spellcheck="false">
+        <span class="kbd-hint">⌘F</span>
+      </label>
+    </div>
+    <div class="detail-header">
+      <div class="detail-header-row">
+        <div class="detail-file-path">${file.path}</div>
+        <span class="result-card-meta">${file.matchCount} match${file.matchCount === 1 ? '' : 'es'}</span>
+      </div>
+      <div class="detail-module">${file.module}</div>
+    </div>
+    <div class="detail-code">${linesHtml}</div>
+  `;
+}
+
+// ===================================================================
+// =====  TRIGREP QUERY BAR — LEAN v1  ===============================
+// Recognition-over-recall: typeahead surfaces the vocabulary on focus
+// and valid values after `key:`. Filter pills make committed filters
+// editable. Silent reformulation snaps near-miss queries onto the
+// scripted happy-path fixtures. No prose parser, no concept index,
+// no catalog modal, no telemetry — those layers are removed.
+// ===================================================================
+// === DISABLED in v1 (kept as a note for the team): ====================
+//   tgParseNL / TG_CONCEPTS / TG_TRIGGERS / TG_STOPWORDS / tgStem
+//   tgRenderSuggestions / tgRenderExplain / tgExplainToken
+//   tgRenderCatalog / tgOpenCatalog / TG_CATALOG / tgCatalogSearch
+//   tgInsertTemplateAt / tgApplySyntaxMode (patternType: now parse-only)
+//   window.__trigrepMisses (telemetry)
+// =====================================================================
+
+// === Token model (Appendix A canonical filters) ======================
+const TG_FILTERS = {
+  'file':        { aliases: ['f','path'],    desc: 'Filter by file path or glob' },
+  'repo':        { aliases: ['r'],           desc: 'Filter by repository' },
+  'branch':      { aliases: ['b'],           desc: 'Filter by branch glob' },
+  'rev':         { aliases: ['revision'],    desc: 'Filter by revision (tag or branch)' },
+  'lang':        { aliases: ['language','l'],desc: 'Filter by programming language' },
+  'case':        { aliases: [],              desc: 'Match case-sensitively' },
+  'type':        { aliases: [],              desc: 'Restrict to file / path / symbol matches' },
+  'sym':         { aliases: ['symbol'],      desc: 'Match a fully-qualified name substring' },
+  'select':      { aliases: [],              desc: 'Restrict to a symbol kind (class / method / field…)' },
+  'count':       { aliases: [],              desc: 'Cap result count' },
+  'content':     { aliases: [],              desc: 'Match quoted literal content' },
+  'patternType': { aliases: [],              desc: 'Pattern engine — parsed for compat, set via the dialect dropdown' },
+  'visibility':  { aliases: [],              desc: 'Filter by access modifier' },
+  'static':      { aliases: [],              desc: 'Filter on static modifier' },
+  'final':       { aliases: [],              desc: 'Filter on final modifier' },
+  'abstract':    { aliases: [],              desc: 'Filter on abstract modifier' },
+  'extends':     { aliases: [],              desc: 'Find subclasses of a base type' },
+  'implements':  { aliases: [],              desc: 'Find classes implementing an interface' },
+  'returns':     { aliases: [],              desc: 'Find methods returning a type' },
+  'throws':      { aliases: [],              desc: 'Find code that throws an exception' },
+};
+const TG_ALIAS_TO_CANON = {};
+for (const [c, def] of Object.entries(TG_FILTERS)) {
+  TG_ALIAS_TO_CANON[c] = c;
+  def.aliases.forEach(a => TG_ALIAS_TO_CANON[a] = c);
+}
+
+// Order shown when the bar is focused empty — discovery surface.
+const TG_FILTER_ORDER = [
+  'lang','repo','file','visibility','type','select',
+  'implements','extends','returns','throws','sym','branch',
+  'static','final','abstract',
+];
+
+// === Curated vocabulary — SWAP POINT: replace with live index suggestions
+// Only values backed by the mock corpus / happy-path fixtures. Never
+// suggest something that would return zero results in this prototype.
+const TG_VALUES = {
+  'lang':       ['java','kotlin','typescript','python','go','csharp','scala','rust'],
+  'visibility': ['public','private','protected','package-private'],
+  'type':       ['file','path','symbol'],
+  'select':     ['symbol.class','symbol.interface','symbol.enum','symbol.method','symbol.constructor','symbol.field'],
+  'case':       ['yes','no'],
+  'static':     ['yes','no'],
+  'final':      ['yes','no'],
+  'abstract':   ['yes','no'],
+  'patternType':['literal','regexp','structural','keyword'],
+  'extends':    [
+    { value: 'AbstractController',  desc: 'common Spring base' },
+    { value: 'BaseService',          desc: 'common service base' },
+    { value: 'AbstractService',      desc: 'common service base' },
+    { value: 'HttpServlet',          desc: 'servlet base class' },
+    { value: 'OncePerRequestFilter', desc: 'Spring filter base' },
+  ],
+  'implements': [
+    { value: 'Repository',                 desc: 'Spring Data marker' },
+    { value: 'AuthenticationEntryPoint',   desc: 'Spring Security entry point' },
+    { value: 'Serializable',               desc: 'JDK serialization' },
+    { value: 'CrudRepository',             desc: 'Spring Data CRUD' },
+    { value: 'JpaRepository',              desc: 'Spring Data JPA' },
+    { value: 'UserDetailsService',         desc: 'Spring Security users' },
+  ],
+  'returns':    ['List','Optional','ResponseEntity','Mono','Flux','CompletableFuture','String','void'],
+  'throws':     [
+    { value: 'IOException',          desc: 'java.io' },
+    { value: 'SQLException',         desc: 'java.sql' },
+    { value: 'InterruptedException', desc: 'java.lang' },
+    { value: 'RuntimeException',     desc: 'java.lang' },
+    { value: 'IllegalArgumentException', desc: 'java.lang' },
+    { value: 'IllegalStateException',    desc: 'java.lang' },
+  ],
+  'file': [
+    { value: 'src/**/*.java',                 desc: 'all Java sources' },
+    { value: '**/*Test.java',                 desc: 'JUnit tests' },
+    { value: '**/test/**',                    desc: 'test directories' },
+    { value: 'OrderController.java',          desc: 'payments-api' },
+    { value: 'AdminController.java',          desc: 'customer-portal' },
+    { value: 'PaymentProcessor.java',         desc: 'payments-api' },
+    { value: 'NotificationService.java',      desc: 'notifications' },
+    { value: 'UserService.java',              desc: 'customer-portal' },
+    { value: 'InvoiceClient.java',            desc: 'billing-service' },
+  ],
+  'repo': [
+    { value: 'payments-api',      desc: '12 matches' },
+    { value: 'customer-portal',   desc: '11 matches' },
+    { value: 'user-service',      desc: '8 matches' },
+    { value: 'admin-service',     desc: '6 matches' },
+    { value: 'orders-service',    desc: '14 matches' },
+    { value: 'billing-service',   desc: '9 matches' },
+    { value: 'inventory-service', desc: '7 matches' },
+    { value: 'notifications',     desc: '5 matches' },
+    { value: 'common-logging',    desc: '3 matches' },
+  ],
+  'branch':  ['main','develop'],
+  'rev':     ['main','v1.0'],
+  'sym':     [
+    { value: 'org.springframework.security', desc: 'spring-security' },
+    { value: 'org.apache.logging.log4j',     desc: 'log4j-api' },
+  ],
+};
+
+// === Levenshtein (capped) — used for autocomplete fuzzy matching ======
+function tgLev(a, b) {
+  if (a === b) return 0;
+  const m = a.length, n = b.length;
+  if (!m) return n; if (!n) return m;
+  if (Math.abs(m - n) > 3) return 99;
+  let prev = new Array(n + 1), curr = new Array(n + 1);
+  for (let j = 0; j <= n; j++) prev[j] = j;
+  for (let i = 1; i <= m; i++) {
+    curr[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i-1] === b[j-1] ? 0 : 1;
+      curr[j] = Math.min(curr[j-1] + 1, prev[j] + 1, prev[j-1] + cost);
+    }
+    [prev, curr] = [curr, prev];
+  }
+  return prev[n];
+}
+
+// === Lexer + parser — raw query only, no prose pipeline =============
+function tgLexRaw(s) {
+  const out = [];
+  const re = /(\()|(\))|(\/(?:\\.|[^/\\])+\/)|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|(struct(?:ural)?:'(?:\\.|[^'\\])*')|([A-Za-z_][\w-]*:[^\s()]+)|(-?[^\s()]+)/g;
+  let m;
+  while ((m = re.exec(s))) {
+    const tok = m[0];
+    if (!tok.trim()) continue;
+    out.push(tok);
+  }
+  return out;
+}
+
+function tgValidateValue(filterKey, value) {
+  const list = TG_VALUES[filterKey] || [];
+  if (!value) return 'invalid';
+  const pool = list.map(v => (typeof v === 'string' ? v : v.value).toLowerCase());
+  return pool.includes(value.toLowerCase()) ? 'valid' : 'unverified';
+}
+
+function tgParseRaw(s) {
+  const atoms = tgLexRaw(s || '');
+  const tokens = [];
+  for (const a of atoms) {
+    const low = a.toLowerCase();
+    if (a === '(' || a === ')') { tokens.push({ kind:'op', value:a }); continue; }
+    if (low === 'or' || low === 'and') { tokens.push({ kind:'op', value: low }); continue; }
+    if (a.startsWith('-') && a.length > 1) {
+      const rest = a.slice(1);
+      const rc = rest.indexOf(':');
+      if (rc > 0 && /^[A-Za-z_][\w-]*$/.test(rest.slice(0, rc))) {
+        tokens.push({ kind:'op', value:'not' });
+        const rawKey = rest.slice(0, rc);
+        const value = rest.slice(rc + 1);
+        const canon = TG_ALIAS_TO_CANON[rawKey.toLowerCase()] || rawKey;
+        const status = TG_FILTERS[canon] ? tgValidateValue(canon, value) : 'unverified';
+        tokens.push({ kind:'filter', key:canon, value, raw:rest, status });
+        continue;
+      }
+      if (!rest.includes(':')) {
+        tokens.push({ kind:'op', value:'not' });
+        tokens.push({ kind:'term', value: rest, mode:'literal' });
+        continue;
+      }
+    }
+    if (/^\/.+\/$/.test(a)) { tokens.push({ kind:'term', value:a, mode:'regex' }); continue; }
+    if (/^struct(ural)?:/.test(a)) { tokens.push({ kind:'term', value:a, mode:'structural' }); continue; }
+    const colon = a.indexOf(':');
+    if (colon > 0 && /^[A-Za-z_][\w-]*$/.test(a.slice(0, colon))) {
+      const rawKey = a.slice(0, colon);
+      const value = a.slice(colon + 1);
+      const canon = TG_ALIAS_TO_CANON[rawKey.toLowerCase()] || rawKey;
+      const status = TG_FILTERS[canon] ? tgValidateValue(canon, value) : 'unverified';
+      tokens.push({ kind:'filter', key:canon, value, raw:a, status });
+      continue;
+    }
+    tokens.push({ kind:'term', value:a, mode:'literal' });
+  }
+  return tokens;
+}
+
+function tgSerialize(tokens) {
+  const parts = [];
+  for (const t of tokens) {
+    if (t.kind === 'op') {
+      if (t.value === 'not') parts.push('-NEG');
+      else parts.push(t.value);
+    } else if (t.kind === 'filter') {
+      parts.push(`${t.key}:${t.value}`);
+    } else {
+      parts.push(t.value);
+    }
+  }
+  return parts.join(' ').replace(/-NEG\s+/g, '-').replace(/\s+/g, ' ').trim();
+}
+
+// === State + glue =====================================================
+const TGState = { tokens: [], ac: { open:false, items:[], active:0, mode:null, ctx:null }, lastSubmitted: '' };
+
+function tgEscape(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+// === Canonicalizer ====================================================
+function tgCanonical(input) {
+  const tokens = typeof input === 'string' ? tgParseRaw(input) : input;
+  const filters = [], terms = [], ops = [];
+  for (const t of tokens) {
+    if (t.kind === 'filter') filters.push(`${t.key}:${t.value}`);
+    else if (t.kind === 'term') terms.push(t.value);
+    else if (t.kind === 'op' && (t.value === 'or' || t.value === 'not')) ops.push(t.value);
+  }
+  filters.sort(); terms.sort(); ops.sort();
+  return [...terms, ...filters, ...ops].join(' ');
+}
+
+// === Happy-path queries (Appendix A) + signature & phrase routing ======
+const TG_HAPPY_QUERIES = {
+  authOpt1: { flow: 'a', query: '(@PreAuthorize or @Secured or @RolesAllowed) visibility:public lang:java' },
+  authOpt2: { flow: 'a', query: 'implements:AuthenticationEntryPoint' },
+  authOpt3: { flow: 'a', query: 'visibility:public' },
+  logOpt1:  { flow: 'b', query: '/log\\.(error|warn)\\(/' },
+  logOpt2:  { flow: 'b', query: 'Logger type:symbol' },
+  logOpt3:  { flow: 'b', query: 'Logger type:symbol -file:**/test/**' },
+  restOpt1: { flow: 'c', query: '@RestController lang:java' },
+  restOpt2: { flow: 'c', query: 'type:symbol RestTemplate or type:symbol WebClient or type:symbol RestClient lang:java' },
+};
+
+// Precomputed canonical bags for "did the user assemble a happy path?"
+const TG_HAPPY_BAGS = {};
+for (const [k, h] of Object.entries(TG_HAPPY_QUERIES)) TG_HAPPY_BAGS[k] = tgCanonical(h.query);
+
+function tgRouteSignature(tokens) {
+  const literals = tokens.filter(t => t.kind === 'term' && t.mode === 'literal').map(t => t.value);
+  const regexes  = tokens.filter(t => t.kind === 'term' && t.mode === 'regex').map(t => t.value);
+  const filters  = tokens.filter(t => t.kind === 'filter');
+  const hasFilter = (k, v) => filters.some(f => f.key === k && (v == null || f.value.toLowerCase() === v.toLowerCase()));
+  const hasNegFile = (glob) => {
+    for (let i = 0; i < tokens.length - 1; i++) {
+      if (tokens[i].kind === 'op' && tokens[i].value === 'not'
+          && tokens[i+1].kind === 'filter' && tokens[i+1].key === 'file' && tokens[i+1].value === glob) return true;
+    }
+    return false;
+  };
+  if (literals.some(v => /^@(PreAuthorize|Secured|RolesAllowed)$/.test(v))
+      && (hasFilter('visibility','public') || hasFilter('lang','java'))) return TG_HAPPY_QUERIES.authOpt1;
+  if (hasFilter('implements','AuthenticationEntryPoint')) return TG_HAPPY_QUERIES.authOpt2;
+  if (filters.length === 1 && hasFilter('visibility','public') && literals.length === 0 && regexes.length === 0) return TG_HAPPY_QUERIES.authOpt3;
+  if (regexes.some(r => /log\\?\.\(\s*(error\s*\|\s*warn|warn\s*\|\s*error)\s*\)\\?\(/.test(r))) return TG_HAPPY_QUERIES.logOpt1;
+  const isLoggerByType = literals.includes('Logger') && hasFilter('type','symbol');
+  if (isLoggerByType && hasNegFile('**/test/**')) return TG_HAPPY_QUERIES.logOpt3;
+  if (isLoggerByType) return TG_HAPPY_QUERIES.logOpt2;
+  if (hasFilter('type','symbol') && literals.some(v => /^(RestTemplate|WebClient|RestClient)$/.test(v))) return TG_HAPPY_QUERIES.restOpt2;
+  if (literals.includes('@RestController')) return TG_HAPPY_QUERIES.restOpt1;
+  return null;
+}
+
+// Small fixed phrase bridge — not a parser. A handful of broad questions
+// that mature search products bridge to a known query (Sourcegraph
+// Smart Search–style). No stemming, no concept index, no fuzzy English.
+const TG_PHRASE_ROUTES = [
+  { rx: /\b(production code only|exclude tests?|no tests?|skip tests?)\b/i,                    key: 'logOpt3' },
+  { rx: /\b(logger declarations?|what loggers do we use|logger types?|loggers?\b)\b/i,         key: 'logOpt2' },
+  { rx: /\b(error logging|where do we log errors?|log errors?|warnings?|error\/warn)\b/i,      key: 'logOpt1' },
+  { rx: /\b(public[- ]?facing|public only|just public|exposed services?)\b/i,                  key: 'authOpt3' },
+  { rx: /\b(auth(entication)? entry points?|where authentication starts|entry points?)\b/i,    key: 'authOpt2' },
+  { rx: /\b(@PreAuthorize|@Secured|@RolesAllowed|public authorization|authorization (rules?|annotations?))\b/i, key: 'authOpt1' },
+  { rx: /\b(outbound|client calls?|http clients?|RestTemplate|WebClient|RestClient)\b/i,       key: 'restOpt2' },
+  { rx: /\b(server[- ]?side controllers?|rest controllers?|@RestController|REST APIs?)\b/i,    key: 'restOpt1' },
+];
+function tgRoutePhrase(text) {
+  for (const r of TG_PHRASE_ROUTES) if (r.rx.test(text)) return TG_HAPPY_QUERIES[r.key];
+  return null;
+}
+
+const TG_THEME_WORDS = {
+  auth:    /\b(authentication|auth|login|security|authorize|authorization|@PreAuthorize|@Secured|@RolesAllowed|entry points?|public[- ]?facing)\b/i,
+  logging: /\b(logging|log|logger|loggers|slf4j|log4j|error logging|warnings?|audit log)\b/i,
+  rest:    /\b(rest|api|apis|endpoints?|controllers?|@RestController|outbound|client|RestTemplate|WebClient|RestClient)\b/i,
+};
+function tgDetectTheme(text) {
+  for (const [theme, rx] of Object.entries(TG_THEME_WORDS)) if (rx.test(text)) return theme;
+  return null;
+}
+const TG_THEMES = {
+  auth:    { title: 'Authentication', question: 'How is authentication handled?', options: [
+    { label: 'Public authorization rules',  desc: '@PreAuthorize / @Secured / @RolesAllowed on public methods', key: 'authOpt1' },
+    { label: 'Auth entry points',           desc: 'Classes that implement AuthenticationEntryPoint',           key: 'authOpt2' },
+    { label: 'Just public-facing services', desc: 'Anything tagged visibility:public',                          key: 'authOpt3' },
+  ]},
+  logging: { title: 'Logging', question: 'How is logging done across our services?', options: [
+    { label: 'Error logging',                       desc: 'Regex over log.error / log.warn calls', key: 'logOpt1' },
+    { label: 'Logger declarations',                 desc: 'All Logger symbol declarations',         key: 'logOpt2' },
+    { label: 'Production code only (exclude tests)', desc: 'Loggers, excluding **/test/** paths',   key: 'logOpt3' },
+  ]},
+  rest:    { title: 'REST APIs', question: 'How are our REST APIs structured?', options: [
+    { label: 'REST controllers (server side)', desc: '@RestController in Java',                  key: 'restOpt1' },
+    { label: 'Outbound REST calls (client)',   desc: 'RestTemplate / WebClient / RestClient',    key: 'restOpt2' },
+  ]},
+};
+function tgShowScope(themeId) {
+  const theme = TG_THEMES[themeId];
+  const results = document.getElementById('trigrep-results') || trigrepPanel.querySelector('#trigrep-results');
+  if (!theme || !results) { showSearchFallback(); return; }
+  results.innerHTML = `
+    <div class="trigrep-empty tg-scope">
+      <div class="trigrep-empty-title">Looking for ${tgEscape(theme.title)}?</div>
+      <div class="trigrep-empty-desc">${tgEscape(theme.question)} Pick a way to scope it down:</div>
+      <div class="tg-scope-list">
+        ${theme.options.map((o, i) => {
+          const q = TG_HAPPY_QUERIES[o.key].query;
+          return `<button class="tg-scope-option" data-i="${i}" type="button">
+            <span class="tg-scope-label">${tgEscape(o.label)}</span>
+            <span class="tg-scope-desc">${tgEscape(o.desc)}</span>
+            <code>${tgEscape(q)}</code>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+  results.querySelectorAll('.tg-scope-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const opt = theme.options[parseInt(btn.dataset.i, 10)];
+      const h = TG_HAPPY_QUERIES[opt.key];
+      tgRunCanned(h.query, h.flow);
+    });
+  });
+}
+function tgRunCanned(query, flowId) {
+  const flow = FLOWS[flowId];
+  if (!flow) return;
+  currentFlow = flowId;
+  const input = document.getElementById('trigrep-query-input');
+  if (input) input.value = query;
+  setSyntaxMode('sourcegraph');
+  renderTrigrepResults(flow);
+  tgSyncFromInput();
+}
+
+// === Filter pills + free-text token chips =============================
+// A `NOT` op followed by a `filter` token renders as ONE pill with an
+// "is not" badge. Free-text terms / regex / structural units render as
+// their own neutral chips alongside the pills.
+function tgRenderPills() {
+  const strip = document.getElementById('tg-chip-strip');
+  if (!strip) return;
+  const html = [];
+  const tokens = TGState.tokens;
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (t.kind === 'op' && t.value === 'not' && tokens[i+1] && tokens[i+1].kind === 'filter') {
+      const f = tokens[i+1];
+      const cls = ['tg-pill','is-not', f.status === 'unverified' ? 'is-unverified' : ''].filter(Boolean).join(' ');
+      html.push(`<span class="${cls}" data-idx="${i+1}" data-pair="${i}">
+        <span class="tg-pill-key">${tgEscape(f.key)}</span>
+        <span class="tg-pill-op">is not</span>
+        <span class="tg-pill-val">${tgEscape(f.value)}</span>
+        <button class="tg-pill-x" data-x-pair="${i},${i+1}" title="Remove" aria-label="Remove ${tgEscape(f.key)}: ${tgEscape(f.value)}">×</button>
+      </span>`);
+      i++;
+      continue;
+    }
+    if (t.kind === 'filter') {
+      const cls = ['tg-pill', t.status === 'unverified' ? 'is-unverified' : ''].filter(Boolean).join(' ');
+      html.push(`<span class="${cls}" data-idx="${i}">
+        <span class="tg-pill-key">${tgEscape(t.key)}:</span>
+        <span class="tg-pill-val">${tgEscape(t.value)}</span>
+        <button class="tg-pill-x" data-x="${i}" title="Remove" aria-label="Remove ${tgEscape(t.key)}: ${tgEscape(t.value)}">×</button>
+      </span>`);
+      continue;
+    }
+    if (t.kind === 'op') {
+      html.push(`<span class="tg-op-chip" data-idx="${i}">${tgEscape(t.value)}</span>`);
+      continue;
+    }
+    const modeCls = t.mode === 'regex' ? ' is-regex' : (t.mode === 'structural' ? ' is-structural' : '');
+    html.push(`<span class="tg-tok${modeCls}" data-idx="${i}">${tgEscape(t.value)}<button class="tg-tok-x" data-x="${i}" title="Remove" aria-label="Remove ${tgEscape(t.value)}">×</button></span>`);
+  }
+  strip.innerHTML = html.join('');
+  strip.querySelectorAll('[data-x]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.x, 10);
+      TGState.tokens.splice(idx, 1);
+      tgWriteBack();
+    });
+  });
+  strip.querySelectorAll('[data-x-pair]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const [a, b] = btn.dataset.xPair.split(',').map(n => parseInt(n, 10));
+      TGState.tokens.splice(Math.min(a,b), 2);
+      tgWriteBack();
+    });
+  });
+  // Click on a pill (not the ×) → re-edit its value via the autocomplete.
+  strip.querySelectorAll('.tg-pill').forEach(p => {
+    p.addEventListener('click', e => {
+      if (e.target.closest('.tg-pill-x')) return;
+      const idx = parseInt(p.dataset.idx, 10);
+      const t = TGState.tokens[idx];
+      if (!t || t.kind !== 'filter') return;
+      const input = document.getElementById('trigrep-query-input');
+      if (!input) return;
+      // Strip the pill from tokens, then plant `key:` in the input so the
+      // value dropdown opens and the user picks again.
+      const pairOp = p.dataset.pair != null ? parseInt(p.dataset.pair, 10) : null;
+      if (pairOp != null) TGState.tokens.splice(Math.min(pairOp, idx), 2);
+      else TGState.tokens.splice(idx, 1);
+      const baseRaw = tgSerialize(TGState.tokens);
+      input.value = (baseRaw ? baseRaw + ' ' : '') + `${t.key}:`;
+      const newPos = input.value.length;
+      input.focus();
+      input.setSelectionRange(newPos, newPos);
+      tgSyncFromInput();
+      setTimeout(tgRenderAutocomplete, 0);
+    });
+  });
+}
+
+function tgWriteBack() {
+  const input = document.getElementById('trigrep-query-input');
+  if (input) input.value = tgSerialize(TGState.tokens);
+  tgRenderPills();
+}
+
+// === Recognition-over-recall autocomplete =============================
+// On focus / empty caret token → list of filters with descriptions.
+// After `key:` → values for that filter (curated, with scope hints).
+function tgCaretContext(input) {
+  const v = input.value;
+  const pos = input.selectionStart || v.length;
+  let start = pos;
+  while (start > 0 && !/\s/.test(v[start - 1])) start--;
+  const tokenSoFar = v.slice(start, pos);
+  const colon = tokenSoFar.indexOf(':');
+  if (colon < 0) {
+    return { mode: 'filter', prefix: tokenSoFar.toLowerCase(), start, pos };
+  }
+  const key = tokenSoFar.slice(0, colon);
+  const prefix = tokenSoFar.slice(colon + 1);
+  const canon = TG_ALIAS_TO_CANON[key.toLowerCase()];
+  if (!canon) return null;
+  return { mode: 'value', canon, prefix, start, pos };
+}
+
+function tgValueLookup(filterKey, prefix='') {
+  const list = (TG_VALUES[filterKey] || []).map(v => typeof v === 'string' ? { value: v } : v);
+  const p = (prefix || '').toLowerCase();
+  if (!p) return list.slice(0, 12);
+  const starts = list.filter(v => v.value.toLowerCase().startsWith(p));
+  const contains = list.filter(v => !v.value.toLowerCase().startsWith(p) && v.value.toLowerCase().includes(p));
+  const fuzzy = list.filter(v => !v.value.toLowerCase().includes(p) && tgLev(v.value.toLowerCase(), p) <= 2);
+  return [...starts, ...contains, ...fuzzy].slice(0, 12);
+}
+
+function tgFilterLookup(prefix='') {
+  const p = (prefix || '').toLowerCase();
+  const all = TG_FILTER_ORDER.map(k => ({ key: k, desc: TG_FILTERS[k].desc }));
+  if (!p) return all;
+  const starts = all.filter(f => f.key.startsWith(p));
+  const contains = all.filter(f => !f.key.startsWith(p) && f.key.includes(p));
+  const aliasHits = all.filter(f => !f.key.includes(p) && TG_FILTERS[f.key].aliases.some(a => a.startsWith(p)));
+  return [...starts, ...contains, ...aliasHits];
+}
+
+function tgRenderAutocomplete() {
+  const ac = document.getElementById('tg-autocomplete');
+  const input = document.getElementById('trigrep-query-input');
+  if (!ac || !input) return;
+  if (document.activeElement !== input) { ac.hidden = true; TGState.ac.open = false; return; }
+  const ctx = tgCaretContext(input);
+  if (!ctx) { ac.hidden = true; TGState.ac.open = false; return; }
+  let items, sectionTitle;
+  if (ctx.mode === 'filter') {
+    items = tgFilterLookup(ctx.prefix).map(f => ({ kind:'filter', name: `${f.key}:`, desc: f.desc, insert: `${f.key}:` }));
+    sectionTitle = ctx.prefix ? `Filters matching "${ctx.prefix}"` : 'Available filters';
+  } else {
+    const raw = tgValueLookup(ctx.canon, ctx.prefix);
+    items = raw.map(v => ({ kind:'value', name: v.value, desc: v.desc || '', insert: v.value }));
+    sectionTitle = `Values for ${ctx.canon}:`;
+  }
+  if (!items.length) { ac.hidden = true; TGState.ac.open = false; return; }
+  TGState.ac = { open: true, items, active: 0, mode: ctx.mode, ctx };
+  const renderName = (name) => {
+    if (ctx.mode === 'filter') {
+      const m = ctx.prefix && name.toLowerCase().startsWith(ctx.prefix) ? ctx.prefix.length : 0;
+      return m ? `<b>${tgEscape(name.slice(0, m))}</b>${tgEscape(name.slice(m))}` : tgEscape(name);
+    }
+    const m = ctx.prefix && name.toLowerCase().startsWith(ctx.prefix.toLowerCase()) ? ctx.prefix.length : 0;
+    return m ? `<b>${tgEscape(name.slice(0, m))}</b>${tgEscape(name.slice(m))}` : tgEscape(name);
+  };
+  ac.innerHTML = `<div class="tg-ac-section">${tgEscape(sectionTitle)}</div>` +
+    items.map((it, i) => `
+      <div class="tg-ac-item${i === 0 ? ' is-active' : ''}" data-i="${i}">
+        <span class="tg-ac-name">${renderName(it.name)}</span>
+        <span class="tg-ac-desc">${tgEscape(it.desc || '')}</span>
+      </div>`).join('');
+  const box = document.getElementById('trigrep-search-box');
+  if (box) {
+    ac.style.left = (box.offsetLeft + 120) + 'px';
+    ac.style.top = (box.offsetTop + box.offsetHeight + 4) + 'px';
+  }
+  ac.hidden = false;
+  ac.querySelectorAll('.tg-ac-item').forEach(el => {
+    el.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      tgAcCommit(parseInt(el.dataset.i, 10));
+    });
+  });
+}
+
+function tgAcCommit(i) {
+  const ac = document.getElementById('tg-autocomplete');
+  const input = document.getElementById('trigrep-query-input');
+  if (!ac || !input || !TGState.ac.open) return;
+  const item = TGState.ac.items[i];
+  const ctx = TGState.ac.ctx;
+  const before = input.value.slice(0, ctx.start);
+  const after = input.value.slice(ctx.pos);
+  let insert;
+  if (ctx.mode === 'filter') {
+    insert = item.insert;
+  } else {
+    insert = `${ctx.canon}:${item.insert}`;
+  }
+  input.value = before + insert + after;
+  const newPos = (before + insert).length;
+  input.setSelectionRange(newPos, newPos);
+  if (ctx.mode === 'value') {
+    ac.hidden = true; TGState.ac.open = false;
+  }
+  tgSyncFromInput();
+  // After committing a filter key, re-open to show its value list.
+  if (ctx.mode === 'filter') setTimeout(tgRenderAutocomplete, 0);
+}
+function tgAcMove(delta) {
+  const ac = document.getElementById('tg-autocomplete');
+  if (!ac) return;
+  const n = TGState.ac.items.length;
+  if (!n) return;
+  TGState.ac.active = ((TGState.ac.active + delta) % n + n) % n;
+  ac.querySelectorAll('.tg-ac-item').forEach((el, i) => el.classList.toggle('is-active', i === TGState.ac.active));
+  // Scroll the active item into view (keyboard nav with long lists).
+  const active = ac.querySelector('.tg-ac-item.is-active');
+  if (active) active.scrollIntoView({ block: 'nearest' });
+}
+
+// === Silent reformulation (Sourcegraph Smart Search–style) ============
+// Try deterministic rewrites in order; first one that lands on a happy
+// path wins. Capped to ~6 cheap rules. No prose parsing.
+function tgReformulate(text) {
+  const tokens = tgParseRaw(text);
+  // R1 — exact canonical match against a happy-path bag.
+  const bag = tgCanonical(tokens);
+  for (const [k, b] of Object.entries(TG_HAPPY_BAGS)) {
+    if (bag === b) return { ...TG_HAPPY_QUERIES[k], source: 'exact', original: text };
+  }
+  // R2 — token shape matches a happy-path signature.
+  const sig = tgRouteSignature(tokens);
+  if (sig) return { ...sig, source: 'signature', original: text };
+  // R3 — drop a trailing unverified/unknown filter that's too narrow.
+  if (tokens.length >= 2) {
+    const last = tokens[tokens.length - 1];
+    if (last.kind === 'filter' && last.status !== 'valid') {
+      const stripped = tokens.slice(0, -1);
+      const sig2 = tgRouteSignature(stripped);
+      if (sig2) return { ...sig2, source: 'stripped-trailing-filter', original: text };
+    }
+  }
+  // R4 — treat bare terms as regex (only when nothing else fired).
+  const bareTerms = tokens.filter(t => t.kind === 'term' && t.mode === 'literal');
+  if (bareTerms.length === 1) {
+    const candidate = tgParseRaw(`/${bareTerms[0].value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`);
+    const sig3 = tgRouteSignature(candidate);
+    if (sig3) return { ...sig3, source: 'as-regex', original: text };
+  }
+  // R5 — small fixed phrase bridge (not NL parsing).
+  const ph = tgRoutePhrase(text);
+  if (ph) return { ...ph, source: 'phrase', original: text };
+  return null;
+}
+
+function tgShowReformBanner(originalQuery, reformulatedQuery, sourceLabel) {
+  const el = document.getElementById('tg-reform-banner');
+  if (!el) return;
+  el.innerHTML = `
+    Showing results for: <code>${tgEscape(reformulatedQuery)}</code>
+    <button class="tg-reform-action" type="button" data-act="exact">Search exactly what I typed instead</button>
+    <button class="tg-reform-dismiss" type="button" data-act="dismiss" aria-label="Dismiss">×</button>
+  `;
+  el.dataset.original = originalQuery;
+  el.hidden = false;
+  el.querySelector('[data-act="exact"]').addEventListener('click', () => {
+    const input = document.getElementById('trigrep-query-input');
+    if (input) input.value = originalQuery;
+    tgHideReformBanner();
+    showSearchFallback();
+  });
+  el.querySelector('[data-act="dismiss"]').addEventListener('click', tgHideReformBanner);
+}
+function tgHideReformBanner() {
+  const el = document.getElementById('tg-reform-banner');
+  if (!el) return;
+  el.hidden = true;
+  el.innerHTML = '';
+}
+
+// === Submit pipeline ==================================================
+function tgSubmit(text) {
+  if (!text) return;
+  TGState.lastSubmitted = text;
+  // 1) Exact canned syntax-example match (start-state cards path).
+  const syntaxMatch = Object.entries(SYNTAX_EXAMPLES).find(([, t]) => t.toLowerCase() === text.toLowerCase());
+  if (syntaxMatch) { tgHideReformBanner(); executeSearch(syntaxMatch[0]); return; }
+  // 2) Silent reformulation → run the matched happy path.
+  const hit = tgReformulate(text);
+  if (hit) {
+    if (hit.source === 'exact') tgHideReformBanner();
+    else tgShowReformBanner(text, hit.query, hit.source);
+    tgRunCanned(hit.query, hit.flow);
+    return;
+  }
+  // 3) Theme detected → scope-it-down chips (no fixture matched).
+  const theme = tgDetectTheme(text);
+  if (theme) { tgHideReformBanner(); tgShowScope(theme); return; }
+  // 4) Honest empty state — this prototype only has scripted fixtures.
+  tgHideReformBanner();
+  showSearchFallback();
+}
+
+// === Input → tokens → views ===========================================
+function tgRenderAll() { tgRenderPills(); }
+let tgDebounce = null;
+function tgSyncFromInput() {
+  const input = document.getElementById('trigrep-query-input');
+  if (!input) return;
+  if (tgDebounce) clearTimeout(tgDebounce);
+  tgDebounce = setTimeout(() => {
+    TGState.tokens = tgParseRaw(input.value);
+    tgRenderAll();
+    tgRenderAutocomplete();
+  }, 180);
+}
+
+function tgWireAll() {
+  const input = document.getElementById('trigrep-query-input');
+  const ac = document.getElementById('tg-autocomplete');
+  if (!input) return;
+  input.addEventListener('input', tgSyncFromInput);
+  input.addEventListener('focus', () => setTimeout(tgRenderAutocomplete, 0));
+  input.addEventListener('click', tgRenderAutocomplete);
+  input.addEventListener('keyup', () => { if (!TGState.ac.open) tgRenderAutocomplete(); });
+  input.addEventListener('blur', () => setTimeout(() => { if (ac) ac.hidden = true; TGState.ac.open = false; }, 150));
+  input.addEventListener('keydown', (e) => {
+    if (TGState.ac.open) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); tgAcMove(1); return; }
+      if (e.key === 'ArrowUp')   { e.preventDefault(); tgAcMove(-1); return; }
+      if (e.key === 'Enter' && TGState.ac.items.length) { e.preventDefault(); tgAcCommit(TGState.ac.active); return; }
+      if (e.key === 'Tab' && TGState.ac.items.length)   { e.preventDefault(); tgAcCommit(TGState.ac.active); return; }
+      if (e.key === 'Escape') { ac.hidden = true; TGState.ac.open = false; return; }
+    }
+  });
+}
+
+// === Acceptance tests — runLeanV1Tests() ==============================
+window.runLeanV1Tests = function tgRunLeanV1Tests() {
+  const cases = [];
+  // Autocomplete
+  cases.push({ section:'autocomplete', name: 'focusing empty input lists filters with descriptions',
+    check: () => {
+      const all = tgFilterLookup('');
+      return all.length >= 10 && all.every(f => f.desc && f.desc.length > 5);
+    } });
+  cases.push({ section:'autocomplete', name: 'lang: suggests only real languages (no zero-result values)',
+    check: () => {
+      const vs = tgValueLookup('lang','');
+      return vs.length >= 4 && vs.every(v => TG_VALUES.lang.includes(v.value) || TG_VALUES.lang.some(x => (typeof x === 'string' ? x : x.value) === v.value));
+    } });
+  cases.push({ section:'autocomplete', name: 'file: suggestions include repo scope where relevant',
+    check: () => {
+      const vs = tgValueLookup('file','OrderController');
+      return vs.length >= 1 && vs[0].desc === 'payments-api';
+    } });
+  cases.push({ section:'autocomplete', name: 'value lookup prefix match: vis → public',
+    check: () => tgValueLookup('visibility','pub').some(v => v.value === 'public') });
+
+  // Pills
+  cases.push({ section:'pills', name: 'Auth Opt 1 parses into 3 free-text + 2 pills',
+    check: () => {
+      const t = tgParseRaw('(@PreAuthorize or @Secured or @RolesAllowed) visibility:public lang:java');
+      return t.filter(x => x.kind === 'filter').length === 2
+          && t.filter(x => x.kind === 'term' && x.mode === 'literal').length === 3;
+    } });
+  cases.push({ section:'pills', name: '-file:**/test/** parses to NOT + filter (rendered as one is-not pill)',
+    check: () => {
+      const t = tgParseRaw('Logger type:symbol -file:**/test/**');
+      const not = t.findIndex(x => x.kind === 'op' && x.value === 'not');
+      return not >= 0 && t[not+1] && t[not+1].kind === 'filter' && t[not+1].key === 'file';
+    } });
+  cases.push({ section:'pills', name: 'editing a value → still serializes valid query',
+    check: () => {
+      const t = tgParseRaw('lang:java visibility:public');
+      t[0].value = 'kotlin';
+      return tgSerialize(t) === 'lang:kotlin visibility:public';
+    } });
+  cases.push({ section:'pills', name: 'removing a pill → others survive',
+    check: () => {
+      const t = tgParseRaw('lang:java visibility:public select:symbol.method');
+      t.splice(1, 1);
+      return tgSerialize(t) === 'lang:java select:symbol.method';
+    } });
+  for (const [k, h] of Object.entries(TG_HAPPY_QUERIES)) {
+    cases.push({ section:'pills', name: `roundtrip canonical: ${k}`,
+      check: () => tgCanonical(tgParseRaw(tgSerialize(tgParseRaw(h.query)))) === TG_HAPPY_BAGS[k] });
+  }
+
+  // Silent reformulation
+  cases.push({ section:'reform', name: 'exact happy-path query → no banner (exact match)',
+    check: () => {
+      const r = tgReformulate('@RestController lang:java');
+      return r && r.source === 'exact';
+    } });
+  cases.push({ section:'reform', name: 'near-miss: "public java authorization annotations" → Auth Opt 1',
+    check: () => {
+      const r = tgReformulate('public java authorization annotations');
+      return r && r.flow === 'a' && (r.source === 'phrase' || r.source === 'signature');
+    } });
+  cases.push({ section:'reform', name: 'reorder-tolerant: tokens in different order still hit Auth Opt 1',
+    check: () => {
+      const r = tgReformulate('lang:java visibility:public (@PreAuthorize or @Secured or @RolesAllowed)');
+      return r && r.flow === 'a';
+    } });
+  cases.push({ section:'reform', name: 'truly off-script "payment processing" → no reformulation',
+    check: () => tgReformulate('payment processing') === null });
+  cases.push({ section:'reform', name: 'phrase bridge: "where do we log errors" → Log Opt 1',
+    check: () => {
+      const r = tgReformulate('where do we log errors');
+      return r && r.query === TG_HAPPY_QUERIES.logOpt1.query;
+    } });
+
+  // Removed surfaces are no longer reachable
+  cases.push({ section:'removed', name: 'tgParseNL no longer defined',
+    check: () => typeof tgParseNL === 'undefined' });
+  cases.push({ section:'removed', name: 'TG_CONCEPTS no longer defined',
+    check: () => typeof TG_CONCEPTS === 'undefined' });
+  cases.push({ section:'removed', name: 'TG_CATALOG no longer defined',
+    check: () => typeof TG_CATALOG === 'undefined' });
+  cases.push({ section:'removed', name: 'tgApplySyntaxMode no longer defined (patternType: parse-only)',
+    check: () => typeof tgApplySyntaxMode === 'undefined' });
+  cases.push({ section:'removed', name: 'patternType: still PARSES from a pasted query',
+    check: () => {
+      const t = tgParseRaw('lang:java patternType:structural');
+      return t.some(x => x.kind === 'filter' && x.key === 'patternType' && x.value === 'structural');
+    } });
+
+  // Theme fallback when no reformulation fires
+  cases.push({ section:'theme', name: '"how is authentication handled?" → auth scope panel',
+    check: () => tgDetectTheme('how is authentication handled?') === 'auth' });
+
+  let pass = 0;
+  const report = [];
+  for (const c of cases) {
+    let ok = false, detail = '';
+    try { ok = !!c.check(); } catch (e) { detail = 'ERR: ' + e.message; }
+    if (ok) pass++;
+    report.push({ section: c.section, name: c.name, ok, detail });
+  }
+  const sections = {};
+  for (const r of report) { sections[r.section] = sections[r.section] || { p:0, t:0 }; sections[r.section].t++; if (r.ok) sections[r.section].p++; }
+  console.group(`[trigrep] lean v1 tests: ${pass}/${cases.length} passed`);
+  for (const [s, x] of Object.entries(sections)) console.log(`   ${x.p === x.t ? '✅' : '❌'} ${s}: ${x.p}/${x.t}`);
+  for (const r of report) {
+    const tag = r.ok ? '✅' : '❌';
+    if (r.ok) console.log(`${tag} [${r.section}] ${r.name}`);
+    else console.warn(`${tag} [${r.section}] ${r.name} ${r.detail}`);
+  }
+  console.groupEnd();
+  return { pass, total: cases.length, report };
+};
+
+
+
+// ===================================================================
+// Boot
+// ===================================================================
+setNavActive('trigrep');
+trigrepPanel.innerHTML = buildTrigrepLandingHTML();
+wireSyntaxSelector();
+wireTrigrepSearchBar();
+setSyntaxMode('sourcegraph');
+renderStartExamples();
+tgWireAll();
+tgRenderAll();
+try { window.runLeanV1Tests(); } catch (e) { console.warn('[trigrep] lean-v1 test error:', e); }
+</script>
+</body>
+</html>
