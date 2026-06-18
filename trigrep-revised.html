@@ -608,6 +608,518 @@
     display: flex; flex-direction: column;
     overflow: hidden;
   }
+  .trigrep-panel[hidden] { display: none; }
+  .activity-panel {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex; flex-direction: column;
+    overflow: auto;
+    background: #fafafa;
+  }
+  .activity-panel[hidden] { display: none; }
+
+  /* ===== Activity page (scoped) ===== */
+  .activity-panel {
+    --ap-bg:           #fafafa;
+    --ap-bg-2:         #f9fafb;
+    --ap-panel:        #ffffff;
+    --ap-text:         #1f2937;
+    --ap-text-sec:     #6b7280;
+    --ap-text-mute:    #9ca3af;
+    --ap-text-strong:  #111827;
+    --ap-line:         #e5e7eb;
+    --ap-line-soft:    #f3f4f6;
+    --ap-link:         #2f42ff;
+    --ap-c-trigrep:        #ecb81f;
+    --ap-c-trigrep-text:   #bd9319;
+    --ap-c-trigrep-bg:     #fef3c7;
+    --ap-c-recipe:         #992fb9;
+    --ap-c-recipe-text:    #7e2497;
+    --ap-c-commit:         #2f42ff;
+    --ap-c-commit-text:    #2f42ff;
+    --ap-c-viz:            #27aa88;
+    --ap-c-viz-text:       #1f8a6e;
+    --ap-c-none:           #e5e7eb;
+    --ap-success:          #1e7e34;
+    --ap-success-bg:       #e6f4ea;
+    --ap-info:             #2f42ff;
+    --ap-info-bg:          #e8eaff;
+    --ap-warn:             #92400e;
+    --ap-warn-bg:          #fef3c7;
+    --ap-running:          #7e2497;
+    --ap-running-bg:       #f5e6fa;
+    --ap-fail:             #b91c1c;
+    --ap-fail-bg:          #fee2e2;
+    --ap-row-h: 42px;
+    --ap-col-act: 34px;
+    color: var(--ap-text);
+  }
+  .activity-panel .ap-main {
+    padding: 28px 32px 64px;
+    width: 100%;
+    max-width: none;
+  }
+  .activity-panel .ap-crumbs {
+    font-size: 12px;
+    color: var(--ap-text-sec);
+    margin-bottom: 14px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .activity-panel .ap-crumbs a { color: var(--ap-text-sec); text-decoration: none; }
+  .activity-panel .ap-crumbs a:hover { color: var(--ap-text); }
+  .activity-panel .ap-crumbs .sep { color: var(--ap-text-mute); }
+  .activity-panel .ap-pageHead {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .activity-panel .ap-pageTitle {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+    color: var(--ap-text-strong);
+  }
+  .activity-panel .ap-pageSub {
+    color: var(--ap-text-sec);
+    font-size: 14px;
+    margin: 0;
+    max-width: 640px;
+  }
+  .activity-panel .ap-pageActions { display: flex; gap: 8px; align-items: center; }
+  .activity-panel .ap-btn {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--ap-line);
+    background: var(--ap-panel);
+    color: var(--ap-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .activity-panel .ap-btn:hover { background: var(--ap-line-soft); border-color: #d1d5db; }
+  .activity-panel .ap-btn.primary {
+    background: var(--ap-link);
+    color: #fff;
+    border-color: var(--ap-link);
+    font-weight: 600;
+  }
+  .activity-panel .ap-btn.primary:hover { background: #1e2fcc; border-color: #1e2fcc; }
+  .activity-panel .ap-btn svg { width: 14px; height: 14px; }
+
+  .activity-panel .ap-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .activity-panel .ap-tile {
+    background: var(--ap-panel);
+    border: 1px solid var(--ap-line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .activity-panel .ap-tile::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--ap-accent, var(--ap-text-mute));
+  }
+  .activity-panel .ap-tile.trigrep { --ap-accent: var(--ap-c-trigrep); }
+  .activity-panel .ap-tile.recipe  { --ap-accent: var(--ap-c-recipe); }
+  .activity-panel .ap-tile.commit  { --ap-accent: var(--ap-c-commit); }
+  .activity-panel .ap-tile.viz     { --ap-accent: var(--ap-c-viz); }
+  .activity-panel .ap-tile-label {
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ap-text-sec);
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .activity-panel .ap-tile-label .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ap-accent);
+  }
+  .activity-panel .ap-tile-value {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ap-text-strong);
+  }
+  .activity-panel .ap-tile-delta { font-size: 12px; color: var(--ap-text-sec); margin-top: 2px; }
+  .activity-panel .ap-tile-delta .up { color: var(--ap-success); }
+  .activity-panel .ap-tile-delta .down { color: var(--ap-fail); }
+
+  .activity-panel .ap-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .activity-panel .ap-search {
+    flex: 1 1 320px;
+    min-width: 240px;
+    max-width: 460px;
+    position: relative;
+  }
+  .activity-panel .ap-search input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 13px;
+    padding: 9px 12px 9px 34px;
+    border-radius: 6px;
+    background: var(--ap-panel);
+    border: 1px solid var(--ap-line);
+    color: var(--ap-text);
+    outline: none;
+  }
+  .activity-panel .ap-search input::placeholder { color: var(--ap-text-mute); }
+  .activity-panel .ap-search input:focus { border-color: var(--ap-link); box-shadow: 0 0 0 3px rgba(47,66,255,0.12); }
+  .activity-panel .ap-search .icn {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ap-text-mute);
+    width: 14px;
+    height: 14px;
+  }
+  .activity-panel .ap-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .activity-panel .ap-chip {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 10px 6px 8px;
+    border-radius: 999px;
+    background: var(--ap-panel);
+    border: 1px solid var(--ap-line);
+    color: var(--ap-text-sec);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+  .activity-panel .ap-chip:hover { border-color: #d1d5db; color: var(--ap-text); }
+  .activity-panel .ap-chip .sw { width: 8px; height: 8px; border-radius: 50%; background: var(--ap-chip-color, var(--ap-text-mute)); }
+  .activity-panel .ap-chip.t-trigrep { --ap-chip-color: var(--ap-c-trigrep); }
+  .activity-panel .ap-chip.t-recipe  { --ap-chip-color: var(--ap-c-recipe); }
+  .activity-panel .ap-chip.t-commit  { --ap-chip-color: var(--ap-c-commit); }
+  .activity-panel .ap-chip.t-viz     { --ap-chip-color: var(--ap-c-viz); }
+  .activity-panel .ap-chip.active {
+    background: var(--ap-line-soft);
+    border-color: #d1d5db;
+    color: var(--ap-text);
+  }
+  .activity-panel .ap-chip.active .sw { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ap-chip-color, var(--ap-text)) 24%, transparent); }
+  .activity-panel .ap-chip.muted { opacity: 0.5; }
+  .activity-panel .ap-tool-divider { width: 1px; align-self: stretch; background: var(--ap-line); margin: 0 4px; }
+  .activity-panel .ap-select {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 28px 6px 10px;
+    border-radius: 6px;
+    background: var(--ap-panel);
+    border: 1px solid var(--ap-line);
+    color: var(--ap-text-sec);
+    cursor: pointer;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--ap-text-mute) 50%),
+                      linear-gradient(135deg, var(--ap-text-mute) 50%, transparent 50%);
+    background-position: calc(100% - 14px) 50%, calc(100% - 10px) 50%;
+    background-size: 4px 4px;
+    background-repeat: no-repeat;
+  }
+  .activity-panel .ap-select:hover { color: var(--ap-text); border-color: #d1d5db; }
+
+  .activity-panel .ap-tableCard {
+    background: var(--ap-panel);
+    border: 1px solid var(--ap-line);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .activity-panel table.ap-activity {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+  }
+  .activity-panel .ap-activity thead th {
+    background: var(--ap-bg-2);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ap-text-sec);
+    text-align: left;
+    border-bottom: 1px solid var(--ap-line);
+    padding: 0;
+    height: var(--ap-row-h);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  .activity-panel .ap-activity thead th.activity-col {
+    width: var(--ap-col-act);
+    min-width: var(--ap-col-act);
+    max-width: var(--ap-col-act);
+    border-right: 1px solid var(--ap-line);
+    padding: 0;
+  }
+  .activity-panel .ap-activity thead th.activity-col .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: block;
+  }
+  .activity-panel .ap-activity thead th.name   { padding: 0 16px 0 20px; min-width: 320px; }
+  .activity-panel .ap-activity thead th.type   { padding: 0 16px; width: 140px; }
+  .activity-panel .ap-activity thead th.org    { padding: 0 16px; width: 180px; }
+  .activity-panel .ap-activity thead th.status { padding: 0 16px; width: 200px; }
+  .activity-panel .ap-activity thead th.runby  { width: 90px; text-align: center; padding: 0; }
+  .activity-panel .ap-activity thead th.time   { padding: 0 16px; width: 180px; text-align: right; }
+  .activity-panel .ap-activity tbody tr:hover { background: var(--ap-bg-2); }
+  .activity-panel .ap-activity tbody td {
+    font-size: 13px;
+    height: var(--ap-row-h);
+    vertical-align: middle;
+    border-bottom: 1px solid var(--ap-line-soft);
+  }
+  .activity-panel .ap-activity tbody tr:last-child td { border-bottom: none; }
+  .activity-panel .ap-activity tbody td.activity-cell {
+    width: var(--ap-col-act);
+    min-width: var(--ap-col-act);
+    max-width: var(--ap-col-act);
+    border-right: 1px solid var(--ap-line);
+    padding: 0;
+    text-align: center;
+    line-height: 0;
+  }
+  .activity-panel .ap-activity tbody td.name { padding: 0 16px 0 20px; }
+  .activity-panel .ap-activity tbody td.name a {
+    color: var(--ap-link);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .activity-panel .ap-activity tbody td.name a:hover { text-decoration: underline; }
+  .activity-panel .ap-activity tbody td.name.trigrep-name {
+    color: var(--ap-text);
+    font-weight: 600;
+  }
+  .activity-panel .ap-activity tbody td.name.trigrep-name .trigrep-search-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .activity-panel .ap-activity tbody td.name.trigrep-name .trigrep-search-link:hover {
+    color: var(--ap-link);
+    text-decoration: underline;
+    text-decoration-color: rgba(47,66,255,0.4);
+  }
+  .activity-panel .ap-activity tbody td.name .name-meta {
+    display: block;
+    font-size: 11px;
+    color: var(--ap-text-mute);
+    margin-top: 1px;
+    font-weight: 400;
+  }
+  .activity-panel .ap-activity tbody td.name .trigrep-token {
+    display: inline-block;
+    font-family: var(--font-code, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: var(--ap-c-trigrep-bg);
+    color: var(--ap-c-trigrep-text);
+    border: 1px solid #f7e3a3;
+    margin-left: 8px;
+    vertical-align: 1px;
+  }
+  .activity-panel .ap-activity tbody td.type {
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .activity-panel .ap-activity tbody td.type.t-trigrep-search { color: var(--ap-c-trigrep-text); }
+  .activity-panel .ap-activity tbody td.type.t-recipe-run     { color: var(--ap-c-recipe); }
+  .activity-panel .ap-activity tbody td.type.t-commit-job     { color: var(--ap-c-commit); }
+  .activity-panel .ap-activity tbody td.type.t-visualization  { color: var(--ap-c-viz); }
+  .activity-panel .ap-activity tbody td.org { padding: 0 16px; color: var(--ap-text); }
+  .activity-panel .ap-activity tbody td.status { padding: 0 16px; }
+  .activity-panel .ap-activity tbody td.status .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 9px 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .activity-panel .ap-activity tbody td.status .badge .pulse { width: 6px; height: 6px; border-radius: 50%; }
+  .activity-panel .ap-activity tbody td.status .badge.success { background: var(--ap-success-bg); color: var(--ap-success); }
+  .activity-panel .ap-activity tbody td.status .badge.success .pulse { background: var(--ap-success); }
+  .activity-panel .ap-activity tbody td.status .badge.warn { background: var(--ap-warn-bg); color: var(--ap-warn); }
+  .activity-panel .ap-activity tbody td.status .badge.warn .pulse { background: #d97706; }
+  .activity-panel .ap-activity tbody td.status .badge.running { background: var(--ap-running-bg); color: var(--ap-running); }
+  .activity-panel .ap-activity tbody td.status .badge.running .pulse { background: var(--ap-running); animation: ap-pulse 1.6s ease-in-out infinite; }
+  .activity-panel .ap-activity tbody td.status .badge.failed { background: var(--ap-fail-bg); color: var(--ap-fail); }
+  .activity-panel .ap-activity tbody td.status .badge.failed .pulse { background: var(--ap-fail); }
+  @keyframes ap-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+  .activity-panel .ap-activity tbody td.status .secondary {
+    color: var(--ap-text-sec);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .activity-panel .ap-activity tbody td.status .progress {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 160px;
+    max-width: 100%;
+  }
+  .activity-panel .ap-activity tbody td.status .progress-bar {
+    width: 100%;
+    height: 5px;
+    border-radius: 999px;
+    background: #eef0f3;
+    overflow: hidden;
+  }
+  .activity-panel .ap-activity tbody td.status .progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 200ms ease;
+    background: var(--ap-success);
+  }
+  .activity-panel .ap-activity tbody td.status .progress-fill.success { background: var(--ap-success); }
+  .activity-panel .ap-activity tbody td.status .progress-fill.warn    { background: #d97706; }
+  .activity-panel .ap-activity tbody td.status .progress-fill.failed  { background: var(--ap-fail); }
+  .activity-panel .ap-activity tbody td.status .progress-fill.running {
+    background: var(--ap-running);
+    background-image: linear-gradient(45deg,
+      rgba(255,255,255,0.35) 25%, transparent 25%,
+      transparent 50%, rgba(255,255,255,0.35) 50%,
+      rgba(255,255,255,0.35) 75%, transparent 75%);
+    background-size: 10px 10px;
+    animation: ap-stripes 1s linear infinite;
+  }
+  @keyframes ap-stripes { 0% { background-position: 0 0; } 100% { background-position: 10px 0; } }
+  .activity-panel .ap-activity tbody td.status .progress-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--ap-text-sec);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .activity-panel .ap-activity tbody td.status .progress-label .state { font-weight: 500; }
+  .activity-panel .ap-activity tbody td.status .progress-label .state.success { color: var(--ap-success); }
+  .activity-panel .ap-activity tbody td.status .progress-label .state.warn    { color: #92400e; }
+  .activity-panel .ap-activity tbody td.status .progress-label .state.failed  { color: var(--ap-fail); }
+  .activity-panel .ap-activity tbody td.status .progress-label .state.running { color: var(--ap-running); }
+  .activity-panel .ap-activity tbody td.status .progress-label .count { color: var(--ap-text-mute); font-weight: 500; }
+
+  .activity-panel .ap-activity tbody td.runby { width: 90px; text-align: center; padding: 0; }
+  .activity-panel .ap-activity tbody td.runby .avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #d1d5db;
+    color: #374151;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .activity-panel .ap-activity tbody td.time {
+    padding: 0 16px;
+    color: var(--ap-text-sec);
+    font-size: 12px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .activity-panel .ap-activity tbody td.time .abs {
+    display: block;
+    color: var(--ap-text-mute);
+    font-size: 10.5px;
+    margin-top: 1px;
+  }
+  .activity-panel svg.ap-scene {
+    width: 35px;
+    height: 36px;
+    overflow: visible;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .activity-panel .ap-activity tbody tr.cluster-start td { border-top: 1px solid var(--ap-line); }
+
+  .activity-panel .ap-tableFoot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    border-top: 1px solid var(--ap-line);
+    background: var(--ap-bg-2);
+    color: var(--ap-text-sec);
+    font-size: 12px;
+  }
+  .activity-panel .ap-pager { display: flex; gap: 4px; }
+  .activity-panel .ap-pager button {
+    font-family: inherit;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: transparent;
+    border: 1px solid var(--ap-line);
+    color: var(--ap-text-sec);
+    cursor: pointer;
+  }
+  .activity-panel .ap-pager button.current {
+    background: var(--ap-info-bg);
+    color: var(--ap-link);
+    border-color: #c7cdff;
+  }
+  .activity-panel .ap-pager button:hover:not(.current) {
+    color: var(--ap-text);
+    border-color: #d1d5db;
+  }
+  .activity-panel .ap-legend {
+    display: flex;
+    gap: 18px;
+    margin-top: 14px;
+    padding: 0 4px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--ap-text-sec);
+  }
+  .activity-panel .ap-legend .li { display: inline-flex; align-items: center; gap: 6px; }
+  .activity-panel .ap-legend .li .sw { width: 10px; height: 10px; border-radius: 50%; }
+  .activity-panel .ap-legend .li.trigrep .sw { background: var(--ap-c-trigrep); }
+  .activity-panel .ap-legend .li.recipe  .sw { background: var(--ap-c-recipe); }
+  .activity-panel .ap-legend .li.commit  .sw { background: var(--ap-c-commit); }
+  .activity-panel .ap-legend .li.viz     .sw { background: var(--ap-c-viz); }
 
   /* ===== Trigrep left panel ===== */
   .trigrep-page-header {
@@ -753,6 +1265,23 @@
     cursor: pointer;
   }
   .btn-search:hover { background: #1f30e6; }
+
+  /* Clear-query button inside the search box */
+  .trigrep-query-clear {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: var(--grey-100);
+    color: var(--grey-500);
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+    transition: background 0.1s, color 0.1s;
+  }
+  .trigrep-query-clear:hover { background: var(--grey-200); color: var(--grey-800); }
+  .trigrep-query-clear svg { width: 12px; height: 12px; }
+
 
   /* Search-bar help text */
   .search-help-row {
@@ -1008,6 +1537,335 @@
   }
   .trigrep-results::-webkit-scrollbar { width: 8px; }
   .trigrep-results::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 4px; }
+
+  /* ===== "Run recipe" toolbar above results ===== */
+  .results-actions {
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: 10px;
+    margin: 0 0 12px;
+  }
+  .btn-run-recipe {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: var(--neo-digital-blue-500);
+    color: #fff;
+    border: 1px solid var(--neo-digital-blue-500);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .btn-run-recipe:hover { background: #1e2fcc; border-color: #1e2fcc; }
+  .btn-run-recipe svg { width: 13px; height: 13px; }
+
+  /* Shared inline bar used in the recipe picker's relevance line */
+  .sr-rel-bar {
+    display: inline-block;
+    width: 56px; height: 4px;
+    border-radius: 999px;
+    background: var(--grey-100);
+    overflow: hidden;
+    vertical-align: middle;
+    margin: 0 4px 0 2px;
+  }
+  .sr-rel-fill {
+    display: block; height: 100%;
+    background: var(--neo-digital-blue-500);
+    border-radius: 999px;
+  }
+
+  /* ===== Recipe picker drawer ===== */
+  .rp-drawer .rp-sub {
+    margin: 4px 0 0;
+    font-size: 12.5px;
+    color: var(--grey-600);
+    line-height: 1.5;
+  }
+  .rp-drawer .rp-query {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--neo-digital-blue-500);
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(47,66,255,0.06);
+    vertical-align: 1px;
+  }
+  .rp-search {
+    margin-top: 12px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    background: var(--grey-25);
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .rp-search:focus-within {
+    border-color: var(--neo-digital-blue-500);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(47,66,255,0.10);
+  }
+  .rp-search svg { width: 14px; height: 14px; color: var(--grey-500); flex-shrink: 0; }
+  .rp-search input {
+    flex: 1;
+    border: none; outline: none; background: transparent;
+    font-family: inherit; font-size: 13px;
+    color: var(--grey-900);
+  }
+  .rp-search input::placeholder { color: var(--grey-500); }
+  .rp-body { padding: 12px 22px; }
+  .rp-group { margin-bottom: 14px; }
+  .rp-group:last-child { margin-bottom: 0; }
+  .rp-group-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    margin-bottom: 6px;
+  }
+  .rp-group-label .rp-query {
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .rp-group-list {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--grey-100);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .rp-recipe {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    background: #fff;
+    border-top: 1px solid var(--grey-100);
+    transition: background 0.1s;
+  }
+  .rp-recipe:first-child { border-top: none; }
+  .rp-recipe:hover { background: rgba(47,66,255,0.025); }
+  .rp-recipe.is-selected {
+    background: rgba(47,66,255,0.06);
+  }
+  .rp-radio {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid var(--grey-300);
+    background: #fff;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: border-color 0.1s;
+  }
+  .rp-recipe:hover .rp-radio { border-color: var(--neo-digital-blue-500); }
+  .rp-recipe.is-selected .rp-radio {
+    border-color: var(--neo-digital-blue-500);
+    border-width: 5px;
+  }
+  .rp-recipe-text { flex: 1; min-width: 0; }
+  .rp-recipe-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--grey-900);
+    margin-bottom: 2px;
+  }
+  .rp-recipe-desc {
+    font-size: 12px;
+    color: var(--grey-600);
+    line-height: 1.45;
+    margin-bottom: 4px;
+  }
+  .rp-recipe-rel {
+    font-size: 11.5px;
+    color: var(--grey-500);
+    display: flex; align-items: center; gap: 4px;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 4px;
+  }
+  .rp-recipe-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--grey-400);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rp-empty {
+    padding: 22px 4px;
+    text-align: center;
+    color: var(--grey-500);
+    font-size: 13px;
+  }
+  .rp-scope {
+    padding: 12px 22px;
+    background: var(--grey-25);
+    border-top: 1px solid var(--grey-100);
+  }
+  .rp-scope-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    margin-bottom: 6px;
+  }
+  .rp-scope-rows {
+    display: flex; flex-direction: column; gap: 4px;
+    font-size: 12.5px;
+    color: var(--grey-700);
+  }
+  .rp-scope-rows .sr-scope-row {
+    display: flex; justify-content: space-between;
+  }
+  .rp-scope-rows .sr-scope-row strong { color: var(--grey-900); font-weight: 600; }
+
+  /* Run confirmation drawer */
+  .sr-drawer-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(15, 18, 36, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    z-index: 80;
+  }
+  .sr-drawer-backdrop.on { opacity: 1; pointer-events: auto; }
+  .sr-drawer {
+    position: fixed; top: 0; right: 0; height: 100%;
+    width: min(440px, 92vw);
+    background: #fff;
+    box-shadow: -8px 0 24px rgba(0,0,0,0.12);
+    transform: translateX(100%);
+    transition: transform 0.18s ease;
+    z-index: 81;
+    display: flex; flex-direction: column;
+  }
+  .sr-drawer.on { transform: none; }
+  .sr-drawer-head {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--grey-100);
+  }
+  .sr-drawer-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--neo-digital-blue-500);
+    margin-bottom: 6px;
+  }
+  .sr-drawer-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--grey-900);
+    margin: 0;
+  }
+  .sr-drawer-close {
+    position: absolute;
+    top: 12px; right: 12px;
+    border: none; background: transparent;
+    color: var(--grey-500);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 6px;
+    border-radius: 6px;
+  }
+  .sr-drawer-close:hover { background: var(--grey-50); color: var(--grey-800); }
+  .sr-drawer-body {
+    padding: 18px 22px;
+    overflow-y: auto;
+    flex: 1;
+    font-size: 13.5px;
+    color: var(--grey-700);
+    line-height: 1.55;
+  }
+  .sr-drawer-body h4 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    margin: 14px 0 8px;
+  }
+  .sr-drawer-body h4:first-child { margin-top: 0; }
+  .sr-scope {
+    background: var(--grey-50);
+    border: 1px solid var(--grey-100);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 6px;
+    font-size: 12.5px;
+  }
+  .sr-scope .sr-scope-row {
+    display: flex; justify-content: space-between;
+    color: var(--grey-600);
+  }
+  .sr-scope .sr-scope-row strong { color: var(--grey-900); font-weight: 600; }
+  .sr-drawer-foot {
+    padding: 14px 22px;
+    border-top: 1px solid var(--grey-100);
+    display: flex; gap: 8px; justify-content: flex-end;
+    background: var(--grey-25);
+  }
+  .sr-drawer-foot .btn-secondary {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #fff;
+    color: var(--grey-700);
+    border: 1px solid var(--grey-200);
+    cursor: pointer;
+  }
+  .sr-drawer-foot .btn-secondary:hover { background: var(--grey-50); }
+  .sr-drawer-foot .btn-primary {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: var(--neo-digital-blue-500);
+    color: #fff;
+    border: 1px solid var(--neo-digital-blue-500);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .sr-drawer-foot .btn-primary:hover { background: #1e2fcc; border-color: #1e2fcc; }
+  .sr-drawer-foot .btn-primary svg { width: 13px; height: 13px; }
+
+  /* Inline toast after queueing */
+  .sr-toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--grey-900);
+    color: #fff;
+    border-radius: 10px;
+    padding: 12px 16px 12px 14px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px;
+    z-index: 90;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.18s, transform 0.18s;
+  }
+  .sr-toast.on { opacity: 1; transform: none; }
+  .sr-toast .sr-toast-icon {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(51,255,153,0.16);
+    color: #33ff99;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .sr-toast .sr-toast-icon svg { width: 13px; height: 13px; }
+  .sr-toast a {
+    color: #9fa8ff;
+    text-decoration: none;
+    margin-left: 6px;
+    font-weight: 500;
+  }
+  .sr-toast a:hover { text-decoration: underline; }
 
   /* Result card */
   .result-card {
@@ -1320,11 +2178,89 @@
     color: var(--grey-500);
     margin-top: 18px;
   }
+  .trigrep-start-recent-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    margin-top: 18px;
+  }
   .trigrep-start-examples-list {
     display: flex; flex-direction: column;
     gap: 8px;
     width: 100%;
     margin-top: 4px;
+  }
+
+  /* Recent queries — compact one-line rows */
+  .trigrep-start-recent-list {
+    display: flex; flex-direction: column;
+    width: 100%;
+    margin-top: 4px;
+    border: 1px solid var(--grey-100);
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .trigrep-start-recent {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px;
+    background: transparent;
+    border: none;
+    border-top: 1px solid var(--grey-100);
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    width: 100%;
+    transition: background 0.12s;
+  }
+  .trigrep-start-recent:first-child { border-top: none; }
+  .trigrep-start-recent:hover { background: rgba(47, 66, 255, 0.04); }
+  .trigrep-start-recent-icon {
+    width: 14px; height: 14px;
+    color: var(--grey-400);
+    flex-shrink: 0;
+  }
+  .trigrep-start-recent:hover .trigrep-start-recent-icon { color: var(--neo-digital-blue-500); }
+  .trigrep-start-recent-query {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--grey-800);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .trigrep-start-recent-mode {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--grey-50);
+    color: var(--grey-600);
+    flex-shrink: 0;
+  }
+  .trigrep-start-recent-mode.mode-sourcegraph {
+    background: rgba(47, 66, 255, 0.08);
+    color: var(--neo-digital-blue-500);
+  }
+  .trigrep-start-recent-mode.mode-comby {
+    background: rgba(153, 47, 185, 0.08);
+    color: #7e2497;
+  }
+  .trigrep-start-recent-mode.mode-regex {
+    background: rgba(236, 184, 31, 0.14);
+    color: #8a6a10;
+  }
+  .trigrep-start-recent-time {
+    font-size: 11.5px;
+    color: var(--grey-500);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
   }
   .trigrep-start-example {
     display: flex; align-items: center; gap: 12px;
@@ -1671,6 +2607,7 @@
       <!-- PAGE: full-width Trigrep panel -->
       <div class="page" id="page">
         <section class="trigrep-panel" id="trigrep-panel" aria-label="Trigrep search"></section>
+        <section class="activity-panel" id="activity-panel" aria-label="Recent activity" hidden></section>
       </div>
     </div>
   </div>
@@ -1709,6 +2646,7 @@ const MORE_ITEMS = [
 function renderNavItem(item) {
   const el = document.createElement('div');
   el.className = 'nav-item' + (item.active ? ' active' : '');
+  el.dataset.navId = item.id;
   el.innerHTML = `
     <div class="nav-icon-container">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${item.svg}</svg>
@@ -1721,6 +2659,33 @@ function renderNavItem(item) {
 
 const navList = document.getElementById('left-nav-items');
 NAV_ITEMS.forEach(item => navList.appendChild(renderNavItem(item)));
+
+// View switching: clicking 'trigrep' or 'activity' swaps the visible panel.
+function setActiveView(viewId) {
+  const trigrepEl = document.getElementById('trigrep-panel');
+  const activityEl = document.getElementById('activity-panel');
+  if (viewId === 'activity') {
+    trigrepEl.hidden = true;
+    activityEl.hidden = false;
+    if (!activityEl.dataset.rendered) {
+      renderActivityPanel(activityEl);
+      activityEl.dataset.rendered = '1';
+    }
+  } else {
+    activityEl.hidden = true;
+    trigrepEl.hidden = false;
+  }
+  document.querySelectorAll('.nav-item[data-nav-id]').forEach(n => {
+    n.classList.toggle('active', n.dataset.navId === viewId);
+  });
+}
+document.querySelectorAll('.nav-item[data-nav-id]').forEach(n => {
+  const id = n.dataset.navId;
+  if (id === 'trigrep' || id === 'activity') {
+    n.style.cursor = 'pointer';
+    n.addEventListener('click', () => setActiveView(id));
+  }
+});
 
 const morePopover = document.getElementById('nav-more-popover');
 MORE_ITEMS.forEach(item => morePopover.appendChild(renderNavItem(item)));
@@ -1948,6 +2913,279 @@ const FLOWS = {
         { id: 'c-LegacyShipController', file: 'ShipmentController.java', module: 'shipping-legacy', count: 2, lines: [
           { n: 7, code: '@Controller' },
           { n: 8, code: '<m>@ResponseBody</m>' },
+        ]},
+      ],
+    },
+  },
+
+  // ============== FLOW D — @Deprecated audit ==============
+  d: {
+    id: 'd',
+    cards: [
+      { id: 'd-OrderRepository', file: 'OrderRepository.java', module: 'payments-api', count: 3, lines: [
+        { n: 18, code: '<m>@Deprecated</m>' },
+        { n: 19, code: 'public Order findByCustomerLegacy(<span class="kw">String</span> id) {' },
+        { n: 47, code: '<m>@Deprecated</m>(<span class="cs">since = "2.1"</span>)' },
+      ]},
+      { id: 'd-UserApi', file: 'UserApi.java', module: 'identity-service', count: 2, lines: [
+        { n: 22, code: '<m>@Deprecated</m>' },
+        { n: 23, code: 'public ResponseEntity&lt;User&gt; updateProfile_v1(@RequestBody User u) {' },
+      ]},
+      { id: 'd-LegacyClient', file: 'LegacyClient.java', module: 'gateway', count: 2, lines: [
+        { n: 11, code: '<m>@java.lang.Deprecated</m>' },
+        { n: 12, code: 'public class LegacyClient {' },
+      ]},
+      { id: 'd-PricingRules', file: 'PricingRules.java', module: 'pricing-engine', count: 1, lines: [
+        { n: 65, code: '<m>@Deprecated</m>(<span class="cs">forRemoval = true</span>)' },
+      ]},
+    ],
+    overflow: 'Showing <strong>4 of 38</strong> files (147 matches)',
+    phase2: {
+      chips: [],
+      query: '@Deprecated',
+      summary: '<span class="summary-count" id="summary-count">147</span> matches across <span class="summary-count" id="summary-files">38</span> files in <span class="mono">62ms</span>',
+      baseMatches: 147,
+      baseFiles: 38,
+      filters: [
+        { id: 'shape', title: 'By annotation shape', items: [
+          { name: 'Marker only',         count: 91 },
+          { name: 'With since=',         count: 38 },
+          { name: 'With forRemoval=true', count: 18 },
+        ]},
+        { id: 'lang', title: 'By language', items: [
+          { name: 'Java',   count: 36, dot: '#e76f00' },
+          { name: 'Kotlin', count: 2,  dot: '#a97bff' },
+        ]},
+        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 18, items: [
+          { name: 'payments-api',       count: 9 },
+          { name: 'identity-service',   count: 6 },
+          { name: 'gateway',            count: 5 },
+          { name: 'pricing-engine',     count: 4 },
+          { name: 'inventory-service',  count: 3 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'payments',  count: 27 },
+          { name: 'identity',  count: 21 },
+          { name: 'gateway',   count: 16 },
+          { name: 'pricing',   count: 11 },
+          { name: 'inventory', count: 9 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'd-NotificationDispatcher', file: 'NotificationDispatcher.java', module: 'notifications', count: 2, lines: [
+          { n: 33, code: '<m>@Deprecated</m>' },
+          { n: 34, code: 'public void sendLegacyEmail(String to) {' },
+        ]},
+        { id: 'd-SettingsLoader', file: 'SettingsLoader.java', module: 'platform-core', count: 1, lines: [
+          { n: 9, code: '<m>@Deprecated</m>(<span class="cs">since = "1.8"</span>)' },
+        ]},
+        { id: 'd-StockSync', file: 'StockSync.java', module: 'inventory-service', count: 2, lines: [
+          { n: 27, code: '<m>@Deprecated</m>' },
+          { n: 28, code: 'public void pollWarehouse() {' },
+        ]},
+      ],
+    },
+  },
+
+  // ============== FLOW E — SLF4J logger declarations ==============
+  e: {
+    id: 'e',
+    cards: [
+      { id: 'e-PaymentService', file: 'PaymentService.java', module: 'payments-api', count: 1, lines: [
+        { n: 24, code: '<m>private static final Logger</m> logger = LoggerFactory.getLogger(PaymentService.class);' },
+      ]},
+      { id: 'e-AuthInterceptor', file: 'AuthInterceptor.java', module: 'identity-service', count: 1, lines: [
+        { n: 19, code: '<m>private static final Logger</m> log = LoggerFactory.getLogger(AuthInterceptor.class);' },
+      ]},
+      { id: 'e-OrderRouter', file: 'OrderRouter.java', module: 'orders-service', count: 2, lines: [
+        { n: 16, code: '<m>private static final Logger</m> LOG = LoggerFactory.getLogger(OrderRouter.class);' },
+        { n: 88, code: '// duplicate logger declared below — flagged by audit' },
+      ]},
+      { id: 'e-WebhookDispatcher', file: 'WebhookDispatcher.java', module: 'gateway', count: 1, lines: [
+        { n: 11, code: '<m>private static final Logger</m> logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());' },
+      ]},
+    ],
+    overflow: 'Showing <strong>4 of 156</strong> files (412 matches)',
+    phase2: {
+      chips: [],
+      query: 'private static final Logger',
+      summary: '<span class="summary-count" id="summary-count">412</span> matches across <span class="summary-count" id="summary-files">156</span> files in <span class="mono">98ms</span>',
+      baseMatches: 412,
+      baseFiles: 156,
+      filters: [
+        { id: 'style', title: 'By naming style', items: [
+          { name: 'logger (lowercase)', count: 244 },
+          { name: 'log',                count: 122 },
+          { name: 'LOG (upper)',        count: 46 },
+        ]},
+        { id: 'binding', title: 'By binding', items: [
+          { name: 'SLF4J + Logback',  count: 138 },
+          { name: 'SLF4J + Log4j 2',  count: 14 },
+          { name: 'SLF4J + JUL',      count: 4 },
+        ]},
+        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 41, items: [
+          { name: 'payments-api',       count: 22 },
+          { name: 'identity-service',   count: 18 },
+          { name: 'orders-service',     count: 17 },
+          { name: 'gateway',            count: 14 },
+          { name: 'inventory-service',  count: 11 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'payments',     count: 58 },
+          { name: 'identity',     count: 41 },
+          { name: 'orders',       count: 37 },
+          { name: 'gateway',      count: 24 },
+          { name: 'observability',count: 18 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'e-CartController', file: 'CartController.java', module: 'orders-service', count: 1, lines: [
+          { n: 18, code: '<m>private static final Logger</m> log = LoggerFactory.getLogger(CartController.class);' },
+        ]},
+        { id: 'e-FraudDetector', file: 'FraudDetector.java', module: 'risk-engine', count: 1, lines: [
+          { n: 14, code: '<m>private static final Logger</m> LOG = LoggerFactory.getLogger("fraud");' },
+        ]},
+      ],
+    },
+  },
+
+  // ============== FLOW F — Comby: logged-and-swallowed exceptions ==============
+  f: {
+    id: 'f',
+    cards: [
+      { id: 'f-OrderRouter', file: 'OrderRouter.java', module: 'orders-service', count: 1, lines: [
+        { n: 92, code: '} <m>catch</m> (TimeoutException ex) {' },
+        { n: 93, code: '  <m>log.error</m>(<span class="cs">"order route timed out"</span>);' },
+        { n: 94, code: '}  // no rethrow, no metric — silent failure' },
+      ]},
+      { id: 'f-PaymentClient', file: 'PaymentClient.java', module: 'payments-api', count: 1, lines: [
+        { n: 41, code: '} <m>catch</m> (IOException io) {' },
+        { n: 42, code: '  <m>log.error</m>(<span class="cs">"payment gateway error"</span>);' },
+        { n: 43, code: '}' },
+      ]},
+      { id: 'f-CacheLoader', file: 'CacheLoader.java', module: 'platform-core', count: 2, lines: [
+        { n: 28, code: '} <m>catch</m> (SQLException sql) {' },
+        { n: 29, code: '  <m>log.error</m>(<span class="cs">"cache reload failed"</span>);' },
+        { n: 30, code: '}' },
+        { n: 71, code: '} <m>catch</m> (RuntimeException rex) {' },
+      ]},
+      { id: 'f-WebhookDispatcher', file: 'WebhookDispatcher.java', module: 'gateway', count: 1, lines: [
+        { n: 47, code: '} <m>catch</m> (Exception webhookEx) {' },
+        { n: 48, code: '  <m>log.error</m>(<span class="cs">"webhook delivery failed: " + url</span>);' },
+        { n: 49, code: '}' },
+      ]},
+    ],
+    overflow: 'Showing <strong>4 of 28</strong> files (73 matches)',
+    phase2: {
+      chips: [],
+      query: 'catch (:[ex]) { log.error(:[msg]); }',
+      summary: '<span class="summary-count" id="summary-count">73</span> matches across <span class="summary-count" id="summary-files">28</span> files in <span class="mono">112ms</span>',
+      baseMatches: 73,
+      baseFiles: 28,
+      filters: [
+        { id: 'kind', title: 'By exception kind', items: [
+          { name: 'Checked exceptions',   count: 38 },
+          { name: 'Runtime exceptions',   count: 22 },
+          { name: 'Base Exception/Throwable', count: 13 },
+        ]},
+        { id: 'fix', title: 'By suggested remediation', items: [
+          { name: 'Re-throw or wrap',       count: 41 },
+          { name: 'Add structured context', count: 19 },
+          { name: 'Emit failure metric',    count: 13 },
+        ]},
+        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 11, items: [
+          { name: 'orders-service',  count: 7 },
+          { name: 'payments-api',    count: 6 },
+          { name: 'platform-core',   count: 5 },
+          { name: 'gateway',         count: 4 },
+          { name: 'identity-service',count: 3 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'reliability',  count: 21 },
+          { name: 'observability',count: 14 },
+          { name: 'payments',     count: 11 },
+          { name: 'orders',       count: 9 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'f-AuthSession', file: 'AuthSession.java', module: 'identity-service', count: 1, lines: [
+          { n: 55, code: '} <m>catch</m> (JwtException jwt) {' },
+          { n: 56, code: '  <m>log.error</m>(<span class="cs">"token parse failed"</span>);' },
+        ]},
+        { id: 'f-FileMover', file: 'FileMover.java', module: 'legacy-batch', count: 1, lines: [
+          { n: 38, code: '} <m>catch</m> (IOException e) {' },
+          { n: 39, code: '  <m>log.error</m>(<span class="cs">"file move failed"</span>);' },
+        ]},
+      ],
+    },
+  },
+
+  // ============== FLOW G — Regex: owner-tagged TODO comments ==============
+  g: {
+    id: 'g',
+    cards: [
+      { id: 'g-PaymentService', file: 'PaymentService.java', module: 'payments-api', count: 4, lines: [
+        { n: 41,  code: '// <m>TODO(arimbach):</m> handle 3DS challenge here' },
+        { n: 88,  code: '// <m>TODO(mkapadia):</m> back-pressure on retry queue' },
+        { n: 134, code: '// <m>TODO(arimbach):</m> log structured fields' },
+        { n: 211, code: '// <m>TODO(rparkin):</m> remove after deprecating v1' },
+      ]},
+      { id: 'g-AuthInterceptor', file: 'AuthInterceptor.java', module: 'identity-service', count: 3, lines: [
+        { n: 18, code: '// <m>TODO(mkapadia):</m> rotate signing keys nightly' },
+        { n: 47, code: '// <m>TODO(rparkin):</m> short-circuit on cached principal' },
+        { n: 92, code: '// <m>TODO(arimbach):</m> redact PII before logging' },
+      ]},
+      { id: 'g-CartReconciler', file: 'CartReconciler.java', module: 'orders-service', count: 2, lines: [
+        { n: 24, code: '// <m>TODO(arimbach):</m> handle concurrent edits' },
+        { n: 71, code: '// <m>TODO(jbenoit):</m> move to event-sourced model' },
+      ]},
+      { id: 'g-FraudDetector', file: 'FraudDetector.java', module: 'risk-engine', count: 2, lines: [
+        { n: 14, code: '// <m>TODO(rparkin):</m> retrain decision tree quarterly' },
+        { n: 39, code: '// <m>TODO(mkapadia):</m> swap heuristics for ML model' },
+      ]},
+    ],
+    overflow: 'Showing <strong>4 of 87</strong> files (284 matches)',
+    phase2: {
+      chips: [],
+      query: '/TODO\\(\\w+\\):/',
+      summary: '<span class="summary-count" id="summary-count">284</span> matches across <span class="summary-count" id="summary-files">87</span> files in <span class="mono">71ms</span>',
+      baseMatches: 284,
+      baseFiles: 87,
+      filters: [
+        { id: 'owner', title: 'By owner', items: [
+          { name: 'arimbach',  count: 96 },
+          { name: 'mkapadia',  count: 71 },
+          { name: 'rparkin',   count: 54 },
+          { name: 'jbenoit',   count: 38 },
+          { name: 'sliang',    count: 25 },
+        ]},
+        { id: 'lang', title: 'By language', items: [
+          { name: 'Java',       count: 62, dot: '#e76f00' },
+          { name: 'Kotlin',     count: 15, dot: '#a97bff' },
+          { name: 'TypeScript', count: 10, dot: '#3178c6' },
+        ]},
+        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 22, items: [
+          { name: 'payments-api',     count: 14 },
+          { name: 'identity-service', count: 12 },
+          { name: 'orders-service',   count: 10 },
+          { name: 'risk-engine',      count: 9 },
+          { name: 'platform-core',    count: 7 },
+        ]},
+        { id: 'topic', title: 'By topic', searchable: true, items: [
+          { name: 'payments', count: 41 },
+          { name: 'identity', count: 32 },
+          { name: 'orders',   count: 27 },
+          { name: 'risk',     count: 19 },
+          { name: 'tech-debt',count: 18 },
+        ]},
+      ],
+      extraCards: [
+        { id: 'g-RetryPolicy', file: 'RetryPolicy.java', module: 'platform-core', count: 2, lines: [
+          { n: 12, code: '// <m>TODO(sliang):</m> exponential backoff with jitter' },
+          { n: 44, code: '// <m>TODO(arimbach):</m> tune for 99th percentile' },
+        ]},
+        { id: 'g-FeatureFlags', file: 'FeatureFlags.kt', module: 'platform-core', count: 1, lines: [
+          { n: 27, code: '// <m>TODO(jbenoit):</m> migrate from in-memory to LaunchDarkly' },
         ]},
       ],
     },
@@ -2292,6 +3530,19 @@ const FINAL_QUERIES = {
   a: '(@PreAuthorize or @Secured or @RolesAllowed)',
   b: 'org.apache.logging.log4j',
   c: '@RestController',
+  d: '@Deprecated',
+  e: 'private static final Logger',
+  f: 'catch (:[ex]) { log.error(:[msg]); }',
+  g: '/TODO\\(\\w+\\):/',
+};
+
+// Activity-table trigrep search rows point at canned flows via this map.
+// Keys are the exact query string stored on the activity row.
+const QUERY_TO_FLOW = {
+  '@Deprecated': 'd',
+  'private static final Logger': 'e',
+  'catch (:[ex]) { log.error(:[msg]); }': 'f',
+  '/TODO\\(\\w+\\):/': 'g',
 };
 
 const START_EXAMPLES = [
@@ -2300,6 +3551,13 @@ const START_EXAMPLES = [
   { mode: 'sourcegraph', query: '@RestController lang:java',                     desc: 'Find Spring REST controllers',        action: 'syntax-c' },
   { mode: 'comby',       query: 'try { :[body] } catch (:[ex]) { :[handler] }',  desc: 'Match structural patterns',           action: 'fallback' },
   { mode: 'regex',       query: '/log\\.(error|warn)\\(/',                       desc: 'Match with regular expressions',       action: 'fallback' },
+];
+
+const RECENT_QUERIES = [
+  { mode: 'sourcegraph', query: '@Deprecated',                                   when: '6 min ago',  action: 'syntax-d' },
+  { mode: 'sourcegraph', query: 'private static final Logger',                   when: '3 hr ago',   action: 'syntax-e' },
+  { mode: 'comby',       query: 'catch (:[ex]) { log.error(:[msg]); }',          when: 'Yesterday',  action: 'syntax-f' },
+  { mode: 'regex',       query: '/TODO\\(\\w+\\):/',                              when: '2 days ago', action: 'syntax-g' },
 ];
 
 function buildTrigrepLandingHTML() {
@@ -2342,6 +3600,9 @@ function buildTrigrepLandingHTML() {
           <span class="syntax-selector-divider" aria-hidden="true"></span>
           <svg class="trigrep-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input class="trigrep-query" id="trigrep-query-input" placeholder="${escapeHtml(PLACEHOLDERS.sourcegraph)}" spellcheck="false">
+          <button type="button" class="trigrep-query-clear" id="trigrep-query-clear" aria-label="Clear query" title="Clear query" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+          </button>
         </div>
         <button class="btn-search" id="trigrep-search-btn">Search</button>
         <div class="tg-autocomplete" id="tg-autocomplete" hidden></div>
@@ -2375,6 +3636,8 @@ function buildTrigrepLandingHTML() {
             </div>
             <div class="trigrep-start-title">Start Your Code Search</div>
             <div class="trigrep-start-subtitle">Use powerful filters and semantic search to find exactly what you're looking for across your entire codebase</div>
+            <div class="trigrep-start-recent-label">Recent queries</div>
+            <div class="trigrep-start-recent-list" id="trigrep-start-recent-list"></div>
             <div class="trigrep-start-examples-label">Try these examples</div>
             <div class="trigrep-start-examples-list" id="trigrep-start-examples-list"></div>
             <div class="trigrep-start-divider"></div>
@@ -2471,17 +3734,66 @@ function renderStartExamples() {
   });
 }
 
+function renderStartRecent() {
+  const slot = trigrepPanel.querySelector('#trigrep-start-recent-list');
+  if (!slot) return;
+  slot.innerHTML = RECENT_QUERIES.map(rq => `
+    <button class="trigrep-start-recent" type="button" data-action="${rq.action}" data-mode="${rq.mode}" data-query="${escapeHtml(rq.query)}">
+      <svg class="trigrep-start-recent-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span class="trigrep-start-recent-query">${escapeHtml(rq.query)}</span>
+      <span class="trigrep-start-recent-mode mode-${rq.mode}">${SYNTAX_LABELS[rq.mode] || rq.mode}</span>
+      <span class="trigrep-start-recent-time">${rq.when}</span>
+    </button>
+  `).join('');
+  slot.querySelectorAll('.trigrep-start-recent').forEach(row => {
+    row.addEventListener('click', () => {
+      const mode = row.dataset.mode;
+      const input = trigrepPanel.querySelector('#trigrep-query-input');
+      if (input) input.value = row.dataset.query || '';
+      const action = row.dataset.action;
+      if (action === 'fallback') {
+        if (mode) setSyntaxMode(mode);
+        showSearchFallback();
+        return;
+      }
+      if (action && action.startsWith('syntax-')) {
+        executeSearch(action.slice('syntax-'.length));
+        // executeSearch resets the syntax mode to Sourcegraph; restore the
+        // recent-query's original mode and refresh the chip strip.
+        if (mode) { try { setSyntaxMode(mode); } catch (err) {} }
+        if (input) input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    });
+  });
+}
+
 function wireTrigrepSearchBar() {
   const input = trigrepPanel.querySelector('#trigrep-query-input');
   const btn = trigrepPanel.querySelector('#trigrep-search-btn');
+  const clearBtn = trigrepPanel.querySelector('#trigrep-query-clear');
   if (!input || !btn) return;
 
   const submit = () => tgSubmit((input.value || '').trim());
-
   btn.addEventListener('click', submit);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); }
   });
+
+  // Show / hide the clear-input "×" based on whether the input has content.
+  const syncClearVisibility = () => {
+    if (!clearBtn) return;
+    clearBtn.hidden = !((input.value || '').length > 0);
+  };
+  input.addEventListener('input', syncClearVisibility);
+  syncClearVisibility();
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      input.focus();
+      syncClearVisibility();
+    });
+  }
 }
 
 function showSearchFallback() {
@@ -2518,6 +3830,139 @@ const PRESET_ACTIVE_FILTERS = {
   a: new Set(['Java']),
   b: new Set(['Java', 'Sole logger (Log4j only)', 'Mixed with SLF4J']),
   c: new Set(['Java']),
+};
+
+// Suggested recipes per flow — ranked by relevance against the search result set.
+// Each recipe describes: id, name, short description, relevance (files/repos that the recipe
+// would touch out of the search result set), and an estimated change count.
+const SUGGESTED_RECIPES = {
+  a: {
+    queryLabel: '@PreAuthorize',
+    recipes: [
+      { id: 'org.openrewrite.java.spring.security.StandardizeAuthorizationExpressions',
+        name: 'Standardize Spring Security authorization expressions',
+        desc: 'Normalize @PreAuthorize / @Secured / @RolesAllowed usage to a single, consistent style.',
+        files: 198, totalFiles: 234, repos: 76, changes: 612 },
+      { id: 'org.openrewrite.java.spring.security.MigrateSecuredToPreAuthorize',
+        name: 'Migrate @Secured to @PreAuthorize',
+        desc: 'Replaces legacy @Secured annotations with equivalent @PreAuthorize SpEL expressions.',
+        files: 47,  totalFiles: 234, repos: 21, changes: 47 },
+      { id: 'org.openrewrite.java.spring.security.AddRolesAllowedAudit',
+        name: 'Add audit logging to @RolesAllowed methods',
+        desc: 'Wraps role-checked endpoints with an audit log call for SOC compliance.',
+        files: 12,  totalFiles: 234, repos: 6,  changes: 24 },
+      { id: 'org.openrewrite.java.spring.security.RemoveUnusedAuthorizationAnnotations',
+        name: 'Remove unused authorization annotations',
+        desc: 'Strips @PreAuthorize / @Secured from methods that are no longer publicly reachable.',
+        files: 8,   totalFiles: 234, repos: 5,  changes: 8 },
+    ]
+  },
+  b: {
+    queryLabel: 'log4j',
+    recipes: [
+      { id: 'org.openrewrite.java.logging.log4j.Log4j1ToSlf4j',
+        name: 'Migrate Log4j 1.x to SLF4J',
+        desc: 'Replaces org.apache.log4j Logger declarations with SLF4J equivalents and rewires bindings.',
+        files: 38,  totalFiles: 54, repos: 14, changes: 162 },
+      { id: 'org.openrewrite.java.logging.log4j.UpgradeLog4j2',
+        name: 'Upgrade Log4j 2.x to the latest patched release',
+        desc: 'Bumps log4j-core / log4j-api to a vetted version that addresses recent CVEs.',
+        files: 12,  totalFiles: 54, repos: 8,  changes: 12 },
+      { id: 'org.openrewrite.java.logging.AddStructuredLogContext',
+        name: 'Add structured logging context (MDC)',
+        desc: 'Inserts requestId / userId into MDC at request boundaries so logs join up cleanly.',
+        files: 22,  totalFiles: 54, repos: 9,  changes: 88 },
+    ]
+  },
+  c: {
+    queryLabel: '@RestController',
+    recipes: [
+      { id: 'org.openrewrite.java.spring.boot3.AddOpenApiAnnotations',
+        name: 'Add OpenAPI annotations to REST controllers',
+        desc: 'Generates @Operation / @ApiResponse stubs from existing method signatures and Javadoc.',
+        files: 312, totalFiles: 390, repos: 84, changes: 1240 },
+      { id: 'org.openrewrite.java.spring.NormalizeRequestMapping',
+        name: 'Replace @RequestMapping with specific HTTP-verb annotations',
+        desc: 'Swaps @RequestMapping(method=…) for @GetMapping / @PostMapping / @PutMapping / @DeleteMapping.',
+        files: 168, totalFiles: 390, repos: 61, changes: 411 },
+      { id: 'org.openrewrite.java.spring.AddRequestValidation',
+        name: 'Add request-body validation',
+        desc: 'Annotates @RequestBody parameters with @Valid and surfaces missing constraint declarations.',
+        files: 94,  totalFiles: 390, repos: 38, changes: 138 },
+      { id: 'org.openrewrite.java.spring.RemoveDeadEndpoints',
+        name: 'Remove unreferenced REST endpoints',
+        desc: 'Flags handlers with no inbound calls in the last 90 days for review.',
+        files: 18,  totalFiles: 390, repos: 11, changes: 18 },
+    ]
+  },
+  d: {
+    queryLabel: '@Deprecated',
+    recipes: [
+      { id: 'org.openrewrite.java.migrate.MarkForRemoval',
+        name: 'Add forRemoval=true to long-deprecated APIs',
+        desc: 'Marks @Deprecated members older than 12 months with forRemoval=true and a since= tag.',
+        files: 26, totalFiles: 38, repos: 14, changes: 71 },
+      { id: 'org.openrewrite.java.migrate.RemoveCallsToDeprecated',
+        name: 'Remove call-sites of @Deprecated APIs',
+        desc: 'Rewrites consumers of @Deprecated APIs to use the documented replacement.',
+        files: 19, totalFiles: 38, repos: 11, changes: 84 },
+      { id: 'org.openrewrite.java.spring.MigrateDeprecatedSpringAnnotations',
+        name: 'Migrate deprecated Spring annotations to current equivalents',
+        desc: 'Updates @Deprecated Spring annotations to their Spring 6 / Boot 3 replacements.',
+        files: 12, totalFiles: 38, repos: 7,  changes: 22 },
+    ]
+  },
+  e: {
+    queryLabel: 'private static final Logger',
+    recipes: [
+      { id: 'org.openrewrite.java.logging.slf4j.StandardizeLoggerName',
+        name: 'Standardize logger field naming',
+        desc: 'Renames logger/log/LOG declarations to a consistent project-wide convention.',
+        files: 152, totalFiles: 156, repos: 41, changes: 198 },
+      { id: 'org.openrewrite.java.logging.slf4j.AddMDCContext',
+        name: 'Add structured MDC context to log statements',
+        desc: 'Wraps service-entry methods with MDC.put / MDC.clear for requestId and userId.',
+        files: 88,  totalFiles: 156, repos: 33, changes: 312 },
+      { id: 'org.openrewrite.java.logging.MigratePrintStream',
+        name: 'Migrate System.out / System.err to logger',
+        desc: 'Replaces stray System.out.println / System.err.println with the appropriate logger call.',
+        files: 24,  totalFiles: 156, repos: 14, changes: 47 },
+    ]
+  },
+  f: {
+    queryLabel: 'catch (:[ex])',
+    recipes: [
+      { id: 'org.openrewrite.java.logging.IncludeCaughtThrowable',
+        name: 'Pass the caught exception into log.error',
+        desc: 'Adds the caught exception as the last argument so stack traces are preserved.',
+        files: 28, totalFiles: 28, repos: 11, changes: 73 },
+      { id: 'org.openrewrite.java.logging.AddStructuredErrorContext',
+        name: 'Replace string-only log.error with structured context',
+        desc: 'Switches log.error("...") for the structured form with key/value pairs.',
+        files: 19, totalFiles: 28, repos: 9,  changes: 47 },
+      { id: 'org.openrewrite.java.reliability.EmitFailureMetric',
+        name: 'Emit a failure metric alongside log.error',
+        desc: 'Inserts a metrics.counter("…failure").increment() call next to log.error.',
+        files: 13, totalFiles: 28, repos: 6,  changes: 26 },
+    ]
+  },
+  g: {
+    queryLabel: 'TODO comments',
+    recipes: [
+      { id: 'org.openrewrite.staticanalysis.ConvertTodoToIssueLink',
+        name: 'Convert TODOs to GitHub issue links',
+        desc: 'Opens GitHub issues for owner-tagged TODOs and rewrites comments to reference the issue.',
+        files: 81, totalFiles: 87, repos: 24, changes: 284 },
+      { id: 'org.openrewrite.staticanalysis.AddTodoExpiry',
+        name: 'Add expiry dates to TODO comments',
+        desc: 'Tags every TODO with a 90-day expiry so CI can fail builds on stale items.',
+        files: 56, totalFiles: 87, repos: 18, changes: 142 },
+      { id: 'org.openrewrite.staticanalysis.NormalizeTodoFormat',
+        name: 'Normalize TODO format to TODO(@owner)',
+        desc: 'Rewrites legacy formats (FIXME / XXX / TODO:) to the standard TODO(@owner) shape.',
+        files: 34, totalFiles: 87, repos: 13, changes: 71 },
+    ]
+  },
 };
 
 const CHECK_ICON_SVG = '<svg class="filter-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
@@ -2620,6 +4065,12 @@ function renderTrigrepResults(flow) {
       </section>
     </aside>
     <div class="trigrep-results" id="trigrep-results">
+      <div class="results-actions" id="results-actions">
+        <button type="button" class="btn-run-recipe" id="btn-run-recipe">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run recipe
+        </button>
+      </div>
       <div id="result-cards-list">${cardsHtml}</div>
       <div class="results-overflow">
         ${overflowText} <button class="show-more" id="show-more-btn">Show more results</button>
@@ -2628,6 +4079,249 @@ function renderTrigrepResults(flow) {
   `;
 
   wireResultsInteractions(flow, remainingCards);
+  wireRunRecipeButton(currentFlow);
+}
+
+// Catalog recipes — appear in "All recipes" alongside the per-flow suggested ones.
+const RECIPE_CATALOG = [
+  { id: 'org.openrewrite.java.testing.junit5.JUnit5BestPractices',
+    name: 'Migrate JUnit 4 to JUnit 5',
+    desc: 'Rewrites assertions, runners, and annotations for the Jupiter test engine.' },
+  { id: 'org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3',
+    name: 'Upgrade Spring Boot to 3.3',
+    desc: 'Bumps the Spring Boot platform and fixes deprecations along the way.' },
+  { id: 'org.openrewrite.java.migrate.UpgradeJavaVersion',
+    name: 'Upgrade Java version',
+    desc: 'Updates the source/target Java version and applies the latest language idioms.' },
+  { id: 'org.openrewrite.java.format.AutoFormat',
+    name: 'Auto-format Java code',
+    desc: 'Applies your project formatter to all Java sources in one pass.' },
+  { id: 'org.openrewrite.java.cleanup.CommonStaticAnalysis',
+    name: 'Common static-analysis cleanup',
+    desc: 'A bundle of high-confidence cleanups: unused imports, empty blocks, redundant casts.' },
+  { id: 'org.openrewrite.java.security.OwaspTopTen',
+    name: 'OWASP Top Ten remediations',
+    desc: 'Detects and fixes well-known classes of security vulnerabilities.' },
+];
+
+// Build a unified list of recipes for the picker, with a `kind` tag.
+// Suggested recipes for the current flow come first; the catalog follows.
+function getRecipeList(flowId) {
+  const sugBlock = SUGGESTED_RECIPES[flowId];
+  const suggested = (sugBlock?.recipes || []).map(r => ({ ...r, kind: 'suggested' }));
+  const suggestedIds = new Set(suggested.map(r => r.id));
+  const catalog = RECIPE_CATALOG
+    .filter(r => !suggestedIds.has(r.id))
+    .map(r => ({ ...r, kind: 'catalog' }));
+  return { suggested, catalog, queryLabel: sugBlock?.queryLabel || '' };
+}
+
+function wireRunRecipeButton(flowId) {
+  const btn = trigrepPanel.querySelector('#btn-run-recipe');
+  if (!btn) return;
+  btn.addEventListener('click', () => openRecipePicker(flowId));
+}
+
+function openRecipePicker(flowId) {
+  closeRunDrawer();
+  const { suggested, catalog, queryLabel } = getRecipeList(flowId);
+  const flow = FLOWS[flowId];
+  const totalFiles = flow?.phase2?.baseFiles || 0;
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'sr-drawer-backdrop';
+  backdrop.id = 'sr-drawer-backdrop';
+  const drawer = document.createElement('aside');
+  drawer.className = 'sr-drawer rp-drawer';
+  drawer.id = 'sr-drawer';
+  drawer.setAttribute('role', 'dialog');
+  drawer.setAttribute('aria-modal', 'true');
+
+  const recipeRow = (r) => {
+    const pct = (r.totalFiles && r.totalFiles > 0) ? Math.round((r.files / r.totalFiles) * 100) : null;
+    const relevance = (r.kind === 'suggested' && pct !== null)
+      ? `<div class="rp-recipe-rel">
+           <span class="sr-rel-bar"><span class="sr-rel-fill" style="width:${pct}%"></span></span>
+           ${pct}% match · ${r.files.toLocaleString()} of ${r.totalFiles.toLocaleString()} files · ${r.repos} repo${r.repos === 1 ? '' : 's'}
+         </div>`
+      : '';
+    return `
+      <div class="rp-recipe" role="radio" tabindex="0" aria-checked="false"
+           data-recipe-id="${escapeHtml(r.id)}"
+           data-recipe-name="${escapeHtml(r.name)}"
+           data-recipe-files="${r.files ?? ''}"
+           data-recipe-repos="${r.repos ?? ''}"
+           data-recipe-changes="${r.changes ?? ''}"
+           data-recipe-kind="${r.kind}">
+        <span class="rp-radio" aria-hidden="true"></span>
+        <div class="rp-recipe-text">
+          <div class="rp-recipe-name">${escapeHtml(r.name)}</div>
+          <div class="rp-recipe-desc">${escapeHtml(r.desc)}</div>
+          ${relevance}
+          <div class="rp-recipe-id">${escapeHtml(r.id)}</div>
+        </div>
+      </div>
+    `;
+  };
+
+  drawer.innerHTML = `
+    <button type="button" class="sr-drawer-close" aria-label="Close">×</button>
+    <div class="sr-drawer-head">
+      <div class="sr-drawer-eyebrow">Run recipe</div>
+      <h2 class="sr-drawer-title">Pick a recipe to run</h2>
+      <p class="rp-sub">Against your <strong>${totalFiles.toLocaleString()}</strong> matched files. We've ranked recipes most relevant to <span class="rp-query">${escapeHtml(queryLabel)}</span> at the top.</p>
+      <div class="rp-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="rp-search-input" placeholder="Search recipes by name or id…" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+    <div class="sr-drawer-body rp-body">
+      ${suggested.length ? `
+        <div class="rp-group" data-group="suggested">
+          <div class="rp-group-label">Suggested for <span class="rp-query">${escapeHtml(queryLabel)}</span></div>
+          <div class="rp-group-list">${suggested.map(recipeRow).join('')}</div>
+        </div>` : ''}
+      ${catalog.length ? `
+        <div class="rp-group" data-group="catalog">
+          <div class="rp-group-label">All recipes</div>
+          <div class="rp-group-list">${catalog.map(recipeRow).join('')}</div>
+        </div>` : ''}
+      <div class="rp-empty" id="rp-empty" hidden>No recipes match your search.</div>
+    </div>
+    <div class="rp-scope" id="rp-scope" hidden>
+      <div class="rp-scope-label">Selected scope</div>
+      <div class="rp-scope-rows" id="rp-scope-rows"></div>
+    </div>
+    <div class="sr-drawer-foot">
+      <button type="button" class="btn-secondary" id="sr-drawer-cancel">Cancel</button>
+      <button type="button" class="btn-primary" id="sr-drawer-run" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Queue recipe run
+      </button>
+    </div>
+  `;
+  document.body.appendChild(backdrop);
+  document.body.appendChild(drawer);
+  requestAnimationFrame(() => {
+    backdrop.classList.add('on');
+    drawer.classList.add('on');
+    drawer.querySelector('#rp-search-input')?.focus();
+  });
+
+  let selected = null;
+  const runBtn = drawer.querySelector('#sr-drawer-run');
+  const scopeWrap = drawer.querySelector('#rp-scope');
+  const scopeRows = drawer.querySelector('#rp-scope-rows');
+
+  const renderScope = (row) => {
+    if (!row) { scopeWrap.hidden = true; return; }
+    const kind = row.dataset.recipeKind;
+    const filesVal = row.dataset.recipeFiles;
+    const reposVal = row.dataset.recipeRepos;
+    const changesVal = row.dataset.recipeChanges;
+    const hasMatch = kind === 'suggested' && filesVal !== '';
+    const rows = [
+      `<div class="sr-scope-row">Trigrep query <strong>${escapeHtml(queryLabel)}</strong></div>`,
+      `<div class="sr-scope-row">Matched files <strong>${hasMatch ? Number(filesVal).toLocaleString() : totalFiles.toLocaleString()}</strong></div>`,
+      hasMatch ? `<div class="sr-scope-row">Repositories <strong>${Number(reposVal).toLocaleString()}</strong></div>` : '',
+      hasMatch ? `<div class="sr-scope-row">Estimated changes <strong>${Number(changesVal).toLocaleString()}</strong></div>` : ''
+    ].join('');
+    scopeRows.innerHTML = rows;
+    scopeWrap.hidden = false;
+  };
+
+  const select = (row) => {
+    drawer.querySelectorAll('.rp-recipe.is-selected').forEach(r => {
+      r.classList.remove('is-selected');
+      r.setAttribute('aria-checked', 'false');
+    });
+    selected = row;
+    row.classList.add('is-selected');
+    row.setAttribute('aria-checked', 'true');
+    runBtn.disabled = false;
+    renderScope(row);
+  };
+
+  drawer.querySelectorAll('.rp-recipe').forEach(row => {
+    row.addEventListener('click', () => select(row));
+    row.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); select(row); }
+    });
+  });
+
+  // Live filter by query string
+  const searchInput = drawer.querySelector('#rp-search-input');
+  const emptyEl = drawer.querySelector('#rp-empty');
+  searchInput.addEventListener('input', () => {
+    const q = (searchInput.value || '').trim().toLowerCase();
+    let anyVisible = false;
+    drawer.querySelectorAll('.rp-group').forEach(group => {
+      let groupVisible = false;
+      group.querySelectorAll('.rp-recipe').forEach(row => {
+        const name = (row.dataset.recipeName || '').toLowerCase();
+        const id   = (row.dataset.recipeId || '').toLowerCase();
+        const hit = !q || name.includes(q) || id.includes(q);
+        row.style.display = hit ? '' : 'none';
+        if (hit) groupVisible = true;
+      });
+      group.style.display = groupVisible ? '' : 'none';
+      if (groupVisible) anyVisible = true;
+    });
+    emptyEl.hidden = anyVisible;
+  });
+
+  backdrop.addEventListener('click', closeRunDrawer);
+  drawer.querySelector('.sr-drawer-close').addEventListener('click', closeRunDrawer);
+  drawer.querySelector('#sr-drawer-cancel').addEventListener('click', closeRunDrawer);
+  runBtn.addEventListener('click', () => {
+    if (!selected) return;
+    const recipe = {
+      id: selected.dataset.recipeId,
+      name: selected.dataset.recipeName,
+      files: selected.dataset.recipeFiles ? Number(selected.dataset.recipeFiles) : totalFiles,
+      repos: selected.dataset.recipeRepos ? Number(selected.dataset.recipeRepos) : 0,
+      changes: selected.dataset.recipeChanges ? Number(selected.dataset.recipeChanges) : 0,
+      queryLabel
+    };
+    closeRunDrawer();
+    showRunToast(recipe);
+  });
+}
+
+function closeRunDrawer() {
+  const backdrop = document.getElementById('sr-drawer-backdrop');
+  const drawer = document.getElementById('sr-drawer');
+  if (!backdrop && !drawer) return;
+  if (backdrop) backdrop.classList.remove('on');
+  if (drawer) drawer.classList.remove('on');
+  setTimeout(() => {
+    backdrop?.remove();
+    drawer?.remove();
+  }, 200);
+}
+
+function showRunToast(recipe) {
+  const existing = document.getElementById('sr-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'sr-toast';
+  toast.id = 'sr-toast';
+  toast.innerHTML = `
+    <span class="sr-toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+    <div>Queued <strong>${escapeHtml(recipe.name)}</strong> against ${recipe.files.toLocaleString()} files <a href="#" id="sr-toast-link">View in Activity →</a></div>
+  `;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('on'));
+  toast.querySelector('#sr-toast-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelector('.nav-item[data-nav-id="activity"]')?.click();
+    toast.classList.remove('on');
+    setTimeout(() => toast.remove(), 200);
+  });
+  setTimeout(() => {
+    toast.classList.remove('on');
+    setTimeout(() => toast.remove(), 200);
+  }, 5200);
 }
 
 function buildResultCardHTML(card) {
@@ -3679,10 +5373,347 @@ trigrepPanel.innerHTML = buildTrigrepLandingHTML();
 wireSyntaxSelector();
 wireTrigrepSearchBar();
 setSyntaxMode('sourcegraph');
+renderStartRecent();
 renderStartExamples();
 tgWireAll();
 tgRenderAll();
 try { window.runLeanV1Tests(); } catch (e) { console.warn('[trigrep] lean-v1 test error:', e); }
+
+// ===================================================================
+// Activity panel — recent activity table with lineage scenes
+// ===================================================================
+function renderActivityPanel(root) {
+  const COLORS = {
+    'trigrep-search': '#ecb81f',
+    'recipe-run':     '#992fb9',
+    'commit-job':     '#2f42ff',
+    'visualization':  '#27aa88',
+    'none':           '#e5e7eb'
+  };
+  const STROKE = 1.2;
+  const VB = '-12 -12 35 36';
+  const svg = (children) => `<svg class="ap-scene" viewBox="${VB}" xmlns="http://www.w3.org/2000/svg">${children}</svg>`;
+  const circle = (color, paths = {}) => {
+    const parts = [];
+    if (paths.right)  parts.push(`<path d="M 11,5 H 35"  stroke="${paths.right}"  stroke-width="${STROKE}" fill="none"/>`);
+    if (paths.left)   parts.push(`<path d="M -12,5 H -1" stroke="${paths.left}"   stroke-width="${STROKE}" fill="none"/>`);
+    if (paths.top)    parts.push(`<path d="M 5,-1 V -12" stroke="${paths.top}"    stroke-width="${STROKE}" fill="none"/>`);
+    if (paths.bottom) parts.push(`<path d="M 5,11 V 35"  stroke="${paths.bottom}" stroke-width="${STROKE}" fill="none"/>`);
+    parts.push(`<circle r="6" cx="5" cy="5" fill="${color}"/>`);
+    return svg(parts.join(''));
+  };
+  const pathVertical   = (color) => svg(`<path d="M 5,-12 V 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
+  const pathHorizontal = (color) => svg(`<path d="M -12,5 H 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
+  const corner         = (color) => svg(`<path d="M -12,5 H 0 Q 5 5.5, 5 12 V 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
+  const cornerWithH    = (cornerColor, hColor) => svg(`
+    <path d="M -12,5 H 35" stroke="${hColor}"      stroke-width="${STROKE}" fill="none"/>
+    <path d="M -12,5 H 0 Q 5 5.5, 5 12 V 35" stroke="${cornerColor}" stroke-width="${STROKE}" fill="none"/>
+  `);
+  const cornerTR = (color) => svg(`<path d="M 5,-12 V 0 Q 5 5, 12 5 H 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
+  const teeRight = (railColor, branchColor) => svg(`
+    <path d="M 5,-12 V 35" stroke="${railColor}"   stroke-width="${STROKE}" fill="none"/>
+    <path d="M 5,5 H 35"   stroke="${branchColor || railColor}" stroke-width="${STROKE}" fill="none"/>
+  `);
+  const S = {
+    BLANK:'blank', CIRCLE:'circle', CIRCLE_R:'circle-right', CIRCLE_B:'circle-bottom',
+    CIRCLE_T:'circle-top', CIRCLE_TB:'circle-top-bottom',
+    CORNER:'corner', CORNER_H:'corner-h', CORNER_TR:'corner-tr', TEE_RIGHT:'tee-right',
+    V:'vertical', H:'horizontal'
+  };
+  const renderScene = (scene, color, pathColor) => {
+    const pc = pathColor || color;
+    switch (scene) {
+      case S.BLANK:     return '';
+      case S.CIRCLE:    return circle(color);
+      case S.CIRCLE_R:  return circle(color, { right: pc });
+      case S.CIRCLE_B:  return circle(color, { bottom: pc });
+      case S.CIRCLE_T:  return circle(color, { top: pc });
+      case S.CIRCLE_TB: return circle(color, { top: pc, bottom: pc });
+      case S.CORNER:    return corner(pc);
+      case S.CORNER_H:  return cornerWithH(color, pc);
+      case S.CORNER_TR: return cornerTR(color);
+      case S.TEE_RIGHT: return teeRight(color, pc);
+      case S.V:         return pathVertical(color);
+      case S.H:         return pathHorizontal(color);
+      default:          return '';
+    }
+  };
+
+  const trigrepRow = (name, query, opts) => {
+    const { hasChild = true, mode = 'sourcegraph', org = 'Acme Bank', status = '2 matches · 14 files', runBy = 'A', time = '6 min ago', abs = 'Today 09:42', clusterStart = true } = opts || {};
+    return {
+      type: 'trigrep-search', name, query, mode, isHeader: true, clusterStart,
+      scenes:          [hasChild ? S.CIRCLE_B : S.CIRCLE, S.BLANK, S.BLANK, S.BLANK],
+      colors:          [COLORS['trigrep-search'], COLORS.none, COLORS.none, COLORS.none],
+      secondaryColors: [COLORS['trigrep-search'], COLORS.none, COLORS.none, COLORS.none],
+      org, status, statusBadge: null, runBy, time, abs
+    };
+  };
+  const recipeRunRow = (name, recipe, opts) => {
+    const { trigrepRel = 'none', hasCommit = false, hasVis = false,
+            org = 'Acme Bank', status = 'Completed', statusBadge = 'success',
+            runBy = 'A', time = '4 min ago', abs = 'Today 09:44', clusterStart = false } = opts || {};
+    let col0 = S.BLANK;
+    if (trigrepRel === 'middle') col0 = S.TEE_RIGHT;
+    if (trigrepRel === 'last')   col0 = S.CORNER_TR;
+    const col1 = (hasCommit || hasVis) ? S.CIRCLE_R : S.CIRCLE;
+    let col2 = S.BLANK;
+    if (hasCommit && hasVis) col2 = S.CORNER_H;
+    else if (hasCommit)      col2 = S.CORNER;
+    else if (hasVis)         col2 = S.H;
+    const col3 = hasVis ? S.CORNER : S.BLANK;
+    const col2BranchColor = hasCommit ? COLORS['commit-job'] : (hasVis ? COLORS['visualization'] : COLORS['recipe-run']);
+    return {
+      type: 'recipe-run', name, recipe, clusterStart,
+      scenes:          [col0, col1, col2, col3],
+      colors:          [
+        COLORS['trigrep-search'], COLORS['recipe-run'],
+        hasCommit ? COLORS['commit-job'] : (hasVis ? COLORS['visualization'] : COLORS.none),
+        hasVis ? COLORS['visualization'] : COLORS.none
+      ],
+      secondaryColors: [
+        COLORS['trigrep-search'],
+        col1 === S.CIRCLE_R ? col2BranchColor : COLORS['recipe-run'],
+        hasCommit && hasVis ? COLORS['visualization'] : (hasCommit ? COLORS['commit-job'] : COLORS['visualization']),
+        COLORS['visualization']
+      ],
+      org, status, statusBadge, runBy, time, abs
+    };
+  };
+  const commitJobRow = (name, opts) => {
+    const { isLast = true, hasParallelVis = false, parentHasTrigrepSiblingBelow = false,
+            org = 'Acme Bank', status, statusBadge,
+            progress = { done: 12, total: 12 },
+            runBy = 'A', time = '3 min ago', abs = 'Today 09:45' } = opts || {};
+    const col0 = parentHasTrigrepSiblingBelow ? S.V : S.BLANK;
+    const col2 = isLast ? S.CIRCLE_T : S.CIRCLE_TB;
+    const col3 = hasParallelVis ? S.V : S.BLANK;
+    return {
+      type: 'commit-job', name,
+      scenes:          [col0, S.BLANK, col2, col3],
+      colors:          [COLORS['trigrep-search'], COLORS.none, COLORS['commit-job'], COLORS['visualization']],
+      secondaryColors: [COLORS['trigrep-search'], COLORS.none, COLORS['commit-job'], COLORS['visualization']],
+      org, status, statusBadge, progress, runBy, time, abs
+    };
+  };
+  const visualizationRow = (name, opts) => {
+    const { isLast = true, parentHasTrigrepSiblingBelow = false,
+            org = 'Acme Bank', status = 'Completed', statusBadge = 'success',
+            runBy = 'A', time = '2 min ago', abs = 'Today 09:46' } = opts || {};
+    const col0 = parentHasTrigrepSiblingBelow ? S.V : S.BLANK;
+    const col3 = isLast ? S.CIRCLE_T : S.CIRCLE_TB;
+    return {
+      type: 'visualization', name,
+      scenes:          [col0, S.BLANK, S.BLANK, col3],
+      colors:          [COLORS['trigrep-search'], COLORS.none, COLORS.none, COLORS['visualization']],
+      secondaryColors: [COLORS['trigrep-search'], COLORS.none, COLORS.none, COLORS['visualization']],
+      org, status, statusBadge, runBy, time, abs
+    };
+  };
+
+  const rows = [
+    trigrepRow('Find usages of @Deprecated in Spring projects', '@Deprecated', { hasChild: true, status: '147 matches · 38 files', time: '6 min ago', abs: 'Today 09:42' }),
+    recipeRunRow('Update Spring Boot dependencies', 'org.openrewrite.spring.boot3.UpgradeSpringBoot_3_3', { trigrepRel: 'middle', hasCommit: true, hasVis: true, runBy: 'A', time: '4 min ago', abs: 'Today 09:44' }),
+    commitJobRow('chore: bump Spring Boot to 3.3.x', { isLast: true, hasParallelVis: true, parentHasTrigrepSiblingBelow: true, progress: { done: 12, total: 12 }, runBy: 'A', time: '3 min ago', abs: 'Today 09:45' }),
+    visualizationRow('Dependency usage chart', { isLast: true, parentHasTrigrepSiblingBelow: true, status: 'Completed', runBy: 'A', time: '2 min ago', abs: 'Today 09:46' }),
+    recipeRunRow('Replace deprecated annotations', 'org.openrewrite.java.migrate.UpgradeJavaVersion', { trigrepRel: 'last', hasCommit: true, hasVis: false, runBy: 'M', time: '4 min ago', abs: 'Today 09:44' }),
+    commitJobRow('refactor: replace @Deprecated calls', { isLast: true, hasParallelVis: false, parentHasTrigrepSiblingBelow: false, progress: { done: 8, total: 12, running: true }, runBy: 'M', time: '2 min ago', abs: 'Today 09:46' }),
+    recipeRunRow('Migrate JUnit 4 to JUnit 5', 'org.openrewrite.java.testing.junit5.JUnit5BestPractices', { trigrepRel: 'none', hasCommit: true, hasVis: true, runBy: 'R', time: '1 hr ago', abs: 'Today 08:51', clusterStart: true }),
+    commitJobRow('test: migrate to JUnit 5', { isLast: true, hasParallelVis: true, parentHasTrigrepSiblingBelow: false, progress: { done: 8, total: 9 }, runBy: 'R', time: '58 min ago', abs: 'Today 08:53' }),
+    visualizationRow('Test results summary', { isLast: true, parentHasTrigrepSiblingBelow: false, status: 'Completed', runBy: 'R', time: '55 min ago', abs: 'Today 08:55' }),
+    trigrepRow('Search for SLF4J logger declarations', 'private static final Logger', { hasChild: true, status: '412 matches · 156 files', runBy: 'A', time: '3 hr ago', abs: 'Today 06:40', clusterStart: true }),
+    recipeRunRow('Add structured logging context', 'org.openrewrite.java.logging.slf4j.AddMDCContext', { trigrepRel: 'last', hasCommit: false, hasVis: false, status: 'Failed · 2 errors', statusBadge: 'failed', runBy: 'A', time: '3 hr ago', abs: 'Today 06:42' }),
+
+    // Standalone trigrep searches (no follow-up actions) — match the Recent queries on the Trigrep empty state
+    trigrepRow('Audit logged-and-swallowed exceptions', 'catch (:[ex]) { log.error(:[msg]); }', { hasChild: false, mode: 'comby', status: '73 matches · 28 files', runBy: 'A', time: 'Yesterday',  abs: 'Yesterday 16:12', clusterStart: true }),
+    trigrepRow('Find owner-tagged TODO comments',      '/TODO\\(\\w+\\):/',                      { hasChild: false, mode: 'regex', status: '284 matches · 87 files', runBy: 'A', time: '2 days ago', abs: 'Mon 11:08',      clusterStart: true })
+  ];
+
+  root.innerHTML = `
+    <div class="ap-main">
+      <header class="ap-pageHead">
+        <div>
+          <h1 class="ap-pageTitle">Recent activity</h1>
+          <p class="ap-pageSub">Everything you and your organization have run — trigrep searches, recipe runs, and the commits and visualizations they produce — grouped by lineage so you can see what came from what.</p>
+        </div>
+        <div class="ap-pageActions">
+          <button class="ap-btn">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1v10M4 7l4 4 4-4M2 14h12"/></svg>
+            Export
+          </button>
+          <button class="ap-btn primary">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3v10M3 8h10"/></svg>
+            New run
+          </button>
+        </div>
+      </header>
+      <section class="ap-tiles">
+        <div class="ap-tile trigrep"><div class="ap-tile-label"><span class="dot"></span>Trigrep searches</div><div class="ap-tile-value">38</div><div class="ap-tile-delta"><span class="up">▲ 12%</span> · last 7 days</div></div>
+        <div class="ap-tile recipe"><div class="ap-tile-label"><span class="dot"></span>Recipe runs</div><div class="ap-tile-value">64</div><div class="ap-tile-delta"><span class="up">▲ 4%</span> · last 7 days</div></div>
+        <div class="ap-tile commit"><div class="ap-tile-label"><span class="dot"></span>Commit jobs</div><div class="ap-tile-value">27</div><div class="ap-tile-delta"><span class="down">▼ 8%</span> · last 7 days</div></div>
+        <div class="ap-tile viz"><div class="ap-tile-label"><span class="dot"></span>Visualizations</div><div class="ap-tile-value">13</div><div class="ap-tile-delta">— stable · last 7 days</div></div>
+      </section>
+      <div class="ap-toolbar">
+        <div class="ap-search">
+          <svg class="icn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+          <input type="text" placeholder="Search by name, recipe, or commit message…" />
+        </div>
+        <div class="ap-chips" role="group" aria-label="Activity type filters">
+          <button class="ap-chip t-trigrep active"><span class="sw"></span>Trigrep</button>
+          <button class="ap-chip t-recipe active"><span class="sw"></span>Recipe runs</button>
+          <button class="ap-chip t-commit active"><span class="sw"></span>Commit jobs</button>
+          <button class="ap-chip t-viz active"><span class="sw"></span>Visualizations</button>
+        </div>
+        <div class="ap-tool-divider"></div>
+        <select class="ap-select" aria-label="Time range"><option>Last 7 days</option><option>Last 24 hours</option><option>Last 30 days</option><option>All time</option></select>
+        <select class="ap-select" aria-label="Run by"><option>Run by anyone</option><option>Run by me</option><option>Run by team</option></select>
+        <select class="ap-select" aria-label="Status"><option>Any status</option><option>Completed</option><option>Running</option><option>Failed</option></select>
+      </div>
+      <div class="ap-tableCard">
+        <table class="ap-activity">
+          <colgroup>
+            <col style="width: 34px"><col style="width: 34px"><col style="width: 34px"><col style="width: 34px">
+            <col><col style="width: 140px"><col style="width: 180px"><col style="width: 200px"><col style="width: 90px"><col style="width: 180px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="activity-col" title="Trigrep search"><span class="dot" style="background: var(--ap-c-trigrep)"></span></th>
+              <th class="activity-col" title="Recipe run"><span class="dot" style="background: var(--ap-c-recipe)"></span></th>
+              <th class="activity-col" title="Commit job"><span class="dot" style="background: var(--ap-c-commit)"></span></th>
+              <th class="activity-col" title="Visualization"><span class="dot" style="background: var(--ap-c-viz)"></span></th>
+              <th class="name">Name</th>
+              <th class="type">Type</th>
+              <th class="org">Organization</th>
+              <th class="status">Status</th>
+              <th class="runby">Run by</th>
+              <th class="time">Started</th>
+            </tr>
+          </thead>
+          <tbody id="ap-rows"></tbody>
+        </table>
+        <div class="ap-tableFoot">
+          <div>Showing <strong style="color:var(--ap-text)">11</strong> of 142 activities</div>
+          <div class="ap-pager">
+            <button>‹</button>
+            <button class="current">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>…</button>
+            <button>13</button>
+            <button>›</button>
+          </div>
+        </div>
+      </div>
+      <div class="ap-legend">
+        <span class="li trigrep"><span class="sw"></span>Trigrep search</span>
+        <span class="li recipe"><span class="sw"></span>Recipe run</span>
+        <span class="li commit"><span class="sw"></span>Commit job</span>
+        <span class="li viz"><span class="sw"></span>Visualization</span>
+        <span style="margin-left:auto;color:var(--ap-text-mute)">Lineage columns are read left → right; vertical connectors group activities that share a parent.</span>
+      </div>
+    </div>
+  `;
+
+  const tbody = root.querySelector('#ap-rows');
+  rows.forEach((r) => {
+    const tr = document.createElement('tr');
+    if (r.clusterStart) tr.classList.add('cluster-start');
+    for (let i = 0; i < 4; i++) {
+      const td = document.createElement('td');
+      td.className = 'activity-cell';
+      td.innerHTML = renderScene(r.scenes[i], r.colors[i], r.secondaryColors[i]);
+      tr.appendChild(td);
+    }
+    const tdName = document.createElement('td');
+    tdName.className = 'name' + (r.isHeader ? ' trigrep-name' : '');
+    if (r.isHeader) {
+      // Trigrep search rows are clickable — they take the user back to the search.
+      tdName.innerHTML = `<a href="#" class="trigrep-search-link" data-query="${escapeHtml(r.query)}" data-mode="${escapeHtml(r.mode || 'sourcegraph')}">${r.name}</a><span class="trigrep-token">${r.query}</span>`;
+    } else {
+      tdName.innerHTML = `<a href="#">${r.name}</a>` + (r.recipe ? `<span class="name-meta">${r.recipe}</span>` : '');
+    }
+    tr.appendChild(tdName);
+    const tdType = document.createElement('td');
+    tdType.className = 'type t-' + r.type;
+    tdType.textContent = ({ 'trigrep-search':'Trigrep search','recipe-run':'Recipe run','commit-job':'Commit job','visualization':'Visualization' })[r.type];
+    tr.appendChild(tdType);
+    const tdOrg = document.createElement('td');
+    tdOrg.className = 'org';
+    tdOrg.textContent = r.org;
+    tr.appendChild(tdOrg);
+    const tdStatus = document.createElement('td');
+    tdStatus.className = 'status';
+    if (r.progress) {
+      const { done, total, running, failed } = r.progress;
+      const pct = total > 0 ? Math.max(0, Math.min(100, (done / total) * 100)) : 0;
+      const state = failed ? 'failed' : running ? 'running' : done < total ? 'warn' : 'success';
+      const stateLabel = ({ running:'Running', failed:'Failed', warn:'Partial', success:'Completed' })[state];
+      tdStatus.innerHTML = `
+        <div class="progress">
+          <div class="progress-bar"><div class="progress-fill ${state}" style="width:${pct.toFixed(1)}%"></div></div>
+          <div class="progress-label">
+            <span class="state ${state}">${stateLabel}</span>
+            <span class="count">${done} / ${total} repos</span>
+          </div>
+        </div>
+      `;
+    } else if (r.statusBadge) {
+      tdStatus.innerHTML = `<span class="badge ${r.statusBadge}"><span class="pulse"></span>${r.status}</span>`;
+    } else {
+      tdStatus.innerHTML = `<span class="secondary">${r.status}</span>`;
+    }
+    tr.appendChild(tdStatus);
+    const tdRunBy = document.createElement('td');
+    tdRunBy.className = 'runby';
+    tdRunBy.innerHTML = `<span class="avatar" title="${r.runBy}">${r.runBy}</span>`;
+    tr.appendChild(tdRunBy);
+    const tdTime = document.createElement('td');
+    tdTime.className = 'time';
+    tdTime.innerHTML = `${r.time}<span class="abs">${r.abs}</span>`;
+    tr.appendChild(tdTime);
+    tbody.appendChild(tr);
+  });
+  root.querySelectorAll('.ap-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('active');
+      chip.classList.toggle('muted');
+    });
+  });
+
+  // Trigrep search rows are clickable — clicking the name jumps back to that
+  // search in the Trigrep view with the query and syntax mode pre-filled.
+  root.querySelectorAll('.trigrep-search-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const query = link.dataset.query || '';
+      const mode  = link.dataset.mode  || 'sourcegraph';
+      setActiveView('trigrep');
+
+      // Route to a canned flow if one exists for this query, otherwise let
+      // the standard submit pipeline handle it (which falls back to the
+      // honest empty "no matches" state).
+      const flowId = (typeof QUERY_TO_FLOW !== 'undefined') ? QUERY_TO_FLOW[query] : null;
+      if (flowId && FLOWS[flowId]) {
+        try { executeSearch(flowId); } catch (err) {}
+        // executeSearch hard-codes Sourcegraph, so restore the original mode
+        // and refresh the chip strip from the rewritten input value.
+        try { setSyntaxMode(mode); } catch (err) {}
+        const input = trigrepPanel.querySelector('#trigrep-query-input');
+        if (input) input.dispatchEvent(new Event('input', { bubbles: true }));
+        return;
+      }
+
+      try { setSyntaxMode(mode); } catch (err) {}
+      const input = trigrepPanel.querySelector('#trigrep-query-input');
+      if (input) {
+        input.value = query;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      try { tgSubmit(query); }
+      catch (err) { try { showSearchFallback(); } catch (e2) {} }
+    });
+  });
+}
 </script>
 </body>
 </html>
