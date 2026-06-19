@@ -5848,16 +5848,9 @@ function renderActivityPanel(root) {
     commitJobRow('chore: bump Spring Boot to 3.3.x', { isLast: true, hasParallelVis: true, parentHasTrigrepSiblingBelow: true, progress: { done: 12, total: 12 }, runBy: 'A', time: '3 min ago', abs: 'Today 09:45' }),
     visualizationRow('Dependency usage chart', { isLast: true, parentHasTrigrepSiblingBelow: true, status: 'Completed', runBy: 'A', time: '2 min ago', abs: 'Today 09:46' }),
     recipeRunRow('Replace deprecated annotations', 'org.openrewrite.java.migrate.UpgradeJavaVersion', { trigrepRel: 'last', hasCommit: true, hasVis: false, runBy: 'M', time: '4 min ago', abs: 'Today 09:44' }),
-    commitJobRow('refactor: replace @Deprecated calls', { isLast: true, hasParallelVis: false, parentHasTrigrepSiblingBelow: false, progress: { done: 8, total: 12, running: true }, runBy: 'M', time: '2 min ago', abs: 'Today 09:46' }),
-    recipeRunRow('Migrate JUnit 4 to JUnit 5', 'org.openrewrite.java.testing.junit5.JUnit5BestPractices', { trigrepRel: 'none', hasCommit: true, hasVis: true, runBy: 'R', time: '1 hr ago', abs: 'Today 08:51', clusterStart: true }),
-    commitJobRow('test: migrate to JUnit 5', { isLast: true, hasParallelVis: true, parentHasTrigrepSiblingBelow: false, progress: { done: 8, total: 9 }, runBy: 'R', time: '58 min ago', abs: 'Today 08:53' }),
-    visualizationRow('Test results summary', { isLast: true, parentHasTrigrepSiblingBelow: false, status: 'Completed', runBy: 'R', time: '55 min ago', abs: 'Today 08:55' }),
+    commitJobRow('refactor: replace @Deprecated calls', { isLast: true, hasParallelVis: false, parentHasTrigrepSiblingBelow: true, progress: { done: 8, total: 12, running: true }, runBy: 'M', time: '2 min ago', abs: 'Today 09:46' }),
     trigrepRow('Search for SLF4J logger declarations', 'private static final Logger', { hasChild: true, status: '412 matches · 156 files', runBy: 'A', time: '3 hr ago', abs: 'Today 06:40', clusterStart: true }),
-    recipeRunRow('Add structured logging context', 'org.openrewrite.java.logging.slf4j.AddMDCContext', { trigrepRel: 'last', hasCommit: false, hasVis: false, status: 'Failed · 2 errors', statusBadge: 'failed', runBy: 'A', time: '3 hr ago', abs: 'Today 06:42' }),
-
-    // Standalone trigrep searches (no follow-up actions) — match the Recent queries on the Trigrep empty state
-    trigrepRow('Audit logged-and-swallowed exceptions', 'catch (:[ex]) { log.error(:[msg]); }', { hasChild: false, mode: 'comby', status: '73 matches · 28 files', runBy: 'A', time: 'Yesterday',  abs: 'Yesterday 16:12', clusterStart: true }),
-    trigrepRow('Find owner-tagged TODO comments',      '/TODO\\(\\w+\\):/',                      { hasChild: false, mode: 'regex', status: '284 matches · 87 files', runBy: 'A', time: '2 days ago', abs: 'Mon 11:08',      clusterStart: true })
+    recipeRunRow('Add structured logging context', 'org.openrewrite.java.logging.slf4j.AddMDCContext', { trigrepRel: 'last', hasCommit: false, hasVis: false, status: 'Failed · 2 errors', statusBadge: 'failed', runBy: 'A', time: '3 hr ago', abs: 'Today 06:42' })
   ];
 
   root.innerHTML = `
