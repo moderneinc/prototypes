@@ -806,6 +806,57 @@
     width: 14px;
     height: 14px;
   }
+  /* View tabs above the toolbar — "All" shows the lineage view;
+     per-type tabs collapse the lineage dot columns and show a flat list. */
+  .activity-panel .ap-tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border-bottom: 1px solid var(--ap-line);
+    margin-bottom: 14px;
+  }
+  .activity-panel .ap-tab {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    color: var(--ap-text-sec);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    margin-bottom: -1px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.12s, border-color 0.12s;
+  }
+  .activity-panel .ap-tab:hover { color: var(--ap-text); }
+  .activity-panel .ap-tab.active {
+    color: var(--ap-text-strong);
+    font-weight: 600;
+    border-bottom-color: var(--ap-link);
+  }
+  .activity-panel .ap-tab .ap-tab-count {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--ap-text-mute);
+    background: var(--ap-line-soft);
+    padding: 1px 7px;
+    border-radius: 999px;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .activity-panel .ap-tab.active .ap-tab-count {
+    color: var(--ap-link);
+    background: rgba(47,66,255,0.10);
+  }
+  /* Per-type views collapse the 4 lineage dot columns. */
+  .activity-panel[data-view]:not([data-view="all"]) .ap-activity .activity-col,
+  .activity-panel[data-view]:not([data-view="all"]) .ap-activity .activity-cell { display: none; }
+
   .activity-panel .ap-chips { display: flex; gap: 6px; flex-wrap: wrap; }
   .activity-panel .ap-chip {
     font-family: inherit;
@@ -5876,18 +5927,18 @@ function renderActivityPanel(root) {
         <div class="ap-tile commit"><div class="ap-tile-label"><span class="dot"></span>Commit jobs</div><div class="ap-tile-value">27</div><div class="ap-tile-delta"><span class="down">▼ 8%</span> · last 7 days</div></div>
         <div class="ap-tile viz"><div class="ap-tile-label"><span class="dot"></span>Visualizations</div><div class="ap-tile-value">13</div><div class="ap-tile-delta">— stable · last 7 days</div></div>
       </section>
+      <div class="ap-tabs" role="tablist" aria-label="Activity view">
+        <button class="ap-tab active" role="tab" data-view="all">All<span class="ap-tab-count" data-count-for="all">0</span></button>
+        <button class="ap-tab" role="tab" data-view="trigrep-search">Trigrep<span class="ap-tab-count" data-count-for="trigrep-search">0</span></button>
+        <button class="ap-tab" role="tab" data-view="recipe-run">Recipe runs<span class="ap-tab-count" data-count-for="recipe-run">0</span></button>
+        <button class="ap-tab" role="tab" data-view="commit-job">Commit jobs<span class="ap-tab-count" data-count-for="commit-job">0</span></button>
+        <button class="ap-tab" role="tab" data-view="visualization">Visualizations<span class="ap-tab-count" data-count-for="visualization">0</span></button>
+      </div>
       <div class="ap-toolbar">
         <div class="ap-search">
           <svg class="icn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
           <input type="text" placeholder="Search by name, recipe, or commit message…" />
         </div>
-        <div class="ap-chips" role="group" aria-label="Activity type filters">
-          <button class="ap-chip t-trigrep active"><span class="sw"></span>Trigrep</button>
-          <button class="ap-chip t-recipe active"><span class="sw"></span>Recipe runs</button>
-          <button class="ap-chip t-commit active"><span class="sw"></span>Commit jobs</button>
-          <button class="ap-chip t-viz active"><span class="sw"></span>Visualizations</button>
-        </div>
-        <div class="ap-tool-divider"></div>
         <select class="ap-select" aria-label="Time range"><option>Last 7 days</option><option>Last 24 hours</option><option>Last 30 days</option><option>All time</option></select>
         <select class="ap-select" aria-label="Run by"><option>Run by anyone</option><option>Run by me</option><option>Run by team</option></select>
         <select class="ap-select" aria-label="Status"><option>Any status</option><option>Completed</option><option>Running</option><option>Failed</option></select>
@@ -5937,9 +5988,17 @@ function renderActivityPanel(root) {
     </div>
   `;
 
+  const TYPE_TO_CHIP = {
+    'trigrep-search': 't-trigrep',
+    'recipe-run':     't-recipe',
+    'commit-job':     't-commit',
+    'visualization':  't-viz',
+  };
+
   const tbody = root.querySelector('#ap-rows');
   rows.forEach((r) => {
     const tr = document.createElement('tr');
+    tr.dataset.type = r.type;
     if (r.clusterStart) tr.classList.add('cluster-start');
     for (let i = 0; i < 4; i++) {
       const td = document.createElement('td');
@@ -5996,12 +6055,35 @@ function renderActivityPanel(root) {
     tr.appendChild(tdTime);
     tbody.appendChild(tr);
   });
-  root.querySelectorAll('.ap-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      chip.classList.toggle('active');
-      chip.classList.toggle('muted');
-    });
+  const tabs = root.querySelectorAll('.ap-tab');
+  const allRows = () => root.querySelectorAll('#ap-rows tr');
+  const countNode = root.querySelector('.ap-tableFoot strong');
+
+  const counts = { all: 0, 'trigrep-search': 0, 'recipe-run': 0, 'commit-job': 0, 'visualization': 0 };
+  allRows().forEach(tr => {
+    counts.all += 1;
+    if (counts[tr.dataset.type] !== undefined) counts[tr.dataset.type] += 1;
   });
+  root.querySelectorAll('.ap-tab-count').forEach(el => {
+    const key = el.dataset.countFor;
+    el.textContent = String(counts[key] || 0);
+  });
+
+  const applyTabFilter = (view) => {
+    root.dataset.view = view;
+    let shown = 0;
+    allRows().forEach(tr => {
+      const visible = view === 'all' || tr.dataset.type === view;
+      tr.hidden = !visible;
+      if (visible) shown++;
+    });
+    if (countNode) countNode.textContent = String(shown);
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.view === view));
+  };
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => applyTabFilter(tab.dataset.view));
+  });
+  applyTabFilter('all');
 
   // Trigrep search rows are clickable — clicking the name jumps back to that
   // search in the Trigrep view with the query and syntax mode pre-filled.
