@@ -167,7 +167,44 @@
   .viewh{font-size:19px;font-weight:600;margin:22px 0 4px;}
   .viewlead{color:var(--ink2);font-size:14px;margin:0 0 14px;max-width:820px;}
   .flowcard{border:1px solid var(--line);border-radius:14px;background:var(--panel);box-shadow:var(--shadow);padding:16px;overflow-x:auto;}
-  svg.flow{display:block;width:100%;max-width:900px;min-width:640px;margin:0 auto;height:auto;font-family:inherit;}
+  svg.flow{display:block;width:100%;min-width:640px;margin:0 auto;height:auto;font-family:inherit;}
+
+  /* responsive flow */
+  .flow2{position:relative;border:1px solid var(--line);border-radius:14px;background:var(--panel);box-shadow:var(--shadow);padding:18px clamp(12px,2vw,28px) 22px;}
+  .flow2-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;font-family:inherit;}
+  .flow2-lanes{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,80px);z-index:1;}
+  .f2-lane{position:relative;border:1px dashed var(--line2);border-radius:14px;padding:14px clamp(12px,2vw,28px) 22px;display:grid;grid-template-columns:minmax(40px,1fr) minmax(200px,260px) minmax(40px,1fr);column-gap:16px;row-gap:48px;align-content:start;}
+  .f2-lane.cli{border-color:var(--process);background:color-mix(in srgb,var(--process-bg) 38%,transparent);}
+  .f2-lane.platform{border-color:var(--info);background:color-mix(in srgb,var(--info-bg) 38%,transparent);}
+  .f2-lane-label{grid-column:1 / -1;justify-self:start;font-weight:700;font-size:12px;letter-spacing:.04em;margin:0 0 6px;}
+  .f2-lane.cli .f2-lane-label{color:var(--process);}
+  .f2-lane.platform .f2-lane-label{color:var(--info);}
+  .f2-row{grid-column:1 / -1;display:grid;grid-template-columns:subgrid;column-gap:inherit;align-items:center;}
+  .f2-main{grid-column:2;justify-self:center;display:flex;align-items:center;justify-content:center;}
+  .f2-aux-left{grid-column:1;justify-self:end;display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
+  .f2-aux-right{grid-column:3;justify-self:start;display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
+  .f2-node{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:600;font-size:13px;line-height:1.2;padding:10px 18px;background:var(--panel);border:1.5px solid var(--line2);position:relative;z-index:2;}
+  .f2-node small{font-weight:400;font-size:10.5px;color:var(--ink2);margin-top:3px;}
+  .f2-node.pill{border-radius:999px;min-width:160px;}
+  .f2-node.rect{border-radius:10px;min-width:170px;}
+  .f2-node.small{font-size:11px;padding:6px 12px;min-width:auto;}
+  .f2-node.input{background:var(--input-bg);border-color:var(--input);color:var(--input);}
+  .f2-node.success{background:var(--success-bg);border-color:var(--success);color:var(--success);}
+  .f2-node.process{background:var(--process-bg);border-color:var(--process);color:var(--process);}
+  .f2-node.info{background:var(--info-bg);border-color:var(--info);color:var(--info);}
+  .f2-node.fail{background:var(--fail-bg);border-color:var(--fail);color:var(--fail);}
+  .f2-node.gold{background:color-mix(in srgb,#c9a227 20%,var(--panel));border-color:#c9a227;color:#a07f0f;}
+  .f2-node.neutral{background:var(--neutral-bg);border-color:var(--neutral);color:var(--ink2);}
+  .f2-diamond{position:relative;width:148px;height:104px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;line-height:1.15;text-align:center;z-index:2;}
+  .f2-diamond svg{position:absolute;inset:0;width:100%;height:100%;}
+  .f2-diamond.gold svg polygon{fill:color-mix(in srgb,#c9a227 16%,var(--panel));stroke:#c9a227;stroke-width:1.5;}
+  .f2-diamond.gold{color:#a07f0f;}
+  .f2-diamond > span{position:relative;max-width:110px;}
+  .f2-cylinder{position:relative;width:200px;height:64px;background:var(--neutral-bg);border:1.3px solid var(--neutral);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:600;color:var(--ink);font-size:13px;z-index:2;}
+  .f2-cylinder small{font-weight:400;font-size:10.5px;color:var(--ink2);margin-top:3px;}
+  @media (max-width: 820px){
+    .flow2-lanes{grid-template-columns:1fr;}
+  }
   .layoutwrap{border:1px solid var(--line);border-radius:14px;background:var(--panel);box-shadow:var(--shadow);padding:18px;overflow-x:auto;}
   pre.tree{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.75;margin:0;white-space:pre;color:var(--ink2);}
   pre.tree .dir{color:var(--info);font-weight:600;}
@@ -231,95 +268,90 @@
 
   <h2 class="viewh">User flow — happy path &amp; failure branches</h2>
   <p class="viewlead">A UX-style flow with the <strong>CLI</strong> and <strong>Platform UI</strong> as side-by-side lanes. Pills start and end the journey, rectangles are actions, diamonds are decisions, and labelled branches show each outcome. The lanes hand off at the artifact repo (the data store), where the platform ingests the published LST.</p>
-  <div class="flowcard">
-    <svg class="flow" viewBox="0 0 900 912" role="img" aria-label="LST user flow with CLI and Platform UI as side-by-side lanes, decision diamonds and failure branches">
+  <div class="flow2" id="flow2" role="img" aria-label="LST user flow with CLI and Platform UI as side-by-side lanes, decision diamonds and failure branches">
+    <svg class="flow2-overlay" id="flow2Overlay" aria-hidden="true">
       <defs>
-        <marker id="fa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <marker id="f2-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
         </marker>
       </defs>
-
-      <!-- lane bands (side by side) -->
-      <rect x="12" y="12" width="416" height="886" rx="14" style="fill:color-mix(in srgb,var(--process-bg) 38%,transparent);stroke:var(--process);stroke-width:1;stroke-dasharray:5 4"/>
-      <rect x="462" y="12" width="426" height="886" rx="14" style="fill:color-mix(in srgb,var(--info-bg) 38%,transparent);stroke:var(--info);stroke-width:1;stroke-dasharray:5 4"/>
-      <text x="28" y="36" style="fill:var(--process);font-weight:700;font-size:12px;letter-spacing:.04em">CLI · ADMIN / INGEST</text>
-      <text x="478" y="36" style="fill:var(--info);font-weight:700;font-size:12px;letter-spacing:.04em">PLATFORM UI · BROWSE &amp; RUN</text>
-
-      <!-- CLI spine arrows (x=200, down) -->
-      <line x1="200" y1="114" x2="200" y2="192" style="stroke:var(--ink2);stroke-width:1.5" marker-end="url(#fa)"/>
-      <line x1="200" y1="286" x2="200" y2="360" style="stroke:var(--ink2);stroke-width:1.5" marker-end="url(#fa)"/>
-      <line x1="200" y1="418" x2="200" y2="492" style="stroke:var(--ink2);stroke-width:1.5" marker-end="url(#fa)"/>
-      <line x1="200" y1="586" x2="200" y2="660" style="stroke:var(--ink2);stroke-width:1.5" marker-end="url(#fa)"/>
-      <line x1="200" y1="718" x2="200" y2="808" style="stroke:var(--ink2);stroke-width:1.5" marker-end="url(#fa)"/>
-      <text x="208" y="330" style="fill:var(--ink3);font-size:11px">incremental / full</text>
-      <text x="208" y="628" style="fill:var(--ink3);font-size:11px">yes</text>
-
-      <!-- Platform spine arrows (x=650, down) -->
-      <line x1="650" y1="136" x2="650" y2="210" style="stroke:var(--ink2);stroke-width:1.5" marker-end="url(#fa)"/>
-      <line x1="650" y1="268" x2="650" y2="342" style="stroke:var(--ink2);stroke-width:1.5" marker-end="url(#fa)"/>
-      <line x1="650" y1="436" x2="650" y2="510" style="stroke:var(--ink2);stroke-width:1.5" marker-end="url(#fa)"/>
-      <line x1="650" y1="568" x2="650" y2="642" style="stroke:var(--ink2);stroke-width:1.5" marker-end="url(#fa)"/>
-      <line x1="650" y1="736" x2="650" y2="814" style="stroke:var(--ink2);stroke-width:1.5" marker-end="url(#fa)"/>
-      <text x="658" y="310" style="fill:var(--ink3);font-size:11px">yes</text>
-      <text x="658" y="478" style="fill:var(--ink3);font-size:11px">synced</text>
-      <text x="658" y="780" style="fill:var(--ink3);font-size:11px">finished</text>
-
-      <!-- handoff: artifact repo -> LST available? (up the gutter) -->
-      <path d="M295 840 L450 840 L450 90 L588 90" fill="none" style="stroke:var(--info);stroke-width:1.5;stroke-dasharray:6 4" marker-end="url(#fa)"/>
-      <text x="300" y="832" style="fill:var(--info);font-size:11px">platform ingests →</text>
-
-      <!-- reuse branch (CLI, left) -->
-      <line x1="140" y1="240" x2="104" y2="240" style="stroke:var(--success);stroke-width:1.4" marker-end="url(#fa)"/>
-      <path d="M55 258 L55 690 L98 690" fill="none" style="stroke:var(--success);stroke-width:1.4" marker-end="url(#fa)"/>
-      <text x="60" y="214" style="fill:var(--success);font-size:11px">no · reuse</text>
-
-      <!-- CLI failure arrows (right of CLI lane) -->
-      <line x1="260" y1="540" x2="313" y2="540" style="stroke:var(--fail);stroke-width:1.3;stroke-dasharray:4 3" marker-end="url(#fa)"/>
-      <text x="268" y="532" style="fill:var(--ink3);font-size:11px">no</text>
-
-      <!-- Platform failure arrows (right of Platform lane) -->
-      <line x1="710" y1="90" x2="756" y2="90" style="stroke:var(--process);stroke-width:1.3;stroke-dasharray:4 3" marker-end="url(#fa)"/>
-      <line x1="710" y1="390" x2="756" y2="362" style="stroke:var(--fail);stroke-width:1.3;stroke-dasharray:4 3" marker-end="url(#fa)"/>
-      <line x1="710" y1="390" x2="756" y2="398" style="stroke:var(--process);stroke-width:1.3;stroke-dasharray:4 3" marker-end="url(#fa)"/>
-      <line x1="710" y1="390" x2="756" y2="434" style="stroke:var(--neutral);stroke-width:1.3;stroke-dasharray:4 3" marker-end="url(#fa)"/>
-      <line x1="710" y1="690" x2="756" y2="666" style="stroke:var(--fail);stroke-width:1.3;stroke-dasharray:4 3" marker-end="url(#fa)"/>
-      <line x1="710" y1="690" x2="756" y2="704" style="stroke:#c9a227;stroke-width:1.3;stroke-dasharray:4 3" marker-end="url(#fa)"/>
-      <line x1="710" y1="690" x2="756" y2="742" style="stroke:var(--process);stroke-width:1.3;stroke-dasharray:4 3" marker-end="url(#fa)"/>
-      <text x="716" y="82" style="fill:var(--ink3);font-size:11px">no</text>
-
-      <!-- ===== CLI lane nodes (cx=200) ===== -->
-      <g><rect x="100" y="66" width="200" height="48" rx="24" style="fill:var(--input-bg);stroke:var(--input);stroke-width:1.5"/><text x="200" y="86" text-anchor="middle" style="fill:var(--input);font-weight:600;font-size:13px">repos.csv</text><text x="200" y="102" text-anchor="middle" style="fill:var(--ink2);font-size:10.5px">start · repos + orgs</text></g>
-      <g><polygon points="200,194 260,240 200,286 140,240" style="fill:color-mix(in srgb,#c9a227 16%,var(--panel));stroke:#c9a227;stroke-width:1.5"/><text x="200" y="244" text-anchor="middle" style="fill:#a07f0f;font-weight:600;font-size:12px">Rebuild?</text></g>
-      <g><rect x="10" y="222" width="92" height="36" rx="18" style="fill:var(--success-bg);stroke:var(--success);stroke-width:1.2"/><text x="56" y="245" text-anchor="middle" style="fill:var(--success);font-weight:600;font-size:11px">Reuse</text></g>
-      <g><rect x="100" y="362" width="200" height="56" rx="10" style="fill:var(--process-bg);stroke:var(--process);stroke-width:1.5"/><text x="200" y="386" text-anchor="middle" style="fill:var(--process);font-weight:600;font-size:13px">mod build</text><text x="200" y="403" text-anchor="middle" style="fill:var(--ink2);font-size:11px">clone·parse·build·publish</text></g>
-      <g><polygon points="200,494 260,540 200,586 140,540" style="fill:color-mix(in srgb,#c9a227 16%,var(--panel));stroke:#c9a227;stroke-width:1.5"/><text x="200" y="544" text-anchor="middle" style="fill:#a07f0f;font-weight:600;font-size:12px">Build OK?</text></g>
-      <g><rect x="315" y="521" width="110" height="38" rx="8" style="fill:var(--fail-bg);stroke:var(--fail);stroke-width:1.2"/><text x="370" y="545" text-anchor="middle" style="fill:var(--fail);font-weight:600;font-size:12px">FAILED</text></g>
-      <g><rect x="100" y="662" width="200" height="56" rx="10" style="fill:var(--process-bg);stroke:var(--process);stroke-width:1.5"/><text x="200" y="686" text-anchor="middle" style="fill:var(--process);font-weight:600;font-size:13px">Publish -ast.jar</text><text x="200" y="703" text-anchor="middle" style="fill:var(--ink2);font-size:11px">→ artifact repo</text></g>
-      <g>
-        <rect x="105" y="810" width="190" height="60" style="fill:var(--neutral-bg);stroke:none"/>
-        <line x1="105" y1="810" x2="105" y2="870" style="stroke:var(--neutral);stroke-width:1.3"/>
-        <line x1="295" y1="810" x2="295" y2="870" style="stroke:var(--neutral);stroke-width:1.3"/>
-        <ellipse cx="200" cy="870" rx="95" ry="11" style="fill:var(--neutral-bg);stroke:var(--neutral);stroke-width:1.3"/>
-        <ellipse cx="200" cy="810" rx="95" ry="11" style="fill:color-mix(in srgb,var(--neutral-bg) 55%,var(--panel));stroke:var(--neutral);stroke-width:1.3"/>
-        <text x="200" y="838" text-anchor="middle" style="fill:var(--ink);font-weight:600;font-size:13px">Artifact repo</text>
-        <text x="200" y="855" text-anchor="middle" style="fill:var(--ink2);font-size:10.5px">cold storage</text>
-      </g>
-
-      <!-- ===== Platform lane nodes (cx=650) ===== -->
-      <g><polygon points="650,44 710,90 650,136 590,90" style="fill:color-mix(in srgb,#c9a227 16%,var(--panel));stroke:#c9a227;stroke-width:1.5"/><text x="650" y="86" text-anchor="middle" style="fill:#a07f0f;font-weight:600;font-size:12px">LST</text><text x="650" y="100" text-anchor="middle" style="fill:#a07f0f;font-weight:600;font-size:12px">available?</text></g>
-      <g><rect x="758" y="72" width="120" height="36" rx="8" style="fill:var(--process-bg);stroke:var(--process);stroke-width:1.2"/><text x="818" y="95" text-anchor="middle" style="fill:var(--process);font-weight:600;font-size:12px">No LST</text></g>
-      <g><rect x="550" y="212" width="200" height="56" rx="10" style="fill:var(--info-bg);stroke:var(--info);stroke-width:1.5"/><text x="650" y="236" text-anchor="middle" style="fill:var(--info);font-weight:600;font-size:13px">Sync</text><text x="650" y="253" text-anchor="middle" style="fill:var(--ink2);font-size:11px">fetch + decrypt</text></g>
-      <g><polygon points="650,344 710,390 650,436 590,390" style="fill:color-mix(in srgb,#c9a227 16%,var(--panel));stroke:#c9a227;stroke-width:1.5"/><text x="650" y="394" text-anchor="middle" style="fill:#a07f0f;font-weight:600;font-size:12px">Sync OK?</text></g>
-      <g><rect x="758" y="346" width="124" height="32" rx="8" style="fill:var(--fail-bg);stroke:var(--fail);stroke-width:1.2"/><text x="820" y="367" text-anchor="middle" style="fill:var(--fail);font-weight:600;font-size:11px">Failed</text></g>
-      <g><rect x="758" y="382" width="124" height="32" rx="8" style="fill:var(--process-bg);stroke:var(--process);stroke-width:1.2"/><text x="820" y="403" text-anchor="middle" style="fill:var(--process);font-weight:600;font-size:11px">Skipped → No LST</text></g>
-      <g><rect x="758" y="418" width="124" height="32" rx="8" style="fill:var(--neutral-bg);stroke:var(--neutral);stroke-width:1.2"/><text x="820" y="439" text-anchor="middle" style="fill:var(--ink2);font-weight:600;font-size:11px">Canceled</text></g>
-      <g><rect x="550" y="512" width="200" height="56" rx="10" style="fill:var(--info-bg);stroke:var(--info);stroke-width:1.5"/><text x="650" y="536" text-anchor="middle" style="fill:var(--info);font-weight:600;font-size:13px">Run recipe</text><text x="650" y="553" text-anchor="middle" style="fill:var(--ink2);font-size:11px">visitor chain</text></g>
-      <g><polygon points="650,644 710,690 650,736 590,690" style="fill:color-mix(in srgb,#c9a227 16%,var(--panel));stroke:#c9a227;stroke-width:1.5"/><text x="650" y="688" text-anchor="middle" style="fill:#a07f0f;font-weight:600;font-size:12px">Recipe</text><text x="650" y="702" text-anchor="middle" style="fill:#a07f0f;font-weight:600;font-size:12px">result?</text></g>
-      <g><rect x="758" y="650" width="124" height="32" rx="8" style="fill:var(--fail-bg);stroke:var(--fail);stroke-width:1.2"/><text x="820" y="671" text-anchor="middle" style="fill:var(--fail);font-weight:600;font-size:11px">Error</text></g>
-      <g><rect x="758" y="688" width="124" height="32" rx="8" style="fill:color-mix(in srgb,#c9a227 20%,var(--panel));stroke:#c9a227;stroke-width:1.2"/><text x="820" y="709" text-anchor="middle" style="fill:#a07f0f;font-weight:600;font-size:11px">Canceled</text></g>
-      <g><rect x="758" y="726" width="124" height="32" rx="8" style="fill:var(--process-bg);stroke:var(--process);stroke-width:1.2"/><text x="820" y="747" text-anchor="middle" style="fill:var(--process);font-weight:600;font-size:11px">No LST</text></g>
-      <g><rect x="550" y="816" width="200" height="48" rx="24" style="fill:var(--success-bg);stroke:var(--success);stroke-width:1.5"/><text x="650" y="836" text-anchor="middle" style="fill:var(--success);font-weight:600;font-size:13px">Review / commit</text><text x="650" y="852" text-anchor="middle" style="fill:var(--ink2);font-size:10.5px">end · patches → PR</text></g>
     </svg>
+    <div class="flow2-lanes">
+      <section class="f2-lane cli">
+        <div class="f2-lane-label">CLI · ADMIN / INGEST</div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-node pill input" data-fid="cli-start"><b>repos.csv</b><small>start · repos + orgs</small></div></div>
+          <div class="f2-aux-right"></div>
+        </div>
+        <div class="f2-row">
+          <div class="f2-aux-left"><div class="f2-node pill success small" data-fid="cli-reuse">Reuse</div></div>
+          <div class="f2-main"><div class="f2-diamond gold" data-fid="cli-rebuild"><svg viewBox="0 0 148 104" preserveAspectRatio="none"><polygon points="74,4 144,52 74,100 4,52"/></svg><span>Rebuild?</span></div></div>
+          <div class="f2-aux-right"></div>
+        </div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-node rect process" data-fid="cli-build"><b>mod build</b><small>clone·parse·build·publish</small></div></div>
+          <div class="f2-aux-right"></div>
+        </div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-diamond gold" data-fid="cli-buildok"><svg viewBox="0 0 148 104" preserveAspectRatio="none"><polygon points="74,4 144,52 74,100 4,52"/></svg><span>Build OK?</span></div></div>
+          <div class="f2-aux-right"><div class="f2-node rect fail small" data-fid="cli-failed">FAILED</div></div>
+        </div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-node rect process" data-fid="cli-publish"><b>Publish -ast.jar</b><small>→ artifact repo</small></div></div>
+          <div class="f2-aux-right"></div>
+        </div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-cylinder" data-fid="cli-artifact"><b>Artifact repo</b><small>cold storage</small></div></div>
+          <div class="f2-aux-right"></div>
+        </div>
+      </section>
+      <section class="f2-lane platform">
+        <div class="f2-lane-label">PLATFORM UI · BROWSE &amp; RUN</div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-diamond gold" data-fid="plat-lst"><svg viewBox="0 0 148 104" preserveAspectRatio="none"><polygon points="74,4 144,52 74,100 4,52"/></svg><span>LST<br>available?</span></div></div>
+          <div class="f2-aux-right"><div class="f2-node rect process small" data-fid="plat-nolst-1">No LST</div></div>
+        </div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-node rect info" data-fid="plat-sync"><b>Sync</b><small>fetch + decrypt</small></div></div>
+          <div class="f2-aux-right"></div>
+        </div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-diamond gold" data-fid="plat-syncok"><svg viewBox="0 0 148 104" preserveAspectRatio="none"><polygon points="74,4 144,52 74,100 4,52"/></svg><span>Sync OK?</span></div></div>
+          <div class="f2-aux-right">
+            <div class="f2-node rect fail small" data-fid="plat-failed">Failed</div>
+            <div class="f2-node rect process small" data-fid="plat-skipped">Skipped → No LST</div>
+            <div class="f2-node rect neutral small" data-fid="plat-canceled-1">Canceled</div>
+          </div>
+        </div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-node rect info" data-fid="plat-run"><b>Run recipe</b><small>visitor chain</small></div></div>
+          <div class="f2-aux-right"></div>
+        </div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-diamond gold" data-fid="plat-result"><svg viewBox="0 0 148 104" preserveAspectRatio="none"><polygon points="74,4 144,52 74,100 4,52"/></svg><span>Recipe<br>result?</span></div></div>
+          <div class="f2-aux-right">
+            <div class="f2-node rect fail small" data-fid="plat-error">Error</div>
+            <div class="f2-node rect gold small" data-fid="plat-canceled-2">Canceled</div>
+            <div class="f2-node rect process small" data-fid="plat-nolst-2">No LST</div>
+          </div>
+        </div>
+        <div class="f2-row">
+          <div class="f2-aux-left"></div>
+          <div class="f2-main"><div class="f2-node pill success" data-fid="plat-end"><b>Review / commit</b><small>end · patches → PR</small></div></div>
+          <div class="f2-aux-right"></div>
+        </div>
+      </section>
+    </div>
   </div>
   <p class="viewlead" style="margin-top:12px;font-size:13px;color:var(--ink3)">The whole CLI lane runs in CI / on disk — its per-repo <code style="font-family:ui-monospace,monospace">clone → parse → build → publish</code> logs are <strong style="color:var(--ink2)">not</strong> surfaced in the platform, which only sees the published artifact. The build isn't triggered from the UI either (<code style="font-family:ui-monospace,monospace">requestRepositoryLstDetails</code> has no client caller). And the published LST is a snapshot at one changeset — it drifts behind the repo's HEAD as the branch evolves, so it needs re-ingesting to stay current.</p>
 
@@ -650,6 +682,151 @@ LEG.forEach(([label,fg])=>{
   it.appendChild(d);it.appendChild(el("span",null,label));
   legend.appendChild(it);
 });
+
+// ===== Responsive user-flow connectors =====
+(function(){
+  const SVG_NS="http://www.w3.org/2000/svg";
+  const wrap=document.getElementById("flow2");
+  const svg=document.getElementById("flow2Overlay");
+  if(!wrap||!svg) return;
+  const defs=svg.querySelector("defs");
+
+  function bbox(id){
+    const e=wrap.querySelector(`[data-fid="${id}"]`);
+    if(!e) return null;
+    const r=e.getBoundingClientRect();
+    const w=wrap.getBoundingClientRect();
+    return {
+      left:r.left-w.left, right:r.right-w.left,
+      top:r.top-w.top, bottom:r.bottom-w.top,
+      cx:r.left-w.left+r.width/2, cy:r.top-w.top+r.height/2
+    };
+  }
+  function laneRect(sel){
+    const e=wrap.querySelector(sel);
+    if(!e) return null;
+    const r=e.getBoundingClientRect(), w=wrap.getBoundingClientRect();
+    return {left:r.left-w.left, right:r.right-w.left};
+  }
+  function mk(tag,attrs){
+    const n=document.createElementNS(SVG_NS,tag);
+    for(const k in attrs) n.setAttribute(k,attrs[k]);
+    return n;
+  }
+  function clear(){
+    [...svg.childNodes].forEach(n=>{ if(n!==defs) svg.removeChild(n); });
+  }
+  function line(x1,y1,x2,y2,opt){
+    svg.appendChild(mk("line",{x1,y1,x2,y2,
+      style:`stroke:${opt.color};stroke-width:${opt.w||1.5};${opt.dash?"stroke-dasharray:4 3;":""}`,
+      "marker-end":"url(#f2-arrow)"}));
+  }
+  function path(d,opt){
+    svg.appendChild(mk("path",{d,fill:"none",
+      style:`stroke:${opt.color};stroke-width:${opt.w||1.5};${opt.dash?"stroke-dasharray:6 4;":""}`,
+      "marker-end":"url(#f2-arrow)"}));
+  }
+  function label(x,y,text,color){
+    const t=mk("text",{x,y,style:`fill:${color};font-size:11px;font-family:inherit;`});
+    t.textContent=text;
+    svg.appendChild(t);
+  }
+
+  function draw(){
+    const w=wrap.getBoundingClientRect();
+    svg.setAttribute("viewBox",`0 0 ${w.width} ${w.height}`);
+    svg.setAttribute("width",w.width);
+    svg.setAttribute("height",w.height);
+    clear();
+
+    const INK="var(--ink2)", DIM="var(--ink3)";
+    const COL={
+      success:"var(--success)", info:"var(--info)", fail:"var(--fail)",
+      process:"var(--process)", neutral:"var(--neutral)", gold:"#c9a227"
+    };
+    const PAD=4;
+
+    // vertical spine
+    function vline(fromId,toId,lbl){
+      const a=bbox(fromId), b=bbox(toId);
+      if(!a||!b) return;
+      const x=(a.cx+b.cx)/2;
+      line(x,a.bottom+PAD,x,b.top-PAD,{color:INK});
+      if(lbl) label(x+8,(a.bottom+b.top)/2+4,lbl,DIM);
+    }
+    ["cli-start>cli-rebuild","cli-rebuild>cli-build|incremental / full","cli-build>cli-buildok",
+     "cli-buildok>cli-publish|yes","cli-publish>cli-artifact"].forEach(s=>{
+      const [pair,lbl]=s.split("|"); const [a,b]=pair.split(">"); vline(a,b,lbl);
+    });
+    ["plat-lst>plat-sync|yes","plat-sync>plat-syncok","plat-syncok>plat-run|synced",
+     "plat-run>plat-result","plat-result>plat-end|finished"].forEach(s=>{
+      const [pair,lbl]=s.split("|"); const [a,b]=pair.split(">"); vline(a,b,lbl);
+    });
+
+    // reuse branch
+    (function(){
+      const rebuild=bbox("cli-rebuild"), reuse=bbox("cli-reuse"), publish=bbox("cli-publish");
+      if(rebuild&&reuse){
+        line(rebuild.left-PAD, rebuild.cy, reuse.right+PAD, reuse.cy, {color:COL.success,w:1.4});
+        label(reuse.left, reuse.top-6, "no · reuse", COL.success);
+      }
+      if(reuse&&publish){
+        const x=Math.max(8, reuse.cx - reuse.right + reuse.left); // stay left of nodes
+        const turnX=Math.min(reuse.cx, publish.left-24);
+        path(`M${reuse.cx} ${reuse.bottom+PAD} L${reuse.cx} ${publish.cy} L${publish.left-PAD} ${publish.cy}`,
+          {color:COL.success,w:1.4});
+      }
+    })();
+
+    // CLI failure
+    (function(){
+      const a=bbox("cli-buildok"), b=bbox("cli-failed");
+      if(!a||!b) return;
+      line(a.right+PAD, a.cy, b.left-PAD, b.cy, {color:COL.fail,w:1.3,dash:true});
+      label(a.right+8, a.cy-6, "no", DIM);
+    })();
+
+    // Platform right-side branches (fan out)
+    function rightBranch(fromId,toId,color,lbl){
+      const a=bbox(fromId), b=bbox(toId);
+      if(!a||!b) return;
+      const turnX=(a.right + b.left)/2;
+      path(`M${a.right+PAD} ${a.cy} L${turnX} ${a.cy} L${turnX} ${b.cy} L${b.left-PAD} ${b.cy}`,
+        {color,w:1.3,dash:true});
+      if(lbl) label(a.right+8, a.cy-6, lbl, DIM);
+    }
+    rightBranch("plat-lst","plat-nolst-1",COL.process,"no");
+    rightBranch("plat-syncok","plat-failed",COL.fail);
+    rightBranch("plat-syncok","plat-skipped",COL.process);
+    rightBranch("plat-syncok","plat-canceled-1",COL.neutral);
+    rightBranch("plat-result","plat-error",COL.fail);
+    rightBranch("plat-result","plat-canceled-2",COL.gold);
+    rightBranch("plat-result","plat-nolst-2",COL.process);
+
+    // Handoff: CLI artifact → up through gutter → Platform LST?
+    (function(){
+      const art=bbox("cli-artifact"), lst=bbox("plat-lst");
+      const cliLane=laneRect(".f2-lane.cli"), platLane=laneRect(".f2-lane.platform");
+      if(!art||!lst||!cliLane||!platLane) return;
+      const gutterX=(cliLane.right + platLane.left)/2;
+      const d=`M${art.right+PAD} ${art.cy} L${gutterX} ${art.cy} L${gutterX} ${lst.cy} L${lst.left-PAD} ${lst.cy}`;
+      path(d,{color:COL.info,w:1.5,dash:true});
+      label(art.right+8, art.cy-6, "platform ingests →", COL.info);
+    })();
+  }
+
+  // draw + observe
+  let raf=0;
+  function schedule(){ cancelAnimationFrame(raf); raf=requestAnimationFrame(draw); }
+  if("ResizeObserver" in window){
+    new ResizeObserver(schedule).observe(wrap);
+  }
+  window.addEventListener("resize",schedule);
+  // wait for fonts/layout
+  if(document.readyState==="complete") schedule();
+  else window.addEventListener("load",schedule);
+  schedule();
+})();
 </script>
 </body>
 </html>
