@@ -853,7 +853,9 @@
     color: var(--ap-link);
     background: rgba(47,66,255,0.10);
   }
-  /* Per-type views collapse the 4 lineage dot columns. */
+  /* Per-type views: lineage th/td cells are hidden via CSS; their matching
+     <col> elements are detached in JS so the remaining columns redistribute
+     and fill the table width. */
   .activity-panel[data-view]:not([data-view="all"]) .ap-activity .activity-col,
   .activity-panel[data-view]:not([data-view="all"]) .ap-activity .activity-cell { display: none; }
 
@@ -954,7 +956,7 @@
   .activity-panel .ap-activity tbody tr:hover { background: var(--ap-bg-2); }
   .activity-panel .ap-activity tbody td {
     font-size: 13px;
-    height: var(--ap-row-h);
+    padding: 8px 0;
     vertical-align: middle;
     border-bottom: 1px solid var(--ap-line-soft);
   }
@@ -968,7 +970,7 @@
     text-align: center;
     line-height: 0;
   }
-  .activity-panel .ap-activity tbody td.name { padding: 0 16px 0 20px; }
+  .activity-panel .ap-activity tbody td.name { padding: 8px 16px 8px 20px; }
   .activity-panel .ap-activity tbody td.name a {
     color: var(--ap-link);
     text-decoration: none;
@@ -1007,7 +1009,7 @@
     vertical-align: 1px;
   }
   .activity-panel .ap-activity tbody td.type {
-    padding: 0 16px;
+    padding: 8px 16px;
     font-size: 12px;
     font-weight: 500;
   }
@@ -1015,8 +1017,8 @@
   .activity-panel .ap-activity tbody td.type.t-recipe-run     { color: var(--ap-c-recipe); }
   .activity-panel .ap-activity tbody td.type.t-commit-job     { color: var(--ap-c-commit); }
   .activity-panel .ap-activity tbody td.type.t-visualization  { color: var(--ap-c-viz); }
-  .activity-panel .ap-activity tbody td.org { padding: 0 16px; color: var(--ap-text); }
-  .activity-panel .ap-activity tbody td.status { padding: 0 16px; }
+  .activity-panel .ap-activity tbody td.org { padding: 8px 16px; color: var(--ap-text); }
+  .activity-panel .ap-activity tbody td.status { padding: 8px 16px; }
   .activity-panel .ap-activity tbody td.status .badge {
     display: inline-flex;
     align-items: center;
@@ -1091,7 +1093,7 @@
   .activity-panel .ap-activity tbody td.status .progress-label .state.running { color: var(--ap-running); }
   .activity-panel .ap-activity tbody td.status .progress-label .count { color: var(--ap-text-mute); font-weight: 500; }
 
-  .activity-panel .ap-activity tbody td.runby { width: 90px; text-align: center; padding: 0; }
+  .activity-panel .ap-activity tbody td.runby { width: 90px; text-align: center; padding: 8px 0; }
   .activity-panel .ap-activity tbody td.runby .avatar {
     width: 24px;
     height: 24px;
@@ -1105,7 +1107,7 @@
     justify-content: center;
   }
   .activity-panel .ap-activity tbody td.time {
-    padding: 0 16px;
+    padding: 8px 16px;
     color: var(--ap-text-sec);
     font-size: 12px;
     text-align: right;
@@ -5779,21 +5781,21 @@ function renderActivityPanel(root) {
     const parts = [];
     if (paths.right)  parts.push(`<path d="M 11,5 H 35"  stroke="${paths.right}"  stroke-width="${STROKE}" fill="none"/>`);
     if (paths.left)   parts.push(`<path d="M -12,5 H -1" stroke="${paths.left}"   stroke-width="${STROKE}" fill="none"/>`);
-    if (paths.top)    parts.push(`<path d="M 5,-1 V -12" stroke="${paths.top}"    stroke-width="${STROKE}" fill="none"/>`);
-    if (paths.bottom) parts.push(`<path d="M 5,11 V 35"  stroke="${paths.bottom}" stroke-width="${STROKE}" fill="none"/>`);
+    if (paths.top)    parts.push(`<path d="M 5,-1 V -30" stroke="${paths.top}"    stroke-width="${STROKE}" fill="none"/>`);
+    if (paths.bottom) parts.push(`<path d="M 5,11 V 50"  stroke="${paths.bottom}" stroke-width="${STROKE}" fill="none"/>`);
     parts.push(`<circle r="6" cx="5" cy="5" fill="${color}"/>`);
     return svg(parts.join(''));
   };
-  const pathVertical   = (color) => svg(`<path d="M 5,-12 V 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
+  const pathVertical   = (color) => svg(`<path d="M 5,-30 V 50" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
   const pathHorizontal = (color) => svg(`<path d="M -12,5 H 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
-  const corner         = (color) => svg(`<path d="M -12,5 H 0 Q 5 5.5, 5 12 V 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
+  const corner         = (color) => svg(`<path d="M -12,5 H 0 Q 5 5.5, 5 12 V 50" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
   const cornerWithH    = (cornerColor, hColor) => svg(`
     <path d="M -12,5 H 35" stroke="${hColor}"      stroke-width="${STROKE}" fill="none"/>
-    <path d="M -12,5 H 0 Q 5 5.5, 5 12 V 35" stroke="${cornerColor}" stroke-width="${STROKE}" fill="none"/>
+    <path d="M -12,5 H 0 Q 5 5.5, 5 12 V 50" stroke="${cornerColor}" stroke-width="${STROKE}" fill="none"/>
   `);
-  const cornerTR = (color) => svg(`<path d="M 5,-12 V 0 Q 5 5, 12 5 H 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
+  const cornerTR = (color) => svg(`<path d="M 5,-30 V 0 Q 5 5, 12 5 H 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
   const teeRight = (railColor, branchColor) => svg(`
-    <path d="M 5,-12 V 35" stroke="${railColor}"   stroke-width="${STROKE}" fill="none"/>
+    <path d="M 5,-30 V 50" stroke="${railColor}"   stroke-width="${STROKE}" fill="none"/>
     <path d="M 5,5 H 35"   stroke="${branchColor || railColor}" stroke-width="${STROKE}" fill="none"/>
   `);
   const S = {
@@ -6069,6 +6071,8 @@ function renderActivityPanel(root) {
     el.textContent = String(counts[key] || 0);
   });
 
+  const colgroup = root.querySelector('.ap-activity colgroup');
+  const lineageCols = Array.from(colgroup.children).slice(0, 4);
   const applyTabFilter = (view) => {
     root.dataset.view = view;
     let shown = 0;
@@ -6077,6 +6081,15 @@ function renderActivityPanel(root) {
       tr.hidden = !visible;
       if (visible) shown++;
     });
+    // Detach the first four <col> elements in per-type views so the
+    // remaining columns get full table width; reinsert them in All.
+    if (view === 'all') {
+      lineageCols.forEach((col, i) => {
+        if (!col.isConnected) colgroup.insertBefore(col, colgroup.children[i] || null);
+      });
+    } else {
+      lineageCols.forEach(col => { if (col.isConnected) col.remove(); });
+    }
     if (countNode) countNode.textContent = String(shown);
     tabs.forEach(t => t.classList.toggle('active', t.dataset.view === view));
   };
