@@ -679,11 +679,13 @@
     flex-wrap: wrap;
   }
   .activity-panel .ap-pageTitle {
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin: 0 0 6px;
-    color: var(--ap-text-strong);
+    font-family: var(--font-heading, 'Inter', sans-serif);
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: normal;
+    margin: 0;
+    color: var(--grey-900, #111827);
   }
   .activity-panel .ap-pageSub {
     color: var(--ap-text-sec);
@@ -777,9 +779,9 @@
     margin-bottom: 12px;
   }
   .activity-panel .ap-search {
-    flex: 1 1 320px;
+    flex: 1 1 auto;
     min-width: 240px;
-    max-width: 460px;
+    max-width: none;
     position: relative;
   }
   .activity-panel .ap-search input {
@@ -924,17 +926,15 @@
   .activity-panel .ap-activity tbody td.name a:hover { text-decoration: underline; }
   .activity-panel .ap-activity tbody td.name.trigrep-name {
     color: var(--ap-text);
-    font-weight: 600;
   }
   .activity-panel .ap-activity tbody td.name.trigrep-name .trigrep-search-link {
-    color: inherit;
+    color: var(--ap-link);
+    font-weight: 500;
     text-decoration: none;
     cursor: pointer;
   }
   .activity-panel .ap-activity tbody td.name.trigrep-name .trigrep-search-link:hover {
-    color: var(--ap-link);
     text-decoration: underline;
-    text-decoration-color: rgba(47,66,255,0.4);
   }
   .activity-panel .ap-activity tbody td.name .name-meta {
     display: block;
@@ -1282,6 +1282,169 @@
   .trigrep-query-clear:hover { background: var(--grey-200); color: var(--grey-800); }
   .trigrep-query-clear svg { width: 12px; height: 12px; }
 
+  /* Bookmark / saved-search controls inside the search box */
+  .bookmark-controls {
+    position: relative;
+    display: inline-flex; align-items: center;
+    flex-shrink: 0;
+    margin-left: 2px;
+  }
+  .bookmark-divider {
+    width: 1px; height: 18px;
+    background: var(--grey-200);
+    margin: 0 6px 0 4px;
+    flex-shrink: 0;
+  }
+  .bookmark-toggle, .bookmark-list-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--grey-500);
+    cursor: pointer;
+    padding: 0;
+    border-radius: 4px;
+    transition: background 0.12s, color 0.12s;
+  }
+  .bookmark-toggle { width: 24px; }
+  .bookmark-list-btn { width: 18px; }
+  .bookmark-toggle:hover, .bookmark-list-btn:hover {
+    background: var(--grey-100);
+    color: var(--grey-800);
+  }
+  .bookmark-toggle:disabled {
+    color: var(--grey-300);
+    cursor: not-allowed;
+    background: transparent;
+  }
+  .bookmark-toggle svg { width: 15px; height: 15px; }
+  .bookmark-list-btn svg { width: 11px; height: 11px; }
+  .bookmark-toggle[data-saved="1"] {
+    color: var(--neo-digital-blue-500);
+  }
+  .bookmark-toggle[data-saved="1"] svg { fill: currentColor; }
+  .bookmark-controls[data-open="1"] .bookmark-list-btn svg { transform: rotate(180deg); }
+
+  .bookmark-popover {
+    position: absolute;
+    top: calc(100% + 8px); right: 0;
+    width: 340px;
+    background: #fff;
+    border: 1px solid var(--grey-200);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+    z-index: 40;
+    overflow: hidden;
+  }
+  .bookmark-popover-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--grey-100);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    background: var(--grey-50);
+  }
+  .bookmark-popover-header .bookmark-popover-count {
+    font-size: 11px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--grey-500);
+    font-weight: 500;
+  }
+  .bookmark-popover-list {
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .bookmark-popover-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px;
+    border-top: 1px solid var(--grey-100);
+    cursor: pointer;
+    background: transparent;
+    border-left: none; border-right: none; border-bottom: none;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+    transition: background 0.12s;
+  }
+  .bookmark-popover-item:first-child { border-top: none; }
+  .bookmark-popover-item:hover { background: rgba(47, 66, 255, 0.04); }
+  .bookmark-popover-icon {
+    width: 14px; height: 14px;
+    color: var(--neo-digital-blue-500);
+    flex-shrink: 0;
+  }
+  .bookmark-popover-icon svg { width: 14px; height: 14px; fill: currentColor; }
+  .bookmark-popover-text {
+    flex: 1 1 auto; min-width: 0;
+    display: flex; flex-direction: column;
+    gap: 2px;
+  }
+  .bookmark-popover-label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--grey-900);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .bookmark-popover-query {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--grey-600);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .bookmark-popover-mode {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: var(--grey-50);
+    color: var(--grey-600);
+    flex-shrink: 0;
+  }
+  .bookmark-popover-mode.mode-sourcegraph {
+    background: rgba(47, 66, 255, 0.08);
+    color: var(--neo-digital-blue-500);
+  }
+  .bookmark-popover-mode.mode-comby {
+    background: rgba(153, 47, 185, 0.08);
+    color: #7e2497;
+  }
+  .bookmark-popover-mode.mode-regex {
+    background: rgba(236, 184, 31, 0.14);
+    color: #8a6a10;
+  }
+  .bookmark-popover-remove {
+    width: 22px; height: 22px;
+    border: none;
+    background: transparent;
+    color: var(--grey-400);
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.12s, background 0.12s, color 0.12s;
+  }
+  .bookmark-popover-item:hover .bookmark-popover-remove { opacity: 1; }
+  .bookmark-popover-remove:hover { background: var(--grey-100); color: var(--grey-800); }
+  .bookmark-popover-remove svg { width: 11px; height: 11px; }
+  .bookmark-popover-empty {
+    padding: 20px 16px;
+    text-align: center;
+    color: var(--grey-500);
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .bookmark-popover-empty strong { color: var(--grey-700); font-weight: 600; }
 
   /* Search-bar help text */
   .search-help-row {
@@ -3560,6 +3723,16 @@ const RECENT_QUERIES = [
   { mode: 'regex',       query: '/TODO\\(\\w+\\):/',                              when: '2 days ago', action: 'syntax-g' },
 ];
 
+// Saved searches — bookmarks reachable from the popover on the search bar.
+// Shape is forward-compatible with a later "standing search" upgrade
+// (add cadence, lastRun, notify, scope fields without breaking layer 1).
+let SAVED_SEARCHES = [
+  { id: 'sv-1', mode: 'sourcegraph', label: 'Public auth surface', query: '@PreAuthorize lang:java visibility:public', action: 'syntax-a' },
+  { id: 'sv-2', mode: 'sourcegraph', label: 'Log4j usage',         query: 'org.apache.logging.log4j lang:java',         action: 'syntax-b' },
+  { id: 'sv-3', mode: 'regex',       label: 'Owner TODOs',         query: '/TODO\\(\\w+\\):/',                          action: 'syntax-g' },
+];
+let SAVED_SEQ = 4;
+
 function buildTrigrepLandingHTML() {
   return `
     <div class="trigrep-page-header">
@@ -3603,6 +3776,16 @@ function buildTrigrepLandingHTML() {
           <button type="button" class="trigrep-query-clear" id="trigrep-query-clear" aria-label="Clear query" title="Clear query" hidden>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
           </button>
+          <span class="bookmark-divider" aria-hidden="true"></span>
+          <div class="bookmark-controls" id="bookmark-controls">
+            <button type="button" class="bookmark-toggle" id="bookmark-toggle" aria-label="Save this search" title="Save this search" aria-pressed="false" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+            <button type="button" class="bookmark-list-btn" id="bookmark-list-btn" aria-label="Open saved searches" aria-haspopup="true" aria-expanded="false" title="Saved searches">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="bookmark-popover" id="bookmark-popover" role="menu" hidden></div>
+          </div>
         </div>
         <button class="btn-search" id="trigrep-search-btn">Search</button>
         <div class="tg-autocomplete" id="tg-autocomplete" hidden></div>
@@ -3676,6 +3859,7 @@ function setSyntaxMode(mode) {
   }
   const input = trigrepPanel.querySelector('#trigrep-query-input');
   if (input) input.placeholder = PLACEHOLDERS[mode] || '';
+  try { syncBookmarkToggleState(); } catch (err) {}
 }
 
 function wireSyntaxSelector() {
@@ -3792,8 +3976,153 @@ function wireTrigrepSearchBar() {
       input.value = '';
       input.focus();
       syncClearVisibility();
+      syncBookmarkToggleState();
     });
   }
+}
+
+// === Bookmarks / saved searches =======================================
+function findSavedMatch(query, mode) {
+  const q = (query || '').trim();
+  if (!q) return null;
+  return SAVED_SEARCHES.find(s => s.query === q && s.mode === mode) || null;
+}
+function syncBookmarkToggleState() {
+  const toggle = trigrepPanel.querySelector('#bookmark-toggle');
+  const input = trigrepPanel.querySelector('#trigrep-query-input');
+  if (!toggle || !input) return;
+  const q = (input.value || '').trim();
+  const saved = !!findSavedMatch(q, trigrepCurrentMode);
+  toggle.disabled = q.length === 0;
+  toggle.dataset.saved = saved ? '1' : '0';
+  toggle.setAttribute('aria-pressed', saved ? 'true' : 'false');
+  toggle.title = q.length === 0
+    ? 'Type a query to save it'
+    : (saved ? 'Remove from saved searches' : 'Save this search');
+}
+function renderBookmarkPopover() {
+  const pop = trigrepPanel.querySelector('#bookmark-popover');
+  if (!pop) return;
+  const header = `
+    <div class="bookmark-popover-header">
+      <span>Saved searches</span>
+      <span class="bookmark-popover-count">${SAVED_SEARCHES.length} saved</span>
+    </div>`;
+  if (SAVED_SEARCHES.length === 0) {
+    pop.innerHTML = header + `
+      <div class="bookmark-popover-empty">
+        <strong>No saved searches yet.</strong><br>
+        Run a query, then click the bookmark icon to save it.
+      </div>`;
+    return;
+  }
+  const items = SAVED_SEARCHES.map(s => `
+    <button class="bookmark-popover-item" type="button" role="menuitem" data-id="${s.id}">
+      <span class="bookmark-popover-icon">
+        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </span>
+      <span class="bookmark-popover-text">
+        <span class="bookmark-popover-label">${escapeHtml(s.label || s.query)}</span>
+        ${s.label ? `<span class="bookmark-popover-query">${escapeHtml(s.query)}</span>` : ''}
+      </span>
+      <span class="bookmark-popover-mode mode-${s.mode}">${SYNTAX_LABELS[s.mode] || s.mode}</span>
+      <button class="bookmark-popover-remove" type="button" data-remove="${s.id}" aria-label="Remove saved search" title="Remove">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+      </button>
+    </button>
+  `).join('');
+  pop.innerHTML = header + `<div class="bookmark-popover-list">${items}</div>`;
+}
+function openBookmarkPopover() {
+  const pop = trigrepPanel.querySelector('#bookmark-popover');
+  const controls = trigrepPanel.querySelector('#bookmark-controls');
+  const listBtn = trigrepPanel.querySelector('#bookmark-list-btn');
+  if (!pop || !controls || !listBtn) return;
+  renderBookmarkPopover();
+  pop.hidden = false;
+  controls.dataset.open = '1';
+  listBtn.setAttribute('aria-expanded', 'true');
+}
+function closeBookmarkPopover() {
+  const pop = trigrepPanel.querySelector('#bookmark-popover');
+  const controls = trigrepPanel.querySelector('#bookmark-controls');
+  const listBtn = trigrepPanel.querySelector('#bookmark-list-btn');
+  if (!pop || !controls || !listBtn) return;
+  pop.hidden = true;
+  controls.removeAttribute('data-open');
+  listBtn.setAttribute('aria-expanded', 'false');
+}
+function runSavedSearch(saved) {
+  const input = trigrepPanel.querySelector('#trigrep-query-input');
+  if (!input) return;
+  input.value = saved.query;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  if (saved.action && saved.action.startsWith('syntax-')) {
+    executeSearch(saved.action.slice('syntax-'.length));
+    try { setSyntaxMode(saved.mode); } catch (err) {}
+  } else {
+    setSyntaxMode(saved.mode);
+    tgSubmit(saved.query);
+  }
+  syncBookmarkToggleState();
+}
+function wireBookmarkControls() {
+  const toggle = trigrepPanel.querySelector('#bookmark-toggle');
+  const listBtn = trigrepPanel.querySelector('#bookmark-list-btn');
+  const pop = trigrepPanel.querySelector('#bookmark-popover');
+  const input = trigrepPanel.querySelector('#trigrep-query-input');
+  const controls = trigrepPanel.querySelector('#bookmark-controls');
+  if (!toggle || !listBtn || !pop || !input || !controls) return;
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const q = (input.value || '').trim();
+    if (!q) return;
+    const existing = findSavedMatch(q, trigrepCurrentMode);
+    if (existing) {
+      SAVED_SEARCHES = SAVED_SEARCHES.filter(s => s.id !== existing.id);
+    } else {
+      SAVED_SEARCHES.unshift({
+        id: `sv-${SAVED_SEQ++}`,
+        mode: trigrepCurrentMode,
+        label: '',
+        query: q,
+        action: 'fallback',
+      });
+    }
+    syncBookmarkToggleState();
+    if (!pop.hidden) renderBookmarkPopover();
+  });
+
+  listBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (pop.hidden) openBookmarkPopover(); else closeBookmarkPopover();
+  });
+
+  pop.addEventListener('click', (e) => {
+    const removeBtn = e.target.closest('[data-remove]');
+    if (removeBtn) {
+      e.stopPropagation();
+      const id = removeBtn.dataset.remove;
+      SAVED_SEARCHES = SAVED_SEARCHES.filter(s => s.id !== id);
+      renderBookmarkPopover();
+      syncBookmarkToggleState();
+      return;
+    }
+    const item = e.target.closest('.bookmark-popover-item');
+    if (!item) return;
+    const saved = SAVED_SEARCHES.find(s => s.id === item.dataset.id);
+    if (!saved) return;
+    closeBookmarkPopover();
+    runSavedSearch(saved);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (pop.hidden) return;
+    if (!controls.contains(e.target)) closeBookmarkPopover();
+  });
+
+  input.addEventListener('input', syncBookmarkToggleState);
 }
 
 function showSearchFallback() {
@@ -5372,7 +5701,9 @@ setNavActive('trigrep');
 trigrepPanel.innerHTML = buildTrigrepLandingHTML();
 wireSyntaxSelector();
 wireTrigrepSearchBar();
+wireBookmarkControls();
 setSyntaxMode('sourcegraph');
+syncBookmarkToggleState();
 renderStartRecent();
 renderStartExamples();
 tgWireAll();
@@ -5534,7 +5865,6 @@ function renderActivityPanel(root) {
       <header class="ap-pageHead">
         <div>
           <h1 class="ap-pageTitle">Recent activity</h1>
-          <p class="ap-pageSub">Everything you and your organization have run — trigrep searches, recipe runs, and the commits and visualizations they produce — grouped by lineage so you can see what came from what.</p>
         </div>
         <div class="ap-pageActions">
           <button class="ap-btn">
