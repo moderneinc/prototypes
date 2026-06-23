@@ -1558,6 +1558,47 @@
   .results-toolbar-export:hover { text-decoration: underline; }
   .results-toolbar-export svg { width: 11px; height: 11px; }
 
+  /* Summary panel card — ported from recipe-results .summary. Lives at the
+     top of the sidebar (matching the recipe-results layout) and replaces
+     the inline matches / files / time stats. */
+  .trigrep-sidebar-summary {
+    padding: 12px 12px 4px;
+    flex-shrink: 0;
+  }
+  .tg-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 24px;
+    background: #fff;
+    border: 1px solid var(--mui-grey-200);
+    border-radius: 8px;
+    padding: 8px 12px;
+  }
+  .tg-summary-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px;
+    padding: 2px 0;
+    font-size: 12.5px;
+  }
+  .tg-summary-row-wide { grid-column: 1 / -1; }
+  .tg-summary-key { color: var(--mui-grey-600); }
+  .tg-summary-val {
+    color: var(--grey-900);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .tg-summary-val.link {
+    color: var(--neo-digital-blue-500);
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+    text-decoration: none;
+  }
+  .tg-summary-val.link:hover { text-decoration: underline; }
+  .tg-summary-val.link svg { width: 11px; height: 11px; }
+  .tg-summary-val.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
   .trigrep-body {
     flex: 1;
     display: flex;
@@ -2561,6 +2602,186 @@
     cursor: pointer;
   }
   .results-overflow .show-more:hover { text-decoration: underline; }
+
+  /* =====================================================================
+     Hierarchical results — ported from results-hierarchical-selection-v2.
+     The hierarchy tree lives in the left sidebar where the Repositories
+     list used to be, below the existing Filters pane. The main area is
+     now solely the detail pane.
+     ===================================================================== */
+  .trigrep-results.has-tree {
+    padding: 18px 22px;
+    background: var(--brand-grey-100);
+    overflow-y: auto;
+  }
+  /* Widen the sidebar so the tree has room to breathe */
+  .trigrep-body .trigrep-sidebar { flex: 0 0 34%; }
+  /* New hierarchy pane (replaces .trigrep-pane-repos) — takes the
+     majority of sidebar height; the existing Filters pane sits above it. */
+  .trigrep-pane-filters  { flex: 0 1 auto; max-height: 38%; }
+  .trigrep-pane-hierarchy {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex; flex-direction: column;
+  }
+  .trigrep-pane-body-tree {
+    padding: 8px 10px 10px;
+    flex: 1 1 auto;
+  }
+  .trigrep-pane-foot {
+    padding: 10px 12px 14px;
+    border-top: 1px solid var(--mui-grey-200);
+    background: #fff;
+    flex-shrink: 0;
+    display: flex; justify-content: center;
+  }
+
+  /* Tree container */
+  .tg-tree{border:1px solid var(--brand-grey-300);border-radius:8px;overflow:hidden;background:#fff;}
+  .tg-tree-head{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--brand-grey-100);border-bottom:1px solid var(--brand-grey-300);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--grey-600);}
+  .tg-tree-head .th-results{margin-left:auto;}
+
+  /* Hierarchical node rows */
+  .hn-row{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--brand-grey-200);cursor:pointer;transition:background 150ms ease;}
+  .hn-row:last-child{border-bottom:none;}
+  .hn-row.n-match{background:var(--brand-grey-100);}
+  .hn-row:hover{background:var(--brand-grey-100);}
+  .hn-row.n-match:hover{background:var(--brand-grey-200);}
+  .hn-row.active,.hn-row.active:hover{background:var(--brand-digital-blue-100);}
+  .hn-ic{width:14px;height:14px;color:var(--grey-600);flex-shrink:0;}
+  .hn-name{font-size:12.5px;color:var(--grey-900);min-width:0;display:inline-flex;align-items:baseline;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .n-file .hn-name{font-weight:600;font-family:'JetBrains Mono',monospace;font-size:12px;}
+  .n-repo .hn-name{font-weight:600;}
+  .hn-name.hn-match{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--grey-700);font-weight:400;}
+  .hn-spacer{flex:1;}
+  .hn-count{font-family:var(--brand-font-family-sans);font-weight:500;font-size:11px;color:var(--grey-700);white-space:nowrap;flex-shrink:0;}
+  .hn-count .hn-sub{color:var(--grey-500);}
+  .chev-spacer{width:18px;flex-shrink:0;}
+  .cb-spacer{width:18px;flex-shrink:0;}
+  .hn-repo-branch{font-size:11.5px;color:var(--grey-500);font-family:'JetBrains Mono',monospace;font-weight:400;}
+  .hn-line-no{color:var(--grey-500);font-weight:500;margin-right:8px;font-size:11px;}
+
+  /* Chevron button */
+  .chev-btn{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;color:var(--grey-600);border:none;background:transparent;flex-shrink:0;padding:0;cursor:pointer;}
+  .chev-btn svg{width:14px;height:14px;transition:transform 150ms ease;}
+  .chev-btn.collapsed svg{transform:rotate(-90deg);}
+
+  /* Status dots (color-blind accessible shapes) */
+  .repo-status-dot{width:9px;height:9px;flex-shrink:0;}
+  .repo-status-dot.ok{background:var(--brand-green-600);border-radius:50%;}
+  .repo-status-dot.none{background:var(--brand-orange-600);clip-path:polygon(50% 0,100% 100%,0 100%);}
+  .repo-status-dot.error{background:var(--brand-red-600);border-radius:1.5px;}
+
+  /* Custom checkboxes */
+  .ckbox{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:none;border-radius:0;cursor:pointer;flex-shrink:0;vertical-align:middle;background:transparent no-repeat center/18px 18px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D1D5DB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3C/svg%3E");}
+  .ckbox:hover{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238D99FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3C/svg%3E");}
+  .ckbox:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232637E6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E");}
+  .ckbox:indeterminate{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232637E6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E");}
+
+  /* Right detail pane */
+  .detail-empty{height:100%;min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;color:var(--grey-500);border:1.5px dashed var(--brand-grey-300);border-radius:12px;background:#fff;padding:32px;}
+  .detail-empty .ic{width:46px;height:46px;border-radius:8px;background:var(--brand-digital-blue-100);color:var(--brand-digital-blue-600);display:inline-flex;align-items:center;justify-content:center;}
+  .detail-empty .ic svg{width:24px;height:24px;}
+  .detail-empty .et{font-size:14px;color:var(--grey-600);max-width:280px;line-height:1.5;}
+
+  /* Scope breadcrumb in the detail pane */
+  .scope-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:8px 12px;background:#fff;border:1px solid var(--brand-grey-300);border-radius:8px;}
+  .scope-level{font-size:11px;font-weight:600;color:var(--brand-digital-blue-700);background:var(--brand-digital-blue-100);border:1px solid var(--brand-digital-blue-300);padding:2px 10px;border-radius:9999px;flex-shrink:0;}
+  .scope-crumbs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;}
+  .sc-crumb{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--brand-digital-blue-700);}
+  .sc-crumb.cur{font-weight:700;color:var(--brand-digital-blue-800);}
+  .sc-sep{color:var(--brand-digital-blue-400);}
+  .scope-count{margin-left:auto;font-size:12px;font-weight:600;color:var(--brand-digital-blue-700);white-space:nowrap;}
+
+  /* Match-card (trigrep equivalent of File B's diff-file) */
+  .match-card{border:1px solid var(--brand-grey-300);border-radius:8px;overflow:hidden;margin-bottom:14px;background:#fff;}
+  .match-card-head{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--brand-grey-100);border-bottom:1px solid var(--brand-grey-300);font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;}
+  .match-card.collapsed .match-body{display:none;}
+  .match-card.collapsed .match-card-head{border-bottom:none;}
+  .match-chev{width:13px;height:13px;color:var(--grey-600);transition:transform 150ms ease;flex-shrink:0;}
+  .match-card.collapsed .match-chev{transform:rotate(-90deg);}
+  .match-fileicon{width:14px;height:14px;color:var(--grey-600);flex-shrink:0;}
+  .match-file-path{color:var(--grey-900);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .match-file-repo{color:var(--grey-600);font-weight:500;}
+  .match-hunk{color:var(--grey-500);flex-shrink:0;font-size:11.5px;}
+  .match-card-actions{margin-left:auto;display:flex;align-items:center;gap:2px;flex-shrink:0;}
+  .match-act{width:26px;height:26px;border-radius:5px;border:1px solid transparent;background:transparent;color:var(--grey-600);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;}
+  .match-act:hover{background:#fff;border-color:var(--brand-grey-300);color:var(--grey-900);}
+  .match-act svg{width:15px;height:15px;}
+  .match-body{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;overflow-x:auto;}
+  .match-line{display:flex;min-width:max-content;}
+  .match-line.is-hit{background:rgba(159,168,255,0.14);}
+  .match-line.focus{background:rgba(255,184,0,0.18);}
+  /* Context lines shown when a match-card is expanded — dimmer than matches */
+  .match-line.is-ctx{background:#FBFBFD;}
+  .match-line.is-ctx .match-code{color:var(--grey-600);}
+  .match-line.is-ctx .match-gutter{color:var(--grey-400);}
+  /* Per-card "Show context" labeled pill button — clearer affordance than
+     an icon-only square. Switches to a filled blue pressed state when on. */
+  .match-ctx-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 24px;
+    padding: 0 9px;
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--grey-700);
+    background: #fff;
+    border: 1px solid var(--mui-grey-300);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+  }
+  .match-ctx-btn:hover {
+    background: var(--brand-grey-100);
+    color: var(--grey-900);
+    border-color: var(--mui-grey-400);
+  }
+  .match-ctx-btn svg { width: 12px; height: 12px; }
+  .match-ctx-btn[aria-pressed="true"] {
+    background: var(--brand-digital-blue-500);
+    color: #fff;
+    border-color: var(--brand-digital-blue-500);
+  }
+  .match-ctx-btn[aria-pressed="true"]:hover {
+    background: var(--brand-digital-blue-600);
+    border-color: var(--brand-digital-blue-600);
+  }
+  /* Toolbar-level pressed state for "Show all context" */
+  .dt-btn[aria-pressed="true"] {
+    background: var(--brand-digital-blue-500);
+    color: #fff;
+    border-color: var(--brand-digital-blue-500);
+  }
+  .dt-btn[aria-pressed="true"]:hover {
+    background: var(--brand-digital-blue-600);
+    border-color: var(--brand-digital-blue-600);
+    color: #fff;
+  }
+  .match-gutter{display:flex;flex:0 0 auto;color:var(--grey-500);background:#FBFBFD;user-select:none;}
+  .match-gutter .n{width:48px;text-align:right;padding:0 6px;}
+  .match-code{padding:0 12px;white-space:pre;color:var(--grey-900);}
+
+  /* Detail toolbar (right pane) */
+  .detail-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .dt-title{font-size:15px;font-weight:600;color:var(--grey-900);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dt-title .repo-branch{font-size:12px;color:var(--grey-500);font-family:'JetBrains Mono',monospace;font-weight:400;margin-left:6px;}
+  .dt-actions{margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  .dt-btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;font-size:12.5px;font-weight:500;background:#fff;border:1px solid var(--brand-grey-300);border-radius:6px;color:var(--grey-600);white-space:nowrap;cursor:pointer;}
+  .dt-btn:hover{background:var(--brand-grey-100);color:var(--grey-900);}
+  .dt-btn svg{width:14px;height:14px;}
+  .dt-btn.icon{width:32px;padding:0;justify-content:center;}
+
+  /* Commit / Run-recipe bar — sticky at the bottom of the left pane */
+  .commit-bar{position:sticky;bottom:0;display:flex;justify-content:center;pointer-events:none;margin-top:16px;padding-top:14px;z-index:5;}
+  .commit-bar::before{content:'';position:absolute;left:-24px;right:-20px;bottom:-14px;top:-6px;background:linear-gradient(to top,#fff 55%,rgba(255,255,255,0));pointer-events:none;}
+  .commit-btn{position:relative;pointer-events:auto;display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;background:var(--brand-digital-blue-500);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;box-shadow:0 4px 14px rgba(31,41,55,0.12);transition:background 150ms ease;cursor:pointer;}
+  .commit-btn:hover{background:var(--brand-digital-blue-600);}
+  .commit-btn svg{width:13px;height:13px;}
+  .commit-btn .pill{background:rgba(255,255,255,.22);border-radius:9999px;padding:1px 8px;font-size:11.5px;font-weight:600;margin-left:4px;}
+
+  .tg-footer-summary{font-size:12px;color:var(--grey-500);padding:10px 2px 0;}
 
   /* Search-fallback empty state */
   .trigrep-empty {
@@ -4400,8 +4621,6 @@ function renderTrigrepResults(flow) {
   const nonRepoFiltersHtml = nonRepoFilters.map(renderGroup).join('');
   const repoFiltersHtml    = repoFilters.map(renderGroup).join('');
 
-  const repoCount = flow.phase2.baseFiles || 0;
-
   // ----- Result cards (cap initial display at 5) -----
   const extraCards = flow.phase2.extraCards || [];
   const extraSlice = Math.max(0, 5 - flow.cards.length);
@@ -4410,33 +4629,21 @@ function renderTrigrepResults(flow) {
   const cardsHtml = initialCards.map(buildResultCardHTML).join('');
   const overflowText = flow.overflow || '';
 
-  // ----- Results stats — inline on the right of the search-help row -----
-  const summaryRaw = flow.phase2.summary || '';
-  const nums = (summaryRaw.replace(/<[^>]+>/g, '').match(/[\d,]+/g) || []);
-  const matchCount = nums[0] || '';
-  const fileCount = nums[1] || '';
-  const timeMs = (summaryRaw.match(/([\d.]+ms)/) || [, ''])[1];
-  const statsHtml = `
-    <span class="results-toolbar-summary"><strong id="summary-count">${matchCount}</strong> matches across <strong id="summary-files">${fileCount}</strong> files</span>
-    <a class="results-toolbar-export" href="#" onclick="return false;" title="Export results as CSV">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Export
-    </a>
-    <span class="results-toolbar-time">${timeMs}</span>
-  `;
-  if (inlineStats) inlineStats.innerHTML = statsHtml;
+  // ----- Results stats — derived from the actual cards the tree will show
+  // so every number in the UI reconciles (sidebar count, hierarchy header,
+  // scope-bar totals, per-repo / per-file counts all add up). -----
+  const ft = flowTotals(flow);
+  const repoCount = ft.repos;
+  tgFlowStats = {
+    matches: ft.matches.toLocaleString(),
+    files:   ft.files.toLocaleString(),
+    time:    ft.time,
+  };
+  // Clear the inline top-of-page stats slot so the row collapses.
+  if (inlineStats) inlineStats.innerHTML = '';
 
   body.innerHTML = `
-    <aside class="trigrep-sidebar" aria-label="Repositories and filters">
-      ${repoFiltersHtml ? `
-      <section class="trigrep-pane trigrep-pane-repos" aria-label="Repositories">
-        <div class="trigrep-pane-head">
-          <span>Repositories <span class="pane-count">(${repoCount.toLocaleString()})</span></span>
-        </div>
-        <div class="trigrep-pane-body">
-          ${repoFiltersHtml}
-        </div>
-      </section>` : ''}
+    <aside class="trigrep-sidebar" aria-label="Filters and hierarchy">
       <section class="trigrep-pane trigrep-pane-filters" aria-label="Filters">
         <div class="trigrep-pane-head">
           <span>Filters</span>
@@ -4445,23 +4652,32 @@ function renderTrigrepResults(flow) {
           ${nonRepoFiltersHtml}
         </div>
       </section>
+      <section class="trigrep-pane trigrep-pane-hierarchy" aria-label="Hierarchy">
+        <div class="trigrep-pane-head">
+          <span>Hierarchy <span class="pane-count">(${repoCount.toLocaleString()})</span></span>
+        </div>
+        <div class="trigrep-pane-body trigrep-pane-body-tree">
+          <div class="tg-tree" id="tg-tree">
+            <div id="tg-tree-body"></div>
+          </div>
+          <div class="tg-footer-summary" id="tg-footer-summary"></div>
+        </div>
+        <div class="trigrep-pane-foot">
+          <button type="button" class="commit-btn" id="btn-run-recipe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Run recipe on selected <span class="pill" id="tg-sel-count">0</span>
+          </button>
+        </div>
+      </section>
     </aside>
-    <div class="trigrep-results" id="trigrep-results">
-      <div class="results-actions" id="results-actions">
-        <button type="button" class="btn-run-recipe" id="btn-run-recipe">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Run recipe
-        </button>
-      </div>
-      <div id="result-cards-list">${cardsHtml}</div>
-      <div class="results-overflow">
-        ${overflowText} <button class="show-more" id="show-more-btn">Show more results</button>
-      </div>
+    <div class="trigrep-results has-tree" id="trigrep-results">
+      <div id="tg-detail-slot"></div>
     </div>
   `;
 
   wireResultsInteractions(flow, remainingCards);
   wireRunRecipeButton(currentFlow);
+  initTrigrepTree(flow);
 }
 
 // Catalog recipes — appear in "All recipes" alongside the per-flow suggested ones.
@@ -4506,9 +4722,22 @@ function wireRunRecipeButton(flowId) {
 
 function openRecipePicker(flowId) {
   closeRunDrawer();
-  const { suggested, catalog, queryLabel } = getRecipeList(flowId);
+  const { suggested: suggestedRaw, catalog, queryLabel } = getRecipeList(flowId);
   const flow = FLOWS[flowId];
-  const totalFiles = flow?.phase2?.baseFiles || 0;
+  const ft = flow ? flowTotals(flow) : { matches: 0, files: 0, repos: 0 };
+  const totalFiles = ft.files;
+  const totalRepos = ft.repos;
+  // Rescale each suggested recipe's per-row stats to the actual tree totals
+  // so the drawer's "X of Y files · N repos" lines up with the rest of the UI.
+  const scaleRecipe = (r) => {
+    if (!r.totalFiles || r.totalFiles === 0) return { ...r, totalFiles: totalFiles };
+    const factor = totalFiles / r.totalFiles;
+    const scaledFiles = Math.max(0, Math.min(totalFiles, Math.round(r.files * factor)));
+    const scaledRepos = Math.max(0, Math.min(totalRepos, Math.round((r.repos || 0) * factor)));
+    const scaledChanges = Math.max(0, Math.round((r.changes || 0) * factor));
+    return { ...r, files: scaledFiles, totalFiles: totalFiles, repos: scaledRepos, changes: scaledChanges };
+  };
+  const suggested = suggestedRaw.map(scaleRecipe);
 
   const backdrop = document.createElement('div');
   backdrop.className = 'sr-drawer-backdrop';
@@ -4706,6 +4935,486 @@ function showRunToast(recipe) {
   }, 5200);
 }
 
+// ===================================================================
+// HIERARCHICAL TREE — ported from results-hierarchical-selection-v2.
+// Replaces the flat result-card list. Three levels (repo → file →
+// match line) reflect trigrep's data shape; visual treatment mirrors
+// the recipe-results prototype.
+// ===================================================================
+const TG_IC_FILE = '<svg class="hn-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+const TG_IC_MATCH = '<svg class="hn-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 9 11 12 8 15"/><line x1="13.5" y1="15" x2="16.5" y2="15"/></svg>';
+
+let tgTreeState = null;
+let tgTreeData = null;
+let tgCurrentFlow = null;
+let tgFlowStats = null;
+
+// Single source of truth for the totals shown anywhere in the prototype
+// (tree, scope bar, hierarchy header, recipe-run drawer). Derived from the
+// actual cards so every number reconciles.
+function flowTotals(flow) {
+  const all = [...(flow.cards || []), ...(flow.phase2.extraCards || [])];
+  const matches = all.reduce((s, c) => s + (c.count || 0), 0);
+  const files = all.length;
+  const repos = new Set(all.map(c => c.module || 'unknown')).size;
+  const m = (flow.phase2.summary || '').match(/([\d.]+ms)/);
+  return { matches, files, repos, time: m ? m[1] : '' };
+}
+
+function tgBuildTreeData(flow) {
+  const all = [...(flow.cards || []), ...(flow.phase2.extraCards || [])];
+  const repoMap = new Map();
+  all.forEach((card) => {
+    const repoName = card.module || 'unknown';
+    if (!repoMap.has(repoName)) {
+      repoMap.set(repoName, {
+        id: 'tgr_' + repoMap.size,
+        name: repoName,
+        branch: 'main',
+        files: [],
+        results: 0,
+      });
+    }
+    const repo = repoMap.get(repoName);
+    const fileId = repo.id + '__' + card.id;
+    const matches = (card.lines || []).map((l, i) => ({
+      id: fileId + '__m' + i,
+      n: l.n,
+      code: l.code,
+    }));
+    repo.files.push({
+      id: fileId,
+      cardId: card.id,
+      file: card.file,
+      count: card.count,
+      matches,
+    });
+    repo.results += card.count;
+  });
+  return Array.from(repoMap.values());
+}
+
+function tgChevHTML(expanded) {
+  return `<button type="button" class="chev-btn hn-chev ${expanded ? '' : 'collapsed'}" tabindex="-1" aria-label="Expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>`;
+}
+function tgCbHTML(kind, id, sel) {
+  const checked = sel === 'all' || sel === true;
+  const ind = sel === 'some';
+  return `<input type="checkbox" class="ckbox hn-check" data-cbk="${kind}" data-cid="${id}" ${checked ? 'checked' : ''} ${ind ? 'data-ind="1"' : ''}>`;
+}
+
+function tgFileMatchKeys(file) { return file.matches.map(m => m.id); }
+function tgRepoMatchKeys(repo) { return repo.files.flatMap(tgFileMatchKeys); }
+function tgRollup(keys) {
+  if (!keys.length) return 'none';
+  const n = keys.filter(k => tgTreeState.selMatches.has(k)).length;
+  return n === 0 ? 'none' : (n === keys.length ? 'all' : 'some');
+}
+function tgFileSel(file) { return tgRollup(tgFileMatchKeys(file)); }
+function tgRepoSel(repo) { return tgRollup(tgRepoMatchKeys(repo)); }
+
+function tgAct(type, id) {
+  const s = tgTreeState.scope;
+  return !!(s && s.type === type && s.id === id);
+}
+
+const TG_PAD = d => `style="padding-left:${12 + d * 20}px"`;
+
+function tgRepoNodeHTML(r, d) {
+  const expanded = tgTreeState.expanded.has(r.id);
+  const resTxt = r.results > 0 ? `${r.results.toLocaleString()} result${r.results === 1 ? '' : 's'}` : 'No results';
+  let html = `<div class="hn-row n-repo ${tgAct('repo', r.id) ? 'active' : ''}" data-node="repo" data-id="${r.id}" ${TG_PAD(d)}>
+    ${tgChevHTML(expanded)}
+    ${tgCbHTML('repo', r.id, tgRepoSel(r))}
+    <span class="repo-status-dot ok" title="Has results"></span>
+    <span class="hn-name">${escapeHtml(r.name)} <span class="hn-repo-branch">@ ${escapeHtml(r.branch)}</span></span>
+    <span class="hn-spacer"></span>
+    <span class="hn-count">${resTxt}</span>
+  </div>`;
+  if (expanded) r.files.forEach(f => { html += tgFileNodeHTML(r, f, d + 1); });
+  return html;
+}
+
+function tgFileNodeHTML(r, f, d) {
+  const expanded = tgTreeState.expanded.has(f.id);
+  let html = `<div class="hn-row n-file ${tgAct('file', f.id) ? 'active' : ''}" data-node="file" data-id="${f.id}" data-rid="${r.id}" ${TG_PAD(d)}>
+    ${tgChevHTML(expanded)}
+    ${tgCbHTML('file', f.id, tgFileSel(f))}
+    ${TG_IC_FILE}<span class="hn-name">${escapeHtml(f.file)}</span>
+    <span class="hn-spacer"></span>
+    <span class="hn-count">${f.count} match${f.count === 1 ? '' : 'es'}</span>
+  </div>`;
+  if (expanded) f.matches.forEach(m => { html += tgMatchNodeHTML(r, f, m, d + 1); });
+  return html;
+}
+
+function tgMatchNodeHTML(r, f, m, d) {
+  const snippet = (m.code || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  const display = snippet.length > 80 ? snippet.slice(0, 80) + '…' : snippet;
+  return `<div class="hn-row n-match ${tgAct('match', m.id) ? 'active' : ''}" data-node="match" data-id="${m.id}" data-rid="${r.id}" data-fid="${f.id}" ${TG_PAD(d)}>
+    <span class="chev-spacer"></span>
+    <input type="checkbox" class="ckbox hn-check" data-cbk="match" data-cid="${m.id}" ${tgTreeState.selMatches.has(m.id) ? 'checked' : ''}>
+    ${TG_IC_MATCH}<span class="hn-name hn-match"><span class="hn-line-no">L${m.n}</span>${escapeHtml(display)}</span>
+    <span class="hn-spacer"></span>
+  </div>`;
+}
+
+// Read the names of currently-active filter items in the left sidebar.
+function tgActiveFilterNames() {
+  const out = new Set();
+  trigrepPanel.querySelectorAll('.filter-item.active .filter-item-name').forEach(el => {
+    out.add(el.textContent.trim().toLowerCase());
+  });
+  return out;
+}
+
+// Apply existing filters to top-level repos: if any filter is active and
+// any active filter name matches a repo name, restrict to that subset.
+// Otherwise (no active filters), show all repos.
+function tgFilteredRepos() {
+  const active = tgActiveFilterNames();
+  if (active.size === 0) return tgTreeData;
+  const matches = tgTreeData.filter(r => active.has(r.name.toLowerCase()));
+  return matches.length > 0 ? matches : tgTreeData; // graceful: no repo-name hits → show all
+}
+
+function tgRenderTree() {
+  const body = trigrepPanel.querySelector('#tg-tree-body');
+  if (!body) return;
+  const repos = tgFilteredRepos();
+  const totalResults = repos.reduce((s, r) => s + r.results, 0);
+  body.innerHTML = repos.length
+    ? repos.map(r => tgRepoNodeHTML(r, 0)).join('')
+    : `<div style="padding:16px;font-size:12.5px;color:var(--grey-500)">No repositories match the active filters.</div>`;
+  body.querySelectorAll('.hn-check[data-ind="1"]').forEach(c => { c.indeterminate = true; });
+  const footer = trigrepPanel.querySelector('#tg-footer-summary');
+  if (footer) {
+    footer.textContent = `Showing ${repos.length.toLocaleString()} of ${tgTreeData.length.toLocaleString()} repositor${tgTreeData.length === 1 ? 'y' : 'ies'} · ${totalResults.toLocaleString()} result${totalResults === 1 ? '' : 's'}`;
+  }
+  const selCount = trigrepPanel.querySelector('#tg-sel-count');
+  if (selCount) selCount.textContent = tgTreeState.selMatches.size.toLocaleString();
+}
+
+// Reuse the original trigrep-activity start-state visual treatment as the
+// detail-pane empty state so it matches the rest of the prototype.
+const TG_EMPTY_DETAIL = `<div class="trigrep-start-state">
+  <div class="trigrep-start-hero">
+    <div class="trigrep-start-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><polyline points="8.5 8 6 11 8.5 14"/><polyline points="13.5 8 16 11 13.5 14"/></svg>
+    </div>
+    <div class="trigrep-start-title">Pick a result to inspect it</div>
+    <div class="trigrep-start-subtitle">Select a repository, file, or match in the hierarchy to view its matches and the surrounding code.</div>
+  </div>
+</div>`;
+
+function tgRenderDetail() {
+  const slot = trigrepPanel.querySelector('#tg-detail-slot');
+  if (!slot) return;
+  const s = tgTreeState.scope;
+  if (!s) { slot.innerHTML = TG_EMPTY_DETAIL; return; }
+  // "all" scope: show every file across every repo (default, auto-loaded)
+  if (s.type === 'all') {
+    const allCards = tgTreeData.flatMap(r => r.files.map(f => ({ repo: r, file: f })));
+    const stats = tgFlowStats || {};
+    const statsLine = `<strong>${stats.matches || allCards.reduce((a,x)=>a+x.file.count,0).toLocaleString()}</strong> matches across <strong>${stats.files || allCards.length}</strong> files`;
+    slot.innerHTML = `
+      <div class="scope-bar">
+        <span class="scope-level">All results</span>
+        <div class="scope-crumbs"><span class="sc-crumb cur">All repositories</span></div>
+        <span class="scope-count">${statsLine}${stats.time ? ` · <span class="sc-time">${stats.time}</span>` : ''}</span>
+      </div>
+      <div class="detail-toolbar">
+        <div class="dt-actions">
+          <button type="button" class="dt-btn" id="tg-all-context-toggle" title="Show context on every result" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg><span class="dt-btn-label">Show all context</span></button>
+          <button type="button" class="dt-btn" id="tg-export-btn" title="Export results as CSV"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV</button>
+          <button type="button" class="dt-btn icon" id="tg-collapse-toggle" title="Collapse all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></button>
+        </div>
+      </div>
+      <div id="tg-match-list">${allCards.map(x => tgMatchCardHTML(x.file, null, x.repo)).join('')}</div>
+    `;
+    tgWireDetail(slot);
+    return;
+  }
+  const repo = tgTreeData.find(r => r.id === s.repoId);
+  if (!repo) { slot.innerHTML = TG_EMPTY_DETAIL; return; }
+  let files = [];
+  let focusMatchId = null;
+  let levelLabel = 'Repository';
+  const crumbs = [repo.name];
+  if (s.type === 'repo') {
+    files = repo.files;
+  } else if (s.type === 'file') {
+    const f = repo.files.find(x => x.id === s.id);
+    if (f) { files = [f]; crumbs.push(f.file); levelLabel = 'File'; }
+  } else if (s.type === 'match') {
+    const f = repo.files.find(x => x.id === s.fileId);
+    if (f) {
+      files = [f];
+      focusMatchId = s.id;
+      crumbs.push(f.file);
+      const m = f.matches.find(x => x.id === s.id);
+      if (m) crumbs.push('L' + m.n);
+      levelLabel = 'Match';
+    }
+  }
+  const totalMatches = files.reduce((a, f) => a + f.count, 0);
+  const crumbHTML = crumbs.map((x, i) => `<span class="sc-crumb${i === crumbs.length - 1 ? ' cur' : ''}">${escapeHtml(x)}</span>`).join('<span class="sc-sep">›</span>');
+  slot.innerHTML = `
+    <div class="scope-bar">
+      <span class="scope-level">${levelLabel}</span>
+      <div class="scope-crumbs">${crumbHTML}</div>
+      <span class="scope-count">${totalMatches.toLocaleString()} match${totalMatches === 1 ? '' : 'es'}</span>
+    </div>
+    <div class="detail-toolbar">
+      <div class="dt-title">${escapeHtml(repo.name)}<span class="repo-branch">@ ${escapeHtml(repo.branch)}</span></div>
+      <div class="dt-actions">
+        <button type="button" class="dt-btn icon" id="tg-collapse-toggle" title="Collapse all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></button>
+      </div>
+    </div>
+    <div id="tg-match-list">${files.map(f => tgMatchCardHTML(f, focusMatchId)).join('')}</div>
+  `;
+  tgWireDetail(slot);
+}
+
+// Build the lines shown inside a match-card body. When `withContext` is
+// true, pad ±3 lines around the matched range and fill gaps with filler
+// code so the matches read in surrounding context (still illustrative —
+// real file content isn't in the prototype seed).
+function tgMatchBodyLines(matches, withContext) {
+  const sorted = [...matches].sort((a, b) => a.n - b.n);
+  if (!withContext || sorted.length === 0) {
+    return sorted.map(m => ({ n: m.n, code: m.code, id: m.id, isMatch: true }));
+  }
+  const PAD = 3;
+  const start = Math.max(1, sorted[0].n - PAD);
+  const end = sorted[sorted.length - 1].n + PAD;
+  const byLine = new Map(sorted.map(m => [m.n, m]));
+  const out = [];
+  for (let n = start; n <= end; n++) {
+    const m = byLine.get(n);
+    if (m) {
+      out.push({ n, code: m.code, id: m.id, isMatch: true });
+    } else {
+      const filler = DETAIL_FILLERS[n % DETAIL_FILLERS.length] || '';
+      out.push({ n, code: filler, isMatch: false });
+    }
+  }
+  return out;
+}
+
+function tgMatchBodyHTML(matches, focusMatchId, withContext) {
+  return tgMatchBodyLines(matches, withContext).map(l => {
+    const code = (l.code || '').replace(/<m>/g, '<span class="match">').replace(/<\/m>/g, '</span>');
+    const focus = (l.id && focusMatchId === l.id) ? ' focus' : '';
+    const cls = l.isMatch ? `match-line is-hit${focus}` : 'match-line is-ctx';
+    const dataAttr = l.id ? ` data-match-id="${l.id}"` : '';
+    return `<div class="${cls}"${dataAttr}><span class="match-gutter"><span class="n">${l.n}</span></span><span class="match-code">${code}</span></div>`;
+  }).join('');
+}
+
+function tgMatchCardHTML(f, focusMatchId, repo) {
+  const lines = (f.matches || []);
+  const repoPrefix = repo ? `<span class="match-file-repo">${escapeHtml(repo.name)}</span> · ` : '';
+  return `<div class="match-card" data-file-id="${f.id}">
+    <div class="match-card-head">
+      <svg class="match-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <svg class="match-fileicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span class="match-file-path">${repoPrefix}${escapeHtml(f.file)}</span>
+      <div class="match-card-actions">
+        <button type="button" class="match-ctx-btn match-context-toggle" title="Show 3 lines of context around each match" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+          <span class="match-ctx-btn-label">Show context</span>
+        </button>
+        <button type="button" class="match-act" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+      </div>
+    </div>
+    <div class="match-body" data-focus-id="${focusMatchId || ''}">${tgMatchBodyHTML(lines, focusMatchId, false)}</div>
+  </div>`;
+}
+
+// Keep the toolbar-level "Show / Hide all context" button label in sync with
+// the per-card state in the pane.
+function tgSyncAllContextToggle(slot) {
+  const btn = slot.querySelector('#tg-all-context-toggle');
+  if (!btn) return;
+  const cards = [...slot.querySelectorAll('.match-card')];
+  if (!cards.length) return;
+  const allOn = cards.every(c => c.classList.contains('with-context'));
+  btn.setAttribute('aria-pressed', allOn ? 'true' : 'false');
+  btn.title = allOn ? 'Hide context on every result' : 'Show context on every result';
+  const label = btn.querySelector('.dt-btn-label');
+  if (label) label.textContent = allOn ? 'Hide all context' : 'Show all context';
+}
+
+function tgWireDetail(slot) {
+  slot.querySelectorAll('.match-card-head').forEach(h => {
+    h.addEventListener('click', (e) => {
+      if (e.target.closest('.match-act')) return;
+      h.closest('.match-card').classList.toggle('collapsed');
+    });
+  });
+  // Per-card "show context" toggle — re-renders the body with ±3 surrounding
+  // filler lines so matches read in the context of the file.
+  const applyCardContext = (card, expanded) => {
+    const fileId = card.dataset.fileId;
+    const repo = tgTreeData.find(r => r.files.some(f => f.id === fileId));
+    const file = repo && repo.files.find(f => f.id === fileId);
+    if (!file) return;
+    card.classList.toggle('with-context', expanded);
+    const btn = card.querySelector('.match-context-toggle');
+    if (btn) {
+      btn.setAttribute('aria-pressed', expanded ? 'true' : 'false');
+      btn.title = expanded ? 'Hide surrounding context' : 'Show 3 lines of context around each match';
+      const label = btn.querySelector('.match-ctx-btn-label');
+      if (label) label.textContent = expanded ? 'Hide context' : 'Show context';
+    }
+    const body = card.querySelector('.match-body');
+    const focusId = body.dataset.focusId || null;
+    body.innerHTML = tgMatchBodyHTML(file.matches, focusId, expanded);
+  };
+  slot.querySelectorAll('.match-context-toggle').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const card = btn.closest('.match-card');
+      if (!card) return;
+      applyCardContext(card, !card.classList.contains('with-context'));
+      tgSyncAllContextToggle(slot);
+    });
+  });
+  // Toolbar-level "Show all context" — flips every match-card in the pane.
+  const allCtx = slot.querySelector('#tg-all-context-toggle');
+  if (allCtx) {
+    allCtx.addEventListener('click', () => {
+      const cards = [...slot.querySelectorAll('.match-card')];
+      const anyOff = cards.some(c => !c.classList.contains('with-context'));
+      cards.forEach(c => applyCardContext(c, anyOff));
+      tgSyncAllContextToggle(slot);
+    });
+  }
+  tgSyncAllContextToggle(slot);
+  const ct = slot.querySelector('#tg-collapse-toggle');
+  if (ct) {
+    ct.addEventListener('click', () => {
+      const cards = [...slot.querySelectorAll('.match-card')];
+      const anyOpen = cards.some(c => !c.classList.contains('collapsed'));
+      cards.forEach(c => c.classList.toggle('collapsed', anyOpen));
+    });
+  }
+  // Auto-scroll the focused match into view
+  const focused = slot.querySelector('.match-line.focus');
+  if (focused) focused.scrollIntoView({ block: 'center', behavior: 'auto' });
+}
+
+function tgExpandKey(row) {
+  return row.dataset.id;
+}
+
+function tgWireTree() {
+  const treeBody = trigrepPanel.querySelector('#tg-tree-body');
+  if (!treeBody) return;
+
+  treeBody.addEventListener('change', (e) => {
+    const cb = e.target.closest('.hn-check');
+    if (!cb) return;
+    const kind = cb.dataset.cbk, id = cb.dataset.cid, on = cb.checked;
+    let keys = [];
+    if (kind === 'repo') {
+      const r = tgTreeData.find(x => x.id === id);
+      if (r) keys = tgRepoMatchKeys(r);
+    } else if (kind === 'file') {
+      const r = tgTreeData.find(x => x.files.some(f => f.id === id));
+      const f = r && r.files.find(x => x.id === id);
+      if (f) keys = tgFileMatchKeys(f);
+    } else if (kind === 'match') {
+      keys = [id];
+    }
+    keys.forEach(k => on ? tgTreeState.selMatches.add(k) : tgTreeState.selMatches.delete(k));
+    tgRenderTree();
+  });
+
+  treeBody.addEventListener('click', (e) => {
+    if (e.target.closest('.hn-check')) return;
+    const chev = e.target.closest('.hn-chev');
+    if (chev) {
+      const row = chev.closest('.hn-row');
+      const key = tgExpandKey(row);
+      if (tgTreeState.expanded.has(key)) tgTreeState.expanded.delete(key);
+      else tgTreeState.expanded.add(key);
+      tgRenderTree();
+      return;
+    }
+    const row = e.target.closest('.hn-row');
+    if (!row) return;
+    const node = row.dataset.node;
+    const id = row.dataset.id;
+    const repoId = node === 'repo' ? id : row.dataset.rid;
+    const fileId = node === 'match' ? row.dataset.fid : (node === 'file' ? id : null);
+    tgTreeState.scope = { type: node, id, repoId, fileId };
+    // Body click also toggles expand for non-leaf rows
+    if (node !== 'match') {
+      const key = tgExpandKey(row);
+      if (tgTreeState.expanded.has(key)) tgTreeState.expanded.delete(key);
+      else tgTreeState.expanded.add(key);
+    }
+    tgRenderDetail();
+    tgRenderTree();
+  });
+}
+
+function tgWireDivider() {
+  const layout = trigrepPanel.querySelector('#tg-results-layout');
+  const divider = trigrepPanel.querySelector('#tg-results-divider');
+  if (!layout || !divider) return;
+  let dragging = false;
+  divider.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    divider.classList.add('dragging');
+    document.body.classList.add('col-resizing');
+    try { divider.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+  divider.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const rect = layout.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    const min = 300, max = rect.width - 340;
+    x = Math.max(min, Math.min(max, x));
+    layout.style.setProperty('--left-w', x + 'px');
+  });
+  const end = (e) => {
+    if (!dragging) return;
+    dragging = false;
+    divider.classList.remove('dragging');
+    document.body.classList.remove('col-resizing');
+    try { divider.releasePointerCapture(e.pointerId); } catch (_) {}
+  };
+  divider.addEventListener('pointerup', end);
+  divider.addEventListener('pointercancel', end);
+  divider.addEventListener('dblclick', () => layout.style.removeProperty('--left-w'));
+}
+
+function initTrigrepTree(flow) {
+  tgCurrentFlow = flow;
+  tgTreeData = tgBuildTreeData(flow);
+  tgTreeState = {
+    expanded: new Set(),
+    selMatches: new Set(),
+    scope: null,
+  };
+  // Default: pre-select every match so "Run recipe on selected" is meaningful
+  tgTreeData.forEach(r => tgRepoMatchKeys(r).forEach(k => tgTreeState.selMatches.add(k)));
+  // Auto-load results into the detail pane by defaulting to the "all" scope.
+  tgTreeState.scope = { type: 'all' };
+  tgRenderTree();
+  tgWireTree();
+  tgRenderDetail();
+}
+
+// Called when a sidebar filter item is toggled — refresh the tree.
+function tgRefreshFromFilters() {
+  if (!tgTreeData) return;
+  tgRenderTree();
+}
+
 function buildResultCardHTML(card) {
   return `
     <article class="result-card" data-card-id="${card.id}">
@@ -4775,6 +5484,9 @@ function wireResultsInteractions(flow, remainingCards) {
       else activeFilters.set(key, count);
       item.classList.toggle('active', !wasActive);
       recomputeSummary();
+      // Cheapest filter↔tree wiring: re-render the top-level repo list
+      // restricted to repos whose name matches an active filter item.
+      if (typeof tgRefreshFromFilters === 'function') tgRefreshFromFilters();
     });
   });
 
