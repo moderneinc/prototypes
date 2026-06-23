@@ -2717,47 +2717,10 @@
   .match-line.is-ctx{background:#FBFBFD;}
   .match-line.is-ctx .match-code{color:var(--grey-600);}
   .match-line.is-ctx .match-gutter{color:var(--grey-400);}
-  /* Per-card "Show context" labeled pill button — clearer affordance than
-     an icon-only square. Switches to a filled blue pressed state when on. */
-  .match-ctx-btn {
-    display: inline-flex; align-items: center; gap: 5px;
-    height: 24px;
-    padding: 0 9px;
-    font-family: inherit;
-    font-size: 11.5px;
-    font-weight: 500;
-    color: var(--grey-700);
-    background: #fff;
-    border: 1px solid var(--mui-grey-300);
-    border-radius: 9999px;
-    cursor: pointer;
-    transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
-  }
-  .match-ctx-btn:hover {
-    background: var(--brand-grey-100);
-    color: var(--grey-900);
-    border-color: var(--mui-grey-400);
-  }
-  .match-ctx-btn svg { width: 12px; height: 12px; }
-  .match-ctx-btn[aria-pressed="true"] {
-    background: var(--brand-digital-blue-500);
-    color: #fff;
-    border-color: var(--brand-digital-blue-500);
-  }
-  .match-ctx-btn[aria-pressed="true"]:hover {
-    background: var(--brand-digital-blue-600);
-    border-color: var(--brand-digital-blue-600);
-  }
-  /* Toolbar-level pressed state for "Show all context" */
-  .dt-btn[aria-pressed="true"] {
-    background: var(--brand-digital-blue-500);
-    color: #fff;
-    border-color: var(--brand-digital-blue-500);
-  }
-  .dt-btn[aria-pressed="true"]:hover {
-    background: var(--brand-digital-blue-600);
-    border-color: var(--brand-digital-blue-600);
-    color: #fff;
+  /* Brief active state when a tree click jumps to a card. */
+  .match-card.active {
+    border-color: var(--brand-digital-blue-400);
+    box-shadow: 0 0 0 3px var(--brand-digital-blue-100);
   }
   .match-gutter{display:flex;flex:0 0 auto;color:var(--grey-500);background:#FBFBFD;user-select:none;}
   .match-gutter .n{width:48px;text-align:right;padding:0 6px;}
@@ -5107,71 +5070,30 @@ const TG_EMPTY_DETAIL = `<div class="trigrep-start-state">
   </div>
 </div>`;
 
+// The right pane now always shows the full results set with surrounding
+// context on. Tree row clicks scroll/jump to the matching card rather than
+// re-rendering the pane. Mirrors recipe-results' detail panel UX.
 function tgRenderDetail() {
   const slot = trigrepPanel.querySelector('#tg-detail-slot');
   if (!slot) return;
-  const s = tgTreeState.scope;
-  if (!s) { slot.innerHTML = TG_EMPTY_DETAIL; return; }
-  // "all" scope: show every file across every repo (default, auto-loaded)
-  if (s.type === 'all') {
-    const allCards = tgTreeData.flatMap(r => r.files.map(f => ({ repo: r, file: f })));
-    const stats = tgFlowStats || {};
-    const statsLine = `<strong>${stats.matches || allCards.reduce((a,x)=>a+x.file.count,0).toLocaleString()}</strong> matches across <strong>${stats.files || allCards.length}</strong> files`;
-    slot.innerHTML = `
-      <div class="scope-bar">
-        <span class="scope-level">All results</span>
-        <div class="scope-crumbs"><span class="sc-crumb cur">All repositories</span></div>
-        <span class="scope-count">${statsLine}${stats.time ? ` · <span class="sc-time">${stats.time}</span>` : ''}</span>
-      </div>
-      <div class="detail-toolbar">
-        <div class="dt-actions">
-          <button type="button" class="dt-btn" id="tg-all-context-toggle" title="Show context on every result" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg><span class="dt-btn-label">Show all context</span></button>
-          <button type="button" class="dt-btn" id="tg-export-btn" title="Export results as CSV"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV</button>
-          <button type="button" class="dt-btn icon" id="tg-collapse-toggle" title="Collapse all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></button>
-        </div>
-      </div>
-      <div id="tg-match-list">${allCards.map(x => tgMatchCardHTML(x.file, null, x.repo)).join('')}</div>
-    `;
-    tgWireDetail(slot);
-    return;
-  }
-  const repo = tgTreeData.find(r => r.id === s.repoId);
-  if (!repo) { slot.innerHTML = TG_EMPTY_DETAIL; return; }
-  let files = [];
-  let focusMatchId = null;
-  let levelLabel = 'Repository';
-  const crumbs = [repo.name];
-  if (s.type === 'repo') {
-    files = repo.files;
-  } else if (s.type === 'file') {
-    const f = repo.files.find(x => x.id === s.id);
-    if (f) { files = [f]; crumbs.push(f.file); levelLabel = 'File'; }
-  } else if (s.type === 'match') {
-    const f = repo.files.find(x => x.id === s.fileId);
-    if (f) {
-      files = [f];
-      focusMatchId = s.id;
-      crumbs.push(f.file);
-      const m = f.matches.find(x => x.id === s.id);
-      if (m) crumbs.push('L' + m.n);
-      levelLabel = 'Match';
-    }
-  }
-  const totalMatches = files.reduce((a, f) => a + f.count, 0);
-  const crumbHTML = crumbs.map((x, i) => `<span class="sc-crumb${i === crumbs.length - 1 ? ' cur' : ''}">${escapeHtml(x)}</span>`).join('<span class="sc-sep">›</span>');
+  if (!tgTreeData || tgTreeData.length === 0) { slot.innerHTML = TG_EMPTY_DETAIL; return; }
+  const allCards = tgTreeData.flatMap(r => r.files.map(f => ({ repo: r, file: f })));
+  const stats = tgFlowStats || {};
+  const totalMatchesFromCards = allCards.reduce((a, x) => a + x.file.count, 0);
+  const statsLine = `<strong>${stats.matches || totalMatchesFromCards.toLocaleString()}</strong> matches across <strong>${stats.files || allCards.length}</strong> files`;
   slot.innerHTML = `
     <div class="scope-bar">
-      <span class="scope-level">${levelLabel}</span>
-      <div class="scope-crumbs">${crumbHTML}</div>
-      <span class="scope-count">${totalMatches.toLocaleString()} match${totalMatches === 1 ? '' : 'es'}</span>
+      <span class="scope-level">All results</span>
+      <div class="scope-crumbs"><span class="sc-crumb cur">All repositories</span></div>
+      <span class="scope-count">${statsLine}${stats.time ? ` · <span class="sc-time">${stats.time}</span>` : ''}</span>
     </div>
     <div class="detail-toolbar">
-      <div class="dt-title">${escapeHtml(repo.name)}<span class="repo-branch">@ ${escapeHtml(repo.branch)}</span></div>
       <div class="dt-actions">
+        <button type="button" class="dt-btn" id="tg-export-btn" title="Export results as CSV"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV</button>
         <button type="button" class="dt-btn icon" id="tg-collapse-toggle" title="Collapse all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></button>
       </div>
     </div>
-    <div id="tg-match-list">${files.map(f => tgMatchCardHTML(f, focusMatchId)).join('')}</div>
+    <div id="tg-match-list">${allCards.map(x => tgMatchCardHTML(x.file, null, x.repo)).join('')}</div>
   `;
   tgWireDetail(slot);
 }
@@ -5215,83 +5137,32 @@ function tgMatchBodyHTML(matches, focusMatchId, withContext) {
 function tgMatchCardHTML(f, focusMatchId, repo) {
   const lines = (f.matches || []);
   const repoPrefix = repo ? `<span class="match-file-repo">${escapeHtml(repo.name)}</span> · ` : '';
-  return `<div class="match-card" data-file-id="${f.id}">
+  // Each card identifies itself by repo + file so tree clicks can jump here;
+  // file-id alone collides across repos (same basename in different repos).
+  const repoId = repo ? repo.id : '';
+  return `<div class="match-card" data-file-id="${f.id}" data-repo-id="${repoId}" id="mc-${repoId}-${f.id}">
     <div class="match-card-head">
       <svg class="match-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       <svg class="match-fileicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       <span class="match-file-path">${repoPrefix}${escapeHtml(f.file)}</span>
       <div class="match-card-actions">
-        <button type="button" class="match-ctx-btn match-context-toggle" title="Show 3 lines of context around each match" aria-pressed="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
-          <span class="match-ctx-btn-label">Show context</span>
-        </button>
         <button type="button" class="match-act" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
       </div>
     </div>
-    <div class="match-body" data-focus-id="${focusMatchId || ''}">${tgMatchBodyHTML(lines, focusMatchId, false)}</div>
+    <div class="match-body">${tgMatchBodyHTML(lines, focusMatchId, true)}</div>
   </div>`;
 }
 
-// Keep the toolbar-level "Show / Hide all context" button label in sync with
-// the per-card state in the pane.
-function tgSyncAllContextToggle(slot) {
-  const btn = slot.querySelector('#tg-all-context-toggle');
-  if (!btn) return;
-  const cards = [...slot.querySelectorAll('.match-card')];
-  if (!cards.length) return;
-  const allOn = cards.every(c => c.classList.contains('with-context'));
-  btn.setAttribute('aria-pressed', allOn ? 'true' : 'false');
-  btn.title = allOn ? 'Hide context on every result' : 'Show context on every result';
-  const label = btn.querySelector('.dt-btn-label');
-  if (label) label.textContent = allOn ? 'Hide all context' : 'Show all context';
-}
-
 function tgWireDetail(slot) {
+  // Per-card chevron expand/collapse (clicking the head, but not the action
+  // buttons). Mirrors the recipe-results diff-file UX.
   slot.querySelectorAll('.match-card-head').forEach(h => {
     h.addEventListener('click', (e) => {
       if (e.target.closest('.match-act')) return;
       h.closest('.match-card').classList.toggle('collapsed');
     });
   });
-  // Per-card "show context" toggle — re-renders the body with ±3 surrounding
-  // filler lines so matches read in the context of the file.
-  const applyCardContext = (card, expanded) => {
-    const fileId = card.dataset.fileId;
-    const repo = tgTreeData.find(r => r.files.some(f => f.id === fileId));
-    const file = repo && repo.files.find(f => f.id === fileId);
-    if (!file) return;
-    card.classList.toggle('with-context', expanded);
-    const btn = card.querySelector('.match-context-toggle');
-    if (btn) {
-      btn.setAttribute('aria-pressed', expanded ? 'true' : 'false');
-      btn.title = expanded ? 'Hide surrounding context' : 'Show 3 lines of context around each match';
-      const label = btn.querySelector('.match-ctx-btn-label');
-      if (label) label.textContent = expanded ? 'Hide context' : 'Show context';
-    }
-    const body = card.querySelector('.match-body');
-    const focusId = body.dataset.focusId || null;
-    body.innerHTML = tgMatchBodyHTML(file.matches, focusId, expanded);
-  };
-  slot.querySelectorAll('.match-context-toggle').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const card = btn.closest('.match-card');
-      if (!card) return;
-      applyCardContext(card, !card.classList.contains('with-context'));
-      tgSyncAllContextToggle(slot);
-    });
-  });
-  // Toolbar-level "Show all context" — flips every match-card in the pane.
-  const allCtx = slot.querySelector('#tg-all-context-toggle');
-  if (allCtx) {
-    allCtx.addEventListener('click', () => {
-      const cards = [...slot.querySelectorAll('.match-card')];
-      const anyOff = cards.some(c => !c.classList.contains('with-context'));
-      cards.forEach(c => applyCardContext(c, anyOff));
-      tgSyncAllContextToggle(slot);
-    });
-  }
-  tgSyncAllContextToggle(slot);
+  // Toolbar "Collapse all" / "Expand all" — flips every card.
   const ct = slot.querySelector('#tg-collapse-toggle');
   if (ct) {
     ct.addEventListener('click', () => {
@@ -5300,9 +5171,32 @@ function tgWireDetail(slot) {
       cards.forEach(c => c.classList.toggle('collapsed', anyOpen));
     });
   }
-  // Auto-scroll the focused match into view
-  const focused = slot.querySelector('.match-line.focus');
-  if (focused) focused.scrollIntoView({ block: 'center', behavior: 'auto' });
+}
+
+// Quick-link from a tree row to the matching card / line in the right pane.
+// Scrolls into view, marks the card as active for a brief beat, and (if
+// targeting a specific match) flashes the matched line.
+function tgJumpToCard(repoId, fileId, matchId) {
+  const slot = trigrepPanel.querySelector('#tg-detail-slot');
+  if (!slot) return;
+  const cardId = `mc-${repoId}-${fileId}`;
+  const card = slot.querySelector(`#${CSS.escape(cardId)}`);
+  if (!card) return;
+  // Always expand the card before jumping so the target line is visible.
+  card.classList.remove('collapsed');
+  // Highlight the active card briefly so the click reads as taking effect.
+  slot.querySelectorAll('.match-card.active').forEach(c => c.classList.remove('active'));
+  card.classList.add('active');
+  let target = card;
+  if (matchId) {
+    const line = card.querySelector(`.match-line[data-match-id="${CSS.escape(matchId)}"]`);
+    if (line) {
+      slot.querySelectorAll('.match-line.focus').forEach(l => l.classList.remove('focus'));
+      line.classList.add('focus');
+      target = line;
+    }
+  }
+  target.scrollIntoView({ block: 'center', behavior: 'smooth' });
 }
 
 function tgExpandKey(row) {
@@ -5332,6 +5226,9 @@ function tgWireTree() {
     tgRenderTree();
   });
 
+  // Tree clicks are quick-links: they expand/collapse subtrees and jump the
+  // right pane to the matching card / line — they never re-render the right
+  // pane (it always shows the full result set).
   treeBody.addEventListener('click', (e) => {
     if (e.target.closest('.hn-check')) return;
     const chev = e.target.closest('.hn-chev');
@@ -5349,14 +5246,20 @@ function tgWireTree() {
     const id = row.dataset.id;
     const repoId = node === 'repo' ? id : row.dataset.rid;
     const fileId = node === 'match' ? row.dataset.fid : (node === 'file' ? id : null);
-    tgTreeState.scope = { type: node, id, repoId, fileId };
-    // Body click also toggles expand for non-leaf rows
+    const matchId = node === 'match' ? id : null;
+    // Body click on non-leaf rows also toggles expand of the subtree.
     if (node !== 'match') {
       const key = tgExpandKey(row);
       if (tgTreeState.expanded.has(key)) tgTreeState.expanded.delete(key);
       else tgTreeState.expanded.add(key);
     }
-    tgRenderDetail();
+    // Repo click → jump to the first file of that repo.
+    let targetFileId = fileId;
+    if (node === 'repo') {
+      const r = tgTreeData.find(x => x.id === repoId);
+      if (r && r.files.length) targetFileId = r.files[0].id;
+    }
+    if (targetFileId) tgJumpToCard(repoId, targetFileId, matchId);
     tgRenderTree();
   });
 }
@@ -5402,10 +5305,10 @@ function initTrigrepTree(flow) {
   };
   // Default: pre-select every match so "Run recipe on selected" is meaningful
   tgTreeData.forEach(r => tgRepoMatchKeys(r).forEach(k => tgTreeState.selMatches.add(k)));
-  // Auto-load results into the detail pane by defaulting to the "all" scope.
-  tgTreeState.scope = { type: 'all' };
   tgRenderTree();
   tgWireTree();
+  // Right pane always shows the full result set; tree clicks scroll-link
+  // into it rather than re-rendering it.
   tgRenderDetail();
 }
 
