@@ -249,7 +249,7 @@
   <h2 class="viewh">Proposed status colour model</h2>
   <div class="layoutwrap" style="padding:16px">
     <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
-      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:#8a887f;margin-top:2px"></span><div><strong style="color:var(--ink)">Waiting — grey</strong> <span style="color:var(--ink2)">· Queued · Canceled · Not started</span></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:#8a887f;margin-top:2px"></span><div><strong style="color:var(--ink)">Neutral — grey</strong> <span style="color:var(--ink2)">· Queued · Canceled · Not started</span></div></div>
       <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--info);margin-top:2px"></span><div><strong style="color:var(--ink)">Working — blue</strong> <span style="color:var(--ink2)">· Building · Running</span></div></div>
       <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--success);margin-top:2px"></span><div><strong style="color:var(--ink)">Done — green</strong> <span style="color:var(--ink2)">· Available · Finished · Published</span></div></div>
       <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--process);margin-top:2px"></span><div><strong style="color:var(--ink)">Needs attention — amber</strong> <span style="color:var(--ink2)">· No LST</span></div></div>
@@ -309,7 +309,7 @@
       <div class="f2-col" style="grid-column:7">
         <div class="f2-aux-top"></div>
         <div class="f2-main"><div class="f2-diamond gold" data-fid="plat-lst"><svg viewBox="0 0 148 104" preserveAspectRatio="none"><polygon points="74,4 144,52 74,100 4,52"/></svg><span>LST<br>available?</span></div></div>
-        <div class="f2-aux-bottom"><div class="f2-node rect process small" data-fid="plat-nolst-1">No LST</div></div>
+        <div class="f2-aux-bottom"><div class="f2-node rect process small" data-fid="plat-nolst-1"><b>No LST</b><small>skip · no run</small></div></div>
       </div>
       <div class="f2-col" style="grid-column:8">
         <div class="f2-aux-top"></div>
@@ -327,7 +327,6 @@
         <div class="f2-aux-bottom">
           <div class="f2-node rect fail small" data-fid="plat-error">Error</div>
           <div class="f2-node rect neutral small" data-fid="plat-canceled-2">Canceled</div>
-          <div class="f2-node rect process small" data-fid="plat-nolst-2">No LST</div>
         </div>
       </div>
       <div class="f2-col" style="grid-column:11">
@@ -646,12 +645,11 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer();});
 // legend
 const legend=document.getElementById("legend");
 const LEG=[
-  ["Ready / available / done",getCss("--success")],
-  ["Building",  "#c9a227"],
-  ["Running / in-flight",getCss("--info")],
-  ["Skipped / no LST",getCss("--process")],
-  ["Failed / error",getCss("--fail")],
-  ["Idle / canceled","#8a887f"]
+  ["Neutral · queued / canceled / not started","#8a887f"],
+  ["Working · building / running",getCss("--info")],
+  ["Done · available / finished / published",getCss("--success")],
+  ["Needs attention · no LST",getCss("--process")],
+  ["Failure · error",getCss("--fail")]
 ];
 LEG.forEach(([label,fg])=>{
   const it=el("div","it");
@@ -771,7 +769,6 @@ LEG.forEach(([label,fg])=>{
     downBranch("plat-lst","plat-nolst-1",COL.process,"no");
     downBranch("plat-result","plat-error",COL.fail);
     downBranch("plat-result","plat-canceled-2",COL.neutral);
-    downBranch("plat-result","plat-nolst-2",COL.process);
   }
 
   // draw + observe
