@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderne — Product Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --midnight: #041834;
+    --digital-blue: #283AF7;
+    --gold: #E7B136;
+    --grey: #F8F8FF;
+    --lavender: #D4D3E4;
+    --body: rgba(4,24,52,0.66);
+    --muted: rgba(4,24,52,0.45);
+    --border: rgba(4,24,52,0.12);
+    --font-head: "Beausite", "Poppins", system-ui, sans-serif;
+    --font-body: "Poppins", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: var(--font-body); background: #1a2236; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+
+  #stage { position: relative; width: 1280px; height: 720px; transform-origin: center center; box-shadow: 0 24px 70px rgba(0,0,0,0.45); border-radius: 6px; overflow: hidden; }
+
+  .slide { position: absolute; inset: 0; display: none; padding: 64px 72px 60px; background: var(--grey); }
+  .slide.active { display: block; }
+  .slide.light {
+    background:
+      radial-gradient(120% 90% at 0% 0%, rgba(231,177,54,0.18) 0%, transparent 42%),
+      radial-gradient(120% 95% at 100% 0%, rgba(40,58,247,0.13) 0%, transparent 55%),
+      radial-gradient(110% 95% at 100% 5%, var(--lavender) 0%, transparent 50%),
+      radial-gradient(120% 100% at 0% 100%, rgba(133,254,153,0.20) 0%, transparent 55%),
+      var(--grey);
+  }
+  .slide.dark { background: var(--midnight); }
+
+  .grid-tex { position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(4,24,52,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(4,24,52,0.05) 1px, transparent 1px);
+    background-size: 116px 116px; }
+  .dark .grid-tex { background-image: linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px); }
+
+  .arc { position: absolute; right: -120px; bottom: -260px; width: 760px; height: 760px; pointer-events: none; }
+  .arc svg { width: 100%; height: 100%; }
+
+  .progress { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: var(--midnight); z-index: 5; }
+  .progress .fill { height: 100%; transition: width .35s ease; }
+
+  .inner { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; }
+  .toprow { display: flex; justify-content: space-between; align-items: flex-start; }
+  .eyebrow { font-family: var(--font-head); font-size: 28px; font-weight: 500; color: var(--midnight); display: inline-flex; align-items: center; gap: 14px; }
+  .dark .eyebrow { color: rgba(255,255,255,0.85); }
+  .eyebrow .tick { width: 16px; height: 16px; border-radius: 4px; display: inline-block; }
+
+  .pill { background: var(--midnight); color: #fff; font-weight: 500; font-size: 16px; padding: 9px 20px; border-radius: 999px; white-space: nowrap; }
+  .dark .pill { background: rgba(255,255,255,0.12); }
+
+  .logo { display: flex; align-items: center; gap: 11px; }
+  .logo .mark { width: 30px; height: 30px; color: #fff; }
+  .logo .word { font-family: var(--font-head); font-size: 27px; font-weight: 500; color: #fff; }
+
+  h1.head { font-family: var(--font-head); color: var(--midnight); font-weight: 600; letter-spacing: -1.5px; line-height: 0.98; margin-top: 28px; }
+  .dark h1.head { color: #fff; }
+  .head.xl { font-size: 128px; }
+  .head.lg { font-size: 78px; line-height: 1.0; letter-spacing: -1px; }
+  .head.md { font-size: 58px; line-height: 1.04; letter-spacing: -0.8px; }
+
+  .accentline { height: 7px; width: 132px; border-radius: 4px; margin-top: 30px; }
+
+  .sub { font-size: 29px; line-height: 1.4; color: var(--body); max-width: 780px; margin-top: 26px; font-weight: 300; }
+  .sub strong { font-weight: 600; color: var(--midnight); }
+  .dark .sub { color: rgba(255,255,255,0.78); }
+  .dark .sub strong { color: #fff; }
+
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: auto; }
+  .feat { border-top: 1px solid var(--border); padding-top: 18px; }
+  .feat .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; margin-right: 12px; vertical-align: middle; }
+  .feat .ftext { font-size: 22px; font-weight: 600; color: var(--midnight); vertical-align: middle; }
+  .feat .fsub { font-size: 16px; color: var(--body); margin-top: 8px; font-weight: 300; }
+
+  .foot { display: flex; align-items: center; justify-content: space-between; margin-top: 38px; }
+  .next { display: inline-flex; align-items: center; gap: 16px; background: var(--digital-blue); color: #fff; font-weight: 600; font-size: 19px; padding: 14px 16px 14px 28px; border: none; border-radius: 999px; cursor: pointer; font-family: inherit; }
+  .next .circ { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.55); display: grid; place-items: center; }
+  .next .circ svg { width: 16px; height: 16px; }
+  .counter { font-size: 16px; color: var(--muted); font-weight: 500; }
+  .dark .counter { color: rgba(255,255,255,0.5); }
+
+  #dots { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); display: flex; gap: 7px; z-index: 50; flex-wrap: wrap; max-width: 90vw; justify-content: center; }
+  #dots button { width: 9px; height: 9px; border-radius: 50%; border: none; background: rgba(255,255,255,0.35); cursor: pointer; padding: 0; }
+  #dots button.on { background: #fff; width: 24px; border-radius: 6px; }
+  .hint { position: fixed; bottom: 16px; right: 20px; color: rgba(255,255,255,0.4); font-size: 13px; z-index: 50; }
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="m-mark" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M22.3499 1.37436C22.1539 1.29304 21.9167 1.3337 21.762 1.49633L12.4793 10.7866C11.8707 5.47063 7.35314 1.3337 1.88666 1.3337C1.74227 1.3337 1.60818 1.39469 1.50504 1.49633C1.4019 1.59798 1.35033 1.73011 1.35033 1.88258V22.1505C1.35033 22.1505 1.35033 22.1708 1.35033 22.181C1.35033 22.2115 1.35033 22.2318 1.36064 22.2623C1.36064 22.2928 1.37096 22.3131 1.38127 22.3436V22.3639C1.38127 22.3843 1.4019 22.3944 1.4019 22.4046C1.41221 22.4249 1.43284 22.4554 1.44316 22.4757C1.45347 22.4961 1.4741 22.5164 1.49473 22.5367C1.51536 22.5571 1.53598 22.5774 1.55661 22.5876C1.57724 22.6079 1.59787 22.618 1.62881 22.6282C1.63913 22.6282 1.65975 22.6485 1.67007 22.6587C1.67007 22.6587 1.68038 22.6587 1.6907 22.6587C1.75258 22.679 1.81447 22.6994 1.87635 22.6994H22.1229C22.4221 22.6994 22.6593 22.4554 22.6593 22.1606V1.87242C22.6593 1.65896 22.5252 1.45567 22.3292 1.37436H22.3499ZM21.5969 3.17347V11.4677H13.3147L21.5969 3.17347ZM21.5969 16.5295H12.5515V12.5451H21.5969V16.5295ZM2.43331 20.8393V12.5451H10.7155L2.423 20.8393H2.43331ZM2.43331 2.43146C7.29126 2.7059 11.19 6.60905 11.4685 11.4677H2.43331V2.43146ZM11.4788 13.3074V21.6016H3.18624L11.4788 13.3074ZM12.5515 21.6016V17.6171H21.5969V21.6016H12.5515Z"/>
+    </symbol>
+    <symbol id="arc-motif" viewBox="0 0 400 400">
+      <path d="M8 8 A392 392 0 0 1 400 400" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M8 200 L392 200 M200 8 L200 392" stroke="currentColor" stroke-width="1.5"/>
+    </symbol>
+  </svg>
+
+  <script id="deckdata" type="application/json">
+[
+ {"type":"dark","title":true,"accent":"#E7B136","eyebrow":"Product Overview","head":"Unleash the<br>100x developer","hc":"lg",
+  "sub":"<strong>Moderne</strong> auto-refactors and analyzes code across thousands of repositories — safely, at enterprise scale.","pill":null,"feats":null},
+
+ {"type":"light","divider":true,"accent":"#283AF7","eyebrow":"01 · Platform","pill":"Platform","head":"Platform","hc":"xl",
+  "sub":"A secure platform and toolchain for fast, enterprise-wide code modernization.","feats":null},
+ {"type":"light","accent":"#283AF7","eyebrow":"Platform","pill":"Platform","head":"Modernize at enterprise scale","hc":"md",
+  "sub":"<strong>One control plane</strong> for searching, fixing, and migrating across every repository at once.",
+  "feats":[["Type-aware search","Across every repo"],["Automated remediation","Recipes at scale"],["Reporting","Track impact & drift"]]},
+
+ {"type":"light","divider":true,"accent":"#E7B136","eyebrow":"02 · CLI","pill":"CLI","head":"CLI","hc":"xl",
+  "sub":"A local, off-line CLI for multi-repo analysis and automated remediation in code.","feats":null},
+ {"type":"light","accent":"#E7B136","eyebrow":"CLI","pill":"CLI","head":"Refactor from your terminal","hc":"md",
+  "sub":"<strong>Run the same recipes locally</strong> — no source code ever has to leave your machine.",
+  "feats":[["Runs offline","Local and air-gapped"],["Multi-repo","Analyze many at once"],["Recipe parity","Same engine as platform"]]},
+
+ {"type":"light","divider":true,"accent":"#E8923C","eyebrow":"03 · Agent tools","pill":"Agent tools","head":"Agent tools","hc":"lg",
+  "sub":"Tools and context that make AI coding agents faster, more accurate, and more effective.","feats":null},
+ {"type":"light","accent":"#E8923C","eyebrow":"Enter:","pill":"Agent tools","head":"Trigrep","hc":"xl",
+  "sub":"<strong>Sub-second code search,</strong> built for agents and the developers who work alongside them.",
+  "feats":[["Trigram-indexed","Instant matches at scale"],["LST-aware","Understands real syntax"],["Enterprise-scoped","Every repo, one query"]]},
+
+ {"type":"light","divider":true,"accent":"#5AC36A","eyebrow":"04 · Recipes","pill":"Recipes","head":"Recipes","hc":"xl",
+  "sub":"Automatable code transformations to search, update, migrate, and onboard codebases accurately.","feats":null},
+ {"type":"light","accent":"#5AC36A","eyebrow":"Recipes","pill":"Recipes","head":"Transformations you can automate","hc":"md",
+  "sub":"<strong>Composable, type-aware rules</strong> that change code correctly the first time, everywhere.",
+  "feats":[["Search","Precise, type-aware queries"],["Migrate","Framework & version bumps"],["Onboard","Codebase-wide changes"]]},
+
+ {"type":"light","divider":true,"accent":"#B7995E","eyebrow":"05 · DX","pill":"DX","head":"DX","hc":"xl",
+  "sub":"Air-gapped, on-prem unified refactoring CLI/IDE solution with recipes & reporting.","feats":null},
+ {"type":"light","accent":"#B7995E","eyebrow":"DX","pill":"DX","head":"Unified refactoring, air-gapped","hc":"md",
+  "sub":"<strong>One workflow across CLI and IDE</strong> for teams that keep everything on-prem.",
+  "feats":[["Air-gapped","On-prem by default"],["CLI + IDE","One unified workflow"],["Recipes & reporting","Built in"]]},
+
+ {"type":"light","divider":true,"accent":"#C21FD0","eyebrow":"06 · Moddy","pill":"Moddy","head":"Moddy","hc":"xl",
+  "sub":"An AI agent that modernizes multi-repository codebases with LLMs and structured LST data.","feats":null},
+ {"type":"light","accent":"#C21FD0","eyebrow":"Moddy","pill":"Moddy","head":"Your modernization agent","hc":"md",
+  "sub":"<strong>LLMs grounded in real code structure</strong> — so changes are safe, reviewable, and at scale.",
+  "feats":[["LLM + LST","Grounded in real code"],["Multi-repo","Modernize in bulk"],["Reviewable PRs","You stay in control"]]},
+
+ {"type":"light","divider":true,"accent":"#2DD4BF","eyebrow":"07 · IDE plugins","pill":"IDE plugins","head":"IDE plugins","hc":"lg",
+  "sub":"An IntelliJ IDEA plugin for multi-repository code search and recipe development.","feats":null},
+ {"type":"light","accent":"#2DD4BF","eyebrow":"IDE plugins","pill":"IDE plugins","head":"Search and author in your IDE","hc":"md",
+  "sub":"<strong>Bring multi-repo search and recipe authoring</strong> right into IntelliJ IDEA.",
+  "feats":[["Code search","Across repositories"],["Recipe development","Author & test inline"],["IntelliJ IDEA","Native plugin"]]},
+
+ {"type":"dark","title":true,"accent":"#E7B136","eyebrow":"Get started","head":"Transform your codebase<br>in minutes, not months","hc":"md",
+  "sub":"Start at <strong>moderne.io</strong> — or explore the docs to go further.","pill":null,"feats":null}
+]
+  </script>
+
+  <div id="stage"></div>
+  <div id="dots"></div>
+  <div class="hint">← → to navigate · F for fullscreen</div>
+
+<script>
+const slides = JSON.parse(document.getElementById('deckdata').textContent);
+const stage = document.getElementById('stage');
+const dotsWrap = document.getElementById('dots');
+let cur = 0;
+
+function render(){
+  const s = slides[cur], n = slides.length;
+  const isDark = s.type === "dark";
+  const arcColor = isDark ? "rgba(133,254,153,0.18)" : "rgba(4,24,52,0.10)";
+  const pct = ((cur+1)/n)*100;
+  const accent = s.accent || "#E7B136";
+
+  const topLeft = (isDark && s.title)
+    ? `<div class="logo"><svg class="mark"><use href="#m-mark"/></svg><span class="word">Moderne</span></div>`
+    : `<span class="eyebrow"><span class="tick" style="background:${accent}"></span>${s.eyebrow}</span>`;
+  const topRight = s.pill ? `<span class="pill">${s.pill}</span>` : `<span class="counter">Moderne · 2026</span>`;
+
+  let mid = `<h1 class="head ${s.hc}">${s.head}</h1>`;
+  if (s.divider) mid += `<div class="accentline" style="background:${accent}"></div>`;
+  mid += `<p class="sub">${s.sub}</p>`;
+
+  let features = "";
+  if (s.feats){
+    features = `<div class="features">` + s.feats.map(f =>
+      `<div class="feat"><span class="dot" style="background:${accent}"></span><span class="ftext">${f[0]}</span><div class="fsub">${f[1]}</div></div>`).join("") + `</div>`;
+  }
+
+  const centered = s.title || s.divider;
+  const body = centered
+    ? `<div style="margin-top:auto;margin-bottom:auto">${mid}</div>`
+    : `<div>${mid}</div>${features}`;
+
+  const last = cur === n - 1;
+  const foot = `<div class="foot">
+      <button class="next" onclick="${last ? 'go(0)' : 'next()'}">${last ? 'Restart' : 'Next slide'}
+        <span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </button>
+      <span class="counter">${String(cur+1).padStart(2,'0')} / ${String(n).padStart(2,'0')}</span>
+    </div>`;
+
+  stage.innerHTML = `
+    <div class="slide ${isDark ? 'dark':'light'} active">
+      <div class="progress"><div class="fill" style="width:${pct}%;background:${accent}"></div></div>
+      <div class="grid-tex"></div>
+      <div class="arc" style="color:${arcColor}"><svg><use href="#arc-motif"/></svg></div>
+      <div class="inner"><div class="toprow">${topLeft}${topRight}</div>${body}${foot}</div>
+    </div>`;
+  [...dotsWrap.children].forEach((d,i)=> d.classList.toggle('on', i===cur));
+}
+function go(i){ cur = (i+slides.length)%slides.length; render(); }
+function next(){ go(cur+1); }
+function prev(){ go(cur-1); }
+slides.forEach((_,i)=>{ const b=document.createElement('button'); b.onclick=()=>go(i); dotsWrap.appendChild(b); });
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key===' '){ next(); e.preventDefault(); }
+  else if(e.key==='ArrowLeft'){ prev(); }
+  else if(e.key.toLowerCase()==='f'){ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+});
+function fit(){ const pad=40; const sx=(window.innerWidth-pad)/1280, sy=(window.innerHeight-pad)/720; stage.style.transform=`scale(${Math.min(sx,sy)})`; }
+window.addEventListener('resize', fit); fit(); render();
+</script>
+</body>
+</html>
