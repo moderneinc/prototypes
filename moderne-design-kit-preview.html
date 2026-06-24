@@ -73,7 +73,7 @@
           <div style="font-size:13px;color:var(--muted);margin-top:2px;">Hand off the project to your terminal</div>
         </div>
       </div>
-      <button style="display:inline-flex;align-items:center;gap:10px;background:#18181B;color:#fff;border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;">
+      <button id="openHandoff" style="display:inline-flex;align-items:center;gap:10px;background:#18181B;color:#fff;border:1px solid rgba(255,255,255,0.14);border-radius:8px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;">
         <span style="font-size:14px;line-height:1;">↗</span>Open in Claude Code Web
       </button>
     </div>
@@ -430,6 +430,198 @@
 
   </div>
 </div>
+
+<!-- ===== Claude Code hand-off modal ===== -->
+<div id="handoffOverlay" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(8,12,18,0.55);align-items:center;justify-content:center;padding:24px;font-family:'Poppins',system-ui,sans-serif;">
+  <div role="dialog" aria-modal="true" aria-label="Hand off to a coding agent" style="width:100%;max-width:600px;max-height:90vh;overflow:auto;background:#fff;border-radius:18px;box-shadow:0 30px 90px rgba(0,0,0,0.45);padding:20px 22px 24px;color:#0A1B33;">
+    <!-- tabs + close -->
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="display:inline-flex;background:#F2F3F7;border-radius:11px;padding:4px;gap:4px;">
+        <button id="hoTabLocal" style="border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;padding:8px 16px;border-radius:8px;background:#fff;color:#0A1B33;box-shadow:0 1px 2px rgba(10,27,51,0.12);">Send to local coding agent</button>
+        <button id="hoTabWeb" style="border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;padding:8px 16px;border-radius:8px;background:transparent;color:#8A93A6;">Send to Claude Code Web</button>
+      </div>
+      <button id="hoClose" aria-label="Close" style="margin-left:auto;border:none;background:transparent;color:#8A93A6;font-size:22px;line-height:1;cursor:pointer;padding:4px 8px;">✕</button>
+    </div>
+
+    <!-- ===== Panel: local ===== -->
+    <div id="hoPanelLocal">
+      <div style="background:#161718;border-radius:12px;overflow:hidden;margin-top:18px;">
+        <div style="position:relative;display:flex;align-items:center;gap:6px;padding:11px 14px;background:#202123;">
+          <span style="width:11px;height:11px;border-radius:50%;background:#FF5F57;"></span>
+          <span style="width:11px;height:11px;border-radius:50%;background:#FEBC2E;"></span>
+          <span style="width:11px;height:11px;border-radius:50%;background:#28C840;"></span>
+          <span style="position:absolute;left:0;right:0;text-align:center;font-size:12px;color:#9AA0A6;font-weight:500;">Claude Code</span>
+        </div>
+        <pre id="hoPromptBox" class="mono" style="margin:0;padding:18px 18px 20px;font-size:12.5px;line-height:1.55;color:#E6E8EA;white-space:pre-wrap;word-break:break-word;"></pre>
+      </div>
+
+      <button id="hoActionBtn" style="display:inline-flex;align-items:center;gap:9px;margin-top:16px;background:#18181B;color:#fff;border:none;border-radius:9px;padding:11px 18px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <span id="hoActionLabel">Copy prompt</span>
+      </button>
+
+      <div class="mono" style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#8A93A6;margin-top:24px;margin-bottom:10px;">Options</div>
+      <label for="hoZip" style="display:flex;align-items:flex-start;gap:11px;cursor:pointer;">
+        <input type="checkbox" id="hoZip" style="margin-top:3px;width:16px;height:16px;flex:none;accent-color:#18181B;cursor:pointer;">
+        <span>
+          <span style="display:block;font-size:14px;font-weight:600;color:#0A1B33;">Download zip instead</span>
+          <span style="display:block;font-size:13px;color:#8A93A6;line-height:1.45;margin-top:2px;">For agents without the Claude Design connector — drop the bundle into your agent's chat manually.</span>
+        </span>
+      </label>
+
+      <div style="font-size:15px;font-weight:600;color:#0A1B33;margin-top:22px;">Give the agent more detail on what to implement <span style="color:#8A93A6;font-weight:400;">(optional)</span></div>
+      <textarea id="hoDetailLocal" rows="2" placeholder="Moderne Design Kit Dark.dc.html" style="display:block;width:100%;margin-top:10px;border:1px solid #DCE0EA;border-radius:9px;padding:13px 14px;font-family:inherit;font-size:14px;color:#0A1B33;resize:vertical;outline:none;"></textarea>
+    </div>
+
+    <!-- ===== Panel: web ===== -->
+    <div id="hoPanelWeb" style="display:none;">
+      <div style="margin-top:18px;background:#F7F8F4;border:1px solid #E7E9E2;border-radius:12px;padding:18px 20px;">
+        <div class="mono" style="font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#8A93A6;margin-bottom:10px;">Your new session will start with</div>
+        <div style="font-size:16px;line-height:1.5;color:#0A1B33;">Your designs and context are attached — please implement <em>Moderne Design Kit Dark.dc.html</em>.</div>
+      </div>
+      <button id="hoOpenWeb" style="display:inline-flex;align-items:center;gap:10px;margin-top:18px;background:#18181B;color:#fff;border:none;border-radius:9px;padding:12px 20px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;">
+        <span style="font-size:15px;line-height:1;">↗</span>Open in Claude Code Web
+      </button>
+      <div style="font-size:15px;font-weight:600;color:#0A1B33;margin-top:24px;">Give the agent more detail on what to implement <span style="color:#8A93A6;font-weight:400;">(optional)</span></div>
+      <textarea id="hoDetailWeb" rows="2" placeholder="Moderne Design Kit Dark.dc.html" style="display:block;width:100%;margin-top:10px;border:1px solid #DCE0EA;border-radius:9px;padding:13px 14px;font-family:inherit;font-size:14px;color:#0A1B33;resize:vertical;outline:none;"></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---- Claude Code hand-off modal logic ----
+  (function(){
+    const BASE_PROMPT =
+"Use the claude_design MCP (https://api.anthropic.com/v1/design/mcp, auth via /design-login) to import this project: https://claude.ai/design/p/2c269c3f-c6f5-47b5-8829-a49b8f3a6ed2?file=Moderne+Design+Kit+Dark.dc.html\n\nImplement: Moderne Design Kit Dark.dc.html";
+    const CLAUDE_CODE_URL = "https://claude.ai/code";
+
+    const overlay = document.getElementById("handoffOverlay");
+    const tabLocal = document.getElementById("hoTabLocal");
+    const tabWeb = document.getElementById("hoTabWeb");
+    const panelLocal = document.getElementById("hoPanelLocal");
+    const panelWeb = document.getElementById("hoPanelWeb");
+    const promptBox = document.getElementById("hoPromptBox");
+    const actionBtn = document.getElementById("hoActionBtn");
+    const actionLabel = document.getElementById("hoActionLabel");
+    const zipChk = document.getElementById("hoZip");
+    const detailLocal = document.getElementById("hoDetailLocal");
+
+    // The full prompt = base + any extra detail the user added.
+    function fullPrompt(){
+      const extra = (detailLocal.value || "").trim();
+      const placeholderish = extra === "" || extra === "Moderne Design Kit Dark.dc.html";
+      return placeholderish ? BASE_PROMPT : BASE_PROMPT + "\n\nAdditional detail: " + extra;
+    }
+    function refreshPrompt(){ promptBox.textContent = "> " + fullPrompt(); }
+    detailLocal.addEventListener("input", refreshPrompt);
+
+    // Tabs
+    function activate(tab){
+      const localOn = tab === "local";
+      panelLocal.style.display = localOn ? "" : "none";
+      panelWeb.style.display = localOn ? "none" : "";
+      [tabLocal, localOn].forEach(()=>{});
+      tabLocal.style.background = localOn ? "#fff" : "transparent";
+      tabLocal.style.color = localOn ? "#0A1B33" : "#8A93A6";
+      tabLocal.style.boxShadow = localOn ? "0 1px 2px rgba(10,27,51,0.12)" : "none";
+      tabWeb.style.background = localOn ? "transparent" : "#fff";
+      tabWeb.style.color = localOn ? "#8A93A6" : "#0A1B33";
+      tabWeb.style.boxShadow = localOn ? "none" : "0 1px 2px rgba(10,27,51,0.12)";
+    }
+    tabLocal.addEventListener("click", ()=>activate("local"));
+    tabWeb.addEventListener("click", ()=>activate("web"));
+
+    // Open / close
+    function open(){ refreshPrompt(); activate("local"); overlay.style.display = "flex"; document.body.style.overflow = "hidden"; }
+    function close(){ overlay.style.display = "none"; document.body.style.overflow = ""; }
+    document.getElementById("openHandoff").addEventListener("click", open);
+    document.getElementById("hoClose").addEventListener("click", close);
+    overlay.addEventListener("click", e=>{ if(e.target === overlay) close(); });
+    document.addEventListener("keydown", e=>{ if(e.key === "Escape" && overlay.style.display === "flex") close(); });
+    document.getElementById("hoOpenWeb").addEventListener("click", ()=> window.open(CLAUDE_CODE_URL, "_blank", "noopener"));
+
+    // Zip toggle changes the primary action
+    function syncAction(){ actionLabel.textContent = zipChk.checked ? "Download zip" : "Copy prompt"; }
+    zipChk.addEventListener("change", syncAction);
+
+    // Clipboard with file:// fallback
+    function copyText(text){
+      if(navigator.clipboard && window.isSecureContext){
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise((res, rej)=>{
+        const ta = document.createElement("textarea");
+        ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); res(); } catch(e){ rej(e); }
+        document.body.removeChild(ta);
+      });
+    }
+    function flash(msg){
+      const prev = actionLabel.textContent;
+      actionLabel.textContent = msg;
+      setTimeout(()=> syncAction(), 1400);
+    }
+
+    // Minimal pure-JS ZIP (store / no compression)
+    function crc32(bytes){
+      let crc = 0xFFFFFFFF;
+      for(let i=0;i<bytes.length;i++){
+        let c = (crc ^ bytes[i]) & 0xFF;
+        for(let k=0;k<8;k++) c = (c & 1) ? (c>>>1) ^ 0xEDB88320 : c>>>1;
+        crc = (crc >>> 8) ^ c;
+      }
+      return (crc ^ 0xFFFFFFFF) >>> 0;
+    }
+    function makeZip(files){
+      const enc = new TextEncoder();
+      const u16 = n => [n & 0xFF, (n>>>8) & 0xFF];
+      const u32 = n => [n & 0xFF, (n>>>8) & 0xFF, (n>>>16) & 0xFF, (n>>>24) & 0xFF];
+      const parts = [], central = [];
+      let offset = 0;
+      for(const f of files){
+        const name = enc.encode(f.name), data = enc.encode(f.content), crc = crc32(data);
+        const lh = [].concat(u32(0x04034b50), u16(20), u16(0), u16(0), u16(0), u16(0),
+          u32(crc), u32(data.length), u32(data.length), u16(name.length), u16(0));
+        parts.push(new Uint8Array(lh), name, data);
+        central.push([].concat(u32(0x02014b50), u16(20), u16(20), u16(0), u16(0), u16(0), u16(0),
+          u32(crc), u32(data.length), u32(data.length), u16(name.length),
+          u16(0), u16(0), u16(0), u16(0), u32(0), u32(offset)), name);
+        offset += lh.length + name.length + data.length;
+      }
+      const cdStart = offset; let cdSize = 0;
+      for(let i=0;i<central.length;i+=2){
+        const hdr = new Uint8Array(central[i]); parts.push(hdr, central[i+1]);
+        cdSize += hdr.length + central[i+1].length;
+      }
+      parts.push(new Uint8Array([].concat(u32(0x06054b50), u16(0), u16(0),
+        u16(central.length/2), u16(central.length/2), u32(cdSize), u32(cdStart), u16(0))));
+      return new Blob(parts, {type:"application/zip"});
+    }
+    function downloadZip(){
+      const prompt = fullPrompt();
+      const readme =
+"Moderne Design Kit — coding-agent hand-off bundle\n\n" +
+"1. Open your coding agent (Claude Code, etc.).\n" +
+"2. Paste the contents of prompt.txt into the chat.\n" +
+"3. The agent will import the Claude Design project and implement the design.\n";
+      const blob = makeZip([{name:"prompt.txt", content: prompt}, {name:"README.txt", content: readme}]);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "moderne-design-kit-handoff.zip";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(()=> URL.revokeObjectURL(url), 2000);
+    }
+
+    actionBtn.addEventListener("click", ()=>{
+      if(zipChk.checked){ downloadZip(); flash("Downloaded ✓"); }
+      else { copyText(fullPrompt()).then(()=> flash("Copied ✓")).catch(()=> flash("Press ⌘C")); }
+    });
+
+    syncAction();
+    refreshPrompt();
+  })();
+</script>
 
 <script>
   // ---- Theme definitions (ported from the .dc.html DCLogic) ----
