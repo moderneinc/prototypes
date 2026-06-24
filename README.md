@@ -43,6 +43,7 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | [`CLI-rewrites.html`](https://moderneinc.github.io/prototypes/CLI-rewrites.html) | CLI / terminal label rewrites |
 | [`status-audit.html`](https://moderneinc.github.io/prototypes/status-audit.html) | Status reference by artifact — every repository status with SaaS chip (label + where) and CLI trigger side by side |
 | [`brand-guidelines.html`](https://moderneinc.github.io/prototypes/brand-guidelines.html) | Brand guidelines, including Product Symbols |
+| [`moderne-design-kit-preview.html`](https://moderneinc.github.io/prototypes/moderne-design-kit-preview.html) | Moderne Design Kit preview — dual-mode (dark/light) visual language: palette, type, logo, components, in-situation surfaces |
 
 ## Wireframe kit
 
