@@ -853,11 +853,68 @@
     color: var(--ap-link);
     background: rgba(47,66,255,0.10);
   }
-  /* Per-type views: lineage th/td cells are hidden via CSS; their matching
-     <col> elements are detached in JS so the remaining columns redistribute
-     and fill the table width. */
-  .activity-panel[data-view]:not([data-view="all"]) .ap-activity .activity-col,
-  .activity-panel[data-view]:not([data-view="all"]) .ap-activity .activity-cell { display: none; }
+
+  /* Tab-view containers: the activity tab keeps the lineage table; the
+     trigrep-history tab swaps to a Chrome-style date-grouped list. */
+  .activity-panel .ap-tabview { display: none; }
+  .activity-panel .ap-tabview.active { display: block; }
+
+  /* Chrome-history-style trigrep search log. */
+  /* History table — mirrors the Activity (.ap-activity) styling so the
+     two tabs feel like the same surface. Per-row affordances: query +
+     optional "led to N recipe runs" lineage badge, mode pill, results,
+     run-by avatar, when, hover-only kebab. */
+  .activity-panel .ap-history-table tbody tr {
+    cursor: pointer;
+    transition: background 0.08s;
+  }
+  .activity-panel .ap-history-table tbody tr:hover { background: rgba(0,0,0,0.03); }
+  .activity-panel .ap-history-table td { vertical-align: middle; padding: 10px 14px; border-bottom: 1px solid var(--ap-line-soft); font-size: 13px; color: var(--ap-text); }
+  .activity-panel .ap-history-table tbody tr:last-child td { border-bottom: none; }
+  .activity-panel .ap-h-query-cell { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+  .activity-panel .ap-h-icon { color: var(--ap-text-mute); display: inline-flex; align-items: center; flex-shrink: 0; }
+  .activity-panel .ap-h-icon svg { width: 14px; height: 14px; }
+  .activity-panel .ap-h-query-text {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    color: var(--ap-link);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    min-width: 0;
+  }
+  .activity-panel .ap-h-lineage {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 4px;
+    padding: 2px 8px;
+    font-size: 11.5px; font-weight: 500;
+    color: var(--ap-text-sec);
+    background: var(--ap-bg-2);
+    border: 1px solid var(--ap-line);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .activity-panel .ap-h-lineage:hover { color: var(--ap-link); border-color: var(--ap-link); background: rgba(47,66,255,0.06); }
+  .activity-panel .ap-h-lineage svg { width: 11px; height: 11px; flex-shrink: 0; }
+  .activity-panel .ap-h-td-results strong { color: var(--ap-text); font-weight: 600; }
+  .activity-panel .ap-h-results-sub { display: block; font-size: 11.5px; color: var(--ap-text-mute); margin-top: 2px; }
+  .activity-panel .ap-h-td-time { font-size: 12.5px; color: var(--ap-text-sec); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .activity-panel .ap-h-td-actions { width: 40px; text-align: right; padding-right: 10px; }
+  .activity-panel .ap-h-kebab {
+    border: none; background: transparent;
+    color: var(--ap-text-mute);
+    padding: 6px; border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.1s, background 0.1s;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .activity-panel .ap-history-table tbody tr:hover .ap-h-kebab { opacity: 1; }
+  .activity-panel .ap-h-kebab:hover { background: var(--ap-line); color: var(--ap-text); }
+  .activity-panel .ap-history-empty-cell {
+    padding: 48px 20px;
+    text-align: center;
+    color: var(--ap-text-sec);
+    font-size: 13px;
+  }
 
   .activity-panel .ap-chips { display: flex; gap: 6px; flex-wrap: wrap; }
   .activity-panel .ap-chip {
@@ -1211,7 +1268,7 @@
     min-height: 40px;
   }
   .trigrep-search-box:focus-within {
-    border-color: var(--neo-digital-blue-500);
+    border-color: var(--brand-digital-blue-500);
     box-shadow: 0 0 0 3px rgba(47, 66, 255, 0.12);
   }
   .trigrep-search-icon { width: 16px; height: 16px; color: var(--grey-500); flex-shrink: 0; }
@@ -1258,7 +1315,7 @@
   }
   .syntax-selector-menu li:hover { background: var(--grey-50, #f5f5f5); }
   .syntax-selector-menu li[aria-selected="true"] {
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     font-weight: 500;
   }
   .syntax-selector-menu .opt-label {
@@ -1271,8 +1328,8 @@
     font-size: 11px; color: var(--grey-500);
     font-family: 'JetBrains Mono', monospace;
   }
-  .syntax-selector-menu li[aria-selected="true"] .opt-label { color: var(--neo-digital-blue-500); }
-  .syntax-selector-menu li[aria-selected="true"] .opt-label svg { color: var(--neo-digital-blue-500); }
+  .syntax-selector-menu li[aria-selected="true"] .opt-label { color: var(--brand-digital-blue-500); }
+  .syntax-selector-menu li[aria-selected="true"] .opt-label svg { color: var(--brand-digital-blue-500); }
   .trigrep-chip {
     display: inline-flex; align-items: center; gap: 4px;
     background: var(--grey-50);
@@ -1310,7 +1367,7 @@
   .btn-search {
     display: inline-flex; align-items: center; justify-content: center;
     min-height: 40px;
-    background: var(--neo-digital-blue-500);
+    background: var(--brand-digital-blue-500);
     color: #fff; border: none;
     padding: 0 16px;
     border-radius: 8px;
@@ -1373,7 +1430,7 @@
   .bookmark-toggle svg { width: 15px; height: 15px; }
   .bookmark-list-btn svg { width: 11px; height: 11px; }
   .bookmark-toggle[data-saved="1"] {
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
   }
   .bookmark-toggle[data-saved="1"] svg { fill: currentColor; }
   .bookmark-controls[data-open="1"] .bookmark-list-btn svg { transform: rotate(180deg); }
@@ -1427,7 +1484,7 @@
   .bookmark-popover-item:hover { background: rgba(47, 66, 255, 0.04); }
   .bookmark-popover-icon {
     width: 14px; height: 14px;
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     flex-shrink: 0;
   }
   .bookmark-popover-icon svg { width: 14px; height: 14px; fill: currentColor; }
@@ -1465,7 +1522,7 @@
   }
   .bookmark-popover-mode.mode-sourcegraph {
     background: rgba(47, 66, 255, 0.08);
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
   }
   .bookmark-popover-mode.mode-comby {
     background: rgba(153, 47, 185, 0.08);
@@ -1501,14 +1558,14 @@
 
   /* Search-bar help text */
   .search-help-row {
-    margin-top: 12px;
+    margin-top: 8px;
     display: flex; align-items: center; justify-content: space-between;
     gap: 16px;
     min-height: 18px;
   }
-  /* Collapse the row when there's nothing to show (no result stats yet)
-     so the empty state and results pane sit tight under the assist row. */
-  .search-help-row:has(> .search-help-stats:empty),
+  /* Collapse the row only when EVERY slot is empty (no help line + no
+     stats). With the persistent help line we want a small consistent gap
+     under the search bar. */
   .search-help-row:not(:has(*:not(:empty))) {
     margin-top: 0;
     min-height: 0;
@@ -1549,7 +1606,7 @@
     font-family: 'JetBrains Mono', monospace;
   }
   .results-toolbar-export {
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     text-decoration: none;
     font-size: 12px;
     cursor: pointer;
@@ -1570,7 +1627,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 2px 24px;
     background: #fff;
-    border: 1px solid var(--mui-grey-200);
+    border: 1px solid var(--brand-grey-300);
     border-radius: 8px;
     padding: 8px 12px;
   }
@@ -1589,7 +1646,7 @@
     white-space: nowrap;
   }
   .tg-summary-val.link {
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     font-weight: 600;
     cursor: pointer;
     display: inline-flex; align-items: center; gap: 4px;
@@ -1607,23 +1664,71 @@
   }
   /* Sidebar */
   .trigrep-sidebar {
-    flex: 0 0 24%;
-    min-width: 0;
+    flex: 0 0 var(--tg-sidebar-w, 40%);
+    min-width: 280px;
+    max-width: 60%;
     display: flex; flex-direction: column;
-    border-right: 1px solid var(--mui-grey-200);
+    border-right: 1px solid var(--brand-grey-300);
     background: #ffffff;
     font-size: 12px;
     min-height: 0;
+    padding: 18px 16px 0;
+    position: relative;
   }
+  /* Drag handle on the sidebar's right edge — mirrors the recipe-results
+     prototype's .results-divider: 7px hit area, a 1px hairline that turns
+     into a 2px blue accent on hover/drag, plus a centered grip pill that
+     fades in to make the affordance discoverable. */
+  .trigrep-sidebar-handle {
+    position: absolute;
+    top: 0; bottom: 0; right: -3px;
+    width: 7px;
+    cursor: col-resize;
+    background: transparent;
+    z-index: 10;
+    user-select: none;
+    touch-action: none;
+  }
+  .trigrep-sidebar-handle::before {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0; left: 3px;
+    width: 1px;
+    background: var(--brand-grey-300);
+    transition: background 120ms ease, width 120ms ease, left 120ms ease;
+  }
+  .trigrep-sidebar-handle::after {
+    content: "";
+    position: absolute;
+    left: 1px; top: 50%;
+    transform: translateY(-50%);
+    width: 4px; height: 30px;
+    border-radius: 3px;
+    background: var(--brand-grey-300);
+    opacity: 0;
+    transition: opacity 120ms ease, background 120ms ease;
+  }
+  .trigrep-sidebar-handle:hover::before,
+  .trigrep-sidebar-handle.is-dragging::before {
+    background: var(--brand-digital-blue-400);
+    width: 2px;
+    left: 2.5px;
+  }
+  .trigrep-sidebar-handle:hover::after,
+  .trigrep-sidebar-handle.is-dragging::after {
+    opacity: 1;
+    background: var(--brand-digital-blue-400);
+  }
+  body.tg-resizing,
+  body.tg-resizing * { cursor: col-resize !important; user-select: none !important; }
   .trigrep-pane {
     display: flex; flex-direction: column;
     min-height: 0;
+    flex: 1 1 50%;
   }
   .trigrep-pane + .trigrep-pane {
-    border-top: 1px solid var(--mui-grey-200);
+    margin-top: 12px;
   }
-  .trigrep-pane-filters { flex: 1 1 auto; }
-  .trigrep-pane-repos   { flex: 0 1 auto; max-height: 40%; }
   .trigrep-pane-head {
     display: flex; justify-content: space-between; align-items: center;
     padding: 10px 12px 8px;
@@ -1641,7 +1746,7 @@
     margin-left: 4px;
   }
   .trigrep-pane-head .collapse-all {
-    color: var(--mui-blue); cursor: pointer;
+    color: var(--brand-digital-blue-500); cursor: pointer;
     text-transform: none; letter-spacing: 0; font-weight: 500;
     font-size: 11.5px;
   }
@@ -1652,7 +1757,7 @@
     min-height: 0;
   }
   .trigrep-pane-body::-webkit-scrollbar { width: 6px; }
-  .trigrep-pane-body::-webkit-scrollbar-thumb { background: var(--mui-grey-300); border-radius: 3px; }
+  .trigrep-pane-body::-webkit-scrollbar-thumb { background: var(--brand-grey-300); border-radius: 3px; }
   .filter-group { margin: 4px 0 2px; }
   .filter-group-head {
     display: flex; align-items: center;
@@ -1675,25 +1780,65 @@
   .filter-group.collapsed .filter-group-body { display: none; }
   .filter-group-body { padding: 2px 0 6px 8px; margin-left: 12px; }
   .filter-group-label {
-    padding: 10px 6px 4px;
+    padding: 14px 6px 6px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .filter-group + .filter-group .filter-group-label {
+    border-top: 1px solid var(--brand-grey-300);
+    margin-top: 8px;
+  }
+  .filters-card {
+    border: 1px solid var(--brand-grey-300);
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+    padding-bottom: 8px;
+  }
+  .filters-card .filter-group-label { padding: 14px 12px 6px; }
+  .filters-card .filter-group:first-of-type .filter-group-label {
+    padding-top: 10px;
+    border-top: none;
+    margin-top: 0;
+  }
+  .filters-card .filter-item { padding: 4px 12px; border-radius: 0; }
+  .filter-group-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--mui-grey-900);
+    letter-spacing: 0;
+  }
+  .filter-item.is-mono .filter-item-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .filter-item-not {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
-    color: var(--mui-grey-500);
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    color: var(--brand-red-700);
+    background: var(--brand-red-100);
+    border: 1px solid var(--brand-red-400);
+    border-radius: 3px;
+    padding: 0 4px;
+    margin-right: 6px;
+    line-height: 14px;
   }
   .topic-search {
     width: calc(100% - 8px);
     margin: 4px 0 6px;
     padding: 5px 9px;
-    border: 1px solid var(--mui-grey-300);
+    border: 1px solid var(--brand-grey-300);
     border-radius: 4px;
     font-family: inherit; font-size: 12px;
     color: var(--mui-grey-800);
     background: #ffffff;
     outline: none;
   }
-  .topic-search:focus { border-color: var(--mui-blue); }
+  .topic-search:focus { border-color: var(--brand-digital-blue-400); box-shadow: 0 0 0 3px var(--brand-digital-blue-100); }
   .filter-item {
     display: flex; align-items: center; justify-content: space-between;
     gap: 8px;
@@ -1712,10 +1857,10 @@
   }
   .filter-item.active {
     background: rgba(47, 66, 255, 0.06);
-    color: var(--mui-blue);
+    color: var(--brand-digital-blue-500);
     font-weight: 500;
   }
-  .filter-item.active .count { color: var(--mui-blue); font-weight: 500; }
+  .filter-item.active .count { color: var(--brand-digital-blue-500); font-weight: 500; }
   .filter-item .lang-dot {
     width: 8px; height: 8px;
     border-radius: 50%;
@@ -1737,20 +1882,20 @@
     margin-right: 6px;
   }
   .filter-item.active .filter-check {
-    color: var(--mui-blue);
+    color: var(--brand-digital-blue-500);
   }
   .filter-group.is-repo-list .filter-item .count {
-    color: var(--mui-blue);
+    color: var(--brand-digital-blue-500);
     font-weight: 500;
   }
-  .filter-group.is-repo-list .filter-item.active .count { color: var(--mui-blue); }
+  .filter-group.is-repo-list .filter-item.active .count { color: var(--brand-digital-blue-500); }
   .filter-more-link {
     display: block;
     background: transparent; border: 0;
     padding: 4px 6px;
     margin-top: 2px;
     font-family: inherit; font-size: 12px;
-    color: var(--mui-blue);
+    color: var(--brand-digital-blue-500);
     cursor: pointer;
     text-align: left;
   }
@@ -1764,12 +1909,12 @@
     display: flex; align-items: center; gap: 6px;
     margin: 4px 0 6px;
     padding: 4px 9px;
-    border: 1px solid var(--mui-grey-300);
+    border: 1px solid var(--brand-grey-300);
     border-radius: 4px;
     background: #fff;
   }
   .repo-search-wrap:focus-within {
-    border-color: var(--mui-blue);
+    border-color: var(--brand-digital-blue-500);
   }
   .repo-search-icon {
     width: 12px; height: 12px;
@@ -1808,9 +1953,9 @@
     font-weight: 600;
     padding: 8px 14px;
     border-radius: 8px;
-    background: var(--neo-digital-blue-500);
+    background: var(--brand-digital-blue-500);
     color: #fff;
-    border: 1px solid var(--neo-digital-blue-500);
+    border: 1px solid var(--brand-digital-blue-500);
     cursor: pointer;
     transition: background 0.12s, border-color 0.12s;
   }
@@ -1829,7 +1974,7 @@
   }
   .sr-rel-fill {
     display: block; height: 100%;
-    background: var(--neo-digital-blue-500);
+    background: var(--brand-digital-blue-500);
     border-radius: 999px;
   }
 
@@ -1843,7 +1988,7 @@
   .rp-drawer .rp-query {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11.5px;
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     padding: 1px 6px;
     border-radius: 4px;
     background: rgba(47,66,255,0.06);
@@ -1859,7 +2004,7 @@
     transition: border-color 0.12s, background 0.12s;
   }
   .rp-search:focus-within {
-    border-color: var(--neo-digital-blue-500);
+    border-color: var(--brand-digital-blue-500);
     background: #fff;
     box-shadow: 0 0 0 3px rgba(47,66,255,0.10);
   }
@@ -1914,9 +2059,9 @@
     margin-top: 2px;
     transition: border-color 0.1s;
   }
-  .rp-recipe:hover .rp-radio { border-color: var(--neo-digital-blue-500); }
+  .rp-recipe:hover .rp-radio { border-color: var(--brand-digital-blue-500); }
   .rp-recipe.is-selected .rp-radio {
-    border-color: var(--neo-digital-blue-500);
+    border-color: var(--brand-digital-blue-500);
     border-width: 5px;
   }
   .rp-recipe-text { flex: 1; min-width: 0; }
@@ -2006,7 +2151,7 @@
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     margin-bottom: 6px;
   }
   .sr-drawer-title {
@@ -2081,9 +2226,9 @@
     font-weight: 600;
     padding: 8px 14px;
     border-radius: 8px;
-    background: var(--neo-digital-blue-500);
+    background: var(--brand-digital-blue-500);
     color: #fff;
-    border: 1px solid var(--neo-digital-blue-500);
+    border: 1px solid var(--brand-digital-blue-500);
     cursor: pointer;
     display: inline-flex; align-items: center; gap: 6px;
   }
@@ -2127,7 +2272,7 @@
   /* Result card */
   .result-card {
     background: var(--mui-card-bg);
-    border: 1px solid var(--mui-grey-300);
+    border: 1px solid var(--brand-grey-300);
     border-radius: 6px;
     overflow: hidden;
     margin-bottom: 12px;
@@ -2165,14 +2310,14 @@
     cursor: pointer;
     display: inline-flex; align-items: center; justify-content: center;
   }
-  .icon-btn:hover { background: var(--mui-grey-200); color: var(--mui-grey-800); }
+  .icon-btn:hover { background: var(--brand-grey-300); color: var(--mui-grey-800); }
   .icon-btn svg { width: 14px; height: 14px; }
   .chevron-btn svg { transition: transform 0.2s ease; }
   .result-card.collapsed .chevron-btn svg { transform: rotate(-90deg); }
   .result-card.collapsed .result-card-body { display: none; }
   .result-card-body {
     background: var(--mui-card-body-bg);
-    border-top: 1px solid var(--mui-grey-300);
+    border-top: 1px solid var(--brand-grey-300);
   }
 
   /* Hunk-range header */
@@ -2180,8 +2325,8 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 6px 14px;
     background: var(--mui-card-bg);
-    border-top: 1px solid var(--mui-grey-300);
-    border-bottom: 1px solid var(--mui-grey-300);
+    border-top: 1px solid var(--brand-grey-300);
+    border-bottom: 1px solid var(--brand-grey-300);
     font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
     color: var(--mui-grey-600);
@@ -2255,7 +2400,7 @@
   }
   .trigrep-body.detail-mode > .trigrep-detail { display: flex; }
   .result-card-file.is-clickable { cursor: pointer; }
-  .result-card-file.is-clickable:hover { color: var(--mui-blue); }
+  .result-card-file.is-clickable:hover { color: var(--brand-digital-blue-500); }
 
   .detail-breadcrumb {
     display: flex; align-items: center; gap: 8px;
@@ -2267,7 +2412,7 @@
   }
   .detail-back {
     background: none; border: none; padding: 2px 0;
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     cursor: pointer;
     font-family: inherit; font-size: 13px; font-weight: 500;
     display: inline-flex; align-items: center; gap: 4px;
@@ -2294,7 +2439,7 @@
     padding: 6px 12px;
   }
   .detail-search-box:focus-within {
-    border-color: var(--neo-digital-blue-500);
+    border-color: var(--brand-digital-blue-500);
     box-shadow: 0 0 0 3px rgba(47, 66, 255, 0.12);
   }
   .detail-search-box svg {
@@ -2375,7 +2520,7 @@
     white-space: pre;
     color: var(--grey-900);
   }
-  .detail-code .kw { color: var(--neo-digital-blue-500); }
+  .detail-code .kw { color: var(--brand-digital-blue-500); }
   .detail-code .str { color: #b45309; }
   .detail-code .ann { color: var(--violet); }
   .detail-code .cmt { color: var(--grey-500); font-style: italic; }
@@ -2413,7 +2558,7 @@
     border-radius: 50%;
     background: rgba(47, 66, 255, 0.10);
     display: inline-flex; align-items: center; justify-content: center;
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
   }
   .trigrep-start-icon svg { width: 28px; height: 28px; }
   .trigrep-start-title {
@@ -2479,7 +2624,7 @@
     color: var(--grey-400);
     flex-shrink: 0;
   }
-  .trigrep-start-recent:hover .trigrep-start-recent-icon { color: var(--neo-digital-blue-500); }
+  .trigrep-start-recent:hover .trigrep-start-recent-icon { color: var(--brand-digital-blue-500); }
   .trigrep-start-recent-query {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12.5px;
@@ -2503,7 +2648,7 @@
   }
   .trigrep-start-recent-mode.mode-sourcegraph {
     background: rgba(47, 66, 255, 0.08);
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
   }
   .trigrep-start-recent-mode.mode-comby {
     background: rgba(153, 47, 185, 0.08);
@@ -2532,7 +2677,7 @@
     width: 100%;
   }
   .trigrep-start-example:hover {
-    border-color: var(--neo-digital-blue-500);
+    border-color: var(--brand-digital-blue-500);
     background: rgba(47, 66, 255, 0.03);
   }
   .trigrep-start-example-text {
@@ -2542,7 +2687,7 @@
   .trigrep-start-example-query {
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -2558,7 +2703,7 @@
     transition: color 0.15s;
   }
   .trigrep-start-example:hover .trigrep-start-example-icon {
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
   }
   .trigrep-start-divider {
     width: 100%;
@@ -2571,7 +2716,7 @@
     padding: 8px 18px;
     border: 1px solid var(--brand-digital-blue-200);
     border-radius: 9999px;
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     font-size: 13px;
     font-weight: 500;
     background: #fff;
@@ -2581,7 +2726,7 @@
   }
   .trigrep-start-reference-link:hover {
     background: rgba(47, 66, 255, 0.04);
-    border-color: var(--neo-digital-blue-500);
+    border-color: var(--brand-digital-blue-500);
   }
   .trigrep-start-reference-link svg { width: 13px; height: 13px; flex-shrink: 0; }
 
@@ -2597,7 +2742,7 @@
   .results-overflow .show-more {
     background: none; border: 0; padding: 0;
     margin-left: 12px;
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     font-family: inherit; font-size: 13px; font-weight: 600;
     cursor: pointer;
   }
@@ -2614,27 +2759,80 @@
     background: var(--brand-grey-100);
     overflow-y: auto;
   }
-  /* Widen the sidebar so the tree has room to breathe */
-  .trigrep-body .trigrep-sidebar { flex: 0 0 34%; }
-  /* New hierarchy pane (replaces .trigrep-pane-repos) — takes the
-     majority of sidebar height; the existing Filters pane sits above it. */
-  .trigrep-pane-filters  { flex: 0 1 auto; max-height: 38%; }
+  /* Sidebar default width matches the recipe-results prototype's left pane
+     (--left-w: 40%). Drag handle can override via --tg-sidebar-w. */
+  .trigrep-body .trigrep-sidebar { flex: 0 0 var(--tg-sidebar-w, 40%); }
+  /* Filters takes ~40%, Repositories takes the remaining ~60%; each scrolls
+     internally. Both panes are flex-column wrappers around their card. */
+  .trigrep-pane-filters,
   .trigrep-pane-hierarchy {
+    min-height: 0;
+    display: flex; flex-direction: column;
+  }
+  .trigrep-pane-filters   { flex: 0 0 40%; }
+  .trigrep-pane-hierarchy { flex: 1 1 auto; }
+  .trigrep-pane-filters .trigrep-pane-body {
+    overflow: hidden;
+    padding: 0;
     flex: 1 1 auto;
     min-height: 0;
     display: flex; flex-direction: column;
   }
-  .trigrep-pane-body-tree {
-    padding: 8px 10px 10px;
+  .trigrep-pane-filters .filters-card {
     flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
   }
+  .trigrep-pane-body-tree {
+    padding: 0;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .trigrep-pane-body-tree .tg-tree {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex; flex-direction: column;
+  }
+  .trigrep-pane-body-tree #tg-tree-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  /* Commit bar — overlays the sidebar bottom with a soft fade so repo rows
+     beneath dissolve into the button area, matching the recipe-results
+     prototype (.commit-bar pattern). */
   .trigrep-pane-foot {
-    padding: 10px 12px 14px;
-    border-top: 1px solid var(--mui-grey-200);
-    background: #fff;
-    flex-shrink: 0;
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 30px 16px 18px;
+    background: linear-gradient(to top, #ffffff 60%, rgba(255,255,255,0));
     display: flex; justify-content: center;
+    pointer-events: none;
+    z-index: 5;
   }
+  .trigrep-pane-foot > * { pointer-events: auto; }
+  /* Leave space at the bottom of the repos pane so the absolute commit bar
+     never hides the last row even before the gradient fade. */
+  .trigrep-pane-hierarchy .trigrep-pane-body-tree { padding-bottom: 56px; }
+
+  /* Filter-repositories search above the tree */
+  .tbl-search { position: relative; display: flex; align-items: center; margin-bottom: 10px; }
+  .tbl-search svg { position: absolute; left: 10px; width: 14px; height: 14px; color: var(--mui-grey-500); }
+  .tbl-search input {
+    width: 100%; height: 32px;
+    padding: 0 10px 0 30px;
+    background: #fff;
+    border: 1px solid var(--brand-grey-300);
+    border-radius: 6px;
+    font-size: 12.5px;
+    color: var(--grey-900);
+    font-family: inherit;
+    outline: none;
+  }
+  .tbl-search input:focus { border-color: var(--brand-digital-blue-400); box-shadow: 0 0 0 3px var(--brand-digital-blue-100); }
+  .tbl-search input::placeholder { color: var(--mui-grey-500); }
 
   /* Tree container */
   .tg-tree{border:1px solid var(--brand-grey-300);border-radius:8px;overflow:hidden;background:#fff;}
@@ -2655,6 +2853,10 @@
   .hn-name.hn-match{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--grey-700);font-weight:400;}
   .hn-spacer{flex:1;}
   .hn-count{font-family:var(--brand-font-family-sans);font-weight:500;font-size:11px;color:var(--grey-700);white-space:nowrap;flex-shrink:0;}
+  .hn-count.is-none{color:var(--grey-500);font-weight:400;}
+  .hn-count.is-error{color:var(--brand-red-700);}
+  .hn-row.n-repo-none .hn-name,
+  .hn-row.n-repo-error .hn-name{color:var(--grey-600);}
   .hn-count .hn-sub{color:var(--grey-500);}
   .chev-spacer{width:18px;flex-shrink:0;}
   .cb-spacer{width:18px;flex-shrink:0;}
@@ -2686,13 +2888,86 @@
   .detail-empty .et{font-size:14px;color:var(--grey-600);max-width:280px;line-height:1.5;}
 
   /* Scope breadcrumb in the detail pane */
-  .scope-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:8px 12px;background:#fff;border:1px solid var(--brand-grey-300);border-radius:8px;}
+  .scope-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:8px 12px;background:#fff;border:1px solid var(--brand-grey-300);border-radius:8px;position:sticky;top:0;z-index:4;}
   .scope-level{font-size:11px;font-weight:600;color:var(--brand-digital-blue-700);background:var(--brand-digital-blue-100);border:1px solid var(--brand-digital-blue-300);padding:2px 10px;border-radius:9999px;flex-shrink:0;}
   .scope-crumbs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;}
   .sc-crumb{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--brand-digital-blue-700);}
   .sc-crumb.cur{font-weight:700;color:var(--brand-digital-blue-800);}
   .sc-sep{color:var(--brand-digital-blue-400);}
-  .scope-count{margin-left:auto;font-size:12px;font-weight:600;color:var(--brand-digital-blue-700);white-space:nowrap;}
+  .scope-count{font-size:12px;font-weight:600;color:var(--grey-700);white-space:nowrap;}
+  .scope-actions{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .match-check{margin-right:2px;}
+  /* Right-pane toolbar — "Results" header on the left, page-level actions
+     (Export CSV, Collapse all) on the right. Sticky and flush with the top
+     edge of the right pane (negative margins cancel the pane's padding). */
+  .tg-detail-toolbar {
+    display: flex; align-items: center; gap: 8px;
+    position: sticky; top: -18px; z-index: 6;
+    margin: -18px -22px 14px;
+    padding: 12px 22px;
+    background: var(--brand-grey-100);
+    border-bottom: 1px solid var(--brand-grey-300);
+  }
+  .tg-detail-toolbar-title {
+    font-size: 13px; color: var(--mui-grey-600);
+  }
+  .tg-detail-toolbar-title strong { color: var(--grey-900); font-weight: 700; }
+  .tg-detail-toolbar-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--mui-grey-500);
+    margin-left: 8px;
+  }
+  .tg-detail-toolbar-spacer { flex: 1 1 auto; }
+  /* Repo group — wraps a header + its match cards so the header click can
+     toggle the whole group. */
+  .tg-repo-group { margin-top: 22px; }
+  .tg-repo-group:first-child { margin-top: 0; }
+  .tg-repo-group.collapsed .tg-repo-group-body { display: none; }
+  .tg-repo-group.collapsed .tg-repo-header-chev { transform: rotate(-90deg); }
+  /* Per-repo header — embedded between groups, no card chrome. */
+  .tg-repo-header {
+    padding: 6px 4px 8px;
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 4px;
+  }
+  .tg-repo-header:hover { background: rgba(0, 0, 0, 0.03); }
+  .tg-repo-header-chev {
+    width: 14px; height: 14px;
+    color: var(--grey-600);
+    flex-shrink: 0;
+    transition: transform 150ms ease;
+  }
+  .tg-repo-header-path {
+    font-size: 13px; font-weight: 600;
+    color: var(--grey-900);
+    flex: 1 1 auto; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tg-repo-header-branch {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 400; color: var(--grey-500);
+    margin-left: 4px;
+  }
+  .tg-repo-header-count {
+    font-size: 12px; font-weight: 500; color: var(--grey-600);
+    white-space: nowrap;
+  }
+  .tg-detail-more {
+    display: block; width: 100%;
+    margin: 6px 0 18px;
+    padding: 12px 14px;
+    background: #ffffff;
+    border: 1px dashed var(--brand-grey-300);
+    border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    color: var(--brand-digital-blue-500);
+    cursor: pointer;
+    text-align: center;
+  }
+  .tg-detail-more:hover { background: var(--brand-grey-100); border-color: var(--brand-digital-blue-300); }
+  .tg-detail-more-sub { color: var(--grey-500); font-weight: 400; margin-left: 6px; }
 
   /* Match-card (trigrep equivalent of File B's diff-file) */
   .match-card{border:1px solid var(--brand-grey-300);border-radius:8px;overflow:hidden;margin-bottom:14px;background:#fff;}
@@ -2714,7 +2989,7 @@
   .match-line.is-hit{background:rgba(159,168,255,0.14);}
   .match-line.focus{background:rgba(255,184,0,0.18);}
   /* Context lines shown when a match-card is expanded — dimmer than matches */
-  .match-line.is-ctx{background:#FBFBFD;}
+  .match-line.is-ctx{background:transparent;}
   .match-line.is-ctx .match-code{color:var(--grey-600);}
   .match-line.is-ctx .match-gutter{color:var(--grey-400);}
   /* Brief active state when a tree click jumps to a card. */
@@ -2763,27 +3038,38 @@
      Trigrep query bar — lean v1: filter pills, recognition autocomplete,
      and a silent-reformulation banner. No prose parser, no catalog modal.
      ===================================================================== */
-  .tg-assist-row {
-    margin-top: 8px;
-    display: flex; align-items: flex-start;
-    gap: 8px;
-  }
   .tg-chip-strip {
-    flex: 1 1 auto;
-    display: flex; flex-wrap: wrap; align-items: center;
+    display: inline-flex; flex-wrap: wrap; align-items: center;
     gap: 4px;
-    min-height: 22px;
+    margin-right: 4px;
   }
-  .tg-chip-strip:empty::before {
-    content: "Tip — start typing a filter like \201Clang:\201D or \201Cvisibility:\201D to see suggestions.";
-    color: var(--grey-500); font-size: 12px;
+  .tg-chip-strip:empty { display: none; }
+  /* Suppress the long placeholder once chips own the leading space. */
+  .tg-chip-strip:not(:empty) + .trigrep-query { min-width: 60px; flex: 1 1 60px; }
+  .tg-chip-strip:not(:empty) + .trigrep-query::placeholder { color: transparent; }
+  .tg-help-line {
+    font-size: 12px;
+    color: var(--grey-500);
+    line-height: 1.5;
   }
-  /* Filter pill: "filter: value" with a remove × and an optional NOT badge */
-  .tg-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--alias-primary-100, #F2F3FF);
+  .tg-help-line a {
+    color: var(--brand-digital-blue-500);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .tg-help-line a:hover { text-decoration: underline; }
+  .tg-help-line a svg { width: 12px; height: 12px; }
+  /* Unified chip frame — every search-content token (filter / term) shares
+     the same chip shell so the bar reads as one composed expression.
+     Boolean operators stay as inline text (handled separately below). */
+  .tg-pill,
+  .tg-tok {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #ffffff;
     color: var(--grey-800);
-    border: 1px solid var(--neo-digital-blue-300);
+    border: 1px solid var(--brand-grey-300);
     border-radius: 999px;
     padding: 2px 4px 2px 10px;
     font-family: 'JetBrains Mono', monospace;
@@ -2791,38 +3077,39 @@
     line-height: 1.4;
     white-space: nowrap;
     cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
   }
-  .tg-pill .tg-pill-key { color: var(--neo-digital-blue-500); font-weight: 500; }
+  /* Filter pills get a soft blue tint + blue key to mark them as
+     structured filters without breaking the visual rhythm. */
+  .tg-pill {
+    background: var(--brand-digital-blue-100);
+    border-color: var(--brand-digital-blue-300);
+    gap: 6px;
+  }
+  .tg-pill .tg-pill-key { color: var(--brand-digital-blue-500); font-weight: 500; }
   .tg-pill .tg-pill-op  { color: var(--grey-500); font-style: italic; font-family: var(--brand-font-family-sans); font-size: 11px; }
   .tg-pill .tg-pill-val { color: var(--grey-900); }
   .tg-pill.is-not { background: var(--brand-red-100); border-color: var(--brand-red-400); }
   .tg-pill.is-not .tg-pill-key { color: var(--brand-red-700); }
   .tg-pill.is-unverified { background: var(--brand-orange-100); border-color: var(--brand-orange-600); }
   .tg-pill.is-unverified .tg-pill-key { color: var(--brand-orange-800); }
-  .tg-pill.is-unverified::after {
-    content: "·";
-    font-size: 14px;
-    color: var(--brand-orange-800);
-    margin-left: -2px;
-  }
-  /* Free-text tokens (literal / regex / structural) live alongside pills */
-  .tg-tok {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: #fff;
-    color: var(--grey-700);
-    border: 1px dashed var(--grey-200);
-    border-radius: 6px;
-    padding: 2px 4px 2px 8px;
+  /* Free-text tokens — same chip frame, default white. Regex / structural
+     keep their accent colors but inherit the unified shape. */
+  .tg-tok.is-regex      { background: #fff7ed; border-color: #fed7aa; color: #9a3412; }
+  .tg-tok.is-structural { background: #f5f3ff; border-color: #ddd6fe; color: #5b21b6; }
+  /* Boolean operators / grouping ("OR", "AND", "NOT", "(", ")") render as
+     plain inline text — they're query glue, not search content. */
+  .tg-op-chip {
+    display: inline;
+    padding: 0 2px;
+    color: var(--grey-500);
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-  }
-  .tg-tok.is-regex      { background: #fff7ed; border-color: #fed7aa; color: #9a3412; border-style: solid; }
-  .tg-tok.is-structural { background: #f5f3ff; border-color: #ddd6fe; color: #5b21b6; border-style: solid; }
-  .tg-op-chip {
-    display: inline-flex; align-items: center;
-    color: var(--grey-500); font-size: 11px;
-    padding: 0 4px;
-    text-transform: uppercase; letter-spacing: 0.04em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: default;
   }
   .tg-pill-x, .tg-tok-x {
     width: 16px; height: 16px;
@@ -2859,7 +3146,7 @@
   .tg-reform-banner .tg-reform-action {
     margin-left: auto;
     background: transparent;
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
     border: 0;
     cursor: pointer;
     font-size: 12px;
@@ -2902,7 +3189,7 @@
     color: var(--grey-900);
     flex: 0 0 auto;
   }
-  .tg-ac-item .tg-ac-name b { color: var(--neo-digital-blue-500); font-weight: 600; }
+  .tg-ac-item .tg-ac-name b { color: var(--brand-digital-blue-500); font-weight: 600; }
   .tg-ac-item .tg-ac-desc {
     font-size: 11.5px; color: var(--grey-500);
     flex: 1 1 auto; text-align: right;
@@ -2911,7 +3198,7 @@
     background: var(--alias-primary-100, #F2F3FF);
   }
   .tg-ac-item.is-active .tg-ac-name, .tg-ac-item:hover .tg-ac-name {
-    color: var(--neo-digital-blue-500);
+    color: var(--brand-digital-blue-500);
   }
 
   /* Scope-it-down panel (shown after Search when a theme is detected) */
@@ -2934,7 +3221,7 @@
     font: inherit;
   }
   .tg-scope-option:hover {
-    border-color: var(--neo-digital-blue-500);
+    border-color: var(--brand-digital-blue-500);
     background: var(--alias-primary-100, #F2F3FF);
   }
   .tg-scope-label { font-size: 13px; font-weight: 600; color: var(--grey-900); }
@@ -3140,26 +3427,29 @@ const FLOWS = {
       baseMatches: 1892,
       baseFiles: 234,
       filters: [
-        { id: 'annotation', title: 'By annotation', items: [
-          { name: '@PreAuthorize', count: 156 },
-          { name: '@Secured', count: 78 },
-          { name: '@RolesAllowed', count: 23 },
+        { id: 'lang', title: 'Language', filterKey: 'lang', items: [
+          { name: 'Java', value: 'java', count: 234, dot: '#e76f00' },
         ]},
-        { id: 'lang', title: 'By language', items: [
-          { name: 'Java', count: 234, dot: '#e76f00' },
+        { id: 'visibility', title: 'Visibility', filterKey: 'visibility', mono: true, items: [
+          { name: 'public',          count: 198 },
+          { name: 'package-private', count: 24 },
+          { name: 'protected',       count: 12 },
         ]},
-        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 218, items: [
+        { id: 'select', title: 'Symbol kind', filterKey: 'select', mono: true, items: [
+          { name: 'symbol.method', count: 211 },
+          { name: 'symbol.class',  count: 23 },
+        ]},
+        { id: 'file', title: 'Path', filterKey: 'file', mono: true, items: [
+          { name: 'src/**/*.java',   count: 234 },
+          { name: '**/api/**',       count: 87 },
+          { name: '**/test/**',      count: 41, not: true },
+        ]},
+        { id: 'repo', title: 'Repository', filterKey: 'repo', isRepoList: true, overflowMore: 218, items: [
           { name: 'payments-api',     count: 12 },
           { name: 'customer-portal',  count: 9 },
           { name: 'user-service',     count: 8 },
           { name: 'admin-service',    count: 6 },
           { name: 'orders-service',   count: 5 },
-        ]},
-        { id: 'topic', title: 'By topic', searchable: true, items: [
-          { name: 'payments', count: 45 },
-          { name: 'customer-portal', count: 38 },
-          { name: 'user-service', count: 31 },
-          { name: 'admin', count: 28 },
         ]},
       ],
       extraCards: [
@@ -3204,27 +3494,25 @@ const FLOWS = {
       baseMatches: 847,
       baseFiles: 54,
       filters: [
-        { id: 'usage', title: 'By usage pattern', items: [
-          { name: 'Sole logger (Log4j only)', count: 38 },
-          { name: 'Mixed with SLF4J', count: 16 },
+        { id: 'lang', title: 'Language', filterKey: 'lang', items: [
+          { name: 'Java', value: 'java', count: 54, dot: '#e76f00' },
         ]},
-        { id: 'lang', title: 'By language', items: [
-          { name: 'Java', count: 54, dot: '#e76f00' },
+        { id: 'type', title: 'Match type', filterKey: 'type', mono: true, items: [
+          { name: 'file',   count: 54 },
+          { name: 'symbol', count: 26 },
+          { name: 'path',   count: 0  },
         ]},
-        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 34, items: [
+        { id: 'file', title: 'Path', filterKey: 'file', mono: true, items: [
+          { name: 'src/main/**',          count: 48 },
+          { name: '**/*Config.java',      count: 6  },
+          { name: '**/test/**',           count: 14, not: true },
+        ]},
+        { id: 'repo', title: 'Repository', filterKey: 'repo', isRepoList: true, overflowMore: 34, items: [
           { name: 'payments-api',       count: 8 },
           { name: 'notifications',      count: 5 },
           { name: 'inventory-service',  count: 4 },
           { name: 'legacy-batch',       count: 4 },
           { name: 'common-logging',     count: 3 },
-        ]},
-        { id: 'topic', title: 'By topic', searchable: true, items: [
-          { name: 'payments', count: 14 },
-          { name: 'billing', count: 11 },
-          { name: 'inventory', count: 9 },
-          { name: 'notifications', count: 8 },
-          { name: 'batch', count: 6 },
-          { name: 'common-logging', count: 6 },
         ]},
       ],
       extraCards: [
@@ -3276,30 +3564,31 @@ const FLOWS = {
       baseMatches: 2519,
       baseFiles: 390,
       filters: [
-        { id: 'type', title: 'By type', items: [
-          { name: '@RestController', count: 187 },
-          { name: '@Controller + @ResponseBody', count: 47 },
-          { name: 'RestTemplate', count: 612 },
-          { name: 'WebClient', count: 187 },
-          { name: 'RestClient', count: 48 },
+        { id: 'lang', title: 'Language', filterKey: 'lang', items: [
+          { name: 'Java', value: 'java', count: 390, dot: '#e76f00' },
         ]},
-        { id: 'role', title: 'By role', items: [
-          { name: 'Server only', count: 145 },
-          { name: 'Client only', count: 67 },
-          { name: 'Both', count: 89 },
+        { id: 'visibility', title: 'Visibility', filterKey: 'visibility', mono: true, items: [
+          { name: 'public',          count: 367 },
+          { name: 'package-private', count: 23  },
         ]},
-        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 380, items: [
+        { id: 'returns', title: 'Return type', filterKey: 'returns', mono: true, items: [
+          { name: 'ResponseEntity',    count: 187 },
+          { name: 'Mono',              count: 67  },
+          { name: 'Flux',              count: 23  },
+          { name: 'List',              count: 89  },
+          { name: 'CompletableFuture', count: 24  },
+        ]},
+        { id: 'file', title: 'Path', filterKey: 'file', mono: true, items: [
+          { name: 'src/**/*.java',        count: 390 },
+          { name: '**/controller/**',     count: 234 },
+          { name: '**/test/**',           count: 56, not: true },
+        ]},
+        { id: 'repo', title: 'Repository', filterKey: 'repo', isRepoList: true, overflowMore: 380, items: [
           { name: 'orders-service',     count: 14 },
           { name: 'customer-portal',    count: 11 },
           { name: 'billing-service',    count: 9 },
           { name: 'payments-api',       count: 8 },
           { name: 'inventory-service',  count: 7 },
-        ]},
-        { id: 'topic', title: 'By topic', searchable: true, items: [
-          { name: 'orders', count: 52 },
-          { name: 'customer-portal', count: 41 },
-          { name: 'billing', count: 38 },
-          { name: 'inventory', count: 31 },
         ]},
       ],
       extraCards: [
@@ -3347,28 +3636,31 @@ const FLOWS = {
       baseMatches: 147,
       baseFiles: 38,
       filters: [
-        { id: 'shape', title: 'By annotation shape', items: [
-          { name: 'Marker only',         count: 91 },
-          { name: 'With since=',         count: 38 },
-          { name: 'With forRemoval=true', count: 18 },
+        { id: 'lang', title: 'Language', filterKey: 'lang', items: [
+          { name: 'Java', value: 'java',   count: 36, dot: '#e76f00' },
+          { name: 'Kotlin', value: 'kotlin', count: 2,  dot: '#a97bff' },
         ]},
-        { id: 'lang', title: 'By language', items: [
-          { name: 'Java',   count: 36, dot: '#e76f00' },
-          { name: 'Kotlin', count: 2,  dot: '#a97bff' },
+        { id: 'visibility', title: 'Visibility', filterKey: 'visibility', mono: true, items: [
+          { name: 'public',          count: 89 },
+          { name: 'package-private', count: 38 },
+          { name: 'protected',       count: 20 },
         ]},
-        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 18, items: [
+        { id: 'select', title: 'Symbol kind', filterKey: 'select', mono: true, items: [
+          { name: 'symbol.method', count: 102 },
+          { name: 'symbol.class',  count: 24  },
+          { name: 'symbol.field',  count: 21  },
+        ]},
+        { id: 'file', title: 'Path', filterKey: 'file', mono: true, items: [
+          { name: 'src/main/**',         count: 36 },
+          { name: '**/legacy/**',        count: 14 },
+          { name: '**/test/**',          count: 11, not: true },
+        ]},
+        { id: 'repo', title: 'Repository', filterKey: 'repo', isRepoList: true, overflowMore: 18, items: [
           { name: 'payments-api',       count: 9 },
           { name: 'identity-service',   count: 6 },
           { name: 'gateway',            count: 5 },
           { name: 'pricing-engine',     count: 4 },
           { name: 'inventory-service',  count: 3 },
-        ]},
-        { id: 'topic', title: 'By topic', searchable: true, items: [
-          { name: 'payments',  count: 27 },
-          { name: 'identity',  count: 21 },
-          { name: 'gateway',   count: 16 },
-          { name: 'pricing',   count: 11 },
-          { name: 'inventory', count: 9 },
         ]},
       ],
       extraCards: [
@@ -3413,29 +3705,32 @@ const FLOWS = {
       baseMatches: 412,
       baseFiles: 156,
       filters: [
-        { id: 'style', title: 'By naming style', items: [
-          { name: 'logger (lowercase)', count: 244 },
-          { name: 'log',                count: 122 },
-          { name: 'LOG (upper)',        count: 46 },
+        { id: 'lang', title: 'Language', filterKey: 'lang', items: [
+          { name: 'Java', value: 'java', count: 156, dot: '#e76f00' },
         ]},
-        { id: 'binding', title: 'By binding', items: [
-          { name: 'SLF4J + Logback',  count: 138 },
-          { name: 'SLF4J + Log4j 2',  count: 14 },
-          { name: 'SLF4J + JUL',      count: 4 },
+        { id: 'visibility', title: 'Visibility', filterKey: 'visibility', mono: true, items: [
+          { name: 'private',         count: 392 },
+          { name: 'package-private', count: 14  },
+          { name: 'public',          count: 6   },
         ]},
-        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 41, items: [
+        { id: 'static', title: 'Static', filterKey: 'static', mono: true, items: [
+          { name: 'yes', count: 398 },
+          { name: 'no',  count: 14  },
+        ]},
+        { id: 'final', title: 'Final', filterKey: 'final', mono: true, items: [
+          { name: 'yes', count: 405 },
+          { name: 'no',  count: 7   },
+        ]},
+        { id: 'file', title: 'Path', filterKey: 'file', mono: true, items: [
+          { name: 'src/main/**',         count: 152 },
+          { name: '**/test/**',          count: 39, not: true },
+        ]},
+        { id: 'repo', title: 'Repository', filterKey: 'repo', isRepoList: true, overflowMore: 41, items: [
           { name: 'payments-api',       count: 22 },
           { name: 'identity-service',   count: 18 },
           { name: 'orders-service',     count: 17 },
           { name: 'gateway',            count: 14 },
           { name: 'inventory-service',  count: 11 },
-        ]},
-        { id: 'topic', title: 'By topic', searchable: true, items: [
-          { name: 'payments',     count: 58 },
-          { name: 'identity',     count: 41 },
-          { name: 'orders',       count: 37 },
-          { name: 'gateway',      count: 24 },
-          { name: 'observability',count: 18 },
         ]},
       ],
       extraCards: [
@@ -3483,28 +3778,26 @@ const FLOWS = {
       baseMatches: 73,
       baseFiles: 28,
       filters: [
-        { id: 'kind', title: 'By exception kind', items: [
-          { name: 'Checked exceptions',   count: 38 },
-          { name: 'Runtime exceptions',   count: 22 },
-          { name: 'Base Exception/Throwable', count: 13 },
+        { id: 'lang', title: 'Language', filterKey: 'lang', items: [
+          { name: 'Java', value: 'java', count: 28, dot: '#e76f00' },
         ]},
-        { id: 'fix', title: 'By suggested remediation', items: [
-          { name: 'Re-throw or wrap',       count: 41 },
-          { name: 'Add structured context', count: 19 },
-          { name: 'Emit failure metric',    count: 13 },
+        { id: 'throws', title: 'Throws', filterKey: 'throws', mono: true, items: [
+          { name: 'IOException',          count: 18 },
+          { name: 'SQLException',         count: 11 },
+          { name: 'RuntimeException',     count: 22 },
+          { name: 'InterruptedException', count: 9  },
+          { name: 'TimeoutException',     count: 13 },
         ]},
-        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 11, items: [
+        { id: 'file', title: 'Path', filterKey: 'file', mono: true, items: [
+          { name: 'src/main/**',        count: 28 },
+          { name: '**/test/**',         count: 4, not: true },
+        ]},
+        { id: 'repo', title: 'Repository', filterKey: 'repo', isRepoList: true, overflowMore: 11, items: [
           { name: 'orders-service',  count: 7 },
           { name: 'payments-api',    count: 6 },
           { name: 'platform-core',   count: 5 },
           { name: 'gateway',         count: 4 },
           { name: 'identity-service',count: 3 },
-        ]},
-        { id: 'topic', title: 'By topic', searchable: true, items: [
-          { name: 'reliability',  count: 21 },
-          { name: 'observability',count: 14 },
-          { name: 'payments',     count: 11 },
-          { name: 'orders',       count: 9 },
         ]},
       ],
       extraCards: [
@@ -3552,31 +3845,26 @@ const FLOWS = {
       baseMatches: 284,
       baseFiles: 87,
       filters: [
-        { id: 'owner', title: 'By owner', items: [
-          { name: 'arimbach',  count: 96 },
-          { name: 'mkapadia',  count: 71 },
-          { name: 'rparkin',   count: 54 },
-          { name: 'jbenoit',   count: 38 },
-          { name: 'sliang',    count: 25 },
+        { id: 'lang', title: 'Language', filterKey: 'lang', items: [
+          { name: 'Java', value: 'java',       count: 62, dot: '#e76f00' },
+          { name: 'Kotlin', value: 'kotlin',     count: 15, dot: '#a97bff' },
+          { name: 'TypeScript', value: 'typescript', count: 10, dot: '#3178c6' },
         ]},
-        { id: 'lang', title: 'By language', items: [
-          { name: 'Java',       count: 62, dot: '#e76f00' },
-          { name: 'Kotlin',     count: 15, dot: '#a97bff' },
-          { name: 'TypeScript', count: 10, dot: '#3178c6' },
+        { id: 'case', title: 'Case-sensitive', filterKey: 'case', mono: true, items: [
+          { name: 'yes', count: 284 },
+          { name: 'no',  count: 312 },
         ]},
-        { id: 'repo', title: 'By repository', isRepoList: true, overflowMore: 22, items: [
+        { id: 'file', title: 'Path', filterKey: 'file', mono: true, items: [
+          { name: 'src/**',              count: 87 },
+          { name: '**/*.java',           count: 62 },
+          { name: '**/test/**',          count: 18, not: true },
+        ]},
+        { id: 'repo', title: 'Repository', filterKey: 'repo', isRepoList: true, overflowMore: 22, items: [
           { name: 'payments-api',     count: 14 },
           { name: 'identity-service', count: 12 },
           { name: 'orders-service',   count: 10 },
           { name: 'risk-engine',      count: 9 },
           { name: 'platform-core',    count: 7 },
-        ]},
-        { id: 'topic', title: 'By topic', searchable: true, items: [
-          { name: 'payments', count: 41 },
-          { name: 'identity', count: 32 },
-          { name: 'orders',   count: 27 },
-          { name: 'risk',     count: 19 },
-          { name: 'tech-debt',count: 18 },
         ]},
       ],
       extraCards: [
@@ -3926,10 +4214,13 @@ const SYNTAX_EXAMPLES = {
   c: '@RestController lang:java',
 };
 
+// What the canned-search buttons actually run. Includes the filter tokens
+// that each button advertises in its label so chips, sidebar active state,
+// and result counts all line up after a click.
 const FINAL_QUERIES = {
-  a: '(@PreAuthorize or @Secured or @RolesAllowed)',
-  b: 'org.apache.logging.log4j',
-  c: '@RestController',
+  a: '(@PreAuthorize or @Secured or @RolesAllowed) lang:java visibility:public',
+  b: 'org.apache.logging.log4j lang:java',
+  c: '@RestController lang:java',
   d: '@Deprecated',
   e: 'private static final Logger',
   f: 'catch (:[ex]) { log.error(:[msg]); }',
@@ -4009,6 +4300,7 @@ function buildTrigrepLandingHTML() {
           </div>
           <span class="syntax-selector-divider" aria-hidden="true"></span>
           <svg class="trigrep-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <div class="tg-chip-strip" id="tg-chip-strip"></div>
           <input class="trigrep-query" id="trigrep-query-input" placeholder="${escapeHtml(PLACEHOLDERS.sourcegraph)}" spellcheck="false">
           <button type="button" class="trigrep-query-clear" id="trigrep-query-clear" aria-label="Clear query" title="Clear query" hidden>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
@@ -4027,27 +4319,14 @@ function buildTrigrepLandingHTML() {
         <button class="btn-search" id="trigrep-search-btn">Search</button>
         <div class="tg-autocomplete" id="tg-autocomplete" hidden></div>
       </div>
-      <div class="tg-assist-row" id="tg-assist-row">
-        <div class="tg-chip-strip" id="tg-chip-strip"></div>
-      </div>
       <div class="tg-reform-banner" id="tg-reform-banner" hidden></div>
       <div class="search-help-row">
+        <div class="tg-help-line">Just start typing to search — or browse the <a href="https://docs.moderne.io/user-documentation/agent-tools/trigrep/" target="_blank" rel="noopener">complete query reference<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a>.</div>
         <div class="search-help-stats" id="search-help-stats"></div>
       </div>
     </div>
 
     <div class="trigrep-body" id="trigrep-body">
-      <aside class="trigrep-sidebar" aria-label="Filters and repositories">
-        <section class="trigrep-pane trigrep-pane-filters" aria-label="Filters">
-          <div class="trigrep-pane-head">
-            <span>Filters</span>
-          </div>
-          <div class="trigrep-pane-body" style="padding: 12px; color: var(--grey-500); font-size: 12px;">
-            Filters appear after a search.
-          </div>
-        </section>
-      </aside>
-
       <div class="trigrep-results" id="trigrep-results">
         <div class="trigrep-start-state">
           <div class="trigrep-start-hero">
@@ -4169,20 +4448,20 @@ function renderStartRecent() {
   slot.querySelectorAll('.trigrep-start-recent').forEach(row => {
     row.addEventListener('click', () => {
       const mode = row.dataset.mode;
-      const input = trigrepPanel.querySelector('#trigrep-query-input');
-      if (input) input.value = row.dataset.query || '';
       const action = row.dataset.action;
       if (action === 'fallback') {
+        const input = trigrepPanel.querySelector('#trigrep-query-input');
+        if (input) input.value = row.dataset.query || '';
         if (mode) setSyntaxMode(mode);
         showSearchFallback();
         return;
       }
       if (action && action.startsWith('syntax-')) {
+        // executeSearch handles parsing the query into chips. Restore the
+        // recent-query's original syntax mode afterwards since executeSearch
+        // hard-codes Sourcegraph.
         executeSearch(action.slice('syntax-'.length));
-        // executeSearch resets the syntax mode to Sourcegraph; restore the
-        // recent-query's original mode and refresh the chip strip.
         if (mode) { try { setSyntaxMode(mode); } catch (err) {} }
-        if (input) input.dispatchEvent(new Event('input', { bubbles: true }));
       }
     });
   });
@@ -4194,16 +4473,21 @@ function wireTrigrepSearchBar() {
   const clearBtn = trigrepPanel.querySelector('#trigrep-query-clear');
   if (!input || !btn) return;
 
-  const submit = () => tgSubmit((input.value || '').trim());
+  // Chips-in-input: the full query is the serialized chips PLUS whatever
+  // unconfirmed text is sitting in the input.
+  const submit = () => tgSubmit((tgGetFullQuery() || '').trim());
   btn.addEventListener('click', submit);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); }
   });
 
-  // Show / hide the clear-input "×" based on whether the input has content.
+  // Show / hide the clear-input "×" based on whether there's anything in
+  // the composite — either chips or unfinished tail text.
   const syncClearVisibility = () => {
     if (!clearBtn) return;
-    clearBtn.hidden = !((input.value || '').length > 0);
+    const hasContent = (input.value || '').length > 0
+      || (TGState.tokens && TGState.tokens.length > 0);
+    clearBtn.hidden = !hasContent;
   };
   input.addEventListener('input', syncClearVisibility);
   syncClearVisibility();
@@ -4211,6 +4495,9 @@ function wireTrigrepSearchBar() {
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
       input.value = '';
+      TGState.tokens = [];
+      tgRenderPills();
+      tgSyncFilterActive();
       input.focus();
       syncClearVisibility();
       syncBookmarkToggleState();
@@ -4228,7 +4515,7 @@ function syncBookmarkToggleState() {
   const toggle = trigrepPanel.querySelector('#bookmark-toggle');
   const input = trigrepPanel.querySelector('#trigrep-query-input');
   if (!toggle || !input) return;
-  const q = (input.value || '').trim();
+  const q = (tgGetFullQuery() || '').trim();
   const saved = !!findSavedMatch(q, trigrepCurrentMode);
   toggle.disabled = q.length === 0;
   toggle.dataset.saved = saved ? '1' : '0';
@@ -4313,7 +4600,7 @@ function wireBookmarkControls() {
 
   toggle.addEventListener('click', (e) => {
     e.stopPropagation();
-    const q = (input.value || '').trim();
+    const q = (tgGetFullQuery() || '').trim();
     if (!q) return;
     const existing = findSavedMatch(q, trigrepCurrentMode);
     if (existing) {
@@ -4381,21 +4668,29 @@ function executeSearch(flowId) {
   if (!flow) return;
   currentFlow = flowId;
 
+  const query = FINAL_QUERIES[flowId] || flow.phase2.query;
   const input = trigrepPanel.querySelector('#trigrep-query-input');
   if (input) {
-    input.value = FINAL_QUERIES[flowId] || flow.phase2.query;
+    // Chips-in-input model: tokens live in TGState, the input holds only
+    // the unconfirmed tail. Parse the canned query, render chips, then
+    // clear the input so we don't show the same content twice.
+    input.value = '';
     input.style.color = '';
   }
   setSyntaxMode('sourcegraph');
+  TGState.tokens = tgParseRaw(query);
+  tgRenderPills();
+  tgSyncSearchBarUI();
 
   renderTrigrepResults(flow);
+  tgSyncFilterActive();
 }
 
 // Filters to pre-activate per flow — derived from the search query semantics
 const PRESET_ACTIVE_FILTERS = {
-  a: new Set(['Java']),
-  b: new Set(['Java', 'Sole logger (Log4j only)', 'Mixed with SLF4J']),
-  c: new Set(['Java']),
+  a: new Set(['Java', 'public']),
+  b: new Set(['Java', 'file']),
+  c: new Set(['Java', 'public']),
 };
 
 // Suggested recipes per flow — ranked by relevance against the search result set.
@@ -4548,17 +4843,27 @@ function renderTrigrepResults(flow) {
     const overflow = group.overflowMore
       ? `<button type="button" class="filter-more-link">+${group.overflowMore.toLocaleString()} more</button>`
       : '';
+    const monoCls = group.mono ? ' is-mono' : '';
+    const fkey = group.filterKey || '';
     const itemsHtml = group.items.map(it => {
       const dot = it.dot ? `<span class="lang-dot" style="background:${it.dot};box-shadow:none;"></span>` : '';
-      const isActive = activeSet.has(it.name);
-      return `<div class="filter-item${isActive ? ' active' : ''}" data-count="${it.count}">
-        <span class="filter-item-name">${CHECK_ICON_SVG}${dot}${it.name}</span>
+      const notBadge = it.not ? '<span class="filter-item-not">NOT</span>' : '';
+      const fval = it.value != null ? it.value : it.name;
+      const fattrs = fkey
+        ? ` data-fkey="${fkey}" data-fval="${tgEscape(fval)}"${it.not ? ' data-fnot="1"' : ''}`
+        : '';
+      const isActive = fkey
+        ? tgFilterIsActive(fkey, fval, !!it.not)
+        : activeSet.has(it.name);
+      return `<div class="filter-item${monoCls}${isActive ? ' active' : ''}" data-count="${it.count}"${fattrs}>
+        <span class="filter-item-name">${CHECK_ICON_SVG}${dot}${notBadge}${it.name}</span>
         <span class="count">${it.count.toLocaleString()}</span>
       </div>`;
     }).join('');
     if (group.isRepoList) {
       return `
       <div class="filter-group is-repo-list flat" data-group="${group.id}">
+        <div class="filter-group-label"><span class="filter-group-key">repo:</span></div>
         <div class="repo-search-wrap">
           <svg class="repo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input class="repo-search" placeholder="Filter repos…">
@@ -4569,11 +4874,14 @@ function renderTrigrepResults(flow) {
         </div>
       </div>`;
     }
+    const keyBadge = group.filterKey
+      ? `<span class="filter-group-key">${group.filterKey}:</span>`
+      : `<span class="filter-group-key">${group.title}</span>`;
     return `
     <div class="filter-group${repoClass}" data-group="${group.id}">
-      <div class="filter-group-label">${group.title.replace(/^By\s+/i, '').toUpperCase()}</div>
+      <div class="filter-group-label">${keyBadge}</div>
       <div class="filter-group-body" style="margin-left: 0; padding: 0;">
-        ${group.searchable ? '<input class="topic-search" placeholder="Search topics…">' : ''}
+        ${group.searchable ? '<input class="topic-search" placeholder="Search…">' : ''}
         ${itemsHtml}
         ${overflow}
       </div>
@@ -4594,44 +4902,58 @@ function renderTrigrepResults(flow) {
 
   // ----- Results stats — derived from the actual cards the tree will show
   // so every number in the UI reconciles (sidebar count, hierarchy header,
-  // scope-bar totals, per-repo / per-file counts all add up). -----
+  // scope-bar totals, per-repo / per-file counts all add up). Build the
+  // tree data first so the generated bulk pool is counted. -----
+  tgCurrentFlow = flow;
+  tgTreeData = tgBuildTreeData(flow);
   const ft = flowTotals(flow);
   const repoCount = ft.repos;
   tgFlowStats = {
     matches: ft.matches.toLocaleString(),
     files:   ft.files.toLocaleString(),
     time:    ft.time,
+    repos:   ft.repos,
   };
-  // Clear the inline top-of-page stats slot so the row collapses.
+  // The stats line now lives in the right-pane sticky toolbar to avoid
+  // showing the same numbers twice. Keep the page-header slot empty so the
+  // help-row collapses cleanly.
   if (inlineStats) inlineStats.innerHTML = '';
 
   body.innerHTML = `
     <aside class="trigrep-sidebar" aria-label="Filters and hierarchy">
       <section class="trigrep-pane trigrep-pane-filters" aria-label="Filters">
-        <div class="trigrep-pane-head">
-          <span>Filters</span>
-        </div>
         <div class="trigrep-pane-body">
-          ${nonRepoFiltersHtml}
+          <div class="filters-card">
+            <div class="tg-tree-head">
+              <span class="th-name">FILTERS</span>
+            </div>
+            ${nonRepoFiltersHtml}
+          </div>
         </div>
       </section>
-      <section class="trigrep-pane trigrep-pane-hierarchy" aria-label="Hierarchy">
-        <div class="trigrep-pane-head">
-          <span>Hierarchy <span class="pane-count">(${repoCount.toLocaleString()})</span></span>
-        </div>
+      <section class="trigrep-pane trigrep-pane-hierarchy" aria-label="Repositories">
         <div class="trigrep-pane-body trigrep-pane-body-tree">
+          <div class="tbl-search" role="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input id="tg-repo-search" type="search" placeholder="Filter repositories…" autocomplete="off" spellcheck="false">
+          </div>
           <div class="tg-tree" id="tg-tree">
+            <div class="tg-tree-head">
+              <span class="th-name">REPOSITORIES</span>
+              <span class="th-results">RESULTS</span>
+            </div>
             <div id="tg-tree-body"></div>
           </div>
           <div class="tg-footer-summary" id="tg-footer-summary"></div>
         </div>
-        <div class="trigrep-pane-foot">
-          <button type="button" class="commit-btn" id="btn-run-recipe">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Run recipe on selected <span class="pill" id="tg-sel-count">0</span>
-          </button>
-        </div>
       </section>
+      <div class="trigrep-pane-foot">
+        <button type="button" class="commit-btn" id="btn-run-recipe">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run recipe on selected <span class="pill" id="tg-sel-count">0</span>
+        </button>
+      </div>
+      <div class="trigrep-sidebar-handle" id="tg-sidebar-handle" role="separator" aria-orientation="vertical" aria-label="Resize filters and repositories pane" tabindex="0"></div>
     </aside>
     <div class="trigrep-results has-tree" id="trigrep-results">
       <div id="tg-detail-slot"></div>
@@ -4641,6 +4963,48 @@ function renderTrigrepResults(flow) {
   wireResultsInteractions(flow, remainingCards);
   wireRunRecipeButton(currentFlow);
   initTrigrepTree(flow);
+  wireSidebarResize();
+}
+
+// Drag-to-resize the sidebar — width is stored on the .trigrep-body as a
+// CSS variable so subsequent renders preserve it. Clamped against the
+// sidebar's CSS min/max so we never produce an unreadable layout.
+function wireSidebarResize() {
+  const handle = trigrepPanel.querySelector('#tg-sidebar-handle');
+  const body = trigrepPanel.querySelector('#trigrep-body');
+  if (!handle || !body) return;
+  const sidebar = body.querySelector('.trigrep-sidebar');
+  if (!sidebar) return;
+  let dragging = false;
+  const onDown = (e) => {
+    dragging = true;
+    handle.classList.add('is-dragging');
+    document.body.classList.add('tg-resizing');
+    try { handle.setPointerCapture(e.pointerId); } catch (_) {}
+    e.preventDefault();
+  };
+  const onMove = (e) => {
+    if (!dragging) return;
+    const bodyRect = body.getBoundingClientRect();
+    let w = e.clientX - bodyRect.left;
+    const minPx = 240;
+    const maxPx = Math.max(minPx, bodyRect.width * 0.6);
+    w = Math.max(minPx, Math.min(maxPx, w));
+    body.style.setProperty('--tg-sidebar-w', w + 'px');
+  };
+  const onUp = (e) => {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove('is-dragging');
+    document.body.classList.remove('tg-resizing');
+    try { handle.releasePointerCapture(e.pointerId); } catch (_) {}
+  };
+  handle.addEventListener('pointerdown', onDown);
+  handle.addEventListener('pointermove', onMove);
+  handle.addEventListener('pointerup', onUp);
+  handle.addEventListener('pointercancel', onUp);
+  // Double-click resets to the default width.
+  handle.addEventListener('dblclick', () => body.style.removeProperty('--tg-sidebar-w'));
 }
 
 // Catalog recipes — appear in "All recipes" alongside the per-flow suggested ones.
@@ -4916,6 +5280,17 @@ let tgFlowStats = null;
 // (tree, scope bar, hierarchy header, recipe-run drawer). Derived from the
 // actual cards so every number reconciles.
 function flowTotals(flow) {
+  // Once the tree is built (which includes the generated bulk pool), prefer
+  // its tallies so every counter in the UI agrees. Falls back to the raw
+  // fixture totals before the tree exists.
+  if (typeof tgTreeData !== 'undefined' && tgTreeData && tgTreeData.length
+      && tgCurrentFlow && tgCurrentFlow.id === flow.id) {
+    const matches = tgTreeData.reduce((s, r) => s + (r.results || 0), 0);
+    const files   = tgTreeData.reduce((s, r) => s + (r.files ? r.files.length : 0), 0);
+    const repos   = tgTreeData.filter(r => (r.status || 'ok') === 'ok' && r.results > 0).length;
+    const m = (flow.phase2.summary || '').match(/([\d.]+ms)/);
+    return { matches, files, repos, time: m ? m[1] : '' };
+  }
   const all = [...(flow.cards || []), ...(flow.phase2.extraCards || [])];
   const matches = all.reduce((s, c) => s + (c.count || 0), 0);
   const files = all.length;
@@ -4934,6 +5309,7 @@ function tgBuildTreeData(flow) {
         id: 'tgr_' + repoMap.size,
         name: repoName,
         branch: 'main',
+        status: 'ok',
         files: [],
         results: 0,
       });
@@ -4954,7 +5330,109 @@ function tgBuildTreeData(flow) {
     });
     repo.results += card.count;
   });
-  return Array.from(repoMap.values());
+  const handAuthored = Array.from(repoMap.values());
+  // Pad with a large generated pool so the tree convincingly shows results
+  // across hundreds of repositories — mirrors the recipe-results scale.
+  const bulk = tgGenerateRepoPool(flow, handAuthored, 220);
+  return [...handAuthored, ...bulk];
+}
+
+// === Bulk-repo fixture generator ======================================
+// Mirrors the recipe-results prototype's mix of statuses (most repos have
+// results, a chunk show "no results", a few error out). Match snippets are
+// recycled from the active flow's hand-authored cards so the right-pane
+// card UI still renders real-looking code.
+const TG_REPO_POOL_NAMES = [
+  'analytics-pipeline','fraud-detector','audit-log','event-bus','message-router',
+  'session-store','identity-broker','token-mint','ledger-core','ledger-edge',
+  'fx-rates','quote-engine','order-gateway','order-router','order-history',
+  'shipping-service','warehouse-sync','catalog-search','catalog-indexer','catalog-cache',
+  'pricing-engine','promo-engine','recommendation-svc','recsys-trainer','recsys-serving',
+  'feature-store','feature-flags','config-server','config-vault','config-watcher',
+  'metrics-collector','log-shipper','trace-aggregator','alerting-rules','oncall-rotation',
+  'platform-cli','platform-bootstrap','deploy-controller','release-orchestrator','build-cache',
+  'infra-terraform','infra-pulumi','infra-helm','k8s-operators','k8s-ingress',
+  'data-warehouse','data-lake','data-streams','data-quality','data-lineage',
+  'compliance-scanner','soc2-evidence','pii-redactor','consent-store','consent-api',
+  'reporting-api','reporting-web','reporting-jobs','dashboard-web','dashboard-api',
+  'mobile-android','mobile-ios','mobile-shared','web-storefront','web-checkout',
+  'web-account','web-admin','partner-portal','partner-sdk','partner-webhooks',
+  'marketing-emails','marketing-push','marketing-segments','growth-experiments','growth-ab',
+  'support-tickets','support-chat','support-kb','help-center','knowledge-graph',
+  'docs-portal','dev-docs','api-docs','spec-generator','swagger-tooling',
+  'tax-engine','tax-rules','vat-calculator','customs-broker','invoicing',
+  'subscriptions','billing-cycles','billing-retry','dunning-svc','collections',
+  'risk-rules','risk-decisioning','risk-models','kyc-pipeline','kyc-decision',
+  'aml-screening','sanctions-list','watchlist-sync','transaction-monitor','case-mgmt',
+  'webhook-dispatcher','webhook-receiver','api-gateway-edge','api-gateway-core','api-throttle',
+  'rate-limiter','cache-warmer','cdn-edge','image-pipeline','image-cdn',
+  'video-encoder','video-cdn','search-frontend','search-backend','search-tuning',
+  'recsys-eval','recsys-ranking','ml-pipeline','ml-features','ml-serving',
+  'model-registry','model-monitor','prompt-router','llm-gateway','llm-eval',
+  'embeddings-svc','vector-store','rag-pipeline','agent-runtime','agent-tools',
+  'gameday-runbooks','chaos-experiments','dr-failover','backup-controller','restore-svc',
+  'secrets-broker','keyring','jwt-issuer','jwt-verifier','oauth-broker',
+  'sso-bridge','saml-bridge','scim-bridge','user-directory','group-directory',
+  'permission-engine','policy-engine','policy-store','abac-decider','rbac-mapper',
+  'audit-trail','tamper-log','change-feed','event-store','event-replay',
+  'job-scheduler','job-runner','cron-supervisor','workflow-engine','workflow-ui',
+  'queue-broker','queue-dlq','queue-replay','priority-queue','delay-queue',
+  'feed-ingest','feed-normalizer','feed-router','feed-publisher','feed-archive',
+  'taxonomy-service','glossary-svc','dictionary-svc','translation-svc','locale-service',
+  'fx-conversion','geo-routing','geo-ip','region-router','region-sync',
+  'admin-tools','operator-console','engineering-onboarding','ci-orchestrator','release-trainer',
+];
+const TG_REPO_BRANCHES = ['main','main','main','main','master','develop','release/2024','release/2025'];
+function tgGenerateRepoPool(flow, handAuthored, target) {
+  const handNames = new Set(handAuthored.map(r => r.name));
+  const seedCards = [...(flow.cards || []), ...(flow.phase2.extraCards || [])];
+  if (!seedCards.length) return [];
+  const palette = TG_REPO_POOL_NAMES.filter(n => !handNames.has(n));
+  let s = 0; for (const c of flow.id) s = (s * 31 + c.charCodeAt(0)) >>> 0;
+  const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 0xFFFFFFFF; };
+  const need = Math.max(0, target - handAuthored.length);
+  const out = [];
+  let nextId = handAuthored.length;
+  for (let i = 0; i < need && i < palette.length; i++) {
+    const r = rnd();
+    let status = 'ok';
+    if (r > 0.72 && r <= 0.92) status = 'none';
+    else if (r > 0.92) status = 'error';
+    const repoId = 'tgr_' + (nextId++);
+    const repo = {
+      id: repoId,
+      name: palette[i],
+      branch: TG_REPO_BRANCHES[(i * 7 + Math.floor(rnd() * 7)) % TG_REPO_BRANCHES.length],
+      status,
+      files: [],
+      results: 0,
+    };
+    if (status === 'ok') {
+      const nFiles = 1 + Math.floor(rnd() * 3);
+      for (let f = 0; f < nFiles; f++) {
+        const seed = seedCards[Math.floor(rnd() * seedCards.length)];
+        const fileId = repo.id + '__gen' + f;
+        const lineOffset = 4 + Math.floor(rnd() * 90);
+        const matches = (seed.lines || []).slice(0, 2 + Math.floor(rnd() * 4)).map((l, mi) => ({
+          id: fileId + '__m' + mi,
+          n: (l.n || 1) + lineOffset,
+          code: l.code,
+        }));
+        if (!matches.length) continue;
+        repo.files.push({
+          id: fileId,
+          cardId: seed.id + '_gen_' + repoId + '_' + f,
+          file: seed.file,
+          count: matches.length,
+          matches,
+        });
+        repo.results += matches.length;
+      }
+      if (repo.files.length === 0) repo.status = 'none';
+    }
+    out.push(repo);
+  }
+  return out;
 }
 
 function tgChevHTML(expanded) {
@@ -4985,16 +5463,24 @@ const TG_PAD = d => `style="padding-left:${12 + d * 20}px"`;
 
 function tgRepoNodeHTML(r, d) {
   const expanded = tgTreeState.expanded.has(r.id);
-  const resTxt = r.results > 0 ? `${r.results.toLocaleString()} result${r.results === 1 ? '' : 's'}` : 'No results';
-  let html = `<div class="hn-row n-repo ${tgAct('repo', r.id) ? 'active' : ''}" data-node="repo" data-id="${r.id}" ${TG_PAD(d)}>
-    ${tgChevHTML(expanded)}
+  const status = r.status || (r.results > 0 ? 'ok' : 'none');
+  let resTxt, resCls;
+  if (status === 'error') { resTxt = 'Error'; resCls = 'is-error'; }
+  else if (status === 'none' || r.results === 0) { resTxt = 'No results'; resCls = 'is-none'; }
+  else { resTxt = `${r.results.toLocaleString()} result${r.results === 1 ? '' : 's'}`; resCls = ''; }
+  const dotCls = status === 'error' ? 'error' : (status === 'none' ? 'none' : 'ok');
+  const dotTitle = status === 'error' ? 'Failed to scan' : (status === 'none' ? 'No matches in this repo' : 'Has results');
+  // Skip the chevron entirely for repos with nothing to drill into.
+  const chev = status === 'ok' && r.files.length > 0 ? tgChevHTML(expanded) : '<span class="chev-spacer"></span>';
+  let html = `<div class="hn-row n-repo n-repo-${status} ${tgAct('repo', r.id) ? 'active' : ''}" data-node="repo" data-id="${r.id}" ${TG_PAD(d)}>
+    ${chev}
     ${tgCbHTML('repo', r.id, tgRepoSel(r))}
-    <span class="repo-status-dot ok" title="Has results"></span>
+    <span class="repo-status-dot ${dotCls}" title="${dotTitle}"></span>
     <span class="hn-name">${escapeHtml(r.name)} <span class="hn-repo-branch">@ ${escapeHtml(r.branch)}</span></span>
     <span class="hn-spacer"></span>
-    <span class="hn-count">${resTxt}</span>
+    <span class="hn-count ${resCls}">${resTxt}</span>
   </div>`;
-  if (expanded) r.files.forEach(f => { html += tgFileNodeHTML(r, f, d + 1); });
+  if (expanded && status === 'ok') r.files.forEach(f => { html += tgFileNodeHTML(r, f, d + 1); });
   return html;
 }
 
@@ -5033,12 +5519,19 @@ function tgActiveFilterNames() {
 
 // Apply existing filters to top-level repos: if any filter is active and
 // any active filter name matches a repo name, restrict to that subset.
-// Otherwise (no active filters), show all repos.
+// Otherwise (no active filters), show all repos. Then narrow further by the
+// repository-name search input (the "Filter repositories…" field).
+let tgRepoSearchQuery = '';
 function tgFilteredRepos() {
+  let repos = tgTreeData;
   const active = tgActiveFilterNames();
-  if (active.size === 0) return tgTreeData;
-  const matches = tgTreeData.filter(r => active.has(r.name.toLowerCase()));
-  return matches.length > 0 ? matches : tgTreeData; // graceful: no repo-name hits → show all
+  if (active.size > 0) {
+    const matches = repos.filter(r => active.has(r.name.toLowerCase()));
+    if (matches.length > 0) repos = matches;
+  }
+  const q = (tgRepoSearchQuery || '').trim().toLowerCase();
+  if (q) repos = repos.filter(r => r.name.toLowerCase().includes(q));
+  return repos;
 }
 
 function tgRenderTree() {
@@ -5073,29 +5566,74 @@ const TG_EMPTY_DETAIL = `<div class="trigrep-start-state">
 // The right pane now always shows the full results set with surrounding
 // context on. Tree row clicks scroll/jump to the matching card rather than
 // re-rendering the pane. Mirrors recipe-results' detail panel UX.
+const TG_DETAIL_PAGE_SIZE = 30;
+let tgDetailVisible = TG_DETAIL_PAGE_SIZE;
 function tgRenderDetail() {
   const slot = trigrepPanel.querySelector('#tg-detail-slot');
   if (!slot) return;
   if (!tgTreeData || tgTreeData.length === 0) { slot.innerHTML = TG_EMPTY_DETAIL; return; }
   const allCards = tgTreeData.flatMap(r => r.files.map(f => ({ repo: r, file: f })));
+  tgDetailVisible = Math.min(allCards.length, TG_DETAIL_PAGE_SIZE);
+  const remaining = allCards.length - tgDetailVisible;
+  const moreHTML = remaining > 0
+    ? `<button type="button" class="tg-detail-more" id="tg-detail-more">Show ${Math.min(remaining, TG_DETAIL_PAGE_SIZE).toLocaleString()} more files <span class="tg-detail-more-sub">· ${remaining.toLocaleString()} of ${allCards.length.toLocaleString()} files left</span></button>`
+    : '';
   const stats = tgFlowStats || {};
-  const totalMatchesFromCards = allCards.reduce((a, x) => a + x.file.count, 0);
-  const statsLine = `<strong>${stats.matches || totalMatchesFromCards.toLocaleString()}</strong> matches across <strong>${stats.files || allCards.length}</strong> files`;
+  const statsLine = `<strong>${stats.matches || allCards.length.toLocaleString()}</strong> matches in <strong>${stats.files || allCards.length.toLocaleString()}</strong> files across <strong>${(stats.repos || tgTreeData.length).toLocaleString()}</strong> repos`;
   slot.innerHTML = `
-    <div class="scope-bar">
-      <span class="scope-level">All results</span>
-      <div class="scope-crumbs"><span class="sc-crumb cur">All repositories</span></div>
-      <span class="scope-count">${statsLine}${stats.time ? ` · <span class="sc-time">${stats.time}</span>` : ''}</span>
+    <div class="tg-detail-toolbar" id="tg-detail-toolbar">
+      <span class="tg-detail-toolbar-title">${statsLine}${stats.time ? `<span class="tg-detail-toolbar-time">${stats.time}</span>` : ''}</span>
+      <span class="tg-detail-toolbar-spacer"></span>
+      <button type="button" class="dt-btn" id="tg-export-btn" title="Export results as CSV"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV</button>
+      <button type="button" class="dt-btn icon" id="tg-collapse-toggle" title="Collapse all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></button>
     </div>
-    <div class="detail-toolbar">
-      <div class="dt-actions">
-        <button type="button" class="dt-btn" id="tg-export-btn" title="Export results as CSV"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV</button>
-        <button type="button" class="dt-btn icon" id="tg-collapse-toggle" title="Collapse all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg></button>
-      </div>
-    </div>
-    <div id="tg-match-list">${allCards.map(x => tgMatchCardHTML(x.file, null, x.repo)).join('')}</div>
+    <div id="tg-match-list">${tgGroupedCardsHTML(allCards.slice(0, tgDetailVisible))}</div>
+    ${moreHTML}
   `;
   tgWireDetail(slot);
+  const moreBtn = slot.querySelector('#tg-detail-more');
+  if (moreBtn) {
+    moreBtn.addEventListener('click', () => {
+      const prevVisible = tgDetailVisible;
+      tgDetailVisible = Math.min(allCards.length, tgDetailVisible + TG_DETAIL_PAGE_SIZE);
+      // Re-render the whole list so repo-group headers stay correct when a
+      // new page extends a group that already had cards in the previous page.
+      const list = slot.querySelector('#tg-match-list');
+      list.innerHTML = tgGroupedCardsHTML(allCards.slice(0, tgDetailVisible));
+      const rem = allCards.length - tgDetailVisible;
+      if (rem <= 0) moreBtn.remove();
+      else moreBtn.querySelector('.tg-detail-more-sub').textContent = `· ${rem.toLocaleString()} of ${allCards.length.toLocaleString()} files left`;
+      tgWireDetail(slot);
+    });
+  }
+}
+
+// Render cards grouped by repo. Each group has an embedded header that
+// can collapse/expand the cards underneath it.
+function tgGroupedCardsHTML(cards) {
+  const groups = [];
+  let current = null;
+  cards.forEach(({ repo, file }) => {
+    if (!current || current.repo.id !== repo.id) {
+      current = { repo, files: [] };
+      groups.push(current);
+    }
+    current.files.push(file);
+  });
+  return groups.map(({ repo, files }) => {
+    const repoMatches = repo.files.reduce((s, f) => s + f.count, 0);
+    const sel = tgRepoSel(repo);
+    const checked = sel === 'all' || sel === true;
+    const indeterminate = sel === 'some';
+    const headerHTML = `<div class="tg-repo-header" id="rh-${repo.id}" role="button" tabindex="0" aria-expanded="true">
+      <input type="checkbox" class="ckbox tg-repo-header-check" data-repo-id="${repo.id}"${checked ? ' checked' : ''}${indeterminate ? ' data-ind="1"' : ''} aria-label="Include all matches in ${escapeHtml(repo.name)}">
+      <svg class="tg-repo-header-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <span class="tg-repo-header-path">${escapeHtml(repo.name)} <span class="tg-repo-header-branch">@ ${escapeHtml(repo.branch)}</span></span>
+      <span class="tg-repo-header-count">${repoMatches.toLocaleString()} result${repoMatches === 1 ? '' : 's'}</span>
+    </div>`;
+    const cardsHTML = files.map(f => tgMatchCardHTML(f, null, repo)).join('');
+    return `<div class="tg-repo-group" data-repo-id="${repo.id}">${headerHTML}<div class="tg-repo-group-body">${cardsHTML}</div></div>`;
+  }).join('');
 }
 
 // Build the lines shown inside a match-card body. When `withContext` is
@@ -5140,11 +5678,27 @@ function tgMatchCardHTML(f, focusMatchId, repo) {
   // Each card identifies itself by repo + file so tree clicks can jump here;
   // file-id alone collides across repos (same basename in different repos).
   const repoId = repo ? repo.id : '';
+  // Selection state mirrors the tree's per-match checkboxes.
+  const keys = tgFileMatchKeys(f);
+  const selCount = keys.filter(k => tgTreeState.selMatches.has(k)).length;
+  const allSel = selCount === keys.length && keys.length > 0;
+  const anySel = selCount > 0 && !allSel;
+  // Hunk-style meta: line range + match count (mirrors recipe-results
+  // `@@ -15,13 +15,13 @@` slot but expressed in trigrep terms).
+  const ns = lines.map(l => l.n).filter(n => typeof n === 'number');
+  const minN = ns.length ? Math.min(...ns) : null;
+  const maxN = ns.length ? Math.max(...ns) : null;
+  const rangeText = minN != null
+    ? (minN === maxN ? `L${minN}` : `L${minN}–${maxN}`)
+    : '';
+  const hunkMeta = `${rangeText ? rangeText + ' · ' : ''}${lines.length} match${lines.length === 1 ? '' : 'es'}`;
   return `<div class="match-card" data-file-id="${f.id}" data-repo-id="${repoId}" id="mc-${repoId}-${f.id}">
     <div class="match-card-head">
+      <input type="checkbox" class="ckbox match-check" data-file-id="${f.id}" data-repo-id="${repoId}"${allSel ? ' checked' : ''}${anySel ? ' data-ind="1"' : ''} title="Include this file in the recipe run">
       <svg class="match-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       <svg class="match-fileicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       <span class="match-file-path">${repoPrefix}${escapeHtml(f.file)}</span>
+      <span class="match-hunk">${hunkMeta}</span>
       <div class="match-card-actions">
         <button type="button" class="match-act" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
       </div>
@@ -5154,23 +5708,107 @@ function tgMatchCardHTML(f, focusMatchId, repo) {
 }
 
 function tgWireDetail(slot) {
-  // Per-card chevron expand/collapse (clicking the head, but not the action
-  // buttons). Mirrors the recipe-results diff-file UX.
+  // Per-card chevron expand/collapse (clicking the head, but not the
+  // checkbox or action buttons).
   slot.querySelectorAll('.match-card-head').forEach(h => {
     h.addEventListener('click', (e) => {
-      if (e.target.closest('.match-act')) return;
+      if (e.target.closest('.match-act') || e.target.closest('.match-check')) return;
       h.closest('.match-card').classList.toggle('collapsed');
     });
   });
-  // Toolbar "Collapse all" / "Expand all" — flips every card.
+  // Repo header expand/collapse — clicking anywhere on the header toggles
+  // the cards in that group, except clicks on the include-all checkbox.
+  slot.querySelectorAll('.tg-repo-header').forEach(h => {
+    const group = h.closest('.tg-repo-group');
+    const toggle = () => {
+      const nowCollapsed = group.classList.toggle('collapsed');
+      h.setAttribute('aria-expanded', nowCollapsed ? 'false' : 'true');
+    };
+    h.addEventListener('click', (e) => {
+      if (e.target.closest('.tg-repo-header-check')) return;
+      toggle();
+    });
+    h.addEventListener('keydown', (e) => {
+      if (e.target.closest('.tg-repo-header-check')) return;
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+  // Repo-level checkbox in the header toggles every match in the repo and
+  // keeps the sidebar tree in sync. Mirrors the per-file checkbox pattern.
+  slot.querySelectorAll('.tg-repo-header-check[data-ind="1"]').forEach(cb => { cb.indeterminate = true; });
+  slot.querySelectorAll('.tg-repo-header-check').forEach(cb => {
+    cb.addEventListener('click', e => e.stopPropagation());
+    cb.addEventListener('change', () => {
+      const repo = tgTreeData.find(r => r.id === cb.dataset.repoId);
+      if (!repo) return;
+      const keys = tgRepoMatchKeys(repo);
+      const on = cb.checked;
+      keys.forEach(k => on ? tgTreeState.selMatches.add(k) : tgTreeState.selMatches.delete(k));
+      tgRenderTree();
+      // Refresh the detail pane so every per-file checkbox under this repo
+      // reflects the new selection without scrolling away.
+      tgRenderDetail();
+    });
+  });
+  // File-level checkbox in the card head toggles every match in that file
+  // and keeps the sidebar tree in sync.
+  slot.querySelectorAll('.match-check[data-ind="1"]').forEach(cb => { cb.indeterminate = true; });
+  slot.querySelectorAll('.match-check').forEach(cb => {
+    cb.addEventListener('click', e => e.stopPropagation());
+    cb.addEventListener('change', () => {
+      const repoId = cb.dataset.repoId;
+      const fileId = cb.dataset.fileId;
+      const repo = tgTreeData.find(r => r.id === repoId);
+      const file = repo && repo.files.find(f => f.id === fileId);
+      if (!file) return;
+      const keys = tgFileMatchKeys(file);
+      const on = cb.checked;
+      keys.forEach(k => on ? tgTreeState.selMatches.add(k) : tgTreeState.selMatches.delete(k));
+      tgRenderTree();
+    });
+  });
+  // Toolbar "Collapse all" / "Expand all" — flips every repo group AND
+  // every match card so one click takes the whole right pane between the
+  // two states.
   const ct = slot.querySelector('#tg-collapse-toggle');
   if (ct) {
     ct.addEventListener('click', () => {
+      const groups = [...slot.querySelectorAll('.tg-repo-group')];
       const cards = [...slot.querySelectorAll('.match-card')];
-      const anyOpen = cards.some(c => !c.classList.contains('collapsed'));
-      cards.forEach(c => c.classList.toggle('collapsed', anyOpen));
+      const anyGroupOpen = groups.some(g => !g.classList.contains('collapsed'));
+      const anyCardOpen  = cards.some(c => !c.classList.contains('collapsed'));
+      const collapse = anyGroupOpen || anyCardOpen;
+      groups.forEach(g => {
+        g.classList.toggle('collapsed', collapse);
+        const head = g.querySelector('.tg-repo-header');
+        if (head) head.setAttribute('aria-expanded', collapse ? 'false' : 'true');
+      });
+      cards.forEach(c => c.classList.toggle('collapsed', collapse));
     });
   }
+}
+
+let tgJumpScrollSuppress = 0;
+
+// Breadcrumb helpers — drive the "Jumped to:" indicator in the scope-bar.
+function tgSetJumpedBreadcrumb(parts) {
+  const el = trigrepPanel.querySelector('#tg-jumped-to');
+  if (!el) return;
+  const html = parts
+    .map((p, i) => {
+      const cls = i === parts.length - 1 ? 'sc-crumb cur' : 'sc-crumb';
+      const sep = i > 0 ? '<span class="sc-sep">›</span>' : '';
+      return `${sep}<span class="${cls}">${escapeHtml(p)}</span>`;
+    })
+    .join('');
+  el.innerHTML = `<span class="sc-label">Jumped to</span>${html}`;
+  el.hidden = false;
+}
+function tgClearJumpedBreadcrumb() {
+  const el = trigrepPanel.querySelector('#tg-jumped-to');
+  if (!el) return;
+  el.hidden = true;
+  el.innerHTML = '';
 }
 
 // Quick-link from a tree row to the matching card / line in the right pane.
@@ -5188,15 +5826,30 @@ function tgJumpToCard(repoId, fileId, matchId) {
   slot.querySelectorAll('.match-card.active').forEach(c => c.classList.remove('active'));
   card.classList.add('active');
   let target = card;
+  let matchLine = null;
   if (matchId) {
-    const line = card.querySelector(`.match-line[data-match-id="${CSS.escape(matchId)}"]`);
-    if (line) {
+    matchLine = card.querySelector(`.match-line[data-match-id="${CSS.escape(matchId)}"]`);
+    if (matchLine) {
       slot.querySelectorAll('.match-line.focus').forEach(l => l.classList.remove('focus'));
-      line.classList.add('focus');
-      target = line;
+      matchLine.classList.add('focus');
+      target = matchLine;
     }
   }
+  // Suppress the "scroll back to top clears breadcrumb" handler for the
+  // duration of the smooth scroll animation we're about to trigger.
+  tgJumpScrollSuppress = Date.now() + 900;
   target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  // Reflect the jump destination in the scope-bar breadcrumb.
+  const repo = tgTreeData.find(r => r.id === repoId);
+  const file = repo && repo.files.find(f => f.id === fileId);
+  if (repo && file) {
+    const parts = [repo.name, file.file];
+    if (matchLine) {
+      const m = file.matches.find(x => x.id === matchId);
+      if (m && typeof m.n === 'number') parts.push('L' + m.n);
+    }
+    tgSetJumpedBreadcrumb(parts);
+  }
 }
 
 function tgExpandKey(row) {
@@ -5305,6 +5958,15 @@ function initTrigrepTree(flow) {
   };
   // Default: pre-select every match so "Run recipe on selected" is meaningful
   tgTreeData.forEach(r => tgRepoMatchKeys(r).forEach(k => tgTreeState.selMatches.add(k)));
+  tgRepoSearchQuery = '';
+  const repoSearchInput = trigrepPanel.querySelector('#tg-repo-search');
+  if (repoSearchInput) {
+    repoSearchInput.value = '';
+    repoSearchInput.addEventListener('input', () => {
+      tgRepoSearchQuery = repoSearchInput.value;
+      tgRenderTree();
+    });
+  }
   tgRenderTree();
   tgWireTree();
   // Right pane always shows the full result set; tree clicks scroll-link
@@ -5380,15 +6042,23 @@ function wireResultsInteractions(flow, remainingCards) {
 
   trigrepPanel.querySelectorAll('.filter-item').forEach(item => {
     item.addEventListener('click', () => {
-      const key = item.querySelector('.filter-item-name').textContent.trim();
-      const count = parseInt(item.dataset.count, 10) || 0;
-      const wasActive = activeFilters.has(key);
-      if (wasActive) activeFilters.delete(key);
-      else activeFilters.set(key, count);
-      item.classList.toggle('active', !wasActive);
+      const fkey = item.dataset.fkey;
+      const fval = item.dataset.fval;
+      const fnot = item.dataset.fnot === '1';
+      // Sidebar items mapped to a trigrep filter key push/remove a token
+      // from the query bar — tgWriteBack re-syncs the active class.
+      if (fkey && fval != null) {
+        tgToggleFilter(fkey, fval, fnot);
+      } else {
+        // Legacy free-form item (e.g. repo list rows) — just toggle locally.
+        const key = item.querySelector('.filter-item-name').textContent.trim();
+        const count = parseInt(item.dataset.count, 10) || 0;
+        const wasActive = activeFilters.has(key);
+        if (wasActive) activeFilters.delete(key);
+        else activeFilters.set(key, count);
+        item.classList.toggle('active', !wasActive);
+      }
       recomputeSummary();
-      // Cheapest filter↔tree wiring: re-render the top-level repo list
-      // restricted to repos whose name matches an active filter item.
       if (typeof tgRefreshFromFilters === 'function') tgRefreshFromFilters();
     });
   });
@@ -5911,11 +6581,45 @@ function tgRunCanned(query, flowId) {
   const flow = FLOWS[flowId];
   if (!flow) return;
   currentFlow = flowId;
-  const input = document.getElementById('trigrep-query-input');
-  if (input) input.value = query;
   setSyntaxMode('sourcegraph');
+  // Chips-in-input model: TGState holds all committed tokens; the visible
+  // <input> only holds the unconfirmed trailing text. A canned query is
+  // fully tokenized, so the input is cleared.
+  TGState.tokens = tgParseRaw(query);
+  const input = document.getElementById('trigrep-query-input');
+  if (input) input.value = '';
+  tgRenderPills();
+  tgSyncSearchBarUI();
   renderTrigrepResults(flow);
-  tgSyncFromInput();
+  tgSyncFilterActive();
+}
+
+// Build the full query string from committed tokens + the unfinished tail
+// in the input. Used by search submit, bookmark save, etc.
+function tgGetFullQuery() {
+  const input = document.getElementById('trigrep-query-input');
+  const base = tgSerialize(TGState.tokens || []);
+  const tail = input ? input.value.trim() : '';
+  return base && tail ? base + ' ' + tail : (base || tail);
+}
+
+// Parse the input's trailing text and, if it produces tokens, promote them
+// to chips in TGState. Skips bare incomplete filters like "lang:". Returns
+// whether any tokens were committed.
+function tgCommitInputTokens() {
+  const input = document.getElementById('trigrep-query-input');
+  if (!input) return false;
+  const trimmed = input.value.trim();
+  if (!trimmed) return false;
+  if (/^[a-zA-Z][a-zA-Z0-9_]*:$/.test(trimmed)) return false;
+  const tokens = tgParseRaw(trimmed);
+  if (tokens.length === 0) return false;
+  TGState.tokens.push(...tokens);
+  input.value = '';
+  tgRenderPills();
+  tgSyncFilterActive();
+  tgSyncSearchBarUI();
+  return true;
 }
 
 // === Filter pills + free-text token chips =============================
@@ -5983,26 +6687,133 @@ function tgRenderPills() {
       if (!t || t.kind !== 'filter') return;
       const input = document.getElementById('trigrep-query-input');
       if (!input) return;
-      // Strip the pill from tokens, then plant `key:` in the input so the
-      // value dropdown opens and the user picks again.
+      // Strip the pill from tokens, then plant `key:` in the input (the
+      // other chips stay rendered — input only holds the unconfirmed tail).
       const pairOp = p.dataset.pair != null ? parseInt(p.dataset.pair, 10) : null;
       if (pairOp != null) TGState.tokens.splice(Math.min(pairOp, idx), 2);
       else TGState.tokens.splice(idx, 1);
-      const baseRaw = tgSerialize(TGState.tokens);
-      input.value = (baseRaw ? baseRaw + ' ' : '') + `${t.key}:`;
+      input.value = `${t.key}:`;
       const newPos = input.value.length;
       input.focus();
       input.setSelectionRange(newPos, newPos);
-      tgSyncFromInput();
+      tgRenderPills();
+      tgSyncFilterActive();
       setTimeout(tgRenderAutocomplete, 0);
     });
   });
 }
 
 function tgWriteBack() {
-  const input = document.getElementById('trigrep-query-input');
-  if (input) input.value = tgSerialize(TGState.tokens);
+  // Chips-in-input model: chips render directly from TGState. The visible
+  // input holds only the unconfirmed trailing text — do NOT overwrite it.
   tgRenderPills();
+  tgSyncFilterActive();
+  tgSyncSearchBarUI();
+  tgApplyFilterScale();
+}
+
+// Combined scale derived from active sidebar filters. Each filter group's
+// scale is the sum of its active items' counts divided by the group's
+// total; the combined scale is the product across groups. With no active
+// filters the scale is 1 (no narrowing).
+function tgComputeFilterScale() {
+  if (!tgCurrentFlow || !tgCurrentFlow.phase2) return 1;
+  const activeByKey = new Map();
+  document.querySelectorAll('.filter-item.active[data-fkey][data-count]').forEach(item => {
+    const k = item.dataset.fkey;
+    const c = parseInt(item.dataset.count, 10) || 0;
+    if (!activeByKey.has(k)) activeByKey.set(k, []);
+    activeByKey.get(k).push(c);
+  });
+  let scale = 1;
+  for (const [key, counts] of activeByKey) {
+    const group = tgCurrentFlow.phase2.filters.find(g => g.filterKey === key);
+    if (!group) continue;
+    const total = group.items.reduce((s, it) => s + (it.count || 0), 0);
+    if (total === 0) continue;
+    const activeSum = counts.reduce((s, c) => s + c, 0);
+    scale *= (activeSum / total);
+  }
+  return Math.max(0, Math.min(1, scale));
+}
+
+// Apply the current filter scale to the visible result stats (toolbar
+// title, tree footer summary, selected-count pill) so the page reflects
+// "results updated" after a filter toggle.
+function tgApplyFilterScale() {
+  if (!tgFlowStats) return;
+  const scale = tgComputeFilterScale();
+  const baseMatches = parseInt((tgFlowStats.matches || '0').replace(/,/g, ''), 10) || 0;
+  const baseFiles   = parseInt((tgFlowStats.files   || '0').replace(/,/g, ''), 10) || 0;
+  const baseRepos   = tgFlowStats.repos || 0;
+  const matches = Math.max(0, Math.round(baseMatches * scale));
+  const files   = Math.max(0, Math.round(baseFiles * scale));
+  const repos   = Math.max(0, Math.round(baseRepos * scale));
+  const title = document.querySelector('.tg-detail-toolbar-title');
+  if (title) {
+    title.innerHTML = `<strong>${matches.toLocaleString()}</strong> matches in <strong>${files.toLocaleString()}</strong> files across <strong>${repos.toLocaleString()}</strong> repos<span class="tg-detail-toolbar-time">${tgFlowStats.time}</span>`;
+  }
+  const footer = trigrepPanel.querySelector('#tg-footer-summary');
+  if (footer && tgTreeData) {
+    const totalRepos = tgTreeData.length;
+    const visibleRepos = Math.max(1, Math.round(repos));
+    footer.textContent = `Showing ${visibleRepos.toLocaleString()} of ${totalRepos.toLocaleString()} repositor${totalRepos === 1 ? 'y' : 'ies'} · ${matches.toLocaleString()} result${matches === 1 ? '' : 's'}`;
+  }
+}
+
+// Reconcile the clear-button visibility and bookmark-toggle state with the
+// current composite contents (chips + unfinished tail).
+function tgSyncSearchBarUI() {
+  const input = document.getElementById('trigrep-query-input');
+  const clearBtn = document.getElementById('trigrep-query-clear');
+  if (input && clearBtn) {
+    const hasContent = (input.value || '').length > 0
+      || (TGState.tokens && TGState.tokens.length > 0);
+    clearBtn.hidden = !hasContent;
+  }
+  if (typeof syncBookmarkToggleState === 'function') syncBookmarkToggleState();
+}
+
+// === Sidebar ↔ query bar sync ========================================
+// Helpers used by the filter sidebar to mirror its active state into the
+// query (and vice-versa). A filter item with data-fkey/data-fval/data-fnot
+// represents one trigrep token (or a NOT + token pair).
+function tgFilterIsActive(key, value, isNot) {
+  if (!TGState || !TGState.tokens) return false;
+  const tokens = TGState.tokens;
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (t.kind !== 'filter' || t.key !== key || t.value !== value) continue;
+    const prev = tokens[i - 1];
+    const tokenIsNot = !!(prev && prev.kind === 'op' && prev.value === 'not');
+    if (!!isNot === tokenIsNot) return true;
+  }
+  return false;
+}
+function tgToggleFilter(key, value, isNot) {
+  if (!TGState || !TGState.tokens) return;
+  const tokens = TGState.tokens;
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (t.kind !== 'filter' || t.key !== key || t.value !== value) continue;
+    const prev = tokens[i - 1];
+    const tokenIsNot = !!(prev && prev.kind === 'op' && prev.value === 'not');
+    if (!!isNot !== tokenIsNot) continue;
+    tokens.splice(isNot ? i - 1 : i, isNot ? 2 : 1);
+    tgWriteBack();
+    return;
+  }
+  if (isNot) tokens.push({ kind: 'op', value: 'not' });
+  tokens.push({ kind: 'filter', key, value });
+  tgWriteBack();
+}
+function tgSyncFilterActive() {
+  document.querySelectorAll('.filter-item[data-fkey]').forEach(item => {
+    const k = item.dataset.fkey;
+    const v = item.dataset.fval;
+    const n = item.dataset.fnot === '1';
+    item.classList.toggle('active', tgFilterIsActive(k, v, n));
+  });
 }
 
 // === Recognition-over-recall autocomplete =============================
@@ -6214,14 +7025,13 @@ function tgSubmit(text) {
 function tgRenderAll() { tgRenderPills(); }
 let tgDebounce = null;
 function tgSyncFromInput() {
-  const input = document.getElementById('trigrep-query-input');
-  if (!input) return;
+  // Chips-in-input model: TGState is canonical and only changes when the
+  // user commits a chip (space/Enter) or removes one (×/Backspace). The
+  // input only holds the unconfirmed trailing text — re-parsing it into
+  // TGState would clobber committed chips. So this hook now only refreshes
+  // the autocomplete dropdown for the current caret context.
   if (tgDebounce) clearTimeout(tgDebounce);
-  tgDebounce = setTimeout(() => {
-    TGState.tokens = tgParseRaw(input.value);
-    tgRenderAll();
-    tgRenderAutocomplete();
-  }, 180);
+  tgDebounce = setTimeout(() => { tgRenderAutocomplete(); }, 120);
 }
 
 function tgWireAll() {
@@ -6240,6 +7050,27 @@ function tgWireAll() {
       if (e.key === 'Enter' && TGState.ac.items.length) { e.preventDefault(); tgAcCommit(TGState.ac.active); return; }
       if (e.key === 'Tab' && TGState.ac.items.length)   { e.preventDefault(); tgAcCommit(TGState.ac.active); return; }
       if (e.key === 'Escape') { ac.hidden = true; TGState.ac.open = false; return; }
+    }
+    // Chips-in-input: commit the tail to chips on space; pop last chip back
+    // into the input on Backspace at an empty caret.
+    if (e.key === ' ' && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (tgCommitInputTokens()) { e.preventDefault(); return; }
+    }
+    if (e.key === 'Backspace' && input.value === '' && TGState.tokens.length > 0) {
+      const last = TGState.tokens.pop();
+      const prev = TGState.tokens[TGState.tokens.length - 1];
+      let restore;
+      if (last && last.kind === 'filter' && prev && prev.kind === 'op' && prev.value === 'not') {
+        TGState.tokens.pop();
+        restore = '-' + last.key + ':' + last.value;
+      } else {
+        restore = tgSerialize([last]);
+      }
+      input.value = restore;
+      input.setSelectionRange(restore.length, restore.length);
+      tgRenderPills();
+      tgSyncFilterActive();
+      e.preventDefault();
     }
   });
 }
@@ -6545,12 +7376,10 @@ function renderActivityPanel(root) {
         <div class="ap-tile viz"><div class="ap-tile-label"><span class="dot"></span>Visualizations</div><div class="ap-tile-value">13</div><div class="ap-tile-delta">— stable · last 7 days</div></div>
       </section>
       <div class="ap-tabs" role="tablist" aria-label="Activity view">
-        <button class="ap-tab active" role="tab" data-view="all">All<span class="ap-tab-count" data-count-for="all">0</span></button>
-        <button class="ap-tab" role="tab" data-view="trigrep-search">Trigrep<span class="ap-tab-count" data-count-for="trigrep-search">0</span></button>
-        <button class="ap-tab" role="tab" data-view="recipe-run">Recipe runs<span class="ap-tab-count" data-count-for="recipe-run">0</span></button>
-        <button class="ap-tab" role="tab" data-view="commit-job">Commit jobs<span class="ap-tab-count" data-count-for="commit-job">0</span></button>
-        <button class="ap-tab" role="tab" data-view="visualization">Visualizations<span class="ap-tab-count" data-count-for="visualization">0</span></button>
+        <button class="ap-tab active" role="tab" data-tabview="activity">Activity<span class="ap-tab-count" data-count-for="activity">0</span></button>
+        <button class="ap-tab" role="tab" data-tabview="history">All trigrep searches<span class="ap-tab-count" data-count-for="history">0</span></button>
       </div>
+      <div class="ap-tabview active" data-tabview-panel="activity">
       <div class="ap-toolbar">
         <div class="ap-search">
           <svg class="icn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
@@ -6601,6 +7430,55 @@ function renderActivityPanel(root) {
         <span class="li commit"><span class="sw"></span>Commit job</span>
         <span class="li viz"><span class="sw"></span>Visualization</span>
         <span style="margin-left:auto;color:var(--ap-text-mute)">Lineage columns are read left → right; vertical connectors group activities that share a parent.</span>
+      </div>
+      </div><!-- /ap-tabview activity -->
+
+      <div class="ap-tabview" data-tabview-panel="history">
+        <div class="ap-toolbar">
+          <div class="ap-search">
+            <svg class="icn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+            <input type="text" id="ap-history-search-input" placeholder="Search history by query…" />
+          </div>
+          <select class="ap-select" id="ap-history-date-filter" aria-label="Date">
+            <option value="all">All time</option>
+            <option value="today">Today</option>
+            <option value="yesterday">Yesterday</option>
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+          </select>
+          <select class="ap-select" aria-label="Run by"><option>Run by anyone</option><option>Run by me</option><option>Run by team</option></select>
+          <select class="ap-select" id="ap-history-mode-filter" aria-label="Mode">
+            <option value="all">Any mode</option>
+            <option value="sourcegraph">Sourcegraph</option>
+            <option value="comby">Comby</option>
+            <option value="regex">Regex</option>
+          </select>
+        </div>
+        <div class="ap-tableCard">
+          <table class="ap-activity ap-history-table">
+            <colgroup>
+              <col><col style="width: 130px"><col style="width: 230px"><col style="width: 90px"><col style="width: 180px"><col style="width: 56px">
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="name">Query</th>
+                <th class="type">Mode</th>
+                <th class="status">Results</th>
+                <th class="runby">Run by</th>
+                <th class="time">Started</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="ap-history-list"></tbody>
+          </table>
+          <div class="ap-tableFoot">
+            <div>Showing <strong style="color:var(--ap-text)" id="ap-history-footer-count">0</strong> of <strong style="color:var(--ap-text)" id="ap-history-footer-total">0</strong> trigrep searches</div>
+            <div id="ap-history-loading" class="ap-history-loading" hidden>Loading more…</div>
+          </div>
+        </div>
+        <div class="ap-legend">
+          <span style="color:var(--ap-text-mute)">Searches with downstream activity link back to the matching cluster in the Activity tab.</span>
+        </div>
       </div>
     </div>
   `;
@@ -6672,49 +7550,301 @@ function renderActivityPanel(root) {
     tr.appendChild(tdTime);
     tbody.appendChild(tr);
   });
-  const tabs = root.querySelectorAll('.ap-tab');
   const allRows = () => root.querySelectorAll('#ap-rows tr');
   const countNode = root.querySelector('.ap-tableFoot strong');
+  if (countNode) countNode.textContent = String(allRows().length);
 
-  const counts = { all: 0, 'trigrep-search': 0, 'recipe-run': 0, 'commit-job': 0, 'visualization': 0 };
-  allRows().forEach(tr => {
-    counts.all += 1;
-    if (counts[tr.dataset.type] !== undefined) counts[tr.dataset.type] += 1;
-  });
+  // Activity row count (this is the activity table — every row of every type).
+  const activityCount = allRows().length;
+
+  // ------------------------------------------------------------------
+  // Chrome-style trigrep search history.
+  // ------------------------------------------------------------------
+  // Seed queries are drawn from FINAL_QUERIES / RECENT_QUERIES / SYNTAX_EXAMPLES
+  // so they match the canned flows wired into QUERY_TO_FLOW.
+  // Trigrep search history. `recipeRuns` flags a search that spawned
+  // downstream activity (recipe runs / commit jobs) — those searches show a
+  // small "→ N recipe runs" badge on the row and live in BOTH the Activity
+  // lineage table and this history list. `commitJobs` is optional.
+  const HISTORY_ENTRIES = [
+    // Today (2026-06-24) — newest first.
+    { date: '2026-06-24', time: '16:32', query: '@Deprecated', mode: 'sourcegraph', matches: 1892, files: 234, repos: 89,  runBy: 'A', recipeRuns: 2, commitJobs: 2 },
+    { date: '2026-06-24', time: '15:55', query: 'extends:AbstractController lang:java', mode: 'sourcegraph', matches: 312,  files: 198, repos: 71,  runBy: 'M' },
+    { date: '2026-06-24', time: '15:48', query: '(@PreAuthorize or @Secured or @RolesAllowed) lang:java visibility:public', mode: 'sourcegraph', matches: 412,  files: 156, repos: 74,  runBy: 'A', recipeRuns: 1, commitJobs: 0 },
+    { date: '2026-06-24', time: '15:21', query: 'implements:CrudRepository',                                         mode: 'sourcegraph', matches: 184,  files: 142, repos: 58,  runBy: 'K' },
+    { date: '2026-06-24', time: '14:52', query: 'visibility:package-private static:yes',                             mode: 'sourcegraph', matches: 967,  files: 612, repos: 134, runBy: 'J' },
+    { date: '2026-06-24', time: '14:11', query: 'private static final Logger',                                       mode: 'sourcegraph', matches: 3104, files: 982, repos: 142, runBy: 'M', recipeRuns: 1, commitJobs: 1 },
+    { date: '2026-06-24', time: '13:39', query: 'returns:ResponseEntity',                                            mode: 'sourcegraph', matches: 1842, files: 524, repos: 113, runBy: 'A' },
+    { date: '2026-06-24', time: '12:55', query: '@RestController lang:java',                                         mode: 'sourcegraph', matches: 567,  files: 312, repos: 96,  runBy: 'A' },
+    { date: '2026-06-24', time: '12:14', query: 'select:symbol.method throws:IOException',                           mode: 'sourcegraph', matches: 728,  files: 412, repos: 104, runBy: 'M' },
+    { date: '2026-06-24', time: '11:18', query: 'org.apache.logging.log4j lang:java',                                mode: 'sourcegraph', matches: 1233, files: 488, repos: 67,  runBy: 'J', recipeRuns: 3, commitJobs: 2 },
+    { date: '2026-06-24', time: '10:42', query: 'file:**/test/** @Test',                                             mode: 'sourcegraph', matches: 4521, files: 2104, repos: 167, runBy: 'A' },
+    { date: '2026-06-24', time: '10:04', query: 'catch (:[ex]) { log.error(:[msg]); }',                              mode: 'comby',       matches: 218,  files: 174, repos: 52,  runBy: 'A' },
+    { date: '2026-06-24', time: '09:42', query: '/TODO\\(\\w+\\):/',                                                 mode: 'regex',       matches: 87,   files: 64,  repos: 23,  runBy: 'M' },
+    { date: '2026-06-24', time: '09:18', query: 'select:symbol.class final:yes',                                     mode: 'sourcegraph', matches: 612,  files: 612, repos: 128, runBy: 'A' },
+    { date: '2026-06-24', time: '08:52', query: '@Autowired private',                                                mode: 'sourcegraph', matches: 3219, files: 1142, repos: 156, runBy: 'K' },
+
+    // Yesterday (2026-06-23).
+    { date: '2026-06-23', time: '17:22', query: '@PreAuthorize lang:java visibility:public',                         mode: 'sourcegraph', matches: 296,  files: 142, repos: 64,  runBy: 'A' },
+    { date: '2026-06-23', time: '16:48', query: 'file:**/migrations/** /v\\d+__/',                                   mode: 'regex',       matches: 514,  files: 514, repos: 89,  runBy: 'M' },
+    { date: '2026-06-23', time: '16:14', query: 'returns:Mono',                                                      mode: 'sourcegraph', matches: 887,  files: 412, repos: 78,  runBy: 'A' },
+    { date: '2026-06-23', time: '15:09', query: 'try { :[body] } catch (:[ex]) { :[handler] }',                      mode: 'comby',       matches: 1455, files: 612, repos: 121, runBy: 'J', recipeRuns: 1, commitJobs: 1 },
+    { date: '2026-06-23', time: '14:31', query: 'extends:HttpServlet',                                               mode: 'sourcegraph', matches: 142,  files: 142, repos: 47,  runBy: 'K' },
+    { date: '2026-06-23', time: '13:46', query: '/log\\.(error|warn)\\(/',                                           mode: 'regex',       matches: 2104, files: 754, repos: 132, runBy: 'M', recipeRuns: 2, commitJobs: 0 },
+    { date: '2026-06-23', time: '13:02', query: 'visibility:protected select:symbol.method',                         mode: 'sourcegraph', matches: 1228, files: 718, repos: 142, runBy: 'A' },
+    { date: '2026-06-23', time: '12:18', query: 'org.springframework.boot lang:java',                                mode: 'sourcegraph', matches: 4218, files: 1342, repos: 178, runBy: 'J' },
+    { date: '2026-06-23', time: '11:32', query: 'private static final Logger',                                       mode: 'sourcegraph', matches: 3098, files: 980, repos: 142, runBy: 'A' },
+    { date: '2026-06-23', time: '10:48', query: 'file:pom.xml log4j',                                                mode: 'sourcegraph', matches: 312,  files: 312, repos: 142, runBy: 'M' },
+    { date: '2026-06-23', time: '10:01', query: '@RestController lang:java',                                         mode: 'sourcegraph', matches: 562,  files: 310, repos: 96,  runBy: 'A' },
+    { date: '2026-06-23', time: '09:42', query: 'sym:UserDetailsService',                                            mode: 'sourcegraph', matches: 96,   files: 64,  repos: 34,  runBy: 'K' },
+    { date: '2026-06-23', time: '09:14', query: '@Deprecated',                                                       mode: 'sourcegraph', matches: 1888, files: 232, repos: 89,  runBy: 'K' },
+
+    // Two days ago (2026-06-22).
+    { date: '2026-06-22', time: '17:12', query: 'visibility:public abstract:yes',                                    mode: 'sourcegraph', matches: 412,  files: 312, repos: 88,  runBy: 'A' },
+    { date: '2026-06-22', time: '16:55', query: 'org.apache.logging.log4j lang:java',                                mode: 'sourcegraph', matches: 1230, files: 486, repos: 67,  runBy: 'J', recipeRuns: 2, commitJobs: 1 },
+    { date: '2026-06-22', time: '16:11', query: 'implements:Serializable',                                           mode: 'sourcegraph', matches: 1864, files: 1864, repos: 152, runBy: 'M' },
+    { date: '2026-06-22', time: '15:34', query: 'select:symbol.field final:no',                                      mode: 'sourcegraph', matches: 7421, files: 2342, repos: 167, runBy: 'A' },
+    { date: '2026-06-22', time: '14:58', query: 'throws:RuntimeException',                                           mode: 'sourcegraph', matches: 521,  files: 412, repos: 96,  runBy: 'K' },
+    { date: '2026-06-22', time: '14:28', query: '/TODO\\(\\w+\\):/',                                                 mode: 'regex',       matches: 85,   files: 63,  repos: 23,  runBy: 'M' },
+    { date: '2026-06-22', time: '13:42', query: 'file:**/*Service.java @Transactional',                              mode: 'sourcegraph', matches: 942,  files: 612, repos: 112, runBy: 'A' },
+    { date: '2026-06-22', time: '12:55', query: 'returns:CompletableFuture',                                         mode: 'sourcegraph', matches: 318,  files: 218, repos: 67,  runBy: 'J' },
+    { date: '2026-06-22', time: '12:07', query: 'catch (:[ex]) { log.error(:[msg]); }',                              mode: 'comby',       matches: 214,  files: 172, repos: 52,  runBy: 'A' },
+    { date: '2026-06-22', time: '11:21', query: 'select:symbol.constructor visibility:private',                      mode: 'sourcegraph', matches: 312,  files: 312, repos: 96,  runBy: 'M' },
+    { date: '2026-06-22', time: '10:42', query: '(@PreAuthorize or @Secured or @RolesAllowed) lang:java visibility:public', mode: 'sourcegraph', matches: 408,  files: 154, repos: 74,  runBy: 'A' },
+    { date: '2026-06-22', time: '09:48', query: 'extends:AbstractAuthenticationToken',                               mode: 'sourcegraph', matches: 47,   files: 47,  repos: 18,  runBy: 'K' },
+    { date: '2026-06-22', time: '09:03', query: '@Deprecated',                                                       mode: 'sourcegraph', matches: 1880, files: 230, repos: 89,  runBy: 'A' },
+
+    // Last week.
+    { date: '2026-06-19', time: '17:48', query: '@RestController lang:java',                                         mode: 'sourcegraph', matches: 558,  files: 308, repos: 96,  runBy: 'K', recipeRuns: 1, commitJobs: 1 },
+    { date: '2026-06-19', time: '16:12', query: 'file:**/config/** @ConfigurationProperties',                        mode: 'sourcegraph', matches: 218,  files: 218, repos: 142, runBy: 'A' },
+    { date: '2026-06-19', time: '14:21', query: 'private static final Logger',                                       mode: 'sourcegraph', matches: 3080, files: 974, repos: 142, runBy: 'A' },
+    { date: '2026-06-19', time: '13:08', query: 'returns:void throws:Exception',                                     mode: 'sourcegraph', matches: 1421, files: 612, repos: 121, runBy: 'M' },
+    { date: '2026-06-19', time: '11:09', query: 'try { :[body] } catch (:[ex]) { :[handler] }',                      mode: 'comby',       matches: 1442, files: 608, repos: 121, runBy: 'J' },
+    { date: '2026-06-19', time: '09:42', query: 'select:symbol.enum',                                                mode: 'sourcegraph', matches: 718,  files: 718, repos: 167, runBy: 'A' },
+    { date: '2026-06-18', time: '17:08', query: 'org.slf4j.LoggerFactory.getLogger',                                 mode: 'sourcegraph', matches: 4218, files: 1342, repos: 178, runBy: 'M', recipeRuns: 1, commitJobs: 0 },
+    { date: '2026-06-18', time: '16:36', query: '@Deprecated',                                                       mode: 'sourcegraph', matches: 1875, files: 228, repos: 89,  runBy: 'M' },
+    { date: '2026-06-18', time: '14:21', query: 'file:src/main/**/*.kt lang:kotlin',                                 mode: 'sourcegraph', matches: 2104, files: 982, repos: 47,  runBy: 'A' },
+    { date: '2026-06-18', time: '12:48', query: 'sym:ApplicationContext',                                            mode: 'sourcegraph', matches: 142,  files: 142, repos: 78,  runBy: 'K' },
+    { date: '2026-06-18', time: '10:15', query: '/log\\.(error|warn)\\(/',                                           mode: 'regex',       matches: 2096, files: 752, repos: 132, runBy: 'M' },
+    { date: '2026-06-17', time: '17:32', query: 'returns:List visibility:public',                                    mode: 'sourcegraph', matches: 2841, files: 1421, repos: 156, runBy: 'A' },
+    { date: '2026-06-17', time: '15:50', query: 'org.apache.logging.log4j lang:java',                                mode: 'sourcegraph', matches: 1224, files: 484, repos: 67,  runBy: 'J' },
+    { date: '2026-06-17', time: '14:21', query: 'extends:RuntimeException',                                          mode: 'sourcegraph', matches: 318,  files: 318, repos: 96,  runBy: 'K' },
+    { date: '2026-06-17', time: '11:48', query: 'file:**/*.gradle dependencies',                                     mode: 'sourcegraph', matches: 612,  files: 612, repos: 178, runBy: 'M' },
+    { date: '2026-06-17', time: '09:28', query: '@PreAuthorize lang:java visibility:public',                         mode: 'sourcegraph', matches: 292,  files: 140, repos: 64,  runBy: 'A' },
+  ];
+
+  // Hard-coded "today" for the prototype so the labels stay aligned with the
+  // mock timestamps regardless of when the page is loaded.
+  const TODAY_ISO = '2026-06-24';
+  const YESTERDAY_ISO = '2026-06-23';
+  const WEEKDAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const fmtFullDate = (iso) => {
+    const [y, m, d] = iso.split('-').map(Number);
+    const dt = new Date(Date.UTC(y, m - 1, d));
+    return `${WEEKDAYS[dt.getUTCDay()]}, ${MONTHS[m - 1]} ${d}, ${y}`;
+  };
+  const dayHeader = (iso) => {
+    const full = fmtFullDate(iso);
+    if (iso === TODAY_ISO)     return `Today - ${full}`;
+    if (iso === YESTERDAY_ISO) return `Yesterday - ${full}`;
+    return full;
+  };
+  const fmtClock = (hhmm) => {
+    const [hh, mm] = hhmm.split(':').map(Number);
+    const ampm = hh >= 12 ? 'PM' : 'AM';
+    const h12 = hh % 12 === 0 ? 12 : hh % 12;
+    return `${h12}:${String(mm).padStart(2, '0')} ${ampm}`;
+  };
+  const fmtCount = (n) => n.toLocaleString('en-US');
+
+  const SEARCH_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+  const KEBAB_SVG = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="8" cy="3" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="8" cy="13" r="1.4"/></svg>';
+  const SYNTAX_LABELS_FALLBACK = { sourcegraph: 'Sourcegraph', comby: 'Comby', regex: 'Regex' };
+  const modeLabel = (m) => (typeof SYNTAX_LABELS !== 'undefined' && SYNTAX_LABELS[m]) || SYNTAX_LABELS_FALLBACK[m] || m;
+
+  const historyListEl = root.querySelector('#ap-history-list');
+  const historySearchInput = root.querySelector('#ap-history-search-input');
+  const historyDateFilter = root.querySelector('#ap-history-date-filter');
+  const historyModeFilter = root.querySelector('#ap-history-mode-filter');
+
+  // Convert ISO yyyy-mm-dd to a numeric day index (days since epoch) so we
+  // can do simple "within N days of today" filtering against TODAY_ISO.
+  const isoToDayIdx = (iso) => {
+    const [y, m, d] = iso.split('-').map(Number);
+    return Math.floor(Date.UTC(y, m - 1, d) / 86400000);
+  };
+  const todayIdx = isoToDayIdx(TODAY_ISO);
+  const yesterdayIdx = isoToDayIdx(YESTERDAY_ISO);
+
+  const fmtRelativeDate = (iso, hhmm) => {
+    const idx = isoToDayIdx(iso);
+    const clock = fmtClock(hhmm);
+    if (idx === todayIdx)     return `Today ${clock}`;
+    if (idx === yesterdayIdx) return `Yesterday ${clock}`;
+    const [y, m, d] = iso.split('-').map(Number);
+    return `${MONTHS[m - 1].slice(0, 3)} ${d} · ${clock}`;
+  };
+
+  // Lazy load — render in batches; a scroll listener appends more as the
+  // user nears the bottom of the page.
+  const HISTORY_BATCH_SIZE = 15;
+  let historyFiltered = [];
+  let historyShown = 0;
+
+  const buildRowHTML = (e) => {
+    const downstream = (e.recipeRuns || 0) > 0;
+    const downstreamLabel = downstream
+      ? `<span class="ap-h-lineage" title="This search led to ${e.recipeRuns} recipe run${e.recipeRuns === 1 ? '' : 's'}${e.commitJobs ? ` and ${e.commitJobs} commit job${e.commitJobs === 1 ? '' : 's'}` : ''}">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="13 6 19 12 13 18"/></svg>
+           ${e.recipeRuns} recipe run${e.recipeRuns === 1 ? '' : 's'}${e.commitJobs ? ` · ${e.commitJobs} commit${e.commitJobs === 1 ? '' : 's'}` : ''}
+         </span>`
+      : '';
+    return `<tr class="ap-h-tr" data-query="${escapeHtml(e.query)}" data-mode="${escapeHtml(e.mode)}">
+      <td class="name ap-h-td-query">
+        <div class="ap-h-query-cell">
+          <span class="ap-h-query-text">${escapeHtml(e.query)}</span>
+        </div>
+        ${downstreamLabel}
+      </td>
+      <td class="type ap-h-td-mode">
+        <span class="trigrep-start-recent-mode mode-${escapeHtml(e.mode)}">${escapeHtml(modeLabel(e.mode))}</span>
+      </td>
+      <td class="status ap-h-td-results">
+        <strong>${fmtCount(e.matches)}</strong> matches
+        <span class="ap-h-results-sub">${fmtCount(e.files)} files · ${fmtCount(e.repos)} repos</span>
+      </td>
+      <td class="runby"><span class="avatar" title="${escapeHtml(e.runBy)}">${escapeHtml(e.runBy)}</span></td>
+      <td class="time ap-h-td-time">${escapeHtml(fmtRelativeDate(e.date, e.time))}</td>
+      <td class="ap-h-td-actions"><button type="button" class="ap-h-kebab" aria-label="More actions">${KEBAB_SVG}</button></td>
+    </tr>`;
+  };
+
+  const wireRowClicks = (scope) => {
+    scope.querySelectorAll('.ap-h-tr:not([data-wired])').forEach(row => {
+      row.dataset.wired = '1';
+      row.addEventListener('click', (ev) => {
+        if (ev.target.closest('.ap-h-kebab')) { ev.stopPropagation(); return; }
+        if (ev.target.closest('.ap-h-lineage')) {
+          ev.stopPropagation();
+          switchTab('activity');
+          return;
+        }
+        const query = row.dataset.query || '';
+        const mode  = row.dataset.mode  || 'sourcegraph';
+        setActiveView('trigrep');
+        const flowId = (typeof QUERY_TO_FLOW !== 'undefined') ? QUERY_TO_FLOW[query] : null;
+        if (flowId && typeof FLOWS !== 'undefined' && FLOWS[flowId]) {
+          try { tgRunCanned(query, flowId); } catch (err) {}
+          try { setSyntaxMode(mode); } catch (err) {}
+          return;
+        }
+        try { setSyntaxMode(mode); } catch (err) {}
+        const input = trigrepPanel && trigrepPanel.querySelector('#trigrep-query-input');
+        if (input) {
+          input.value = query;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        try { tgSubmit(query); } catch (err) {}
+      });
+    });
+  };
+
+  const appendMoreRows = () => {
+    if (historyShown >= historyFiltered.length) return;
+    const next = historyFiltered.slice(historyShown, historyShown + HISTORY_BATCH_SIZE);
+    historyShown += next.length;
+    historyListEl.insertAdjacentHTML('beforeend', next.map(buildRowHTML).join(''));
+    wireRowClicks(historyListEl);
+    const footer = root.querySelector('#ap-history-footer-count');
+    if (footer) footer.textContent = historyShown.toLocaleString();
+    const loading = root.querySelector('#ap-history-loading');
+    if (loading) loading.hidden = historyShown >= historyFiltered.length;
+  };
+
+  const renderHistory = (filterText, dateRange, modeFilter) => {
+    const q = (filterText || '').trim().toLowerCase();
+    const range = dateRange || 'all';
+    const mode = modeFilter || 'all';
+    const within = (iso) => {
+      if (range === 'all') return true;
+      const idx = isoToDayIdx(iso);
+      const delta = todayIdx - idx;
+      if (range === 'today')     return delta === 0;
+      if (range === 'yesterday') return delta === 1;
+      if (range === '7d')        return delta >= 0 && delta < 7;
+      if (range === '30d')       return delta >= 0 && delta < 30;
+      return true;
+    };
+    // Cap at 38 so the visible total matches the "Trigrep searches · 38"
+    // tile and tab chip; this is the "last 7 days" set in the prototype.
+    historyFiltered = HISTORY_ENTRIES
+      .slice(0, 38)
+      .filter(e =>
+        within(e.date)
+        && (q === '' || e.query.toLowerCase().includes(q))
+        && (mode === 'all' || e.mode === mode)
+      );
+    historyShown = 0;
+    historyListEl.innerHTML = '';
+    const total = root.querySelector('#ap-history-footer-total');
+    if (total) total.textContent = historyFiltered.length.toLocaleString();
+    const footer = root.querySelector('#ap-history-footer-count');
+    if (footer) footer.textContent = '0';
+    if (!historyFiltered.length) {
+      historyListEl.innerHTML = `<tr><td colspan="6" class="ap-history-empty-cell">No searches found</td></tr>`;
+      const loading = root.querySelector('#ap-history-loading');
+      if (loading) loading.hidden = true;
+      return;
+    }
+    appendMoreRows();
+  };
+  const currentHistoryQuery = () => historySearchInput ? historySearchInput.value : '';
+  const currentHistoryDate  = () => historyDateFilter ? historyDateFilter.value : 'all';
+  const currentHistoryMode  = () => historyModeFilter ? historyModeFilter.value : 'all';
+  const rerenderHistory = () => renderHistory(currentHistoryQuery(), currentHistoryDate(), currentHistoryMode());
+  rerenderHistory();
+
+  if (historySearchInput) historySearchInput.addEventListener('input', rerenderHistory);
+  if (historyDateFilter)  historyDateFilter.addEventListener('change', rerenderHistory);
+  if (historyModeFilter)  historyModeFilter.addEventListener('change', rerenderHistory);
+
+  // Lazy-load sentinel — when the "Loading more…" footer scrolls into view,
+  // append the next batch of rows. Re-fires repeatedly until all rows shown.
+  const loadingSentinel = root.querySelector('#ap-history-loading');
+  if (loadingSentinel && typeof IntersectionObserver !== 'undefined') {
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting && historyShown < historyFiltered.length) {
+          appendMoreRows();
+        }
+      }
+    }, { rootMargin: '200px 0px' });
+    io.observe(loadingSentinel);
+  }
+
+  // ------------------------------------------------------------------
+  // Tab switching between Activity (lineage table) and All trigrep searches.
+  // ------------------------------------------------------------------
+  const tabButtons = root.querySelectorAll('.ap-tab');
+  const tabPanels = root.querySelectorAll('.ap-tabview');
   root.querySelectorAll('.ap-tab-count').forEach(el => {
     const key = el.dataset.countFor;
-    el.textContent = String(counts[key] || 0);
+    if (key === 'activity') el.textContent = '142';
+    else if (key === 'history') el.textContent = '38';
   });
-
-  const colgroup = root.querySelector('.ap-activity colgroup');
-  const lineageCols = Array.from(colgroup.children).slice(0, 4);
-  const applyTabFilter = (view) => {
-    root.dataset.view = view;
-    let shown = 0;
-    allRows().forEach(tr => {
-      const visible = view === 'all' || tr.dataset.type === view;
-      tr.hidden = !visible;
-      if (visible) shown++;
-    });
-    // Detach the first four <col> elements in per-type views so the
-    // remaining columns get full table width; reinsert them in All.
-    if (view === 'all') {
-      lineageCols.forEach((col, i) => {
-        if (!col.isConnected) colgroup.insertBefore(col, colgroup.children[i] || null);
-      });
-    } else {
-      lineageCols.forEach(col => { if (col.isConnected) col.remove(); });
-    }
-    if (countNode) countNode.textContent = String(shown);
-    tabs.forEach(t => t.classList.toggle('active', t.dataset.view === view));
+  const switchTab = (name) => {
+    tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tabview === name));
+    tabPanels.forEach(p => p.classList.toggle('active', p.dataset.tabviewPanel === name));
   };
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => applyTabFilter(tab.dataset.view));
+  tabButtons.forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tabview));
   });
-  applyTabFilter('all');
+  switchTab('activity');
 
-  // Trigrep search rows are clickable — clicking the name jumps back to that
-  // search in the Trigrep view with the query and syntax mode pre-filled.
+  // Trigrep search rows in the legacy lineage table are still clickable — they
+  // jump back to the search in the Trigrep view with the query and syntax mode
+  // pre-filled.
   root.querySelectorAll('.trigrep-search-link').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
@@ -6722,14 +7852,9 @@ function renderActivityPanel(root) {
       const mode  = link.dataset.mode  || 'sourcegraph';
       setActiveView('trigrep');
 
-      // Route to a canned flow if one exists for this query, otherwise let
-      // the standard submit pipeline handle it (which falls back to the
-      // honest empty "no matches" state).
       const flowId = (typeof QUERY_TO_FLOW !== 'undefined') ? QUERY_TO_FLOW[query] : null;
       if (flowId && FLOWS[flowId]) {
         try { executeSearch(flowId); } catch (err) {}
-        // executeSearch hard-codes Sourcegraph, so restore the original mode
-        // and refresh the chip strip from the rewritten input value.
         try { setSyntaxMode(mode); } catch (err) {}
         const input = trigrepPanel.querySelector('#trigrep-query-input');
         if (input) input.dispatchEvent(new Event('input', { bubbles: true }));
