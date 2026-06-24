@@ -5767,23 +5767,13 @@ function tgWireDetail(slot) {
       tgRenderTree();
     });
   });
-  // Toolbar "Collapse all" / "Expand all" — flips every repo group AND
-  // every match card so one click takes the whole right pane between the
-  // two states.
+  // Toolbar "Collapse all" / "Expand all" — flips every card.
   const ct = slot.querySelector('#tg-collapse-toggle');
   if (ct) {
     ct.addEventListener('click', () => {
-      const groups = [...slot.querySelectorAll('.tg-repo-group')];
       const cards = [...slot.querySelectorAll('.match-card')];
-      const anyGroupOpen = groups.some(g => !g.classList.contains('collapsed'));
-      const anyCardOpen  = cards.some(c => !c.classList.contains('collapsed'));
-      const collapse = anyGroupOpen || anyCardOpen;
-      groups.forEach(g => {
-        g.classList.toggle('collapsed', collapse);
-        const head = g.querySelector('.tg-repo-header');
-        if (head) head.setAttribute('aria-expanded', collapse ? 'false' : 'true');
-      });
-      cards.forEach(c => c.classList.toggle('collapsed', collapse));
+      const anyOpen = cards.some(c => !c.classList.contains('collapsed'));
+      cards.forEach(c => c.classList.toggle('collapsed', anyOpen));
     });
   }
 }
