@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderne — Status palette stress test</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   PALETTE TOKENS — proposed status colors
+   Soft-badge style: fill = ramp-50, border = ramp-600, text = ramp-800.
+   ============================================================ */
+:root{
+  /* Green — Finished / Completed / Synced / Merged / Mergeable / Success / Approved / LST available */
+  --green-50:#F3FFF5;  --green-600:#4CA75A;  --green-800:#2C6C36;
+  /* Blue — Open / info / Authorize / Available (viz aggregate) */
+  --blue-50:#F2F3FF;   --blue-600:#2637E6;   --blue-800:#131E7A;
+  /* Gold — Needs approval / Changes requested / Not authenticated / LST out of date / Partially parsed */
+  --gold-50:#FEF9E8;   --gold-600:#BD9319;   --gold-800:#5E4A0C;
+  /* Red — Error / Failed / Closed / Blocked / Access denied / Org unavailable / MCP load failure / LST unavailable / No LST / Timeout */
+  --red-50:#FFEDEF;    --red-600:#A92232;    --red-800:#650914;
+  /* Cool neutral grey — No changes / Finished empty / CI Skipped / Not required / Draft / Available to run / Unknown fallback */
+  --grey-50:#F9FAFB;   --grey-600:#4B5563;   --grey-800:#1F2937;
+  /* Violet — in-progress family. Active = darker stops; pending = lighter stops on same fill. */
+  --violet-50:#F6EEFB;
+  --violet-active-bd:#7A2694;   --violet-active-fg:#3D134A;
+  --violet-pending-bd:#AD59C7;  --violet-pending-fg:#7A2694;
+  /* Warm-grey (brand-derived) — Canceled */
+  --warm-50:#FAF8F3;   --warm-100:#F6F1E8;  --warm-200:#F1ECE0;
+  --warm-300:#DCD3C3;  --warm-400:#C9BFA6;  --warm-500:#9C927E;
+  --warm-600:#7B7263;  --warm-700:#564E41;  --warm-800:#38332A;
+  --warm-900:#15120F;
+
+  /* Page chrome */
+  --bg-page:#F4F5F7;
+  --bg-card:#FFFFFF;
+  --bg-mock:#FAFBFC;
+  --text:#1F2937;
+  --text-2:#4B5563;
+  --text-3:#6B7280;
+  --border:#E5E7EB;
+  --border-2:#D1D5DB;
+  --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.04);
+
+  --radius-sm:6px;
+  --radius-md:8px;
+  --radius-lg:12px;
+  --radius-pill:999px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  background:var(--bg-page);
+  color:var(--text);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding:32px 24px 96px;
+}
+.wrap{max-width:1280px;margin:0 auto;}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:.92em;}
+
+/* ============================================================ */
+/* Page header                                                  */
+/* ============================================================ */
+.page-head{margin-bottom:20px;}
+.page-eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;}
+.page-head h1{font-size:30px;font-weight:700;line-height:1.15;letter-spacing:-.012em;margin-bottom:10px;}
+.page-head p{font-size:14.5px;color:var(--text-2);max-width:820px;}
+.disclaimer{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--gold-50);border:1px solid var(--gold-600);border-radius:var(--radius-md);font-size:12.5px;color:var(--gold-800);margin:20px 0 24px;}
+.disclaimer svg{width:16px;height:16px;color:var(--gold-600);flex-shrink:0;margin-top:1px;}
+.disclaimer code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;}
+
+/* TOC */
+.toc{position:sticky;top:16px;z-index:20;margin-bottom:28px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);}
+.toc-title{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;}
+.toc ol{list-style:none;display:flex;flex-wrap:wrap;gap:6px 6px;counter-reset:sec;}
+.toc li{counter-increment:sec;}
+.toc a{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;font-size:12.5px;color:var(--text-2);text-decoration:none;background:var(--bg-mock);border:1px solid var(--border);border-radius:var(--radius-pill);transition:.15s;}
+.toc a::before{content:counter(sec);font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:var(--text-3);}
+.toc a:hover{color:var(--violet-active-fg);background:var(--violet-50);border-color:var(--violet-pending-bd);}
+
+/* ============================================================ */
+/* CHIPS — labeled, no leading icon by default                  */
+/* In-progress (.active) keeps the animated spinner.            */
+/* ============================================================ */
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  height:22px;padding:0 10px;
+  border-radius:var(--radius-pill);
+  font-size:12px;font-weight:600;line-height:1;
+  white-space:nowrap;border:1px solid transparent;
+}
+.chip .spinner{width:12px;height:12px;flex-shrink:0;display:inline-flex;}
+.chip .spinner svg{width:12px;height:12px;}
+.chip.success { background:var(--green-50);  color:var(--green-800);          border-color:var(--green-600); }
+.chip.info    { background:var(--blue-50);   color:var(--blue-800);           border-color:var(--blue-600); }
+.chip.warning { background:var(--gold-50);   color:var(--gold-800);           border-color:var(--gold-600); }
+.chip.error   { background:var(--red-50);    color:var(--red-800);            border-color:var(--red-600); }
+.chip.neutral { background:var(--grey-50);   color:var(--grey-800);           border-color:var(--grey-600); }
+.chip.pending { background:var(--violet-50); color:var(--violet-pending-fg);  border-color:var(--violet-pending-bd); }
+.chip.active  { background:var(--violet-50); color:var(--violet-active-fg);   border-color:var(--violet-active-bd); }
+.chip.canceled{ background:var(--warm-50);   color:var(--warm-800);           border-color:var(--warm-600); }
+
+/* Detail code tucked beside a chip (failure reason, enum, etc.) */
+.chip + code.detail{font-size:10.5px;color:var(--text-3);background:var(--grey-50);border:1px solid var(--border);padding:1px 6px;border-radius:4px;margin-left:6px;}
+
+/* Spinner — colored by parent chip; honor reduced motion. */
+.spinner{color:var(--violet-active-bd);animation:spin 1s linear infinite;}
+@keyframes spin{ to { transform:rotate(360deg);} }
+@media (prefers-reduced-motion: reduce){
+  .spinner{animation:none;}
+}
+
+/* Icon-only chip — used in dense / no-label contexts */
+.icon-only{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;}
+.icon-only svg{width:16px;height:16px;}
+.icon-only.success  { color:var(--green-600);}
+.icon-only.info     { color:var(--blue-600);}
+.icon-only.warning  { color:var(--gold-600);}
+.icon-only.error    { color:var(--red-600);}
+.icon-only.neutral  { color:var(--grey-600);}
+.icon-only.pending  { color:var(--violet-pending-bd);}
+.icon-only.active   { color:var(--violet-active-bd);}
+.icon-only.canceled { color:var(--warm-600);}
+
+/* Dot + label — optional scan anchor without icon weight */
+.dot-label{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--text);}
+.dot-label .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-label.success .dot  { background:var(--green-600);}
+.dot-label.info .dot     { background:var(--blue-600);}
+.dot-label.warning .dot  { background:var(--gold-600);}
+.dot-label.error .dot    { background:var(--red-600);}
+.dot-label.neutral .dot  { background:var(--grey-600);}
+.dot-label.pending .dot  { background:var(--violet-pending-bd);}
+.dot-label.active .dot   { background:var(--violet-active-bd);}
+.dot-label.canceled .dot { background:var(--warm-600);}
+
+/* Determinate progress bar — violet bar with X / N text */
+.progress-bar{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--violet-active-fg);}
+.progress-bar .track{width:160px;height:8px;background:var(--violet-50);border:1px solid var(--violet-pending-bd);border-radius:var(--radius-pill);overflow:hidden;}
+.progress-bar .fill{height:100%;background:var(--violet-active-bd);border-radius:var(--radius-pill);}
+.progress-bar.small .track{width:100px;height:6px;}
+
+/* ============================================================ */
+/* Page mock card                                               */
+/* ============================================================ */
+.mock{margin-top:38px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);overflow:hidden;}
+.mock-head{display:flex;align-items:flex-start;gap:14px;padding:18px 22px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#FCFCFE,#FFF);}
+.mock-num{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:var(--radius-md);background:var(--warm-900);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;margin-top:2px;}
+.mock-head .eyebrow{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:2px;}
+.mock-head h2{font-size:18px;font-weight:600;letter-spacing:-.005em;line-height:1.25;}
+.mock-head .scope{font-size:12px;color:var(--text-3);margin-top:6px;line-height:1.5;}
+.mock-head .scope b{color:var(--text-2);font-weight:600;}
+.mock-body{padding:22px 22px 24px;background:var(--bg-mock);}
+
+/* Generic surface inside a mock (mini-page panel) */
+.surface{background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:0 1px 0 rgba(15,23,42,.02);}
+.surface + .surface{margin-top:14px;}
+.surface-pad{padding:16px 18px;}
+.surface-tight{padding:10px 14px;}
+
+/* Crumb + page title strip used inside page mocks */
+.crumb{font-size:11.5px;color:var(--text-3);font-family:'JetBrains Mono',monospace;}
+.crumb b{color:var(--text-2);font-weight:600;}
+.page-title{font-size:18px;font-weight:600;margin-top:6px;letter-spacing:-.005em;color:var(--text);}
+.page-sub{font-size:12.5px;color:var(--text-3);margin-top:4px;}
+
+/* Mock table */
+table.mt{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;}
+.mt thead th{background:var(--bg-mock);font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);}
+.mt tbody td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.mt tbody tr:last-child td{border-bottom:none;}
+.mt .repo{display:flex;flex-direction:column;}
+.mt .repo .name{font-weight:600;color:var(--text);}
+.mt .repo .org{font-size:11.5px;color:var(--text-3);font-family:'JetBrains Mono',monospace;}
+.mt td.num{font-variant-numeric:tabular-nums;color:var(--text-2);font-family:'JetBrains Mono',monospace;font-size:12.5px;}
+.mt td.dense{padding-top:8px;padding-bottom:8px;}
+
+/* Header band — used inside run-detail / commit-detail headers */
+.banner{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border);}
+.banner h3{font-size:14.5px;font-weight:600;color:var(--text);}
+.banner .meta{font-size:11.5px;color:var(--text-3);font-family:'JetBrains Mono',monospace;margin-top:2px;}
+.banner .right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+
+/* Stat strip */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--border);border-bottom:1px solid var(--border);}
+.stats .cell{background:#fff;padding:10px 14px;}
+.stats .k{font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);}
+.stats .v{font-size:18px;font-weight:600;color:var(--text);margin-top:2px;font-variant-numeric:tabular-nums;}
+.stats .v.small{font-size:13px;font-weight:500;color:var(--text-2);}
+
+/* Rollup line (X done · Y failed · Z running · W queued) */
+.rollup{display:flex;flex-wrap:wrap;gap:14px;font-size:11.5px;color:var(--text-3);align-items:center;}
+.rollup b{color:var(--text);font-weight:600;}
+
+/* Mini PR popover style */
+.popover{max-width:380px;background:#fff;border:1px solid var(--border-2);border-radius:var(--radius-md);box-shadow:0 12px 30px rgba(15,23,42,.12);padding:14px;}
+.popover h4{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);font-weight:600;margin-bottom:8px;}
+.popover .row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--border);font-size:12.5px;}
+.popover .row:last-child{border-bottom:none;}
+.popover .row .lbl{color:var(--text-2);}
+
+/* Activity row */
+.act{display:grid;grid-template-columns:18px 1fr auto;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border);align-items:center;}
+.act:last-child{border-bottom:none;}
+.act .what{font-size:13.5px;color:var(--text);}
+.act .what .by{color:var(--text-3);font-weight:400;}
+.act .when{font-size:11.5px;color:var(--text-3);font-family:'JetBrains Mono',monospace;}
+.act .lead{display:flex;align-items:center;justify-content:center;}
+
+/* Inline empty-state strip */
+.inline-strip{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px dashed var(--border-2);border-radius:var(--radius-md);background:#fff;font-size:12.5px;color:var(--text-2);}
+.inline-strip + .inline-strip{margin-top:8px;}
+.inline-strip .lead-text{flex:1;}
+.inline-strip .lead-text b{color:var(--text);font-weight:600;}
+
+/* ============================================================ */
+/* Gallery (final coverage section)                             */
+/* ============================================================ */
+.gallery{margin-top:38px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);overflow:hidden;}
+.gallery > h2{padding:18px 22px;border-bottom:1px solid var(--border);font-size:16px;font-weight:600;}
+.gallery > h2 small{font-weight:500;color:var(--text-3);font-size:12px;margin-left:8px;}
+table.gtbl{width:100%;border-collapse:separate;border-spacing:0;font-size:12.5px;}
+.gtbl thead th{background:var(--bg-mock);font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+.gtbl tbody td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.gtbl tbody tr:last-child td{border-bottom:none;}
+.gtbl .label{font-weight:600;color:var(--text);}
+.gtbl .ctx{color:var(--text-3);font-size:11.5px;}
+.gtbl .ctx code{background:var(--grey-50);border:1px solid var(--border);padding:0 4px;border-radius:3px;}
+.gtbl tr.band td{background:#FBFAFE;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--violet-active-fg);padding:8px 14px;}
+
+/* Progress demo card */
+.demo{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:18px 22px;}
+.demo-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;}
+.demo-card h4{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);font-weight:600;margin-bottom:10px;}
+.demo-card p{font-size:11.5px;color:var(--text-3);margin-top:8px;}
+
+/* Misc helpers */
+.row-inline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.muted{color:var(--text-3);}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+hr.soft{border:none;border-top:1px solid var(--border);margin:14px 0;}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     ICON DEFS
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- check (Finished / Success / Synced / Mergeable / Approved / LST available) -->
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 12.5l3 3 5-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <!-- info-circle (Open / info) -->
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.05" fill="currentColor"/></symbol>
+    <!-- alert-triangle (Needs approval / Changes requested / LST out of date / Partially parsed / Not authenticated) -->
+    <symbol id="i-alert-triangle" viewBox="0 0 24 24"><path d="M12 3l10 18H2L12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="18" r="1" fill="currentColor"/></symbol>
+    <!-- alert-circle (Error / Failed / LST unavailable / Closed / Blocked) -->
+    <symbol id="i-alert-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.4" r="1.05" fill="currentColor"/></symbol>
+    <!-- minus (No changes / Skipped / Not required / Draft / Available to run / Unknown fallback) -->
+    <symbol id="i-minus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 12h10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <!-- clock (Queued / Pending — pending sibling of active) -->
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <!-- x (Canceled — warm-grey) -->
+    <symbol id="i-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 9l6 6M15 9l-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <!-- loader-2 (animated spinner for active) -->
+    <symbol id="i-loader" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <!-- PR shape glyphs (kept for popover detail; not used as labeled-chip leading icons) -->
+    <symbol id="i-pr" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 8.5v7M18 6v9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 4l2 2-2 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="page-head">
+    <div class="page-eyebrow">Internal · palette stress test</div>
+    <h1>Status palette — in-context stress test</h1>
+    <p>Six page mockups that, together, exercise every status the product surfaces — under the proposed new palette. The closing gallery shows each status in all three display modes (labeled chip, icon-only, dot + label) as a coverage proof.</p>
+  </header>
+
+  <div class="disclaimer">
+    <svg><use href="#i-alert-triangle"/></svg>
+    <div>
+      <b>Proposed palette · pending design-system sign-off and AA check.</b> Soft-badge style: fill <code>ramp-50</code>, border <code>ramp-600</code>, text <code>ramp-800</code>. Labeled chips show <b>no leading icon</b> by default — the in-progress chip keeps an animated spinner, and the determinate aggregate uses a violet bar with <code>X / N</code>. Icon-only mode uses the ramp-600 stop with an accessible label.
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc" aria-label="Sections">
+    <div class="toc-title">Pages</div>
+    <ol>
+      <li><a href="#p-run">Run results · Repositories</a></li>
+      <li><a href="#p-commit">Commit job · PR popover</a></li>
+      <li><a href="#p-viz">Visualization run</a></li>
+      <li><a href="#p-orgs">Organizations &amp; repositories</a></li>
+      <li><a href="#p-activity">Recent activity</a></li>
+      <li><a href="#p-auth">Authorization &amp; access strips</a></li>
+      <li><a href="#g-gallery">Coverage gallery</a></li>
+      <li><a href="#g-progress">In-progress shapes</a></li>
+    </ol>
+  </nav>
+
+  <!-- ============================================================
+       1 — RUN RESULTS · REPOSITORIES
+       Covers: Queued · Running · Syncing (status) · Finished ·
+       Finished w/ markers · Error (+ 4 reasons) · Canceled · Unknown ·
+       No LST · Sync col: Pending · Syncing · Synced · Sync failed ·
+       Canceled (neutral grey in sync col) · whole-run rollup ·
+       determinate bar + X/N · indeterminate spinner
+       ============================================================ -->
+  <section class="mock" id="p-run">
+    <header class="mock-head">
+      <span class="mock-num">1</span>
+      <div>
+        <div class="eyebrow">Page</div>
+        <h2>Run results — Repositories</h2>
+        <div class="scope">
+          <code>/results/[org]/[runId]/repositories</code> · the densest single status surface — <b>two columns</b> (Sync + Status), per-repo error reasons, run-header aggregate, and the determinate <code>X / N</code> progress shape.
+        </div>
+      </div>
+    </header>
+    <div class="mock-body">
+
+      <!-- Run header banner -->
+      <div class="surface">
+        <div class="banner">
+          <div>
+            <div class="crumb">moderne-inc / <b>FindSecretsInPlainText</b></div>
+            <h3 style="margin-top:4px;">Find secrets in plain text</h3>
+            <div class="meta">run id <code>3f29-…-b91a</code> · kicked off 12m ago by anne@moderne.io</div>
+          </div>
+          <div class="right">
+            <span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Running</span>
+            <span class="progress-bar"><span class="track"><span class="fill" style="width:54%"></span></span>13 / 24</span>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="cell"><div class="k">Repositories</div><div class="v">24</div></div>
+          <div class="cell"><div class="k">Time savings</div><div class="v">7.2 <span class="muted" style="font-size:13px;font-weight:500">hr</span></div></div>
+          <div class="cell"><div class="k">Started</div><div class="v small">2026-06-25 13:42 UTC</div></div>
+          <div class="cell"><div class="k">Rollup</div>
+            <div class="rollup" style="margin-top:4px;">
+              <span><b>8</b> done</span><span><b>2</b> failed</span><span><b>5</b> running</span><span><b>4</b> queued</span><span><b>3</b> skipped</span><span><b>2</b> canceled</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Repositories table -->
+      <div class="surface" style="margin-top:14px;">
+        <div class="banner">
+          <h3>Repositories</h3>
+          <div class="right muted" style="font-size:12px;">24 repos · sortable</div>
+        </div>
+        <table class="mt">
+          <thead>
+            <tr>
+              <th style="width:34%">Repository</th>
+              <th style="width:12%">Sync</th>
+              <th style="width:18%">Status</th>
+              <th style="width:24%">Details</th>
+              <th style="width:12%">Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="repo"><span class="name">accounts-service</span><span class="org">github.com/moderne-inc/accounts-service</span></div></td>
+              <td><span class="chip success">Synced</span></td>
+              <td><span class="chip success">Finished</span></td>
+              <td class="muted">38 results · 4 files changed</td>
+              <td class="num">1m 12s</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">billing-gateway</span><span class="org">github.com/moderne-inc/billing-gateway</span></div></td>
+              <td><span class="chip success">Synced</span></td>
+              <td><span class="chip success">Finished</span>&nbsp;<span class="muted" style="font-size:11.5px">3 info markers</span></td>
+              <td class="muted">12 results</td>
+              <td class="num">42s</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">notifications-worker</span><span class="org">github.com/moderne-inc/notifications-worker</span></div></td>
+              <td><span class="chip success">Synced</span></td>
+              <td>
+                <span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Running</span>
+              </td>
+              <td><span class="progress-bar small"><span class="track"><span class="fill" style="width:38%"></span></span>3 / 8</span></td>
+              <td class="num">…</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">edge-router</span><span class="org">github.com/moderne-inc/edge-router</span></div></td>
+              <td><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Syncing</span></td>
+              <td><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Syncing</span></td>
+              <td class="muted">sync precedence overrides changeset state</td>
+              <td class="num">…</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">data-pipeline</span><span class="org">github.com/moderne-inc/data-pipeline</span></div></td>
+              <td><span class="chip pending">Pending</span></td>
+              <td><span class="chip pending">Queued</span></td>
+              <td class="muted">waiting for LST sync</td>
+              <td class="num">—</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">legacy-monolith</span><span class="org">github.com/moderne-inc/legacy-monolith</span></div></td>
+              <td><span class="chip error">Sync failed</span></td>
+              <td><span class="chip error">Error</span><code class="detail">FAILED_LOAD_AST</code></td>
+              <td class="muted">LST loading failed — re-build queued</td>
+              <td class="num">8s</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">search-service</span><span class="org">github.com/moderne-inc/search-service</span></div></td>
+              <td><span class="chip success">Synced</span></td>
+              <td><span class="chip error">Error</span><code class="detail">RECIPE_ERROR</code></td>
+              <td class="muted">NullPointerException at line 142</td>
+              <td class="num">22s</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">marketing-site</span><span class="org">github.com/moderne-inc/marketing-site</span></div></td>
+              <td><span class="chip success">Synced</span></td>
+              <td><span class="chip error">Error</span><code class="detail">TIMEOUT</code></td>
+              <td class="muted">execution exceeded 10m budget</td>
+              <td class="num">10m</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">infra-ansible</span><span class="org">github.com/moderne-inc/infra-ansible</span></div></td>
+              <td><span class="chip success">Synced</span></td>
+              <td><span class="chip error">Error</span><code class="detail">FAILED_LOAD_RECIPE</code></td>
+              <td class="muted">recipe artifact unavailable</td>
+              <td class="num">3s</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">analytics-warehouse</span><span class="org">github.com/moderne-inc/analytics-warehouse</span></div></td>
+              <td><span class="chip canceled">Canceled</span></td>
+              <td><span class="chip canceled">Canceled</span></td>
+              <td class="muted">canceled by user · in trace</td>
+              <td class="num">—</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">prototype-experiment</span><span class="org">github.com/moderne-inc/prototype-experiment</span></div></td>
+              <td><span class="chip success">Synced</span></td>
+              <td><span class="chip error">No LST</span></td>
+              <td class="muted">no build step produced an LST</td>
+              <td class="num">—</td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">research-spike</span><span class="org">github.com/moderne-inc/research-spike</span></div></td>
+              <td><span class="chip success">Synced</span></td>
+              <td><span class="chip neutral">Unknown</span></td>
+              <td class="muted">typename fallback</td>
+              <td class="num">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- "Finished with markers" callout strip -->
+      <div class="surface" style="margin-top:14px;">
+        <div class="surface-pad">
+          <div class="page-sub" style="margin-bottom:8px;"><b style="color:var(--text);">Finished, with markers</b> — same green chip; severity carried in a sibling marker chip.</div>
+          <div class="row-inline">
+            <span class="chip success">Finished</span>
+            <span class="muted">+</span>
+            <span class="chip info">3 info</span>
+            <span class="chip warning">1 needs review</span>
+            <span class="chip error">2 errors</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2 — COMMIT JOB · PR POPOVER
+       Covers commit grid (Queued · Processing · Completed×4 ·
+       No changes · Failed · Canceled) and PR: Open · Draft · Closed ·
+       Merged · Blocked · Mergeable · CI checks (6) · Review (4)
+       ============================================================ -->
+  <section class="mock" id="p-commit">
+    <header class="mock-head">
+      <span class="mock-num">2</span>
+      <div>
+        <div class="eyebrow">Page</div>
+        <h2>Commit job — repository grid + PR popover</h2>
+        <div class="scope">
+          <code>/commits/[jobId]</code> · multi-entity status correlation — commit lifecycle, PR state, mergeability, CI checks, and review decision all stacked on one row.
+        </div>
+      </div>
+    </header>
+    <div class="mock-body">
+
+      <div class="surface">
+        <div class="banner">
+          <div>
+            <div class="crumb">commit job <code>cj-a812</code> · upgrade-spring-boot-3.2</div>
+            <h3 style="margin-top:4px;">Commit · Find secrets in plain text</h3>
+            <div class="meta">opened by anne@moderne.io · 24 repos · 17 PRs queued</div>
+          </div>
+          <div class="right">
+            <span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Processing</span>
+            <span class="progress-bar"><span class="track"><span class="fill" style="width:62%"></span></span>15 / 24</span>
+          </div>
+        </div>
+        <table class="mt">
+          <thead>
+            <tr>
+              <th style="width:30%">Repository</th>
+              <th style="width:18%">Commit</th>
+              <th style="width:14%">PR state</th>
+              <th style="width:18%">CI</th>
+              <th style="width:20%">Review</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="repo"><span class="name">accounts-service</span><span class="org">moderne-inc/accounts-service</span></div></td>
+              <td><span class="chip success">Completed · PR</span></td>
+              <td><span class="chip success">Merged</span></td>
+              <td><span class="chip success">Success</span></td>
+              <td><span class="chip success">Approved</span></td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">billing-gateway</span><span class="org">moderne-inc/billing-gateway</span></div></td>
+              <td><span class="chip success">Completed · Direct</span></td>
+              <td><span class="chip neutral">—</span></td>
+              <td><span class="chip neutral">Not required</span></td>
+              <td><span class="chip neutral">Not required</span></td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">notifications-worker</span><span class="org">moderne-inc/notifications-worker</span></div></td>
+              <td><span class="chip success">Completed · Fork + PR</span></td>
+              <td><span class="chip info">Open</span></td>
+              <td><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>In progress</span></td>
+              <td><span class="chip warning">Needs approval</span></td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">edge-router</span><span class="org">moderne-inc/edge-router</span></div></td>
+              <td><span class="chip success">Completed · Fork</span></td>
+              <td><span class="chip info">Open</span></td>
+              <td><span class="chip error">Failure</span></td>
+              <td><span class="chip warning">Changes requested</span></td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">data-pipeline</span><span class="org">moderne-inc/data-pipeline</span></div></td>
+              <td><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Processing</span></td>
+              <td><span class="chip neutral">Draft</span></td>
+              <td><span class="chip pending">Pending</span></td>
+              <td><span class="chip neutral">—</span></td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">legacy-monolith</span><span class="org">moderne-inc/legacy-monolith</span></div></td>
+              <td><span class="chip pending">Queued</span></td>
+              <td><span class="chip neutral">—</span></td>
+              <td><span class="chip neutral">—</span></td>
+              <td><span class="chip neutral">—</span></td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">search-service</span><span class="org">moderne-inc/search-service</span></div></td>
+              <td><span class="chip success">No changes</span></td>
+              <td><span class="chip neutral">—</span></td>
+              <td><span class="chip neutral">Skipped</span></td>
+              <td><span class="chip neutral">—</span></td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">marketing-site</span><span class="org">moderne-inc/marketing-site</span></div></td>
+              <td><span class="chip error">Failed</span></td>
+              <td><span class="chip error">Closed</span></td>
+              <td><span class="chip neutral">—</span></td>
+              <td><span class="chip neutral">—</span></td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">infra-ansible</span><span class="org">moderne-inc/infra-ansible</span></div></td>
+              <td><span class="chip success">Completed · PR</span></td>
+              <td><span class="chip info">Open</span></td>
+              <td><span class="chip success">Success</span></td>
+              <td>
+                <span class="chip error">Blocked</span>
+                <span class="muted" style="font-size:11px;">(branch protection)</span>
+              </td>
+            </tr>
+            <tr>
+              <td><div class="repo"><span class="name">analytics-warehouse</span><span class="org">moderne-inc/analytics-warehouse</span></div></td>
+              <td><span class="chip canceled">Canceled</span></td>
+              <td><span class="chip neutral">—</span></td>
+              <td><span class="chip neutral">—</span></td>
+              <td><span class="chip neutral">—</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PR popover demo -->
+      <div style="margin-top:18px;display:grid;grid-template-columns:1fr 380px;gap:16px;align-items:start;">
+        <div class="surface surface-pad">
+          <div class="page-sub" style="margin-bottom:8px;">Hover state: PR popover for <b style="color:var(--text);">notifications-worker</b> — exercises mergeability + every CI state + review decision side-by-side.</div>
+          <div class="row-inline" style="gap:6px;">
+            <span class="chip info">Open</span>
+            <span class="chip success">Mergeable</span>
+            <span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>In progress</span>
+            <span class="chip warning">Needs approval</span>
+          </div>
+        </div>
+        <div class="popover" role="tooltip" aria-label="Pull request popover">
+          <h4>Pull request #482</h4>
+          <div class="row"><span class="lbl">State</span><span class="chip info">Open</span></div>
+          <div class="row"><span class="lbl">Mergeability</span><span class="chip success">Mergeable</span></div>
+          <div class="row"><span class="lbl">CI · build</span><span class="chip success">Success</span></div>
+          <div class="row"><span class="lbl">CI · tests</span><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>In progress</span></div>
+          <div class="row"><span class="lbl">CI · lint</span><span class="chip pending">Pending</span></div>
+          <div class="row"><span class="lbl">CI · security</span><span class="chip error">Failure</span></div>
+          <div class="row"><span class="lbl">CI · canary</span><span class="chip neutral">Skipped</span></div>
+          <div class="row"><span class="lbl">CI · perf</span><span class="chip neutral">Not required</span></div>
+          <div class="row"><span class="lbl">Review</span><span class="chip warning">Needs approval</span></div>
+          <div class="row"><span class="lbl">Reviewers · 1</span><span class="chip warning">Changes requested</span></div>
+        </div>
+      </div>
+
+      <!-- All PR states (and Draft) collected for completeness -->
+      <div class="surface surface-pad" style="margin-top:16px;">
+        <div class="page-sub" style="margin-bottom:8px;"><b style="color:var(--text);">All PR states</b> — coverage strip (this is what the Changelog filter renders).</div>
+        <div class="row-inline">
+          <span class="chip info">Open</span>
+          <span class="chip neutral">Draft</span>
+          <span class="chip error">Closed</span>
+          <span class="chip success">Merged</span>
+          <span class="chip error">Blocked</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       3 — VISUALIZATION RUN
+       Per-repo: Queued · Processing · Finished · Finished empty ·
+       No LST · Error. Whole-viz: Available · Processing · Finished ·
+       Finished empty · Error.
+       ============================================================ -->
+  <section class="mock" id="p-viz">
+    <header class="mock-head">
+      <span class="mock-num">3</span>
+      <div>
+        <div class="eyebrow">Page</div>
+        <h2>Visualization run</h2>
+        <div class="scope">
+          <code>/visualizations/[visualizationRunId]</code> · long error messages in the per-repo grid + a separate aggregate at the top. Tests overflow + tooltip affordances.
+        </div>
+      </div>
+    </header>
+    <div class="mock-body">
+
+      <div class="surface">
+        <div class="banner">
+          <div>
+            <div class="crumb">visualization <code>v-77c2</code></div>
+            <h3 style="margin-top:4px;">Method-level fan-in across services</h3>
+            <div class="meta">12 repos · last refreshed 4m ago</div>
+          </div>
+          <div class="right">
+            <span class="chip info">Available</span>
+            <span class="progress-bar small"><span class="track"><span class="fill" style="width:75%"></span></span>9 / 12</span>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="cell"><div class="k">Repos</div><div class="v">12</div></div>
+          <div class="cell"><div class="k">Methods analyzed</div><div class="v">8,421</div></div>
+          <div class="cell"><div class="k">Whole-viz state</div>
+            <div class="row-inline" style="margin-top:4px;gap:6px;">
+              <span class="chip info">Available</span>
+              <span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Processing</span>
+              <span class="chip success">Finished</span>
+              <span class="chip neutral">Finished empty</span>
+              <span class="chip error">Error</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="surface" style="margin-top:14px;">
+        <div class="banner"><h3>Per-repository</h3><div class="right muted" style="font-size:12px;">12 repos</div></div>
+        <table class="mt">
+          <thead>
+            <tr>
+              <th style="width:30%">Repository</th>
+              <th style="width:18%">Status</th>
+              <th style="width:52%">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><div class="repo"><span class="name">accounts-service</span><span class="org">moderne-inc/accounts-service</span></div></td><td><span class="chip success">Finished</span></td><td class="muted">1,204 methods</td></tr>
+            <tr><td><div class="repo"><span class="name">billing-gateway</span><span class="org">moderne-inc/billing-gateway</span></div></td><td><span class="chip success">Finished</span></td><td class="muted">912 methods</td></tr>
+            <tr><td><div class="repo"><span class="name">notifications-worker</span><span class="org">moderne-inc/notifications-worker</span></div></td><td><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Processing</span></td><td class="muted">analyzing dependency graph…</td></tr>
+            <tr><td><div class="repo"><span class="name">data-pipeline</span><span class="org">moderne-inc/data-pipeline</span></div></td><td><span class="chip pending">Queued</span></td><td class="muted">—</td></tr>
+            <tr><td><div class="repo"><span class="name">prototype-experiment</span><span class="org">moderne-inc/prototype-experiment</span></div></td><td><span class="chip error">No LST</span></td><td class="muted">no build step produced an LST · tooltip: "Run <code>mod build</code> to populate the artifact store"</td></tr>
+            <tr><td><div class="repo"><span class="name">marketing-site</span><span class="org">moderne-inc/marketing-site</span></div></td><td><span class="chip neutral">Finished empty</span></td><td class="muted">no methods matched the visualization query</td></tr>
+            <tr><td><div class="repo"><span class="name">search-service</span><span class="org">moderne-inc/search-service</span></div></td><td><span class="chip error">Error</span></td><td class="muted">java.lang.IllegalStateException: cycle detected in call graph at <code>com.moderne.search.Index#rebuild()</code> — hover for stack</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4 — ORGANIZATIONS & REPOSITORIES
+       LST status column: LST available · Unknown · No LST ·
+       Partially parsed · LST out of date · LST failed to build.
+       ============================================================ -->
+  <section class="mock" id="p-orgs">
+    <header class="mock-head">
+      <span class="mock-num">4</span>
+      <div>
+        <div class="eyebrow">Page</div>
+        <h2>Organizations &amp; repositories</h2>
+        <div class="scope">
+          <code>/organizations</code> · metadata-heavy grid. Stresses how the chip reads next to other metadata + verifies the warning-vs-error split for LST states.
+        </div>
+      </div>
+    </header>
+    <div class="mock-body">
+
+      <div class="surface">
+        <div class="banner">
+          <div>
+            <h3>moderne-inc</h3>
+            <div class="meta">412 repositories · 3 sub-orgs · ingested via GitHub App</div>
+          </div>
+          <div class="right">
+            <span class="chip success">Org connected</span>
+          </div>
+        </div>
+        <table class="mt">
+          <thead>
+            <tr>
+              <th style="width:36%">Repository</th>
+              <th style="width:18%">LST status</th>
+              <th style="width:14%">Last built</th>
+              <th style="width:18%">Source</th>
+              <th style="width:14%">Auth</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><div class="repo"><span class="name">accounts-service</span><span class="org">moderne-inc/accounts-service</span></div></td><td><span class="chip success">LST available</span></td><td class="num">2h ago</td><td class="muted">GitHub</td><td><span class="chip success">Connected</span></td></tr>
+            <tr><td><div class="repo"><span class="name">billing-gateway</span><span class="org">moderne-inc/billing-gateway</span></div></td><td><span class="chip success">LST available</span></td><td class="num">3h ago</td><td class="muted">GitHub</td><td><span class="chip success">Connected</span></td></tr>
+            <tr><td><div class="repo"><span class="name">legacy-monolith</span><span class="org">moderne-inc/legacy-monolith</span></div></td><td><span class="chip warning">LST out of date</span></td><td class="num">9d ago</td><td class="muted">GitHub</td><td><span class="chip success">Connected</span></td></tr>
+            <tr><td><div class="repo"><span class="name">data-pipeline</span><span class="org">moderne-inc/data-pipeline</span></div></td><td><span class="chip warning">Partially parsed</span></td><td class="num">1h ago</td><td class="muted">GitHub</td><td><span class="chip success">Connected</span></td></tr>
+            <tr><td><div class="repo"><span class="name">prototype-experiment</span><span class="org">moderne-inc/prototype-experiment</span></div></td><td><span class="chip error">No LST</span></td><td class="num">—</td><td class="muted">GitHub</td><td><span class="chip success">Connected</span></td></tr>
+            <tr><td><div class="repo"><span class="name">old-mainframe-bridge</span><span class="org">moderne-inc/old-mainframe-bridge</span></div></td><td><span class="chip error">LST failed to build</span></td><td class="num">2d ago</td><td class="muted">GitHub</td><td><span class="chip success">Connected</span></td></tr>
+            <tr><td><div class="repo"><span class="name">research-spike</span><span class="org">moderne-inc/research-spike</span></div></td><td><span class="chip neutral">Unknown</span></td><td class="num">—</td><td class="muted">GitHub</td><td><span class="chip success">Connected</span></td></tr>
+            <tr><td><div class="repo"><span class="name">partner-portal</span><span class="org">acme-partners/portal</span></div></td><td><span class="chip neutral">Available to run</span></td><td class="num">—</td><td class="muted">Bitbucket</td><td><span class="chip warning">Not authenticated</span></td></tr>
+            <tr><td><div class="repo"><span class="name">internal-tools</span><span class="org">acme-partners/internal-tools</span></div></td><td><span class="chip success">LST available</span></td><td class="num">5h ago</td><td class="muted">GitLab</td><td><span class="chip error">Access denied</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       5 — RECENT ACTIVITY
+       Cross-domain rollup: run / commit / viz statuses next to each
+       other in one feed.
+       ============================================================ -->
+  <section class="mock" id="p-activity">
+    <header class="mock-head">
+      <span class="mock-num">5</span>
+      <div>
+        <div class="eyebrow">Page</div>
+        <h2>Recent activity</h2>
+        <div class="scope">
+          <code>/recent-activity</code> · mixed feed — verifies chips read well <i>next to each other</i> across object types (run · commit · viz).
+        </div>
+      </div>
+    </header>
+    <div class="mock-body">
+
+      <div class="surface">
+        <div class="banner"><h3>Today</h3></div>
+        <div class="act"><div class="lead"><span class="icon-only success"><svg><use href="#i-check"/></svg></span></div><div class="what"><b>Find secrets in plain text</b> · run finished <span class="by">by anne@moderne.io</span></div><div class="when"><span class="chip success">Finished</span> · 14:02</div></div>
+        <div class="act"><div class="lead"><span class="icon-only active"><svg><use href="#i-loader"/></svg></span></div><div class="what"><b>Upgrade Spring Boot 3.2</b> · commit job processing <span class="by">on 24 repos</span></div><div class="when"><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Processing</span> · 13:48</div></div>
+        <div class="act"><div class="lead"><span class="icon-only active"><svg><use href="#i-loader"/></svg></span></div><div class="what"><b>Method-level fan-in</b> · visualization processing</div><div class="when"><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Processing</span> · 13:42</div></div>
+        <div class="act"><div class="lead"><span class="icon-only pending"><svg><use href="#i-clock"/></svg></span></div><div class="what"><b>Migrate JUnit 4 → 5</b> · run queued</div><div class="when"><span class="chip pending">Queued</span> · 13:30</div></div>
+        <div class="act"><div class="lead"><span class="icon-only error"><svg><use href="#i-alert-circle"/></svg></span></div><div class="what"><b>Replace deprecated APIs</b> · run failed <span class="by">— 3 repos errored</span></div><div class="when"><span class="chip error">Error</span> · 12:18</div></div>
+        <div class="act"><div class="lead"><span class="icon-only success"><svg><use href="#i-check"/></svg></span></div><div class="what"><b>Find secrets in plain text</b> · commit completed <span class="by">— 22 PRs opened</span></div><div class="when"><span class="chip success">Completed</span> · 11:54</div></div>
+        <div class="act"><div class="lead"><span class="icon-only success"><svg><use href="#i-check"/></svg></span></div><div class="what"><b>Class hierarchy explorer</b> · visualization finished</div><div class="when"><span class="chip success">Success</span> · 11:21</div></div>
+        <div class="act"><div class="lead"><span class="icon-only canceled"><svg><use href="#i-x"/></svg></span></div><div class="what"><b>Bulk rename: getUserId → getUserUuid</b> · run canceled</div><div class="when"><span class="chip canceled">Canceled</span> · 10:48</div></div>
+        <div class="act"><div class="lead"><span class="icon-only neutral"><svg><use href="#i-minus"/></svg></span></div><div class="what"><b>Find deprecated lombok usage</b> · commit produced no changes</div><div class="when"><span class="chip neutral">No changes</span> · 09:12</div></div>
+        <div class="act"><div class="lead"><span class="icon-only neutral"><svg><use href="#i-minus"/></svg></span></div><div class="what"><b>Dependency drift</b> · visualization finished empty</div><div class="when"><span class="chip neutral">Finished empty</span> · 08:55</div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       6 — AUTH & ACCESS STRIPS
+       Authorize · Access denied · Org unavailable · MCP load failure ·
+       Not authenticated. Smaller surface — inline empty-state.
+       ============================================================ -->
+  <section class="mock" id="p-auth">
+    <header class="mock-head">
+      <span class="mock-num">6</span>
+      <div>
+        <div class="eyebrow">Page</div>
+        <h2>Authorization &amp; access strips</h2>
+        <div class="scope">
+          Inline strips that show up in result-diff, PR action buttons, and connector pages — covers <b>Authorize</b>, <b>Not authenticated</b>, <b>Access denied</b>, <b>Org unavailable</b>, and <b>MCP load failure</b>.
+        </div>
+      </div>
+    </header>
+    <div class="mock-body">
+
+      <div class="inline-strip">
+        <div class="lead-text"><b>Authorize GitHub access</b> to view this diff. You'll be redirected to the OAuth consent screen.</div>
+        <span class="chip info">Authorize</span>
+      </div>
+      <div class="inline-strip">
+        <div class="lead-text"><b>Not authenticated</b> — link your SCM account in <i>Settings → Integrations</i> to load this view.</div>
+        <span class="chip warning">Not authenticated</span>
+      </div>
+      <div class="inline-strip">
+        <div class="lead-text"><b>You don't have access</b> to <code>acme-partners/internal-tools</code>. Ask an admin to grant <i>read:repo</i>.</div>
+        <span class="chip error">Access denied</span>
+      </div>
+      <div class="inline-strip">
+        <div class="lead-text"><b>Org unavailable</b> — the connector reports the underlying VCS is temporarily unreachable. Will retry in 60s.</div>
+        <span class="chip error">Org unavailable</span>
+      </div>
+      <div class="inline-strip">
+        <div class="lead-text"><b>MCP load failed</b> — recipe artifact could not be fetched from the marketplace. Check connector health.</div>
+        <span class="chip error">MCP load failure</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       7 — COVERAGE GALLERY (3 display modes)
+       Every status × labeled chip / icon-only / dot+label.
+       ============================================================ -->
+  <section class="gallery" id="g-gallery">
+    <h2>Coverage gallery <small>every status × every display mode</small></h2>
+    <table class="gtbl">
+      <thead>
+        <tr>
+          <th style="width:22%">Status</th>
+          <th style="width:18%">Labeled chip</th>
+          <th style="width:14%">Icon-only</th>
+          <th style="width:18%">Dot + label</th>
+          <th style="width:28%">Where it shows up</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr class="band"><td colspan="5">Success · green</td></tr>
+        <tr><td class="label">Finished</td><td><span class="chip success">Finished</span></td><td><span class="icon-only success" aria-label="Finished"><svg><use href="#i-check"/></svg></span></td><td><span class="dot-label success"><span class="dot"></span>Finished</span></td><td class="ctx">Run results · per-repo</td></tr>
+        <tr><td class="label">Completed</td><td><span class="chip success">Completed</span></td><td><span class="icon-only success" aria-label="Completed"><svg><use href="#i-check"/></svg></span></td><td><span class="dot-label success"><span class="dot"></span>Completed</span></td><td class="ctx">Commit job · grid</td></tr>
+        <tr><td class="label">Synced</td><td><span class="chip success">Synced</span></td><td><span class="icon-only success" aria-label="Synced"><svg><use href="#i-check"/></svg></span></td><td><span class="dot-label success"><span class="dot"></span>Synced</span></td><td class="ctx">Run results · Sync column</td></tr>
+        <tr><td class="label">Merged</td><td><span class="chip success">Merged</span></td><td><span class="icon-only success" aria-label="Merged"><svg><use href="#i-check"/></svg></span></td><td><span class="dot-label success"><span class="dot"></span>Merged</span></td><td class="ctx">Commit job · PR column</td></tr>
+        <tr><td class="label">Mergeable</td><td><span class="chip success">Mergeable</span></td><td><span class="icon-only success" aria-label="Mergeable"><svg><use href="#i-check"/></svg></span></td><td><span class="dot-label success"><span class="dot"></span>Mergeable</span></td><td class="ctx">PR popover</td></tr>
+        <tr><td class="label">Success (CI)</td><td><span class="chip success">Success</span></td><td><span class="icon-only success" aria-label="Success"><svg><use href="#i-check"/></svg></span></td><td><span class="dot-label success"><span class="dot"></span>Success</span></td><td class="ctx">PR popover · CI checks</td></tr>
+        <tr><td class="label">Approved</td><td><span class="chip success">Approved</span></td><td><span class="icon-only success" aria-label="Approved"><svg><use href="#i-check"/></svg></span></td><td><span class="dot-label success"><span class="dot"></span>Approved</span></td><td class="ctx">PR popover · Review</td></tr>
+        <tr><td class="label">LST available</td><td><span class="chip success">LST available</span></td><td><span class="icon-only success" aria-label="LST available"><svg><use href="#i-check"/></svg></span></td><td><span class="dot-label success"><span class="dot"></span>LST available</span></td><td class="ctx">Orgs &amp; repositories</td></tr>
+
+        <tr class="band"><td colspan="5">Info · blue</td></tr>
+        <tr><td class="label">Open (PR)</td><td><span class="chip info">Open</span></td><td><span class="icon-only info" aria-label="Open"><svg><use href="#i-info"/></svg></span></td><td><span class="dot-label info"><span class="dot"></span>Open</span></td><td class="ctx">Commit job · PR column</td></tr>
+        <tr><td class="label">Available (viz)</td><td><span class="chip info">Available</span></td><td><span class="icon-only info" aria-label="Available"><svg><use href="#i-info"/></svg></span></td><td><span class="dot-label info"><span class="dot"></span>Available</span></td><td class="ctx">Visualization · header</td></tr>
+        <tr><td class="label">Authorize</td><td><span class="chip info">Authorize</span></td><td><span class="icon-only info" aria-label="Authorize"><svg><use href="#i-info"/></svg></span></td><td><span class="dot-label info"><span class="dot"></span>Authorize</span></td><td class="ctx">Auth strip · result-diff</td></tr>
+
+        <tr class="band"><td colspan="5">Warning · gold</td></tr>
+        <tr><td class="label">Needs approval</td><td><span class="chip warning">Needs approval</span></td><td><span class="icon-only warning" aria-label="Needs approval"><svg><use href="#i-alert-triangle"/></svg></span></td><td><span class="dot-label warning"><span class="dot"></span>Needs approval</span></td><td class="ctx">PR popover · Review</td></tr>
+        <tr><td class="label">Changes requested</td><td><span class="chip warning">Changes requested</span></td><td><span class="icon-only warning" aria-label="Changes requested"><svg><use href="#i-alert-triangle"/></svg></span></td><td><span class="dot-label warning"><span class="dot"></span>Changes requested</span></td><td class="ctx">PR popover · Review</td></tr>
+        <tr><td class="label">Not authenticated</td><td><span class="chip warning">Not authenticated</span></td><td><span class="icon-only warning" aria-label="Not authenticated"><svg><use href="#i-alert-triangle"/></svg></span></td><td><span class="dot-label warning"><span class="dot"></span>Not authenticated</span></td><td class="ctx">Auth strip · Orgs grid</td></tr>
+        <tr><td class="label">LST out of date</td><td><span class="chip warning">LST out of date</span></td><td><span class="icon-only warning" aria-label="LST out of date"><svg><use href="#i-alert-triangle"/></svg></span></td><td><span class="dot-label warning"><span class="dot"></span>LST out of date</span></td><td class="ctx">Orgs &amp; repositories</td></tr>
+        <tr><td class="label">Partially parsed</td><td><span class="chip warning">Partially parsed</span></td><td><span class="icon-only warning" aria-label="Partially parsed"><svg><use href="#i-alert-triangle"/></svg></span></td><td><span class="dot-label warning"><span class="dot"></span>Partially parsed</span></td><td class="ctx">Orgs &amp; repositories</td></tr>
+
+        <tr class="band"><td colspan="5">Error · red</td></tr>
+        <tr><td class="label">Error</td><td><span class="chip error">Error</span></td><td><span class="icon-only error" aria-label="Error"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>Error</span></td><td class="ctx">Run results · Status</td></tr>
+        <tr><td class="label">Failed</td><td><span class="chip error">Failed</span></td><td><span class="icon-only error" aria-label="Failed"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>Failed</span></td><td class="ctx">Commit grid · CI · Sync</td></tr>
+        <tr><td class="label">Sync failed</td><td><span class="chip error">Sync failed</span></td><td><span class="icon-only error" aria-label="Sync failed"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>Sync failed</span></td><td class="ctx">Run results · Sync</td></tr>
+        <tr><td class="label">LST loading failed</td><td><span class="chip error">LST loading failed</span></td><td><span class="icon-only error" aria-label="LST loading failed"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>LST loading failed</span></td><td class="ctx">Run results · reason</td></tr>
+        <tr><td class="label">Recipe loading failed</td><td><span class="chip error">Recipe loading failed</span></td><td><span class="icon-only error" aria-label="Recipe loading failed"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>Recipe loading failed</span></td><td class="ctx">Run results · reason</td></tr>
+        <tr><td class="label">Recipe error</td><td><span class="chip error">Recipe error</span></td><td><span class="icon-only error" aria-label="Recipe error"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>Recipe error</span></td><td class="ctx">Run results · reason</td></tr>
+        <tr><td class="label">Timeout</td><td><span class="chip error">Timeout</span></td><td><span class="icon-only error" aria-label="Timeout"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>Timeout</span></td><td class="ctx">Run results · reason</td></tr>
+        <tr><td class="label">No LST</td><td><span class="chip error">No LST</span></td><td><span class="icon-only error" aria-label="No LST"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>No LST</span></td><td class="ctx">Run results · Visualizations · Orgs</td></tr>
+        <tr><td class="label">LST failed to build</td><td><span class="chip error">LST failed to build</span></td><td><span class="icon-only error" aria-label="LST failed to build"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>LST failed to build</span></td><td class="ctx">Orgs &amp; repositories</td></tr>
+        <tr><td class="label">Closed (PR)</td><td><span class="chip error">Closed</span></td><td><span class="icon-only error" aria-label="Closed"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>Closed</span></td><td class="ctx">Commit job · PR</td></tr>
+        <tr><td class="label">Blocked</td><td><span class="chip error">Blocked</span></td><td><span class="icon-only error" aria-label="Blocked"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>Blocked</span></td><td class="ctx">PR · branch protection</td></tr>
+        <tr><td class="label">Access denied</td><td><span class="chip error">Access denied</span></td><td><span class="icon-only error" aria-label="Access denied"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>Access denied</span></td><td class="ctx">Auth strip · Orgs</td></tr>
+        <tr><td class="label">Org unavailable</td><td><span class="chip error">Org unavailable</span></td><td><span class="icon-only error" aria-label="Org unavailable"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>Org unavailable</span></td><td class="ctx">Auth strip · Connectors</td></tr>
+        <tr><td class="label">MCP load failure</td><td><span class="chip error">MCP load failure</span></td><td><span class="icon-only error" aria-label="MCP load failure"><svg><use href="#i-alert-circle"/></svg></span></td><td><span class="dot-label error"><span class="dot"></span>MCP load failure</span></td><td class="ctx">Auth strip · Connectors</td></tr>
+
+        <tr class="band"><td colspan="5">Neutral · cool grey</td></tr>
+        <tr><td class="label">No changes</td><td><span class="chip neutral">No changes</span></td><td><span class="icon-only neutral" aria-label="No changes"><svg><use href="#i-minus"/></svg></span></td><td><span class="dot-label neutral"><span class="dot"></span>No changes</span></td><td class="ctx">Commit grid</td></tr>
+        <tr><td class="label">Finished empty</td><td><span class="chip neutral">Finished empty</span></td><td><span class="icon-only neutral" aria-label="Finished empty"><svg><use href="#i-minus"/></svg></span></td><td><span class="dot-label neutral"><span class="dot"></span>Finished empty</span></td><td class="ctx">Visualizations</td></tr>
+        <tr><td class="label">Skipped (CI)</td><td><span class="chip neutral">Skipped</span></td><td><span class="icon-only neutral" aria-label="Skipped"><svg><use href="#i-minus"/></svg></span></td><td><span class="dot-label neutral"><span class="dot"></span>Skipped</span></td><td class="ctx">PR popover · CI</td></tr>
+        <tr><td class="label">Not required</td><td><span class="chip neutral">Not required</span></td><td><span class="icon-only neutral" aria-label="Not required"><svg><use href="#i-minus"/></svg></span></td><td><span class="dot-label neutral"><span class="dot"></span>Not required</span></td><td class="ctx">PR popover · CI / Review</td></tr>
+        <tr><td class="label">Draft (PR)</td><td><span class="chip neutral">Draft</span></td><td><span class="icon-only neutral" aria-label="Draft"><svg><use href="#i-minus"/></svg></span></td><td><span class="dot-label neutral"><span class="dot"></span>Draft</span></td><td class="ctx">Commit job · PR</td></tr>
+        <tr><td class="label">Available to run</td><td><span class="chip neutral">Available to run</span></td><td><span class="icon-only neutral" aria-label="Available to run"><svg><use href="#i-minus"/></svg></span></td><td><span class="dot-label neutral"><span class="dot"></span>Available to run</span></td><td class="ctx">Orgs · repos pending build</td></tr>
+        <tr><td class="label">Unknown</td><td><span class="chip neutral">Unknown</span></td><td><span class="icon-only neutral" aria-label="Unknown"><svg><use href="#i-minus"/></svg></span></td><td><span class="dot-label neutral"><span class="dot"></span>Unknown</span></td><td class="ctx">Run results · fallback</td></tr>
+
+        <tr class="band"><td colspan="5">Active · violet (animated spinner)</td></tr>
+        <tr><td class="label">Running</td><td><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Running</span></td><td><span class="icon-only active" aria-label="Running"><svg class="spinner"><use href="#i-loader"/></svg></span></td><td><span class="dot-label active"><span class="dot"></span>Running</span></td><td class="ctx">Run results · per-repo</td></tr>
+        <tr><td class="label">Processing</td><td><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Processing</span></td><td><span class="icon-only active" aria-label="Processing"><svg class="spinner"><use href="#i-loader"/></svg></span></td><td><span class="dot-label active"><span class="dot"></span>Processing</span></td><td class="ctx">Commit job · Visualizations</td></tr>
+        <tr><td class="label">Syncing</td><td><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Syncing</span></td><td><span class="icon-only active" aria-label="Syncing"><svg class="spinner"><use href="#i-loader"/></svg></span></td><td><span class="dot-label active"><span class="dot"></span>Syncing</span></td><td class="ctx">Run results · Sync</td></tr>
+        <tr><td class="label">In progress (CI)</td><td><span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>In progress</span></td><td><span class="icon-only active" aria-label="In progress"><svg class="spinner"><use href="#i-loader"/></svg></span></td><td><span class="dot-label active"><span class="dot"></span>In progress</span></td><td class="ctx">PR popover · CI</td></tr>
+
+        <tr class="band"><td colspan="5">Pending · violet (lighter; static)</td></tr>
+        <tr><td class="label">Queued</td><td><span class="chip pending">Queued</span></td><td><span class="icon-only pending" aria-label="Queued"><svg><use href="#i-clock"/></svg></span></td><td><span class="dot-label pending"><span class="dot"></span>Queued</span></td><td class="ctx">Run results · per-repo</td></tr>
+        <tr><td class="label">Pending</td><td><span class="chip pending">Pending</span></td><td><span class="icon-only pending" aria-label="Pending"><svg><use href="#i-clock"/></svg></span></td><td><span class="dot-label pending"><span class="dot"></span>Pending</span></td><td class="ctx">Run results · Sync · CI</td></tr>
+
+        <tr class="band"><td colspan="5">Canceled · warm-grey</td></tr>
+        <tr><td class="label">Canceled</td><td><span class="chip canceled">Canceled</span></td><td><span class="icon-only canceled" aria-label="Canceled"><svg><use href="#i-x"/></svg></span></td><td><span class="dot-label canceled"><span class="dot"></span>Canceled</span></td><td class="ctx">Run · Commit · per-repo</td></tr>
+
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============================================================
+       8 — IN-PROGRESS SHAPES
+       Indeterminate spinner chip vs. determinate violet bar + X/N.
+       ============================================================ -->
+  <section class="gallery" id="g-progress">
+    <h2>In-progress shapes <small>indeterminate vs. determinate</small></h2>
+    <div class="demo">
+      <div class="demo-card">
+        <h4>Indeterminate · single item</h4>
+        <div class="row-inline" style="gap:8px;">
+          <span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Running</span>
+          <span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Processing</span>
+          <span class="chip active"><span class="spinner"><svg><use href="#i-loader"/></svg></span>Syncing</span>
+        </div>
+        <p>Use when one item is working with no known internal progress (one repo: Running / Processing / Syncing · one LST building). Icon = <code>loader-2</code>, animated. Honors <code>prefers-reduced-motion</code>.</p>
+      </div>
+      <div class="demo-card">
+        <h4>Determinate · aggregate across a known set</h4>
+        <div class="row-inline" style="flex-direction:column;align-items:flex-start;gap:10px;">
+          <span class="progress-bar"><span class="track"><span class="fill" style="width:18%"></span></span>4 / 22</span>
+          <span class="progress-bar"><span class="track"><span class="fill" style="width:54%"></span></span>13 / 24</span>
+          <span class="progress-bar"><span class="track"><span class="fill" style="width:88%"></span></span>21 / 24</span>
+          <div class="rollup"><span><b>13</b> done</span><span><b>2</b> failed</span><span><b>5</b> running</span><span><b>4</b> queued</span></div>
+        </div>
+        <p><b>X</b> = repos that reached a terminal state · <b>N</b> = total. The fraction only climbs to N/N. Carry the good/bad breakdown as a separate rollup; when all N are terminal, the aggregate flips to its terminal status (Finished / Error / …).</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

@@ -43,6 +43,7 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | [`visualizations-tab-results-view.html`](https://moderneinc.github.io/prototypes/visualizations-tab-results-view.html) | Visualizations tab: master-detail picker with Configure panel |
 | [`CLI-rewrites.html`](https://moderneinc.github.io/prototypes/CLI-rewrites.html) | CLI / terminal label rewrites |
 | [`status-audit.html`](https://moderneinc.github.io/prototypes/status-audit.html) | Status reference by artifact — every repository status with SaaS chip (label + where) and CLI trigger side by side |
+| [`proposed-statuses.html`](https://moderneinc.github.io/prototypes/proposed-statuses.html) | Proposed status palette stress test — six page mockups (Run results · Commits · Visualizations · Orgs · Activity · Auth strips) exercising every status under the new violet/warm-grey palette, plus a coverage gallery showing each status in all three display modes |
 | [`brand-guidelines.html`](https://moderneinc.github.io/prototypes/brand-guidelines.html) | Brand guidelines, including Product Symbols |
 | [`moderne-design-kit-preview.html`](https://moderneinc.github.io/prototypes/moderne-design-kit-preview.html) | Moderne Design Kit preview — dual-mode (dark/light) visual language: palette, type, logo, components, in-situation surfaces, embedded product-overview deck |
 | [`moderne-product-overview-deck.html`](https://moderneinc.github.io/prototypes/moderne-product-overview-deck.html) | Product overview slide deck — 16 slides across the product line (arrow-key / fullscreen navigation) |
