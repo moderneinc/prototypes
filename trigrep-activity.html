@@ -2887,6 +2887,30 @@
   .tg-tree-head{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--brand-grey-100);border-bottom:1px solid var(--brand-grey-300);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--grey-600);}
   .tg-tree-head .th-results{margin-left:auto;}
 
+  /* Segmented "view by" toggle inside the tree head — List / Similarity.
+     Mirrors the IntelliJ "Find Usages" cluster-by-pattern affordance. */
+  .tg-view-toggle{display:inline-flex;align-items:stretch;border:1px solid var(--brand-grey-300);border-radius:6px;overflow:hidden;background:#fff;margin-left:auto;}
+  .tg-view-toggle button{appearance:none;background:transparent;border:0;padding:3px 8px;font:inherit;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--grey-600);cursor:pointer;display:inline-flex;align-items:center;gap:5px;line-height:1;}
+  .tg-view-toggle button + button{border-left:1px solid var(--brand-grey-300);}
+  .tg-view-toggle button:hover{background:var(--brand-grey-100);color:var(--grey-900);}
+  .tg-view-toggle button.active{background:var(--brand-digital-blue-100);color:var(--brand-digital-blue-700);}
+  .tg-view-toggle button svg{width:11px;height:11px;}
+  .tg-tree-head.with-toggle .th-results{margin-left:14px;margin-right:0;}
+  /* Compact text link that flips all clusters open/closed at once.
+     Lives in the tree-head; only shown while similarity mode is active. */
+  .tg-cluster-expand-link{font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--brand-digital-blue-700);background:none;border:0;padding:0;margin-left:10px;cursor:pointer;}
+  .tg-cluster-expand-link:hover{text-decoration:underline;}
+
+  /* Similarity-cluster header (group of repos that share a match pattern).
+     Sits flush with the tree rows; chevron toggles its repo body. */
+  .hn-cluster{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--brand-grey-100);border-top:1px solid var(--brand-grey-300);border-bottom:1px solid var(--brand-grey-200);cursor:pointer;}
+  .hn-cluster:first-child{border-top:none;}
+  .hn-cluster:hover{background:var(--brand-grey-200);}
+  .hn-cluster .hn-cluster-label{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:500;color:var(--brand-digital-blue-800);min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .hn-cluster .hn-cluster-label .hn-cluster-mark{background:var(--brand-digital-blue-200);color:var(--brand-digital-blue-900);padding:0 4px;border-radius:3px;}
+  .hn-cluster .hn-cluster-count{font-family:var(--brand-font-family-sans);font-weight:500;font-size:11px;color:var(--grey-700);white-space:nowrap;flex-shrink:0;text-transform:none;letter-spacing:0;}
+  .hn-cluster.is-other .hn-cluster-label{color:var(--grey-700);font-family:var(--brand-font-family-sans);font-style:italic;font-weight:500;}
+
   /* Hierarchical node rows */
   .hn-row{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--brand-grey-200);cursor:pointer;transition:background 150ms ease;}
   .hn-row:last-child{border-bottom:none;}
@@ -4986,8 +5010,19 @@ function renderTrigrepResults(flow) {
             <input id="tg-repo-search" type="search" placeholder="Filter repositories…" autocomplete="off" spellcheck="false">
           </div>
           <div class="tg-tree" id="tg-tree">
-            <div class="tg-tree-head">
+            <div class="tg-tree-head with-toggle">
               <span class="th-name">REPOSITORIES</span>
+              <div class="tg-view-toggle" role="tablist" aria-label="Repository view">
+                <button type="button" id="tg-view-list" class="active" role="tab" aria-selected="true" title="Flat list">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+                  List
+                </button>
+                <button type="button" id="tg-view-similar" role="tab" aria-selected="false" title="Cluster repositories by similar match patterns">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M8 7l8 4M8 17l8-4"/></svg>
+                  Group similar
+                </button>
+              </div>
+              <button type="button" id="tg-cluster-expand-all" class="tg-cluster-expand-link" hidden>Expand all</button>
               <span class="th-results">RESULTS</span>
             </div>
             <div id="tg-tree-body"></div>
@@ -5406,6 +5441,12 @@ let tgTreeState = null;
 let tgTreeData = null;
 let tgCurrentFlow = null;
 let tgFlowStats = null;
+// View mode for the repo tree. When true, repos are clustered by the
+// shape of their match snippets — analogous to IntelliJ's "Group similar
+// usages" affordance — so a 220-repo result becomes a handful of pattern
+// buckets the user can scan and drill into.
+let tgGroupBySimilarity = false;
+let tgCollapsedClusters = new Set();
 
 // Single source of truth for the totals shown anywhere in the prototype
 // (tree, scope bar, hierarchy header, recipe-run drawer). Derived from the
@@ -5665,21 +5706,148 @@ function tgFilteredRepos() {
   return repos;
 }
 
+// Structural signature for a match line. Strips HTML, normalises string
+// literals and numeric/identifier args to placeholders, then lower-cases.
+// Two matches that share a call shape end up with the same signature even
+// if the argument values differ — that's the cluster predicate.
+function tgMatchSignature(code) {
+  if (!code) return '';
+  let s = String(code);
+  s = s.replace(/<[^>]+>/g, '');
+  s = s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  // String literals → "…" so different args don't fragment the bucket.
+  s = s.replace(/"(?:[^"\\]|\\.)*"/g, '"…"');
+  s = s.replace(/'(?:[^'\\]|\\.)*'/g, "'…'");
+  // Numbers → N
+  s = s.replace(/\b\d+(?:\.\d+)?\b/g, 'N');
+  s = s.replace(/\s+/g, ' ').trim().toLowerCase();
+  return s;
+}
+
+// Pretty-print the same line for the cluster header — keeps original
+// capitalisation/punctuation but still collapses string contents so
+// the bucket label reads as a pattern, not a single example.
+function tgMatchSignatureDisplay(code) {
+  if (!code) return '';
+  let s = String(code);
+  s = s.replace(/<[^>]+>/g, '');
+  s = s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  s = s.replace(/"(?:[^"\\]|\\.)*"/g, '"…"');
+  s = s.replace(/'(?:[^'\\]|\\.)*'/g, "'…'");
+  s = s.replace(/\b\d+(?:\.\d+)?\b/g, 'N');
+  s = s.replace(/\s+/g, ' ').trim();
+  return s;
+}
+
+// One signature per repo: the most-frequent line-shape across its matches.
+// Repos with no matches at all get a stable '__none__' bucket so they can
+// be surfaced (collapsed) under an "Other / no matches" cluster.
+function tgRepoSignature(repo) {
+  const counts = new Map();
+  const displays = new Map();
+  for (const f of repo.files) {
+    for (const m of f.matches) {
+      const sig = tgMatchSignature(m.code);
+      if (!sig) continue;
+      counts.set(sig, (counts.get(sig) || 0) + 1);
+      if (!displays.has(sig)) displays.set(sig, tgMatchSignatureDisplay(m.code));
+    }
+  }
+  if (counts.size === 0) return { key: '__none__', display: '' };
+  // Pick the dominant signature; ties broken by lexicographic order so the
+  // bucketing is deterministic across renders.
+  let bestSig = null, bestCount = -1;
+  for (const [sig, n] of counts) {
+    if (n > bestCount || (n === bestCount && bestSig !== null && sig < bestSig)) {
+      bestSig = sig; bestCount = n;
+    }
+  }
+  return { key: bestSig, display: displays.get(bestSig) || bestSig };
+}
+
+// Bucket the filtered repo list by signature. Returns an array of clusters
+// sorted by size (largest first) so the most-impactful patterns surface at
+// the top — same heuristic IntelliJ uses for similar-usages clustering.
+function tgClusterReposBySimilarity(repos) {
+  const map = new Map();
+  for (const r of repos) {
+    const { key, display } = tgRepoSignature(r);
+    if (!map.has(key)) map.set(key, { key, display, repos: [] });
+    map.get(key).repos.push(r);
+    // Prefer a non-empty display label when one shows up later in the bucket.
+    if (!map.get(key).display && display) map.get(key).display = display;
+  }
+  const clusters = [...map.values()];
+  clusters.sort((a, b) => {
+    // "Other / no matches" always sinks to the bottom.
+    if (a.key === '__none__') return 1;
+    if (b.key === '__none__') return -1;
+    return b.repos.length - a.repos.length;
+  });
+  return clusters;
+}
+
+function tgClusterHeaderHTML(cluster, index) {
+  const id = 'cl_' + index;
+  const collapsed = tgCollapsedClusters.has(id);
+  const isOther = cluster.key === '__none__';
+  const label = isOther
+    ? 'Other / no extracted pattern'
+    : `<span class="hn-cluster-mark">${escapeHtml(cluster.display || cluster.key)}</span>`;
+  const repoCount = cluster.repos.length;
+  const totalResults = cluster.repos.reduce((s, r) => s + r.results, 0);
+  const countText = isOther
+    ? `${repoCount.toLocaleString()} repo${repoCount === 1 ? '' : 's'}`
+    : `${repoCount.toLocaleString()} repo${repoCount === 1 ? '' : 's'} · ${totalResults.toLocaleString()} result${totalResults === 1 ? '' : 's'}`;
+  return `<div class="hn-cluster ${isOther ? 'is-other' : ''} ${collapsed ? 'collapsed' : ''}" data-cluster-id="${id}">
+    <button type="button" class="chev-btn ${collapsed ? 'collapsed' : ''}" tabindex="-1" aria-label="Toggle cluster"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <span class="hn-cluster-label">${label}</span>
+    <span class="hn-cluster-count">${countText}</span>
+  </div>`;
+}
+
 function tgRenderTree() {
   const body = trigrepPanel.querySelector('#tg-tree-body');
   if (!body) return;
   const repos = tgFilteredRepos();
   const totalResults = repos.reduce((s, r) => s + r.results, 0);
-  body.innerHTML = repos.length
-    ? repos.map(r => tgRepoNodeHTML(r, 0)).join('')
-    : `<div style="padding:16px;font-size:12.5px;color:var(--grey-500)">No repositories match the active filters.</div>`;
+  if (!repos.length) {
+    body.innerHTML = `<div style="padding:16px;font-size:12.5px;color:var(--grey-500)">No repositories match the active filters.</div>`;
+  } else if (tgGroupBySimilarity) {
+    const clusters = tgClusterReposBySimilarity(repos);
+    body.innerHTML = clusters.map((cluster, i) => {
+      const id = 'cl_' + i;
+      const header = tgClusterHeaderHTML(cluster, i);
+      if (tgCollapsedClusters.has(id)) return header;
+      return header + cluster.repos.map(r => tgRepoNodeHTML(r, 0)).join('');
+    }).join('');
+  } else {
+    body.innerHTML = repos.map(r => tgRepoNodeHTML(r, 0)).join('');
+  }
   body.querySelectorAll('.hn-check[data-ind="1"]').forEach(c => { c.indeterminate = true; });
   const footer = trigrepPanel.querySelector('#tg-footer-summary');
   if (footer) {
-    footer.textContent = `Showing ${repos.length.toLocaleString()} of ${tgTreeData.length.toLocaleString()} repositor${tgTreeData.length === 1 ? 'y' : 'ies'} · ${totalResults.toLocaleString()} result${totalResults === 1 ? '' : 's'}`;
+    if (tgGroupBySimilarity && repos.length) {
+      const clusters = tgClusterReposBySimilarity(repos);
+      footer.textContent = `${clusters.length.toLocaleString()} pattern${clusters.length === 1 ? '' : 's'} · ${repos.length.toLocaleString()} of ${tgTreeData.length.toLocaleString()} repositor${tgTreeData.length === 1 ? 'y' : 'ies'} · ${totalResults.toLocaleString()} result${totalResults === 1 ? '' : 's'}`;
+    } else {
+      footer.textContent = `Showing ${repos.length.toLocaleString()} of ${tgTreeData.length.toLocaleString()} repositor${tgTreeData.length === 1 ? 'y' : 'ies'} · ${totalResults.toLocaleString()} result${totalResults === 1 ? '' : 's'}`;
+    }
   }
   const selCount = trigrepPanel.querySelector('#tg-sel-count');
   if (selCount) selCount.textContent = tgTreeState.selMatches.size.toLocaleString();
+  const expandLink = trigrepPanel.querySelector('#tg-cluster-expand-all');
+  if (expandLink) {
+    if (tgGroupBySimilarity && repos.length) {
+      const clusters = tgClusterReposBySimilarity(repos);
+      const allIds = clusters.map((_, i) => 'cl_' + i);
+      const anyCollapsed = allIds.some(id => tgCollapsedClusters.has(id));
+      expandLink.textContent = anyCollapsed ? 'Expand all' : 'Collapse all';
+      expandLink.hidden = false;
+    } else {
+      expandLink.hidden = true;
+    }
+  }
 }
 
 // Reuse the original trigrep-activity start-state visual treatment as the
@@ -6005,6 +6173,15 @@ function tgWireTree() {
   // pane (it always shows the full result set).
   treeBody.addEventListener('click', (e) => {
     if (e.target.closest('.hn-check')) return;
+    // Similarity-cluster header — toggle collapse for the whole bucket.
+    const cluster = e.target.closest('.hn-cluster');
+    if (cluster) {
+      const id = cluster.dataset.clusterId;
+      if (tgCollapsedClusters.has(id)) tgCollapsedClusters.delete(id);
+      else tgCollapsedClusters.add(id);
+      tgRenderTree();
+      return;
+    }
     const chev = e.target.closest('.hn-chev');
     if (chev) {
       const row = chev.closest('.hn-row');
@@ -6090,9 +6267,45 @@ function initTrigrepTree(flow) {
   }
   tgRenderTree();
   tgWireTree();
+  tgWireViewToggle();
   // Right pane always shows the full result set; tree clicks scroll-link
   // into it rather than re-rendering it.
   tgRenderDetail();
+}
+
+function tgWireViewToggle() {
+  const btnList = trigrepPanel.querySelector('#tg-view-list');
+  const btnSim  = trigrepPanel.querySelector('#tg-view-similar');
+  const btnExpand = trigrepPanel.querySelector('#tg-cluster-expand-all');
+  if (!btnList || !btnSim) return;
+  const setMode = (group) => {
+    tgGroupBySimilarity = group;
+    btnList.classList.toggle('active', !group);
+    btnList.setAttribute('aria-selected', String(!group));
+    btnSim.classList.toggle('active', group);
+    btnSim.setAttribute('aria-selected', String(group));
+    if (group) {
+      // Default to overview mode: collapse every cluster so the user sees
+      // just the pattern headers and can drill into the ones they care about.
+      const clusters = tgClusterReposBySimilarity(tgFilteredRepos());
+      tgCollapsedClusters = new Set(clusters.map((_, i) => 'cl_' + i));
+    } else {
+      tgCollapsedClusters.clear();
+    }
+    tgRenderTree();
+  };
+  btnList.addEventListener('click', () => setMode(false));
+  btnSim.addEventListener('click', () => setMode(true));
+  if (btnExpand) {
+    btnExpand.addEventListener('click', () => {
+      const clusters = tgClusterReposBySimilarity(tgFilteredRepos());
+      const allIds = clusters.map((_, i) => 'cl_' + i);
+      // If anything is collapsed, expand all; otherwise collapse all.
+      const anyCollapsed = allIds.some(id => tgCollapsedClusters.has(id));
+      tgCollapsedClusters = anyCollapsed ? new Set() : new Set(allIds);
+      tgRenderTree();
+    });
+  }
 }
 
 // Called when a sidebar filter item is toggled — refresh the tree.
