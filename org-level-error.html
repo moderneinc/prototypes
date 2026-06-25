@@ -271,21 +271,30 @@ body.opts-none .opt-empty{display:block;}
 .run-chip.errored{background:var(--brand-red-100);color:var(--brand-red-700);border:1px solid color-mix(in srgb,var(--brand-red-600) 30%,transparent);}
 .run-chip.errored svg circle{fill:var(--brand-red-600);}
 /* ===== Org-level error banner (FIX: demote run error, keep results committable) ===== */
-.run-banner{display:flex;align-items:center;gap:11px;padding:11px 32px;background:var(--brand-orange-100);border-bottom:1px solid color-mix(in srgb,var(--brand-orange-600) 38%,transparent);color:var(--brand-orange-800);font-size:13px;flex-shrink:0;}
+.run-banner{display:flex;align-items:center;gap:13px;padding:12px 26px;background:var(--brand-red-100);border-bottom:1px solid color-mix(in srgb,var(--brand-red-600) 20%,transparent);flex-shrink:0;}
 .run-banner[hidden]{display:none;}
-.run-banner .rb-warn{width:18px;height:18px;color:var(--brand-orange-700);flex-shrink:0;}
-.run-banner b{font-weight:600;}
+.run-banner .rb-ic{width:22px;height:22px;color:var(--brand-red-600);flex-shrink:0;}
+.run-banner .rb-title{font-size:14px;font-weight:600;color:var(--text-primary);}
+.run-banner .rb-sub{font-size:13px;color:var(--text-secondary);margin-top:1px;}
 .run-banner .rb-spacer{flex:1;}
-.run-banner .rb-view{display:inline-flex;align-items:center;gap:6px;color:var(--brand-red-700);font-weight:600;background:var(--surface-primary);border:1px solid color-mix(in srgb,var(--brand-red-600) 32%,transparent);border-radius:var(--radius-full);padding:4px 12px;font-size:12.5px;flex-shrink:0;}
-.run-banner .rb-view:hover{background:var(--brand-red-100);}
-.run-banner .rb-view svg{width:13px;height:13px;}
-.run-banner .rb-dismiss{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:var(--radius-md);color:var(--brand-orange-800);flex-shrink:0;}
-.run-banner .rb-dismiss:hover{background:color-mix(in srgb,var(--brand-orange-600) 18%,transparent);}
+.run-banner .rb-error{display:inline-flex;align-items:center;gap:6px;color:var(--brand-red-600);font-size:13px;font-weight:500;background:transparent;border:none;flex-shrink:0;}
+.run-banner .rb-error:hover{text-decoration:underline;}
+.run-banner .rb-error svg{width:15px;height:15px;}
+.run-banner .rb-dismiss{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:var(--radius-md);color:var(--brand-red-600);flex-shrink:0;margin-left:4px;}
+.run-banner .rb-dismiss:hover{background:color-mix(in srgb,var(--brand-red-600) 14%,transparent);}
 .run-banner .rb-dismiss svg{width:15px;height:15px;}
-/* error popover (full message + copy, reachable on demand) */
-.err-pop{position:fixed;z-index:90;width:600px;max-width:92vw;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);}
-.err-pop .err-panel{border-radius:var(--radius-lg);}
-.err-scrim{position:fixed;inset:0;z-index:89;}
+/* error side panel (full message + copy, reachable on demand) */
+.err-scrim{position:fixed;inset:0;z-index:89;background:rgba(17,24,39,.30);opacity:0;pointer-events:none;transition:opacity var(--transition-fast);}
+.err-scrim.open{opacity:1;pointer-events:auto;}
+.err-pop{position:fixed;top:0;right:0;bottom:0;width:580px;max-width:94vw;z-index:90;background:var(--surface-primary);border-left:1px solid var(--border-primary);box-shadow:-8px 0 28px -8px rgba(17,24,39,.20);display:flex;flex-direction:column;transform:translateX(100%);transition:transform var(--transition-fast);}
+.err-pop.open{transform:translateX(0);}
+.err-drawer-head{display:flex;align-items:center;gap:9px;padding:14px 16px;border-bottom:1px solid var(--border-primary);flex-shrink:0;}
+.err-drawer-head .ec-ic{width:18px;height:18px;color:var(--brand-red-600);flex-shrink:0;}
+.err-drawer-head h3{font-size:15px;font-weight:600;flex:1;color:var(--text-primary);}
+.err-drawer-head .ec-act{width:30px;height:30px;border-radius:var(--radius-md);display:inline-flex;align-items:center;justify-content:center;color:var(--text-tertiary);border:1px solid transparent;}
+.err-drawer-head .ec-act:hover{background:var(--brand-grey-100);color:var(--text-primary);border-color:var(--border-primary);}
+.err-drawer-head .ec-act svg{width:16px;height:16px;}
+.err-pop .err-log{max-height:none;flex:1;}
 /* total-failure full-screen panel (only when zero repositories completed) */
 #total-fail{flex:1;min-height:0;overflow:auto;padding:26px 32px;}
 .total-fail-head{display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;margin:8px 0 18px;}
@@ -697,8 +706,8 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
   </div>
 </div>
 
-<div class="err-scrim" id="err-scrim" hidden></div>
-<div class="err-pop" id="err-pop" hidden></div>
+<div class="err-scrim" id="err-scrim"></div>
+<aside class="err-pop" id="err-pop" aria-label="Recipe run error"></aside>
 
 <div class="gh-menu" id="gh-menu" hidden></div>
 
@@ -1416,31 +1425,43 @@ function renderRunState(){
   if(ss==='partial' && !state.bannerDismissed){
     banner.hidden=false;
     banner.innerHTML=`
-      <svg class="rb-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <span><b>This recipe run ended in an error.</b> ${COMPLETED} of ${TOTAL_REPOS} repositories completed and can still be committed.</span>
+      <svg class="rb-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <div>
+        <div class="rb-title">This recipe run ended with an error</div>
+        <div class="rb-sub">Some repositories did not finish, but the results below completed and can be committed.</div>
+      </div>
       <span class="rb-spacer"></span>
-      <button class="rb-view" data-act="view-err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>View error</button>
+      <button class="rb-error" data-act="view-err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Error</button>
       <button class="rb-dismiss" data-act="dismiss-banner" title="Dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
   } else { banner.hidden=true; }
   closeErrPop();
 }
-/* error popover (full message + copy on demand) */
-function openErrPop(anchor){
+/* error side panel (full message + copy on demand) */
+function openErrPop(){
   const pop=document.getElementById('err-pop'), scrim=document.getElementById('err-scrim');
-  pop.innerHTML=errPanel(buildOrgErrorLog());
-  pop.hidden=false; scrim.hidden=false;
-  const r=anchor.getBoundingClientRect();
-  pop.style.top=Math.min(r.bottom+8, window.innerHeight-pop.offsetHeight-12)+'px';
-  pop.style.left=Math.max(12, Math.min(r.left, window.innerWidth-pop.offsetWidth-12))+'px';
-  wireErr(pop, buildOrgErrorLog().map(l=>l[0]).join('\n'));
+  const log=buildOrgErrorLog();
+  const copy='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  const x='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  pop.innerHTML=`
+    <div class="err-drawer-head">
+      <svg class="ec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <h3>Recipe run failed</h3>
+      <button class="ec-act" data-err="copy" title="Copy log">${copy}</button>
+      <button class="ec-act" data-act="close-err" title="Close">${x}</button>
+    </div>
+    <div class="err-log">${log.map((l,i)=>`<div class="ln ${l[1]?'dim':''}"><span class="n">${i+1}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>`;
+  wireErr(pop, log.map(l=>l[0]).join('\n'));
+  requestAnimationFrame(()=>{ pop.classList.add('open'); scrim.classList.add('open'); });
 }
-function closeErrPop(){ const pop=document.getElementById('err-pop'), scrim=document.getElementById('err-scrim'); if(pop){pop.hidden=true;pop.innerHTML='';} if(scrim)scrim.hidden=true; }
+function closeErrPop(){ const pop=document.getElementById('err-pop'), scrim=document.getElementById('err-scrim'); if(pop)pop.classList.remove('open'); if(scrim)scrim.classList.remove('open'); }
 document.getElementById('err-scrim').addEventListener('click',closeErrPop);
 document.addEventListener('click',e=>{
   const a=e.target.closest('[data-act]'); if(!a)return;
-  if(a.dataset.act==='view-err'){ e.stopPropagation(); openErrPop(a); }
+  if(a.dataset.act==='view-err'){ e.stopPropagation(); openErrPop(); }
+  else if(a.dataset.act==='close-err'){ closeErrPop(); }
   else if(a.dataset.act==='dismiss-banner'){ state.bannerDismissed=true; renderRunState(); }
 });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && document.getElementById('err-pop').classList.contains('open')) closeErrPop(); });
 /* demo: run-state toggle */
 document.querySelectorAll('.demo-btn[data-runstate]').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.demo-btn[data-runstate]').forEach(x=>x.classList.remove('active')); b.classList.add('active');
