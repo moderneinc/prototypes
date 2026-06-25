@@ -1978,14 +1978,14 @@
     border-radius: 999px;
   }
 
-  /* ===== Recipe picker drawer ===== */
-  .rp-drawer .rp-sub {
-    margin: 4px 0 0;
+  /* ===== Recipe actions modal (ported from moderne-ui PR #8352) ===== */
+  .rp-modal .rp-sub {
+    margin: 0 0 12px;
     font-size: 12.5px;
     color: var(--grey-600);
     line-height: 1.5;
   }
-  .rp-drawer .rp-query {
+  .rp-modal .rp-query {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11.5px;
     color: var(--brand-digital-blue-500);
@@ -1995,17 +1995,15 @@
     vertical-align: 1px;
   }
   .rp-search {
-    margin-top: 12px;
     display: flex; align-items: center; gap: 8px;
     padding: 8px 12px;
     border: 1px solid var(--grey-200);
     border-radius: 8px;
-    background: var(--grey-25);
-    transition: border-color 0.12s, background 0.12s;
+    background: #fff;
+    transition: border-color 0.12s, box-shadow 0.12s;
   }
   .rp-search:focus-within {
     border-color: var(--brand-digital-blue-500);
-    background: #fff;
     box-shadow: 0 0 0 3px rgba(47,66,255,0.10);
   }
   .rp-search svg { width: 14px; height: 14px; color: var(--grey-500); flex-shrink: 0; }
@@ -2016,59 +2014,112 @@
     color: var(--grey-900);
   }
   .rp-search input::placeholder { color: var(--grey-500); }
-  .rp-body { padding: 12px 22px; }
-  .rp-group { margin-bottom: 14px; }
-  .rp-group:last-child { margin-bottom: 0; }
+  .rp-body { padding: 14px 22px 12px; }
+
+  /* Tab strip across the top of the modal */
+  .rp-tabs {
+    display: flex; gap: 4px;
+    padding: 0 22px;
+    border-bottom: 1px solid var(--grey-100);
+    flex-shrink: 0;
+  }
+  .rp-tab {
+    appearance: none;
+    border: none; background: transparent;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--grey-600);
+    padding: 10px 12px;
+    margin-bottom: -1px;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.12s, border-color 0.12s;
+  }
+  .rp-tab:hover { color: var(--grey-900); }
+  .rp-tab.is-active {
+    color: var(--brand-digital-blue-500);
+    border-bottom-color: var(--brand-digital-blue-500);
+  }
+
+  /* Pill filter row above the search input */
+  .rp-pills {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 10px;
+  }
+  .rp-pill {
+    appearance: none;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--grey-700);
+    background: #fff;
+    border: 1px solid var(--grey-200);
+    border-radius: 999px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  }
+  .rp-pill:hover { background: var(--grey-50); }
+  .rp-pill.is-active {
+    background: var(--brand-digital-blue-500);
+    border-color: var(--brand-digital-blue-500);
+    color: #fff;
+  }
+
+  /* Bordered scrollable list — replaces the previous grouped lists */
+  .rp-list {
+    margin-top: 10px;
+    border: 1px solid var(--grey-100);
+    border-radius: 8px;
+    overflow: hidden;
+    max-height: 320px;
+    overflow-y: auto;
+    background: #fff;
+  }
   .rp-group-label {
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--grey-500);
-    margin-bottom: 6px;
+    padding: 8px 12px 4px;
+    background: var(--grey-25);
+    border-top: 1px solid var(--grey-100);
   }
+  .rp-group-label:first-child { border-top: none; }
   .rp-group-label .rp-query {
     text-transform: none;
     letter-spacing: 0;
   }
-  .rp-group-list {
-    display: flex; flex-direction: column;
-    border: 1px solid var(--grey-100);
-    border-radius: 8px;
-    overflow: hidden;
-  }
   .rp-recipe {
     display: flex; align-items: flex-start; gap: 12px;
-    padding: 10px 12px;
+    padding: 10px 14px;
     cursor: pointer;
     background: #fff;
     border-top: 1px solid var(--grey-100);
     transition: background 0.1s;
   }
-  .rp-recipe:first-child { border-top: none; }
   .rp-recipe:hover { background: rgba(47,66,255,0.025); }
-  .rp-recipe.is-selected {
-    background: rgba(47,66,255,0.06);
-  }
-  .rp-radio {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    border: 1.5px solid var(--grey-300);
-    background: #fff;
+  .rp-recipe.is-selected { background: rgba(47,66,255,0.06); }
+  .rp-recipe-icon {
+    width: 18px; height: 18px;
     flex-shrink: 0;
-    margin-top: 2px;
-    transition: border-color 0.1s;
+    color: var(--grey-500);
+    margin-top: 1px;
   }
-  .rp-recipe:hover .rp-radio { border-color: var(--brand-digital-blue-500); }
-  .rp-recipe.is-selected .rp-radio {
-    border-color: var(--brand-digital-blue-500);
-    border-width: 5px;
-  }
+  .rp-recipe-icon svg { width: 100%; height: 100%; display: block; }
+  .rp-recipe.is-selected .rp-recipe-icon { color: var(--brand-digital-blue-500); }
   .rp-recipe-text { flex: 1; min-width: 0; }
   .rp-recipe-name {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--grey-900);
+    margin-bottom: 2px;
+  }
+  .rp-recipe-subtitle {
+    font-size: 11.5px;
+    color: var(--grey-500);
     margin-bottom: 2px;
   }
   .rp-recipe-desc {
@@ -2096,7 +2147,22 @@
     padding: 22px 4px;
     text-align: center;
     color: var(--grey-500);
+    font-style: italic;
     font-size: 13px;
+  }
+  .rp-placeholder {
+    padding: 32px 22px;
+    text-align: center;
+    color: var(--grey-500);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .rp-placeholder strong {
+    display: block;
+    font-size: 14px;
+    color: var(--grey-700);
+    margin-bottom: 6px;
+    font-weight: 600;
   }
   .rp-scope {
     padding: 12px 22px;
@@ -2104,7 +2170,7 @@
     border-top: 1px solid var(--grey-100);
   }
   .rp-scope-label {
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -2121,10 +2187,10 @@
   }
   .rp-scope-rows .sr-scope-row strong { color: var(--grey-900); font-weight: 600; }
 
-  /* Run confirmation drawer */
+  /* Centered modal chrome */
   .sr-drawer-backdrop {
     position: fixed; inset: 0;
-    background: rgba(15, 18, 36, 0.35);
+    background: rgba(15, 18, 36, 0.10);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.15s;
@@ -2132,81 +2198,59 @@
   }
   .sr-drawer-backdrop.on { opacity: 1; pointer-events: auto; }
   .sr-drawer {
-    position: fixed; top: 0; right: 0; height: 100%;
-    width: min(440px, 92vw);
+    position: fixed;
+    top: 72px; left: 50%;
+    width: min(640px, 94vw);
+    max-height: calc(100vh - 96px);
     background: #fff;
-    box-shadow: -8px 0 24px rgba(0,0,0,0.12);
-    transform: translateX(100%);
-    transition: transform 0.18s ease;
+    border-radius: 12px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.06);
+    transform: translate(-50%, -8px);
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.18s ease;
     z-index: 81;
     display: flex; flex-direction: column;
+    overflow: hidden;
   }
-  .sr-drawer.on { transform: none; }
+  .sr-drawer.on {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
   .sr-drawer-head {
     padding: 18px 22px 14px;
-    border-bottom: 1px solid var(--grey-100);
-  }
-  .sr-drawer-eyebrow {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--brand-digital-blue-500);
-    margin-bottom: 6px;
+    flex-shrink: 0;
   }
   .sr-drawer-title {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
     color: var(--grey-900);
     margin: 0;
   }
   .sr-drawer-close {
     position: absolute;
-    top: 12px; right: 12px;
+    top: 14px; right: 14px;
     border: none; background: transparent;
     color: var(--grey-500);
     font-size: 22px;
     cursor: pointer;
     line-height: 1;
-    padding: 6px;
+    padding: 4px 8px;
     border-radius: 6px;
   }
   .sr-drawer-close:hover { background: var(--grey-50); color: var(--grey-800); }
   .sr-drawer-body {
-    padding: 18px 22px;
     overflow-y: auto;
     flex: 1;
     font-size: 13.5px;
     color: var(--grey-700);
     line-height: 1.55;
   }
-  .sr-drawer-body h4 {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--grey-500);
-    margin: 14px 0 8px;
-  }
-  .sr-drawer-body h4:first-child { margin-top: 0; }
-  .sr-scope {
-    background: var(--grey-50);
-    border: 1px solid var(--grey-100);
-    border-radius: 8px;
-    padding: 10px 12px;
-    display: flex; flex-direction: column; gap: 6px;
-    font-size: 12.5px;
-  }
-  .sr-scope .sr-scope-row {
-    display: flex; justify-content: space-between;
-    color: var(--grey-600);
-  }
-  .sr-scope .sr-scope-row strong { color: var(--grey-900); font-weight: 600; }
   .sr-drawer-foot {
     padding: 14px 22px;
     border-top: 1px solid var(--grey-100);
     display: flex; gap: 8px; justify-content: flex-end;
-    background: var(--grey-25);
+    background: #fff;
+    flex-shrink: 0;
   }
   .sr-drawer-foot .btn-secondary {
     font-family: inherit;
@@ -2232,7 +2276,11 @@
     cursor: pointer;
     display: inline-flex; align-items: center; gap: 6px;
   }
-  .sr-drawer-foot .btn-primary:hover { background: #1e2fcc; border-color: #1e2fcc; }
+  .sr-drawer-foot .btn-primary:hover:not(:disabled) { background: #1e2fcc; border-color: #1e2fcc; }
+  .sr-drawer-foot .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
   .sr-drawer-foot .btn-primary svg { width: 13px; height: 13px; }
 
   /* Inline toast after queueing */
@@ -5055,7 +5103,7 @@ function openRecipePicker(flowId) {
   const totalFiles = ft.files;
   const totalRepos = ft.repos;
   // Rescale each suggested recipe's per-row stats to the actual tree totals
-  // so the drawer's "X of Y files · N repos" lines up with the rest of the UI.
+  // so the modal's "X of Y files · N repos" lines up with the rest of the UI.
   const scaleRecipe = (r) => {
     if (!r.totalFiles || r.totalFiles === 0) return { ...r, totalFiles: totalFiles };
     const factor = totalFiles / r.totalFiles;
@@ -5066,18 +5114,41 @@ function openRecipePicker(flowId) {
   };
   const suggested = suggestedRaw.map(scaleRecipe);
 
+  // The modal classifies recipes by source so the pill filter (All / Suggested
+  // for query / Recent / Marketplace / My recipes) can mirror PR #8352's
+  // "Open existing" tab. Suggested recipes carry their relevance signal; the
+  // catalog has no real source field, so we rotate sources across the rows
+  // just to populate every pill — this is prototype data, not production.
+  const catalogSources = ['marketplace', 'recent', 'marketplace', 'builder', 'marketplace', 'recent'];
+  const classifyCatalog = (index) =>
+    catalogSources[index % catalogSources.length];
+  const subtitleFor = (source) => ({
+    suggested: `Suggested for ${queryLabel}`,
+    recent: 'Recent',
+    marketplace: 'Marketplace',
+    builder: 'My recipe'
+  })[source];
+
+  const allRecipes = [
+    ...suggested.map(r => ({ ...r, source: 'suggested' })),
+    ...catalog.map((r, i) => ({ ...r, source: classifyCatalog(i) }))
+  ];
+
   const backdrop = document.createElement('div');
   backdrop.className = 'sr-drawer-backdrop';
   backdrop.id = 'sr-drawer-backdrop';
-  const drawer = document.createElement('aside');
-  drawer.className = 'sr-drawer rp-drawer';
-  drawer.id = 'sr-drawer';
-  drawer.setAttribute('role', 'dialog');
-  drawer.setAttribute('aria-modal', 'true');
+  const modal = document.createElement('div');
+  modal.className = 'sr-drawer rp-modal';
+  modal.id = 'sr-drawer';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.setAttribute('aria-labelledby', 'rp-modal-title');
 
   const recipeRow = (r) => {
-    const pct = (r.totalFiles && r.totalFiles > 0) ? Math.round((r.files / r.totalFiles) * 100) : null;
-    const relevance = (r.kind === 'suggested' && pct !== null)
+    const pct = (r.source === 'suggested' && r.totalFiles && r.totalFiles > 0)
+      ? Math.round((r.files / r.totalFiles) * 100)
+      : null;
+    const relevance = pct !== null
       ? `<div class="rp-recipe-rel">
            <span class="sr-rel-bar"><span class="sr-rel-fill" style="width:${pct}%"></span></span>
            ${pct}% match · ${r.files.toLocaleString()} of ${r.totalFiles.toLocaleString()} files · ${r.repos} repo${r.repos === 1 ? '' : 's'}
@@ -5090,10 +5161,13 @@ function openRecipePicker(flowId) {
            data-recipe-files="${r.files ?? ''}"
            data-recipe-repos="${r.repos ?? ''}"
            data-recipe-changes="${r.changes ?? ''}"
-           data-recipe-kind="${r.kind}">
-        <span class="rp-radio" aria-hidden="true"></span>
+           data-recipe-source="${r.source}">
+        <span class="rp-recipe-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v6a6 6 0 0 0 12 0V2"/><path d="M5 22h14"/><path d="M8 22l1-4h6l1 4"/></svg>
+        </span>
         <div class="rp-recipe-text">
           <div class="rp-recipe-name">${escapeHtml(r.name)}</div>
+          <div class="rp-recipe-subtitle">${escapeHtml(subtitleFor(r.source))}</div>
           <div class="rp-recipe-desc">${escapeHtml(r.desc)}</div>
           ${relevance}
           <div class="rp-recipe-id">${escapeHtml(r.id)}</div>
@@ -5102,62 +5176,91 @@ function openRecipePicker(flowId) {
     `;
   };
 
-  drawer.innerHTML = `
-    <button type="button" class="sr-drawer-close" aria-label="Close">×</button>
-    <div class="sr-drawer-head">
-      <div class="sr-drawer-eyebrow">Run recipe</div>
-      <h2 class="sr-drawer-title">Pick a recipe to run</h2>
-      <p class="rp-sub">Against your <strong>${totalFiles.toLocaleString()}</strong> matched files. We've ranked recipes most relevant to <span class="rp-query">${escapeHtml(queryLabel)}</span> at the top.</p>
+  // "Open existing" tab markup — pills + search + bordered list. Placeholder
+  // panels for the other tabs hint at the unified-actions concept from the PR
+  // without dragging in their actual implementation (this prototype only runs
+  // recipes).
+  const existingPanelHtml = `
+    <div class="sr-drawer-body rp-body" data-panel="existing">
+      <p class="rp-sub">Pick a recipe to run against your <strong>${totalFiles.toLocaleString()}</strong> matched files. We've ranked recipes most relevant to <span class="rp-query">${escapeHtml(queryLabel)}</span> at the top.</p>
+      <div class="rp-pills" role="tablist" aria-label="Filter recipes by source">
+        <button type="button" class="rp-pill is-active" data-pill="all">All</button>
+        <button type="button" class="rp-pill" data-pill="suggested">Suggested</button>
+        <button type="button" class="rp-pill" data-pill="recent">Recent</button>
+        <button type="button" class="rp-pill" data-pill="marketplace">Marketplace</button>
+        <button type="button" class="rp-pill" data-pill="builder">My recipes</button>
+      </div>
       <div class="rp-search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" id="rp-search-input" placeholder="Search recipes by name or id…" autocomplete="off" spellcheck="false" />
+        <input type="text" id="rp-search-input" placeholder="Find a recipe" autocomplete="off" spellcheck="false" />
       </div>
-    </div>
-    <div class="sr-drawer-body rp-body">
-      ${suggested.length ? `
-        <div class="rp-group" data-group="suggested">
-          <div class="rp-group-label">Suggested for <span class="rp-query">${escapeHtml(queryLabel)}</span></div>
-          <div class="rp-group-list">${suggested.map(recipeRow).join('')}</div>
-        </div>` : ''}
-      ${catalog.length ? `
-        <div class="rp-group" data-group="catalog">
-          <div class="rp-group-label">All recipes</div>
-          <div class="rp-group-list">${catalog.map(recipeRow).join('')}</div>
-        </div>` : ''}
-      <div class="rp-empty" id="rp-empty" hidden>No recipes match your search.</div>
+      <div class="rp-list" id="rp-list">
+        ${allRecipes.map(recipeRow).join('')}
+      </div>
+      <div class="rp-empty" id="rp-empty" hidden>No matching recipes</div>
     </div>
     <div class="rp-scope" id="rp-scope" hidden>
       <div class="rp-scope-label">Selected scope</div>
       <div class="rp-scope-rows" id="rp-scope-rows"></div>
     </div>
+  `;
+
+  const placeholderPanel = (label) => `
+    <div class="sr-drawer-body" data-panel="${label.toLowerCase().replace(/\s+/g, '-')}" hidden>
+      <div class="rp-placeholder">
+        <strong>${label}</strong>
+        Not wired up in this prototype — see <span class="rp-query">moderne-ui PR #8352</span> for the production implementation.
+      </div>
+    </div>
+  `;
+
+  modal.innerHTML = `
+    <button type="button" class="sr-drawer-close" aria-label="Close">×</button>
+    <div class="sr-drawer-head">
+      <h2 class="sr-drawer-title" id="rp-modal-title">Builder recipe actions</h2>
+    </div>
+    <div class="rp-tabs" role="tablist">
+      <button type="button" class="rp-tab is-active" role="tab" aria-selected="true" data-tab="existing">Open existing</button>
+      <button type="button" class="rp-tab" role="tab" aria-selected="false" data-tab="import">Import from Yaml</button>
+      <button type="button" class="rp-tab" role="tab" aria-selected="false" data-tab="new">Create new</button>
+      <button type="button" class="rp-tab" role="tab" aria-selected="false" data-tab="manage">Manage</button>
+    </div>
+    ${existingPanelHtml}
+    ${placeholderPanel('Import from Yaml')}
+    ${placeholderPanel('Create new')}
+    ${placeholderPanel('Manage')}
     <div class="sr-drawer-foot">
       <button type="button" class="btn-secondary" id="sr-drawer-cancel">Cancel</button>
       <button type="button" class="btn-primary" id="sr-drawer-run" disabled>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Queue recipe run
+        Run recipe
       </button>
     </div>
   `;
   document.body.appendChild(backdrop);
-  document.body.appendChild(drawer);
+  document.body.appendChild(modal);
   requestAnimationFrame(() => {
     backdrop.classList.add('on');
-    drawer.classList.add('on');
-    drawer.querySelector('#rp-search-input')?.focus();
+    modal.classList.add('on');
+    modal.querySelector('#rp-search-input')?.focus();
   });
 
   let selected = null;
-  const runBtn = drawer.querySelector('#sr-drawer-run');
-  const scopeWrap = drawer.querySelector('#rp-scope');
-  const scopeRows = drawer.querySelector('#rp-scope-rows');
+  let activePill = 'all';
+  const runBtn = modal.querySelector('#sr-drawer-run');
+  const scopeWrap = modal.querySelector('#rp-scope');
+  const scopeRows = modal.querySelector('#rp-scope-rows');
+  const searchInput = modal.querySelector('#rp-search-input');
+  const emptyEl = modal.querySelector('#rp-empty');
+  const listEl = modal.querySelector('#rp-list');
 
   const renderScope = (row) => {
     if (!row) { scopeWrap.hidden = true; return; }
-    const kind = row.dataset.recipeKind;
+    const source = row.dataset.recipeSource;
     const filesVal = row.dataset.recipeFiles;
     const reposVal = row.dataset.recipeRepos;
     const changesVal = row.dataset.recipeChanges;
-    const hasMatch = kind === 'suggested' && filesVal !== '';
+    const hasMatch = source === 'suggested' && filesVal !== '';
     const rows = [
       `<div class="sr-scope-row">Trigrep query <strong>${escapeHtml(queryLabel)}</strong></div>`,
       `<div class="sr-scope-row">Matched files <strong>${hasMatch ? Number(filesVal).toLocaleString() : totalFiles.toLocaleString()}</strong></div>`,
@@ -5169,7 +5272,7 @@ function openRecipePicker(flowId) {
   };
 
   const select = (row) => {
-    drawer.querySelectorAll('.rp-recipe.is-selected').forEach(r => {
+    modal.querySelectorAll('.rp-recipe.is-selected').forEach(r => {
       r.classList.remove('is-selected');
       r.setAttribute('aria-checked', 'false');
     });
@@ -5180,37 +5283,65 @@ function openRecipePicker(flowId) {
     renderScope(row);
   };
 
-  drawer.querySelectorAll('.rp-recipe').forEach(row => {
+  modal.querySelectorAll('.rp-recipe').forEach(row => {
     row.addEventListener('click', () => select(row));
     row.addEventListener('keydown', (e) => {
       if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); select(row); }
     });
   });
 
-  // Live filter by query string
-  const searchInput = drawer.querySelector('#rp-search-input');
-  const emptyEl = drawer.querySelector('#rp-empty');
-  searchInput.addEventListener('input', () => {
+  // Pills and search filter against the same list together.
+  const applyFilter = () => {
     const q = (searchInput.value || '').trim().toLowerCase();
-    let anyVisible = false;
-    drawer.querySelectorAll('.rp-group').forEach(group => {
-      let groupVisible = false;
-      group.querySelectorAll('.rp-recipe').forEach(row => {
-        const name = (row.dataset.recipeName || '').toLowerCase();
-        const id   = (row.dataset.recipeId || '').toLowerCase();
-        const hit = !q || name.includes(q) || id.includes(q);
-        row.style.display = hit ? '' : 'none';
-        if (hit) groupVisible = true;
-      });
-      group.style.display = groupVisible ? '' : 'none';
-      if (groupVisible) anyVisible = true;
+    let visible = 0;
+    listEl.querySelectorAll('.rp-recipe').forEach(row => {
+      const name = (row.dataset.recipeName || '').toLowerCase();
+      const id   = (row.dataset.recipeId || '').toLowerCase();
+      const source = row.dataset.recipeSource;
+      const matchesText = !q || name.includes(q) || id.includes(q);
+      const matchesPill = activePill === 'all' || activePill === source;
+      const hit = matchesText && matchesPill;
+      row.style.display = hit ? '' : 'none';
+      if (hit) visible++;
     });
-    emptyEl.hidden = anyVisible;
+    emptyEl.hidden = visible > 0;
+    listEl.style.display = visible > 0 ? '' : 'none';
+  };
+  searchInput.addEventListener('input', applyFilter);
+  modal.querySelectorAll('.rp-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      modal.querySelectorAll('.rp-pill').forEach(p => p.classList.remove('is-active'));
+      pill.classList.add('is-active');
+      activePill = pill.dataset.pill;
+      applyFilter();
+    });
+  });
+
+  // Tab switching — show one panel at a time. Run-recipe footer is only
+  // meaningful on the Open existing tab; disable it on the placeholder tabs.
+  const panels = modal.querySelectorAll('.sr-drawer-body');
+  modal.querySelectorAll('.rp-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      modal.querySelectorAll('.rp-tab').forEach(t => {
+        t.classList.remove('is-active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('is-active');
+      tab.setAttribute('aria-selected', 'true');
+      const target = tab.dataset.tab === 'existing' ? 'existing'
+        : tab.dataset.tab === 'import' ? 'import-from-yaml'
+        : tab.dataset.tab === 'new' ? 'create-new'
+        : 'manage';
+      panels.forEach(p => { p.hidden = p.dataset.panel !== target; });
+      const onExisting = tab.dataset.tab === 'existing';
+      scopeWrap.hidden = !onExisting || !selected;
+      runBtn.disabled = !onExisting || !selected;
+    });
   });
 
   backdrop.addEventListener('click', closeRunDrawer);
-  drawer.querySelector('.sr-drawer-close').addEventListener('click', closeRunDrawer);
-  drawer.querySelector('#sr-drawer-cancel').addEventListener('click', closeRunDrawer);
+  modal.querySelector('.sr-drawer-close').addEventListener('click', closeRunDrawer);
+  modal.querySelector('#sr-drawer-cancel').addEventListener('click', closeRunDrawer);
   runBtn.addEventListener('click', () => {
     if (!selected) return;
     const recipe = {
