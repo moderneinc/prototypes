@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderne — Org level error</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Real Neo Design tokens (@moderneinc/neo-design). Local --brand-*/--surface-*/etc.
+     below are aliased onto these by value. -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/colors.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/semantic-colors.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/border-radius.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/shadows.css">
+<style>
+:root{
+  /* Local prototype tokens aliased onto real Neo Design tokens (loaded
+     in <head>). Mapped by value — the prototype's scales are Neo's
+     scales shifted ~one step. */
+  --brand-white:var(--neo-surfaces-white);
+  --brand-digital-blue-100:var(--neo-digital-blue-50);--brand-digital-blue-200:var(--neo-digital-blue-100);--brand-digital-blue-300:var(--neo-digital-blue-200);
+  --brand-digital-blue-400:var(--neo-digital-blue-300);--brand-digital-blue-500:var(--neo-digital-blue-500);--brand-digital-blue-600:var(--neo-digital-blue-600);
+  --brand-digital-blue-700:var(--neo-digital-blue-700);--brand-digital-blue-800:var(--neo-digital-blue-800);
+  --brand-green-100:var(--neo-digital-green-50);--brand-green-200:var(--neo-digital-green-100);--brand-green-500:var(--neo-digital-green-400);--brand-green-600:var(--neo-digital-green-500);--brand-green-700:var(--neo-digital-green-600);--brand-green-800:var(--neo-digital-green-700);
+  --brand-red-100:var(--neo-red-50);--brand-red-500:var(--neo-red-400);--brand-red-600:var(--neo-red-500);--brand-red-700:var(--neo-red-600);
+  --brand-orange-100:var(--neo-orange-50);--brand-orange-600:var(--neo-orange-500);--brand-orange-700:var(--neo-orange-600);--brand-orange-800:var(--neo-orange-700);
+  --brand-grey-100:var(--neo-grey-50);--brand-grey-200:var(--neo-grey-100);--brand-grey-300:var(--neo-grey-200);--brand-grey-400:var(--neo-grey-300);
+  --brand-grey-500:var(--neo-grey-400);--brand-grey-600:var(--neo-grey-500);--brand-grey-700:var(--neo-grey-600);--brand-grey-800:var(--neo-grey-700);--brand-grey-900:var(--neo-grey-800);--brand-grey-1000:var(--neo-grey-900);
+  --brand-violet-500:var(--neo-violet-400);
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-code:'JetBrains Mono','Fira Code','Consolas',monospace;
+  --surface-primary:var(--neo-surfaces-white);--surface-page:var(--neo-surfaces-page);--surface-tertiary:var(--brand-grey-200);
+  --text-primary:var(--brand-grey-1000);--text-secondary:var(--brand-grey-600);--text-tertiary:var(--brand-grey-500);
+  --text-information:var(--brand-digital-blue-700);
+  --border-primary:var(--brand-grey-300);--border-secondary:var(--brand-grey-400);
+  /* Neo radius tokens are unitless numbers — multiply by 1px. */
+  --radius-sm:calc(var(--neo-border-radius-x-s) * 1px);--radius-md:6px;--radius-lg:calc(var(--neo-border-radius-s) * 1px);--radius-xl:calc(var(--neo-border-radius-m) * 1px);--radius-full:calc(var(--neo-border-radius-full) * 1px);
+  --shadow-xs:var(--neo-shadow-neutral-small);--shadow-sm:var(--neo-shadow-card);
+  --shadow-md:var(--neo-shadow-neutral-medium);--shadow-lg:var(--neo-shadow-neutral-large1),var(--neo-shadow-neutral-large2);
+  --transition-fast:150ms ease;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--surface-page);color:var(--text-primary);font-family:var(--font-body);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.55;overflow:hidden;}
+button{font:inherit;cursor:pointer;}
+.mono{font-family:var(--font-code);}
+.svg-stroke{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+.shell{height:100vh;display:grid;grid-template-columns:98px 1fr;grid-template-rows:65px 1fr;grid-template-areas:"nav topbar" "nav main";background:var(--surface-page);overflow:hidden;}
+
+/* left rail */
+.left-nav{grid-area:nav;width:98px;display:flex;flex-direction:column;justify-content:space-between;padding:2px 8px 24px;background:var(--surface-page);z-index:10;}
+.left-nav-top{display:flex;flex-direction:column;gap:4px;width:100%;}
+.nav-home-stack{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:2px;padding:4px 0;}
+.nav-item-home{padding:0 4px;}.nav-item-home .nav-icon-container{padding:4px;}
+.nav-version-badge{display:inline-flex;align-items:center;justify-content:center;height:18px;padding:0 8px;border-radius:999px;background:linear-gradient(135deg,var(--brand-digital-blue-500),var(--brand-violet-500));color:#fff;font-size:11px;font-weight:600;line-height:1;}
+.nav-item{width:100%;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;border-radius:var(--radius-lg);position:relative;background:transparent;}
+.nav-icon-container{display:flex;align-items:center;justify-content:center;padding:8px;border-radius:var(--radius-lg);border:1px solid transparent;background:transparent;transition:background-color 150ms,border-color 150ms;}
+.nav-item:hover .nav-icon-container,.nav-item.active .nav-icon-container{background:var(--brand-digital-blue-100);border-color:var(--brand-digital-blue-200);}
+.nav-item svg{width:22px;height:22px;min-width:22px;color:var(--brand-grey-900);flex-shrink:0;}
+.nav-label{font-size:11px;font-weight:400;line-height:1;color:var(--brand-grey-900);text-align:center;width:100%;transition:color 150ms;}
+.nav-item:hover .nav-label{color:var(--brand-digital-blue-600);}
+.nav-item.active .nav-label{font-weight:600;color:var(--brand-digital-blue-800);}
+/* tenant / org branding placeholder (bottom of rail) */
+.nav-tenant{display:flex;flex-direction:column;align-items:center;width:100%;padding:4px 0;}
+.tenant-logo{width:46px;height:46px;border-radius:var(--radius-lg);background:var(--brand-digital-blue-800);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:600;line-height:1.15;letter-spacing:.01em;}
+
+/* main */
+.main-area{grid-area:main;display:flex;flex-direction:column;overflow:hidden;position:relative;min-height:0;z-index:11;background:var(--surface-primary);border-top-left-radius:20px;box-shadow:-1px 0 0 var(--border-primary),0 -1px 0 var(--border-primary),0 -5px 24px -4px rgba(176,141,152,.10),-12px 0 28px -6px rgba(176,141,152,.20);}
+
+/* global nav */
+.global-nav{grid-area:topbar;height:65px;display:flex;align-items:center;gap:12px;padding:12px 20px;flex-shrink:0;position:relative;width:100%;background:var(--surface-page);}
+.global-nav::before{content:'';position:absolute;left:50%;top:70%;transform:translate(-50%,-50%);width:1000px;max-width:90%;height:65px;background:radial-gradient(ellipse at center,var(--brand-red-100) 0%,var(--brand-red-100) 40%,transparent 70%);filter:blur(20px);z-index:0;pointer-events:none;}
+.global-nav>*{position:relative;z-index:1;}
+.org-selector{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-primary);padding:10px 16px;border-radius:var(--radius-full);background:var(--surface-primary);border:1px solid var(--border-secondary);white-space:nowrap;transition:all var(--transition-fast);}
+.org-selector:hover{background:var(--brand-grey-200);}
+.org-selector{min-width:0;}
+.org-selector .org-name{font-weight:500;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;}
+.nav-spacer{flex:1;}
+.search-input{height:40px;border-radius:var(--radius-full);border:1px solid var(--border-secondary);padding:10px 16px;font-size:14px;color:var(--text-tertiary);background:var(--surface-primary);display:flex;align-items:center;gap:12px;width:280px;user-select:none;}
+.search-input:hover{background:var(--brand-grey-200);}.search-input>span:first-of-type{flex:1;}
+.search-input-keys{display:inline-flex;gap:2px;}
+.search-input kbd{font-size:10px;background:var(--surface-tertiary);padding:2px 6px;border-radius:var(--radius-sm);color:var(--text-tertiary);border:1px solid var(--border-primary);min-width:18px;text-align:center;}
+.nav-actions{display:flex;align-items:center;gap:4px;}
+.nav-action-btn{width:40px;height:40px;border-radius:64px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--brand-grey-900);transition:background var(--transition-fast);}
+.nav-action-btn:hover{background:var(--brand-grey-200);}.nav-action-btn svg{width:20px;height:20px;}
+.avatar{width:32px;height:32px;border-radius:var(--radius-full);background:#E45A4F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;}
+
+/* page top */
+.page-top{padding:28px 32px 0;flex-shrink:0;}
+.crumbs{display:flex;align-items:center;gap:8px;color:var(--text-secondary);font-size:13px;padding:0 0 10px;}
+.crumbs a{color:var(--brand-digital-blue-600);font-weight:600;text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+.crumbs .sep{display:inline-flex;align-items:center;color:var(--brand-grey-400);}.crumbs .sep svg{width:13px;height:13px;}
+.run-title{position:relative;display:inline-block;max-width:720px;}
+.run-title h1{font-family:'Inter',sans-serif;font-weight:500;font-size:18px;line-height:24px;color:rgb(52,58,64);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* Custom tooltip: shows the full title on hover, only when truncated
+   (the is-truncated class is set by JS when the h1 overflows). */
+.run-title.is-truncated:hover::after{
+  content:attr(data-tooltip);
+  position:absolute;top:calc(100% + 6px);left:0;z-index:60;
+  max-width:520px;padding:8px 12px;
+  background:var(--brand-grey-900);color:#fff;
+  border:1px solid var(--brand-grey-800);border-radius:var(--radius-md);
+  box-shadow:var(--shadow-lg);
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:500;line-height:18px;
+  white-space:normal;pointer-events:none;
+}
+.run-title.is-truncated:hover::before{
+  content:'';position:absolute;top:calc(100% + 1px);left:18px;z-index:61;
+  border:5px solid transparent;border-bottom-color:var(--brand-grey-900);
+  pointer-events:none;
+}
+.run-subhead{font-family:'Inter',sans-serif;font-weight:500;font-size:14px;line-height:20px;color:rgb(52,58,64);margin-bottom:12px;}
+.run-status-row{display:flex;align-items:center;gap:12px;margin-bottom:2px;}
+.run-chip{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px 0 8px;border-radius:var(--radius-full);font-size:13px;font-weight:600;}
+.run-chip svg{width:17px;height:17px;}
+.run-chip.done{background:var(--brand-green-100);color:var(--brand-green-800);border:1px solid var(--brand-green-200);}
+.run-meta{font-size:12.5px;color:var(--text-tertiary);}
+.savings-chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text-primary);white-space:nowrap;}
+.savings-chip svg{width:15px;height:15px;color:var(--text-secondary);}
+.savings-chip strong{font-weight:700;}
+.savings-chip .lbl{font-weight:500;color:var(--text-secondary);}
+
+.tabs{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border-primary);margin-top:14px;}
+.tab{position:relative;padding:12px 18px;font-size:14px;font-weight:500;color:var(--text-secondary);background:transparent;border:none;cursor:pointer;}
+.tab:hover{color:var(--text-primary);}
+.tab.active{color:var(--text-information);font-weight:600;}
+.tab.active::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--brand-digital-blue-500);border-radius:2px 2px 0 0;}
+.tabs-spacer{flex:1;}
+.tabs-actions{display:flex;gap:4px;padding-bottom:6px;}
+.icon-btn{width:32px;height:32px;border-radius:var(--radius-md);display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;color:var(--text-secondary);transition:background var(--transition-fast);}
+.icon-btn:hover{background:var(--brand-grey-200);color:var(--text-primary);}
+.icon-btn svg{width:16px;height:16px;}
+
+/* ===== Results layout ===== */
+.results-layout{flex:1;min-height:0;display:grid;grid-template-columns:var(--left-w,40%) 7px 1fr;gap:0;overflow:hidden;}
+.results-left{overflow-y:auto;padding:18px 24px 18px 32px;min-width:0;container-type:inline-size;}
+.results-right{overflow-y:auto;padding:24px;background:var(--brand-grey-100);min-width:0;}
+.results-divider{position:relative;cursor:col-resize;background:transparent;}
+.results-divider::before{content:'';position:absolute;left:3px;top:0;bottom:0;width:1px;background:var(--border-primary);transition:background var(--transition-fast),width var(--transition-fast);}
+.results-divider:hover::before,.results-divider.dragging::before{background:var(--brand-digital-blue-400);width:2px;left:2.5px;}
+.results-divider::after{content:'';position:absolute;left:1px;top:50%;transform:translateY(-50%);width:4px;height:30px;border-radius:3px;background:var(--brand-grey-300);opacity:0;transition:opacity var(--transition-fast);}
+.results-divider:hover::after,.results-divider.dragging::after{opacity:1;background:var(--brand-digital-blue-400);}
+body.col-resizing{cursor:col-resize;user-select:none;}
+
+/* Options / Summary */
+.rd{margin-bottom:6px;border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:12px 14px;}
+.rd-headrow{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:3px;}
+.rd-spacer{flex:1;}
+.rd-toggle{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;background:transparent;border:none;color:var(--text-tertiary);border-radius:var(--radius-sm);}
+.rd-toggle:hover{color:var(--text-primary);background:var(--brand-grey-100);}
+.rd-toggle svg{width:15px;height:15px;}
+#rd.rd-hidden .rd-bodies{display:none;}
+#rd.rd-hidden .rd-headrow{margin-bottom:0;}
+#rd.rd-hidden{padding-top:7px;padding-bottom:7px;}
+.section-toggle{display:inline-flex;align-items:center;gap:7px;background:transparent;border:none;padding:3px 0;font-size:13px;font-weight:600;color:var(--text-primary);}
+.section-toggle .chev{transform:rotate(90deg);transition:transform var(--transition-fast);color:var(--text-tertiary);}
+.section-toggle.collapsed .chev{transform:rotate(0deg);}
+.section-toggle svg{width:14px;height:14px;}
+.section-body{padding-top:4px;margin-bottom:5px;}
+.section-body.collapsed{display:none;}
+.opt-list{display:grid;grid-template-columns:1fr 1fr;gap:2px 24px;padding-left:13px;}
+.opt-item{font-size:12px;color:var(--text-secondary);font-family:var(--font-code);}
+.opt-item b{color:var(--text-primary);font-weight:600;}
+.opt-empty{display:none;font-size:12px;font-style:italic;color:var(--text-tertiary);margin-bottom:6px;}
+body.opts-none #opt-body{display:none;}
+body.opts-none .opt-empty{display:block;}
+
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:1px 24px;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);padding:7px 12px;}
+.summary-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:1px 0;font-size:12.5px;}
+.summary-key{color:var(--text-secondary);}
+.summary-val{color:var(--text-primary);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.summary-val.link{color:var(--text-information);cursor:pointer;font-weight:600;}
+.summary-val.good{color:var(--brand-green-700);}
+
+/* Results header + filters */
+.results-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0 8px;}
+.results-head h2{font-size:14px;font-weight:600;color:var(--text-primary);flex-shrink:0;}
+.results-head .count{font-size:12.5px;color:var(--text-tertiary);}
+.seg{flex-shrink:0;}
+.seg{display:inline-flex;align-items:stretch;height:30px;padding:2px;background:var(--brand-grey-200);border-radius:var(--radius-md);}
+.seg-btn{display:inline-flex;align-items:center;gap:6px;padding:0 12px;background:transparent;border:none;border-radius:var(--radius-sm);color:var(--text-secondary);font-size:12.5px;font-weight:500;white-space:nowrap;}
+.seg-btn:hover{color:var(--text-primary);}
+.seg-btn.active{background:var(--surface-primary);color:var(--brand-digital-blue-700);box-shadow:var(--shadow-xs);}
+.seg-btn .seg-count{font-size:11px;color:var(--text-tertiary);}
+.seg-btn.active .seg-count{color:var(--brand-digital-blue-600);}
+
+.tbl-search{position:relative;display:flex;align-items:center;flex:1 1 170px;min-width:150px;}
+.tbl-search svg{position:absolute;left:10px;width:14px;height:14px;color:var(--text-tertiary);}
+.tbl-search input{width:100%;height:30px;padding:0 10px 0 30px;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-md);font-size:12.5px;color:var(--text-primary);font-family:var(--font-body);outline:none;}
+.tbl-search input:focus{border-color:var(--brand-digital-blue-400);box-shadow:0 0 0 3px var(--brand-digital-blue-100);}
+
+/* Repo tree */
+.tree{border:1px solid var(--border-primary);border-radius:var(--radius-lg);overflow:hidden;background:var(--surface-primary);}
+.tree-head{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--brand-grey-100);border-bottom:1px solid var(--border-primary);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-tertiary);}
+.tree-head .th-results{margin-left:auto;}
+.org-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--brand-grey-200);cursor:pointer;}
+.org-row:hover{background:var(--brand-grey-100);}
+.org-name{font-weight:600;color:var(--text-primary);font-size:13px;display:inline-flex;align-items:center;gap:7px;}
+.org-name svg{width:15px;height:15px;color:var(--text-secondary);}
+.org-row .org-results{margin-left:auto;font-size:12px;color:var(--text-tertiary);}
+.chev-btn{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;color:var(--text-tertiary);border:none;background:transparent;flex-shrink:0;}
+.chev-btn svg{width:14px;height:14px;transition:transform var(--transition-fast);}
+.chev-btn.collapsed svg{transform:rotate(-90deg);}
+
+.repo-row{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 28px;border-bottom:1px solid var(--brand-grey-200);cursor:pointer;transition:background var(--transition-fast);position:relative;}
+.repo-row:hover{background:var(--brand-grey-100);}
+.repo-row.active{background:var(--brand-digital-blue-100);}
+.repo-chev{flex-shrink:0;}
+
+/* nested file rows (tree level 3) */
+.tree-file{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 72px;border-bottom:1px solid var(--brand-grey-200);background:var(--brand-grey-100);cursor:pointer;position:relative;}
+.tree-file:hover{background:var(--brand-grey-200);}
+.tree-file .tf-icon{width:14px;height:14px;color:var(--text-tertiary);flex-shrink:0;}
+.tree-file .tf-path{font-family:var(--font-code);font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tree-file .tf-count{margin-left:auto;font-size:11px;color:var(--text-tertiary);white-space:nowrap;}
+.repo-main{display:flex;align-items:center;gap:7px;min-width:0;}
+.repo-name{font-size:13px;color:var(--text-primary);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.repo-branch{font-size:11.5px;color:var(--text-tertiary);font-family:var(--font-code);}
+.repo-spacer{flex:1;}
+.repo-results{font-size:12.5px;color:var(--text-information);font-weight:600;white-space:nowrap;}
+.repo-results.none{color:var(--text-tertiary);font-weight:500;}
+.repo-results.error{color:var(--text-error,var(--brand-red-600));font-weight:600;}
+/* Status shapes (not color alone) for color-blind accessibility.
+   All solid fills, no outline:
+   success = green circle, No LST = amber triangle, errored = red square. */
+.repo-status-dot{width:9px;height:9px;flex-shrink:0;}
+.repo-status-dot.ok{background:var(--brand-green-600);border-radius:50%;}
+.repo-status-dot.none{background:var(--brand-orange-600);clip-path:polygon(50% 0,100% 100%,0 100%);}
+.repo-status-dot.error{background:var(--brand-red-600);border-radius:1.5px;}
+
+.load-more{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px 12px;background:var(--brand-grey-100);border:none;border-top:1px solid var(--brand-grey-200);font-size:12.5px;font-weight:600;color:var(--text-information);cursor:pointer;}
+.load-more:hover{background:var(--brand-grey-200);}
+.load-more .lm-rest{font-weight:500;color:var(--text-tertiary);}
+
+.ckbox{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:none;border-radius:0;cursor:pointer;flex-shrink:0;vertical-align:middle;background:transparent no-repeat center/18px 18px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D1D5DB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3C/svg%3E");}
+.ckbox:hover{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238D99FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3C/svg%3E");}
+.ckbox:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232637E6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E");}
+.ckbox:indeterminate{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232637E6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E");}
+
+/* Right detail pane */
+.detail-empty{height:100%;min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;color:var(--text-tertiary);border:1.5px dashed var(--border-secondary);border-radius:var(--radius-xl);background:var(--surface-primary);}
+.detail-empty .ic{width:46px;height:46px;border-radius:var(--radius-lg);background:var(--brand-digital-blue-100);color:var(--brand-digital-blue-600);display:inline-flex;align-items:center;justify-content:center;}
+.detail-empty .ic svg{width:24px;height:24px;}
+.detail-empty .et{font-size:14px;color:var(--text-secondary);max-width:260px;line-height:1.5;}
+
+.repo-detail{background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-xl);overflow:hidden;}
+.repo-detail-head{padding:16px 18px;border-bottom:1px solid var(--border-primary);}
+.repo-detail-title{font-size:16px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px;}
+.repo-detail-title .repo-branch{font-size:12px;}
+.repo-detail-sub{font-size:12.5px;color:var(--text-secondary);margin-top:4px;}
+.repo-detail-sub b{color:var(--text-primary);font-weight:600;}
+/* ===== Errored-result log panel ===== */
+.err-context{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.err-context .repo-branch{font-weight:400;}
+.err-panel{background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);overflow:hidden;}
+.err-head{display:flex;align-items:center;gap:9px;padding:11px 14px;border-bottom:1px solid var(--border-primary);}
+.err-head .err-ic{width:18px;height:18px;color:var(--brand-red-600);flex-shrink:0;}
+.err-head h4{font-size:13.5px;font-weight:600;color:var(--text-primary);}
+.err-head .err-actions{margin-left:auto;display:flex;gap:2px;}
+.err-head .err-actions button{width:28px;height:28px;border-radius:var(--radius-md);display:inline-flex;align-items:center;justify-content:center;color:var(--text-tertiary);background:transparent;border:1px solid transparent;}
+.err-head .err-actions button:hover{background:var(--brand-grey-100);color:var(--text-primary);border-color:var(--border-primary);}
+.err-head .err-actions svg{width:15px;height:15px;}
+.err-log{max-height:460px;overflow:auto;background:var(--brand-grey-100);font-family:var(--font-code);font-size:11.5px;line-height:1.7;padding:8px 0;}
+.err-log .ln{display:flex;}
+.err-log .ln .n{flex:0 0 auto;width:44px;text-align:right;padding:0 12px 0 8px;color:var(--brand-grey-400);user-select:none;}
+.err-log .ln .c{white-space:pre;color:var(--brand-red-700);padding-right:16px;}
+.err-log .ln.dim .c{color:var(--text-tertiary);}
+/* run-chip error states */
+.run-chip.errored{background:var(--brand-red-100);color:var(--brand-red-700);border:1px solid color-mix(in srgb,var(--brand-red-600) 30%,transparent);}
+.run-chip.errored svg circle{fill:var(--brand-red-600);}
+/* ===== Org-level error banner (FIX: demote run error, keep results committable) ===== */
+.run-banner{display:flex;align-items:center;gap:11px;padding:11px 32px;background:var(--brand-orange-100);border-bottom:1px solid color-mix(in srgb,var(--brand-orange-600) 38%,transparent);color:var(--brand-orange-800);font-size:13px;flex-shrink:0;}
+.run-banner[hidden]{display:none;}
+.run-banner .rb-warn{width:18px;height:18px;color:var(--brand-orange-700);flex-shrink:0;}
+.run-banner b{font-weight:600;}
+.run-banner .rb-spacer{flex:1;}
+.run-banner .rb-view{display:inline-flex;align-items:center;gap:6px;color:var(--brand-red-700);font-weight:600;background:var(--surface-primary);border:1px solid color-mix(in srgb,var(--brand-red-600) 32%,transparent);border-radius:var(--radius-full);padding:4px 12px;font-size:12.5px;flex-shrink:0;}
+.run-banner .rb-view:hover{background:var(--brand-red-100);}
+.run-banner .rb-view svg{width:13px;height:13px;}
+.run-banner .rb-dismiss{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:var(--radius-md);color:var(--brand-orange-800);flex-shrink:0;}
+.run-banner .rb-dismiss:hover{background:color-mix(in srgb,var(--brand-orange-600) 18%,transparent);}
+.run-banner .rb-dismiss svg{width:15px;height:15px;}
+/* error popover (full message + copy, reachable on demand) */
+.err-pop{position:fixed;z-index:90;width:600px;max-width:92vw;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);}
+.err-pop .err-panel{border-radius:var(--radius-lg);}
+.err-scrim{position:fixed;inset:0;z-index:89;}
+/* total-failure full-screen panel (only when zero repositories completed) */
+#total-fail{flex:1;min-height:0;overflow:auto;padding:26px 32px;}
+.total-fail-head{display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;margin:8px 0 18px;}
+.total-fail-head .tf-ic{width:50px;height:50px;border-radius:50%;background:var(--brand-red-100);color:var(--brand-red-600);display:inline-flex;align-items:center;justify-content:center;}
+.total-fail-head .tf-ic svg{width:26px;height:26px;}
+.total-fail-head h2{font-size:19px;font-weight:600;color:var(--text-primary);}
+.total-fail-head p{font-size:13px;color:var(--text-secondary);}
+.total-fail-inner{max-width:780px;margin:0 auto;}
+.file-row{border-bottom:1px solid var(--brand-grey-200);}
+.file-row:last-child{border-bottom:none;}
+.file-head{display:flex;align-items:center;gap:8px;padding:10px 16px;cursor:pointer;}
+.file-head:hover{background:var(--brand-grey-100);}
+.file-path{font-family:var(--font-code);font-size:12px;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.file-count{margin-left:auto;font-size:11.5px;color:var(--text-tertiary);white-space:nowrap;}
+.file-snippet{padding:0 16px 12px 40px;display:none;}
+.file-row.open .file-snippet{display:block;}
+.file-row.open .file-chev svg{transform:rotate(0deg);}
+.file-chev svg{transform:rotate(-90deg);transition:transform var(--transition-fast);width:13px;height:13px;color:var(--text-tertiary);}
+.snippet{background:var(--brand-grey-100);border:1px solid var(--brand-grey-200);border-radius:var(--radius-md);padding:8px 10px;font-family:var(--font-code);font-size:11.5px;color:var(--text-secondary);overflow:auto;}
+.snippet .ln{color:var(--text-tertiary);user-select:none;margin-right:12px;}
+.snippet mark{background:var(--brand-orange-100);color:var(--brand-orange-800);border-radius:2px;padding:0 2px;}
+
+/* ===== Diff view (right detail pane) ===== */
+.detail-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.dt-title{font-size:15px;font-weight:600;color:var(--text-primary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dt-title .repo-branch{font-size:12px;}
+.dt-actions{margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.dt-btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;font-size:12.5px;font-weight:500;background:#fff;border:1px solid var(--border-primary);border-radius:var(--radius-full);color:var(--text-secondary);white-space:nowrap;}
+.dt-btn:hover{background:var(--brand-grey-100);color:var(--text-primary);}
+.dt-btn svg{width:14px;height:14px;}
+.dt-btn.primary{background:var(--brand-digital-blue-500);border-color:var(--brand-digital-blue-500);color:#fff;}
+.dt-btn.primary:hover{background:var(--brand-digital-blue-600);}
+.dt-btn.secondary{background:#fff;border-color:var(--brand-digital-blue-300);color:var(--brand-digital-blue-700);}
+.dt-btn.secondary:hover{background:var(--brand-digital-blue-100);border-color:var(--brand-digital-blue-400);}
+.dt-split{display:inline-flex;align-items:stretch;border:1px solid var(--brand-digital-blue-500);border-radius:var(--radius-full);overflow:hidden;background:#fff;flex-shrink:0;white-space:nowrap;}
+.dt-split>button{background:#fff;border:none;color:var(--brand-digital-blue-700);font-size:13px;font-weight:600;white-space:nowrap;}
+.dt-split>button:hover{background:var(--brand-digital-blue-100);}
+.dt-split .dt-split-main{display:inline-flex;align-items:center;gap:7px;padding:0 14px 0 16px;height:32px;}
+.dt-split .dt-split-caret{display:inline-flex;align-items:center;justify-content:center;width:30px;height:32px;padding-right:4px;border-left:1px solid var(--brand-digital-blue-200);}
+.dt-split svg{width:14px;height:14px;}
+
+/* Repository information grid */
+.info-grid{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;padding:8px 10px 6px;align-items:start;}
+.info-k{font-size:12.5px;color:var(--text-secondary);padding-top:1px;}
+.info-v{display:flex;align-items:center;gap:8px;min-width:0;font-size:12.5px;}
+.info-v .gh-ic{width:16px;height:16px;color:var(--text-primary);flex-shrink:0;}
+.info-link{display:inline-flex;align-items:center;gap:5px;color:var(--brand-digital-blue-600);text-decoration:none;font-family:var(--font-code);font-size:11.5px;word-break:break-all;}
+.info-link:hover{text-decoration:underline;}
+.info-link .ext{width:12px;height:12px;flex-shrink:0;}
+.info-plain{color:var(--text-primary);}
+
+.diff-file{border:1px solid var(--border-primary);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;background:#fff;}
+.diff-file-head{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--brand-grey-100);border-bottom:1px solid var(--border-primary);font-family:var(--font-code);font-size:12px;cursor:pointer;}
+.diff-file.collapsed .diff-body{display:none;}
+.diff-file.collapsed .diff-file-head{border-bottom:none;}
+.diff-chev{width:13px;height:13px;color:var(--text-tertiary);transition:transform var(--transition-fast);flex-shrink:0;}
+.diff-file.collapsed .diff-chev{transform:rotate(-90deg);}
+.diff-fileicon{width:14px;height:14px;color:var(--text-tertiary);flex-shrink:0;}
+.diff-file-path{color:var(--text-primary);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.diff-hunk{color:var(--text-tertiary);flex-shrink:0;}
+.diff-file-actions{margin-left:auto;display:flex;align-items:center;gap:2px;flex-shrink:0;}
+.diff-act{width:26px;height:26px;border-radius:5px;border:1px solid transparent;background:transparent;color:var(--text-tertiary);display:inline-flex;align-items:center;justify-content:center;}
+.diff-act:hover{background:#fff;border-color:var(--border-primary);color:var(--text-primary);}
+.diff-act svg{width:15px;height:15px;}
+.diff-act.checked{color:var(--brand-digital-blue-600);}
+.ckbox.diff-check:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E");}
+.diff-body{font-family:var(--font-code);font-size:12px;line-height:1.7;overflow-x:auto;}
+.diff-line{display:flex;min-width:max-content;}
+.diff-gutter{display:flex;flex:0 0 auto;color:var(--text-tertiary);background:#FBFBFD;user-select:none;}
+.diff-gutter .n{width:38px;text-align:right;padding:0 6px;}
+.diff-sign{width:16px;text-align:center;color:var(--text-tertiary);flex:0 0 auto;user-select:none;}
+.diff-code{padding:0 12px 0 4px;white-space:pre;color:var(--text-primary);}
+.diff-line.del{background:#FDECEC;}
+.diff-line.del .diff-gutter{background:#FAD9D9;}
+.diff-line.del .diff-sign{color:#CB3446;}
+.diff-line.add{background:#E8F7EC;}
+.diff-line.add .diff-gutter{background:#D3EFDA;}
+.diff-line.add .diff-sign{color:#3B8948;}
+.diff-code .k{color:#A92232;}
+.diff-code .a{color:#1E2EC2;}
+.diff-code .c{color:var(--text-tertiary);font-style:italic;}
+.dt-btn.icon{width:32px;padding:0;justify-content:center;}
+.dt-btn.icon.active{background:var(--brand-digital-blue-100);border-color:var(--brand-digital-blue-300);color:var(--brand-digital-blue-700);}
+
+/* inline file filter (revealed from the diff menu) */
+.diff-filter{display:flex;align-items:center;position:relative;margin:-4px 0 14px;}
+.diff-filter[hidden]{display:none;}
+.diff-filter svg{position:absolute;left:11px;width:14px;height:14px;color:var(--text-tertiary);pointer-events:none;}
+.diff-filter input{width:100%;height:34px;padding:0 12px 0 33px;border:1px solid var(--border-primary);border-radius:var(--radius-md);font-size:13px;font-family:var(--font-body);color:var(--text-primary);outline:none;}
+.diff-filter input:focus{border-color:var(--brand-digital-blue-400);box-shadow:0 0 0 3px var(--brand-digital-blue-100);}
+.diff-file.hide{display:none;}
+
+/* GitHub-style dropdown menu */
+.gh-menu{position:fixed;z-index:90;min-width:230px;background:#fff;border:1px solid var(--border-primary);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:6px;}
+.gh-menu[hidden]{display:none;}
+.gh-menu-label{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-tertiary);padding:6px 10px 4px;}
+.gh-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:none;background:transparent;border-radius:var(--radius-md);font-size:13px;color:var(--text-primary);text-align:left;cursor:pointer;}
+.gh-item:hover{background:var(--brand-grey-100);}
+.gh-item>svg{width:16px;height:16px;color:var(--text-secondary);flex-shrink:0;}
+.gh-item.danger{color:var(--brand-red-600);}
+.gh-item.danger>svg{color:var(--brand-red-600);}
+.gh-divider{height:1px;background:var(--border-primary);margin:5px 0;}
+.tgl{width:30px;height:18px;border-radius:9px;background:var(--brand-grey-300);position:relative;flex-shrink:0;margin-left:auto;transition:background var(--transition-fast);}
+.tgl::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform var(--transition-fast);}
+.gh-item.on .tgl{background:var(--brand-digital-blue-500);}
+.gh-item.on .tgl::after{transform:translateX(12px);}
+.gh-caret{margin-left:auto;width:14px;height:14px;color:var(--text-tertiary);}
+.gh-item.two-line{flex-direction:column;align-items:flex-start;gap:1px;}
+.gh-item .gi-title{font-size:13px;color:var(--text-primary);}
+.gh-item .gi-sub{font-size:11.5px;color:var(--text-tertiary);}
+.gh-menu.wide{min-width:320px;max-width:344px;max-height:min(560px,80vh);overflow-y:auto;}
+.set-back{font-weight:600;}
+.set-back>svg{transform:rotate(180deg);}
+.gh-hint{font-size:11.5px;color:var(--text-information);padding:0 10px 6px;line-height:1.4;}
+.font-row{display:flex;align-items:center;gap:6px;padding:8px 10px 4px;}
+.font-name{flex:1;min-width:0;height:30px;border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:0 10px;font-size:12.5px;font-family:var(--font-body);outline:none;}
+.font-size{width:46px;height:30px;border:1px solid var(--border-primary);border-radius:var(--radius-md);padding:0 8px;font-size:12.5px;text-align:center;font-family:var(--font-body);outline:none;}
+.font-name:focus,.font-size:focus{border-color:var(--brand-digital-blue-400);box-shadow:0 0 0 3px var(--brand-digital-blue-100);}
+.font-save{height:30px;padding:0 14px;background:var(--brand-digital-blue-500);color:#fff;border:none;border-radius:var(--radius-full);font-size:12.5px;font-weight:600;}
+.font-save:hover{background:var(--brand-digital-blue-600);}
+.font-reset{height:30px;padding:0 8px;background:transparent;border:none;color:var(--brand-digital-blue-600);font-size:12.5px;font-weight:600;}
+
+/* Commit button — sticky to the bottom of the left (results) panel */
+.commit-bar{position:sticky;bottom:0;display:flex;justify-content:center;pointer-events:none;margin-top:16px;padding-top:14px;z-index:5;}
+.commit-bar::before{content:'';position:absolute;left:-32px;right:-24px;bottom:-18px;top:-6px;background:linear-gradient(to top,var(--surface-primary) 55%,rgba(255,255,255,0));pointer-events:none;}
+.commit-btn{position:relative;pointer-events:auto;display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px 0 16px;background:var(--brand-digital-blue-500);color:#fff;border:none;border-radius:var(--radius-full);font-size:13px;font-weight:600;box-shadow:var(--shadow-lg);transition:background var(--transition-fast);}
+.commit-btn:hover{background:var(--brand-digital-blue-600);}
+.commit-btn svg{width:14px;height:14px;}
+.commit-btn .pill{background:rgba(255,255,255,.22);border-radius:var(--radius-full);padding:1px 8px;font-size:11.5px;font-weight:600;}
+
+/* Demo button-style switcher */
+/* Demo controls — collapsible dock (collapsed by default) */
+.demo-dock{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:95;display:flex;flex-direction:column;align-items:center;}
+.demo-trigger{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 15px;background:var(--brand-grey-1000);color:#fff;border:none;border-radius:var(--radius-full);font-size:12px;font-weight:600;box-shadow:var(--shadow-lg);opacity:.85;transition:opacity var(--transition-fast);}
+.demo-trigger:hover{opacity:1;}
+.demo-trigger svg{width:14px;height:14px;}
+.demo-panel{display:none;flex-direction:column;gap:11px;width:max-content;max-width:92vw;padding:16px 22px 18px;background:var(--brand-grey-1000);color:#fff;border-radius:18px;box-shadow:var(--shadow-lg);}
+.demo-dock.open .demo-panel{display:flex;}
+.demo-dock.open .demo-trigger{display:none;}
+.demo-panel-head{display:flex;align-items:center;justify-content:space-between;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.10);}
+.demo-panel-head .dim{font-weight:500;}
+.demo-close{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;background:transparent;color:rgba(255,255,255,.6);border-radius:var(--radius-sm);}
+.demo-close:hover{background:rgba(255,255,255,.12);color:#fff;}
+.demo-close svg{width:15px;height:15px;}
+.demo-row{display:flex;align-items:center;gap:16px;}
+.demo-row-label{width:74px;flex-shrink:0;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.5);}
+.demo-row-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.demo-btn{display:inline-flex;align-items:center;padding:0 14px;height:30px;background:transparent;border:1px solid transparent;color:#fff;font-size:12.5px;font-weight:500;border-radius:var(--radius-full);cursor:pointer;transition:background var(--transition-fast);white-space:nowrap;}
+.demo-btn:hover{background:rgba(255,255,255,.10);}
+.demo-btn.active{background:var(--brand-digital-blue-500);}
+/* Rounded-rectangle variant toggled from the demo bar */
+body.btn-rounded .dt-btn,
+body.btn-rounded .dt-split,
+body.btn-rounded .commit-btn,
+body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
+
+/* toast */
+.toast-stack{position:fixed;right:24px;bottom:80px;display:flex;flex-direction:column;gap:8px;z-index:80;}
+.toast{display:flex;align-items:center;gap:10px;min-width:280px;padding:12px 16px;background:#fff;border:1px solid var(--border-primary);border-radius:8px;box-shadow:var(--shadow-lg);font-size:13px;color:var(--text-primary);}
+.toast svg{width:16px;height:16px;color:var(--brand-digital-blue-600);flex-shrink:0;}
+
+@media (max-height:760px){
+  .page-top{padding-top:16px;}
+  .run-subhead{margin-bottom:8px;}
+  .tabs{margin-top:8px;}
+  .nav-label{display:none;}
+  .nav-item{padding:6px 4px;}
+  .left-nav-top{gap:2px;}
+}
+@media (max-width:1100px){
+  .results-layout{grid-template-columns:1fr;}
+  .results-right,.results-divider{display:none;}
+}
+/* Adapt the left panel to its own width (not the viewport) */
+@container (max-width:470px){
+  .summary{grid-template-columns:1fr;gap:1px 0;}
+  .opt-list{grid-template-columns:1fr;}
+  .results-head h2{width:100%;}
+  .tbl-search{flex:1 1 100%;}
+}
+@container (max-width:360px){
+  .seg{width:100%;}
+  .seg-btn{flex:1;justify-content:center;}
+}
+
+/* ===== Hierarchical tree nodes ===== */
+.hn-row{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--brand-grey-200);cursor:pointer;transition:background var(--transition-fast);}
+/* depth indentation is set inline (padding-left); backgrounds keyed by node type */
+.hn-row.n-class,.hn-row.n-method{background:var(--brand-grey-100);}
+.hn-row:hover{background:var(--neo-grey-100);}
+/* selected row → digital-blue-50 (lightest tint); stays selected on hover */
+.hn-row.active,.hn-row.active:hover{background:var(--neo-digital-blue-50);}
+.hn-badge{font-family:var(--font-body);font-size:10px;font-weight:600;color:var(--brand-violet-500);background:color-mix(in srgb, var(--brand-violet-500) 12%, transparent);border-radius:var(--radius-full);padding:1px 7px;}
+.hn-ic{width:14px;height:14px;color:var(--text-tertiary);flex-shrink:0;}
+.hn-name{font-size:12.5px;color:var(--text-primary);min-width:0;display:inline-flex;align-items:baseline;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.n-package .hn-name{font-family:var(--font-code);font-size:12px;color:var(--text-secondary);}
+.n-file .hn-name{font-weight:600;}
+.hn-name.hn-org{font-weight:600;color:var(--text-primary);}
+.hn-badge.shared{color:var(--brand-digital-blue-700);background:var(--neo-digital-blue-50);border:1px solid var(--brand-digital-blue-300);}
+.hn-name.hn-method{font-family:var(--font-code);font-size:12px;color:var(--text-secondary);font-weight:400;}
+.hn-file{font-family:var(--font-code);font-size:11px;color:var(--text-tertiary);font-weight:400;}
+.hn-count{font-family:var(--font-body);font-weight:500;font-size:11px;color:var(--neo-grey-800);white-space:nowrap;flex-shrink:0;}
+.hn-sub{color:var(--text-tertiary);}
+.chev-spacer{width:18px;flex-shrink:0;}
+.cb-spacer{width:18px;flex-shrink:0;}
+.grp-row .hn-name{font-size:13px;color:var(--text-primary);font-weight:500;}
+.grp-row .hn-name.hn-path{font-family:var(--font-code);font-size:12px;color:var(--text-secondary);font-weight:400;}
+/* org roll-up: note banner + summary repo list */
+.org-note{display:flex;align-items:flex-start;gap:8px;margin:6px 8px 10px;padding:8px 11px;font-size:11.5px;line-height:1.5;color:var(--text-secondary);background:var(--brand-orange-100);border:1px solid color-mix(in srgb,var(--brand-orange-600) 30%,transparent);border-radius:var(--radius-md);}
+.org-note svg{width:15px;height:15px;color:var(--brand-orange-700);flex-shrink:0;margin-top:1px;}
+.org-note-text{flex:1;min-width:0;}
+.org-note .shared-key{white-space:nowrap;}
+.org-note-dismiss{flex-shrink:0;width:20px;height:20px;margin:-1px -2px 0 0;display:inline-flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--brand-orange-700);border-radius:var(--radius-sm);cursor:pointer;}
+.org-note-dismiss:hover{background:color-mix(in srgb,var(--brand-orange-600) 18%,transparent);color:var(--brand-orange-800);}
+.org-note-dismiss svg{width:13px;height:13px;}
+.org-note.inset{margin:0 0 14px;}
+.org-note .shared-key{font-weight:600;color:var(--brand-digital-blue-700);background:var(--neo-digital-blue-50);border:1px solid var(--brand-digital-blue-300);border-radius:var(--radius-full);padding:0 6px;font-size:10px;}
+.org-repo-list{margin-top:14px;border:1px solid var(--border-primary);border-radius:var(--radius-lg);overflow:hidden;}
+.org-repo{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--brand-grey-200);font-size:12.5px;}
+.org-repo:last-child{border-bottom:none;}
+.org-repo .orr-name{font-weight:500;color:var(--text-primary);}
+.org-repo .orr-count{margin-left:auto;color:var(--text-tertiary);font-size:11.5px;}
+.org-load-more{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 12px;background:var(--brand-grey-100);border:none;border-top:1px solid var(--brand-grey-200);font-size:12.5px;font-weight:600;color:var(--text-information);cursor:pointer;}
+.org-load-more:hover{background:var(--brand-grey-200);}
+.org-load-more .lm-rest{font-weight:500;color:var(--text-tertiary);}
+
+/* ===== Scope breadcrumb (right pane) ===== */
+.scope-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:8px 12px;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);}
+.scope-level{font-size:11px;font-weight:600;color:var(--brand-digital-blue-700);background:var(--neo-digital-blue-50);border:1px solid var(--brand-digital-blue-300);padding:2px 10px;border-radius:var(--radius-full);flex-shrink:0;}
+.scope-crumbs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;}
+.sc-crumb{font-family:var(--font-code);font-size:12px;color:var(--brand-digital-blue-700);}
+.sc-crumb.cur{font-weight:700;color:var(--brand-digital-blue-800);}
+.sc-sep{color:var(--brand-digital-blue-400);}
+.scope-count{margin-left:auto;font-size:12px;font-weight:600;color:var(--brand-digital-blue-700);white-space:nowrap;}
+
+.diff-scope-note{font-family:var(--font-body);font-size:10.5px;font-weight:600;color:var(--brand-digital-blue-700);background:var(--brand-digital-blue-100);border:1px solid var(--brand-digital-blue-200);border-radius:var(--radius-full);padding:1px 8px;white-space:nowrap;flex-shrink:0;}
+
+/* demo bar: centered, wraps cleanly; disabled group-by reads as inert (no bright pill) */
+.demo-btn.gb:disabled{opacity:.4;background:transparent;color:rgba(255,255,255,.55);cursor:default;}
+.demo-btn.gb:disabled:hover{background:transparent;}
+</style>
+</head>
+<body class="btn-rounded">
+<div class="shell">
+  <nav class="left-nav" aria-label="Platform">
+    <div class="left-nav-top">
+      <div class="nav-home-stack">
+        <div class="nav-item nav-item-home" title="Home"><div class="nav-icon-container">
+          <svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </div></div>
+        <span class="nav-version-badge">v2</span>
+      </div>
+      <div id="left-nav-items"></div>
+    </div>
+    <div class="nav-tenant" title="Acme Bank — organization">
+      <div class="tenant-logo">Acme<br>Bank</div>
+    </div>
+  </nav>
+
+  <div class="global-nav">
+    <div class="org-selector"><svg width="18" height="18" viewBox="0 0 24 24" class="svg-stroke"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="org-name">Acme International Financial Trust and Enterprise Risk Management Solutions Department of North American Operations</span><svg width="14" height="14" viewBox="0 0 24 24" class="svg-stroke"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="nav-spacer"></div>
+    <div class="search-input"><svg width="18" height="18" viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Search recipes</span><span class="search-input-keys"><kbd>⌘</kbd><kbd>K</kbd></span></div>
+    <div class="nav-actions">
+      <button class="nav-action-btn" aria-label="Settings"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      <button class="nav-action-btn" aria-label="Help"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+      <button class="nav-action-btn" aria-label="Account"><div class="avatar">L</div></button>
+    </div>
+  </div>
+
+  <div class="main-area">
+    <div class="page-top">
+      <div class="run-header">
+        <div class="run-title" data-tooltip="DevCenter - Acme International Financial Trust and Enterprise Risk Management Solutions Department of North American Operations Q1 2026"><h1>DevCenter - Acme International Financial Trust and Enterprise Risk Management Solutions Department of North American Operations Q1 2026</h1></div>
+        <div class="run-subhead">Results for Acme International Financial Trust and Enterprise Risk Management Solutions Department of North American Operations</div>
+        <div class="run-status-row">
+          <span class="run-chip done" id="run-chip"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed</span>
+          <span class="savings-chip"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><strong>80 hours</strong> <span class="lbl">estimated time savings</span></span>
+          <span class="run-meta">241 repositories · finished in 6m 12s · 7 days ago</span>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab active">Results</button>
+        <button class="tab">Repository status</button>
+        <button class="tab">Visualizations</button>
+        <button class="tab">Data tables</button>
+        <div class="tabs-spacer"></div>
+        <div class="tabs-actions">
+          <button class="icon-btn" title="Refresh"><svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
+          <button class="icon-btn" id="share-btn" title="Share"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+          <button class="icon-btn" id="api-explorer" title="API explorer"><svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIX: org-level run error is demoted to a dismissible banner; results stay committable -->
+    <div class="run-banner" id="run-banner" hidden></div>
+    <!-- FIX: full-screen panel only on total failure (zero repositories completed) -->
+    <div id="total-fail" hidden></div>
+
+    <div class="results-layout">
+      <!-- LEFT: options + summary + repo list -->
+      <div class="results-left">
+        <div class="rd rd-hidden" id="rd">
+          <div class="rd-headrow">
+            <button class="section-toggle" data-target="opt-body">Summary + Options</button>
+            <button class="rd-toggle" id="rd-toggle" title="Show details" aria-label="Show details"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <div class="rd-bodies" id="rd-bodies">
+            <div id="opt-body" class="section-body">
+              <div class="opt-list">
+                <div class="opt-item">scope: <b>runtime</b></div>
+                <div class="opt-item">overrideTransitive: <b>true</b></div>
+                <div class="opt-item">maximumUpgradeDelta: <b>minor</b></div>
+              </div>
+            </div>
+            <div class="section-body">
+              <div class="opt-empty">No options configured</div>
+              <div class="summary">
+                <div class="summary-row"><span class="summary-key">Files changed</span><span class="summary-val link">5,392</span></div>
+                <div class="summary-row"><span class="summary-key">Repositories with results</span><span class="summary-val link">234</span></div>
+                <div class="summary-row"><span class="summary-key">Files searched</span><span class="summary-val">33,377</span></div>
+                <div class="summary-row"><span class="summary-key">Files examined</span><span class="summary-val">1,284,902</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-head">
+          <div class="seg" role="tablist" aria-label="Filter">
+            <button class="seg-btn active" data-filter="all">All <span class="seg-count" data-c="all"></span></button>
+            <button class="seg-btn" data-filter="results">Has results <span class="seg-count" data-c="results"></span></button>
+            <button class="seg-btn" data-filter="error">Errors <span class="seg-count" data-c="error"></span></button>
+          </div>
+          <div class="tbl-search">
+            <svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input id="repo-search" type="search" placeholder="Filter repositories…" autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+
+        <div class="tree">
+          <div class="tree-head"><span>Hierarchy</span><span class="th-results">Results</span></div>
+          <div class="org-row" id="org-row">
+            <button class="chev-btn" id="org-chev"><svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <input type="checkbox" class="ckbox" id="org-check" aria-label="Select all">
+            <span class="org-name"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>jetbrains</span>
+            <span class="org-results" id="org-results"></span>
+          </div>
+          <div id="repo-list"></div>
+        </div>
+        <div id="footer-summary" style="font-size:12px;color:var(--text-tertiary);padding:10px 2px 0"></div>
+
+        <div class="commit-bar">
+          <button class="commit-btn" id="commit-btn">
+            <svg viewBox="0 0 24 24" class="svg-stroke"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Commit selected files <span class="pill" id="commit-count">234</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DRAGGABLE DIVIDER -->
+      <div class="results-divider" id="results-divider" title="Drag to resize"></div>
+
+      <!-- RIGHT: detail pane -->
+      <div class="results-right">
+        <div id="detail-slot">
+          <div class="detail-empty">
+            <span class="ic"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
+            <div class="et">Select any level — repository, package, class, or method — to view its results</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="demo-dock" id="demo-dock">
+  <button class="demo-trigger" id="demo-trigger" aria-label="Show demo controls"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>Demo controls</button>
+  <div class="demo-panel" role="group" aria-label="Demo controls">
+    <div class="demo-panel-head">
+      <span>Demo controls <span class="dim">— not part of the app</span></span>
+      <button class="demo-close" id="demo-close" aria-label="Hide demo controls"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="demo-row"><span class="demo-row-label">Run state</span><div class="demo-row-btns">
+      <button class="demo-btn" data-runstate="ok" title="Run completed normally.">Completed</button>
+      <button class="demo-btn active" data-runstate="partial" title="Run errored but many repositories completed first — results stay committable.">Errored · partial</button>
+      <button class="demo-btn" data-runstate="total" title="Total failure — zero repositories completed, nothing to commit.">Errored · total</button>
+    </div></div>
+    <div class="demo-row"><span class="demo-row-label">View</span><div class="demo-row-btns">
+      <button class="demo-btn active" data-view="tree">Unified tree</button>
+      <button class="demo-btn" data-view="group">Group by</button>
+    </div></div>
+    <div class="demo-row"><span class="demo-row-label">Roll up</span><div class="demo-row-btns">
+      <button class="demo-btn active" data-root="repo" title="Group by the source-control repository (the default).">Repository</button>
+      <button class="demo-btn" data-root="vcs" title="VCS org = source-control ownership / location (e.g. the GitHub org).">VCS org</button>
+      <button class="demo-btn" data-root="moderne" title="Moderne org = customer / team / business ownership structure (nested sub-orgs; a repo can belong to more than one).">Moderne org</button>
+    </div></div>
+    <div class="demo-row"><span class="demo-row-label">Group by</span><div class="demo-row-btns">
+      <button class="demo-btn gb active" data-group="repository" disabled>Repository</button>
+      <button class="demo-btn gb" data-group="package" disabled>Package</button>
+      <button class="demo-btn gb" data-group="file" disabled>File</button>
+      <button class="demo-btn gb" data-group="class" disabled>Class</button>
+      <button class="demo-btn gb" data-group="method" disabled>Method</button>
+    </div></div>
+    <div class="demo-row"><span class="demo-row-label">Buttons</span><div class="demo-row-btns">
+      <button class="demo-btn" data-btnstyle="pill">Pill</button>
+      <button class="demo-btn active" data-btnstyle="rounded">Rounded</button>
+    </div></div>
+  </div>
+</div>
+
+<div class="err-scrim" id="err-scrim" hidden></div>
+<div class="err-pop" id="err-pop" hidden></div>
+
+<div class="gh-menu" id="gh-menu" hidden></div>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<script>
+/* ===== Left nav ===== */
+const NAV_ITEMS=[
+  {label:'Moddy',svg:'<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/>'},
+  {label:'DevCenter',active:true,svg:'<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>'},
+  {label:'Marketplace',svg:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'},
+  {label:'Builder',svg:'<rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>'},
+  {label:'Activity',svg:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>'},
+  {label:'Changelog',svg:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'},
+  {label:'Repositories',svg:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/>'},
+  {label:'Deploy',svg:'<path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>'},
+];
+const navList=document.getElementById('left-nav-items');
+NAV_ITEMS.forEach(i=>{const el=document.createElement('div');el.className='nav-item'+(i.active?' active':'');el.title=i.label;el.innerHTML=`<div class="nav-icon-container"><svg width="22" height="22" viewBox="0 0 24 24" class="svg-stroke">${i.svg}</svg></div><span class="nav-label">${i.label}</span>`;navList.appendChild(el);});
+
+/* ===== Repositories data ===== */
+const REPOS=[
+  {name:'kotlin', branch:'master', results:412},
+  {name:'intellij-community', branch:'master', results:386},
+  {name:'Exposed', branch:'main', results:168},
+  {name:'ktor', branch:'main', results:142},
+  {name:'kotlinx.coroutines', branch:'master', results:96},
+  {name:'compose-multiplatform', branch:'master', results:74},
+  {name:'kotlinx.serialization', branch:'master', results:58},
+  {name:'kotlin-playground', branch:'master', results:31},
+  {name:'qodana', branch:'main', results:24},
+  {name:'datalore-sdk', branch:'master', results:12},
+  {name:'teamcity-rest-client', branch:'main', results:3},
+  {name:'youtrack-client', branch:'main', results:1},
+  {name:'space-sdk', branch:'main', results:0, error:true},
+  {name:'rider-fs', branch:'main', results:0},
+  {name:'fleet-plugin-template', branch:'main', results:0},
+];
+/* Build the run: 234 repos with results, 4 errored, 3 No LST (the seed
+   list above already contributes 12 results / 1 error / 2 No LST). */
+const PRE=['kotlin','intellij','ktor','space','fleet','rider','clion','webstorm','datalore','qodana','teamcity','youtrack','hub','toolbox','mps','resharper','dataspell','aqua','rustrover','writerside','grazie','kover','dokka','arrow','koin','ktlint','detekt','okio','skija','compose','spek','mockk','klock','kodein','ktorm','jackson','guava','netty','okhttp','retrofit'];
+const SUF=['core','api','gradle-plugin','cli','client','sdk','common','runtime','compiler','tools','ui','server','db','utils','testkit','samples','docs','playground','bench','ide','plugin','android','jvm','native','web','dsl'];
+const BR=['main','master','develop','trunk'];
+(function(){
+  let k=0;
+  const nm=()=>{ const n=PRE[k%PRE.length]+'-'+SUF[Math.floor(k/PRE.length)%SUF.length]; k++; return n; };
+  for(let j=0;j<222;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:1+((j*17+5)%59)}); } // → 234 with results
+  for(let j=0;j<3;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:0, error:true}); }      // → 4 errored
+  REPOS.push({name:nm(),branch:BR[0],results:0});                                            // → 3 No LST
+})();
+/* Surface attention states first: No LST at the top, then errored,
+   then successes by result count. */
+const STATUS_RANK={none:0, error:1, ok:2};
+REPOS.sort((a,b)=> (STATUS_RANK[statusOf(a)]-STATUS_RANK[statusOf(b)]) || (b.results-a.results));
+REPOS.forEach((r,i)=>{ r.id='r'+i; r.selected = r.results>0; });
+
+function statusOf(r){ return r.error ? 'error' : (r.results>0 ? 'ok' : 'none'); }
+
+/* ===== Upward hierarchy: VCS org and Moderne org (nested suborgs) ===== */
+/* VCS org = the source-control namespace; each repo has exactly one. */
+const VCS_ORGS=['jetbrains','square','google','apache','netflix'];
+REPOS.forEach((r,i)=>{ r.vcs = VCS_ORGS[(i*7+3)%VCS_ORGS.length]; });
+
+/* Moderne org = logical grouping, nestable. Leaves carry repositories. */
+const MORG={ id:'acme', name:'Acme Bank', children:[
+  { id:'plat', name:'Platform Engineering', children:[
+    { id:'core', name:'Core Libraries', children:[] },
+    { id:'devx', name:'Developer Tools', children:[] },
+  ]},
+  { id:'pay', name:'Payments', children:[] },
+  { id:'risk', name:'Risk & Compliance', children:[] },
+]};
+const MORG_LEAVES=['core','devx','pay','risk'];
+/* membership: repo id -> array of leaf org ids. A repo CAN belong to >1 suborg. */
+const repoOrgs={};
+REPOS.filter(r=>r.results>0).forEach((r,i)=>{
+  const primary=MORG_LEAVES[i%MORG_LEAVES.length];
+  const orgs=[primary];
+  if(i%6===0){ const second=MORG_LEAVES[(i+2)%MORG_LEAVES.length]; if(second!==primary) orgs.push(second); }
+  repoOrgs[r.id]=orgs;
+});
+const repoShared=rid=>(repoOrgs[rid]||[]).length>1;
+function findOrg(node,id){ if(node.id===id)return node; for(const c of node.children){ const f=findOrg(c,id); if(f)return f; } return null; }
+function leavesUnder(node){ return node.children.length ? node.children.flatMap(leavesUnder) : [node.id]; }
+function reposInLeaf(leafId){ return REPOS.filter(r=>r.results>0 && (repoOrgs[r.id]||[]).includes(leafId)); }
+function reposUnderOrg(node){ const leaves=leavesUnder(node), seen=new Set(), out=[];
+  REPOS.forEach(r=>{ if(r.results>0 && (repoOrgs[r.id]||[]).some(l=>leaves.includes(l)) && !seen.has(r.id)){ seen.add(r.id); out.push(r); } });
+  return out; }
+function orgLeafCount(leafId){ return reposInLeaf(leafId).reduce((s,r)=>s+r.results,0); }      // includes shared fully
+function orgUniqueCount(node){ return reposUnderOrg(node).reduce((s,r)=>s+r.results,0); }        // de-duplicated
+function reposInVcs(vcs){ return REPOS.filter(r=>r.results>0 && r.vcs===vcs); }
+
+/* synth file results for a repo */
+function filesFor(r){
+  if(r.results===0) return [];
+  const names=['src/main/java/org/jetbrains/model/BaseEntity.java','src/main/java/org/jetbrains/owner/Owner.java','src/main/java/org/jetbrains/vet/VetController.java','src/main/java/org/jetbrains/system/CacheConfig.java','src/main/java/org/jetbrains/visit/Visit.java','src/main/java/org/jetbrains/web/Handler.java','src/main/java/org/jetbrains/repository/OwnerRepository.java'];
+  const out=[]; let remaining=r.results; const n=Math.min(names.length, Math.max(1, Math.round(r.results/40)+1));
+  for(let i=0;i<n;i++){
+    const last=i===n-1;
+    const c=last?remaining:Math.max(1,Math.round(remaining/(n-i)));
+    remaining-=c;
+    out.push({path:names[i%names.length], count:c});
+  }
+  return out;
+}
+
+const PAGE_INIT=15, PAGE_INC=25;
+const ORG_INIT=12, ORG_PAGE=25;   // org-summary repo list pagination
+
+/* ===== Java/JVM hierarchy (illustrative, shared under each repo) =====
+   Repository → package → source file → class → method. (A file can declare
+   more than one class — see Visit.java below.) Counts roll up.
+   `hunk` indexes into HUNKS for the file-level diff. */
+const HTREE=[
+  {pkg:'org.jetbrains.model', files:[
+    {file:'src/main/java/org/jetbrains/model/BaseEntity.java', classes:[
+      {cls:'BaseEntity', hunk:0, methods:[
+        {m:'persistence imports', count:4, diff:{header:'@@ -18,4 +18,4 @@ package org.jetbrains.model;', lines:[
+          ['del',18,null,'import javax.persistence.GeneratedValue;'],
+          ['del',19,null,'import javax.persistence.Id;'],
+          ['add',null,18,'import jakarta.persistence.GeneratedValue;'],
+          ['add',null,19,'import jakarta.persistence.Id;'],
+        ]}},
+        {m:'@MappedSuperclass', count:2, diff:{header:'@@ -23,4 +23,4 @@ public abstract class BaseEntity {', lines:[
+          ['ctx',23,23,'@MappedSuperclass'],
+          ['del',24,null,'    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)'],
+          ['add',null,24,'    @GeneratedValue(strategy = jakarta.persistence.GenerationType.AUTO)'],
+          ['ctx',25,25,'    private Long id;'],
+        ]}},
+      ]},
+    ]},
+    {file:'src/main/java/org/jetbrains/visit/Visit.java', classes:[
+      {cls:'Visit', hunk:0, methods:[
+        {m:'getDate()', count:1, diff:{header:'@@ -40,3 +40,3 @@ public class Visit {', lines:[
+          ['ctx',40,40,'    public LocalDate getDate() {'],
+          ['del',41,null,'        @javax.annotation.Nonnull var d = this.date;'],
+          ['add',null,41,'        @jakarta.annotation.Nonnull var d = this.date;'],
+        ]}},
+        {m:'getDescription()', count:1, diff:{header:'@@ -48,3 +48,3 @@ public class Visit {', lines:[
+          ['ctx',48,48,'    public String getDescription() {'],
+          ['del',49,null,'        return javax.xml.bind.DatatypeConverter.printString(desc);'],
+          ['add',null,49,'        return jakarta.xml.bind.DatatypeConverter.printString(desc);'],
+        ]}},
+      ]},
+      {cls:'VisitType', hunk:0, methods:[   // second class declared in the same file
+        {m:'displayName()', count:1, diff:{header:'@@ -58,3 +58,3 @@ enum VisitType {', lines:[
+          ['ctx',58,58,'    String displayName() {'],
+          ['del',59,null,'        return javax.xml.bind.annotation.XmlEnumValue.value(this);'],
+          ['add',null,59,'        return jakarta.xml.bind.annotation.XmlEnumValue.value(this);'],
+        ]}},
+      ]},
+    ]},
+  ]},
+  {pkg:'org.jetbrains.owner', files:[
+    {file:'src/main/java/org/jetbrains/owner/Owner.java', classes:[
+      {cls:'Owner', hunk:1, methods:[
+        {m:'validation imports', count:2, diff:{header:'@@ -10,2 +10,2 @@ package org.jetbrains.owner;', lines:[
+          ['del',10,null,'import javax.validation.constraints.NotBlank;'],
+          ['del',11,null,'import javax.persistence.Column;'],
+          ['add',null,10,'import jakarta.validation.constraints.NotBlank;'],
+          ['add',null,11,'import jakarta.persistence.Column;'],
+        ]}},
+        {m:'getName()', count:1, diff:{header:'@@ -20,4 +20,4 @@ public class Owner extends BaseEntity {', lines:[
+          ['ctx',20,20,'    @NotBlank'],
+          ['del',21,null,'    @javax.persistence.Column(name = "name")'],
+          ['add',null,21,'    @jakarta.persistence.Column(name = "name")'],
+          ['ctx',22,22,'    public String getName() { return name; }'],
+        ]}},
+      ]},
+    ]},
+    {file:'src/main/java/org/jetbrains/repository/OwnerRepository.java', classes:[
+      {cls:'OwnerRepository', hunk:1, methods:[
+        {m:'findById()', count:1, diff:{header:'@@ -15,3 +15,3 @@ public class OwnerRepository {', lines:[
+          ['ctx',15,15,'    public Optional<Owner> findById(Long id) {'],
+          ['del',16,null,'        javax.persistence.EntityManager em = emf.createEntityManager();'],
+          ['add',null,16,'        jakarta.persistence.EntityManager em = emf.createEntityManager();'],
+        ]}},
+      ]},
+    ]},
+  ]},
+  {pkg:'org.jetbrains.web', files:[
+    {file:'src/main/java/org/jetbrains/vet/VetController.java', classes:[
+      {cls:'VetController', hunk:0, methods:[
+        {m:'list()', count:2, diff:{header:'@@ -30,3 +30,3 @@ public class VetController {', lines:[
+          ['ctx',30,30,'    public List<Vet> list() {'],
+          ['del',31,null,'        @javax.annotation.security.RolesAllowed("VET")'],
+          ['add',null,31,'        @jakarta.annotation.security.RolesAllowed("VET")'],
+        ]}},
+        {m:'handle()', count:1, diff:{header:'@@ -38,3 +38,3 @@ public class VetController {', lines:[
+          ['ctx',38,38,'    public void handle(Request req) {'],
+          ['del',39,null,'        javax.servlet.http.HttpServletRequest r = req.raw();'],
+          ['add',null,39,'        jakarta.servlet.http.HttpServletRequest r = req.raw();'],
+        ]}},
+      ]},
+    ]},
+    {file:'src/main/java/org/jetbrains/system/CacheConfig.java', classes:[
+      {cls:'CacheConfig', hunk:1, methods:[
+        {m:'cacheManager()', count:1, diff:{header:'@@ -12,3 +12,3 @@ public class CacheConfig {', lines:[
+          ['ctx',12,12,'    @Bean'],
+          ['del',13,null,'    public javax.cache.CacheManager cacheManager() {'],
+          ['add',null,13,'    public jakarta.cache.CacheManager cacheManager() {'],
+        ]}},
+      ]},
+    ]},
+  ]},
+];
+const HFILES=[]; const HCLASSES=[];
+HTREE.forEach(p=>{
+  p.files.forEach(f=>{
+    f.pkg=p.pkg;
+    f.classes.forEach(c=>{ c.pkg=p.pkg; c.file=f.file; c.count=c.methods.reduce((s,m)=>s+m.count,0); HCLASSES.push(c); });
+    f.count=f.classes.reduce((s,c)=>s+c.count,0);
+    HFILES.push(f);
+  });
+  p.count=p.files.reduce((s,f)=>s+f.count,0);
+});
+const HTREE_TOTAL=HTREE.reduce((s,p)=>s+p.count,0);
+const ckey=(rid,pkg,cls)=>`${rid}|${pkg}|${cls}`;
+function repoClassKeys(rid){ return HCLASSES.map(c=>ckey(rid,c.pkg,c.cls)); }
+function fileClassKeys(rid,file){ return HCLASSES.filter(c=>c.file===file).map(c=>ckey(rid,c.pkg,c.cls)); }
+function pkgClassKeys(rid,pkg){ return HCLASSES.filter(c=>c.pkg===pkg).map(c=>ckey(rid,c.pkg,c.cls)); }
+
+const state={
+  filter:'all', query:'', orgOpen:true, expanded:new Set(), shown:PAGE_INIT,
+  viewMode:'tree',          // 'tree' | 'group'
+  rootBy:'repo',            // 'repo' | 'vcs' | 'moderne' — what the tree roots at (roll up)
+  groupBy:'repository',     // 'repository' | 'package' | 'class' | 'method'
+  scope:null,               // {type:'repo'|'package'|'class'|'method', repoId, pkg, cls, method}
+  activeRepo:null,          // repo backing the current scope (for Repository-info menu)
+  selFiles:new Set(),       // commit selection — set of class (file) keys
+  orgShown:ORG_INIT,        // how many repos shown in the org-summary list
+  noteDismissed:false,      // shared-repos info banner dismissed?
+  runState:'partial',       // 'ok' | 'partial' | 'total' — org-level run outcome
+  bannerDismissed:false,    // org error banner dismissed?
+};
+REPOS.filter(r=>r.results>0).forEach(r=>repoClassKeys(r.id).forEach(k=>state.selFiles.add(k)));
+
+const repoList=document.getElementById('repo-list');
+
+function matches(r){
+  if(state.filter==='results' && !(r.results>0)) return false;
+  if(state.filter==='error' && !r.error) return false;
+  if(state.query){ const q=state.query.toLowerCase(); if(!(`${r.name} ${r.branch}`.toLowerCase().includes(q))) return false; }
+  return true;
+}
+
+const STATUS_LABEL={ok:'Success', none:'No LST', error:'Errored'};
+
+/* hierarchy node icons */
+const IC_PKG='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>';
+const IC_FILE='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+const IC_CLASS='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg>';
+const IC_METHOD='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><polyline points="8 9 11 12 8 15"/><line x1="13.5" y1="15" x2="16.5" y2="15"/></svg>';
+
+function chevHTML(expanded){ return `<button class="chev-btn hn-chev ${expanded?'':'collapsed'}" tabindex="-1" aria-label="Expand"><svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="9 18 15 12 9 6"/></svg></button>`; }
+function cbHTML(kind,id,sel){ // sel: 'all' | 'some' | 'none' | boolean
+  const checked = sel==='all' || sel===true;
+  const ind = sel==='some';
+  return `<input type="checkbox" class="ckbox hn-check" data-cbk="${kind}" data-cid="${id}" ${checked?'checked':''} ${ind?'data-ind="1"':''}>`;
+}
+/* commit-selection rollups (class keyed; file/package/repo roll up over their classes) */
+function rollup(keys){ const n=keys.filter(k=>state.selFiles.has(k)).length; return n===0?'none':(n===keys.length?'all':'some'); }
+function fileSel(rid,file){ return rollup(fileClassKeys(rid,file)); }
+function pkgSel(rid,pkg){ return rollup(pkgClassKeys(rid,pkg)); }
+function repoSel(rid){ return rollup(repoClassKeys(rid)); }
+/* active-row match against the current scope */
+function act(type,rid,o){ const s=state.scope; if(!s||s.type!==type||s.repoId!==rid)return false;
+  for(const k in o){ if(o[k]!==undefined && s[k]!==o[k]) return false; } return true; }
+
+const PAD=d=>`style="padding-left:${12+d*20}px"`;
+const IC_ORG='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>';
+const IC_VCS='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>';
+
+/* ----- upward org nodes ----- */
+function orgClassKeys(repos){ const out=[]; repos.forEach(r=>repoClassKeys(r.id).forEach(k=>out.push(k))); return out; }
+function morgNodeHTML(node,d){
+  const key=`MORG|${node.id}`, expanded=state.expanded.has(key), leaf=!node.children.length;
+  const repos = leaf ? reposInLeaf(node.id) : reposUnderOrg(node);
+  const count = leaf ? orgLeafCount(node.id) : orgUniqueCount(node);
+  let html=`<div class="hn-row n-org ${act('morg',node.id,{})?'active':''}" data-node="morg" data-rid="${node.id}" ${PAD(d)}>
+    ${chevHTML(expanded)}
+    ${cbHTML('morg', node.id, rollup(orgClassKeys(repos)))}
+    ${IC_ORG}<span class="hn-name hn-org">${node.name}</span>
+    <span class="repo-spacer"></span>
+    <span class="hn-count"><span class="hn-n">${count.toLocaleString()}</span> results <span class="hn-sub">· ${repos.length} repos</span></span>
+  </div>`;
+  if(expanded){
+    node.children.forEach(ch=>{ html+=morgNodeHTML(ch,d+1); });
+    if(leaf) reposInLeaf(node.id).forEach(r=>{ html+=repoNodeHTML(r,d+1); });
+  }
+  return html;
+}
+function vcsNodeHTML(vcs,d){
+  const key=`VCS|${vcs}`, expanded=state.expanded.has(key);
+  const repos=reposInVcs(vcs), count=repos.reduce((s,r)=>s+r.results,0);
+  let html=`<div class="hn-row n-org ${act('vcs',vcs,{})?'active':''}" data-node="vcs" data-rid="${vcs}" ${PAD(d)}>
+    ${chevHTML(expanded)}
+    ${cbHTML('vcs', vcs, rollup(orgClassKeys(repos)))}
+    ${IC_VCS}<span class="hn-name hn-org">${vcs}</span>
+    <span class="repo-spacer"></span>
+    <span class="hn-count"><span class="hn-n">${count.toLocaleString()}</span> results <span class="hn-sub">· ${repos.length} repos</span></span>
+  </div>`;
+  if(expanded) repos.forEach(r=>{ html+=repoNodeHTML(r,d+1); });
+  return html;
+}
+
+function repoNodeHTML(r,d=0){
+  const st=statusOf(r);
+  const expandable=r.results>0;
+  const expanded=state.expanded.has(r.id);
+  const resTxt = r.error ? 'Error' : (r.results>0 ? `${r.results.toLocaleString()} result${r.results===1?'':'s'}` : 'No results');
+  const resCls = r.error ? 'error' : (r.results>0 ? '' : 'none');
+  const shared = (state.rootBy==='moderne' && repoShared(r.id)) ? `<span class="hn-badge shared" title="Belongs to ${(repoOrgs[r.id]||[]).length} sub-orgs">shared</span>` : '';
+  let html=`<div class="hn-row n-repo ${act('repo',r.id,{})?'active':''}" data-node="repo" data-rid="${r.id}" ${PAD(d)}>
+    ${expandable?chevHTML(expanded):'<span class="chev-spacer"></span>'}
+    ${cbHTML('repo', r.id, expandable?repoSel(r.id):'none')}
+    <span class="repo-status-dot ${st}" title="${STATUS_LABEL[st]}"></span>
+    <span class="repo-main">
+      <span class="repo-name">${r.name}</span>
+      <span class="repo-branch">@ ${r.branch}</span>${shared}
+    </span>
+    <span class="repo-spacer"></span>
+    <span class="repo-results ${resCls}">${resTxt}</span>
+  </div>`;
+  if(expandable && expanded){ HTREE.forEach(p=>{ html+=pkgNodeHTML(r.id,p,d+1); }); }
+  return html;
+}
+function pkgNodeHTML(rid,p,d){
+  const key=`${rid}|${p.pkg}`;
+  const expanded=state.expanded.has(key);
+  let html=`<div class="hn-row n-package ${act('package',rid,{pkg:p.pkg})?'active':''}" data-node="package" data-rid="${rid}" data-pkg="${p.pkg}" ${PAD(d)}>
+    ${chevHTML(expanded)}
+    ${cbHTML('pkg', key, pkgSel(rid,p.pkg))}
+    ${IC_PKG}<span class="hn-name">${p.pkg}</span>
+    <span class="repo-spacer"></span>
+    <span class="hn-count"><span class="hn-n">${p.count}</span> result${p.count===1?'':'s'}</span>
+  </div>`;
+  if(expanded){ p.files.forEach(f=>{ html+=fileNodeHTML(rid,p.pkg,f,d+1); }); }
+  return html;
+}
+function fileNodeHTML(rid,pkg,f,d){
+  const key=`${rid}|F|${f.file}`;
+  const expanded=state.expanded.has(key);
+  const nm=f.file.split('/').pop();
+  const multi = f.classes.length>1 ? `<span class="hn-badge">${f.classes.length} classes</span>` : '';
+  let html=`<div class="hn-row n-file ${act('file',rid,{file:f.file})?'active':''}" data-node="file" data-rid="${rid}" data-pkg="${pkg}" data-file="${f.file}" ${PAD(d)}>
+    ${chevHTML(expanded)}
+    ${cbHTML('file', `${rid}::${f.file}`, fileSel(rid,f.file))}
+    ${IC_FILE}<span class="hn-name">${nm}${multi}</span>
+    <span class="repo-spacer"></span>
+    <span class="hn-count"><span class="hn-n">${f.count}</span> match${f.count===1?'':'es'}</span>
+  </div>`;
+  if(expanded){ f.classes.forEach(c=>{ html+=clsNodeHTML(rid,pkg,f.file,c,d+1); }); }
+  return html;
+}
+function clsNodeHTML(rid,pkg,file,c,d){
+  const key=ckey(rid,pkg,c.cls);
+  const expanded=state.expanded.has(`${rid}|C|${file}|${c.cls}`);
+  let html=`<div class="hn-row n-class ${act('class',rid,{file:file,cls:c.cls})?'active':''}" data-node="class" data-rid="${rid}" data-pkg="${pkg}" data-file="${file}" data-cls="${c.cls}" ${PAD(d)}>
+    ${chevHTML(expanded)}
+    ${cbHTML('cls', key, state.selFiles.has(key))}
+    ${IC_CLASS}<span class="hn-name">${c.cls}</span>
+    <span class="repo-spacer"></span>
+    <span class="hn-count"><span class="hn-n">${c.count}</span> match${c.count===1?'':'es'}</span>
+  </div>`;
+  if(expanded){ c.methods.forEach(m=>{ html+=methodNodeHTML(rid,pkg,file,c,m,d+1); }); }
+  return html;
+}
+function methodNodeHTML(rid,pkg,file,c,m,d){
+  return `<div class="hn-row n-method ${act('method',rid,{file:file,cls:c.cls,method:m.m})?'active':''}" data-node="method" data-rid="${rid}" data-pkg="${pkg}" data-file="${file}" data-cls="${c.cls}" data-method="${m.m}" ${PAD(d)}>
+    <span class="chev-spacer"></span><span class="cb-spacer"></span>
+    ${IC_METHOD}<span class="hn-name hn-method">${m.m}</span>
+    <span class="repo-spacer"></span>
+    <span class="hn-count"><span class="hn-n">${m.count}</span> match${m.count===1?'':'es'}</span>
+  </div>`;
+}
+/* group-by (pivot) rows */
+function groupData(){
+  const repos=REPOS.filter(r=>r.results>0).length;
+  let rows=[];
+  if(state.groupBy==='package') rows=HTREE.map(p=>({type:'package',pkg:p.pkg,label:p.pkg,count:p.count,icon:IC_PKG}));
+  else if(state.groupBy==='file') rows=HFILES.map(f=>({type:'file',pkg:f.pkg,file:f.file,label:f.file,count:f.count,icon:IC_FILE}));
+  else if(state.groupBy==='class') rows=HCLASSES.map(c=>({type:'class',pkg:c.pkg,file:c.file,cls:c.cls,label:c.cls,sub:c.file.split('/').pop(),count:c.count,icon:IC_CLASS}));
+  else if(state.groupBy==='method') HCLASSES.forEach(c=>c.methods.forEach(m=>rows.push({type:'method',pkg:c.pkg,file:c.file,cls:c.cls,method:m.m,label:m.m,sub:c.cls,count:m.count,icon:IC_METHOD})));
+  return {rows,repos};
+}
+function groupRowHTML(g,repos){
+  const active=act(g.type,'ALL',{pkg:g.pkg,file:g.file,cls:g.cls,method:g.method});
+  return `<div class="hn-row grp-row ${active?'active':''}" data-node="${g.type}" data-rid="ALL" ${g.pkg?`data-pkg="${g.pkg}"`:''} ${g.file?`data-file="${g.file}"`:''} ${g.cls?`data-cls="${g.cls}"`:''} ${g.method?`data-method="${g.method}"`:''}>
+    <span class="chev-spacer"></span>
+    ${g.icon}<span class="hn-name ${g.type==='file'?'hn-path':''}">${g.label}${g.sub?`<span class="hn-file">${g.sub}</span>`:''}</span>
+    <span class="repo-spacer"></span>
+    <span class="hn-count"><span class="hn-n">${g.count.toLocaleString()}</span> <span class="hn-sub">· across ${repos} repos</span></span>
+  </div>`;
+}
+
+function render(){
+  const grouped = state.viewMode==='group' && state.groupBy!=='repository';
+  const rolledUp = !grouped && state.rootBy!=='repo';
+  repoList.style.display = state.orgOpen ? '' : 'none';
+  // the static "jetbrains" org header only makes sense at the repository root
+  const orgRow=document.getElementById('org-row'); if(orgRow) orgRow.style.display = (grouped||rolledUp)?'none':'';
+  if(grouped){
+    const {rows,repos}=groupData();
+    repoList.innerHTML = rows.map(g=>groupRowHTML(g,repos)).join('');
+    document.getElementById('org-results').textContent=`${HTREE_TOTAL.toLocaleString()} results`;
+    document.getElementById('footer-summary').textContent=`${rows.length} ${state.groupBy} group${rows.length===1?'':'s'} · across ${repos.toLocaleString()} repositories`;
+  } else if(rolledUp){
+    const totalResults=REPOS.reduce((s,r)=>s+r.results,0);
+    if(state.rootBy==='moderne'){
+      const note=state.noteDismissed?'':`<div class="org-note"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="org-note-text">Repositories can belong to more than one sub-org. Each sub-org counts its shared repos in full, so sub-org totals can sum to more than the parent org (which de-duplicates them). The <span class="shared-key">shared</span> tag marks multi-org repositories.</span><button class="org-note-dismiss" aria-label="Dismiss"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>`;
+      repoList.innerHTML = note + morgNodeHTML(MORG,0);
+      document.getElementById('footer-summary').textContent=`Rolled up by Moderne org · ${reposUnderOrg(MORG).length.toLocaleString()} repositories`;
+    } else {
+      const vcsList=[...new Set(reposUnderOrg(MORG).map(r=>r.vcs))].filter(Boolean).sort();
+      const all=REPOS.filter(r=>r.results>0); const byVcs=[...new Set(all.map(r=>r.vcs))].sort();
+      repoList.innerHTML = byVcs.map(v=>vcsNodeHTML(v,0)).join('');
+      document.getElementById('footer-summary').textContent=`Rolled up by VCS org · ${byVcs.length} orgs · ${all.length.toLocaleString()} repositories`;
+    }
+    document.getElementById('org-results').textContent=`${totalResults.toLocaleString()} results`;
+  } else {
+    const list=REPOS.filter(matches);
+    const shown=Math.min(state.shown, list.length);
+    const page=list.slice(0,shown);
+    const remaining=list.length-shown;
+    repoList.innerHTML = (page.map(r=>repoNodeHTML(r,0)).join('') || `<div style="padding:16px;font-size:12.5px;color:var(--text-tertiary)">No repositories match this filter.</div>`)
+      + (remaining>0 ? `<button class="load-more" id="load-more">Load ${Math.min(PAGE_INC,remaining)} more <span class="lm-rest">${remaining.toLocaleString()} remaining</span></button>` : '');
+    const totalResults=REPOS.reduce((s,r)=>s+r.results,0);
+    document.getElementById('org-results').textContent=`${totalResults.toLocaleString()} results`;
+    document.getElementById('footer-summary').textContent=`Showing ${shown.toLocaleString()} of ${list.length.toLocaleString()} repositories`;
+  }
+  // seg counts
+  document.querySelector('[data-c="all"]').textContent=REPOS.length;
+  document.querySelector('[data-c="results"]').textContent=REPOS.filter(r=>r.results>0).length;
+  document.querySelector('[data-c="error"]').textContent=REPOS.filter(r=>r.error).length;
+  // commit count = selected files (classes)
+  document.getElementById('commit-count').textContent=state.selFiles.size.toLocaleString();
+  // apply indeterminate states (can't be set via attribute)
+  repoList.querySelectorAll('.hn-check[data-ind="1"]').forEach(c=>c.indeterminate=true);
+  syncOrgCheck();
+}
+
+function syncOrgCheck(){
+  const all=[]; REPOS.filter(r=>r.results>0).forEach(r=>repoClassKeys(r.id).forEach(k=>all.push(k)));
+  const sel=all.filter(k=>state.selFiles.has(k)).length;
+  const oc=document.getElementById('org-check');
+  oc.checked = sel===all.length && all.length>0;
+  oc.indeterminate = sel>0 && sel<all.length;
+}
+
+/* commit selection — checkboxes cascade down to class keys, independent of view */
+repoList.addEventListener('change',e=>{
+  const cb=e.target.closest('.hn-check'); if(!cb)return;
+  const kind=cb.dataset.cbk, id=cb.dataset.cid, on=cb.checked;
+  let keys=[];
+  if(kind==='repo') keys=repoClassKeys(id);
+  else if(kind==='pkg'){ const i=id.indexOf('|'); keys=pkgClassKeys(id.slice(0,i), id.slice(i+1)); }
+  else if(kind==='file'){ const i=id.indexOf('::'); keys=fileClassKeys(id.slice(0,i), id.slice(i+2)); }
+  else if(kind==='cls') keys=[id];
+  else if(kind==='morg'){ keys=orgClassKeys(reposUnderOrg(findOrg(MORG,id))); }
+  else if(kind==='vcs'){ keys=orgClassKeys(reposInVcs(id)); }
+  keys.forEach(k=> on ? state.selFiles.add(k) : state.selFiles.delete(k));
+  render();
+});
+document.getElementById('org-check').addEventListener('change',e=>{
+  const repos=REPOS.filter(r=>r.results>0);
+  if(e.target.checked) repos.forEach(r=>repoClassKeys(r.id).forEach(k=>state.selFiles.add(k)));
+  else repos.forEach(r=>repoClassKeys(r.id).forEach(k=>state.selFiles.delete(k)));
+  render();
+});
+
+/* navigation — chevron expands; row click sets the viewing scope (independent of checkboxes) */
+function expandKey(row){
+  const t=row.dataset.node, rid=row.dataset.rid;
+  if(t==='morg') return `MORG|${rid}`;
+  if(t==='vcs') return `VCS|${rid}`;
+  if(t==='package') return `${rid}|${row.dataset.pkg}`;
+  if(t==='file') return `${rid}|F|${row.dataset.file}`;
+  if(t==='class') return `${rid}|C|${row.dataset.file}|${row.dataset.cls}`;
+  return rid; // repo
+}
+repoList.addEventListener('click',e=>{
+  if(e.target.closest('#load-more')){ state.shown+=PAGE_INC; render(); return; }
+  if(e.target.closest('.hn-check'))return;
+  if(e.target.closest('.org-note-dismiss')){ state.noteDismissed=true; render(); return; }
+  const chev=e.target.closest('.hn-chev');
+  if(chev){
+    const row=chev.closest('.hn-row'); const key=expandKey(row);
+    if(state.expanded.has(key)) state.expanded.delete(key); else state.expanded.add(key);
+    render();
+    return;
+  }
+  const row=e.target.closest('.hn-row'); if(!row)return;
+  const node=row.dataset.node, rid=row.dataset.rid;
+  state.scope={ type:node, repoId:rid, pkg:row.dataset.pkg, cls:row.dataset.cls, file:row.dataset.file, method:row.dataset.method };
+  state.activeRepo = (rid && rid!=='ALL') ? rid : null;
+  state.orgShown = ORG_INIT;   // reset the org-summary pagination for the new scope
+  // clicking the row body also toggles expand for expandable, non-leaf, non-group rows
+  if(rid!=='ALL' && node!=='method'){
+    const repo = REPOS.find(x=>x.id===rid);
+    const expandable = node!=='repo' || (repo && repo.results>0);
+    if(expandable){ const key=expandKey(row); if(state.expanded.has(key)) state.expanded.delete(key); else state.expanded.add(key); }
+  }
+  renderDetail();
+  render();
+});
+
+/* ===== Diff rendering ===== */
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function hl(code){
+  return esc(code).replace(/\b(import|package|public|private|protected|class|interface|extends|implements|return|new|void|final|static|abstract)\b/g,'<span class="k">$1</span>');
+}
+/* a couple of illustrative javax→jakarta hunks; [type, oldNo, newNo, code] */
+const HUNKS=[
+  { header:'@@ -15,13 +15,13 @@', lines:[
+    ['ctx',15,15,'     */'],
+    ['ctx',16,16,'    package org.jetbrains.model;'],
+    ['ctx',17,17,''],
+    ['del',18,null,'    import javax.persistence.GeneratedValue;'],
+    ['del',19,null,'    import javax.persistence.GenerationType;'],
+    ['del',20,null,'    import javax.persistence.Id;'],
+    ['del',21,null,'    import javax.persistence.MappedSuperclass;'],
+    ['add',null,18,'    import jakarta.persistence.GeneratedValue;'],
+    ['add',null,19,'    import jakarta.persistence.GenerationType;'],
+    ['add',null,20,'    import jakarta.persistence.Id;'],
+    ['add',null,21,'    import jakarta.persistence.MappedSuperclass;'],
+    ['ctx',22,22,''],
+    ['ctx',23,23,'    @MappedSuperclass'],
+  ]},
+  { header:'@@ -8,9 +8,9 @@', lines:[
+    ['ctx',8,8,'    package org.jetbrains.owner;'],
+    ['ctx',9,9,''],
+    ['del',10,null,'    import javax.validation.constraints.NotBlank;'],
+    ['del',11,null,'    import javax.persistence.Column;'],
+    ['add',null,10,'    import jakarta.validation.constraints.NotBlank;'],
+    ['add',null,11,'    import jakarta.persistence.Column;'],
+    ['ctx',12,12,''],
+    ['ctx',13,13,'    public class Owner extends BaseEntity {'],
+    ['ctx',14,14,'        @NotBlank'],
+  ]},
+];
+
+function diffCardHTML(f, hunk, scopeNote){
+  if(typeof hunk==='number') hunk=HUNKS[hunk%HUNKS.length];
+  return `<div class="diff-file" data-file="${f.path}">
+    <div class="diff-file-head">
+      <input type="checkbox" class="ckbox diff-check" checked title="Include this file in the commit">
+      <svg class="diff-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      <svg class="diff-fileicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span class="diff-file-path">${f.path}</span>
+      ${scopeNote?`<span class="diff-scope-note">${scopeNote}</span>`:''}
+      <span class="diff-hunk">${hunk.header}</span>
+      <div class="diff-file-actions">
+        <button class="diff-act" data-act="filemenu" aria-label="File options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+      </div>
+    </div>
+    <div class="diff-body">
+      ${hunk.lines.map(([t,o,n,code])=>`<div class="diff-line ${t}">
+        <span class="diff-gutter"><span class="n">${o??''}</span><span class="n">${n??''}</span></span>
+        <span class="diff-sign">${t==='del'?'-':t==='add'?'+':''}</span>
+        <span class="diff-code">${hl(code)}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+/* files (classes) within the current scope */
+function scopeFiles(){
+  const s=state.scope; if(!s) return [];
+  if(s.type==='class'||s.type==='method') return HCLASSES.filter(c=>c.file===s.file && c.cls===s.cls);
+  if(s.type==='file') return HCLASSES.filter(c=>c.file===s.file);
+  if(s.type==='package') return HCLASSES.filter(c=>c.pkg===s.pkg);
+  return HCLASSES.slice(); // repo / all
+}
+function scopeCount(){
+  const s=state.scope;
+  if(s.type==='method'){ const c=scopeFiles()[0]; const m=c&&c.methods.find(x=>x.m===s.method); return m?m.count:0; }
+  return scopeFiles().reduce((a,c)=>a+c.count,0);
+}
+function scopeCrumbs(){
+  const s=state.scope; const out=[];
+  out.push(s.repoId==='ALL' ? 'All repositories' : (REPOS.find(r=>r.id===s.repoId)||{}).name||'');
+  if(s.pkg) out.push(s.pkg);
+  if(s.file) out.push(s.file.split('/').pop());
+  if((s.type==='class'||s.type==='method') && s.cls) out.push(s.cls);
+  if(s.method) out.push(s.method);
+  return out.filter(Boolean);
+}
+const LEVEL_LABEL={repo:'Repository', package:'Package', file:'File', class:'Class', method:'Method'};
+
+/* ===== Errored-result log panel ===== */
+function buildErrorLog(r){
+  const pkg='com/example/'+r.name.replace(/-/g,'/');
+  const lines=[];
+  const push=(t,dim)=>lines.push([t, !!dim]);
+  push(`Exception in thread "main" org.openrewrite.RecipeRunException: Recipe org.openrewrite.java.migrate.UpgradeToJava21 failed`);
+  push(`  on source file src/main/java/${pkg}/Application.java`);
+  [ 'org.openrewrite.RecipeScheduler.handleUncaughtException(RecipeScheduler.java:212)',
+    'org.openrewrite.RecipeScheduler.lambda$scheduleVisit$3(RecipeScheduler.java:189)',
+    'org.openrewrite.internal.RecipeRunCycle.visit(RecipeRunCycle.java:142)',
+    'org.openrewrite.TreeVisitor.visit(TreeVisitor.java:241)',
+    'org.openrewrite.java.JavaVisitor.visitCompilationUnit(JavaVisitor.java:312)',
+    'org.openrewrite.java.tree.J$CompilationUnit.acceptJava(J.java:1187)',
+    'org.openrewrite.java.JavaVisitor.visitImport(JavaVisitor.java:498)',
+    'org.openrewrite.java.migrate.jakarta.JavaxToJakarta$1.visitFieldAccess(JavaxToJakarta.java:88)',
+    'org.openrewrite.java.JavaTemplate.apply(JavaTemplate.java:118)',
+    'org.openrewrite.java.internal.template.JavaTemplateParser.parseExpression(JavaTemplateParser.java:204)',
+    'org.openrewrite.java.JavaParser.requirePrintEqualsInput(JavaParser.java:266)',
+    'org.openrewrite.maven.MavenParser.parseInputs(MavenParser.java:97)',
+    'org.openrewrite.maven.internal.MavenPomDownloader.download(MavenPomDownloader.java:401)',
+    'org.openrewrite.maven.internal.MavenPomDownloader.downloadPom(MavenPomDownloader.java:318)',
+    'org.openrewrite.maven.tree.ResolvedPom.resolveDependencies(ResolvedPom.java:531)',
+    'org.openrewrite.maven.tree.MavenResolutionResult.resolveDependencies(MavenResolutionResult.java:204)',
+  ].forEach(f=>push('  at '+f));
+  push(`Caused by: org.openrewrite.maven.MavenDownloadingException: Unable to download dependency com.jetbrains:${r.name}:jar:1.4.0 from any configured repository.`);
+  [ 'org.openrewrite.maven.internal.MavenPomDownloader.download(MavenPomDownloader.java:418)',
+    'org.openrewrite.maven.internal.MavenPomDownloader.sendRequest(MavenPomDownloader.java:642)',
+    'org.openrewrite.maven.utilities.MavenArtifactDownloader.downloadArtifact(MavenArtifactDownloader.java:96)',
+    'java.base/java.net.http.HttpClient.send(HttpClient.java:563)',
+    'java.base/jdk.internal.net.http.HttpClientImpl.send(HttpClientImpl.java:559)',
+  ].forEach(f=>push('  at '+f));
+  push('  ... 38 more');
+  push('Caused by: java.net.ConnectException: Connection refused (Connection refused) to https://repo.maven.apache.org/maven2/');
+  push('  ... 43 more');
+  push('', true);
+  push('Resolve CLI 4.2.0-20240801.182233-3 installed to ~/.m2/repository/io/moderne/moderne-cli/4.2.0-SNAPSHOT/moderne-cli-4.2.0-SNAPSHOT.jar', true);
+  push('Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -XX:+UseContainerSupport', true);
+  return lines;
+}
+function errorPanelHTML(r){
+  const log=buildErrorLog(r);
+  const copy='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  const ext='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>';
+  return `<div class="err-panel">
+    <div class="err-head">
+      <svg class="err-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <h4>Recipe run failed</h4>
+      <div class="err-actions"><button data-err="copy" title="Copy log">${copy}</button><button data-err="open" title="Open full log">${ext}</button></div>
+    </div>
+    <div class="err-log">${log.map((l,i)=>`<div class="ln ${l[1]?'dim':''}"><span class="n">${i+1}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>
+  </div>`;
+}
+function wireErrorPanel(slot, r){
+  wireErr(slot, buildErrorLog(r).map(l=>l[0]).join('\n'));
+}
+/* generic copy/open wiring for any err-panel container */
+function wireErr(slot, text){
+  const cp=slot.querySelector('[data-err="copy"]');
+  if(cp) cp.addEventListener('click',()=>{ try{navigator.clipboard.writeText(text);}catch(e){} toast('Copied error log'); });
+  const op=slot.querySelector('[data-err="open"]');
+  if(op) op.addEventListener('click',()=>toast('Opening full log…'));
+}
+
+/* ===== Org-level run error (the customer-requests#2611 fix) ===== */
+const COMPLETED=234, TOTAL_REPOS=241;   // partial: many finished before the worker was lost
+function buildOrgErrorLog(){
+  const lines=[]; const push=(t,d)=>lines.push([t,!!d]);
+  push('Exception in thread "worker-7" java.lang.OutOfMemoryError: Java heap space');
+  [ 'org.openrewrite.scheduling.WorkerThread.run(WorkerThread.java:118)',
+    'org.openrewrite.RecipeScheduler.scheduleVisit(RecipeScheduler.java:164)',
+    'org.openrewrite.internal.RecipeRunCycle.runCycle(RecipeRunCycle.java:96)',
+    'org.openrewrite.java.JavaParser.parseInputs(JavaParser.java:142)',
+    'org.openrewrite.java.internal.JavaTypeCache.computeIfAbsent(JavaTypeCache.java:71)',
+    'java.base/java.util.HashMap.resize(HashMap.java:702)',
+    'java.base/java.util.HashMap.putVal(HashMap.java:631)',
+  ].forEach(f=>push('  at '+f));
+  push('');
+  push('worker-7 terminated unexpectedly — exit code 137 (SIGKILL, container out of memory).', true);
+  push('Recipe run org/8f3c9d… ended in ERROR state after 6m 12s.', true);
+  push(COMPLETED+' of '+TOTAL_REPOS+' repositories completed and were written to disk before the worker was lost.', true);
+  push('Resolve CLI 4.2.0-20240801.182233-3', true);
+  return lines;
+}
+function errPanel(log, title){
+  const copy='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  const ext='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>';
+  return `<div class="err-panel">
+    <div class="err-head">
+      <svg class="err-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <h4>${title||'Recipe run failed'}</h4>
+      <div class="err-actions"><button data-err="copy" title="Copy log">${copy}</button><button data-err="open" title="Open full log">${ext}</button></div>
+    </div>
+    <div class="err-log">${log.map((l,i)=>`<div class="ln ${l[1]?'dim':''}"><span class="n">${i+1}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>
+  </div>`;
+}
+
+/* render the org-level run state: banner (partial), full-screen (total), or nothing (ok) */
+function renderRunState(){
+  const banner=document.getElementById('run-banner');
+  const tf=document.getElementById('total-fail');
+  const layout=document.querySelector('.results-layout');
+  const chip=document.getElementById('run-chip');
+  const ss=state.runState;
+  // run chip
+  if(ss==='ok'){ chip.className='run-chip done'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed`; }
+  else { chip.className='run-chip errored'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11"/><line x1="12" y1="8" x2="12" y2="13" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.2" fill="#fff"/></svg>${ss==='total'?'Run failed':'Completed with errors'}`; }
+
+  if(ss==='total'){
+    layout.style.display='none'; banner.hidden=true;
+    tf.hidden=false;
+    tf.innerHTML=`<div class="total-fail-inner">
+      <div class="total-fail-head">
+        <div class="tf-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <h2>Recipe run failed</h2>
+        <p>0 of ${TOTAL_REPOS} repositories completed — there is nothing to commit.</p>
+      </div>
+      ${errPanel(buildOrgErrorLog())}
+    </div>`;
+    wireErr(tf, buildOrgErrorLog().map(l=>l[0]).join('\n'));
+    closeErrPop();
+    return;
+  }
+  // ok / partial → results stay visible
+  layout.style.display=''; tf.hidden=true;
+  if(ss==='partial' && !state.bannerDismissed){
+    banner.hidden=false;
+    banner.innerHTML=`
+      <svg class="rb-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span><b>This recipe run ended in an error.</b> ${COMPLETED} of ${TOTAL_REPOS} repositories completed and can still be committed.</span>
+      <span class="rb-spacer"></span>
+      <button class="rb-view" data-act="view-err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>View error</button>
+      <button class="rb-dismiss" data-act="dismiss-banner" title="Dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
+  } else { banner.hidden=true; }
+  closeErrPop();
+}
+/* error popover (full message + copy on demand) */
+function openErrPop(anchor){
+  const pop=document.getElementById('err-pop'), scrim=document.getElementById('err-scrim');
+  pop.innerHTML=errPanel(buildOrgErrorLog());
+  pop.hidden=false; scrim.hidden=false;
+  const r=anchor.getBoundingClientRect();
+  pop.style.top=Math.min(r.bottom+8, window.innerHeight-pop.offsetHeight-12)+'px';
+  pop.style.left=Math.max(12, Math.min(r.left, window.innerWidth-pop.offsetWidth-12))+'px';
+  wireErr(pop, buildOrgErrorLog().map(l=>l[0]).join('\n'));
+}
+function closeErrPop(){ const pop=document.getElementById('err-pop'), scrim=document.getElementById('err-scrim'); if(pop){pop.hidden=true;pop.innerHTML='';} if(scrim)scrim.hidden=true; }
+document.getElementById('err-scrim').addEventListener('click',closeErrPop);
+document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-act]'); if(!a)return;
+  if(a.dataset.act==='view-err'){ e.stopPropagation(); openErrPop(a); }
+  else if(a.dataset.act==='dismiss-banner'){ state.bannerDismissed=true; renderRunState(); }
+});
+/* demo: run-state toggle */
+document.querySelectorAll('.demo-btn[data-runstate]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.demo-btn[data-runstate]').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+  state.runState=b.dataset.runstate; state.bannerDismissed=false; renderRunState();
+}));
+
+function renderDetail(){
+  const s=state.scope;
+  const slot=document.getElementById('detail-slot');
+  if(!s){ return; }
+  // org-level scope → summary card (results span many repos)
+  if(s.type==='morg' || s.type==='vcs'){
+    const isM=s.type==='morg';
+    const node=isM?findOrg(MORG,s.repoId):null;
+    const repos=isM?reposUnderOrg(node):reposInVcs(s.repoId);
+    const name=isM?node.name:s.repoId;
+    const total=repos.reduce((a,x)=>a+x.results,0);
+    const sharedN=isM?repos.filter(x=>repoShared(x.id)).length:0;
+    slot.innerHTML=`
+      <div class="scope-bar">
+        <span class="scope-level">${isM?'Moderne org':'VCS org'}</span>
+        <div class="scope-crumbs"><span class="sc-crumb cur">${name}</span></div>
+        <span class="scope-count">${total.toLocaleString()} result${total===1?'':'s'}</span>
+      </div>
+      <div class="repo-detail"><div class="repo-detail-head">
+        <div class="repo-detail-title">${name}</div>
+        <div class="repo-detail-sub"><b>${repos.length.toLocaleString()}</b> repositor${repos.length===1?'y':'ies'} · <b>${total.toLocaleString()}</b> results${isM&&sharedN?` · <b>${sharedN}</b> shared across sub-orgs`:''}</div>
+      </div>
+      ${isM&&sharedN?`<div class="org-note inset"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><span class="org-note-text">${sharedN} of these repositories also belong to another sub-org, so this total may differ from the sum of the sub-org totals below it.</span></div>`:''}
+      <div class="org-repo-list">${repos.slice(0,state.orgShown).map(x=>`<div class="org-repo"><span class="repo-status-dot ${statusOf(x)}"></span><span class="orr-name">${x.name}</span>${repoShared(x.id)?'<span class="hn-badge shared">shared</span>':''}<span class="orr-count">${x.results.toLocaleString()} results</span></div>`).join('')}${repos.length>state.orgShown?`<button class="org-load-more" id="org-load-more">Load ${Math.min(ORG_PAGE,repos.length-state.orgShown)} more <span class="lm-rest">${(repos.length-state.orgShown).toLocaleString()} more repositories</span></button>`:''}</div>
+      </div>`;
+    const lm=document.getElementById('org-load-more');
+    if(lm) lm.addEventListener('click',()=>{ state.orgShown+=ORG_PAGE; renderDetail(); });
+    return;
+  }
+  const r = (s.repoId && s.repoId!=='ALL') ? REPOS.find(x=>x.id===s.repoId) : null;
+  // repo with no results / error
+  if(s.type==='repo' && r && r.results===0){
+    if(r.error){
+      // Errored result → show the recipe-run failure log in the diff area.
+      slot.innerHTML=`<div class="err-context">${r.name} <span class="repo-branch mono">@ ${r.branch}</span></div>${errorPanelHTML(r)}`;
+      wireErrorPanel(slot, r);
+    } else {
+      slot.innerHTML=`<div class="repo-detail"><div class="repo-detail-head">
+        <div class="repo-detail-title">${r.name} <span class="repo-branch mono">@ ${r.branch}</span></div>
+        <div class="repo-detail-sub">No results were produced for this repository.</div>
+      </div></div>`;
+    }
+    return;
+  }
+  const files=scopeFiles();
+  const crumbs=scopeCrumbs();
+  const cnt=scopeCount();
+  const crumbHTML=crumbs.map((x,i)=>`<span class="sc-crumb${i===crumbs.length-1?' cur':''}">${x}</span>`).join('<span class="sc-sep">›</span>');
+  const titleMain = r ? `${r.name} <span class="repo-branch mono">@ ${r.branch}</span>` : 'All repositories';
+  slot.innerHTML=`
+    <div class="scope-bar">
+      <span class="scope-level">${LEVEL_LABEL[s.type]||'Scope'}</span>
+      <div class="scope-crumbs">${crumbHTML}</div>
+      <span class="scope-count">${cnt.toLocaleString()} result${cnt===1?'':'s'}</span>
+    </div>
+    <div class="detail-toolbar">
+      <div class="dt-title">${titleMain}</div>
+      <div class="dt-actions">
+        <div class="dt-split">
+          <button class="dt-split-main" id="commit-selected"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Commit selected results</button>
+          <button class="dt-split-caret" id="commit-caret" aria-label="Commit options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        </div>
+        <button class="dt-btn icon" id="filter-toggle" title="Filter files"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button>
+        <button class="dt-btn icon" id="collapse-toggle"></button>
+        <button class="dt-btn icon" id="diff-tools" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+      </div>
+    </div>
+    <div class="diff-filter" id="diff-filter" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input id="diff-filter-input" type="search" placeholder="Filter by file or directory name…" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="diff-list">${diffCards(s, files)}</div>`;
+  wireDiff(slot);
+}
+/* method scope → just that method's changed lines; otherwise full file hunks */
+function diffCards(s, files){
+  if(s.type==='method'){
+    const c=files[0];
+    const meth=c && c.methods.find(x=>x.m===s.method);
+    if(c && meth && meth.diff) return diffCardHTML({path:c.file}, meth.diff, `${s.method}`);
+    return '';
+  }
+  return files.map(c=>diffCardHTML({path:c.file}, c.hunk)).join('');
+}
+
+let diffSettings={errors:false, header:true, ws:false, showWs:false, cssHl:false, disableStyled:false, disableLig:false};
+function applyDiffSettings(slot){
+  slot.querySelectorAll('.diff-hunk').forEach(h=>h.style.display=diffSettings.header?'':'none');
+}
+function wireDiff(slot){
+  // file header: checkbox / menu / collapse
+  slot.querySelectorAll('.diff-file-head').forEach(h=>h.addEventListener('click',e=>{
+    if(e.target.closest('.diff-check'))return;
+    const act=e.target.closest('.diff-act');
+    if(act){ e.stopPropagation(); openFileMenu(act, h.closest('.diff-file')); return; }
+    h.closest('.diff-file').classList.toggle('collapsed');
+    syncCollapseToggle(slot);
+  }));
+  const ct=document.getElementById('collapse-toggle');
+  if(ct)ct.addEventListener('click',()=>{ collapseAll(slot); syncCollapseToggle(slot); });
+  syncCollapseToggle(slot);
+  const ds=document.getElementById('diff-tools');
+  if(ds)ds.addEventListener('click',()=>openDiffToolsMenu(ds, slot));
+  const cs=document.getElementById('commit-selected');
+  if(cs)cs.addEventListener('click',()=>{
+    const n=slot.querySelectorAll('.diff-check:checked').length;
+    toast(`Committing ${n} selected file${n===1?'':'s'}…`);
+  });
+  const cc=document.getElementById('commit-caret');
+  if(cc)cc.addEventListener('click',()=>openCommitMenu(cc));
+  const fi=document.getElementById('diff-filter-input');
+  if(fi)fi.addEventListener('input',e=>{
+    const q=e.target.value.toLowerCase();
+    slot.querySelectorAll('.diff-file').forEach(c=>{
+      const path=c.querySelector('.diff-file-path').textContent.toLowerCase();
+      c.classList.toggle('hide', q && !path.includes(q));
+    });
+  });
+  const ft=document.getElementById('filter-toggle');
+  if(ft)ft.addEventListener('click',()=>{
+    const f=document.getElementById('diff-filter');
+    const show=f.hidden;
+    f.hidden=!show;
+    ft.classList.toggle('active',show);
+    if(show){ fi.focus(); }
+    else { fi.value=''; slot.querySelectorAll('.diff-file.hide').forEach(c=>c.classList.remove('hide')); }
+  });
+  applyDiffSettings(slot);
+}
+
+function collapseAll(slot){
+  const cards=[...slot.querySelectorAll('.diff-file')];
+  const anyOpen=cards.some(c=>!c.classList.contains('collapsed'));
+  cards.forEach(c=>c.classList.toggle('collapsed',anyOpen));
+  return anyOpen; // true if it just collapsed
+}
+// Keep the inline toggle's label/icon in sync with the current state:
+// if any file is open the action is "Collapse all", otherwise "Expand all".
+function syncCollapseToggle(slot){
+  const btn=document.getElementById('collapse-toggle');
+  if(!btn)return;
+  const cards=[...slot.querySelectorAll('.diff-file')];
+  const anyOpen=cards.some(c=>!c.classList.contains('collapsed'));
+  const up='<polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/>';
+  const down='<polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/>';
+  btn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${anyOpen?up:down}</svg>`;
+  btn.title=anyOpen?'Collapse all':'Expand all';
+}
+
+function openDiffToolsMenu(anchor, slot){
+  document.getElementById('gh-menu').classList.remove('wide');
+  const html=`
+    <button class="gh-item noicon" data-act="repoinfo">Repository information<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+    <button class="gh-item noicon" data-act="settings">Display settings<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>`;
+  openGhMenu(anchor, html, (item)=>{
+    const a=item.dataset.act;
+    if(a==='repoinfo'){ openRepoInfoMenu(anchor, slot); return false; }
+    if(a==='settings'){ openSettingsMenu(anchor, slot); return false; }
+    return true;
+  });
+}
+function repoInfo(r){
+  let h=0; for(const c of r.name) h=(h*31+c.charCodeAt(0))>>>0;
+  const sha=h.toString(16).padStart(10,'0').slice(0,10);
+  return { url:`https://github.com/jetbrains/${r.name}/tree/${r.branch}`, sha, published:'about 19 hours ago' };
+}
+function openRepoInfoMenu(anchor, slot){
+  const r=REPOS.find(x=>x.id===state.activeRepo); if(!r)return;
+  const info=repoInfo(r);
+  const gh=`<svg class="gh-ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0C17 4.6 18 4.9 18 4.9c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>`;
+  const ext=`<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>`;
+  const html=`
+    <button class="gh-item set-back" data-act="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Repository information</button>
+    <div class="gh-divider"></div>
+    <div class="info-grid">
+      <div class="info-k">URL</div>
+      <div class="info-v">${gh}<a class="info-link" href="${info.url}" target="_blank" rel="noopener">${info.url}${ext}</a></div>
+      <div class="info-k">Changeset</div>
+      <div class="info-v">${gh}<a class="info-link" href="${info.url.replace('/tree/'+r.branch,'/commit/'+info.sha)}" target="_blank" rel="noopener">${info.sha}${ext}</a></div>
+      <div class="info-k">Last published</div>
+      <div class="info-v info-plain">${info.published}</div>
+    </div>`;
+  document.getElementById('gh-menu').classList.add('wide');
+  openGhMenu(anchor, html, (item)=>{ if(item.dataset.act==='back'){ openDiffToolsMenu(anchor, slot); return false; } return true; });
+}
+function openCommitMenu(anchor){
+  document.getElementById('gh-menu').classList.remove('wide');
+  const html=`
+    <button class="gh-item noicon" data-act="selected">Commit only selected results</button>
+    <button class="gh-item noicon" data-act="patch">Patch</button>`;
+  openGhMenu(anchor, html, (item)=>{
+    toast(item.dataset.act==='patch' ? 'Downloading patch…' : 'Committing only selected results…');
+    return true;
+  });
+}
+function openSettingsMenu(anchor, slot){
+  const t=diffSettings;
+  const tog=(k,l)=>`<button class="gh-item toggle ${t[k]?'on':''}" data-tgl="${k}">${l}<span class="tgl"></span></button>`;
+  const html=`
+    <button class="gh-item set-back" data-act="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Display settings</button>
+    <div class="gh-divider"></div>
+    <div class="gh-menu-label">Errors</div>
+    ${tog('errors','Only show errors')}
+    <div class="gh-menu-label">Diff header</div>
+    ${tog('header','Show diff header')}
+    <div class="gh-menu-label">Whitespace</div>
+    ${tog('ws','Ignore whitespace')}
+    ${tog('showWs','Show whitespace characters')}
+    <div class="gh-menu-label">Performance</div>
+    ${tog('cssHl','Use CSS Highlights API')}
+    <div class="gh-hint">Faster syntax highlighting with fewer DOM nodes (99% reduction)</div>
+    <div class="gh-menu-label">Authoring tools</div>
+    ${tog('disableStyled','Disable stylized descriptions')}
+    <div class="gh-menu-label">Customize code font</div>
+    ${tog('disableLig','Disable font ligatures')}
+    <div class="font-row">
+      <input class="font-name" placeholder="Comic Sans MS">
+      <input class="font-size" value="14">
+      <button class="font-save">Save</button>
+      <button class="font-reset">Reset</button>
+    </div>
+    <div class="gh-hint">Choose a font from your local machine to use</div>`;
+  document.getElementById('gh-menu').classList.add('wide');
+  openGhMenu(anchor, html, (item)=>{
+    if(item.dataset.act==='back'){ openDiffToolsMenu(anchor, slot); return false; }
+    const k=item.dataset.tgl;
+    if(k){ diffSettings[k]=!diffSettings[k]; item.classList.toggle('on',diffSettings[k]); if(k==='header') applyDiffSettings(slot); return false; }
+    return true;
+  });
+  const m=document.getElementById('gh-menu');
+  m.querySelector('.font-save').addEventListener('click',e=>{ e.stopPropagation(); toast('Saved code font'); });
+  m.querySelector('.font-reset').addEventListener('click',e=>{ e.stopPropagation(); m.querySelector('.font-name').value=''; m.querySelector('.font-size').value='14'; });
+}
+
+function openFileMenu(anchor, card){
+  document.getElementById('gh-menu').classList.remove('wide');
+  const html=`
+    <button class="gh-item noicon" data-act="why">Why did this change?</button>
+    <button class="gh-item noicon" data-act="report">Report issue</button>`;
+  const path=card.querySelector('.diff-file-path').textContent;
+  openGhMenu(anchor, html, (item)=>{
+    const a=item.dataset.act;
+    if(a==='why') toast('Why did this change? — '+path);
+    else if(a==='report') toast('Report issue — '+path);
+    return true;
+  });
+}
+
+/* generic floating menu */
+let ghHandler=null, ghAnchor=null;
+function openGhMenu(anchor, html, onPick){
+  const menu=document.getElementById('gh-menu');
+  menu.innerHTML=html; menu.hidden=false; ghHandler=onPick; ghAnchor=anchor;
+  const r=anchor.getBoundingClientRect();
+  const mw=menu.offsetWidth, mh=menu.offsetHeight;
+  let left=Math.min(r.left, window.innerWidth-mw-8);
+  let top=r.bottom+6;
+  if(top+mh>window.innerHeight) top=r.top-mh-6;
+  menu.style.left=Math.max(8,left)+'px';
+  menu.style.top=Math.max(8,top)+'px';
+}
+function closeGhMenu(){ const m=document.getElementById('gh-menu'); m.hidden=true; ghHandler=null; ghAnchor=null; }
+document.getElementById('gh-menu').addEventListener('click',e=>{
+  const item=e.target.closest('.gh-item'); if(!item)return;
+  e.stopPropagation();
+  const close = ghHandler ? ghHandler(item) : true;
+  if(close!==false) closeGhMenu();
+});
+document.addEventListener('click',e=>{
+  const m=document.getElementById('gh-menu');
+  if(m.hidden)return;
+  if(m.contains(e.target)||e.target.closest('#diff-tools')||e.target.closest('#commit-caret')||e.target.closest('#share-btn')||e.target.closest('[data-act="filemenu"]'))return;
+  closeGhMenu();
+});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeGhMenu(); });
+
+/* filters */
+document.querySelectorAll('.seg-btn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.seg-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); state.filter=b.dataset.filter; state.shown=PAGE_INIT; render();
+}));
+document.getElementById('repo-search').addEventListener('input',e=>{ state.query=e.target.value; state.shown=PAGE_INIT; render(); });
+
+/* Load more on scroll near the bottom of the left panel */
+document.querySelector('.results-left').addEventListener('scroll',function(){
+  if(this.scrollTop+this.clientHeight >= this.scrollHeight-120){
+    const total=REPOS.filter(matches).length;
+    if(state.shown<total){ state.shown=Math.min(total,state.shown+PAGE_INC); render(); }
+  }
+});
+
+/* collapsible sections (Options, Summary) — toggle their own body */
+document.querySelectorAll('.section-toggle').forEach(t=>t.addEventListener('click',()=>{
+  t.classList.toggle('collapsed');
+  const body=document.getElementById(t.dataset.target);
+  if(body)body.classList.toggle('collapsed');
+}));
+
+/* hide/show the whole Options+Summary block */
+document.getElementById('rd-toggle').addEventListener('click',function(){
+  const hidden=document.getElementById('rd').classList.toggle('rd-hidden');
+  this.innerHTML = hidden
+    ? '<svg viewBox="0 0 24 24" class="svg-stroke"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+    : '<svg viewBox="0 0 24 24" class="svg-stroke"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+  const label = hidden ? 'Show details' : 'Hide details';
+  this.title = label; this.setAttribute('aria-label', label);
+});
+
+/* org collapse */
+document.getElementById('org-chev').addEventListener('click',e=>{
+  e.stopPropagation(); state.orgOpen=!state.orgOpen;
+  document.getElementById('org-chev').classList.toggle('collapsed',!state.orgOpen);
+  render();
+});
+
+/* commit */
+document.getElementById('commit-btn').addEventListener('click',()=>{
+  const n=state.selFiles.size;
+  toast(`Committing ${n.toLocaleString()} selected file${n===1?'':'s'}…`);
+});
+
+function toast(msg){
+  const stack=document.getElementById('toast-stack');
+  const el=document.createElement('div');el.className='toast';
+  el.innerHTML=`<svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="20 6 9 17 4 12"/></svg>${msg}`;
+  stack.appendChild(el);setTimeout(()=>el.remove(),2600);
+}
+
+/* draggable divider between results list and detail pane */
+(function(){
+  const layout=document.querySelector('.results-layout');
+  const divider=document.getElementById('results-divider');
+  let dragging=false;
+  divider.addEventListener('pointerdown',e=>{
+    dragging=true; divider.classList.add('dragging');
+    document.body.classList.add('col-resizing');
+    divider.setPointerCapture(e.pointerId);
+  });
+  divider.addEventListener('pointermove',e=>{
+    if(!dragging)return;
+    const rect=layout.getBoundingClientRect();
+    let x=e.clientX-rect.left;
+    const min=340, max=rect.width-380;
+    x=Math.max(min,Math.min(max,x));
+    layout.style.setProperty('--left-w', x+'px');
+  });
+  function end(e){ if(!dragging)return; dragging=false; divider.classList.remove('dragging'); document.body.classList.remove('col-resizing'); try{divider.releasePointerCapture(e.pointerId);}catch(_){} }
+  divider.addEventListener('pointerup',end);
+  divider.addEventListener('pointercancel',end);
+  // double-click to reset
+  divider.addEventListener('dblclick',()=>layout.style.removeProperty('--left-w'));
+})();
+
+/* Share menu (top toolbar) */
+document.getElementById('share-btn').addEventListener('click',function(){
+  document.getElementById('gh-menu').classList.remove('wide');
+  const html=`
+    <button class="gh-item noicon" data-act="recipe-id">Recipe ID</button>
+    <button class="gh-item noicon two-line" data-act="rerun-link">
+      <span class="gi-title">Copy link to rerun recipe</span>
+      <span class="gi-sub">for the Default organization</span>
+    </button>`;
+  openGhMenu(this, html, (item)=>{
+    toast(item.dataset.act==='recipe-id' ? 'Copied recipe ID' : 'Copied link to rerun recipe');
+    return true;
+  });
+});
+document.getElementById('api-explorer').addEventListener('click',()=>toast('Opening API explorer…'));
+
+/* Demo button-style toggle (pill vs rounded rectangle) */
+document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.body.classList.toggle('btn-rounded',b.dataset.btnstyle==='rounded');
+}));
+
+/* Demo: View mode (Unified tree vs Group-by pivot) */
+const EMPTY_DETAIL=`<div class="detail-empty">
+  <span class="ic"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
+  <div class="et">Select any level — repository, package, class, or method — to view its results</div>
+</div>`;
+function resetScope(){ state.scope=null; state.activeRepo=null; document.getElementById('detail-slot').innerHTML=EMPTY_DETAIL; }
+document.querySelectorAll('.demo-btn[data-view]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.demo-btn[data-view]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  state.viewMode=b.dataset.view;
+  const groupMode=state.viewMode==='group';
+  document.querySelectorAll('.demo-btn.gb').forEach(g=>g.disabled=!groupMode);
+  // entering group mode: jump straight to a visible pivot (Package) so the toggle does something
+  if(groupMode && state.groupBy==='repository') state.groupBy='package';
+  if(!groupMode) state.groupBy='repository';
+  document.querySelectorAll('.demo-btn[data-group]').forEach(x=>x.classList.toggle('active',x.dataset.group===state.groupBy));
+  resetScope(); render();
+}));
+document.querySelectorAll('.demo-btn[data-group]').forEach(b=>b.addEventListener('click',()=>{
+  if(b.disabled)return;
+  document.querySelectorAll('.demo-btn[data-group]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  state.groupBy=b.dataset.group;
+  resetScope(); render();
+}));
+
+/* Roll up: re-root the tree at VCS org / Moderne org (or repository). Tree-only. */
+document.querySelectorAll('.demo-btn[data-root]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.demo-btn[data-root]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  state.rootBy=b.dataset.root;
+  // roll-up is a Unified-tree concept — snap back to it and reset the downward pivot
+  state.viewMode='tree';
+  document.querySelectorAll('.demo-btn[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view==='tree'));
+  state.groupBy='repository';
+  document.querySelectorAll('.demo-btn.gb').forEach(g=>{ g.disabled=true; g.classList.toggle('active',g.dataset.group==='repository'); });
+  state.expanded=new Set();
+  if(state.rootBy==='moderne'){ state.noteDismissed=false; state.expanded.add('MORG|acme'); MORG.children.forEach(c=>state.expanded.add('MORG|'+c.id)); }
+  resetScope(); render();
+}));
+
+/* Demo controls dock — collapsed by default; trigger opens, × / click-away closes */
+(function(){
+  const dock=document.getElementById('demo-dock');
+  document.getElementById('demo-trigger').addEventListener('click',e=>{ e.stopPropagation(); dock.classList.add('open'); });
+  document.getElementById('demo-close').addEventListener('click',e=>{ e.stopPropagation(); dock.classList.remove('open'); });
+  document.addEventListener('click',e=>{ if(!dock.contains(e.target)) dock.classList.remove('open'); });
+})();
+
+render();
+renderRunState();   // org-level run error: banner / full-screen / none
+
+// Show the title tooltip only when the h1 is actually truncated.
+(function(){
+  const wrap=document.querySelector('.run-title');
+  if(!wrap)return;
+  const h1=wrap.querySelector('h1');
+  const check=()=>wrap.classList.toggle('is-truncated',h1.scrollWidth>h1.clientWidth);
+  check();
+  window.addEventListener('resize',check);
+})();
+</script>
+</body>
+</html>
