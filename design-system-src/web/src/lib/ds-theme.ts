@@ -12,7 +12,7 @@ type Hue = { name: string; fill: string; ink: string; on: string };
 const PALETTE: Hue[] = [
   { name: "Green",   fill: "#33ff99", ink: "#5fe6a8", on: "#10130d" },
   { name: "Emerald", fill: "#19e085", ink: "#5fe6a8", on: "#08130d" },
-  { name: "Teal",    fill: "#2dd4bf", ink: "#5eecd0", on: "#06231d" },
+  { name: "Teal",    fill: "#25d0c8", ink: "#5eecd0", on: "#06231d" },
   { name: "Cyan",    fill: "#38bdf8", ink: "#7dd3fc", on: "#06202b" },
   { name: "Blue",    fill: "#4f8ff5", ink: "#93c5fd", on: "#071426" },
   { name: "Cobalt",  fill: "#3a6df0", ink: "#93b9ff", on: "#ffffff" },
@@ -40,9 +40,9 @@ const MONO: Font[] = [
 ];
 
 const KEY = "ds-colors";
-// Competition-informed default: Green (brand-differentiated vs the purple/blue
-// crowd) + Violet accent, Inter UI / JetBrains mono, on the dark ground.
-const DEFAULTS = { primary: "Green", secondary: "Violet", fontSans: "Inter", fontMono: "JetBrains", base: "cool" };
+// Default: Teal primary (brand strand, decoupled from success-green) + Violet
+// accent, Inter UI / JetBrains mono, on the dark ground.
+const DEFAULTS = { primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "JetBrains", base: "cool" };
 const current = { ...DEFAULTS };
 
 const toRGB = (h: string) => h.replace("#", "").match(/../g)!.map((v) => parseInt(v, 16));

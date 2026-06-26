@@ -23,8 +23,8 @@ const LIGHT = {
   light: true,
   bg: "#f5f6f8", surface: "#ffffff", panel: "#ffffff", bgAlt: "#eaecf0",
   ink: "#18191c", inkDim: "#44464d", muted: "#696c74", muted2: "#7e818b",
-  // primary (vivid GREEN — brand & action, dark text; doubles as success)
-  primary: "#15cf76", primaryHover: "#10b866", primaryInk: "#096540", onPrimary: "#08130d",
+  // primary (deep TEAL — brand & action; dark fill + white text on light)
+  primary: "#0e4a45", primaryHover: "#12605a", primaryInk: "#0e4a45", onPrimary: "#ffffff",
   // status (vivid fills + AA inks)
   greenInk: "#096540", green: "#15cf76", onGreen: "#08130d",
   redInk: "#b02a17", red: "#e5331f", danger: "#c4291a", onRed: "#ffffff",
@@ -36,7 +36,7 @@ const LIGHT = {
 const DARK = {
   bg: "#0c0d10", surface: "#14161b", panel: "#181a20",
   ink: "#e8eaee", inkDim: "#b4bac3", muted: "#858c97", muted2: "#646b76",
-  primary: "#33ff99", primaryInk: "#5fe6a8", onPrimary: "#10130d",
+  primary: "#25d0c8", primaryInk: "#5eecd0", onPrimary: "#06231d",
   greenInk: "#5fe6a8", green: "#33ff99", onGreen: "#10130d",
   redInk: "#ff9a8e", danger: "#d63420", onRed: "#ffffff", warnInk: "#f0c674", infoInk: "#8bb6ff",
   pink: "#ff7ac9", magenta: "#ff7ac9", violet: "#c4b5fd", indigo: "#a5b4fc",
