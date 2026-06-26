@@ -163,13 +163,20 @@
         <span class="mono" style="font-size:12.5px;color:var(--muted);">PANTONE-matched · green leads the accent</span>
       </div>
 
-      <div id="brandGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:40px;"></div>
-
       <!-- spectral ramp — the identity device -->
       <div style="margin-bottom:44px;">
         <div class="mono" style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">Spectral ramp · category identity</div>
         <div style="height:56px;border-radius:12px;background:var(--spectral);box-shadow:inset 0 0 0 1px var(--swatch-inset);"></div>
         <div id="spectralStops" style="display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-top:16px;"></div>
+
+        <!-- downloadable bar asset -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:22px;">
+          <span class="mono" style="font-size:11.5px;color:var(--muted);">Bar asset · 600×12</span>
+          <a href="assets/spectral-bar/moderne-spectral-bar-600x12.png" download style="display:inline-flex;align-items:center;gap:9px;background:transparent;color:var(--text);border:1px solid var(--line-strong);border-radius:8px;padding:9px 16px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 3v12"></path><path d="M7 11l5 4 5-4"></path><path d="M5 21h14"></path></svg>
+            Download PNG
+          </a>
+        </div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;">
@@ -279,17 +286,6 @@
         </div>
       </div>
 
-    </section>
-
-    <!-- ===== PRODUCT OVERVIEW DECK ===== -->
-    <section style="margin-top:96px;">
-      <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:34px;">
-        <h2 style="font-size:34px;font-weight:400;letter-spacing:-0.8px;color:var(--text);">Product overview deck</h2>
-        <span class="mono" style="font-size:12.5px;color:var(--muted);">Live deck · ← → to navigate · F for fullscreen</span>
-      </div>
-      <div style="border-radius:16px;overflow:hidden;border:1px solid var(--line2);box-shadow:0 28px 64px rgba(0,0,0,0.30);background:#1a2236;">
-        <iframe src="moderne-product-overview-deck.html" title="Moderne — Product Overview deck" style="display:block;width:100%;aspect-ratio:16/9;border:0;"></iframe>
-      </div>
     </section>
 
     <!-- ===== DATA ONE-SHEETS ===== -->
@@ -624,14 +620,6 @@
     { label:"The work ahead", active:false },
     { label:"Further reading", active:true },
   ];
-  const brand = [
-    { name:"Midnight", hex:"#041834", pantone:"5255 C", swatch:"#041834" },
-    { name:"Digital Blue", hex:"#283AF7", pantone:"2728 C", swatch:"#283AF7" },
-    { name:"Gold", hex:"#E7B136", pantone:"1235 C", swatch:"#E7B136" },
-    { name:"Digital Green", hex:"#85FE99", pantone:"13-0220 TPG", swatch:"#85FE99" },
-    { name:"Lavender", hex:"#D4D3E4", pantone:"5295 C", swatch:"#D4D3E4" },
-    { name:"Grey", hex:"#F8F8FF", pantone:"663 C", swatch:"#F8F8FF" },
-  ];
   // products mapped to spectral-ramp stops (the identity device)
   const accents = [
     { name:"Cobalt", product:"Platform", color:"#3B82F6" },
@@ -714,19 +702,6 @@
   }
 
   function renderStatic() {
-    // brand swatches
-    const bg = document.getElementById("brandGrid");
-    brand.forEach(c => {
-      bg.appendChild(el("div","background:var(--surface);border:1px solid var(--line2);border-radius:12px;overflow:hidden;",
-        `<div style="height:108px;background:${c.swatch};box-shadow:inset 0 0 0 1px var(--swatch-inset);"></div>
-         <div style="padding:18px 20px;">
-           <div style="font-size:17px;font-weight:400;margin-bottom:5px;color:var(--text);">${c.name}</div>
-           <div class="mono" style="display:flex;align-items:center;justify-content:space-between;">
-             <span style="font-size:13px;color:var(--body);">${c.hex}</span>
-             <span style="font-size:11.5px;color:var(--muted);">${c.pantone}</span>
-           </div>
-         </div>`));
-    });
     // accent palette
     const ag = document.getElementById("accentGrid");
     accents.forEach(a => {
