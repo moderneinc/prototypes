@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> ds-head }}
+  <title>Feedback &amp; overlay — Moderne SaaS DS</title>
+  <script type="module" src="/src/pages/ds-feedback.ts"></script>
+</head>
+<body>
+  <div class="ds-shell">
+    {{> ds-shell-top }}
+    <nav class="ds-sidenav">{{> ds-sidenav-links }}</nav>
+    <main class="ds-main">
+      <div class="ds-main-inner">
+
+        <div class="ds-page-head">
+          <div class="ds-eyebrow">Components</div>
+          <h1 class="ds-display">Feedback &amp; overlay</h1>
+          <p>Status and overlay surfaces. The four feedback hues (success / error / warning / info) are a SaaS necessity
+            beyond the marketing two-signal — they are clearly fenced and only ever encode component status.</p>
+        </div>
+
+        <section class="ds-section" id="alerts">
+          <header><h2 class="ds-h2">Alerts</h2><span class="maps">maps → <b>MUI Alert / InformationBox</b></span></header>
+          <div class="ds-demo col tight">
+            <div class="ds-alert ds-alert--success">
+              <svg class="ds-alert-icn" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="7.5"/><path d="M5.5 9.2l2.3 2.3 4.7-4.7"/></svg>
+              <div><b>Validated</b><p>142 changes passed the build gate and are ready for a human to land.</p></div>
+            </div>
+            <div class="ds-alert ds-alert--error">
+              <svg class="ds-alert-icn" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="7.5"/><path d="M9 5v5M9 12.4v.1" stroke-linecap="round"/></svg>
+              <div><b>Recipe failed</b><p>Log4j 2.14 was not found on the classpath for moderne/lst.</p></div>
+            </div>
+            <div class="ds-alert ds-alert--warn">
+              <svg class="ds-alert-icn" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2.5l7 12.5H2z"/><path d="M9 7v3.5M9 12.8v.1" stroke-linecap="round"/></svg>
+              <div><b>Large organization</b><p>This will run across 412 repositories and may take several minutes.</p></div>
+            </div>
+            <div class="ds-alert ds-alert--info">
+              <svg class="ds-alert-icn" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="7.5"/><path d="M9 8v4M9 5.6v.1" stroke-linecap="round"/></svg>
+              <div><b>Dry run</b><p>No changes will be committed. Review the diff before running for real.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ds-section" id="banner">
+          <header><h2 class="ds-h2">Banner</h2><span class="maps">maps → <b>neo NeoBanner</b></span></header>
+          <div class="ds-demo col tight">
+            <div class="ds-banner">
+              <svg class="ds-alert-icn" style="width:18px;height:18px" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="7.5"/><path d="M9 8v4M9 5.6v.1" stroke-linecap="round"/></svg>
+              A new platform version is available.
+              <span class="spacer"></span>
+              <button class="ds-btn ds-btn--primary ds-btn--sm">Update</button>
+            </div>
+            <div class="ds-banner ds-banner--warn">
+              <span>Maintenance window scheduled for Sunday 02:00 UTC.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="ds-section" id="toast">
+          <header><h2 class="ds-h2">Toast / snackbar</h2><span class="maps">maps → <b>MUI Snackbar</b></span></header>
+          <div class="ds-demo">
+            <div class="ds-toast">
+              <svg class="ds-alert-icn" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="7.5"/><path d="M5.5 9.2l2.3 2.3 4.7-4.7"/></svg>
+              Recipe queued across 412 repos
+              <span class="spacer"></span>
+              <button>View</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="ds-section" id="tooltip-popover">
+          <header><h2 class="ds-h2">Tooltip &amp; popover</h2><span class="maps">maps → <b>MUI Tooltip / Popover</b></span></header>
+          <div class="ds-demo" style="align-items:flex-start;gap:40px">
+            <span class="ds-tooltip">Validated 2 minutes ago</span>
+            <div class="ds-popover">
+              <h4>log4j-core 2.14.1</h4>
+              <p>Watched dependency. Appears in 38 repositories; 7 still on a vulnerable version.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="ds-section" id="dialog">
+          <header><h2 class="ds-h2">Dialog</h2><span class="maps">maps → <b>MUI Dialog / ConfirmationDialog</b></span></header>
+          <div class="ds-demo col" style="padding:0;border:0;background:transparent">
+            <div class="ds-dialog-stage">
+              <div class="ds-dialog">
+                <div class="ds-dialog-head"><h3>Delete recipe?</h3>
+                  <button class="ds-btn ds-btn--icon ds-btn--subtle ds-btn--sm" aria-label="Close">×</button>
+                </div>
+                <div class="ds-dialog-body">This permanently removes “Upgrade Spring Boot 3.x” and its run history. This cannot be undone.</div>
+                <div class="ds-dialog-foot">
+                  <button class="ds-btn ds-btn--subtle">Cancel</button>
+                  <button class="ds-btn ds-btn--danger">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ds-section" id="drawer">
+          <header><h2 class="ds-h2">Drawer</h2><span class="maps">maps → <b>MUI Drawer / GlobalNavigationDrawer</b></span></header>
+          <div class="ds-demo col" style="padding:0;border:0;background:transparent">
+            <div class="ds-drawer-stage">
+              <aside class="ds-drawer">
+                <h3>Filters</h3>
+                <label class="ds-check"><input type="checkbox" checked /> Validated</label>
+                <label class="ds-check"><input type="checkbox" /> Running</label>
+                <label class="ds-check"><input type="checkbox" /> Failed</label>
+                <span style="flex:1"></span>
+                <button class="ds-btn ds-btn--primary">Apply</button>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <section class="ds-section" id="progress">
+          <header><h2 class="ds-h2">Progress, spinner &amp; skeleton</h2><span class="maps">maps → <b>LinearProgress / CircularProgress / Skeleton</b></span></header>
+          <div class="ds-demo col tight">
+            <div class="ds-progress" style="max-width:420px"><span style="width:64%"></span></div>
+            <div class="ds-progress indeterminate" style="max-width:420px"><span></span></div>
+            <div class="ds-row" style="gap:18px"><span class="ds-spinner"></span> <span class="ds-sequencing" aria-label="Sequencing"><i></i><i></i><i></i><i></i><i></i><i></i></span> <span class="ds-sm ds-muted">Sequencing repositories…</span></div>
+            <div class="ds-row" style="width:100%;max-width:420px">
+              <span class="ds-skeleton circle" style="width:32px;height:32px"></span>
+              <div class="ds-stack" style="flex:1;gap:8px">
+                <span class="ds-skeleton line" style="width:70%"></span>
+                <span class="ds-skeleton line" style="width:40%"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ds-section" id="empty">
+          <header><h2 class="ds-h2">Empty state</h2><span class="maps">maps → <b>utilities/EmptyState</b></span></header>
+          <div class="ds-demo col" style="padding:0;border:0;background:transparent">
+            <div class="ds-empty">
+              <svg class="ds-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="18" rx="3" fill="currentColor" opacity=".22"/><rect x="9" y="5.5" width="6" height="2" rx="1" fill="currentColor" opacity=".6"/><rect x="9" y="9.2" width="6" height="2.4" rx="1.2" fill="var(--ds-green)"/><rect x="9" y="13" width="6" height="2" rx="1" fill="currentColor" opacity=".5"/><rect x="9" y="16.4" width="6" height="1.7" rx=".85" fill="currentColor" opacity=".35"/></svg>
+              <h3>No recipe runs yet</h3>
+              <p>Run a recipe across your organization to see validated changesets here.</p>
+              <button class="ds-btn ds-btn--primary">Browse recipes</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

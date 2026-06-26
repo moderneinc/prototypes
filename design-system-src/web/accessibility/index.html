@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> ds-head }}
+  <title>Accessibility — Moderne SaaS DS</title>
+  <script type="module" src="/src/pages/ds-accessibility.ts"></script>
+</head>
+<body>
+  <div class="ds-shell">
+    {{> ds-shell-top }}
+    <nav class="ds-sidenav">{{> ds-sidenav-links }}</nav>
+    <main class="ds-main">
+      <div class="ds-main-inner">
+
+        <div class="ds-page-head">
+          <div class="ds-eyebrow">Foundations</div>
+          <h1 class="ds-display">Accessibility</h1>
+          <p>Every text and UI color pair in both themes is checked against WCAG&nbsp;2.1 AA. The audit is a script —
+            <code class="ds-mono">.context/ds-a11y-check.mjs</code> — run with <code class="ds-mono">node</code>; it currently reports
+            <b style="color:var(--ds-green-ink)">0 failures</b>. Thresholds: normal text ≥ 4.5:1, large/bold text &amp; UI graphics ≥ 3.0:1.</p>
+        </div>
+
+        <div class="ds-note"><b>Color is never the only signal.</b> Status always pairs the hue with an icon, a dot, and a text
+          label (see the data-display and feedback pages), so red/green meaning survives for color-blind users
+          (DESIGN.md §8). Focus is shown with a visible <code class="ds-mono">:focus-visible</code> ring on the primary color, and
+          all looping motion honors <code class="ds-mono">prefers-reduced-motion</code>.</p>
+
+        <section class="ds-section" id="light">
+          <header><h2 class="ds-h2">Light theme — contrast ratios</h2><span class="maps">AA pass at every row</span></header>
+          <div class="ds-table-wrap"><table class="ds-table">
+            <thead><tr><th>Pair</th><th>Tokens</th><th class="num">Ratio</th><th>Min</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td>Body text on card</td><td class="ds-mono">ink-dim / panel</td><td class="num">9.76</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Labels on canvas</td><td class="ds-mono">muted / bg</td><td class="num">5.09</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Primary link / text</td><td class="ds-mono">primary-ink / panel</td><td class="num">7.10</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Button label on primary</td><td class="ds-mono">on-primary / primary</td><td class="num">7.10</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Success text</td><td class="ds-mono">green-ink / panel</td><td class="num">7.13</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Error text</td><td class="ds-mono">red-ink / panel</td><td class="num">6.58</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Label on danger button</td><td class="ds-mono">white / danger</td><td class="num">5.71</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Rainbow inks (darkest→lightest)</td><td class="ds-mono">cat-*-ink / panel</td><td class="num">4.88–6.32</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Faint caption (large only)</td><td class="ds-mono">muted2 / bg</td><td class="num">3.47</td><td>3.0</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section class="ds-section" id="dark">
+          <header><h2 class="ds-h2">Dark theme — contrast ratios</h2><span class="maps">AA pass at every row</span></header>
+          <div class="ds-table-wrap"><table class="ds-table">
+            <thead><tr><th>Pair</th><th>Tokens</th><th class="num">Ratio</th><th>Min</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td>Body text on card</td><td class="ds-mono">ink-dim / panel</td><td class="num">9.17</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Labels on canvas</td><td class="ds-mono">muted / bg</td><td class="num">6.07</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Primary link / text</td><td class="ds-mono">primary-ink / panel</td><td class="num">9.08</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Button label on primary</td><td class="ds-mono">on-primary / primary</td><td class="num">5.20</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Success text</td><td class="ds-mono">green-ink / panel</td><td class="num">10.67</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Error text</td><td class="ds-mono">red-ink / panel</td><td class="num">8.19</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Label on danger button</td><td class="ds-mono">white / danger</td><td class="num">4.80</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Rainbow inks</td><td class="ds-mono">cat-*-ink / panel</td><td class="num">6.81–11.48</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Faint caption (large only)</td><td class="ds-mono">muted2 / bg</td><td class="num">3.34</td><td>3.0</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section class="ds-section" id="rerun">
+          <header><h2 class="ds-h2">Re-run the audit</h2></header>
+          <pre class="ds-code">node .context/ds-a11y-check.mjs</pre>
+          <p class="ds-sm ds-muted" style="margin-top:12px">The script holds the literal token values and computes WCAG relative-luminance
+            contrast for every meaningful pair, exiting non-zero on any failure — so it can gate CI later. When a token changes,
+            re-run it and update the rows above.</p>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Internal design-system gallery: permanently noindex (dark-launched, see docs/WORKFLOW.md). -->
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="/prototypes/design-system/brand/moderne-symbol.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Dark-only: the dark palette is the default :root, so no pre-paint theme
+       script is needed. (A dormant [data-theme="light"] block remains in
+       ds-tokens.css for easy re-enable, but nothing ships it.) -->
+  <title>Moderne SaaS Design System — exploration</title>
+  <script type="module" crossorigin src="/prototypes/design-system/assets/ds-theme-4EcjPfJO.js"></script>
+  <script type="module" crossorigin src="/prototypes/design-system/assets/ds-boot-DFUytxKs.js"></script>
+  <link rel="stylesheet" crossorigin href="/prototypes/design-system/assets/ds-theme-D-uDu-zQ.css">
+</head>
+<body>
+  <div class="ds-shell">
+    <!-- Gallery chrome: brand block (top-left) + sticky topbar. Dark-only, so there
+         is no theme toggle. This is the static "Storybook" frame, NOT a product component. -->
+    <div class="ds-brand"><span class="dot"></span><b>Moderne</b><span>SaaS DS</span></div>
+    <header class="ds-topbar">
+      <h1>SaaS Design System <span class="ds-topbar-meta" style="margin-left:8px">dark · first pass</span></h1>
+      <!-- Interactive theme builder: pick a primary + secondary from our palette;
+           it live-themes the whole showcase (this site is built with the system) and
+           persists across pages. Swatches are populated by src/lib/ds-theme.ts. -->
+      <div class="ds-theme-ctl">
+        <button class="ds-theme-trigger" aria-expanded="false" aria-controls="ds-theme-panel">
+          <span class="sw2"><i style="background:var(--ds-primary)"></i><i style="background:var(--ds-secondary)"></i></span>
+          Theme
+        </button>
+        <div class="ds-theme-panel" id="ds-theme-panel" hidden>
+          <div class="ds-theme-head"><b>Build a theme</b>
+            <button class="ds-btn ds-btn--subtle ds-btn--sm" data-theme-reset>Reset</button>
+          </div>
+          <div class="ds-theme-grp"><span class="lbl">Primary · brand &amp; action</span><div class="ds-sw-row" data-role="primary"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Secondary · accent</span><div class="ds-sw-row" data-role="secondary"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Primary font · UI</span><div class="ds-font-row" data-font="sans"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Secondary font · mono / data</span><div class="ds-font-row" data-font="mono"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Base · ground</span>
+            <div class="ds-font-row" data-base-row>
+              <button class="ds-fontpill" data-base="cool" aria-pressed="true">Cool neutral</button>
+              <button class="ds-fontpill" data-base="warm" aria-pressed="false">Warm · gold nav</button>
+            </div>
+          </div>
+          <div class="ds-theme-actions">
+            <button class="ds-btn ds-btn--secondary ds-btn--sm" data-theme-copy>Copy CSS</button>
+            <span class="ds-sm ds-muted" data-theme-current></span>
+          </div>
+          <pre class="ds-theme-out"></pre>
+        </div>
+      </div>
+    </header>
+    <nav class="ds-sidenav"><!-- Shared gallery nav. The active link is marked at runtime by ds-chrome.ts
+     (matches location.pathname), so no per-page duplication is needed. -->
+<div class="group">Overview</div>
+<a href="/prototypes/design-system/">Introduction</a>
+<a href="/prototypes/design-system/foundations/">Foundations</a>
+<a href="/prototypes/design-system/accessibility/">Accessibility</a>
+<a href="/prototypes/design-system/dataviz/">Data visualization</a>
+<div class="group">Components</div>
+<a href="/prototypes/design-system/forms/">Forms &amp; buttons</a>
+<a href="/prototypes/design-system/navigation/">Navigation</a>
+<a href="/prototypes/design-system/data-display/">Data display</a>
+<a href="/prototypes/design-system/feedback/">Feedback &amp; overlay</a>
+<div class="group">Example screens</div>
+<a href="/prototypes/design-system/examples/?s=devcenter" data-screen="devcenter">DevCenter</a>
+<a href="/prototypes/design-system/examples/?s=activity" data-screen="activity">Activity</a>
+<a href="/prototypes/design-system/examples/?s=changelog" data-screen="changelog">Changelog</a>
+<a href="/prototypes/design-system/examples/?s=docs-home" data-screen="docs-home">Docs · Home</a>
+<a href="/prototypes/design-system/examples/?s=docs-platform" data-screen="docs-platform">Docs · Platform</a>
+<a href="/prototypes/design-system/examples/?s=docs-article" data-screen="docs-article">Docs · Article</a>
+</nav>
+    <main class="ds-main">
+      <div class="ds-main-inner">
+
+        <div class="ds-page-head" style="--ds-head-measure:none">
+          <div class="ds-eyebrow">Introduction</div>
+          <h1 class="ds-display">Dark mode for <span class="ds-spectral">Docs &amp; SaaS</span>, based on Moderne.ai.</h1>
+          <p>A playground for exploring a <b style="color:var(--ds-ink)">dark mode</b> for our Docs and SaaS, built from the
+            Moderne.ai look. The goal is simple: <b style="color:var(--ds-ink)">try themes, experiment, and align on a direction
+            together</b> — in a fun way. Use the <b style="color:var(--ds-ink)">Theme builder</b> in the top bar to pick colours
+            and fonts; everything re-themes live and carries across pages, with real components and recreated Moderne screens to
+            react to. This experiment folds in several inputs: our <b style="color:var(--ds-ink)">UI kit</b>, the
+            <b style="color:var(--ds-ink)">Moderne.ai marketing site</b>, and the <b style="color:var(--ds-ink)">brand guidelines and
+            design tokens</b> living in the marketing-site repo.</p>
+        </div>
+
+        <section class="ds-section">
+          <header><h2 class="ds-h2">The system in four layers</h2></header>
+          <p class="ds-body" style="margin:0 0 18px">It is built exactly like the website's "library" so the front-end team
+            already understands it: a strict, token-driven CSS cascade plus Handlebars partials. A designer can add a whole
+            component — tokens, CSS, markup — with zero changes to the TypeScript layer.</p>
+          <div class="ds-row" style="align-items:stretch">
+            <div class="ds-card" style="flex:1;min-width:220px"><div class="ds-card-body">
+              <div class="ds-eyebrow" style="color:var(--ds-cat-blue)">1 · Tokens</div>
+              <p style="margin-top:8px"><code class="ds-mono">ds-tokens.css</code> — every color a named <code class="ds-mono">var(--ds-*)</code>.
+                Dark is the default <code class="ds-mono">:root</code> (a dormant light block remains). Never a raw hex in a component.</p>
+            </div></div>
+            <div class="ds-card" style="flex:1;min-width:220px"><div class="ds-card-body">
+              <div class="ds-eyebrow" style="color:var(--ds-cat-gold)">2 · Base</div>
+              <p style="margin-top:8px"><code class="ds-mono">ds-base.css</code> — reset, type primitives, and the gallery shell
+                (top bar, side nav).</p>
+            </div></div>
+            <div class="ds-card" style="flex:1;min-width:220px"><div class="ds-card-body">
+              <div class="ds-eyebrow" style="color:var(--ds-cat-violet)">3 · Components</div>
+              <p style="margin-top:8px"><code class="ds-mono">ds-components.css</code> — the SaaS library: buttons, inputs,
+                tables, dialogs… each class noting the moderne-ui component it maps to.</p>
+            </div></div>
+            <div class="ds-card" style="flex:1;min-width:220px"><div class="ds-card-body">
+              <div class="ds-eyebrow">4 · Partials</div>
+              <p style="margin-top:8px">Canonical markup in <code class="ds-mono">web/partials/</code> — the 1:1 reference the
+                front-end team ports into React/MUI.</p>
+            </div></div>
+          </div>
+        </section>
+
+        <section class="ds-section">
+          <header><h2 class="ds-h2">Where to look</h2></header>
+          <div class="ds-table-wrap">
+            <table class="ds-table">
+              <thead><tr><th>Page</th><th>Covers</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><a href="/prototypes/design-system/foundations/">Foundations</a></td><td class="ds-muted">Teal primary (+ hue picker), status, the 9-hue rainbow, type, spacing, elevation</td><td><span class="ds-badge ds-badge--green">Draft</span></td></tr>
+                <tr><td><a href="/prototypes/design-system/accessibility/">Accessibility</a></td><td class="ds-muted">WCAG AA contrast audit, 0 failures</td><td><span class="ds-badge ds-badge--green">Draft</span></td></tr>
+                <tr><td><a href="/prototypes/design-system/dataviz/">Data visualization</a></td><td class="ds-muted">Chart vocabulary — colour roles, chart types, the green target line, draw-on</td><td><span class="ds-badge ds-badge--green">Draft</span></td></tr>
+                <tr><td><a href="/prototypes/design-system/forms/">Forms &amp; buttons</a></td><td class="ds-muted">Buttons, inputs, select, checkbox, radio, switch, field states</td><td><span class="ds-badge ds-badge--green">Draft</span></td></tr>
+                <tr><td><a href="/prototypes/design-system/navigation/">Navigation</a></td><td class="ds-muted">Tabs, breadcrumbs, menu, side nav, app bar, pagination</td><td><span class="ds-badge ds-badge--green">Draft</span></td></tr>
+                <tr><td><a href="/prototypes/design-system/data-display/">Data display</a></td><td class="ds-muted">Table, card, badge, chip, tag, avatar, status</td><td><span class="ds-badge ds-badge--green">Draft</span></td></tr>
+                <tr><td><a href="/prototypes/design-system/feedback/">Feedback &amp; overlay</a></td><td class="ds-muted">Dialog, drawer, tooltip, popover, toast, alert, progress, empty</td><td><span class="ds-badge ds-badge--green">Draft</span></td></tr>
+                <tr><td><a href="/prototypes/design-system/examples/?s=devcenter">Example screens</a></td><td class="ds-muted">Six recreated Moderne screens — DevCenter, Activity, Changelog, Docs (home / landing / article) — themed live</td><td><span class="ds-badge ds-badge--brand">Demo</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="ds-sm ds-muted" style="margin-top:14px">Deferred to later passes (data/domain-heavy): data-grid behaviors, tree view,
+            date pickers, command palette, code/diff viewers, charts, Moddy chat, builder, results. See <code class="ds-mono">web/design-system/COMPONENTS.md</code>.</p>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

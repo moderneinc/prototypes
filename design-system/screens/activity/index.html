@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" class="ds-screen">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Internal design-system gallery: permanently noindex (dark-launched, see docs/WORKFLOW.md). -->
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="/prototypes/design-system/brand/moderne-symbol.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Dark-only: the dark palette is the default :root, so no pre-paint theme
+       script is needed. (A dormant [data-theme="light"] block remains in
+       ds-tokens.css for easy re-enable, but nothing ships it.) -->
+  <title>Activity — Moderne (recreation)</title>
+  <script type="module" crossorigin src="/prototypes/design-system/assets/ds-theme-4EcjPfJO.js"></script>
+  <script type="module" crossorigin src="/prototypes/design-system/assets/ds-screen-boot-fJAViZLX.js"></script>
+  <link rel="stylesheet" crossorigin href="/prototypes/design-system/assets/ds-theme-D-uDu-zQ.css">
+  <link rel="stylesheet" crossorigin href="/prototypes/design-system/assets/ds-screen-boot-hm-L7ksu.css">
+</head>
+<body>
+  <div class="ex-app">
+    <!-- Shared example-screen left nav rail (mirrors moderne-ui PR #8378), restyled
+         with our tokens. Each page marks its active item via aria-current (a 1-line
+         inline script), which the .ds-rail-item[aria-current="page"] rule styles. -->
+    <nav class="ds-rail" aria-label="Primary">
+      <div class="ds-rail-top">
+        <div class="ds-rail-logo" title="Moderne"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="18" rx="3" fill="currentColor" opacity=".16"/><rect x="9" y="5.5" width="6" height="2" rx="1" fill="currentColor" opacity=".5"/><rect x="9" y="9.2" width="6" height="2.4" rx="1.2" fill="var(--ds-green)"/><rect x="9" y="13" width="6" height="2" rx="1" fill="currentColor" opacity=".42"/><rect x="9" y="16.4" width="6" height="1.7" rx=".85" fill="currentColor" opacity=".3"/></svg></div>
+        <span class="ds-rail-badge">v2</span>
+      </div>
+      <div class="ds-rail-scroll">
+        <button class="ds-rail-item" data-nav="moddy"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9 13.8 10.8 12 15.5 10.2 10.8 5.5 9l4.7-1.3z"/></svg><span class="lbl">Moddy</span><span class="beta">Beta</span></button>
+        <button class="ds-rail-item" data-nav="devcenter"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/></svg><span class="lbl">DevCenter</span></button>
+        <button class="ds-rail-item" data-nav="marketplace"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg><span class="lbl">Marketplace</span></button>
+        <button class="ds-rail-item" data-nav="builder"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 005.4-5.4l-2.5 2.5-2-2 2.5-2.5z"/></svg><span class="lbl">Builder</span></button>
+        <button class="ds-rail-item" data-nav="activity"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg><span class="lbl">Activity</span></button>
+        <button class="ds-rail-item" data-nav="changelog"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="lbl">Changelog</span><span class="beta">Beta</span></button>
+        <button class="ds-rail-item" data-nav="repositories"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 8v8M18 10c0 4-6 2-6 6"/></svg><span class="lbl">Repositories</span></button>
+        <button class="ds-rail-item" data-nav="deploy"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5M8 9l4-4 4 4"/><path d="M5 19h14"/></svg><span class="lbl">Deploy</span></button>
+      </div>
+      <div class="ds-rail-tenant" aria-hidden="true"></div>
+    </nav>
+    <div class="ex-main">
+      <div class="ex-topbar"><!-- Shared example-screen app bar (mirrors GlobalNavigationBar), restyled with
+     our tokens. Static, no data. -->
+<div class="ds-appbar">
+  <button class="org">
+    <svg class="ds-ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2.5" width="8" height="13" rx="1"/><path d="M11 6h4v9.5H3M6 5.5h2M6 8h2M6 10.5h2"/></svg>
+    Moderne
+    <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+  </button>
+  <span class="spacer"></span>
+  <span class="ds-input-wrap" style="max-width:280px">
+    <svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg>
+    <input class="ds-input ds-input--sm" placeholder="Search recipes, repos…" aria-label="Search" />
+  </span>
+  <button class="ds-btn ds-btn--icon ds-btn--subtle" aria-label="Navigation menu" title="Navigation menu">
+    <svg class="ds-ic" viewBox="0 0 16 16" fill="currentColor"><circle cx="3.5" cy="3.5" r="1.4"/><circle cx="8" cy="3.5" r="1.4"/><circle cx="12.5" cy="3.5" r="1.4"/><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/><circle cx="3.5" cy="12.5" r="1.4"/><circle cx="8" cy="12.5" r="1.4"/><circle cx="12.5" cy="12.5" r="1.4"/></svg>
+  </button>
+  <span class="ds-avatar ds-avatar--sm" title="User account">JJ</span>
+</div>
+</div>
+      <div class="ex-content"><div class="ex-inner">
+
+        <div class="ex-pagehead">
+          <h1 style="font-size:24px;font-weight:600;margin:0">Activity</h1>
+          <div class="ex-actions">
+            <button class="ds-btn ds-btn--icon ds-btn--subtle" aria-label="Settings">
+              <svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5L13 13M13 3l-1.5 1.5M4.5 11.5L3 13"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="ds-table-wrap">
+          <table class="ds-table">
+            <thead>
+              <tr>
+                <th class="act-lane"></th>
+                <th>Name</th>
+                <th style="width:130px">Type</th>
+                <th style="width:200px">Organization</th>
+                <th style="width:140px">Status</th>
+                <th style="width:76px;text-align:center">Run by</th>
+                <th style="width:160px">Start time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="act-lane"><i class="d1"></i></td><td><a href="#" class="act-name--recipe">DevCenter for Python</a></td><td class="act-type--recipe">Recipe run</td><td class="ds-muted">Moderne</td><td><span class="act-status act-status--info">Running - Low</span></td><td style="text-align:center"><span class="act-avatar">S</span></td><td class="ds-muted ds-sm">3 minutes ago</td></tr>
+
+              <tr><td class="act-lane"><i class="d1"></i><i class="down"></i></td><td><a href="#" class="act-name--recipe">Find LST provenance</a></td><td class="act-type--recipe">Recipe run</td><td class="ds-muted">Moderne + OpenRewrite</td><td><span class="act-status act-status--ok">Finished</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">about 11 hours ago</td></tr>
+              <tr><td class="act-lane"><i class="up"></i><i class="elbow"></i><i class="d3"></i></td><td><a href="#" class="act-name--data">LST provenance</a></td><td class="act-type--data">Data table</td><td class="ds-muted">Moderne + OpenRewrite</td><td><span class="act-status act-status--ok">Completed</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">about 11 hours ago</td></tr>
+
+              <tr><td class="act-lane"><i class="d1"></i></td><td><a href="#" class="act-name--recipe">Update Prethink context (no AI)</a></td><td class="act-type--recipe">Recipe run</td><td class="ds-muted">Moderne SaaS</td><td><span class="act-status act-status--ok">Finished</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">about 13 hours ago</td></tr>
+
+              <tr><td class="act-lane"><i class="d1"></i><i class="down"></i></td><td><a href="#" class="act-name--recipe">Find LST provenance</a></td><td class="act-type--recipe">Recipe run</td><td class="ds-muted">Moderne SaaS</td><td><span class="act-status act-status--ok">Finished</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">about 13 hours ago</td></tr>
+              <tr><td class="act-lane"><i class="up"></i><i class="elbow"></i><i class="d3"></i></td><td><a href="#" class="act-name--data">LST provenance</a></td><td class="act-type--data">Data table</td><td class="ds-muted">Moderne SaaS</td><td><span class="act-status act-status--ok">Completed</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">about 13 hours ago</td></tr>
+
+              <tr><td class="act-lane"><i class="d1"></i></td><td><a href="#" class="act-name--recipe">OpenRewrite recipe best practices</a></td><td class="act-type--recipe">Recipe run</td><td class="ds-muted">Moderne + OpenRewrite</td><td><span class="act-status act-status--ok">Finished</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">about 14 hours ago</td></tr>
+              <tr><td class="act-lane"><i class="d1"></i></td><td><a href="#" class="act-name--recipe">Moderne best practices</a></td><td class="act-type--recipe">Recipe run</td><td class="ds-muted">Moderne SaaS</td><td><span class="act-status act-status--err">Error</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">about 14 hours ago</td></tr>
+              <tr><td class="act-lane"><i class="d1"></i></td><td><a href="#" class="act-name--recipe">Common static analysis issues</a></td><td class="act-type--recipe">Recipe run</td><td class="ds-muted">Moderne - Training</td><td><span class="act-status act-status--ok">Finished</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">about 23 hours ago</td></tr>
+
+              <tr><td class="act-lane"><i class="d1"></i><i class="down"></i></td><td><a href="#" class="act-name--recipe">Dependency report</a></td><td class="act-type--recipe">Recipe run</td><td class="ds-muted">Moderne - Training</td><td><span class="act-status act-status--ok">Finished</span></td><td style="text-align:center"><span class="act-avatar">J</span></td><td class="ds-muted ds-sm">1 day ago</td></tr>
+              <tr><td class="act-lane"><i class="up"></i><i class="elbow"></i><i class="d3"></i></td><td><a href="#" class="act-name--data">Dependency report</a></td><td class="act-type--data">Data table</td><td class="ds-muted">Moderne - Training</td><td><span class="act-status act-status--ok">Completed</span></td><td style="text-align:center"><span class="act-avatar">J</span></td><td class="ds-muted ds-sm">1 day ago</td></tr>
+
+              <tr><td class="act-lane"><i class="d1"></i><i class="down"></i></td><td><a href="#" class="act-name--recipe">Find LST provenance</a></td><td class="act-type--recipe">Recipe run</td><td class="ds-muted">Moderne + OpenRewrite</td><td><span class="act-status act-status--ok">Finished</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">1 day ago</td></tr>
+              <tr><td class="act-lane"><i class="up"></i><i class="elbow"></i><i class="d3"></i></td><td><a href="#" class="act-name--data">LST provenance</a></td><td class="act-type--data">Data table</td><td class="ds-muted">Moderne + OpenRewrite</td><td><span class="act-status act-status--ok">Completed</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">1 day ago</td></tr>
+
+              <tr><td class="act-lane"><i class="d1"></i></td><td><a href="#" class="act-name--recipe">Update Prethink context (no AI)</a></td><td class="act-type--recipe">Recipe run</td><td class="ds-muted">Moderne + OpenRewrite</td><td><span class="act-status act-status--ok">Finished</span></td><td style="text-align:center"><span class="act-avatar">T</span></td><td class="ds-muted ds-sm">1 day ago</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ds-sm ds-muted" style="margin-top:16px;text-align:center">54 results · <a href="#">Load more</a></div>
+
+      </div></div>
+    </div>
+  </div>
+  <script>document.querySelector('.ds-rail-item[data-nav="activity"]')?.setAttribute('aria-current','page');</script>
+</body>
+</html>

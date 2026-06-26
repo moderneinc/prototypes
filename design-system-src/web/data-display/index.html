@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> ds-head }}
+  <title>Data display — Moderne SaaS DS</title>
+  <script type="module" src="/src/pages/ds-data-display.ts"></script>
+</head>
+<body>
+  <div class="ds-shell">
+    {{> ds-shell-top }}
+    <nav class="ds-sidenav">{{> ds-sidenav-links }}</nav>
+    <main class="ds-main">
+      <div class="ds-main-inner">
+
+        <div class="ds-page-head">
+          <div class="ds-eyebrow">Components</div>
+          <h1 class="ds-display">Data display</h1>
+          <p>Static presentation only — no data wiring. Tables, cards and badges show structure; status uses the
+            two-signal logic (green / red) and never relies on color alone.</p>
+        </div>
+
+        <section class="ds-section" id="table">
+          <header><h2 class="ds-h2">Table</h2><span class="maps">maps → <b>MUI Table / DataGrid</b> (static)</span></header>
+          <div class="ds-demo col tight">
+            <div class="ds-table-wrap">
+              <table class="ds-table zebra">
+                <thead><tr><th>Repository</th><th>Recipe</th><th class="num">Changed</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td class="ds-mono">moderne/moderne</td><td>Upgrade Spring Boot 3.x</td><td class="num">142</td><td><span class="ds-status ds-status--ok">Validated</span></td></tr>
+                  <tr><td class="ds-mono">moderne/rewrite</td><td>Migrate JUnit 4 → 5</td><td class="num">38</td><td><span class="ds-status ds-status--busy">Running</span></td></tr>
+                  <tr><td class="ds-mono">moderne/lst</td><td>Remove Log4j 2.14</td><td class="num">7</td><td><span class="ds-status ds-status--err">Failed</span></td></tr>
+                  <tr><td class="ds-mono">moderne/cli</td><td>Format with SLF4J</td><td class="num">0</td><td><span class="ds-status">No change</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="ds-section" id="cards">
+          <header><h2 class="ds-h2">Cards</h2><span class="maps">maps → <b>MUI Card / ModerneCard</b></span></header>
+          <div class="ds-demo" style="align-items:stretch">
+            <div class="ds-card" style="width:320px">
+              <div class="ds-card-head"><h3>Spring Boot 3.x</h3><span class="ds-badge ds-badge--green">Active</span></div>
+              <div class="ds-card-body"><p>Upgrade across 412 repositories with validated, reviewable changesets per service.</p></div>
+              <div class="ds-card-foot">
+                <button class="ds-btn ds-btn--subtle ds-btn--sm">Preview</button>
+                <button class="ds-btn ds-btn--primary ds-btn--sm">Run</button>
+              </div>
+            </div>
+            <div class="ds-card" style="width:320px">
+              <div class="ds-card-head"><h3>Immune memory</h3><span class="ds-badge">12,480</span></div>
+              <div class="ds-card-body"><p>Shared recipes in the catalog. Grows monotonically — herd immunity for your estate.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ds-section" id="badges">
+          <header><h2 class="ds-h2">Badges, chips &amp; tags</h2><span class="maps">maps → <b>MUI Chip / Badge</b></span></header>
+          <div class="ds-demo">
+            <span class="ds-badge">Neutral</span>
+            <span class="ds-badge ds-badge--green">Fixed</span>
+            <span class="ds-badge ds-badge--red">Defect</span>
+            <span class="ds-badge ds-badge--warn">Pending</span>
+            <span class="ds-badge ds-badge--info">Queued</span>
+            <span class="ds-badge ds-badge--solid">New</span>
+            <span class="ds-badge ds-badge--accent">Accent</span>
+          </div>
+          <div class="ds-demo-label">Chips (removable / filter)</div>
+          <div class="ds-demo">
+            <span class="ds-chip">java <button class="x" aria-label="Remove">×</button></span>
+            <span class="ds-chip ds-chip--brand">spring-boot <button class="x" aria-label="Remove">×</button></span>
+            <span class="ds-chip ds-chip--filter" aria-pressed="true">Validated</span>
+            <span class="ds-chip ds-chip--filter" aria-pressed="false">Failed</span>
+          </div>
+
+          <div class="ds-demo-label">Tags — categorical, drawn from the rainbow (never status)</div>
+          <div class="ds-demo">
+            <span class="ds-tag" style="--_tag:var(--ds-cat-violet)">migration</span>
+            <span class="ds-tag" style="--_tag:var(--ds-cat-blue)">security</span>
+            <span class="ds-tag" style="--_tag:var(--ds-cat-cyan)">framework</span>
+            <span class="ds-tag" style="--_tag:var(--ds-cat-teal)">testing</span>
+            <span class="ds-tag" style="--_tag:var(--ds-cat-pink)">style</span>
+            <span class="ds-tag" style="--_tag:var(--ds-cat-gold)">build</span>
+            <span class="ds-tag" style="--_tag:var(--ds-cat-orange)">deps</span>
+          </div>
+        </section>
+
+        <section class="ds-section" id="list-tree-code">
+          <header><h2 class="ds-h2">List, tree &amp; code</h2><span class="maps">maps → <b>neo NeoListItem / NeoTree / NeoCodeSnippet</b></span></header>
+          <div class="ds-demo" style="align-items:stretch;gap:24px">
+            <div class="ds-list" style="flex:1;min-width:240px">
+              <div class="ds-list-item is-button"><span class="ds-avatar ds-avatar--sm">OK</span> Olga Kundzich <span class="spacer"></span><span class="ds-badge ds-badge--brand">Admin</span></div>
+              <div class="ds-list-item is-button"><span class="ds-avatar ds-avatar--sm">JJ</span> Jayd Jackson <span class="spacer"></span><span class="ds-badge">Member</span></div>
+              <div class="ds-list-item is-button"><span class="ds-avatar ds-avatar--sm">BF</span> Bryan Friedman <span class="spacer"></span><span class="ds-badge">Member</span></div>
+            </div>
+            <div class="ds-tree" style="flex:1;min-width:240px">
+              <div class="ds-tree-item" aria-selected="true"><span class="tw">▾</span> moderne</div>
+              <div class="ds-tree-children">
+                <div class="ds-tree-item"><span class="tw">▾</span> src</div>
+                <div class="ds-tree-children">
+                  <div class="ds-tree-item"><span class="tw">·</span> Main.java</div>
+                  <div class="ds-tree-item"><span class="tw">·</span> Recipe.java</div>
+                </div>
+                <div class="ds-tree-item"><span class="tw">·</span> pom.xml</div>
+              </div>
+            </div>
+          </div>
+          <div class="ds-demo col tight" style="margin-top:14px">
+            <pre class="ds-code"><span class="tok">type</span> UpgradeSpringBoot_3_2 <span class="tok">extends</span> Recipe {
+  displayName = <span class="tok">"Upgrade to Spring Boot 3.2"</span>
+}</pre>
+          </div>
+        </section>
+
+        <section class="ds-section" id="avatars">
+          <header><h2 class="ds-h2">Avatars &amp; status</h2><span class="maps">maps → <b>MUI Avatar / AvatarGroup</b></span></header>
+          <div class="ds-demo">
+            <span class="ds-avatar ds-avatar--sm">JJ</span>
+            <span class="ds-avatar">OK</span>
+            <span class="ds-avatar ds-avatar--lg">M</span>
+            <div class="ds-avatar-group">
+              <span class="ds-avatar">JJ</span><span class="ds-avatar">OK</span><span class="ds-avatar">BF</span><span class="ds-avatar">+9</span>
+            </div>
+          </div>
+          <div class="ds-demo">
+            <span class="ds-status ds-status--ok">Healthy</span>
+            <span class="ds-status ds-status--busy">Syncing</span>
+            <span class="ds-status ds-status--warn">Degraded</span>
+            <span class="ds-status ds-status--err">Down</span>
+            <span class="ds-status">Unknown</span>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>
