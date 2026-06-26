@@ -232,6 +232,12 @@ body.btn-rounded .filter-chip,body.btn-rounded .filter-add{border-radius:var(--r
 .repo-results{font-size:12.5px;color:var(--text-information);font-weight:600;white-space:nowrap;}
 .repo-results.none{color:var(--text-tertiary);font-weight:500;}
 .repo-results.error{color:var(--text-error,var(--brand-red-600));font-weight:600;}
+.sim-show-link{cursor:pointer;}
+.hn-row:hover .sim-show-link{text-decoration:underline;}
+.n-simusage .repo-branch{color:var(--text-tertiary);}
+.repo-sim-link{color:var(--text-information);font-weight:600;font-size:12px;margin-left:10px;margin-right:16px;white-space:nowrap;}
+.repo-sim-link:hover{text-decoration:underline;}
+.dt-title .repo-sim-link{font-weight:600;font-size:12.5px;}
 /* Status shapes (not color alone) for color-blind accessibility.
    All solid fills, no outline:
    success = green circle, No LST = amber triangle, errored = red square. */
@@ -483,12 +489,39 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
 
 /* ===== Scope breadcrumb (right pane) ===== */
 .scope-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding:8px 12px;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-lg);}
+/* similarity cluster bar */
+.sim-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:8px 12px;background:var(--brand-grey-100);border:1px solid var(--border-primary);border-radius:var(--radius-md);font-size:12.5px;}
+.sim-bar .sim-head{font-weight:600;color:var(--text-primary);}
+.sim-bar .sim-dim{font-weight:400;color:var(--text-tertiary);}
+.sim-bar .sim-link{margin-left:auto;display:inline-flex;align-items:center;gap:5px;color:var(--brand-digital-blue-700);font-weight:600;background:transparent;border:none;font-size:12.5px;}
+.sim-bar .sim-link:hover{text-decoration:underline;}
+.sim-bar .sim-link svg{width:13px;height:13px;}
+.sim-more{margin-top:4px;padding:10px 12px;text-align:center;font-size:12.5px;color:var(--text-tertiary);background:var(--brand-grey-100);border:1px dashed var(--border-primary);border-radius:var(--radius-md);}
+/* IntelliJ-style "Show N similar usages" / "Back to search results" nav bar (right diff) */
+.sim-nav{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:7px 12px;background:var(--brand-grey-100);border:1px solid var(--border-primary);border-radius:var(--radius-md);font-size:12.5px;}
+.sim-nav-ic{width:14px;height:14px;flex-shrink:0;}
+.sim-show-usages{display:inline-flex;align-items:center;gap:7px;color:var(--brand-digital-blue-700);font-weight:600;background:transparent;border:none;font-size:12.5px;cursor:pointer;padding:0;}
+.sim-show-usages:hover{text-decoration:underline;}
+.sim-nav-count{display:inline-flex;align-items:center;padding:0 0 0 12px;border:none;border-left:1px solid var(--border-primary);border-radius:0;background:transparent;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--brand-digital-blue-700);cursor:pointer;}
+.sim-nav-count:hover{text-decoration:underline;}
+.sim-nav-refresh{display:inline-flex;align-items:center;color:var(--text-tertiary);background:transparent;border:none;cursor:pointer;padding:2px;border-radius:var(--radius-sm);}
+.sim-nav-refresh:hover{color:var(--text-secondary);background:var(--brand-grey-200);}
+.sim-back{display:inline-flex;align-items:center;gap:6px;color:var(--brand-digital-blue-700);font-weight:600;background:transparent;border:none;font-size:12.5px;cursor:pointer;padding:0;}
+.sim-back:hover{text-decoration:underline;}
+/* similarity tree rows (left panel) */
+.n-sim .hn-name.sim-label{font-weight:500;color:var(--text-primary);}
+.n-sim .hn-ic{color:var(--brand-digital-blue-500);}
+.n-simocc .hn-file{font-family:var(--font-code);font-size:10.5px;color:var(--text-tertiary);}
+.n-simmore{cursor:default;}
+.n-simmore:hover{background:transparent;}
+.sim-more-inline{font-size:12px;color:var(--brand-digital-blue-700);font-weight:500;}
 .scope-level{font-size:11px;font-weight:600;color:var(--brand-digital-blue-700);background:var(--neo-digital-blue-50);border:1px solid var(--brand-digital-blue-300);padding:2px 10px;border-radius:var(--radius-full);flex-shrink:0;}
 .scope-crumbs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;}
 .sc-crumb{font-family:var(--font-code);font-size:12px;color:var(--brand-digital-blue-700);}
 .sc-crumb.cur{font-weight:700;color:var(--brand-digital-blue-800);}
 .sc-sep{color:var(--brand-digital-blue-400);}
 .scope-count{margin-left:auto;font-size:12px;font-weight:600;color:var(--brand-digital-blue-700);white-space:nowrap;}
+.scope-count.sim-count{color:var(--text-secondary);}
 
 .diff-scope-note{font-family:var(--font-body);font-size:10.5px;font-weight:600;color:var(--brand-digital-blue-700);background:var(--brand-digital-blue-100);border:1px solid var(--brand-digital-blue-200);border-radius:var(--radius-full);padding:1px 8px;white-space:nowrap;flex-shrink:0;}
 
@@ -688,10 +721,7 @@ body.tree-focus .focus-exit,body.diff-focus .focus-exit{display:inline-flex;}
     </div></div>
     <div class="demo-row"><span class="demo-row-label">Group by</span><div class="demo-row-btns">
       <button class="demo-btn gb active" data-group="repository" disabled>Repository</button>
-      <button class="demo-btn gb" data-group="package" disabled>Package</button>
-      <button class="demo-btn gb" data-group="file" disabled>File</button>
-      <button class="demo-btn gb" data-group="class" disabled>Class</button>
-      <button class="demo-btn gb" data-group="method" disabled>Method</button>
+      <button class="demo-btn gb" data-group="similar" disabled>Similar changes</button>
     </div></div>
     <div class="demo-row"><span class="demo-row-label">Buttons</span><div class="demo-row-btns">
       <button class="demo-btn" data-btnstyle="pill">Pill</button>
@@ -761,7 +791,7 @@ function statusOf(r){ return r.error ? 'error' : (r.results>0 ? 'ok' : 'none'); 
 
 /* ===== Upward hierarchy: VCS org and Moderne org (nested suborgs) ===== */
 /* VCS org = the source-control namespace; each repo has exactly one. */
-const VCS_ORGS=['jetbrains','square','google','apache','netflix'];
+const VCS_ORGS=['jetbrains','square','google','apache','netflix','finos','spring-projects','openrewrite','awslabs','micronaut-projects','quarkusio','hibernate'];
 REPOS.forEach((r,i)=>{ r.vcs = VCS_ORGS[(i*7+3)%VCS_ORGS.length]; });
 
 /* Moderne org = logical grouping, nestable. Leaves carry repositories. */
@@ -934,6 +964,9 @@ const state={
   selFiles:new Set(),       // commit selection — set of class (file) keys
   orgShown:ORG_INIT,        // how many repos shown in the org-summary list
   noteDismissed:false,      // shared-repos info banner dismissed?
+  simExpanded:false,        // similarity cluster: showing all similar usages?
+  repoSimView:false,        // repo diff: right pane showing this repo's similar usages?
+  simShowAll:false,         // similar-usages view: expand exemplar → all usages?
   filters:[],               // faceted filter chips: [{key,value}]
 };
 REPOS.filter(r=>r.results>0).forEach(r=>repoClassKeys(r.id).forEach(k=>state.selFiles.add(k)));
@@ -974,6 +1007,10 @@ const IC_PKG='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><path d="M21 16V
 const IC_FILE='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
 const IC_CLASS='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 3h1a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2 2 2 0 0 0-2 2v5a2 2 0 0 1-2 2h-1"/></svg>';
 const IC_METHOD='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><polyline points="8 9 11 12 8 15"/><line x1="13.5" y1="15" x2="16.5" y2="15"/></svg>';
+const IC_SIM='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17.5h7M17.5 14v7"/></svg>';
+const IC_SIM_SM='<svg class="sim-nav-ic svg-stroke" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17.5h7M17.5 14v7"/></svg>';
+const IC_REFRESH='<svg class="sim-nav-ic svg-stroke" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>';
+const IC_BACK='<svg class="sim-nav-ic svg-stroke" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>';
 
 function chevHTML(expanded){ return `<button class="chev-btn hn-chev ${expanded?'':'collapsed'}" tabindex="-1" aria-label="Expand"><svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="9 18 15 12 9 6"/></svg></button>`; }
 function cbHTML(kind,id,sel){ // sel: 'all' | 'some' | 'none' | boolean
@@ -993,6 +1030,26 @@ function act(type,rid,o){ const s=state.scope; if(!s||s.type!==type||s.repoId!==
 const PAD=d=>`style="padding-left:${12+d*20}px"`;
 const IC_ORG='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/></svg>';
 const IC_VCS='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>';
+const IC_PEOPLE='<svg class="hn-ic svg-stroke" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>';
+/* repository root: group the repo list under its VCS org headers (multiple orgs) */
+function repoRootGroupedHTML(){
+  const list=REPOS.filter(matches);
+  const orgs=[...new Set(list.map(r=>r.vcs))].sort();
+  return orgs.map(v=>{
+    const repos=list.filter(r=>r.vcs===v);
+    const withResults=repos.filter(r=>r.results>0);
+    const key='RORG|'+v, expanded=state.expanded.has(key);
+    let h=`<div class="hn-row n-org ${act('rorg',v,{})?'active':''}" data-node="rorg" data-rid="${v}" ${PAD(0)}>
+      ${chevHTML(expanded)}
+      ${cbHTML('vcs', v, rollup(orgClassKeys(withResults)))}
+      ${IC_PEOPLE}<span class="hn-name hn-org">${v}</span>
+      <span class="repo-spacer"></span>
+      <span class="hn-count"><span class="hn-n">${repos.length}</span> ${repos.length===1?'repository':'repositories'}</span>
+    </div>`;
+    if(expanded) repos.forEach(r=>{ h+=repoNodeHTML(r,1); });
+    return h;
+  }).join('');
+}
 
 /* ----- upward org nodes ----- */
 function orgClassKeys(repos){ const out=[]; repos.forEach(r=>repoClassKeys(r.id).forEach(k=>out.push(k))); return out; }
@@ -1029,6 +1086,8 @@ function vcsNodeHTML(vcs,d){
   return html;
 }
 
+/* deterministic count of similar usages across the estate for a given repo */
+function repoSimilarN(r){ return 2 + ((r.name.length + r.results) % 7); }
 function repoNodeHTML(r,d=0){
   const st=statusOf(r);
   const expandable=r.results>0;
@@ -1036,8 +1095,10 @@ function repoNodeHTML(r,d=0){
   const resTxt = r.error ? 'Error' : (r.results>0 ? `${r.results.toLocaleString()} result${r.results===1?'':'s'}` : 'No results');
   const resCls = r.error ? 'error' : (r.results>0 ? '' : 'none');
   const shared = (state.rootBy==='moderne' && repoShared(r.id)) ? `<span class="hn-badge shared" title="Belongs to ${(repoOrgs[r.id]||[]).length} sub-orgs">shared</span>` : '';
-  let html=`<div class="hn-row n-repo ${act('repo',r.id,{})?'active':''}" data-node="repo" data-rid="${r.id}" ${PAD(d)}>
-    ${expandable?chevHTML(expanded):'<span class="chev-spacer"></span>'}
+  const simLink = r.results>0 ? `<span class="sim-show-link repo-sim-link" data-act="show-similar" data-rid="${r.id}">${repoSimilarN(r)} similar</span>` : '';
+  // repository is a leaf — clicking it opens the repo's diffs on the right (no in-tree file expansion)
+  return `<div class="hn-row n-repo ${act('repo',r.id,{})?'active':''}" data-node="repo" data-rid="${r.id}" ${PAD(d)}>
+    <span class="chev-spacer"></span>
     ${cbHTML('repo', r.id, expandable?repoSel(r.id):'none')}
     <span class="repo-status-dot ${st}" title="${STATUS_LABEL[st]}"></span>
     <span class="repo-main">
@@ -1045,10 +1106,9 @@ function repoNodeHTML(r,d=0){
       <span class="repo-branch">@ ${r.branch}</span>${shared}
     </span>
     <span class="repo-spacer"></span>
+    ${simLink}
     <span class="repo-results ${resCls}">${resTxt}</span>
   </div>`;
-  if(expandable && expanded){ HTREE.forEach(p=>{ html+=pkgNodeHTML(r.id,p,d+1); }); }
-  return html;
 }
 function pkgNodeHTML(rid,p,d){
   const key=`${rid}|${p.pkg}`;
@@ -1063,20 +1123,16 @@ function pkgNodeHTML(rid,p,d){
   if(expanded){ p.files.forEach(f=>{ html+=fileNodeHTML(rid,p.pkg,f,d+1); }); }
   return html;
 }
-function fileNodeHTML(rid,pkg,f,d){
-  const key=`${rid}|F|${f.file}`;
-  const expanded=state.expanded.has(key);
+function fileNodeHTML(rid,f,d){
   const nm=f.file.split('/').pop();
-  const multi = f.classes.length>1 ? `<span class="hn-badge">${f.classes.length} classes</span>` : '';
-  let html=`<div class="hn-row n-file ${act('file',rid,{file:f.file})?'active':''}" data-node="file" data-rid="${rid}" data-pkg="${pkg}" data-file="${f.file}" ${PAD(d)}>
-    ${chevHTML(expanded)}
+  // file is the deepest level — method/class granularity removed
+  return `<div class="hn-row n-file ${act('file',rid,{file:f.file})?'active':''}" data-node="file" data-rid="${rid}" data-pkg="${f.pkg}" data-file="${f.file}" ${PAD(d)}>
+    <span class="chev-spacer"></span>
     ${cbHTML('file', `${rid}::${f.file}`, fileSel(rid,f.file))}
-    ${IC_FILE}<span class="hn-name">${nm}${multi}</span>
+    ${IC_FILE}<span class="hn-name">${nm}</span>
     <span class="repo-spacer"></span>
     <span class="hn-count"><span class="hn-n">${f.count}</span> match${f.count===1?'':'es'}</span>
   </div>`;
-  if(expanded){ f.classes.forEach(c=>{ html+=clsNodeHTML(rid,pkg,f.file,c,d+1); }); }
-  return html;
 }
 function clsNodeHTML(rid,pkg,file,c,d){
   const key=ckey(rid,pkg,c.cls);
@@ -1104,18 +1160,68 @@ function groupData(){
   const repos=REPOS.filter(r=>r.results>0).length;
   let rows=[];
   if(state.groupBy==='package') rows=HTREE.map(p=>({type:'package',pkg:p.pkg,label:p.pkg,count:p.count,icon:IC_PKG}));
-  else if(state.groupBy==='file') rows=HFILES.map(f=>({type:'file',pkg:f.pkg,file:f.file,label:f.file,count:f.count,icon:IC_FILE}));
-  else if(state.groupBy==='class') rows=HCLASSES.map(c=>({type:'class',pkg:c.pkg,file:c.file,cls:c.cls,label:c.cls,sub:c.file.split('/').pop(),count:c.count,icon:IC_CLASS}));
-  else if(state.groupBy==='method') HCLASSES.forEach(c=>c.methods.forEach(m=>rows.push({type:'method',pkg:c.pkg,file:c.file,cls:c.cls,method:m.m,label:m.m,sub:c.cls,count:m.count,icon:IC_METHOD})));
+  else if(state.groupBy==='similar') rows=SIMGROUPS.map(g=>({type:'similar',sim:g.id,label:g.label,count:g.count,icon:IC_SIM,similar:true}));
   return {rows,repos};
 }
+/* Similarity grouping rendered as an expandable tree (IntelliJ Find-Usages style):
+   each cluster expands to its occurrences (representative + samples + "+N more"). */
+/* a similarity cluster expands to the REPOSITORIES where that change occurs;
+   each repository in turn holds N similar usages (IntelliJ "Show N similar usages") */
+function simOccs(g){
+  const reps=REPOS.filter(r=>r.results>0);
+  const diffs=[g.rep.diff, ...g.samples.map(s=>s.diff)];
+  const files=[g.rep.file, ...g.samples.map(s=>s.file)];
+  const n=Math.min(diffs.length, reps.length);
+  return reps.slice(0,n).map((r,i)=>{
+    const k = 2 + ((i*3 + g.label.length) % 6);   // 2..7 similar usages within this repo
+    const usages = Array.from({length:k}, (_,j)=>({
+      file: files[(i+j)%files.length],
+      diff: diffs[(i+j)%diffs.length],
+      line: 18 + j*23
+    }));
+    return {repo:r.name, branch:r.branch, status:statusOf(r), file:files[i], diff:diffs[i], rep:i===0, usages};
+  });
+}
+function simTreeHTML(){
+  return SIMGROUPS.map(g=>{
+    const key='SIM|'+g.id;
+    const expanded=state.expanded.has(key);
+    const gActive = state.scope && (state.scope.type==='simgroup') && state.scope.sim===g.id;
+    let h=`<div class="hn-row n-sim ${gActive?'active':''}" data-node="simgroup" data-rid="ALL" data-sim="${g.id}" ${PAD(0)}>
+      ${chevHTML(expanded)}${IC_SIM}<span class="hn-name sim-label">${g.label}</span>
+      <span class="repo-spacer"></span>
+      <span class="hn-count"><span class="hn-n">${g.count.toLocaleString()}</span> <span class="hn-sub">similar</span></span>
+    </div>`;
+    if(expanded){
+      const occ=simOccs(g);
+      occ.forEach((o,i)=>{
+        // repository is a leaf — clicking it opens its diff on the right (usage-level detail lives there)
+        const oActive = state.scope && state.scope.type==='simocc' && state.scope.sim===g.id && +state.scope.occ===i;
+        h+=`<div class="hn-row n-repo n-simrepo ${oActive?'active':''}" data-node="simrepo" data-rid="ALL" data-sim="${g.id}" data-occ="${i}" ${PAD(1)}>
+          <span class="chev-spacer"></span>
+          ${cbHTML('simrepo', `${g.id}::${i}`, 'none')}
+          <span class="repo-status-dot ${o.status}" title="${STATUS_LABEL[o.status]||''}"></span>
+          <span class="repo-main"><span class="repo-name">${o.repo}</span><span class="repo-branch">@ ${o.branch}</span></span>
+          <span class="repo-spacer"></span>
+          <span class="repo-results sim-show-link">${o.usages.length} similar</span>
+        </div>`;
+      });
+      const remaining=g.count-occ.length;
+      if(remaining>0) h+=`<div class="hn-row n-simmore" data-node="simmore" data-sim="${g.id}" ${PAD(1)}><span class="chev-spacer"></span><span class="cb-spacer"></span><span class="sim-more-inline">+ ${remaining.toLocaleString()} more repositories</span></div>`;
+    }
+    return h;
+  }).join('');
+}
 function groupRowHTML(g,repos){
-  const active=act(g.type,'ALL',{pkg:g.pkg,file:g.file,cls:g.cls,method:g.method});
-  return `<div class="hn-row grp-row ${active?'active':''}" data-node="${g.type}" data-rid="ALL" ${g.pkg?`data-pkg="${g.pkg}"`:''} ${g.file?`data-file="${g.file}"`:''} ${g.cls?`data-cls="${g.cls}"`:''} ${g.method?`data-method="${g.method}"`:''}>
+  const active=act(g.type,'ALL',{pkg:g.pkg,sim:g.sim});
+  const countTxt = g.similar
+    ? `<span class="hn-n">${g.count.toLocaleString()}</span> <span class="hn-sub">similar</span>`
+    : `<span class="hn-n">${g.count.toLocaleString()}</span> <span class="hn-sub">· across ${repos} repos</span>`;
+  return `<div class="hn-row grp-row ${active?'active':''}" data-node="${g.type}" data-rid="ALL" ${g.pkg?`data-pkg="${g.pkg}"`:''} ${g.sim?`data-sim="${g.sim}"`:''}>
     <span class="chev-spacer"></span>
-    ${g.icon}<span class="hn-name ${g.type==='file'?'hn-path':''}">${g.label}${g.sub?`<span class="hn-file">${g.sub}</span>`:''}</span>
+    ${g.icon}<span class="hn-name">${g.label}${g.sub?`<span class="hn-file">${g.sub}</span>`:''}</span>
     <span class="repo-spacer"></span>
-    <span class="hn-count"><span class="hn-n">${g.count.toLocaleString()}</span> <span class="hn-sub">· across ${repos} repos</span></span>
+    <span class="hn-count">${countTxt}</span>
   </div>`;
 }
 
@@ -1123,13 +1229,18 @@ function render(){
   const grouped = state.viewMode==='group' && state.groupBy!=='repository';
   const rolledUp = !grouped && state.rootBy!=='repo';
   repoList.style.display = state.orgOpen ? '' : 'none';
-  // the static "jetbrains" org header only makes sense at the repository root
-  const orgRow=document.getElementById('org-row'); if(orgRow) orgRow.style.display = (grouped||rolledUp)?'none':'';
+  // the repo list now carries its own per-org headers, so the static single org header is retired
+  const orgRow=document.getElementById('org-row'); if(orgRow) orgRow.style.display = 'none';
   if(grouped){
     const {rows,repos}=groupData();
-    repoList.innerHTML = rows.map(g=>groupRowHTML(g,repos)).join('');
+    if(state.groupBy==='similar'){
+      repoList.innerHTML = simTreeHTML();
+      document.getElementById('footer-summary').textContent=`${SIMGROUPS.length} similarity groups · ${SIMGROUPS.reduce((s,g)=>s+g.count,0).toLocaleString()} results`;
+    } else {
+      repoList.innerHTML = rows.map(g=>groupRowHTML(g,repos)).join('');
+      document.getElementById('footer-summary').textContent=`${rows.length} ${state.groupBy} group${rows.length===1?'':'s'} · across ${repos.toLocaleString()} repositories`;
+    }
     document.getElementById('org-results').textContent=`${HTREE_TOTAL.toLocaleString()} results`;
-    document.getElementById('footer-summary').textContent=`${rows.length} ${state.groupBy} group${rows.length===1?'':'s'} · across ${repos.toLocaleString()} repositories`;
   } else if(rolledUp){
     const totalResults=REPOS.reduce((s,r)=>s+r.results,0);
     if(state.rootBy==='moderne'){
@@ -1145,15 +1256,13 @@ function render(){
     }
     document.getElementById('org-results').textContent=`${totalResults.toLocaleString()} results`;
   } else {
+    // repository root: group the list under its VCS org headers (multiple orgs)
     const list=REPOS.filter(matches);
-    const shown=Math.min(state.shown, list.length);
-    const page=list.slice(0,shown);
-    const remaining=list.length-shown;
-    repoList.innerHTML = (page.map(r=>repoNodeHTML(r,0)).join('') || `<div style="padding:16px;font-size:12.5px;color:var(--text-tertiary)">No repositories match this filter.</div>`)
-      + (remaining>0 ? `<button class="load-more" id="load-more">Load ${Math.min(PAGE_INC,remaining)} more <span class="lm-rest">${remaining.toLocaleString()} remaining</span></button>` : '');
+    const orgCount=[...new Set(list.map(r=>r.vcs))].length;
+    repoList.innerHTML = repoRootGroupedHTML() || `<div style="padding:16px;font-size:12.5px;color:var(--text-tertiary)">No repositories match this filter.</div>`;
     const totalResults=REPOS.reduce((s,r)=>s+r.results,0);
     document.getElementById('org-results').textContent=`${totalResults.toLocaleString()} results`;
-    document.getElementById('footer-summary').textContent=`Showing ${shown.toLocaleString()} of ${list.length.toLocaleString()} repositories`;
+    document.getElementById('footer-summary').textContent=`${orgCount} org${orgCount===1?'':'s'} · ${list.length.toLocaleString()} repositories`;
   }
   // seg counts
   document.querySelector('[data-c="all"]').textContent=REPOS.length;
@@ -1198,6 +1307,8 @@ document.getElementById('org-check').addEventListener('change',e=>{
 /* navigation — chevron expands; row click sets the viewing scope (independent of checkboxes) */
 function expandKey(row){
   const t=row.dataset.node, rid=row.dataset.rid;
+  if(t==='simgroup') return `SIM|${row.dataset.sim}`;
+  if(t==='rorg') return `RORG|${rid}`;
   if(t==='morg') return `MORG|${rid}`;
   if(t==='vcs') return `VCS|${rid}`;
   if(t==='package') return `${rid}|${row.dataset.pkg}`;
@@ -1205,27 +1316,38 @@ function expandKey(row){
   if(t==='class') return `${rid}|C|${row.dataset.file}|${row.dataset.cls}`;
   return rid; // repo
 }
+function toggleExpand(key){ if(state.expanded.has(key)) state.expanded.delete(key); else state.expanded.add(key); }
 repoList.addEventListener('click',e=>{
   if(e.target.closest('#load-more')){ state.shown+=PAGE_INC; render(); return; }
+  if(e.target.closest('[data-act="show-similar"]'))return;  // handled by the document-level handler
   if(e.target.closest('.hn-check'))return;
   if(e.target.closest('.org-note-dismiss')){ state.noteDismissed=true; render(); return; }
   const chev=e.target.closest('.hn-chev');
-  if(chev){
-    const row=chev.closest('.hn-row'); const key=expandKey(row);
-    if(state.expanded.has(key)) state.expanded.delete(key); else state.expanded.add(key);
-    render();
-    return;
-  }
+  if(chev){ toggleExpand(expandKey(chev.closest('.hn-row'))); render(); return; }
   const row=e.target.closest('.hn-row'); if(!row)return;
   const node=row.dataset.node, rid=row.dataset.rid;
-  state.scope={ type:node, repoId:rid, pkg:row.dataset.pkg, cls:row.dataset.cls, file:row.dataset.file, method:row.dataset.method };
+  state.repoSimView=false; state.simShowAll=false;   // any left-list selection exits the similar-usages view
+  // ----- repository-root org header: expand/collapse only -----
+  if(node==='rorg'){ toggleExpand(`RORG|${rid}`); render(); return; }
+  // ----- similarity tree (IntelliJ-style) -----
+  if(node==='simmore'){ return; }
+  if(node==='simgroup'){
+    toggleExpand(`SIM|${row.dataset.sim}`);
+    renderDetail(); render(); return;
+  }
+  if(node==='simrepo'){
+    // open the repo's diff on the right; usage detail is reached from there
+    state.scope={ type:'simocc', sim:row.dataset.sim, occ:row.dataset.occ };
+    state.simExpanded=false;
+    renderDetail(); render(); return;
+  }
+  // ----- regular tree -----
+  state.scope={ type:node, repoId:rid, pkg:row.dataset.pkg, cls:row.dataset.cls, file:row.dataset.file, method:row.dataset.method, sim:row.dataset.sim };
   state.activeRepo = (rid && rid!=='ALL') ? rid : null;
   state.orgShown = ORG_INIT;   // reset the org-summary pagination for the new scope
-  // clicking the row body also toggles expand for expandable, non-leaf, non-group rows
-  if(rid!=='ALL' && node!=='method'){
-    const repo = REPOS.find(x=>x.id===rid);
-    const expandable = node!=='repo' || (repo && repo.results>0);
-    if(expandable){ const key=expandKey(row); if(state.expanded.has(key)) state.expanded.delete(key); else state.expanded.add(key); }
+  // clicking the row body also toggles expand for org roll-up rows (repos/files are leaves)
+  if(rid!=='ALL' && node!=='method' && node!=='file' && node!=='repo'){
+    toggleExpand(expandKey(row));
   }
   renderDetail();
   render();
@@ -1264,6 +1386,56 @@ const HUNKS=[
     ['ctx',13,13,'    public class Owner extends BaseEntity {'],
     ['ctx',14,14,'        @NotBlank'],
   ]},
+];
+
+/* ===== Similarity groups — results clustered by how the change looks =====
+   Each cluster has a representative change + a few sample occurrences; the rest
+   are summarized. Matches the "Show N similar usages / Back to search results"
+   pattern from Find Usages. */
+const SIMGROUPS=[
+  { id:'persist', label:'javax.persistence.* → jakarta.persistence.*', count:124,
+    rep:{file:'org/jetbrains/model/BaseEntity.java', diff:{header:'@@ -18,4 +18,4 @@', lines:[
+      ['del',18,null,'import javax.persistence.GeneratedValue;'],['del',19,null,'import javax.persistence.Id;'],
+      ['add',null,18,'import jakarta.persistence.GeneratedValue;'],['add',null,19,'import jakarta.persistence.Id;'] ]}},
+    samples:[
+      {file:'org/jetbrains/owner/Owner.java', diff:{header:'@@ -9,2 +9,2 @@', lines:[
+        ['del',9,null,'import javax.persistence.Column;'],['add',null,9,'import jakarta.persistence.Column;'] ]}},
+      {file:'org/jetbrains/visit/Visit.java', diff:{header:'@@ -11,2 +11,2 @@', lines:[
+        ['del',11,null,'import javax.persistence.Entity;'],['add',null,11,'import jakarta.persistence.Entity;'] ]}},
+      {file:'org/jetbrains/repository/OwnerRepository.java', diff:{header:'@@ -7,2 +7,2 @@', lines:[
+        ['del',7,null,'import javax.persistence.EntityManager;'],['add',null,7,'import jakarta.persistence.EntityManager;'] ]}},
+    ]},
+  { id:'validation', label:'javax.validation.* → jakarta.validation.*', count:47,
+    rep:{file:'org/jetbrains/owner/Owner.java', diff:{header:'@@ -10,2 +10,2 @@', lines:[
+      ['del',10,null,'import javax.validation.constraints.NotBlank;'],['add',null,10,'import jakarta.validation.constraints.NotBlank;'] ]}},
+    samples:[
+      {file:'org/jetbrains/vet/Vet.java', diff:{header:'@@ -8,2 +8,2 @@', lines:[
+        ['del',8,null,'import javax.validation.constraints.Size;'],['add',null,8,'import jakarta.validation.constraints.Size;'] ]}},
+      {file:'org/jetbrains/pet/Pet.java', diff:{header:'@@ -9,2 +9,2 @@', lines:[
+        ['del',9,null,'import javax.validation.Valid;'],['add',null,9,'import jakarta.validation.Valid;'] ]}},
+    ]},
+  { id:'genvalue', label:'@GeneratedValue strategy reference', count:38,
+    rep:{file:'org/jetbrains/model/BaseEntity.java', diff:{header:'@@ -24,2 +24,2 @@', lines:[
+      ['del',24,null,'  @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)'],
+      ['add',null,24,'  @GeneratedValue(strategy = jakarta.persistence.GenerationType.AUTO)'] ]}},
+    samples:[
+      {file:'org/jetbrains/visit/Visit.java', diff:{header:'@@ -19,2 +19,2 @@', lines:[
+        ['del',19,null,'  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)'],
+        ['add',null,19,'  @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)'] ]}},
+    ]},
+  { id:'servlet', label:'javax.servlet.* → jakarta.servlet.*', count:29,
+    rep:{file:'org/jetbrains/web/Handler.java', diff:{header:'@@ -38,2 +38,2 @@', lines:[
+      ['del',38,null,'    javax.servlet.http.HttpServletRequest r = req.raw();'],
+      ['add',null,38,'    jakarta.servlet.http.HttpServletRequest r = req.raw();'] ]}},
+    samples:[
+      {file:'org/jetbrains/web/Filter.java', diff:{header:'@@ -22,2 +22,2 @@', lines:[
+        ['del',22,null,'import javax.servlet.Filter;'],['add',null,22,'import jakarta.servlet.Filter;'] ]}},
+    ]},
+  { id:'nonnull', label:'@javax.annotation.Nonnull → @jakarta.annotation.Nonnull', count:16,
+    rep:{file:'org/jetbrains/visit/Visit.java', diff:{header:'@@ -41,2 +41,2 @@', lines:[
+      ['del',41,null,'    @javax.annotation.Nonnull var d = this.date;'],
+      ['add',null,41,'    @jakarta.annotation.Nonnull var d = this.date;'] ]}},
+    samples:[] },
 ];
 
 function diffCardHTML(f, hunk, scopeNote){
@@ -1343,6 +1515,35 @@ function renderDetail(){
     if(lm) lm.addEventListener('click',()=>{ state.orgShown+=ORG_PAGE; renderDetail(); });
     return;
   }
+  // similarity cluster occurrence → the repo's change on the right, with a
+  // "Show N similar usages" ⇄ "Back to search results" toggle (IntelliJ Find-Usages style)
+  if(s.type==='simocc' || s.type==='simgroup'){
+    const g=SIMGROUPS.find(x=>x.id===s.sim); if(!g){ return; }
+    const occs=simOccs(g);
+    const i=Math.min(occs.length-1, Math.max(0, +(s.occ||0)));
+    const occ=occs[i];
+    const n=occ.usages.length;
+    const expanded=state.simExpanded;
+    const navBar = expanded
+      ? `<div class="sim-nav"><button class="sim-back" data-act="back-results">${IC_BACK}Back to search results</button><button class="sim-nav-count" data-act="sim-show-all">${n} similar usage${n===1?'':'s'}</button></div>`
+      : `<div class="sim-nav"><button class="sim-show-usages" data-act="show-sim-usages">Show ${n} similar usage${n===1?'':'s'} in this repository</button></div>`;
+    const diffHTML = expanded
+      ? (state.simShowAll
+          ? occ.usages.map((uu,j)=>diffCardHTML({path:uu.file}, uu.diff, j===0?'exemplar':'')).join('')
+          : diffCardHTML({path:occ.usages[0].file}, occ.usages[0].diff, 'exemplar'))
+      : diffCardHTML({path:occ.file}, occ.diff, '');
+    slot.innerHTML=`
+      <div class="scope-bar">
+        <span class="scope-level">Similar change</span>
+        <div class="scope-crumbs"><span class="sc-crumb">${g.label}</span><span class="sc-sep">›</span><span class="sc-crumb cur">${occ.repo}</span></div>
+        <span class="scope-count sim-count">${g.count.toLocaleString()} repos</span>
+      </div>
+      <div class="sim-bar"><span class="sim-head">${occ.repo} <span class="repo-branch mono">@ ${occ.branch}</span></span><span class="sim-dim">· ${g.label}</span></div>
+      ${navBar}
+      <div id="diff-list">${diffHTML}</div>`;
+    wireDiff(slot);
+    return;
+  }
   const r = (s.repoId && s.repoId!=='ALL') ? REPOS.find(x=>x.id===s.repoId) : null;
   // repo with no results / error
   if(s.type==='repo' && r && r.results===0){
@@ -1350,6 +1551,25 @@ function renderDetail(){
       <div class="repo-detail-title">${r.name} <span class="repo-branch mono">@ ${r.branch}</span></div>
       <div class="repo-detail-sub">${r.error?'The recipe errored on this repository.':'No results were produced for this repository.'}</div>
     </div></div>`;
+    return;
+  }
+  // "Show N similar usages" from a repo: right pane shows this repo's similar usages,
+  // with a "Back to search results" link returning to the repo's normal diff (left selection kept)
+  if(r && state.repoSimView){
+    const n=repoSimilarN(r);
+    const rfiles=scopeFiles();
+    const diffHTML = state.simShowAll
+      ? Array.from({length:n}, (_,j)=>{ const c=rfiles[j%rfiles.length]; return diffCardHTML({path:c.file}, c.hunk, j===0?'exemplar':''); }).join('')
+      : diffCardHTML({path:rfiles[0].file}, rfiles[0].hunk, 'exemplar');
+    slot.innerHTML=`
+      <div class="scope-bar">
+        <span class="scope-level">Similar usages</span>
+        <div class="scope-crumbs"><span class="sc-crumb">${r.name} <span class="repo-branch mono">@ ${r.branch}</span></span></div>
+        <span class="scope-count sim-count">${n} similar usage${n===1?'':'s'}</span>
+      </div>
+      <div class="sim-nav"><button class="sim-back" data-act="back-results">${IC_BACK}Back to search results</button><button class="sim-nav-count" data-act="sim-show-all">${n} similar usage${n===1?'':'s'} in ${r.name}</button></div>
+      <div id="diff-list">${diffHTML}</div>`;
+    wireDiff(slot);
     return;
   }
   const files=scopeFiles();
@@ -1364,7 +1584,7 @@ function renderDetail(){
       <span class="scope-count">${cnt.toLocaleString()} result${cnt===1?'':'s'}</span>
     </div>
     <div class="detail-toolbar">
-      <div class="dt-title">${titleMain}</div>
+      <div class="dt-title">${titleMain}${r?`<span class="sim-show-link repo-sim-link" data-act="show-similar" data-rid="${r.id}">Show ${repoSimilarN(r)} similar usages</span>`:''}</div>
       <div class="dt-actions">
         <div class="dt-split">
           <button class="dt-split-main" id="commit-selected"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Commit selected results</button>
@@ -1740,15 +1960,15 @@ const EMPTY_DETAIL=`<div class="detail-empty">
   <span class="ic"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
   <div class="et">Select any level — repository, package, class, or method — to view its results</div>
 </div>`;
-function resetScope(){ state.scope=null; state.activeRepo=null; document.getElementById('detail-slot').innerHTML=EMPTY_DETAIL; }
+function resetScope(){ state.scope=null; state.activeRepo=null; state.simExpanded=false; state.repoSimView=false; state.simShowAll=false; document.getElementById('detail-slot').innerHTML=EMPTY_DETAIL; }
 document.querySelectorAll('.demo-btn[data-view]').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.demo-btn[data-view]').forEach(x=>x.classList.remove('active'));
   b.classList.add('active');
   state.viewMode=b.dataset.view;
   const groupMode=state.viewMode==='group';
   document.querySelectorAll('.demo-btn.gb').forEach(g=>g.disabled=!groupMode);
-  // entering group mode: jump straight to a visible pivot (Package) so the toggle does something
-  if(groupMode && state.groupBy==='repository') state.groupBy='package';
+  // entering group mode: jump straight to the Similar-changes grouping
+  if(groupMode && state.groupBy==='repository') state.groupBy='similar';
   if(!groupMode) state.groupBy='repository';
   document.querySelectorAll('.demo-btn[data-group]').forEach(x=>x.classList.toggle('active',x.dataset.group===state.groupBy));
   resetScope(); render();
@@ -1760,6 +1980,20 @@ document.querySelectorAll('.demo-btn[data-group]').forEach(b=>b.addEventListener
   state.groupBy=b.dataset.group;
   resetScope(); render();
 }));
+/* "Show N similar usages" (repo row / diff header): swap the RIGHT diff pane to this
+   repo's similar usages — the left list selection is unchanged; "Back" returns to it */
+document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-act]'); if(!a)return;
+  if(a.dataset.act==='show-similar'){
+    const rid=a.dataset.rid;
+    if(rid){ state.scope={ type:'repo', repoId:rid }; state.activeRepo=rid; }
+    state.repoSimView=true;
+    render(); renderDetail();
+  }
+  else if(a.dataset.act==='show-sim-usages'){ state.simExpanded=true; state.simShowAll=false; renderDetail(); }
+  else if(a.dataset.act==='sim-show-all'){ state.simShowAll=!state.simShowAll; renderDetail(); }
+  else if(a.dataset.act==='back-results'){ state.simExpanded=false; state.repoSimView=false; state.simShowAll=false; renderDetail(); }
+});
 
 /* Roll up: re-root the tree at VCS org / Moderne org (or repository). Tree-only. */
 document.querySelectorAll('.demo-btn[data-root]').forEach(b=>b.addEventListener('click',()=>{
@@ -1784,6 +2018,8 @@ document.querySelectorAll('.demo-btn[data-root]').forEach(b=>b.addEventListener(
   document.addEventListener('click',e=>{ if(!dock.contains(e.target)) dock.classList.remove('open'); });
 })();
 
+// open the first org by default so the repo-root view isn't all-collapsed
+(function(){ const first=[...new Set(REPOS.map(r=>r.vcs))].sort()[0]; if(first) state.expanded.add('RORG|'+first); })();
 render();
 
 // Show the title tooltip only when the h1 is actually truncated.
