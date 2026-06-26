@@ -272,21 +272,21 @@ body.opts-none .opt-empty{display:block;}
 .err-log .ln.create .c{font-weight:600;}
 /* run-chip error states */
 .run-chip.errored{background:var(--brand-red-100);color:var(--brand-red-700);border:1px solid color-mix(in srgb,var(--brand-red-600) 30%,transparent);}
-.run-chip.errored svg circle{fill:var(--brand-red-600);}
 /* ===== Org-level error banner (FIX: demote run error, keep results committable) ===== */
-.run-banner{display:flex;align-items:center;gap:13px;padding:12px 26px;background:var(--brand-red-100);border-bottom:1px solid color-mix(in srgb,var(--brand-red-600) 20%,transparent);flex-shrink:0;}
+/* Run-error message — flush full-width strip, bottom border only */
+.run-banner{display:flex;align-items:center;gap:11px;padding:7px 26px;background:var(--brand-red-100);border-bottom:1px solid color-mix(in srgb,var(--brand-red-600) 30%,transparent);flex-shrink:0;}
 .run-banner[hidden]{display:none;}
-.run-banner .rb-ic{width:22px;height:22px;color:var(--brand-red-600);flex-shrink:0;}
-.run-banner .rb-title{font-size:14px;font-weight:600;color:var(--text-primary);}
-.run-banner .rb-sub{font-size:13px;color:var(--text-secondary);margin-top:1px;}
+.run-banner .rb-ic{width:17px;height:17px;color:var(--brand-red-600);flex-shrink:0;}
+.run-banner .rb-title{font-size:13px;font-weight:600;color:var(--text-primary);}
+.run-banner .rb-sub{font-size:11.5px;color:var(--text-secondary);}
 .run-banner .rb-spacer{flex:1;}
-.run-banner .rb-error{display:inline-flex;align-items:center;gap:6px;color:var(--brand-red-700);font-size:13px;font-weight:500;background:var(--surface-primary);border:1px solid color-mix(in srgb,var(--brand-red-600) 35%,transparent);border-radius:var(--radius-full);padding:5px 14px;flex-shrink:0;cursor:pointer;transition:background var(--transition-fast),border-color var(--transition-fast);}
-.run-banner .rb-error:hover{background:var(--brand-red-100);border-color:color-mix(in srgb,var(--brand-red-600) 55%,transparent);}
-.run-banner .rb-error svg{width:15px;height:15px;}
-.run-banner .rb-dismiss{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:none;background:transparent;border-radius:var(--radius-md);color:var(--brand-red-600);flex-shrink:0;margin-left:4px;cursor:pointer;}
+.run-banner .rb-error{display:inline-flex;align-items:center;color:var(--text-information);font-size:13px;font-weight:500;background:transparent;border:none;padding:0;flex-shrink:0;cursor:pointer;}
+.run-banner .rb-error:hover{text-decoration:underline;}
+.run-banner .rb-dismiss{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;background:transparent;border-radius:var(--radius-md);color:var(--brand-red-600);flex-shrink:0;margin-left:2px;cursor:pointer;}
 .run-banner .rb-dismiss:hover{background:color-mix(in srgb,var(--brand-red-600) 14%,transparent);}
-.run-banner .rb-dismiss svg{width:15px;height:15px;}
-.run-banner .rb-error:focus-visible,.run-banner .rb-dismiss:focus-visible{outline:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--brand-red-600) 40%,transparent);}
+.run-banner .rb-dismiss svg{width:14px;height:14px;}
+.run-banner .rb-error:focus-visible{outline:none;text-decoration:underline;}
+.run-banner .rb-dismiss:focus-visible{outline:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--brand-red-600) 40%,transparent);}
 /* error side panel (full message + copy, reachable on demand) */
 .err-scrim{position:fixed;inset:0;z-index:89;background:rgba(17,24,39,.45);opacity:0;pointer-events:none;transition:opacity var(--transition-fast);}
 .err-scrim.open{opacity:1;pointer-events:auto;}
@@ -1431,7 +1431,7 @@ function renderRunState(){
   const ss=state.runState;
   // run chip
   if(ss==='ok'){ chip.className='run-chip done'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed`; }
-  else { chip.className='run-chip errored'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" style="fill:var(--brand-red-600)"/><line x1="12" y1="7" x2="12" y2="13" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.3" r="1.3" style="fill:#fff"/></svg>${ss==='total'?'Run failed':'Completed with errors'}`; }
+  else { chip.className='run-chip errored'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" style="fill:none"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${ss==='total'?'Run failed':'Completed with errors'}`; }
 
   if(ss==='total'){
     layout.style.display='none'; banner.hidden=true;
@@ -1454,12 +1454,10 @@ function renderRunState(){
     banner.hidden=false;
     banner.innerHTML=`
       <svg class="rb-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <div>
-        <div class="rb-title">This recipe run ended with an error</div>
-        <div class="rb-sub">Some repositories did not finish, but the results below completed and can be committed.</div>
-      </div>
+      <span class="rb-title">This recipe run ended with an error.</span>
+      <span class="rb-sub">Some repositories did not finish, but the results below completed and can be committed.</span>
       <span class="rb-spacer"></span>
-      <button class="rb-error" data-act="view-err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Error: go to log</button>
+      <button class="rb-error" data-act="view-err">Go to log</button>
       <button class="rb-dismiss" data-act="dismiss-banner" title="Dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
   } else { banner.hidden=true; }
   closeErrPop();
