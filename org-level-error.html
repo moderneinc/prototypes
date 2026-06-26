@@ -262,11 +262,14 @@ body.opts-none .opt-empty{display:block;}
 .err-head .err-actions button{width:28px;height:28px;border-radius:var(--radius-md);display:inline-flex;align-items:center;justify-content:center;color:var(--text-tertiary);background:transparent;border:1px solid transparent;}
 .err-head .err-actions button:hover{background:var(--brand-grey-100);color:var(--text-primary);border-color:var(--border-primary);}
 .err-head .err-actions svg{width:15px;height:15px;}
+.err-msg{font-size:12.5px;font-weight:600;color:var(--text-primary);padding:11px 14px 5px;font-family:var(--font-body);}
 .err-log{max-height:460px;overflow:auto;background:var(--brand-grey-100);font-family:var(--font-code);font-size:11.5px;line-height:1.7;padding:8px 0;}
 .err-log .ln{display:flex;}
-.err-log .ln .n{flex:0 0 auto;width:44px;text-align:right;padding:0 12px 0 8px;color:var(--brand-grey-400);user-select:none;}
-.err-log .ln .c{white-space:pre;color:var(--brand-red-700);padding-right:16px;}
+.err-log .ln .n{flex:0 0 auto;min-width:88px;text-align:left;padding:0 14px 0 12px;color:var(--brand-grey-500);user-select:none;white-space:pre;}
+.err-log .ln .c{white-space:pre;color:var(--text-primary);padding-right:16px;}
 .err-log .ln.dim .c{color:var(--text-tertiary);}
+.err-log .ln.create{margin-top:5px;}
+.err-log .ln.create .c{font-weight:600;}
 /* run-chip error states */
 .run-chip.errored{background:var(--brand-red-100);color:var(--brand-red-700);border:1px solid color-mix(in srgb,var(--brand-red-600) 30%,transparent);}
 .run-chip.errored svg circle{fill:var(--brand-red-600);}
@@ -277,23 +280,25 @@ body.opts-none .opt-empty{display:block;}
 .run-banner .rb-title{font-size:14px;font-weight:600;color:var(--text-primary);}
 .run-banner .rb-sub{font-size:13px;color:var(--text-secondary);margin-top:1px;}
 .run-banner .rb-spacer{flex:1;}
-.run-banner .rb-error{display:inline-flex;align-items:center;gap:6px;color:var(--brand-red-600);font-size:13px;font-weight:500;background:transparent;border:none;flex-shrink:0;}
-.run-banner .rb-error:hover{text-decoration:underline;}
+.run-banner .rb-error{display:inline-flex;align-items:center;gap:6px;color:var(--brand-red-700);font-size:13px;font-weight:500;background:var(--surface-primary);border:1px solid color-mix(in srgb,var(--brand-red-600) 35%,transparent);border-radius:var(--radius-full);padding:5px 14px;flex-shrink:0;cursor:pointer;transition:background var(--transition-fast),border-color var(--transition-fast);}
+.run-banner .rb-error:hover{background:var(--brand-red-100);border-color:color-mix(in srgb,var(--brand-red-600) 55%,transparent);}
 .run-banner .rb-error svg{width:15px;height:15px;}
-.run-banner .rb-dismiss{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:var(--radius-md);color:var(--brand-red-600);flex-shrink:0;margin-left:4px;}
+.run-banner .rb-dismiss{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border:none;background:transparent;border-radius:var(--radius-md);color:var(--brand-red-600);flex-shrink:0;margin-left:4px;cursor:pointer;}
 .run-banner .rb-dismiss:hover{background:color-mix(in srgb,var(--brand-red-600) 14%,transparent);}
 .run-banner .rb-dismiss svg{width:15px;height:15px;}
+.run-banner .rb-error:focus-visible,.run-banner .rb-dismiss:focus-visible{outline:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--brand-red-600) 40%,transparent);}
 /* error side panel (full message + copy, reachable on demand) */
-.err-scrim{position:fixed;inset:0;z-index:89;background:rgba(17,24,39,.30);opacity:0;pointer-events:none;transition:opacity var(--transition-fast);}
+.err-scrim{position:fixed;inset:0;z-index:89;background:rgba(17,24,39,.45);opacity:0;pointer-events:none;transition:opacity var(--transition-fast);}
 .err-scrim.open{opacity:1;pointer-events:auto;}
-.err-pop{position:fixed;top:0;right:0;bottom:0;width:580px;max-width:94vw;z-index:90;background:var(--surface-primary);border-left:1px solid var(--border-primary);box-shadow:-8px 0 28px -8px rgba(17,24,39,.20);display:flex;flex-direction:column;transform:translateX(100%);transition:transform var(--transition-fast);}
-.err-pop.open{transform:translateX(0);}
+.err-pop{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.97);width:min(1500px,95vw);height:min(940px,92vh);z-index:90;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;overflow:hidden;opacity:0;pointer-events:none;transition:opacity var(--transition-fast),transform var(--transition-fast);}
+.err-pop.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
 .err-drawer-head{display:flex;align-items:center;gap:9px;padding:14px 16px;border-bottom:1px solid var(--border-primary);flex-shrink:0;}
 .err-drawer-head .ec-ic{width:18px;height:18px;color:var(--brand-red-600);flex-shrink:0;}
 .err-drawer-head h3{font-size:15px;font-weight:600;flex:1;color:var(--text-primary);}
 .err-drawer-head .ec-act{width:30px;height:30px;border-radius:var(--radius-md);display:inline-flex;align-items:center;justify-content:center;color:var(--text-tertiary);border:1px solid transparent;}
 .err-drawer-head .ec-act:hover{background:var(--brand-grey-100);color:var(--text-primary);border-color:var(--border-primary);}
 .err-drawer-head .ec-act svg{width:16px;height:16px;}
+.err-pop .err-msg{flex-shrink:0;}
 .err-pop .err-log{max-height:none;flex:1;}
 /* total-failure full-screen panel (only when zero repositories completed) */
 #total-fail{flex:1;min-height:0;overflow:auto;padding:26px 32px;}
@@ -742,21 +747,19 @@ const REPOS=[
   {name:'datalore-sdk', branch:'master', results:12},
   {name:'teamcity-rest-client', branch:'main', results:3},
   {name:'youtrack-client', branch:'main', results:1},
-  {name:'space-sdk', branch:'main', results:0, error:true},
-  {name:'rider-fs', branch:'main', results:0},
-  {name:'fleet-plugin-template', branch:'main', results:0},
+  {name:'space-sdk', branch:'main', results:2},
+  {name:'rider-fs', branch:'main', results:4},
+  {name:'fleet-plugin-template', branch:'main', results:7},
 ];
-/* Build the run: 234 repos with results, 4 errored, 3 No LST (the seed
-   list above already contributes 12 results / 1 error / 2 No LST). */
+/* Build the run: every repo returns results — no errored or No-LST states.
+   (the seed list above contributes 15 with results.) */
 const PRE=['kotlin','intellij','ktor','space','fleet','rider','clion','webstorm','datalore','qodana','teamcity','youtrack','hub','toolbox','mps','resharper','dataspell','aqua','rustrover','writerside','grazie','kover','dokka','arrow','koin','ktlint','detekt','okio','skija','compose','spek','mockk','klock','kodein','ktorm','jackson','guava','netty','okhttp','retrofit'];
 const SUF=['core','api','gradle-plugin','cli','client','sdk','common','runtime','compiler','tools','ui','server','db','utils','testkit','samples','docs','playground','bench','ide','plugin','android','jvm','native','web','dsl'];
 const BR=['main','master','develop','trunk'];
 (function(){
   let k=0;
   const nm=()=>{ const n=PRE[k%PRE.length]+'-'+SUF[Math.floor(k/PRE.length)%SUF.length]; k++; return n; };
-  for(let j=0;j<222;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:1+((j*17+5)%59)}); } // → 234 with results
-  for(let j=0;j<3;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:0, error:true}); }      // → 4 errored
-  REPOS.push({name:nm(),branch:BR[0],results:0});                                            // → 3 No LST
+  for(let j=0;j<222;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:1+((j*17+5)%59)}); } // → all with results
 })();
 /* Surface attention states first: No LST at the top, then errored,
    then successes by result count. */
@@ -1363,22 +1366,46 @@ function wireErr(slot, text){
 
 /* ===== Org-level run error (the customer-requests#2611 fix) ===== */
 const COMPLETED=234, TOTAL_REPOS=241;   // partial: many finished before the worker was lost
+const LOG_TS='4s (43s 56s)';
 function buildOrgErrorLog(){
-  const lines=[]; const push=(t,d)=>lines.push([t,!!d]);
-  push('Exception in thread "worker-7" java.lang.OutOfMemoryError: Java heap space');
-  [ 'org.openrewrite.scheduling.WorkerThread.run(WorkerThread.java:118)',
-    'org.openrewrite.RecipeScheduler.scheduleVisit(RecipeScheduler.java:164)',
-    'org.openrewrite.internal.RecipeRunCycle.runCycle(RecipeRunCycle.java:96)',
-    'org.openrewrite.java.JavaParser.parseInputs(JavaParser.java:142)',
-    'org.openrewrite.java.internal.JavaTypeCache.computeIfAbsent(JavaTypeCache.java:71)',
-    'java.base/java.util.HashMap.resize(HashMap.java:702)',
-    'java.base/java.util.HashMap.putVal(HashMap.java:631)',
-  ].forEach(f=>push('  at '+f));
-  push('');
-  push('worker-7 terminated unexpectedly — exit code 137 (SIGKILL, container out of memory).', true);
-  push('Recipe run org/8f3c9d… ended in ERROR state after 6m 12s.', true);
-  push(COMPLETED+' of '+TOTAL_REPOS+' repositories completed and were written to disk before the worker was lost.', true);
-  push('Resolve CLI 4.2.0-20240801.182233-3', true);
+  const lines=[]; const push=(c,d)=>lines.push([c,!!d]);
+  const csv=[
+    'Source path,Class,Line count,Method count,Field count,WMC,LCOM4,TCC,CBO,Maintainability index',
+    'src/test/java/org/springframework/boot/autoconfigure/r2dbc/observation/R2dbcObservationAutoConfigurationIntegrationTest.java,org.springframework.experimental.boot.autoconfigure.r2dbc.observation.R2dbcObservationAutoConfigurationIntegrationTest,109,2,1,2,1,1,0,15,43.771949189944485',
+    'src/test/java/org/springframework/boot/autoconfigure/r2dbc/observation/R2dbcObservationAutoConfigurationTest.java,org.springframework.experimental.boot.autoconfigure.r2dbc.observation.R2dbcObservationAutoConfigurationTest,19,1,0,2,1,1,0,33,56.24889801172401',
+    '+',
+    'src/test/java/org/springframework/boot/autoconfigure/r2dbc/observation/R2dbcObservationConnectionFactoryBeanPostProcessorTest.java,org.springframework.experimental.boot.autoconfigure.r2dbc.observation.R2dbcObservationConnectionFactoryBeanPostProcessorTest,44,2,0,1,2,1,0,17,43.46299905522161',
+    '+',
+    'src/test/java/org/springframework/boot/autoconfigure/r2dbc/observation/R2dbcObservationConnectionFactoryBeanPostProcessor.java,org.springframework.experimental.boot.autoconfigure.r2dbc.observation.R2dbcObservationConnectionFactoryBeanPostProcessor,50,3,3,5,1,2,0,7,58.97457314209582',
+    'src/test/java/org/springframework/boot/autoconfigure/r2dbc/observation/R2dbcObservationProperties.java,org.springframework.experimental.boot.autoconfigure.r2dbc.observation.R2dbcObservationProperties,46,4,2,4,2,0,3,58,72.84142582847515',
+  ];
+  push('● Create(.moderne/context/class-quality-metrics.csv)');
+  csv.forEach((l,i)=>push(String(i+1).padStart(2,' ')+' │ '+l));
+  const md=[
+    '# Class Quality Metrics',
+    '',
+    '## Per-class cohesion, coupling, and complexity measurements',
+    '',
+    'Per-class code quality metrics including Weighted Methods per Class (WMC), Lack of Cohesion (LCOM4), Tight Class Cohesion (TCC), Coupling Between Objects (CBO), and Maintainability Index. Use this to identify classes that should be split or refactored.',
+    '',
+    '### Data Tables',
+    '',
+    '### Class quality metrics',
+    '',
+    '**[class-quality-metrics.csv](class-quality-metrics.csv)**',
+    '',
+    'Per-class code quality metrics including WMC, LCOM4, TCC, CBO, and maintainability index.',
+    '',
+    '| Column | Description |',
+    '|--------|-------------|',
+    '| Source path | The path to the source file containing the class. |',
+    '| Class name | The fully qualified name of the class. |',
+    '| Line count | Number of lines in the class. |',
+    '| Method count | Number of methods defined in the class. |',
+    '| Field count | Number of fields defined in the class. |',
+  ];
+  push('● Create(.moderne/context/class-quality-metrics.md)');
+  md.forEach((l,i)=>push(String(i+1).padStart(2,' ')+' │ '+l));
   return lines;
 }
 function errPanel(log, title){
@@ -1387,10 +1414,11 @@ function errPanel(log, title){
   return `<div class="err-panel">
     <div class="err-head">
       <svg class="err-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <h4>${title||'Recipe run failed'}</h4>
+      <h4>${title||'Error'}</h4>
       <div class="err-actions"><button data-err="copy" title="Copy log">${copy}</button><button data-err="open" title="Open full log">${ext}</button></div>
     </div>
-    <div class="err-log">${log.map((l,i)=>`<div class="ln ${l[1]?'dim':''}"><span class="n">${i+1}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>
+    <div class="err-msg">Message:</div>
+    <div class="err-log">${log.map(l=>`<div class="ln ${l[1]?'dim':''} ${l[0].startsWith('● ')?'create':''}"><span class="n">${LOG_TS}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>
   </div>`;
 }
 
@@ -1403,7 +1431,7 @@ function renderRunState(){
   const ss=state.runState;
   // run chip
   if(ss==='ok'){ chip.className='run-chip done'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed`; }
-  else { chip.className='run-chip errored'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11"/><line x1="12" y1="8" x2="12" y2="13" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.2" fill="#fff"/></svg>${ss==='total'?'Run failed':'Completed with errors'}`; }
+  else { chip.className='run-chip errored'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" style="fill:var(--brand-red-600)"/><line x1="12" y1="7" x2="12" y2="13" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.3" r="1.3" style="fill:#fff"/></svg>${ss==='total'?'Run failed':'Completed with errors'}`; }
 
   if(ss==='total'){
     layout.style.display='none'; banner.hidden=true;
@@ -1431,7 +1459,7 @@ function renderRunState(){
         <div class="rb-sub">Some repositories did not finish, but the results below completed and can be committed.</div>
       </div>
       <span class="rb-spacer"></span>
-      <button class="rb-error" data-act="view-err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Error</button>
+      <button class="rb-error" data-act="view-err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Error: go to log</button>
       <button class="rb-dismiss" data-act="dismiss-banner" title="Dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
   } else { banner.hidden=true; }
   closeErrPop();
@@ -1445,11 +1473,12 @@ function openErrPop(){
   pop.innerHTML=`
     <div class="err-drawer-head">
       <svg class="ec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <h3>Recipe run failed</h3>
+      <h3>Error</h3>
       <button class="ec-act" data-err="copy" title="Copy log">${copy}</button>
       <button class="ec-act" data-act="close-err" title="Close">${x}</button>
     </div>
-    <div class="err-log">${log.map((l,i)=>`<div class="ln ${l[1]?'dim':''}"><span class="n">${i+1}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>`;
+    <div class="err-msg">Message:</div>
+    <div class="err-log">${log.map(l=>`<div class="ln ${l[1]?'dim':''} ${l[0].startsWith('● ')?'create':''}"><span class="n">${LOG_TS}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>`;
   wireErr(pop, log.map(l=>l[0]).join('\n'));
   requestAnimationFrame(()=>{ pop.classList.add('open'); scrim.classList.add('open'); });
 }
