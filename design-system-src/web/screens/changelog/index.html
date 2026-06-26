@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" class="ds-screen">
+<head>
+  {{> ds-head }}
+  <title>Changelog — Moderne (recreation)</title>
+  <script type="module" src="/src/pages/ds-screen-changelog.ts"></script>
+</head>
+<body>
+  <div class="ex-app">
+    {{> ds-ex-rail }}
+    <div class="ex-main">
+      <div class="ex-topbar">{{> ds-ex-appbar }}</div>
+      <div class="ex-content"><div class="ex-inner">
+
+        <div class="ex-pagehead">
+          <h1 style="font-size:24px;font-weight:600;margin:0">Changelog</h1>
+        </div>
+
+        <!-- filter row: wraps on narrow viewports instead of overflowing -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+          <div class="ds-tabs" role="tablist" style="border:0">
+            <button class="ds-tab" role="tab" aria-selected="true">Type</button>
+            <button class="ds-tab" role="tab" aria-selected="false">Check results</button>
+            <button class="ds-tab" role="tab" aria-selected="false">Review state</button>
+            <button class="ds-tab" role="tab" aria-selected="false">Contributors</button>
+            <button class="ds-tab" role="tab" aria-selected="false">Repositories</button>
+          </div>
+          <span style="flex:1"></span>
+          <span class="ds-input-wrap" style="max-width:200px">
+            <svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg>
+            <input class="ds-input ds-input--sm" placeholder="Search changes" aria-label="Search changes" />
+          </span>
+          <button class="ds-btn ds-btn--secondary ds-btn--sm">Sort: Newest</button>
+        </div>
+
+        <div class="ds-table-wrap">
+          <table class="ds-table" style="min-width:900px">
+            <thead>
+              <tr>
+                <th style="width:34px"><label class="ds-check"><input type="checkbox" aria-label="Select all"></label></th>
+                <th style="width:88px">Type</th>
+                <th>Title</th>
+                <th style="width:104px">Checks</th>
+                <th style="width:172px">Review</th>
+                <th style="width:104px;text-align:right">Diff</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--green">Open</span></td>
+                <td><div>Add lines added/removed metrics to recipe run report</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">openrewrite/rewrite · feat/run-metrics → main · #221</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td><span class="ds-badge ds-badge--green">Approved</span></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+148</span> <span class="diff-del">−12</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--green">Open</span></td>
+                <td><div>Fix Java parser for annotated varargs by adding marker</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">openrewrite/rewrite · fix/varargs-marker → main · #1893</div></td>
+                <td><span class="check-fail">✕ Failed</span></td>
+                <td><span class="ds-badge ds-badge--warn">Changes requested</span></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+64</span> <span class="diff-del">−203</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--accent">Merged</span></td>
+                <td><div>Emit component-based recipe MDX for Moderne docs (forModerneDocs path)</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">openrewrite/rewrite-recipe-markdown-generator · feat/moderne-docs-component-mdx → main · #344</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td><span class="ds-badge ds-badge--green">Approved</span></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+521</span> <span class="diff-del">−46</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--green">Open</span></td>
+                <td><div>Restructure recipe section</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">moderneinc/moderne-docs · recipes-section-restructure → main · #88</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+312</span> <span class="diff-del">−87</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--green">Open</span></td>
+                <td><div>feat(navigation): icon-only collapsible left nav (NeoSideNav)</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">moderneinc/moderne-ui · jaydjj/left-nav-compact → main · #8378</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td><span class="ds-badge ds-badge--warn">Changes requested</span></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+904</span> <span class="diff-del">−118</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--green">Open</span></td>
+                <td><div>Upgrade maven-ejb-plugin alongside jakarta.ejb-api</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">openrewrite/rewrite-migrate-java · deps/jakarta-ejb → main · #512</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+27</span> <span class="diff-del">−19</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--accent">Merged</span></td>
+                <td><div>feat(moddy): New data tables view + dual cards + schema inspector</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">moderneinc/moderne-ui · moddy/data-tables → main · #4637</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td><span class="ds-badge ds-badge--green">Approved</span></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+1,204</span> <span class="diff-del">−210</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge">Draft</span></td>
+                <td><div>Back the activity view with a DuckDB/Parquet index</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">moderneinc/moderne-ui · perf/activity-index → main</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+76</span> <span class="diff-del">−5</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ds-sm ds-muted" style="margin-top:16px;text-align:center">50 results · <a href="#">Load more</a></div>
+
+      </div></div>
+    </div>
+  </div>
+  <script>document.querySelector('.ds-rail-item[data-nav="changelog"]')?.setAttribute('aria-current','page');</script>
+</body>
+</html>

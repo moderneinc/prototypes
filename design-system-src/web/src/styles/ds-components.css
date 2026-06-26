@@ -1,0 +1,472 @@
+/* ============================================================================
+   Moderne SaaS DS — COMPONENTS
+   Token-driven (var(--ds-*)) so each class renders in light + dark. Color model:
+   PRIMARY (violet) = brand/action · GREEN = status (success) only · RED = error
+   · AMBER = warning · BLUE = info · RAINBOW (--ds-cat-*) = categorical/tags only.
+   Each block notes the moderne-ui / neo-design component it maps to.
+   ========================================================================== */
+
+/* ──────────────────────────────────────────────────────────────────────────
+   BUTTONS                          maps → neo NeoButton / MUI Button
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-btn{
+  --_h:var(--ds-control-h);
+  appearance:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:var(--_h);padding:0 16px;border-radius:var(--ds-radius-md);
+  border:1px solid transparent;background:transparent;color:var(--ds-ink);
+  font-family:var(--ds-font-sans);font-size:var(--ds-fs-sm);font-weight:var(--ds-w-semibold);line-height:1;white-space:nowrap;
+  transition:background var(--ds-dur) var(--ds-ease),border-color var(--ds-dur) var(--ds-ease),color var(--ds-dur) var(--ds-ease),box-shadow var(--ds-dur) var(--ds-ease),transform var(--ds-dur-fast) var(--ds-ease);
+}
+.ds-btn:disabled,.ds-btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed;pointer-events:none}
+.ds-btn--sm{--_h:var(--ds-control-h-sm);padding:0 12px;font-size:12px}
+.ds-btn--lg{--_h:var(--ds-control-h-lg);padding:0 22px;font-size:var(--ds-fs-body)}
+.ds-btn .ds-ic{width:16px;height:16px;flex:none}
+
+/* primary — brand fill, white text. Flat (no glow); a quiet lift on hover. */
+.ds-btn--primary{background:var(--ds-primary);color:var(--ds-on-primary)}
+.ds-btn--primary:hover{background:var(--ds-primary-hover);transform:translateY(-1px);box-shadow:var(--ds-shadow-2)}
+.ds-btn--primary:active{background:var(--ds-primary-pressed);box-shadow:none;transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){.ds-btn--primary:hover{transform:none}}
+/* secondary — hairline, primary outline on hover */
+.ds-btn--secondary{border-color:var(--ds-field-border);background:var(--ds-panel);color:var(--ds-ink)}
+.ds-btn--secondary:hover{border-color:var(--ds-primary-ink);color:var(--ds-primary-ink)}
+.ds-btn--secondary:active{background:var(--ds-bg-alt)}
+/* subtle / tertiary */
+.ds-btn--subtle{color:var(--ds-ink-dim)}
+.ds-btn--subtle:hover{background:var(--ds-bg-alt);color:var(--ds-ink)}
+/* danger — dedicated AA fill (white text 5.7:1) */
+.ds-btn--danger{background:var(--ds-danger);color:var(--ds-on-danger)}
+.ds-btn--danger:hover{filter:brightness(.92)}
+.ds-btn--danger-ghost{border-color:var(--ds-field-border);color:var(--ds-red-ink)}
+.ds-btn--danger-ghost:hover{border-color:var(--ds-red-ink);background:var(--ds-red-wash)}
+/* accent — filled SECONDARY color (a complementary CTA / highlight action) */
+.ds-btn--accent{background:var(--ds-secondary);color:var(--ds-on-secondary)}
+.ds-btn--accent:hover{background:var(--ds-secondary-hover);transform:translateY(-1px)}
+.ds-btn--accent:active{transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){.ds-btn--accent:hover{transform:none}}
+/* icon-only */
+.ds-btn--icon{width:var(--_h);padding:0;border-radius:var(--ds-radius-md)}
+
+.ds-btn-group{display:inline-flex}
+.ds-btn-group .ds-btn{border-radius:0;border-color:var(--ds-field-border)}
+.ds-btn-group .ds-btn:first-child{border-radius:var(--ds-radius-md) 0 0 var(--ds-radius-md)}
+.ds-btn-group .ds-btn:last-child{border-radius:0 var(--ds-radius-md) var(--ds-radius-md) 0}
+.ds-btn-group .ds-btn + .ds-btn{margin-left:-1px}
+
+/* segmented / toggle-button group    maps → neo NeoToggleButtonGroup */
+.ds-segment{display:inline-flex;background:var(--ds-bg-alt);border:1px solid var(--ds-line);border-radius:var(--ds-radius-md);padding:3px;gap:2px}
+.ds-segment button{appearance:none;border:0;background:transparent;cursor:pointer;padding:5px 12px;border-radius:var(--ds-radius-sm);font-size:var(--ds-fs-sm);font-weight:var(--ds-w-medium);color:var(--ds-muted)}
+.ds-segment button[aria-pressed="true"]{background:var(--ds-panel);color:var(--ds-primary-ink);box-shadow:var(--ds-shadow-1)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   FORM CONTROLS              maps → neo NeoInputField / NeoSelect / NeoCheckbox / NeoToggle
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-label{display:inline-flex;gap:5px;font-size:var(--ds-fs-sm);font-weight:var(--ds-w-medium);color:var(--ds-ink)}
+.ds-label .req{color:var(--ds-red-ink)}
+.ds-help{font-size:12px;color:var(--ds-muted)}
+.ds-error-text{font-size:12px;color:var(--ds-red-ink);display:flex;gap:5px}
+
+.ds-input,.ds-textarea,.ds-select{
+  width:100%;height:var(--ds-control-h);padding:0 12px;
+  background:var(--ds-surface);color:var(--ds-ink);
+  border:1px solid var(--ds-field-border);border-radius:var(--ds-radius-md);
+  font-size:var(--ds-fs-body);transition:border-color var(--ds-dur) var(--ds-ease),box-shadow var(--ds-dur) var(--ds-ease);
+}
+.ds-input--sm{height:var(--ds-control-h-sm);font-size:var(--ds-fs-sm)}
+.ds-textarea{height:auto;min-height:84px;padding:9px 12px;resize:vertical;line-height:1.5}
+.ds-input::placeholder,.ds-textarea::placeholder{color:var(--ds-muted2)}
+.ds-input:hover,.ds-textarea:hover,.ds-select:hover{border-color:var(--ds-line-strong)}
+.ds-input:focus,.ds-textarea:focus,.ds-select:focus{outline:none;border-color:var(--ds-primary-ink);box-shadow:0 0 0 3px var(--ds-primary-wash)}
+.ds-input:disabled,.ds-textarea:disabled,.ds-select:disabled{background:var(--ds-bg-alt);color:var(--ds-muted);cursor:not-allowed}
+.ds-input[aria-invalid="true"],.ds-textarea[aria-invalid="true"],.ds-select[aria-invalid="true"]{border-color:var(--ds-red-ink)}
+.ds-input[aria-invalid="true"]:focus{box-shadow:0 0 0 3px var(--ds-red-wash)}
+
+.ds-select{appearance:none;padding-right:34px;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);
+  background-position:calc(100% - 18px) center,calc(100% - 13px) center;background-size:5px 5px,5px 5px;background-repeat:no-repeat;color:var(--ds-ink)}
+
+.ds-input-wrap{position:relative;display:flex;align-items:center}
+.ds-input-wrap .ds-ic{position:absolute;left:11px;width:16px;height:16px;color:var(--ds-muted);pointer-events:none}
+.ds-input-wrap .ds-input{padding-left:34px}
+
+/* checkbox + radio */
+.ds-check{display:inline-flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:var(--ds-fs-body)}
+.ds-check input{appearance:none;margin:0;width:18px;height:18px;flex:none;border:1px solid var(--ds-field-border);background:var(--ds-surface);transition:background var(--ds-dur),border-color var(--ds-dur)}
+.ds-check input[type=checkbox]{border-radius:var(--ds-radius-xs)}
+.ds-check input[type=radio]{border-radius:50%}
+.ds-check input:hover{border-color:var(--ds-primary-ink)}
+.ds-check input:focus-visible{outline:var(--ds-focus-w) solid var(--ds-focus);outline-offset:2px}
+.ds-check input:checked{background:var(--ds-primary);border-color:var(--ds-primary)}
+/* dark check, to sit on the bright green primary fill (matches --ds-on-primary) */
+.ds-check input[type=checkbox]:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2308130d' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6'/%3E%3C/svg%3E");background-size:contain}
+.ds-check input[type=radio]:checked{box-shadow:inset 0 0 0 4px var(--ds-on-primary)}
+.ds-check input:disabled{opacity:.5;cursor:not-allowed}
+.ds-check.is-disabled{color:var(--ds-muted);cursor:not-allowed}
+
+/* switch */
+.ds-switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer}
+.ds-switch input{appearance:none;margin:0;width:38px;height:22px;border-radius:var(--ds-radius-pill);background:var(--ds-line-strong);position:relative;transition:background var(--ds-dur) var(--ds-ease);cursor:pointer}
+.ds-switch input::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:var(--ds-shadow-1);transition:transform var(--ds-dur) var(--ds-ease)}
+.ds-switch input:checked{background:var(--ds-primary)}
+.ds-switch input:checked::after{transform:translateX(16px)}
+.ds-switch input:focus-visible{outline:var(--ds-focus-w) solid var(--ds-focus);outline-offset:2px}
+.ds-switch input:disabled{opacity:.5;cursor:not-allowed}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   BADGES · CHIPS · TAGS · STATUS DOT      maps → neo NeoBadge / NeoTag / NeoDot
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-badge{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:var(--ds-radius-pill);
+  font-family:var(--ds-font-mono);font-size:11px;font-weight:var(--ds-w-medium);letter-spacing:.02em;white-space:nowrap;
+  background:var(--ds-bg-alt);color:var(--ds-ink-dim);border:1px solid var(--ds-line)}
+.ds-badge--brand{background:var(--ds-primary-soft);color:var(--ds-primary-ink);border-color:transparent}
+.ds-badge--green{background:var(--ds-green-soft);color:var(--ds-green-ink);border-color:transparent}   /* success */
+.ds-badge--red{background:var(--ds-red-soft);color:var(--ds-red-ink);border-color:transparent}         /* error */
+.ds-badge--warn{background:var(--ds-warn-soft);color:var(--ds-warn-ink);border-color:transparent}
+.ds-badge--info{background:var(--ds-info-soft);color:var(--ds-info-ink);border-color:transparent}
+.ds-badge--accent{background:var(--ds-secondary-soft);color:var(--ds-secondary-ink);border-color:transparent}
+.ds-badge--solid{background:var(--ds-primary);color:var(--ds-on-primary);border-color:transparent}
+
+.ds-chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 6px 0 11px;border-radius:var(--ds-radius-pill);
+  font-size:12px;font-weight:var(--ds-w-medium);background:var(--ds-panel);color:var(--ds-ink-dim);border:1px solid var(--ds-field-border)}
+.ds-chip > .x{appearance:none;border:0;background:transparent;cursor:pointer;color:var(--ds-muted);width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-size:13px}
+.ds-chip > .x:hover{background:var(--ds-bg-alt);color:var(--ds-ink)}
+.ds-chip--brand{background:var(--ds-primary-wash);border-color:transparent;color:var(--ds-primary-ink)}
+/* search / filter chip (active state)   maps → neo NeoFilterChip / NeoSearchChip */
+.ds-chip--filter{cursor:pointer;padding:0 11px}
+.ds-chip--filter[aria-pressed="true"]{background:var(--ds-primary);color:var(--ds-on-primary);border-color:transparent}
+
+/* tag — square-ish categorical label (uses the rainbow)   maps → neo NeoTag */
+.ds-tag{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:var(--ds-radius-sm);font-size:11px;font-weight:var(--ds-w-medium);background:var(--ds-bg-alt);color:var(--ds-ink-dim);border:1px solid var(--ds-line)}
+.ds-tag::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--_tag,var(--ds-cat-violet))}
+
+.ds-status{display:inline-flex;align-items:center;gap:7px;font-size:var(--ds-fs-sm);color:var(--ds-ink-dim)}
+.ds-status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ds-muted2);flex:none}
+.ds-status--ok::before{background:var(--ds-green)}
+.ds-status--err::before{background:var(--ds-red)}
+.ds-status--warn::before{background:var(--ds-warn)}
+.ds-status--busy::before{background:var(--ds-info);animation:ds-pulse 1.4s var(--ds-ease) infinite}
+@keyframes ds-pulse{50%{opacity:.35}}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   AVATAR                          maps → neo NeoGeneralAvatar / NeoNavigationAvatar
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-avatar{width:32px;height:32px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--ds-primary-soft);color:var(--ds-primary-ink);font-size:12px;font-weight:var(--ds-w-semibold);overflow:hidden;flex:none;border:1px solid var(--ds-line)}
+.ds-avatar--sm{width:24px;height:24px;font-size:10px}
+.ds-avatar--lg{width:44px;height:44px;font-size:15px}
+.ds-avatar-group{display:inline-flex}
+.ds-avatar-group .ds-avatar{margin-left:-8px;box-shadow:0 0 0 2px var(--ds-panel)}
+.ds-avatar-group .ds-avatar:first-child{margin-left:0}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   CARD                            maps → neo NeoCard
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-card{background:var(--ds-panel);border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg);box-shadow:var(--ds-shadow-1);overflow:hidden}
+.ds-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--ds-line)}
+.ds-card-head h3{font-size:var(--ds-fs-h3);font-weight:var(--ds-w-semibold);margin:0}
+.ds-card-body{padding:18px}
+.ds-card-body > p{margin:0;color:var(--ds-ink-dim);font-size:var(--ds-fs-body)}
+.ds-card-foot{padding:14px 18px;border-top:1px solid var(--ds-line);display:flex;gap:10px;justify-content:flex-end;background:var(--ds-surface)}
+
+/* list item                       maps → neo NeoListItem / NeoListItemButton */
+.ds-list{border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg);background:var(--ds-panel);overflow:hidden}
+.ds-list-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ds-line);font-size:var(--ds-fs-sm)}
+.ds-list-item:last-child{border-bottom:0}
+.ds-list-item.is-button{cursor:pointer}
+.ds-list-item.is-button:hover{background:var(--ds-bg-alt)}
+.ds-list-item .spacer{flex:1}
+
+/* divider                         maps → neo NeoDivider */
+.ds-divider{height:1px;background:var(--ds-line);border:0;margin:var(--ds-space-4) 0}
+.ds-divider--v{width:1px;height:auto;align-self:stretch;margin:0 var(--ds-space-2)}
+/* surveillance line — the genome "watched locus" marker as a divider (brand motif) */
+.ds-divider--watch{height:0;background:none;border:0;border-top:1.5px dashed color-mix(in srgb,var(--ds-green) 55%,transparent)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   TABLE / DATA-GRID HEADER        maps → neo NeoTable / NeoDataGrid (static)
+   ────────────────────────────────────────────────────────────────────────── */
+/* wide tables scroll horizontally on narrow viewports instead of crushing columns */
+.ds-table-wrap{border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg);overflow:auto;background:var(--ds-panel)}
+.ds-table{width:100%;border-collapse:collapse;font-size:var(--ds-fs-sm)}
+.ds-table thead th{text-align:left;font-family:var(--ds-font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--ds-muted);font-weight:var(--ds-w-medium);padding:11px 16px;background:var(--ds-surface);border-bottom:1px solid var(--ds-line);white-space:nowrap}
+.ds-table thead th.sortable{cursor:pointer}
+.ds-table thead th.sortable:hover{color:var(--ds-ink)}
+.ds-table thead th .sort{margin-left:5px;opacity:.6}
+.ds-table thead th[aria-sort] .sort{opacity:1;color:var(--ds-primary-ink)}
+.ds-table tbody td{padding:12px 16px;border-bottom:1px solid var(--ds-line);color:var(--ds-ink-dim)}
+.ds-table tbody tr:last-child td{border-bottom:0}
+.ds-table tbody tr:hover td{background:var(--ds-bg-alt)}
+.ds-table tbody tr[aria-selected="true"] td{background:var(--ds-primary-wash)}
+.ds-table.zebra tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--ds-bg-alt) 55%,transparent)}
+.ds-table td .ds-mono{color:var(--ds-ink)}
+.ds-table .num{text-align:right;font-family:var(--ds-font-mono)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   TABS                            maps → neo NeoTabs / NeoTab
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-tabs{display:flex;gap:4px;border-bottom:1px solid var(--ds-line)}
+.ds-tab{appearance:none;border:0;background:transparent;cursor:pointer;padding:10px 14px;font-size:var(--ds-fs-sm);font-weight:var(--ds-w-medium);color:var(--ds-muted);position:relative;border-bottom:2px solid transparent;margin-bottom:-1px}
+.ds-tab:hover{color:var(--ds-ink)}
+.ds-tab[aria-selected="true"]{color:var(--ds-ink);font-weight:var(--ds-w-semibold);border-bottom:2.5px solid var(--ds-primary)}
+.ds-tab:disabled{opacity:.45;cursor:not-allowed}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   BREADCRUMBS                     maps → neo NeoBreadcrumbs
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-breadcrumbs{display:flex;align-items:center;gap:8px;font-size:var(--ds-fs-sm);color:var(--ds-muted)}
+.ds-breadcrumbs a{color:var(--ds-muted)}
+.ds-breadcrumbs a:hover{color:var(--ds-primary-ink)}
+.ds-breadcrumbs .sep{color:var(--ds-muted2)}
+.ds-breadcrumbs [aria-current="page"]{color:var(--ds-ink);font-weight:var(--ds-w-medium)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   MENU / DROPDOWN                 maps → neo NeoMenu / NeoMenuItem
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-menu{min-width:200px;background:var(--ds-raised);border:1px solid var(--ds-line);border-radius:var(--ds-radius-md);box-shadow:var(--ds-shadow-2);padding:6px}
+.ds-menu-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--ds-radius-sm);font-size:var(--ds-fs-sm);color:var(--ds-ink-dim);cursor:pointer}
+.ds-menu-item:hover{background:var(--ds-bg-alt);color:var(--ds-ink)}
+.ds-menu-item[aria-current="true"]{color:var(--ds-primary-ink)}
+.ds-menu-item.is-danger{color:var(--ds-red-ink)}
+.ds-menu-item.is-danger:hover{background:var(--ds-red-wash)}
+.ds-menu-sep{height:1px;background:var(--ds-line);margin:6px 4px}
+.ds-menu-label{font-family:var(--ds-font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--ds-muted);padding:8px 10px 4px}
+
+/* ── LEFT NAVIGATION RAIL ────────────────────────────────────────────────────
+   Mirrors the moderne-ui prototype (PR #8378): a vertical icon rail — fixed
+   Moderne mark + version badge on top, scrolling icon+label destinations in the
+   middle (slim scrollbar, no overflow menu), fixed tenant-logo slot at the
+   bottom. Collapses to icon-only via `.ds-rail--compact`. Restyled with --ds-*
+   tokens.                          maps → neo NeoSideNav / NeoNavigationItem */
+.ds-rail-frame{height:520px;display:flex}              /* gallery frame so height:100% resolves */
+.ds-rail{width:98px;height:100%;display:flex;flex-direction:column;align-items:center;
+  background:var(--ds-surface);border-right:1px solid var(--ds-line);padding:10px 0 14px}
+.ds-rail-top{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:4px}
+.ds-rail-logo{width:40px;height:40px;border-radius:var(--ds-radius-md);background:var(--ds-bg-alt);color:var(--ds-ink);border:1px solid var(--ds-line);
+  display:flex;align-items:center;justify-content:center}
+.ds-rail-logo svg{width:22px;height:22px}
+.ds-rail-badge{font-family:var(--ds-font-mono);font-size:10px;font-weight:var(--ds-w-semibold);letter-spacing:.04em;
+  color:var(--ds-nav-accent-ink);background:var(--ds-nav-accent-wash);padding:2px 7px;border-radius:var(--ds-radius-pill)}
+.ds-rail-scroll{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;
+  overflow-y:auto;padding:12px 0;scrollbar-width:thin;scrollbar-color:var(--ds-line-strong) transparent}
+.ds-rail-scroll::-webkit-scrollbar{width:4px}
+.ds-rail-scroll::-webkit-scrollbar-thumb{background:var(--ds-line-strong);border-radius:2px}
+.ds-rail-scroll::-webkit-scrollbar-track{background:transparent}
+.ds-rail-item{width:74px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;
+  border-radius:var(--ds-radius-md);color:var(--ds-ink-dim);cursor:pointer;text-align:center;border:0;background:transparent}
+.ds-rail-item:hover{background:var(--ds-bg-alt);color:var(--ds-ink)}
+.ds-rail-item .ds-ic{width:22px;height:22px}
+.ds-rail-item .lbl{font-size:11px;font-weight:var(--ds-w-medium);line-height:1.2}
+.ds-rail-item .beta{font-family:var(--ds-font-mono);font-size:8px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--ds-cat-violet-ink);background:var(--ds-primary-wash);padding:1px 5px;border-radius:var(--ds-radius-pill)}
+.ds-rail-item[aria-current="page"]{background:var(--ds-nav-accent-wash);color:var(--ds-nav-accent-ink)}
+.ds-rail-item:focus-visible{outline:var(--ds-focus-w) solid var(--ds-focus);outline-offset:-2px}
+.ds-rail-tenant{flex-shrink:0;width:56px;height:56px;border-radius:var(--ds-radius-md);border:1px dashed var(--ds-line-strong)}
+/* compact: icon-only — labels + badge hide, rail narrows, spacing tightens */
+.ds-rail--compact{width:64px}
+.ds-rail--compact .ds-rail-item{width:48px;padding:9px 0}
+.ds-rail--compact .ds-rail-item .lbl,.ds-rail--compact .ds-rail-badge{display:none}
+
+/* product left-nav LIST variant (labelled rows)   maps → neo NeoNavigationItem */
+.ds-navlist{display:flex;flex-direction:column;gap:2px}
+.ds-navlist a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--ds-radius-sm);color:var(--ds-ink-dim);font-size:var(--ds-fs-sm);font-weight:var(--ds-w-medium)}
+.ds-navlist a:hover{background:var(--ds-bg-alt);text-decoration:none;color:var(--ds-ink)}
+.ds-navlist a[aria-current="page"]{background:var(--ds-nav-accent-wash);color:var(--ds-nav-accent-ink)}
+.ds-navlist a[aria-current="page"] .ds-ic{color:var(--ds-nav-accent-ink)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   PAGINATION                      maps → MUI Pagination
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-pagination{display:inline-flex;gap:4px}
+.ds-pagination button{appearance:none;cursor:pointer;min-width:32px;height:32px;padding:0 8px;border:1px solid var(--ds-line);background:var(--ds-panel);border-radius:var(--ds-radius-sm);font-size:var(--ds-fs-sm);color:var(--ds-ink-dim)}
+.ds-pagination button:hover{border-color:var(--ds-primary-ink);color:var(--ds-primary-ink)}
+.ds-pagination button[aria-current="page"]{background:var(--ds-primary-wash);border-color:transparent;color:var(--ds-primary-ink);font-weight:var(--ds-w-semibold)}
+.ds-pagination button:disabled{opacity:.45;cursor:not-allowed}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   APP BAR / TOOLBAR               maps → neo NeoTopNav / NeoToolbar
+   ────────────────────────────────────────────────────────────────────────── */
+/* Mirrors moderne-ui GlobalNavigationBar: org selector (left) · spacer · search
+   · nav-menu icon · account avatar, 65px tall, with a soft centered radial glow
+   behind. Restyled with --ds-* tokens (the app's neoRed glow → a faint primary glow). */
+.ds-appbar{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;height:65px;padding:0 16px;background:var(--ds-panel);border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg)}
+.ds-appbar::before{content:"";position:absolute;left:50%;top:74%;transform:translate(-50%,-50%);width:680px;max-width:80%;height:60px;
+  background:radial-gradient(ellipse at center,color-mix(in srgb,var(--ds-primary) 4%,transparent) 0%,transparent 60%);filter:blur(24px);z-index:0;pointer-events:none}
+.ds-appbar > *{position:relative;z-index:1}
+.ds-appbar .spacer{flex:1}
+/* organization / tenant selector       maps → GlobalOrganizationSelector */
+.ds-appbar .org{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid transparent;border-radius:var(--ds-radius-md);background:transparent;cursor:pointer;font-size:var(--ds-fs-sm);font-weight:var(--ds-w-semibold);color:var(--ds-ink)}
+.ds-appbar .org:hover{background:var(--ds-bg-alt)}
+.ds-appbar .org .ds-ic{width:18px;height:18px;color:var(--ds-muted)}
+.ds-appbar .org .chev{width:14px;height:14px;color:var(--ds-muted)}
+
+/* banner (page-width status strip)   maps → neo NeoBanner */
+.ds-banner{display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:var(--ds-radius-md);font-size:var(--ds-fs-sm);background:var(--ds-primary-soft);color:var(--ds-primary-ink);border:1px solid transparent}
+.ds-banner .spacer{flex:1}
+.ds-banner--info{background:var(--ds-info-soft);color:var(--ds-info-ink)}
+.ds-banner--warn{background:var(--ds-warn-soft);color:var(--ds-warn-ink)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   TOOLTIP · POPOVER               maps → neo NeoTooltip / MUI Popover
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-tooltip{display:inline-block;background:var(--ds-ink);color:var(--ds-bg);font-size:12px;font-weight:var(--ds-w-medium);padding:6px 9px;border-radius:var(--ds-radius-sm);box-shadow:var(--ds-shadow-2);position:relative}
+.ds-tooltip::after{content:"";position:absolute;top:100%;left:18px;border:5px solid transparent;border-top-color:var(--ds-ink)}
+.ds-popover{width:260px;background:var(--ds-raised);border:1px solid var(--ds-line);border-radius:var(--ds-radius-md);box-shadow:var(--ds-shadow-2);padding:14px}
+.ds-popover h4{margin:0 0 6px;font-size:var(--ds-fs-sm);font-weight:var(--ds-w-semibold)}
+.ds-popover p{margin:0;font-size:12px;color:var(--ds-muted)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   DIALOG / DRAWER                 maps → neo NeoModal / MUI Drawer
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-dialog-stage{position:relative;border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg);background:var(--ds-overlay);min-height:240px;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden}
+.ds-dialog{width:min(420px,100%);background:var(--ds-panel);border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg);box-shadow:var(--ds-shadow-3)}
+.ds-dialog-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--ds-line)}
+.ds-dialog-head h3{margin:0;font-size:var(--ds-fs-h3);font-weight:var(--ds-w-semibold)}
+.ds-dialog-body{padding:18px;font-size:var(--ds-fs-body);color:var(--ds-ink-dim)}
+.ds-dialog-foot{padding:14px 18px;border-top:1px solid var(--ds-line);display:flex;gap:10px;justify-content:flex-end;background:var(--ds-surface)}
+
+.ds-drawer-stage{position:relative;border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg);background:var(--ds-overlay);min-height:300px;overflow:hidden;display:flex;justify-content:flex-end}
+.ds-drawer{width:min(300px,80%);background:var(--ds-panel);border-left:1px solid var(--ds-line);box-shadow:var(--ds-shadow-3);padding:20px;display:flex;flex-direction:column;gap:14px}
+.ds-drawer h3{margin:0;font-size:var(--ds-fs-h3);font-weight:var(--ds-w-semibold)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   ALERT / CALLOUT                 maps → neo NeoAlert
+   ────────────────────────────────────────────────────────────────────────── */
+/* ONE signal: a soft color tint + the icon. No left rule, no border. */
+.ds-alert{display:flex;gap:12px;padding:13px 15px;border-radius:var(--ds-radius-md);background:var(--ds-surface);font-size:var(--ds-fs-sm)}
+.ds-alert .ds-alert-icn{width:18px;height:18px;flex:none;margin-top:1px}
+.ds-alert b{display:block;color:var(--ds-ink);font-weight:var(--ds-w-semibold);margin-bottom:2px}
+.ds-alert p{margin:0;color:var(--ds-ink-dim)}
+.ds-alert--success{background:var(--ds-green-wash)}
+.ds-alert--success .ds-alert-icn{color:var(--ds-green-ink)}
+.ds-alert--error{background:var(--ds-red-wash)}
+.ds-alert--error .ds-alert-icn{color:var(--ds-red-ink)}
+.ds-alert--warn{background:var(--ds-warn-soft)}
+.ds-alert--warn .ds-alert-icn{color:var(--ds-warn-ink)}
+.ds-alert--info{background:var(--ds-info-soft)}
+.ds-alert--info .ds-alert-icn{color:var(--ds-info-ink)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   TOAST / SNACKBAR                maps → neo NeoToast
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-toast{display:flex;align-items:center;gap:12px;width:min(360px,100%);padding:12px 14px;border-radius:var(--ds-radius-md);background:var(--ds-ink);color:var(--ds-bg);box-shadow:var(--ds-shadow-3);font-size:var(--ds-fs-sm)}
+.ds-toast .ds-alert-icn{width:18px;height:18px;flex:none;color:var(--ds-green)}   /* success check */
+.ds-toast .spacer{flex:1}
+.ds-toast button{appearance:none;border:0;background:transparent;cursor:pointer;color:var(--ds-cat-violet);font-weight:var(--ds-w-semibold);font-size:var(--ds-fs-sm)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   PROGRESS · SPINNER · SKELETON   maps → neo NeoProgressbar / NeoLoadingSpinner / NeoSkeleton
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-progress{height:8px;border-radius:var(--ds-radius-pill);background:var(--ds-bg-alt);overflow:hidden}
+.ds-progress > span{display:block;height:100%;border-radius:inherit;background:var(--ds-primary)}
+.ds-progress.indeterminate > span{width:35%;animation:ds-indet 1.3s var(--ds-ease) infinite}
+@keyframes ds-indet{0%{margin-left:-35%}100%{margin-left:100%}}
+
+.ds-spinner{width:22px;height:22px;border-radius:50%;border:2.5px solid var(--ds-line-strong);border-top-color:var(--ds-primary);animation:ds-spin .7s linear infinite}
+@keyframes ds-spin{to{transform:rotate(360deg)}}
+
+/* "sequencing" loader — a row of bands that pulse green in sequence (genome motif);
+   an ownable alternative to a generic spinner. Use 6 <i> children. */
+.ds-sequencing{display:inline-flex;gap:3px;align-items:center;height:20px}
+.ds-sequencing i{display:block;width:3px;height:16px;border-radius:1.5px;background:var(--ds-line-strong);transform-origin:center;animation:ds-seq 1.1s var(--ds-ease) infinite}
+.ds-sequencing i:nth-child(2){animation-delay:.12s}
+.ds-sequencing i:nth-child(3){animation-delay:.24s}
+.ds-sequencing i:nth-child(4){animation-delay:.36s}
+.ds-sequencing i:nth-child(5){animation-delay:.48s}
+.ds-sequencing i:nth-child(6){animation-delay:.6s}
+@keyframes ds-seq{0%,100%{background:var(--ds-line-strong);transform:scaleY(.55)}45%{background:var(--ds-green);transform:scaleY(1)}}
+
+.ds-skeleton{background:linear-gradient(90deg,var(--ds-bg-alt) 25%,color-mix(in srgb,var(--ds-bg-alt) 50%,var(--ds-surface)) 37%,var(--ds-bg-alt) 63%);background-size:400% 100%;animation:ds-shimmer 1.4s ease infinite;border-radius:var(--ds-radius-sm)}
+.ds-skeleton.line{height:12px}
+.ds-skeleton.circle{border-radius:50%}
+@keyframes ds-shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   CODE SNIPPET                    maps → neo NeoCodeSnippet
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-code{font-family:var(--ds-font-mono);font-size:12.5px;background:var(--ds-code-bg);color:var(--ds-ink);border:1px solid var(--ds-line);border-radius:var(--ds-radius-md);padding:12px 14px;overflow:auto;line-height:1.6}
+.ds-code .tok{color:var(--ds-cat-violet-ink)}
+.ds-code--inline{display:inline;padding:1px 6px;border-radius:var(--ds-radius-xs)}
+
+/* tree (static)                   maps → neo NeoTree / NeoTreeItem */
+.ds-tree{font-size:var(--ds-fs-sm)}
+.ds-tree-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:var(--ds-radius-sm);color:var(--ds-ink-dim);cursor:pointer}
+.ds-tree-item:hover{background:var(--ds-bg-alt)}
+.ds-tree-item[aria-selected="true"]{background:var(--ds-primary-wash);color:var(--ds-primary-ink)}
+.ds-tree-item .tw{width:14px;color:var(--ds-muted2)}
+.ds-tree-children{margin-left:18px;border-left:1px solid var(--ds-line);padding-left:6px}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   EMPTY STATE                     maps → utilities/EmptyState
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-empty{text-align:center;padding:40px 24px;border:1px dashed var(--ds-line-strong);border-radius:var(--ds-radius-lg);background:var(--ds-surface)}
+.ds-empty .ds-ic{width:34px;height:34px;margin:0 auto 12px;color:var(--ds-muted2)}
+.ds-empty h3{margin:0 0 6px;font-size:var(--ds-fs-h3)}
+.ds-empty p{margin:0 0 16px;color:var(--ds-muted);font-size:var(--ds-fs-sm)}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   DATA VISUALIZATION — chart primitives.  COLOR = MEANING (severity ramp,
+   version sequence, status), never decoration. Personality from the genome
+   language: a green "surveillance" target line, mono "lab readout" axes, and a
+   calm draw-on reveal. Charts are decorative SVG; always paired with a legend
+   or table for the actual values.
+   ────────────────────────────────────────────────────────────────────────── */
+.ds-chart{position:relative;width:100%}
+.ds-chart > svg{display:block;width:100%;height:auto;overflow:visible}
+.ds-chart-grid{stroke:var(--ds-line);stroke-width:1}
+.ds-chart-axis{font-family:var(--ds-font-mono);font-size:9px;fill:var(--ds-muted)}
+.ds-chart [data-target]{stroke:var(--ds-green);stroke-width:1.5;stroke-dasharray:4 4;fill:none;opacity:.85}  /* watched-locus target */
+.ds-chart [data-marker]{stroke:var(--ds-muted2);stroke-width:1;stroke-dasharray:2 3;fill:none}
+.ds-chart [data-line]{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:1;stroke-dashoffset:1;animation:ds-draw 1.1s var(--ds-ease) .15s forwards}
+.ds-chart [data-area]{opacity:0;animation:ds-fadein .8s var(--ds-ease) .3s forwards}
+.ds-chart [data-bar]{transform:scaleY(0);transform-origin:bottom;transform-box:fill-box;animation:ds-grow .7s var(--ds-ease) forwards}
+@keyframes ds-draw{to{stroke-dashoffset:0}}
+@keyframes ds-fadein{to{opacity:1}}
+@keyframes ds-grow{to{transform:scaleY(1)}}
+
+.ds-chart-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11px;color:var(--ds-ink-dim)}
+.ds-chart-legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.ds-chart-legend i{width:9px;height:9px;border-radius:2px;flex:none}
+
+.ds-spark{display:block}
+.ds-spark [data-line]{fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* donut — segments set via --seg1/2/3 (fractions of 1); centre hole via mask */
+.ds-donut{width:116px;height:116px;border-radius:50%;
+  background:conic-gradient(var(--ds-green) calc(var(--seg1,0)*1turn),
+    var(--ds-cat-gold) 0 calc((var(--seg1,0) + var(--seg2,0))*1turn),
+    var(--ds-cat-blue) 0 calc((var(--seg1,0) + var(--seg2,0) + var(--seg3,0))*1turn),
+    var(--ds-bg-alt) 0);
+  -webkit-mask:radial-gradient(circle at center,transparent 56%,#000 57%);mask:radial-gradient(circle at center,transparent 56%,#000 57%);
+  animation:ds-donut-in .7s var(--ds-ease) both}
+@keyframes ds-donut-in{from{transform:rotate(-110deg);opacity:.15}to{transform:rotate(0);opacity:1}}
+
+/* parliament / hemicycle dot chart — one dot per item, fanned in concentric arcs
+   and filled left→right along the immune red→green ramp. Personality: a staggered
+   "sequencing" reveal sweeping from the behind (red) seats to completed (green).
+   Mirrors moderne-ui's @moderneinc/react-charts parliament chart, our tokens. */
+.pm-chart{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.pm-svg{flex:none}
+.pm-seat{opacity:0;transform:scale(.35);transform-box:fill-box;transform-origin:center;
+  animation:pm-in .5s var(--ds-ease) forwards;animation-delay:calc(var(--i) * .008s)}
+@keyframes pm-in{to{opacity:1;transform:scale(1)}}
+.pm-table{border-collapse:collapse;font-size:12px;min-width:300px}
+.pm-table th{text-align:left;font-family:var(--ds-font-mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--ds-muted);font-weight:var(--ds-w-medium);padding:6px 10px;border-bottom:1px solid var(--ds-line)}
+.pm-table td{padding:6px 10px;color:var(--ds-ink-dim);border-bottom:1px solid var(--ds-line)}
+.pm-table td.num{text-align:right;font-family:var(--ds-font-mono)}
+.pm-table tr:last-child td{border-bottom:0}
+.pm-table .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;vertical-align:middle}
+
+@media (prefers-reduced-motion:reduce){
+  .ds-chart [data-line]{stroke-dashoffset:0;animation:none}
+  .ds-chart [data-area]{opacity:1;animation:none}
+  .ds-chart [data-bar]{transform:none;animation:none}
+  .ds-donut{transform:none;opacity:1;animation:none}
+  .pm-seat{opacity:1;transform:none;animation:none}
+}
+
+/* honor reduced motion (DESIGN.md §6/§8) */
+@media (prefers-reduced-motion:reduce){
+  .ds-progress.indeterminate > span,.ds-spinner,.ds-skeleton,.ds-status--busy::before,.ds-sequencing i{animation:none}
+  .ds-sequencing i{transform:none;background:var(--ds-green)}
+}

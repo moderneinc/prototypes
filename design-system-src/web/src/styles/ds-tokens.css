@@ -1,0 +1,266 @@
+/* ============================================================================
+   Moderne SaaS Design System — TOKENS  (light + dark)
+   ----------------------------------------------------------------------------
+   The moderne.ai marketing language (genome / immune-system; Poppins +
+   JetBrains Mono; the spectral M-FISH rainbow) expressed as SaaS application
+   UI. Light mode first; dark mode maps back to the shipped site palette.
+
+   COLOR MODEL (revised):
+     • PRIMARY = violet — a SaaS brand/action color pulled from the spectral
+       rainbow. Distinct from status, and deliberately NOT neo-design's
+       Digital Blue (#2f42ff, the blue the marketing site retired as "dated").
+     • GREEN = STATUS ONLY (success / healthy / validated). No longer the
+       primary action. This frees green to stay meaningful.
+     • RED = error/defect · AMBER = warning · BLUE = info. Two extra feedback
+       hues are a SaaS necessity, clearly fenced (status only).
+     • The RAINBOW (spectral) is expanded into a 9-hue CATEGORICAL palette for
+       wayfinding / data-viz / tags — each with an AA-legible "ink" per theme.
+
+   Namespaced --ds-*, self-contained (does not touch the live site tokens.css).
+   Every value is AA-validated — see .context/ds-a11y-check.mjs (0 failures).
+   Discipline mirrors docs/DESIGN.md §11: every color a token; derive tints with
+   color-mix(); status is only success/error/warn/info, never categorical hues.
+
+   THEMING: default :root = LIGHT; [data-theme="dark"] on <html> overrides the
+   color tokens. Toggle wired in src/lib/ds-chrome.ts.
+   ========================================================================== */
+
+/* ── Theme-invariant tokens (shared by light + dark) ───────────────────────── */
+:root{
+  /* UI font defaults to Inter — the dev-tool/SaaS standard (Linear, GitHub,
+     Figma, neo-design); Poppins (the marketing face) is one click away in the
+     theme builder. Mono stays JetBrains Mono. */
+  --ds-font-sans:"Inter",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --ds-font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  /* UI type scale — fixed px (SaaS density); 14px body baseline */
+  --ds-fs-display:30px;  --ds-lh-display:1.15;
+  --ds-fs-h1:24px;       --ds-lh-h1:1.2;
+  --ds-fs-h2:19px;       --ds-lh-h2:1.25;
+  --ds-fs-h3:16px;       --ds-lh-h3:1.3;
+  --ds-fs-body:14px;     --ds-lh-body:1.55;
+  --ds-fs-sm:13px;       --ds-lh-sm:1.5;
+  --ds-fs-label:12px;
+  --ds-fs-caption:11px;
+  --ds-tracking-label:.14em;
+  --ds-tracking-tight:-.01em;
+  --ds-w-regular:400; --ds-w-medium:500; --ds-w-semibold:600; --ds-w-bold:700;
+
+  /* spacing — 4px base, 8px rhythm */
+  --ds-space-0:0; --ds-space-1:4px; --ds-space-2:8px; --ds-space-3:12px;
+  --ds-space-4:16px; --ds-space-5:20px; --ds-space-6:24px; --ds-space-8:32px;
+  --ds-space-10:40px; --ds-space-12:48px; --ds-space-16:64px;
+
+  /* radius */
+  --ds-radius-xs:4px; --ds-radius-sm:6px; --ds-radius-md:8px;
+  --ds-radius-lg:12px; --ds-radius-xl:16px; --ds-radius-pill:999px;
+
+  /* control sizing */
+  --ds-control-h-sm:28px; --ds-control-h:34px; --ds-control-h-lg:42px;
+  --ds-border-w:1px; --ds-focus-w:2px; --ds-focus-offset:2px;
+
+  /* motion */
+  --ds-ease:cubic-bezier(.2,.7,.2,1);
+  --ds-dur-fast:.12s; --ds-dur:.18s; --ds-dur-slow:.28s;
+
+  /* z-index */
+  --ds-z-nav:1400; --ds-z-drawer:1420; --ds-z-dialog:1450;
+  --ds-z-popover:1500; --ds-z-tooltip:1550; --ds-z-toast:1600;
+
+  /* layout */
+  --ds-shell-nav-w:248px; --ds-shell-topbar-h:56px; --ds-content-max:1100px;
+}
+
+/* ── LIGHT (dormant — kept for easy re-enable; no UI toggle ships it) ───────── */
+:root[data-theme="light"]{
+  color-scheme:light;
+
+  /* ground — crisp modern neutral (cool grey canvas, white cards), NOT cream.
+     The warm near-black brand identity lives in DARK mode (the hero); light
+     stays clean/technical like a modern dev-tool SaaS. */
+  --ds-bg:#f5f6f8; --ds-bg-alt:#eaecf0; --ds-surface:#ffffff;
+  --ds-panel:#ffffff; --ds-raised:#ffffff; --ds-overlay:rgba(17,19,24,.46);
+  --ds-code-bg:#f2f3f5;
+
+  /* ink ramp — neutral charcoal → cool grey */
+  --ds-ink:#18191c; --ds-ink-dim:#44464d; --ds-muted:#696c74; --ds-muted2:#7e818b;
+  --ds-on-fill:#ffffff;
+
+  /* hairlines / field edges */
+  --ds-line:rgba(20,22,30,.13); --ds-line-strong:rgba(20,22,30,.24);
+  --ds-field-border:rgba(20,22,30,.32); --ds-sheen:rgba(255,255,255,.7);
+
+  /* ── PRIMARY — vivid mint-GREEN (the marketing hero: brand & action; doubles
+       as success). A bright fill that carries DARK text, like the site's CTA.
+       AA: dark-on-fill 9.2:1, ink 7.1:1. Swap the hue on the Foundations picker. */
+  --ds-primary:#15cf76;
+  --ds-primary-hover:#10b866;
+  --ds-primary-pressed:#0c9c56;
+  --ds-primary-ink:#096540;      /* AA green text / links / icons on light */
+  --ds-primary-soft:color-mix(in srgb, var(--ds-primary) 20%, var(--ds-panel)); /* deep, punchy tint */
+  --ds-on-primary:#08130d;       /* dark text on the bright green fill */
+  --ds-primary-wash:color-mix(in srgb, var(--ds-primary) 18%, transparent);
+  --ds-primary-glow:0 1px 2px color-mix(in srgb, var(--ds-primary) 36%, transparent), 0 4px 16px color-mix(in srgb, var(--ds-primary) 30%, transparent);
+
+  /* SECONDARY — complementary accent (default violet); swappable in the theme builder */
+  --ds-secondary:#6d28d9; --ds-secondary-hover:#5b21b6; --ds-secondary-ink:#6d28d9;
+  --ds-secondary-soft:color-mix(in srgb,var(--ds-secondary) 16%, var(--ds-panel));
+  --ds-secondary-wash:color-mix(in srgb,var(--ds-secondary) 14%, transparent);
+  --ds-on-secondary:#ffffff;
+
+  /* ── STATUS: success = green (status ONLY now, not primary) ─────────────── */
+  --ds-green:#15cf76;            /* vivid success fill (dark text) */
+  --ds-green-neon:#33ff99;       /* marketing mint — decorative/illustration only */
+  --ds-green-ink:#096540;        /* AA success text/icon on light */
+  --ds-green-soft:color-mix(in srgb, var(--ds-green) 22%, var(--ds-panel));
+  --ds-on-green:#08130d;
+  --ds-green-wash:color-mix(in srgb, var(--ds-green) 18%, transparent);
+
+  /* error / danger */
+  --ds-red:#e5331f;              /* vivid defect/illustration/status dot */
+  --ds-red-ink:#b02a17;          /* AA error text/icon on light */
+  --ds-red-soft:color-mix(in srgb, var(--ds-red) 18%, var(--ds-panel));
+  --ds-red-wash:color-mix(in srgb, var(--ds-red) 16%, transparent);
+  --ds-danger:#c4291a;           /* destructive button fill (white text, AA 5.7:1) */
+  --ds-on-danger:#ffffff;
+
+  /* warning / info (feedback status only) */
+  --ds-warn-ink:#8a5300; --ds-warn:#e0a020; --ds-warn-soft:color-mix(in srgb, var(--ds-warn) 28%, var(--ds-panel));
+  --ds-info-ink:#1d5fb0; --ds-info:#2f7fe0; --ds-info-soft:color-mix(in srgb, var(--ds-info) 20%, var(--ds-panel));
+
+  /* focus ring — follows PRIMARY now */
+  --ds-focus:color-mix(in srgb, var(--ds-primary) 55%, transparent);
+
+  /* elevation — light reads depth from shadow */
+  --ds-shadow-1:0 1px 2px rgba(17,19,24,.06), 0 1px 3px rgba(17,19,24,.10);
+  --ds-shadow-2:0 2px 6px rgba(17,19,24,.08), 0 6px 18px rgba(17,19,24,.10);
+  --ds-shadow-3:0 12px 36px rgba(17,19,24,.18);
+  --ds-mark-filter:none;
+
+  /* ── CATEGORICAL RAINBOW (9 hues from the spectral gradient) ──────────────
+     `--ds-cat-<hue>`     = bright base (swatch / dot / chart series)
+     `--ds-cat-<hue>-ink` = AA-legible text on light (≥4.5:1 on panel)
+     Wayfinding / data-viz / tags ONLY — NEVER status (status is green/red/amber/blue).
+     NOTE: this is the SaaS/docs FUNCTIONAL palette (per-theme, AA-tuned). The branding
+     "Moderne Design Kit" identity palette is a separate set — only exact value matches
+     are cross-referenced below; the two are intentionally not merged. */
+  --ds-cat-pink:#ec4899;    --ds-cat-pink-ink:#c5208a;
+  --ds-cat-magenta:#e6399b; --ds-cat-magenta-ink:#7a1e52;   /* brand "Magenta" strand (bright / deep) */
+  --ds-cat-violet:#8b5cf6;  --ds-cat-violet-ink:#7c3aed;
+  --ds-cat-indigo:#6366f1;  --ds-cat-indigo-ink:#4f46e5;
+  --ds-cat-blue:#3b82f6;    --ds-cat-blue-ink:#1f6fd6;   /* exact match → UI-kit "Cobalt" (Platform) */
+  --ds-cat-cyan:#06b6d4;    --ds-cat-cyan-ink:#0e7490;
+  --ds-cat-teal:#25d0c8;    --ds-cat-teal-ink:#0e4a45;     /* brand "Teal" strand (bright / deep) */
+  --ds-cat-gold:#eab308;    --ds-cat-gold-ink:#8a6300;
+  --ds-cat-orange:#f97316;  --ds-cat-orange-ink:#b45309;
+
+  /* spectral heading highlight — legible stops for light (the AA inks) */
+  --ds-spectral-pink:var(--ds-cat-pink-ink);
+  --ds-spectral-violet:var(--ds-cat-violet-ink);
+  --ds-spectral-blue:var(--ds-cat-blue-ink);
+  --ds-spectral-green:var(--ds-green-ink);
+  --ds-spectral-gold:var(--ds-cat-gold-ink);
+  --ds-accent-spectral:linear-gradient(96deg,
+    var(--ds-spectral-pink) 0%, var(--ds-spectral-violet) 26%,
+    var(--ds-spectral-blue) 50%, var(--ds-spectral-green) 76%,
+    var(--ds-spectral-gold) 100%);
+}
+
+/* ── DARK (the shipped theme — default) ─────────────────────────────────────
+   COOL neutral near-black + neon mint. The marketing canvas token (--bg #15120f)
+   is a deliberately WARM near-black that reads brown across large UI surfaces;
+   this uses the site's cooler register (closer to its --bg-deep #070608 hero
+   plate) and a cool off-white ink, so the product reads neutral, not sepia. */
+:root,
+:root[data-theme="dark"]{
+  color-scheme:dark;
+
+  --ds-bg:#0c0d10; --ds-bg-alt:#08090c; --ds-surface:#14161b;
+  --ds-panel:#181a20; --ds-raised:#1c1f26; --ds-overlay:rgba(4,5,8,.66);
+  --ds-code-bg:#0a0b0e;
+
+  --ds-ink:#e8eaee; --ds-ink-dim:#b4bac3; --ds-muted:#858c97;
+  --ds-muted2:#646b76; --ds-on-fill:#0c0d10;
+
+  --ds-line:rgba(232,234,238,.12); --ds-line-strong:rgba(232,234,238,.20);
+  --ds-field-border:rgba(232,234,238,.26); --ds-sheen:rgba(255,255,255,.045);
+
+  /* primary neon mint — the marketing hero (bright fill, dark text).
+     soft/wash/glow DERIVE from --ds-primary so the theme builder only sets the
+     base + ink + on-primary and everything else follows. */
+  --ds-primary:#33ff99; --ds-primary-hover:#5cffb0; --ds-primary-pressed:#2be087;
+  --ds-primary-ink:#5fe6a8; --ds-primary-soft:color-mix(in srgb,var(--ds-primary) 18%, transparent);
+  --ds-on-primary:#10130d;
+  --ds-primary-wash:color-mix(in srgb, var(--ds-primary) 16%, transparent);
+  --ds-primary-glow:0 2px 18px color-mix(in srgb, var(--ds-primary) 45%, transparent);
+
+  /* SECONDARY — a complementary accent (default violet); swappable in the theme builder */
+  --ds-secondary:#7b4fe0; --ds-secondary-hover:#9168e8; --ds-secondary-ink:#c4b5fd;
+  --ds-secondary-soft:color-mix(in srgb,var(--ds-secondary) 22%, transparent);
+  --ds-secondary-wash:color-mix(in srgb,var(--ds-secondary) 26%, transparent);
+  --ds-on-secondary:#ffffff;
+
+  /* NAV accent — the colour the navigation chrome (rail/side-nav active, brand)
+     uses. Defaults to the primary; the WARM base overrides it to gold. */
+  --ds-nav-accent:var(--ds-primary); --ds-nav-accent-ink:var(--ds-primary-ink);
+  --ds-nav-accent-wash:var(--ds-primary-wash);
+
+  --ds-green:#33ff99; --ds-green-neon:#33ff99; --ds-green-ink:#5fe6a8;
+  --ds-green-soft:color-mix(in srgb,#33ff99 16%, transparent); --ds-on-green:#10130d;
+  --ds-green-wash:color-mix(in srgb, var(--ds-green) 12%, transparent);
+
+  --ds-red:#ff5a47; --ds-red-ink:#ff9a8e;
+  --ds-red-soft:color-mix(in srgb,#ff5a47 16%, transparent);
+  --ds-red-wash:color-mix(in srgb, var(--ds-red) 16%, transparent);
+  --ds-danger:#d63420; --ds-on-danger:#ffffff;
+
+  --ds-warn-ink:#f0c674; --ds-warn:#e0b34d; --ds-warn-soft:color-mix(in srgb,#e0b34d 16%, transparent);
+  --ds-info-ink:#8bb6ff; --ds-info:#6a9bff; --ds-info-soft:color-mix(in srgb,#6a9bff 16%, transparent);
+
+  --ds-focus:color-mix(in srgb, var(--ds-primary) 60%, transparent);
+
+  --ds-shadow-1:0 1px 0 var(--ds-sheen) inset, 0 1px 2px rgba(0,0,0,.4);
+  --ds-shadow-2:0 1px 0 var(--ds-sheen) inset, 0 6px 18px rgba(0,0,0,.5);
+  --ds-shadow-3:0 1px 0 var(--ds-sheen) inset, 0 16px 40px rgba(0,0,0,.6);
+  --ds-mark-filter:none;
+
+  /* categorical rainbow — bright on dark; ink == base (both AA on dark panel) */
+  --ds-cat-pink:#ff7ac9;    --ds-cat-pink-ink:#ff7ac9;
+  --ds-cat-magenta:#e6399b; --ds-cat-magenta-ink:#ff7ac9;   /* brand "Magenta": strand bright fills; lighter ink for AA text on dark */
+  --ds-cat-violet:#c4b5fd;  --ds-cat-violet-ink:#c4b5fd;
+  --ds-cat-indigo:#a5b4fc;  --ds-cat-indigo-ink:#a5b4fc;
+  --ds-cat-blue:#7cc0ff;    --ds-cat-blue-ink:#7cc0ff;
+  --ds-cat-cyan:#5fd6ff;    --ds-cat-cyan-ink:#5fd6ff;
+  --ds-cat-teal:#25d0c8;    --ds-cat-teal-ink:#5eecd0;     /* brand "Teal": strand bright fills; lighter ink for AA text on dark */
+  --ds-cat-gold:#f0c674;    --ds-cat-gold-ink:#f0c674;
+  --ds-cat-orange:#ffb066;  --ds-cat-orange-ink:#ffb066;
+
+  --ds-spectral-pink:#ff4db8; --ds-spectral-violet:#9b5cff;
+  --ds-spectral-blue:#39b9ff; --ds-spectral-green:var(--ds-green);
+  --ds-spectral-gold:#ffe14d;
+  --ds-accent-spectral:linear-gradient(96deg,
+    var(--ds-spectral-pink) 0%, var(--ds-spectral-violet) 26%,
+    var(--ds-spectral-blue) 50%, var(--ds-spectral-green) 76%,
+    var(--ds-spectral-gold) 100%);
+}
+
+/* ── WARM base (opt-in via [data-base="warm"]) ──────────────────────────────
+   The marketing-site night register: warm near-black / brown ground + warm
+   cream ink (the exact moderne.ai tokens.css values), and a GOLD navigation
+   accent. Overrides only the ground/ink/line + nav-accent; primary (green),
+   status, and the rainbow are unchanged. Default (no attribute) = our cool base. */
+:root[data-base="warm"]{
+  --ds-bg:#15120f; --ds-bg-alt:#100e0b; --ds-surface:#1d1a15;
+  --ds-panel:#211d17; --ds-raised:#242019; --ds-overlay:rgba(7,6,8,.62);
+  --ds-code-bg:#0c0b0f;
+
+  --ds-ink:#f1ece0; --ds-ink-dim:#c9bfa6; --ds-muted:#9c927e;
+  --ds-muted2:#6f6757; --ds-on-fill:#10130d;
+
+  --ds-line:rgba(241,236,224,.13); --ds-line-strong:rgba(241,236,224,.22);
+  --ds-field-border:rgba(241,236,224,.28); --ds-sheen:rgba(255,255,255,.045);
+
+  /* gold navigation accent (the marketing brand gold) */
+  --ds-nav-accent:#e0b34d; --ds-nav-accent-ink:#f0c674;
+  --ds-nav-accent-wash:color-mix(in srgb,#e0b34d 16%, transparent);
+}

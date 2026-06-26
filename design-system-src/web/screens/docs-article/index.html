@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" class="ds-screen">
+<head>
+  {{> ds-head }}
+  <title>Enhancing code quality — Docs (recreation)</title>
+  <script type="module" src="/src/pages/ds-screen-docs-article.ts"></script>
+</head>
+<body>
+  {{> ds-dx-top }}
+  <div class="dx-shell with-toc">
+    {{> ds-dx-side }}
+    <main class="dx-main"><div class="dx-inner dx-prose">
+      <nav class="dx-breadcrumb"><a href="#">Platform</a><span class="sep">/</span><a href="#">Getting started</a><span class="sep">/</span><span aria-current="page">Enhancing code quality</span></nav>
+
+      <div class="dx-callout">Read a leadership business case for using the Moderne Platform — the <a href="#">Build vs. Buy</a> guide.</div>
+
+      <h1>Enhancing code quality through static analysis remediations</h1>
+
+      <p>Static analysis tools are excellent at telling you what's wrong with your code, but they rarely tell you how to fix it — and they almost never fix it for you. The Moderne Platform closes that gap. Instead of producing yet another backlog of warnings, Moderne applies <a href="#">OpenRewrite recipes</a> that both detect a problem and rewrite the source to remediate it, so a finding becomes a verifiable change rather than a ticket that lingers for months.</p>
+
+      <p>Every remediation is driven by the <a href="#">Lossless Semantic Tree (LST)</a>, a rich, type-attributed representation of your code that preserves formatting, comments, and the full type information needed to reason about a change safely. Because the LST understands what a method call actually resolves to — not just how the text looks — recipes can transform code with the confidence of a compiler rather than the guesswork of a regular expression.</p>
+
+      <p>The real advantage shows up at scale. Once a recipe is validated against one repository, you can run it across hundreds or thousands of repositories in a single operation, with results aggregated into <a href="#">data tables</a> you can inspect before anything is merged. A fix that would take an afternoon of manual edits per service becomes a one-time, organization-wide remediation.</p>
+
+      <p>Before committing, you review each change as a normal diff and open pull requests through your existing review process. Nothing is force-pushed and nothing bypasses your CI — Moderne simply produces the changes, and your team validates them the same way it validates any other contribution. This keeps remediations auditable and lets you build trust in automated fixes incrementally.</p>
+
+      <h2>Fixing common style and best practices</h2>
+
+      <p>Many of the highest-value recipes target the everyday issues that quietly accumulate across a large codebase: inconsistent formatting, unused imports, deprecated APIs, and missed best practices. Running a curated set such as <a href="#">Common static analysis issues</a> sweeps these up everywhere at once, leaving your repositories consistent and your reviewers free to focus on substantive logic rather than nitpicks.</p>
+
+      <ul>
+        <li>Remove unused imports, variables, and redundant casts.</li>
+        <li>Modernize legacy idioms to their preferred, well-supported equivalents.</li>
+        <li>Apply consistent formatting and naming conventions across every repository.</li>
+      </ul>
+
+      <h2>Learning what's wrong with the code</h2>
+
+      <p>Even when you aren't ready to apply a fix, Moderne is a powerful way to understand the shape of a problem. Search recipes and analysis-only runs surface where an anti-pattern, vulnerable dependency, or risky API usage appears across your entire fleet, and the results feed directly into <a href="#">visualizations</a> and data tables. That visibility lets you prioritize remediation by impact — and then apply the corresponding fix recipe when you're confident in the change.</p>
+    </div></main>
+    <aside class="dx-toc">
+      <div class="t">On this page</div>
+      <a href="#fixing-common-style-and-best-practices" aria-current="true">Fixing common style and best practices</a>
+      <a href="#learning-whats-wrong-with-the-code">Learning what's wrong with the code</a>
+    </aside>
+  </div>
+  {{> ds-dx-footer }}
+  <script>document.querySelector('.dx-side a[data-k="enhancing"]')?.setAttribute('aria-current','page');</script>
+</body>
+</html>

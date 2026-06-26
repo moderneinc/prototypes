@@ -1,0 +1,142 @@
+/* ============================================================================
+   Moderne SaaS DS — EXAMPLE SCREENS (accurate static recreations)
+   Chrome + primitives the recreated Moderne app / docs screens need, on top of
+   the DS tokens + components. Static, one level, no data. Loaded by the screen
+   pages (via ds-screen-boot). Charts are inline SVG/CSS using --ds-cat-* hues.
+   ========================================================================== */
+
+/* ── shared: a recreated screen fills its own viewport (it's iframed) ──────── */
+html.ds-screen, .ds-screen body{height:100%}
+.ds-screen body{margin:0;background:var(--ds-bg);color:var(--ds-ink)}
+
+/* diff counts (changelog) */
+.diff-add{color:var(--ds-green-ink);font-family:var(--ds-font-mono);font-size:12px}
+.diff-del{color:var(--ds-red-ink);font-family:var(--ds-font-mono);font-size:12px}
+.check-pass{color:var(--ds-green-ink);font-size:12px;display:inline-flex;gap:5px;align-items:center}
+.check-fail{color:var(--ds-red-ink);font-size:12px;display:inline-flex;gap:5px;align-items:center}
+
+/* ── Activity view: lineage lanes + colored type/name + outline status pills ──
+   Recreates the real Activity table: a Recipe run (violet) can produce a Data
+   table (teal), shown as an indented child row joined by a teal elbow connector.
+   Lane art is pure CSS (absolute children) so it scales to the real row height. */
+.act-lane{width:58px;padding:0!important;position:relative}
+.act-lane i{position:absolute;display:block}
+.act-lane .d1{left:7px;top:calc(50% - 4px);width:8px;height:8px;border-radius:50%;background:var(--ds-cat-violet)}
+.act-lane .d3{left:41px;top:calc(50% - 4px);width:8px;height:8px;border-radius:50%;background:var(--ds-cat-teal)}
+.act-lane .down{left:26px;top:50%;bottom:0;width:2px;background:var(--ds-cat-teal)}
+.act-lane .up{left:26px;top:0;height:50%;width:2px;background:var(--ds-cat-teal)}
+.act-lane .elbow{left:26px;top:calc(50% - 1px);width:19px;height:2px;background:var(--ds-cat-teal)}
+.act-name--recipe{color:var(--ds-cat-violet-ink);font-weight:var(--ds-w-medium)}
+.act-name--data{color:var(--ds-cat-teal-ink);font-weight:var(--ds-w-medium)}
+.act-type--recipe{color:var(--ds-cat-violet-ink);font-weight:var(--ds-w-medium)}
+.act-type--data{color:var(--ds-cat-teal-ink);font-weight:var(--ds-w-medium)}
+.act-status{display:inline-block;padding:1px 10px;border:1px solid;border-radius:var(--ds-radius-pill);font-size:11px;font-weight:var(--ds-w-medium);white-space:nowrap}
+.act-status--ok{color:var(--ds-green-ink);border-color:color-mix(in srgb,var(--ds-green-ink) 55%,transparent)}
+.act-status--info{color:var(--ds-info-ink);border-color:color-mix(in srgb,var(--ds-info-ink) 55%,transparent)}
+.act-status--err{color:var(--ds-red-ink);border-color:color-mix(in srgb,var(--ds-red-ink) 55%,transparent)}
+.act-avatar{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:var(--ds-w-semibold);color:var(--ds-cat-violet-ink);border:1.5px solid var(--ds-cat-violet);background:transparent}
+
+/* ── DevCenter dashboard helpers ──────────────────────────────────────────── */
+.dc-sec{margin:0 0 26px}
+.dc-sec > h2{font-size:15px;font-weight:var(--ds-w-semibold);margin:0 0 3px}
+.dc-sec > .sub{font-size:12px;color:var(--ds-muted);margin:0 0 14px}
+.dc-range{border:1px solid var(--ds-line);border-radius:var(--ds-radius-md);background:var(--ds-surface);height:48px;position:relative;overflow:hidden}
+.dc-range .sel{position:absolute;top:0;bottom:0;background:var(--ds-bg-alt);border-left:2px solid var(--ds-primary);border-right:2px solid var(--ds-primary)}
+.dc-axis{display:flex;justify-content:space-between;font-family:var(--ds-font-mono);font-size:10px;color:var(--ds-muted);margin-top:6px}
+.dc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.dc-stat{background:var(--ds-panel);border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg);padding:16px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;box-shadow:var(--ds-shadow-1)}
+.dc-stat .n{font-family:var(--ds-font-mono);font-variant-numeric:tabular-nums;font-size:22px;font-weight:var(--ds-w-bold);letter-spacing:-.01em}
+.dc-stat .l{font-size:12px;color:var(--ds-muted);margin-top:2px}
+.dc-stat .meta{font-size:11px;color:var(--ds-muted2);margin-top:6px}
+.dc-stat .link{font-size:11px;color:var(--ds-primary-ink)}
+.dc-camps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.dc-camp{background:var(--ds-panel);border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg);padding:14px;box-shadow:var(--ds-shadow-1)}
+.dc-camp h3{font-size:13px;font-weight:var(--ds-w-semibold);margin:0 0 10px}
+.dc-camp .chart{height:120px}
+.dc-cat{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}
+.dc-cat th{text-align:left;font-family:var(--ds-font-mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--ds-muted);font-weight:var(--ds-w-medium);padding:4px 6px;border-bottom:1px solid var(--ds-line)}
+.dc-cat td{padding:4px 6px;color:var(--ds-ink-dim);border-bottom:1px solid var(--ds-line)}
+.dc-cat .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.dc-cat .num{text-align:right;font-family:var(--ds-font-mono)}
+.dc-camp .dry{display:flex;justify-content:flex-end;margin-top:10px}
+.dc-owasp{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start;border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg);background:var(--ds-panel);padding:16px;box-shadow:var(--ds-shadow-1)}
+.dc-owasp .list .it{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:var(--ds-radius-sm);font-size:12px;color:var(--ds-ink-dim);cursor:default}
+.dc-owasp .list .it.sel{background:var(--ds-primary-wash);color:var(--ds-ink)}
+.dc-owasp .list .it .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dc-owasp .callout{border:1px solid var(--ds-line);border-radius:var(--ds-radius-md);background:var(--ds-surface);padding:14px;margin-top:12px}
+.dc-owasp .callout h4{margin:0 0 5px;font-size:13px;font-weight:var(--ds-w-semibold)}
+.dc-owasp .callout p{margin:0 0 8px;font-size:12px;color:var(--ds-muted)}
+
+/* mini sparkline + axis labels */
+.spark{display:block}
+.axisx{display:flex;justify-content:space-between;font-family:var(--ds-font-mono);font-size:9px;color:var(--ds-muted2);margin-top:4px}
+
+/* ── DOCS chrome (top nav + sidebar + content + toc) ──────────────────────── */
+.dx-top{position:sticky;top:0;display:flex;align-items:center;gap:16px;height:52px;padding:0 18px;background:var(--ds-bg-alt);border-bottom:1px solid var(--ds-line);z-index:20}
+.dx-top .brand{display:flex;align-items:center;gap:8px;font-weight:var(--ds-w-bold);font-size:15px;white-space:nowrap}
+.dx-top .brand .mk{width:24px;height:24px;border-radius:6px;background:var(--ds-bg-alt);color:var(--ds-ink);border:1px solid var(--ds-line);display:inline-flex;align-items:center;justify-content:center}
+.dx-top .brand .mk svg{width:15px;height:15px}
+.dx-top nav{display:flex;gap:2px}
+.dx-top nav a{padding:6px 10px;border-radius:var(--ds-radius-sm);font-size:13px;color:var(--ds-ink-dim);font-weight:var(--ds-w-medium)}
+.dx-top nav a:hover{background:var(--ds-surface);color:var(--ds-ink);text-decoration:none}
+.dx-top nav a[aria-current="page"]{color:var(--ds-ink);background:var(--ds-surface)}
+.dx-top .spacer{flex:1}
+.dx-top .util{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--ds-muted)}
+.dx-top .util a{color:var(--ds-muted)}
+.dx-top .util .pill{border:1px solid var(--ds-line-strong);border-radius:var(--ds-radius-pill);padding:3px 9px}
+
+.dx-shell{display:grid;grid-template-columns:250px 1fr}
+.dx-shell.with-toc{grid-template-columns:250px 1fr 224px}
+.dx-side{border-right:1px solid var(--ds-line);background:var(--ds-bg-alt);padding:18px 12px;overflow-y:auto;height:calc(100vh - 52px);position:sticky;top:52px}
+.dx-side .grp{font-family:var(--ds-font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--ds-muted);padding:14px 10px 6px}
+.dx-side a{display:block;padding:5px 10px;border-radius:var(--ds-radius-sm);font-size:13px;color:var(--ds-ink-dim);line-height:1.5}
+.dx-side a:hover{background:var(--ds-surface);color:var(--ds-ink);text-decoration:none}
+.dx-side a[aria-current="page"]{color:var(--ds-primary-ink);font-weight:var(--ds-w-semibold);background:var(--ds-primary-wash)}
+.dx-main{padding:28px clamp(20px,4vw,52px) 60px;min-width:0}
+.dx-inner{max-width:780px}
+.dx-toc{border-left:1px solid var(--ds-line);padding:26px 16px;height:calc(100vh - 52px);position:sticky;top:52px;font-size:13px;overflow-y:auto}
+.dx-toc .t{font-family:var(--ds-font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--ds-muted);margin-bottom:10px}
+.dx-toc a{display:block;padding:4px 0;color:var(--ds-muted);line-height:1.4}
+.dx-toc a:hover{color:var(--ds-ink)}
+.dx-toc a[aria-current="true"]{color:var(--ds-primary-ink)}
+
+.dx-breadcrumb{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ds-muted);margin-bottom:18px}
+.dx-breadcrumb .sep{color:var(--ds-muted2)}
+.dx-breadcrumb [aria-current]{color:var(--ds-ink)}
+
+/* docs prose */
+.dx-prose h1{font-size:30px;font-weight:var(--ds-w-semibold);letter-spacing:-.02em;line-height:1.15;margin:0 0 18px}
+.dx-prose h2{font-size:20px;font-weight:var(--ds-w-semibold);margin:30px 0 10px}
+.dx-prose p{font-size:15px;line-height:1.72;color:var(--ds-ink-dim);margin:0 0 16px;max-width:70ch}
+.dx-prose a{color:var(--ds-primary-ink);font-weight:var(--ds-w-medium)}
+.dx-prose ul{margin:0 0 16px;padding-left:20px;color:var(--ds-ink-dim);font-size:15px;line-height:1.7}
+.dx-callout{display:flex;gap:10px;border:1px solid var(--ds-line);border-left:3px solid var(--ds-primary);background:var(--ds-bg-alt);border-radius:var(--ds-radius-md);padding:12px 14px;font-size:13px;color:var(--ds-ink-dim);margin:0 0 20px}
+
+/* docs homepage hero + cards */
+.dx-hero{padding:48px clamp(20px,5vw,64px) 36px;position:relative;overflow:hidden}
+.dx-hero h1{font-size:clamp(34px,5vw,52px);font-weight:var(--ds-w-semibold);letter-spacing:-.025em;line-height:1.05;margin:0 0 16px;max-width:18ch}
+.dx-hero p{font-size:17px;color:var(--ds-ink-dim);max-width:52ch;line-height:1.6;margin:0 0 24px}
+/* genome motif (a small karyotype) replaces the old gradient blob — ownable, on-brand */
+.dx-hero .shape{position:absolute;right:7%;top:50%;transform:translateY(-50%);width:210px;height:230px;opacity:.96}
+.dx-hero .shape svg{width:100%;height:100%;display:block}
+.dx-cardgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;padding:0 clamp(20px,5vw,64px) 56px}
+.dx-doccard{background:var(--ds-panel);border:1px solid var(--ds-line);border-radius:var(--ds-radius-lg);padding:18px;box-shadow:var(--ds-shadow-1)}
+.dx-doccard .ic{width:34px;height:34px;border-radius:var(--ds-radius-md);background:var(--ds-primary-wash);color:var(--ds-primary-ink);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.dx-doccard h3{font-size:15px;font-weight:var(--ds-w-semibold);margin:0 0 5px}
+.dx-doccard p{font-size:13px;color:var(--ds-muted);margin:0;line-height:1.5}
+
+/* platform landing hero banner + section item-lists */
+/* clean panel (no gradient wash); a single mono eyebrow carries the "lab" feel */
+.dx-banner{border-radius:var(--ds-radius-lg);padding:22px 24px;margin-bottom:26px;background:var(--ds-surface);border:1px solid var(--ds-line)}
+.dx-banner h1{font-size:22px;font-weight:var(--ds-w-semibold);margin:0 0 5px}
+.dx-banner p{font-size:14px;color:var(--ds-ink-dim);margin:0;max-width:60ch}
+.dx-seclist{margin-bottom:22px}
+.dx-seclist .h{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--ds-line);padding-bottom:7px;margin-bottom:8px}
+.dx-seclist .h b{font-size:14px}
+.dx-seclist .h span{font-size:12px;color:var(--ds-muted)}
+.dx-seclist a{display:block;padding:6px 8px;border-radius:var(--ds-radius-sm);font-size:13px;color:var(--ds-ink-dim)}
+.dx-seclist a:hover{background:var(--ds-surface);color:var(--ds-primary-ink);text-decoration:none}
+
+.dx-footer{border-top:1px solid var(--ds-line);padding:16px clamp(20px,5vw,64px);display:flex;align-items:center;gap:16px;font-size:12px;color:var(--ds-muted);background:var(--ds-bg-alt)}
+.dx-footer .spacer{flex:1}
+.dx-footer a{color:var(--ds-muted)}
