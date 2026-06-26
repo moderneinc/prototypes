@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderne — palette reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* dark mode = warm blacks (default) */
+    --bg:#100C0A; --surface:#1C1714; --line:#2C2520;
+    --text:#F2EDE4; --muted:#A39B90;
+    /* brand spectrum (constant across modes) */
+    --green:#30F284; --emerald:#1D5937; --violet:#9D5BE8; --aubergine:#3F1340;
+    --magenta:#E6399B;
+    --btn-bg:#30F284; --btn-fg:#04220f; --link:#30F284;
+    --spectrum:linear-gradient(95deg,#E6399B 0%,#9D5BE8 22%,#3E7BF6 44%,#25D0C0 62%,#30F284 80%,#C7E84B 100%);
+    --font:"Poppins",system-ui,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  body[data-theme="light"]{
+    --bg:#F6F7FA; --surface:#ECEEF3; --line:#DCE0E8;
+    --text:#1B2230; --muted:#6A7180;
+    --btn-bg:#E6399B; --btn-fg:#FFFFFF; --link:#E6399B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;padding:28px 20px 60px;transition:background .25s,color .25s}
+  .page{max-width:1200px;margin:0 auto}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+  .topbar .lbl{color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  .toggle{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);color:var(--text);font-family:var(--mono);font-size:12px;font-weight:500;padding:8px 14px;border-radius:20px;cursor:pointer}
+  .toggle .dot{width:10px;height:10px;border-radius:50%;background:var(--green)}
+
+  /* ---- website ---- */
+  .site{background:var(--bg);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+  .guide{padding:30px 30px 28px;border-bottom:1px solid var(--line)}
+  .guide .kicker{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .guide p{font-size:16px;line-height:1.65;color:var(--text);max-width:780px}
+  nav{display:flex;align-items:center;gap:24px;padding:20px 30px;border-bottom:1px solid var(--line);flex-wrap:nowrap}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:600;font-size:22px;letter-spacing:-.01em;flex-shrink:0}
+  .brand .sym{width:28px;height:28px;border:2px solid var(--text);border-radius:5px;position:relative}
+  .brand .sym::before{content:"";position:absolute;inset:5px 5px auto auto;width:8px;height:8px;border:2px solid var(--text);border-bottom:none;border-left:none}
+  .brand .sym::after{content:"";position:absolute;left:5px;bottom:5px;width:8px;height:8px;background:var(--text);opacity:.55}
+  .navlinks{display:flex;gap:20px;color:var(--muted);font-size:14px;font-weight:500;flex-wrap:nowrap;min-width:0}
+  .navlinks span{white-space:nowrap}
+  .navcta{margin-left:auto;background:var(--btn-bg);color:var(--btn-fg);font-weight:600;font-size:14px;padding:10px 18px;border-radius:9px;flex-shrink:0;white-space:nowrap}
+
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;padding:50px 30px 40px}
+  h1{font-size:60px;line-height:1.02;font-weight:600;letter-spacing:-1.4px}
+  h1 .grad{background:var(--spectrum);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{margin-top:24px;max-width:520px;font-size:17px;line-height:1.6;color:var(--muted)}
+  .sub a{color:var(--link);text-decoration:none;border-bottom:1px solid var(--link)}
+  .sub b{color:var(--text);font-weight:600}
+  .cta{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap}
+  .btn-primary{background:var(--btn-bg);color:var(--btn-fg);font-weight:600;font-size:16px;padding:15px 28px;border-radius:12px;border:none;cursor:pointer}
+  .btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:16px;padding:15px 26px;border-radius:12px;border:1px solid var(--line);cursor:pointer}
+
+  .chroms{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 4px;align-content:start;padding-top:4px}
+  .chrom{height:128px;display:flex;align-items:center;justify-content:center}
+  .x{position:relative;width:62px;height:118px}
+  .bar{position:absolute;top:0;left:14px;width:30px;height:118px;border-radius:16px}
+  .b1{transform:rotate(19deg)} .b2{transform:rotate(-19deg)}
+
+  /* ---- palette ---- */
+  .phead{display:flex;justify-content:space-between;align-items:baseline;margin:30px 4px 12px}
+  .phead h2{font-size:16px;font-weight:600}
+  .phead span{color:var(--muted);font-family:var(--mono);font-size:12px}
+  .palette{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+  .col{border-radius:12px;overflow:hidden}
+  .bright{height:188px;position:relative}
+  .deep{height:104px;position:relative}
+  .bright .hex,.deep .hex{position:absolute;left:9px;bottom:8px;font-family:var(--mono);font-size:10.5px;font-weight:500}
+  .name{margin-top:8px;text-align:center;font-size:12px;color:var(--muted)}
+
+  footer{margin-top:24px;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:.03em;text-align:center}
+
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr}
+    h1{font-size:44px}
+    .navlinks{display:none}
+    .palette{grid-template-columns:repeat(4,1fr)}
+  }
+</style>
+</head>
+<body data-theme="dark">
+<div class="page">
+
+  <div class="topbar">
+    <span class="lbl">Brand reference · Moderne · strand spectrum</span>
+    <button class="toggle" id="toggle"><span class="dot"></span><span id="tlabel">Dark</span></button>
+  </div>
+
+  <!-- ============ WEBSITE ============ -->
+  <section class="site">
+    <div class="guide">
+      <span class="kicker">Design guidelines</span>
+      <p>This is a test page for the color palette, based on the product website. Use the toggle in the top right to switch between light and dark mode and see how each color behaves in both. From here we can start applying the changes across the documentation and the platform.</p>
+    </div>
+
+    <div class="hero">
+      <div>
+        <h1>Your codebase<br><span class="grad">has a genome.</span></h1>
+        <p class="sub">We sequence every repo into a <a href="#">Lossless Semantic Tree</a> — a compiler-accurate model that delivers certainty, not probability. No more reading between the lines, because we've resolved them.</p>
+        <p class="sub" style="margin-top:18px">Moderne gives humans and agents <b>deterministic</b> tools to drive code change accurately and at scale whether across <b>a single repo or 100,000 of them.</b></p>
+        <div class="cta">
+          <button class="btn-primary">Book a demo</button>
+          <button class="btn-ghost">See how it works ↓</button>
+        </div>
+      </div>
+      <div class="chroms" id="chroms"></div>
+    </div>
+  </section>
+
+  <!-- ============ PALETTE ============ -->
+  <div class="phead">
+    <h2>Strand spectrum</h2>
+    <span>bright / deep · 8 pairs</span>
+  </div>
+  <div class="palette" id="palette"></div>
+
+  <footer>Hero recreated in code · palette hexes are reference values · toggle flips warm-black ↔ warm-grey neutrals.</footer>
+</div>
+
+<script>
+  const strands = [
+    {name:'Lime',   b:'#C7E84B', bt:'#3A4210', d:'#4F5A12', dt:'#E8F0C0'},
+    {name:'Green',  b:'#30F284', bt:'#0A3A22', d:'#1D5937', dt:'#DDF3E6'},
+    {name:'Teal',   b:'#25D0C0', bt:'#0A3E3A', d:'#0E4A45', dt:'#CDF1EC'},
+    {name:'Blue',   b:'#3E7BF6', bt:'#0A2356', d:'#16306B', dt:'#CFDDF7'},
+    {name:'Violet', b:'#9D5BE8', bt:'#1E0B3A', d:'#3F1340', dt:'#E7D8EA'},
+    {name:'Magenta',b:'#E6399B', bt:'#3A0A22', d:'#7A1E52', dt:'#F7D6E8'}
+  ];
+
+  /* chromosomes */
+  const wrap = document.getElementById('chroms');
+  strands.forEach(s=>{
+    const stripe = `repeating-linear-gradient(0deg, ${s.b} 0 4px, ${s.d} 4px 9px)`;
+    wrap.insertAdjacentHTML('beforeend',
+      `<div class="chrom"><div class="x">
+         <div class="bar b1" style="background:${stripe}"></div>
+         <div class="bar b2" style="background:${stripe}"></div>
+       </div></div>`);
+  });
+
+  /* palette strip */
+  const pal = document.getElementById('palette');
+  strands.forEach(s=>{
+    pal.insertAdjacentHTML('beforeend',
+      `<div class="col">
+         <div class="bright" style="background:${s.b}"><span class="hex" style="color:${s.bt}">${s.b}</span></div>
+         <div class="deep" style="background:${s.d}"><span class="hex" style="color:${s.dt}">${s.d}</span></div>
+         <div class="name">${s.name}</div>
+       </div>`);
+  });
+
+  /* theme toggle */
+  const body = document.body, tlabel = document.getElementById('tlabel');
+  document.getElementById('toggle').addEventListener('click',()=>{
+    const next = body.dataset.theme === 'dark' ? 'light' : 'dark';
+    body.dataset.theme = next;
+    tlabel.textContent = next.charAt(0).toUpperCase()+next.slice(1);
+  });
+</script>
+</body>
+</html>

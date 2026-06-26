@@ -47,6 +47,7 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | [`brand-guidelines.html`](https://moderneinc.github.io/prototypes/brand-guidelines.html) | Brand guidelines, including Product Symbols |
 | [`moderne-design-kit-preview.html`](https://moderneinc.github.io/prototypes/moderne-design-kit-preview.html) | Moderne Design Kit preview — dual-mode (dark/light) visual language: palette, type, logo, components, in-situation surfaces, embedded product-overview deck |
 | [`moderne-product-overview-deck.html`](https://moderneinc.github.io/prototypes/moderne-product-overview-deck.html) | Product overview slide deck — 16 slides across the product line (arrow-key / fullscreen navigation) |
+| [`moderne-palette.html`](https://moderneinc.github.io/prototypes/moderne-palette.html) | Palette reference — strand-spectrum brand colors on a recreated hero, with a light/dark mode toggle (warm-black ↔ cool-grey neutrals); companion `moderne-palette-tokens.css` / `moderne-palette.json` |
 
 ## Wireframe kit
 
