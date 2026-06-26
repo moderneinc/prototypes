@@ -37,6 +37,9 @@ const MONO: Font[] = [
   { name: "JetBrains", stack: '"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace', g: "JetBrains+Mono:wght@400;500;700" },
   { name: "Geist Mono", stack: '"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace', g: "Geist+Mono:wght@400;500;700" },
   { name: "Space Mono", stack: '"Space Mono",ui-monospace,SFMono-Regular,Menlo,monospace', g: "Space+Mono:wght@400;700" },
+  // Keep the body face (Inter) for data too — one typeface everywhere. Inter's
+  // tabular figures (tnum, applied via --ds-num) keep numerals aligned.
+  { name: "Inter", stack: '"Inter",ui-sans-serif,system-ui,sans-serif', g: "Inter:wght@400;500;600;700" },
 ];
 
 const KEY = "ds-colors";
