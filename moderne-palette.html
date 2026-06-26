@@ -75,6 +75,38 @@
   .bright .hex,.deep .hex{position:absolute;left:9px;bottom:8px;font-family:var(--mono);font-size:10.5px;font-weight:500}
   .name{margin-top:8px;text-align:center;font-size:12px;color:var(--muted)}
 
+  /* ---- about the strands ---- */
+  .about{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:34px 34px 36px;margin-top:30px}
+  .about .kicker{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .about h2{font-size:24px;font-weight:600;letter-spacing:-.4px;margin-bottom:14px}
+  .about h3{font-size:17px;font-weight:600;margin:30px 0 10px}
+  .about p{font-size:15px;line-height:1.7;color:var(--text);max-width:780px;margin-bottom:12px}
+  .about p.muted{color:var(--muted)}
+  .about b{font-weight:600}
+  .about code{font-family:var(--mono);font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+
+  .strand-table{width:100%;border-collapse:collapse;margin:18px 0 6px;font-size:14px}
+  .strand-table th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:0 14px 10px;border-bottom:1px solid var(--line)}
+  .strand-table td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .strand-table tr:last-child td{border-bottom:none}
+  .strand-table .sname{font-weight:600;white-space:nowrap}
+  .swatch{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12.5px}
+  .swatch .chip{width:18px;height:18px;border-radius:5px;border:1px solid rgba(127,127,127,.25);flex-shrink:0}
+  .strand-table .use{color:var(--muted);line-height:1.5}
+
+  .usage{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 6px}
+  .usage .card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .usage .tag{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.04em;padding:3px 9px;border-radius:6px;margin-bottom:9px}
+  .usage .tag.bright{background:var(--green);color:#04220f}
+  .usage .tag.deep{background:var(--emerald);color:#DDF3E6}
+  .usage .card p{font-size:13.5px;line-height:1.6;color:var(--muted);margin:0}
+
+  .philo{list-style:none;display:grid;gap:9px;margin:14px 0 6px;max-width:780px}
+  .philo li{position:relative;padding-left:24px;font-size:14.5px;line-height:1.6;color:var(--text)}
+  .philo li::before{content:"";position:absolute;left:2px;top:8px;width:9px;height:9px;border-radius:50%;background:var(--link)}
+
+  @media(max-width:680px){.usage{grid-template-columns:1fr} .strand-table .use{display:none}}
+
   footer{margin-top:24px;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:.03em;text-align:center}
 
   @media(max-width:860px){
@@ -120,6 +152,84 @@
     <span>bright / deep · 8 pairs</span>
   </div>
   <div class="palette" id="palette"></div>
+
+  <!-- ============ ABOUT THE STRANDS ============ -->
+  <section class="about">
+    <span class="kicker">About the strands</span>
+    <h2>Six saturated brand color pairs</h2>
+    <p>Each <b>“strand”</b> consists of a bright primary color on top and a deep companion shade underneath. Rather than generating darker versions algorithmically, each pair has been chosen to feel balanced and visually intentional.</p>
+
+    <h3>What each pair represents</h3>
+    <table class="strand-table">
+      <thead>
+        <tr><th>Strand</th><th>Bright</th><th>Deep</th><th>Typical use</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="sname">Lime</td>
+          <td><span class="swatch"><span class="chip" style="background:#C7E84B"></span>#C7E84B</span></td>
+          <td><span class="swatch"><span class="chip" style="background:#4F5A12"></span>#4F5A12</span></td>
+          <td class="use">Success, growth, highlighting, positive actions</td>
+        </tr>
+        <tr>
+          <td class="sname">Green</td>
+          <td><span class="swatch"><span class="chip" style="background:#30F284"></span>#30F284</span></td>
+          <td><span class="swatch"><span class="chip" style="background:#1D5937"></span>#1D5937</span></td>
+          <td class="use">Healthy states, confirmations, sustainability</td>
+        </tr>
+        <tr>
+          <td class="sname">Teal</td>
+          <td><span class="swatch"><span class="chip" style="background:#25D0C0"></span>#25D0C0</span></td>
+          <td><span class="swatch"><span class="chip" style="background:#0E4A45"></span>#0E4A45</span></td>
+          <td class="use">Information, exploration, neutral emphasis</td>
+        </tr>
+        <tr>
+          <td class="sname">Blue</td>
+          <td><span class="swatch"><span class="chip" style="background:#3E7BF6"></span>#3E7BF6</span></td>
+          <td><span class="swatch"><span class="chip" style="background:#16306B"></span>#16306B</span></td>
+          <td class="use">Primary actions, links, trusted product UI</td>
+        </tr>
+        <tr>
+          <td class="sname">Violet</td>
+          <td><span class="swatch"><span class="chip" style="background:#9D5BE8"></span>#9D5BE8</span></td>
+          <td><span class="swatch"><span class="chip" style="background:#3F1340"></span>#3F1340</span></td>
+          <td class="use">AI, intelligence, premium features, creativity</td>
+        </tr>
+        <tr>
+          <td class="sname">Magenta</td>
+          <td><span class="swatch"><span class="chip" style="background:#E6399B"></span>#E6399B</span></td>
+          <td><span class="swatch"><span class="chip" style="background:#7A1E52"></span>#7A1E52</span></td>
+          <td class="use">Attention, innovation, marketing accents</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Why use paired colors?</h3>
+    <p>Instead of relying on one color with varying opacity or automatically darkening it, each strand provides two intentional values. This keeps the color relationships consistent across different contexts.</p>
+    <div class="usage">
+      <div class="card">
+        <span class="tag bright">Bright →</span>
+        <p>Interactive elements, fills, highlights, buttons.</p>
+      </div>
+      <div class="card">
+        <span class="tag deep">Deep →</span>
+        <p>Text on bright backgrounds, charts, dark themes, emphasis, borders.</p>
+      </div>
+    </div>
+
+    <h3>“Bright / deep · 8 pairs”</h3>
+    <p class="muted">The note in the top-right of the palette suggests this is one section of a larger set: <b>bright</b> = vivid, energetic colors; <b>deep</b> = darker companion colors; <code>8 pairs</code> = the complete palette likely contains eight color families, although only six are shown here.</p>
+
+    <h3>Design philosophy</h3>
+    <p class="muted">This palette feels intentionally:</p>
+    <ul class="philo">
+      <li>Highly saturated without becoming fluorescent</li>
+      <li>Modern and digital-first</li>
+      <li>Suitable for data visualization — each hue is clearly distinguishable</li>
+      <li>Accessible when bright and deep values are paired correctly</li>
+      <li>Flexible enough for light and dark themes</li>
+    </ul>
+  </section>
 
   <footer>Hero recreated in code · palette hexes are reference values · toggle flips warm-black ↔ warm-grey neutrals.</footer>
 </div>
