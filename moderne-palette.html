@@ -58,11 +58,17 @@
   .btn-primary{background:var(--btn-bg);color:var(--btn-fg);font-weight:600;font-size:16px;padding:15px 28px;border-radius:12px;border:none;cursor:pointer}
   .btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:16px;padding:15px 26px;border-radius:12px;border:1px solid var(--line);cursor:pointer}
 
+  .herofig{display:flex;align-items:center;justify-content:center}
+  .chroms-img{width:100%;height:auto;border-radius:14px;display:block}
   .chroms{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 4px;align-content:start;padding-top:4px}
   .chrom{height:128px;display:flex;align-items:center;justify-content:center}
   .x{position:relative;width:62px;height:118px}
   .bar{position:absolute;top:0;left:14px;width:30px;height:118px;border-radius:16px}
   .b1{transform:rotate(19deg)} .b2{transform:rotate(-19deg)}
+  /* dark mode (default): show the strands illustration, hide the CSS-rendered strands */
+  .herofig .chroms{display:none}
+  body[data-theme="light"] .chroms-img{display:none}
+  body[data-theme="light"] .herofig .chroms{display:grid}
 
   /* ---- palette ---- */
   .phead{display:flex;justify-content:space-between;align-items:baseline;margin:30px 4px 12px}
@@ -141,7 +147,10 @@
           <button class="btn-ghost">See how it works ↓</button>
         </div>
       </div>
-      <div class="chroms" id="chroms"></div>
+      <div class="herofig">
+        <img class="chroms-img" src="assets/moderne-palette/strands-dark.png" alt="Moderne strands — one recipe, every repo">
+        <div class="chroms" id="chroms"></div>
+      </div>
     </div>
   </section>
 
