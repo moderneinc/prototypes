@@ -181,16 +181,6 @@
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;">
-        <div>
-          <div class="mono" style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;">UI tokens · <span id="modeLabel"></span></div>
-          <div id="tokenList"></div>
-        </div>
-        <div>
-          <div class="mono" style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;">Category · spectral stop</div>
-          <div id="accentGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;"></div>
-        </div>
-      </div>
     </section>
 
     <!-- ===== TYPE ===== -->
@@ -622,16 +612,6 @@
     { label:"The work ahead", active:false },
     { label:"Further reading", active:true },
   ];
-  // products mapped to spectral-ramp stops (the identity device)
-  const accents = [
-    { name:"Blue", product:"Platform", color:"#3E7BF6" },
-    { name:"Teal", product:"CLI", color:"#25D0C0" },
-    { name:"Violet", product:"Agent tools", color:"#9D5BE8" },
-    { name:"Green", product:"Recipes", color:"#30F284" },
-    { name:"Lime", product:"DX", color:"#C7E84B" },
-    { name:"Magenta", product:"Moddy", color:"#E6399B" },
-    { name:"Teal", product:"IDE plugins", color:"#25D0C0" },
-  ];
   const docCards = [
     { title:"Platform", color:"#3E7BF6", body:"A secure platform and toolchain for fast, enterprise-wide code modernization." },
     { title:"CLI", color:"#25D0C0", body:"A local, off-line CLI for multi-repo analysis and automated remediation in code." },
@@ -667,27 +647,6 @@
     { spec:"18.5 / 1.55", label:"Body copy — leading 155%", size:"17px", weight:400, lh:"1.5", tracking:"0" },
     { spec:"MONO 12 / 3", label:"TECHNICAL LABEL", size:"13px", weight:500, lh:"1.4", tracking:"2px" },
   ];
-  const tokensByMode = {
-    light: [
-      { token:"--void", swatch:"#F6F7FA", use:"Canvas" },
-      { token:"--surface", swatch:"#ECEEF3", use:"Cards" },
-      { token:"--line", swatch:"#DCE0E8", use:"Dividers" },
-      { token:"--paper", swatch:"#1B2230", use:"Text · ink" },
-      { token:"--body", swatch:"#6A7180", use:"Body copy" },
-      { token:"--green", swatch:"#30F284", use:"Action · fills" },
-      { token:"--green-text", swatch:"#1D5937", use:"Links on bright" },
-      { token:"--flag", swatch:"#FF5470", use:"Defect / alert" },
-    ],
-    dark: [
-      { token:"--void", swatch:"#100C0A", use:"Canvas" },
-      { token:"--surface", swatch:"#1C1714", use:"Cards" },
-      { token:"--line", swatch:"#2C2520", use:"Dividers" },
-      { token:"--paper", swatch:"#F2EDE4", use:"Text · warm white" },
-      { token:"--body", swatch:"#A39B90", use:"Body copy" },
-      { token:"--green", swatch:"#30F284", use:"Action · CTAs/links" },
-      { token:"--flag", swatch:"#FF5470", use:"Defect / alert" },
-    ]
-  };
 
   // ---- Helpers ----
   const el = (tag, css, html) => { const n=document.createElement(tag); if(css) n.setAttribute("style",css); if(html!=null) n.innerHTML=html; return n; };
@@ -707,17 +666,6 @@
   }
 
   function renderStatic() {
-    // accent palette
-    const ag = document.getElementById("accentGrid");
-    accents.forEach(a => {
-      ag.appendChild(el("div","background:var(--surface);border:1px solid var(--line2);border-radius:9px;overflow:hidden;",
-        `<div style="height:46px;background:${a.color};box-shadow:inset 0 0 0 1px var(--swatch-inset);"></div>
-         <div style="padding:9px 12px;">
-           <div style="font-size:13px;font-weight:500;color:var(--text);">${a.name}</div>
-           <div style="font-size:11.5px;color:var(--body);margin-top:1px;">${a.product}</div>
-           <div class="mono" style="font-size:11px;color:var(--muted);margin-top:3px;">${a.color}</div>
-         </div>`));
-    });
     // type scale
     const ts = document.getElementById("typeScale");
     typeScale.forEach(t => {
@@ -754,8 +702,6 @@
   function applyTheme() {
     document.documentElement.setAttribute("data-theme", mode);
 
-    document.getElementById("modeLabel").textContent = mode === "light" ? "Light" : "Dark";
-
     // toggle button
     const btn = document.getElementById("themeToggle");
     if (mode === "dark") {
@@ -763,16 +709,6 @@
     } else {
       btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></svg><span>Light</span>`;
     }
-
-    // token list depends on mode
-    const tk = document.getElementById("tokenList");
-    tk.innerHTML = "";
-    tokensByMode[mode].forEach(d => {
-      tk.appendChild(el("div","display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--line2);",
-        `<div style="width:30px;height:30px;border-radius:7px;flex:none;background:${d.swatch};box-shadow:inset 0 0 0 1px var(--swatch-inset);"></div>
-         <div class="mono" style="flex:1;font-size:13px;font-weight:500;color:var(--text);">${d.token}</div>
-         <div style="font-size:12.5px;color:var(--muted);">${d.use}</div>`));
-    });
   }
 
   document.getElementById("themeToggle").addEventListener("click", () => {
