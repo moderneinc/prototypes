@@ -19,6 +19,7 @@
     --void:#100C0A; --surface:#1C1714; --surface2:#241D18;
     --line:rgba(242,237,228,0.10); --line2:rgba(242,237,228,0.06);
     --paper:#F2EDE4; --body:rgba(242,237,228,0.68); --muted:rgba(242,237,228,0.44);
+    --body-solid:#AAA59E; --muted-solid:#736F6A; /* flat (opaque) equivalents over the canvas */
     --green:#30F284; --green-ink:#04220F; --green-text:#30F284; --flag:#FF5470; --midnight:#041834;
     /* legacy aliases consumed by inline styles */
     --bg:var(--void); --field:var(--void); --text:var(--paper); --line-strong:rgba(242,237,228,0.22);
@@ -29,6 +30,7 @@
     --void:#F6F7FA; --surface:#ECEEF3; --surface2:#E3E7EF;
     --line:rgba(27,34,48,0.12); --line2:rgba(27,34,48,0.08);
     --paper:#1B2230; --body:rgba(27,34,48,0.70); --muted:rgba(27,34,48,0.48);
+    --body-solid:#5D626D; --muted-solid:#8D9199; /* flat (opaque) equivalents over the canvas */
     --green:#30F284; --green-ink:#04220F; --green-text:#1D5937; --flag:#FF5470; --midnight:#041834;
     --bg:var(--void); --field:#FFFFFF; --text:var(--paper); --line-strong:rgba(27,34,48,0.22);
     --swatch-inset:rgba(27,34,48,0.08); --accent:var(--green); --accent-ink:var(--green-ink);
@@ -179,6 +181,18 @@
             Download PNG
           </a>
         </div>
+      </div>
+
+      <!-- backgrounds & greys/blacks -->
+      <div style="margin-bottom:44px;">
+        <div class="mono" style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;">Backgrounds &amp; greys/blacks</div>
+        <div id="bgTokens" style="display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:18px 20px;align-items:start;"></div>
+      </div>
+
+      <!-- font colors -->
+      <div>
+        <div class="mono" style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;">Font colors</div>
+        <div id="fontTokens" style="display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:18px 20px;align-items:start;"></div>
       </div>
 
     </section>
@@ -420,6 +434,50 @@
          <div class="mono" style="font-size:10.5px;color:var(--muted);margin-top:1px;">${s.hex}</div>
          <div class="mono" style="font-size:10.5px;color:var(--muted);margin-top:1px;">${s.deep}</div>`));
     });
+
+    // ---- dual-mode token swatches: backgrounds/greys & font colors ----
+    const bgTokens = [
+      { name:"Page background", token:"--bg", dark:"#100C0A", light:"#F6F7FA" },
+      { name:"Input field", token:"--field", dark:"#100C0A", light:"#FFFFFF" },
+      { name:"Card surface", token:"--surface", dark:"#1C1714", light:"#ECEEF3" },
+      { name:"Inset surface", token:"--surface2", dark:"#241D18", light:"#E3E7EF" },
+      { name:"Hairline", token:"--line", dark:"rgba(242,237,228,0.10)", light:"rgba(27,34,48,0.12)" },
+      { name:"Faint divider", token:"--line2", dark:"rgba(242,237,228,0.06)", light:"rgba(27,34,48,0.08)" },
+      { name:"Strong border", token:"--line-strong", dark:"rgba(242,237,228,0.22)", light:"rgba(27,34,48,0.22)" },
+    ];
+    const fontTokens = [
+      { name:"Headline / primary", token:"--text", dark:"#F2EDE4", light:"#1B2230" },
+      { name:"Body", token:"--body", dark:"rgba(242,237,228,0.68)", light:"rgba(27,34,48,0.70)" },
+      { name:"Body flat", token:"--body-solid", dark:"#AAA59E", light:"#5D626D" },
+      { name:"Muted / meta", token:"--muted", dark:"rgba(242,237,228,0.44)", light:"rgba(27,34,48,0.48)" },
+      { name:"Muted flat", token:"--muted-solid", dark:"#736F6A", light:"#8D9199" },
+      { name:"Green text", token:"--green-text", dark:"#30F284", light:"#1D5937" },
+    ];
+    const DARK_CANVAS = "#100C0A", LIGHT_CANVAS = "#F6F7FA";
+    function tile(canvas, val, inset, kind){
+      return kind === "font"
+        ? `<div style="height:42px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:${canvas};box-shadow:inset 0 0 0 1px ${inset};"><span style="font-size:19px;font-weight:600;letter-spacing:-0.3px;color:${val};">Ag</span></div>`
+        : `<div style="height:42px;border-radius:7px;overflow:hidden;background:${canvas};box-shadow:inset 0 0 0 1px ${inset};"><div style="height:100%;background:${val};"></div></div>`;
+    }
+    function cell(canvas, val, inset, kind){
+      return `<div>${tile(canvas, val, inset, kind)}<div class="mono" style="font-size:10.5px;color:var(--muted);margin-top:6px;word-break:break-all;line-height:1.35;">${val}</div></div>`;
+    }
+    function renderTokenGroup(id, rows, kind){
+      const c = document.getElementById(id); if(!c) return;
+      const head = lbl => `<div class="mono" style="font-size:10.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);align-self:end;padding-bottom:4px;">${lbl}</div>`;
+      let html = "<div></div>" + head("Dark") + head("Light");
+      rows.forEach(r => {
+        html += `<div style="padding-top:2px;">
+            <div style="font-size:14px;font-weight:500;color:var(--text);">${r.name}</div>
+            <div class="mono" style="font-size:12px;color:var(--muted);margin-top:2px;">${r.token}</div>
+          </div>`
+          + cell(DARK_CANVAS, r.dark, "rgba(255,255,255,0.20)", kind)
+          + cell(LIGHT_CANVAS, r.light, "rgba(0,0,0,0.12)", kind);
+      });
+      c.innerHTML = html;
+    }
+    renderTokenGroup("bgTokens", bgTokens, "bg");
+    renderTokenGroup("fontTokens", fontTokens, "font");
   }
 
   // ---- Theme-dependent rendering (tokens live in CSS [data-theme]) ----
