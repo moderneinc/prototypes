@@ -100,7 +100,7 @@ const SURFACES: Record<Surface, SurfaceCfg> = {
     label: "SaaS / Platform", primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter",
     sans: ["Inter", "Geist"], mono: ["Inter", "JetBrains"],
     explain:
-      "<b>SaaS / Platform</b> — the product surface (dense application UI)." +
+      "<p>The product surface — dense application UI.</p>" +
       "<ul>" +
       "<li><b>Recommended colour — Teal (default).</b> Teal is the action colour, kept deliberately distinct from brand-green so &ldquo;do it&rdquo; reads differently from &ldquo;on brand.&rdquo; Success stays green; magenta is reserved for marketing.</li>" +
       "<li><b>Recommended type — Inter (default, UI + data).</b> Built for dense, small-size legibility (the dev-tool standard); its tabular figures keep numerals aligned, so one typeface covers both UI and data. Geist / JetBrains are offered as alternates.</li>" +
@@ -113,7 +113,7 @@ const SURFACES: Record<Surface, SurfaceCfg> = {
     label: "Docs", primary: "Green", secondary: "Violet", fontSans: "Poppins", fontMono: "IBM Plex",
     sans: ["Poppins", "Inter"], mono: ["IBM Plex", "JetBrains"],
     explain:
-      "<b>Docs</b> — public-facing, so it must read as the brand." +
+      "<p>Public-facing, so it must read as the brand.</p>" +
       "<ul>" +
       "<li><b>Recommended colour — Digital Green #30F284 (default).</b> The kit assigns Docs no separate hue, so it holds the brand accent and is differentiated by restraint, not palette. On light it deepens to #1D5937; Midnight #041834 is reserved as the secondary / light-mode brand blue.</li>" +
       "<li><b>Recommended type — Poppins + IBM Plex Mono (default).</b> Poppins is the production stand-in for the brand face Beausite; IBM Plex Mono is the kit&rsquo;s canon for code and technical text.</li>" +
@@ -250,20 +250,37 @@ export function initDsTheme(): void {
     applyFont("sans", sans(cfg.fontSans)); applyFont("mono", mono(cfg.fontMono));
     renderFonts(); syncSwatchAria(); syncSurfaceAria(); persist(); broadcast(); updateLabel();
   };
+  // click is a no-op on a locked (aria-disabled) pill; aria-disabled keeps the
+  // element hoverable so its explanatory title tooltip shows (a real `disabled`
+  // button would suppress the tooltip).
   panel.querySelectorAll<HTMLButtonElement>("[data-surface-row] button[data-surface]").forEach((b) => {
-    b.addEventListener("click", () => applySurface(b.dataset.surface as Surface));
+    b.addEventListener("click", () => {
+      if (b.getAttribute("aria-disabled") === "true") return;
+      applySurface(b.dataset.surface as Surface);
+    });
   });
   syncSurfaceAria();
 
   // Section lock — you can't cross-theme: inside SaaS sections the Docs pill is
   // disabled and vice-versa; neutral pages (intro/foundations/accessibility)
   // allow both. The section is derived from the page; the examples viewer locks
-  // per-screen via the ds-set-surface event.
+  // per-screen via the ds-set-surface event. Locked pills carry a tooltip saying
+  // why and where to switch.
+  const LABEL: Record<Surface, string> = { saas: "SaaS", docs: "Docs" };
   const pillOf = (s: Surface) => panel.querySelector<HTMLButtonElement>(`[data-surface-row] button[data-surface="${s}"]`);
   const lock = (allowed: "saas" | "docs" | "both") => {
-    const sp = pillOf("saas"), dp = pillOf("docs");
-    if (sp) sp.disabled = allowed === "docs";
-    if (dp) dp.disabled = allowed === "saas";
+    (["saas", "docs"] as Surface[]).forEach((s) => {
+      const pill = pillOf(s);
+      if (!pill) return;
+      const locked = allowed !== "both" && allowed !== s;
+      pill.setAttribute("aria-disabled", String(locked));
+      if (locked) {
+        const here = LABEL[allowed as Surface];
+        pill.title = `${LABEL[s]} theme is locked while you're in a ${here} section — open a ${LABEL[s]} page to preview it.`;
+      } else {
+        pill.removeAttribute("title");
+      }
+    });
   };
   const sectionOf = (): "saas" | "docs" | "examples" | "neutral" => {
     const p = location.pathname;

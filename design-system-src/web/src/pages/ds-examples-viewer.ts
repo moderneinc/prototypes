@@ -13,6 +13,7 @@ const BASE = import.meta.env.BASE_URL; // "/prototypes/design-system/" in prod, 
 
 const frame = document.getElementById("ex-frame") as HTMLIFrameElement;
 const intro = document.getElementById("ex-intro") as HTMLElement;
+const note = document.getElementById("ex-note") as HTMLElement;
 
 const valid = (s: string | null) => (s && [...SCREENS, ...INTROS].includes(s) ? s : "saas");
 const surfaceOf = (s: string): "saas" | "docs" => (s.startsWith("docs") ? "docs" : "saas");
@@ -29,6 +30,7 @@ function render(s: string): void {
   mark(s);
   if (INTROS.includes(s)) {
     frame.hidden = true;
+    note.hidden = true;
     intro.hidden = false;
     intro.innerHTML =
       `<div class="ds-surface-intro-inner">` +
@@ -41,6 +43,7 @@ function render(s: string): void {
   } else {
     intro.hidden = true;
     frame.hidden = false;
+    note.hidden = false;
     frame.src = `${BASE}screens/${s}/`;
   }
 }
