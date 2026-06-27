@@ -34,18 +34,19 @@ const SANS: Font[] = [
   { name: "Geist",   stack: '"Geist",ui-sans-serif,system-ui,sans-serif',   g: "Geist:wght@400;500;600;700" },
 ];
 const MONO: Font[] = [
+  // Default: keep the body face (Inter) for data too — one typeface everywhere.
+  // Inter's tabular figures (tnum, applied via --ds-num) keep numerals aligned.
+  { name: "Inter", stack: '"Inter",ui-sans-serif,system-ui,sans-serif', g: "Inter:wght@400;500;600;700" },
   { name: "JetBrains", stack: '"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace', g: "JetBrains+Mono:wght@400;500;700" },
   { name: "Geist Mono", stack: '"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace', g: "Geist+Mono:wght@400;500;700" },
   { name: "Space Mono", stack: '"Space Mono",ui-monospace,SFMono-Regular,Menlo,monospace', g: "Space+Mono:wght@400;700" },
-  // Keep the body face (Inter) for data too — one typeface everywhere. Inter's
-  // tabular figures (tnum, applied via --ds-num) keep numerals aligned.
-  { name: "Inter", stack: '"Inter",ui-sans-serif,system-ui,sans-serif', g: "Inter:wght@400;500;600;700" },
+  { name: "IBM Plex", stack: '"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace', g: "IBM+Plex+Mono:wght@400;500;600" },
 ];
 
 const KEY = "ds-colors";
 // Default: Teal primary (brand strand, decoupled from success-green) + Violet
-// accent, Inter UI / JetBrains mono, on the dark ground.
-const DEFAULTS = { primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "JetBrains", base: "cool" };
+// accent, Inter for both UI and data (one typeface), on the dark ground.
+const DEFAULTS = { primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter", base: "cool" };
 const current = { ...DEFAULTS };
 
 const toRGB = (h: string) => h.replace("#", "").match(/../g)!.map((v) => parseInt(v, 16));
