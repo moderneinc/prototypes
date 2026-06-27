@@ -32,8 +32,8 @@ const LIGHT = {
   redInk: "#b02a17", red: "#e5331f", danger: "#c4291a", onRed: "#ffffff",
   warnInk: "#8a5300", warn: "#e0a020", infoInk: "#1d5fb0", info: "#2f7fe0",
   // expanded rainbow inks (text on light)
-  pink: "#c5208a", magenta: "#7a1e52", violet: "#7c3aed", indigo: "#4f46e5",
-  blue: "#1f6fd6", cyan: "#0e7490", teal: "#0e4a45", gold: "#8a6300", orange: "#b45309",
+  magenta: "#7a1e52", violet: "#3f1340", blue: "#16306b", teal: "#0e4a45", catGreen: "#1d5937", lime: "#4f5a12",
+  pink: "#c5208a", indigo: "#4f46e5", cyan: "#0e7490", gold: "#8a6300", orange: "#b45309",
 };
 const DARK = {
   bg: "#0c0d10", surface: "#14161b", panel: "#181a20",
@@ -42,8 +42,8 @@ const DARK = {
   docsPrimary: "#30f284", docsOn: "#04220f", docsInk: "#30f284",   // Docs surface: Digital Green
   greenInk: "#5fe6a8", green: "#33ff99", onGreen: "#10130d",
   redInk: "#ff9a8e", danger: "#d63420", onRed: "#ffffff", warnInk: "#f0c674", infoInk: "#8bb6ff",
-  pink: "#ff7ac9", magenta: "#ff7ac9", violet: "#c4b5fd", indigo: "#a5b4fc",
-  blue: "#7cc0ff", cyan: "#5fd6ff", teal: "#5eecd0", gold: "#f0c674", orange: "#ffb066",
+  magenta: "#ff7ac9", violet: "#c4b5fd", blue: "#7cc0ff", teal: "#5eecd0", catGreen: "#5fe6a8", lime: "#c7e84b",
+  pink: "#ff7ac9", indigo: "#a5b4fc", cyan: "#5fd6ff", gold: "#f0c674", orange: "#ffb066",
 };
 
 // pair = [label, fg, bg, requiredRatio]
@@ -69,14 +69,16 @@ const pairs = (P, on) => [
   ...(P.onRed ? [["on-red text / danger fill", P.onRed, P.danger, T]] : []),
   ["warn-ink / panel", P.warnInk, P.panel, T],
   ["info-ink / panel", P.infoInk, P.panel, T],
-  // expanded rainbow inks as text on the lightest surface
-  ["cat pink / panel", P.pink, P.panel, T],
+  // 6 kit strands (shared) + SaaS-only extras — inks as text on the lightest surface
   ["cat magenta / panel", P.magenta, P.panel, T],
   ["cat violet / panel", P.violet, P.panel, T],
-  ["cat indigo / panel", P.indigo, P.panel, T],
   ["cat blue / panel", P.blue, P.panel, T],
-  ["cat cyan / panel", P.cyan, P.panel, T],
   ["cat teal / panel", P.teal, P.panel, T],
+  ["cat green / panel", P.catGreen, P.panel, T],
+  ["cat lime / panel", P.lime, P.panel, T],
+  ["cat pink / panel", P.pink, P.panel, T],
+  ["cat indigo / panel", P.indigo, P.panel, T],
+  ["cat cyan / panel", P.cyan, P.panel, T],
   ["cat gold / panel", P.gold, P.panel, T],
   ["cat orange / panel", P.orange, P.panel, T],
   // colored text on the PUNCHIER (deeper) soft tints — badges / alerts. Light only;
