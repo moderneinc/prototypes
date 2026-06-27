@@ -250,14 +250,35 @@ export function initDsTheme(): void {
     applyFont("sans", sans(cfg.fontSans)); applyFont("mono", mono(cfg.fontMono));
     renderFonts(); syncSwatchAria(); syncSurfaceAria(); persist(); broadcast(); updateLabel();
   };
-  panel.querySelectorAll<HTMLElement>("[data-surface-row] button[data-surface]").forEach((b) => {
+  panel.querySelectorAll<HTMLButtonElement>("[data-surface-row] button[data-surface]").forEach((b) => {
     b.addEventListener("click", () => applySurface(b.dataset.surface as Surface));
   });
   syncSurfaceAria();
+
+  // Section lock — you can't cross-theme: inside SaaS sections the Docs pill is
+  // disabled and vice-versa; neutral pages (intro/foundations/accessibility)
+  // allow both. The section is derived from the page; the examples viewer locks
+  // per-screen via the ds-set-surface event.
+  const pillOf = (s: Surface) => panel.querySelector<HTMLButtonElement>(`[data-surface-row] button[data-surface="${s}"]`);
+  const lock = (allowed: "saas" | "docs" | "both") => {
+    const sp = pillOf("saas"), dp = pillOf("docs");
+    if (sp) sp.disabled = allowed === "docs";
+    if (dp) dp.disabled = allowed === "saas";
+  };
+  const sectionOf = (): "saas" | "docs" | "examples" | "neutral" => {
+    const p = location.pathname;
+    if (p.includes("/examples")) return "examples";
+    if (/\/(forms|navigation|data-display|feedback|dataviz)\//.test(p)) return "saas";
+    return "neutral"; // intro, foundations, accessibility
+  };
+  const section = sectionOf();
+  if (section === "saas") { applySurface("saas"); lock("saas"); }
+  else if (section === "neutral") lock("both");
+
   // the examples viewer auto-selects the surface when you open a screen / intro
   document.addEventListener("ds-set-surface", (e) => {
     const s = (e as CustomEvent).detail;
-    if (s === "saas" || s === "docs") applySurface(s);
+    if (s === "saas" || s === "docs") { applySurface(s); if (section === "examples") lock(s); }
   });
 
   updateLabel();
