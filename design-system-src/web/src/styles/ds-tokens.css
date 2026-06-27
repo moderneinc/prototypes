@@ -148,13 +148,18 @@
      NOTE: this is the SaaS/docs FUNCTIONAL palette (per-theme, AA-tuned). The branding
      "Moderne Design Kit" identity palette is a separate set — only exact value matches
      are cross-referenced below; the two are intentionally not merged. */
+  /* 6 KIT STRANDS — the shared categorical spine (Docs + SaaS). Exact design-kit
+     bright fill / deep ink. */
+  --ds-cat-magenta:#e6399b; --ds-cat-magenta-ink:#7a1e52;
+  --ds-cat-violet:#9d5be8;  --ds-cat-violet-ink:#3f1340;
+  --ds-cat-blue:#3e7bf6;    --ds-cat-blue-ink:#16306b;
+  --ds-cat-teal:#25d0c0;    --ds-cat-teal-ink:#0e4a45;
+  --ds-cat-green:#30f284;   --ds-cat-green-ink:#1d5937;
+  --ds-cat-lime:#c7e84b;    --ds-cat-lime-ink:#4f5a12;
+  /* SaaS-ONLY extras — additional data-viz categories (NOT used on Docs). */
   --ds-cat-pink:#ec4899;    --ds-cat-pink-ink:#c5208a;
-  --ds-cat-magenta:#e6399b; --ds-cat-magenta-ink:#7a1e52;   /* brand "Magenta" strand (bright / deep) */
-  --ds-cat-violet:#8b5cf6;  --ds-cat-violet-ink:#7c3aed;
   --ds-cat-indigo:#6366f1;  --ds-cat-indigo-ink:#4f46e5;
-  --ds-cat-blue:#3b82f6;    --ds-cat-blue-ink:#1f6fd6;   /* exact match → UI-kit "Cobalt" (Platform) */
   --ds-cat-cyan:#06b6d4;    --ds-cat-cyan-ink:#0e7490;
-  --ds-cat-teal:#25d0c8;    --ds-cat-teal-ink:#0e4a45;     /* brand "Teal" strand (bright / deep) */
   --ds-cat-gold:#eab308;    --ds-cat-gold-ink:#8a6300;
   --ds-cat-orange:#f97316;  --ds-cat-orange-ink:#b45309;
 
@@ -231,13 +236,18 @@
   --ds-mark-filter:none;
 
   /* categorical rainbow — bright on dark; ink == base (both AA on dark panel) */
+  /* 6 KIT STRANDS — shared categorical spine (Docs + SaaS). Bright kit fill;
+     ink lightened where the bright fails AA as text on the dark panel. */
+  --ds-cat-magenta:#e6399b; --ds-cat-magenta-ink:#ff7ac9;
+  --ds-cat-violet:#9d5be8;  --ds-cat-violet-ink:#c4b5fd;
+  --ds-cat-blue:#3e7bf6;    --ds-cat-blue-ink:#7cc0ff;
+  --ds-cat-teal:#25d0c0;    --ds-cat-teal-ink:#5eecd0;
+  --ds-cat-green:#30f284;   --ds-cat-green-ink:#5fe6a8;
+  --ds-cat-lime:#c7e84b;    --ds-cat-lime-ink:#c7e84b;
+  /* SaaS-ONLY extras — additional data-viz categories (NOT used on Docs). */
   --ds-cat-pink:#ff7ac9;    --ds-cat-pink-ink:#ff7ac9;
-  --ds-cat-magenta:#e6399b; --ds-cat-magenta-ink:#ff7ac9;   /* brand "Magenta": strand bright fills; lighter ink for AA text on dark */
-  --ds-cat-violet:#c4b5fd;  --ds-cat-violet-ink:#c4b5fd;
   --ds-cat-indigo:#a5b4fc;  --ds-cat-indigo-ink:#a5b4fc;
-  --ds-cat-blue:#7cc0ff;    --ds-cat-blue-ink:#7cc0ff;
   --ds-cat-cyan:#5fd6ff;    --ds-cat-cyan-ink:#5fd6ff;
-  --ds-cat-teal:#25d0c8;    --ds-cat-teal-ink:#5eecd0;     /* brand "Teal": strand bright fills; lighter ink for AA text on dark */
   --ds-cat-gold:#f0c674;    --ds-cat-gold-ink:#f0c674;
   --ds-cat-orange:#ffb066;  --ds-cat-orange-ink:#ffb066;
 
@@ -250,23 +260,25 @@
     var(--ds-spectral-gold) 100%);
 }
 
-/* ── WARM base (opt-in via [data-base="warm"]) ──────────────────────────────
-   The marketing-site night register: warm near-black / brown ground + warm
-   cream ink (the exact moderne.ai tokens.css values), and a GOLD navigation
-   accent. Overrides only the ground/ink/line + nav-accent; primary (green),
-   status, and the rainbow are unchanged. Default (no attribute) = our cool base. */
-:root[data-base="warm"]{
-  --ds-bg:#15120f; --ds-bg-alt:#100e0b; --ds-surface:#1d1a15;
-  --ds-panel:#211d17; --ds-raised:#242019; --ds-overlay:rgba(7,6,8,.62);
-  --ds-code-bg:#0c0b0f;
+/* ── DOCS surface canvas — the CANONICAL WARM ground from the design kit ──────
+   Docs is public-facing, so it uses the brand's warm near-black (#100C0A) + warm
+   cream ink (#F2EDE4), exactly the kit's tokens. SaaS keeps the cool ground
+   (the default :root). This is a deliberate brand-vs-product split, set by the
+   surface (not a user toggle). Overrides only the ground/ink/line; the primary
+   (green) + nav-accent follow the surface. (0,2,0) beats the default :root. */
+:root[data-surface="docs"]{
+  --ds-bg:#100c0a; --ds-bg-alt:#0b0807; --ds-surface:#1c1714;
+  --ds-panel:#241d18; --ds-raised:#2a2119; --ds-overlay:rgba(6,4,3,.64);
+  --ds-code-bg:#0c0908;
 
-  --ds-ink:#f1ece0; --ds-ink-dim:#c9bfa6; --ds-muted:#9c927e;
-  --ds-muted2:#6f6757; --ds-on-fill:#10130d;
+  --ds-ink:#f2ede4; --ds-ink-dim:#aaa59e; --ds-muted:#8a857d;
+  --ds-muted2:#6a655d; --ds-on-fill:#100c0a;
 
-  --ds-line:rgba(241,236,224,.13); --ds-line-strong:rgba(241,236,224,.22);
-  --ds-field-border:rgba(241,236,224,.28); --ds-sheen:rgba(255,255,255,.045);
+  --ds-line:rgba(242,237,228,.10); --ds-line-strong:rgba(242,237,228,.22);
+  --ds-field-border:rgba(242,237,228,.26); --ds-sheen:rgba(255,255,255,.04);
 
-  /* gold navigation accent (the marketing brand gold) */
-  --ds-nav-accent:#e0b34d; --ds-nav-accent-ink:#f0c674;
-  --ds-nav-accent-wash:color-mix(in srgb,#e0b34d 16%, transparent);
+  /* soft green ambient glow behind the hero — the kit's one sanctioned glow,
+     a brand-warmth signal Docs gets and SaaS deliberately does not. */
+  --ds-hero-glow:radial-gradient(60% 50% at 50% 0%, color-mix(in srgb,var(--ds-primary) 14%, transparent) 0%, transparent 70%);
 }
+:root{ --ds-hero-glow:none; } /* SaaS: flat, no glow (engineered/calm) */
