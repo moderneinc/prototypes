@@ -248,7 +248,7 @@ export function initDsTheme(): void {
     document.documentElement.setAttribute("data-surface", s);
     applyColor("primary", hue(cfg.primary)); applyColor("secondary", hue(cfg.secondary));
     applyFont("sans", sans(cfg.fontSans)); applyFont("mono", mono(cfg.fontMono));
-    renderFonts(); syncSwatchAria(); syncSurfaceAria(); persist(); broadcast(); updateLabel();
+    renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock(); persist(); broadcast(); updateLabel();
   };
   // click is a no-op on a locked (aria-disabled) pill; aria-disabled keeps the
   // element hoverable so its explanatory title tooltip shows (a real `disabled`
@@ -260,6 +260,27 @@ export function initDsTheme(): void {
     });
   });
   syncSurfaceAria();
+
+  // base tone (ground) pills — SaaS only; the WARM tone matches moderne.ai. On
+  // Docs the pills are disabled (with a tooltip): Docs' warm brand ground is fixed.
+  const baseBtns = panel.querySelectorAll<HTMLButtonElement>("[data-base-row] button[data-base]");
+  const syncBaseLock = () => {
+    const locked = current.surface === "docs";
+    baseBtns.forEach((b) => {
+      b.setAttribute("aria-disabled", String(locked));
+      if (locked) b.title = "Base tone is fixed for Docs — it uses the brand's warm canvas. Switch to a SaaS section to choose.";
+      else b.removeAttribute("title");
+      b.setAttribute("aria-pressed", String(b.dataset.base === current.base));
+    });
+  };
+  baseBtns.forEach((b) => {
+    b.addEventListener("click", () => {
+      if (b.getAttribute("aria-disabled") === "true") return;
+      current.base = b.dataset.base!; applyBase(current.base); persist(); broadcast();
+      baseBtns.forEach((el) => el.setAttribute("aria-pressed", String(el === b)));
+    });
+  });
+  syncBaseLock();
 
   // Section lock — you can't cross-theme: inside SaaS sections the Docs pill is
   // disabled and vice-versa; neutral pages (intro/foundations/accessibility)
@@ -351,7 +372,7 @@ export function initDsTheme(): void {
     broadcast();
     panel.querySelectorAll<HTMLElement>("[data-surface-row] button[data-surface]").forEach((el) =>
       el.setAttribute("aria-pressed", String(el.dataset.surface === current.surface)));
-    renderFonts(); syncSwatchAria(); syncSurfaceAria();
+    renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock();
     out.classList.remove("show"); updateLabel();
   });
 

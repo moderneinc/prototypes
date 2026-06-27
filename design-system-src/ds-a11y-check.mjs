@@ -106,7 +106,13 @@ function run(name, P) {
   return fails;
 }
 
+// SaaS WARM base tone = the moderne.ai marketing ground; same vivid fills/inks
+// as DARK, just the warm canvas/ink. Verify body/muted text still clears AA.
+const WARM = { ...DARK, bg: "#15120f", surface: "#1d1a15", panel: "#211d17",
+  ink: "#f1ece0", inkDim: "#c9bfa6", muted: "#9c927e", muted2: "#6f6757" };
+
 const f1 = run("LIGHT theme", LIGHT);
-const f2 = run("DARK theme", DARK);
-console.log(`\nTOTAL: ${f1 + f2} failure(s).`);
-process.exit(f1 + f2 === 0 ? 0 : 1);
+const f2 = run("DARK theme (cool)", DARK);
+const f3 = run("DARK theme (SaaS warm · moderne.ai)", WARM);
+console.log(`\nTOTAL: ${f1 + f2 + f3} failure(s).`);
+process.exit(f1 + f2 + f3 === 0 ? 0 : 1);
