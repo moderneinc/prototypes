@@ -47,7 +47,7 @@ const KEY = "ds-colors";
 // Default surface is SaaS: Teal primary (decoupled from success-green) + Violet
 // accent, Inter for UI and data, on the dark ground. (Docs surface overrides
 // these — see SURFACES below.)
-const DEFAULTS = { primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter", base: "cool", surface: "saas" };
+const DEFAULTS = { primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter", base: "warm", surface: "saas" };
 const current = { ...DEFAULTS };
 
 const toRGB = (h: string) => h.replace("#", "").match(/../g)!.map((v) => parseInt(v, 16));
