@@ -10,7 +10,7 @@
 type Hue = { name: string; fill: string; ink: string; on: string };
 
 const PALETTE: Hue[] = [
-  { name: "Green",   fill: "#33ff99", ink: "#5fe6a8", on: "#10130d" },
+  { name: "Green",   fill: "#30f284", ink: "#5fe6a8", on: "#04220f" },   /* Digital Green — brand accent (kit) */
   { name: "Emerald", fill: "#19e085", ink: "#5fe6a8", on: "#08130d" },
   { name: "Teal",    fill: "#25d0c8", ink: "#5eecd0", on: "#06231d" },
   { name: "Cyan",    fill: "#38bdf8", ink: "#7dd3fc", on: "#06202b" },
@@ -44,9 +44,10 @@ const MONO: Font[] = [
 ];
 
 const KEY = "ds-colors";
-// Default: Teal primary (brand strand, decoupled from success-green) + Violet
-// accent, Inter for both UI and data (one typeface), on the dark ground.
-const DEFAULTS = { primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter", base: "cool" };
+// Default surface is SaaS: Teal primary (decoupled from success-green) + Violet
+// accent, Inter for UI and data, on the dark ground. (Docs surface overrides
+// these — see SURFACES below.)
+const DEFAULTS = { primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter", base: "cool", surface: "saas" };
 const current = { ...DEFAULTS };
 
 const toRGB = (h: string) => h.replace("#", "").match(/../g)!.map((v) => parseInt(v, 16));
@@ -88,6 +89,41 @@ const hue = (name: string) => PALETTE.find((h) => h.name === name)!;
 const sans = (name: string) => SANS.find((f) => f.name === name)!;
 const mono = (name: string) => MONO.find((f) => f.name === name)!;
 
+// Two surface profiles — the SaaS/Platform app vs the public-facing Docs site —
+// over ONE shared brand spine. Each carries its own recommended defaults, a
+// reduced (curated) font menu, and an explanation that states what was chosen,
+// why, and which brand-rollout epic items it addresses.
+type Surface = "saas" | "docs";
+type SurfaceCfg = { label: string; primary: string; secondary: string; fontSans: string; fontMono: string; sans: string[]; mono: string[]; explain: string };
+const SURFACES: Record<Surface, SurfaceCfg> = {
+  saas: {
+    label: "SaaS / Platform", primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter",
+    sans: ["Inter", "Geist"], mono: ["Inter", "JetBrains"],
+    explain:
+      "<b>SaaS / Platform</b> — the product surface (dense application UI)." +
+      "<ul>" +
+      "<li><b>Recommended colour — Teal (default).</b> Teal is the action colour, kept deliberately distinct from brand-green so &ldquo;do it&rdquo; reads differently from &ldquo;on brand.&rdquo; Success stays green; magenta is reserved for marketing.</li>" +
+      "<li><b>Recommended type — Inter (default, UI + data).</b> Built for dense, small-size legibility (the dev-tool standard); its tabular figures keep numerals aligned, so one typeface covers both UI and data. Geist / JetBrains are offered as alternates.</li>" +
+      "<li>Everything sits on the shared brand spine — canvas, ink, spacing, radius, strand spectrum — from the design kit.</li>" +
+      "</ul>" +
+      "<span class=\"ds-explain-epic\">Epic — addresses: Shared token source &middot; Apply dark theme to the Platform site &middot; Brand QA (Product &rarr; Docs &rarr; Platform).</span>",
+  },
+  docs: {
+    label: "Docs", primary: "Green", secondary: "Violet", fontSans: "Poppins", fontMono: "IBM Plex",
+    sans: ["Poppins", "Inter"], mono: ["IBM Plex", "JetBrains"],
+    explain:
+      "<b>Docs</b> — public-facing, so it must read as the brand." +
+      "<ul>" +
+      "<li><b>Recommended colour — Digital Green #30F284 (default).</b> The kit assigns Docs no separate hue, so it holds the brand accent and is differentiated by restraint, not palette. On light it deepens to #1D5937; Midnight #041834 is reserved as the secondary / light-mode brand blue.</li>" +
+      "<li><b>Recommended type — Poppins + IBM Plex Mono (default).</b> Poppins is the production stand-in for the brand face Beausite; IBM Plex Mono is the kit&rsquo;s canon for code and technical text.</li>" +
+      "<li>Same brand spine as SaaS — identical tokens, just the brand&rsquo;s type and accent.</li>" +
+      "</ul>" +
+      "<span class=\"ds-explain-epic\">Epic — addresses: Extract &amp; document tokens (colour, type) &middot; Shared token source &middot; Apply dark theme to Docs &middot; Brand QA.</span>",
+  },
+};
+const surfSans = () => SURFACES[current.surface as Surface].sans.map(sans);
+const surfMono = () => SURFACES[current.surface as Surface].mono.map(mono);
+
 function persist(): void {
   try { localStorage.setItem(KEY, JSON.stringify(current)); } catch { /* ignore */ }
 }
@@ -95,8 +131,9 @@ function persist(): void {
 function broadcast(): void {
   const css = document.documentElement.style.cssText;
   const base = document.documentElement.getAttribute("data-base") || "";
+  const surface = document.documentElement.getAttribute("data-surface") || "saas";
   document.querySelectorAll("iframe").forEach((f) => {
-    try { (f as HTMLIFrameElement).contentWindow?.postMessage({ type: "ds-theme", css, base }, "*"); } catch { /* ignore */ }
+    try { (f as HTMLIFrameElement).contentWindow?.postMessage({ type: "ds-theme", css, base, surface }, "*"); } catch { /* ignore */ }
   });
 }
 function restore(): void {
@@ -107,6 +144,7 @@ function restore(): void {
     if (s?.fontSans && SANS.some((f) => f.name === s.fontSans)) current.fontSans = s.fontSans;   // stale "System" → keep default
     if (s?.fontMono && MONO.some((f) => f.name === s.fontMono)) current.fontMono = s.fontMono;
     if (s?.base === "cool" || s?.base === "warm") current.base = s.base;
+    if (s?.surface === "saas" || s?.surface === "docs") current.surface = s.surface;
   } catch { /* ignore */ }
 }
 
@@ -117,11 +155,14 @@ function cssSnippet(): string {
 
 export function initDsTheme(): void {
   restore();
-  // apply the active (or persisted) choice on every page, incl. example screens
-  if (current.primary !== DEFAULTS.primary) applyColor("primary", hue(current.primary));
-  if (current.secondary !== DEFAULTS.secondary) applyColor("secondary", hue(current.secondary));
-  if (current.fontSans !== DEFAULTS.fontSans) applyFont("sans", sans(current.fontSans));
-  if (current.fontMono !== DEFAULTS.fontMono) applyFont("mono", mono(current.fontMono));
+  // establish the surface, then apply the active (or persisted) choice on every
+  // page, incl. example screens. (We apply unconditionally now: the surface can
+  // move the baseline away from the CSS :root defaults.)
+  document.documentElement.setAttribute("data-surface", current.surface);
+  applyColor("primary", hue(current.primary));
+  applyColor("secondary", hue(current.secondary));
+  applyFont("sans", sans(current.fontSans));
+  applyFont("mono", mono(current.fontMono));
   applyBase(current.base);
 
   // live-sync: an embedded screen receives the parent's overrides via postMessage
@@ -129,6 +170,7 @@ export function initDsTheme(): void {
     if (e.data && e.data.type === "ds-theme" && typeof e.data.css === "string") {
       document.documentElement.style.cssText = e.data.css;
       if (typeof e.data.base === "string") applyBase(e.data.base);
+      if (e.data.surface === "saas" || e.data.surface === "docs") document.documentElement.setAttribute("data-surface", e.data.surface);
     }
   });
 
@@ -137,7 +179,7 @@ export function initDsTheme(): void {
 
   const label = panel.querySelector<HTMLElement>("[data-theme-current]")!;
   const out = panel.querySelector<HTMLElement>(".ds-theme-out")!;
-  const updateLabel = () => { label.textContent = `${current.primary} + ${current.secondary} · ${current.fontSans}`; };
+  const updateLabel = () => { label.textContent = `${SURFACES[current.surface as Surface].label} · ${current.primary} · ${current.fontSans}`; };
 
   // color swatches
   panel.querySelectorAll<HTMLElement>(".ds-sw-row").forEach((row) => {
@@ -157,24 +199,28 @@ export function initDsTheme(): void {
     }
   });
 
-  // font pills
-  panel.querySelectorAll<HTMLElement>(".ds-font-row[data-font]").forEach((row) => {
-    const which = row.dataset.font as "sans" | "mono";
-    const opts = which === "sans" ? SANS : MONO;
-    const key = which === "sans" ? "fontSans" : "fontMono";
-    row.innerHTML = "";
-    for (const f of opts) {
-      const b = document.createElement("button");
-      b.className = "ds-fontpill"; b.textContent = f.name; b.style.fontFamily = f.stack;
-      b.setAttribute("aria-pressed", String(current[key as "fontSans" | "fontMono"] === f.name));
-      b.addEventListener("click", () => {
-        (current as Record<string, string>)[key] = f.name; applyFont(which, f); persist(); broadcast();
-        row.querySelectorAll(".ds-fontpill").forEach((el) => el.setAttribute("aria-pressed", "false"));
-        b.setAttribute("aria-pressed", "true"); updateLabel();
-      });
-      row.appendChild(b);
-    }
-  });
+  // font pills — rendered from the ACTIVE surface's curated (reduced) menu;
+  // re-rendered when the surface changes.
+  const renderFonts = () => {
+    panel.querySelectorAll<HTMLElement>(".ds-font-row[data-font]").forEach((row) => {
+      const which = row.dataset.font as "sans" | "mono";
+      const opts = which === "sans" ? surfSans() : surfMono();
+      const key = which === "sans" ? "fontSans" : "fontMono";
+      row.innerHTML = "";
+      for (const f of opts) {
+        const b = document.createElement("button");
+        b.className = "ds-fontpill"; b.textContent = f.name; b.style.fontFamily = f.stack;
+        b.setAttribute("aria-pressed", String(current[key as "fontSans" | "fontMono"] === f.name));
+        b.addEventListener("click", () => {
+          (current as Record<string, string>)[key] = f.name; applyFont(which, f); persist(); broadcast();
+          row.querySelectorAll(".ds-fontpill").forEach((el) => el.setAttribute("aria-pressed", "false"));
+          b.setAttribute("aria-pressed", "true"); updateLabel();
+        });
+        row.appendChild(b);
+      }
+    });
+  };
+  renderFonts();
 
   // base (ground) pills — cool / warm
   panel.querySelectorAll<HTMLElement>("[data-base-row] button[data-base]").forEach((b) => {
@@ -183,6 +229,39 @@ export function initDsTheme(): void {
     b.addEventListener("click", () => {
       current.base = val; applyBase(val); persist(); broadcast();
       b.closest("[data-base-row]")!.querySelectorAll("button").forEach((el) => el.setAttribute("aria-pressed", "false"));
+      b.setAttribute("aria-pressed", "true");
+    });
+  });
+
+  // explanation block — what was chosen for this surface, why, + the epic items
+  const explainEl = panel.querySelector<HTMLElement>("[data-theme-explain]");
+  const renderExplain = () => { if (explainEl) explainEl.innerHTML = SURFACES[current.surface as Surface].explain; };
+  const syncSwatchAria = () => {
+    panel.querySelectorAll<HTMLElement>(".ds-sw-row").forEach((row) => {
+      const def = row.dataset.role === "primary" ? current.primary : current.secondary;
+      row.querySelectorAll<HTMLElement>(".ds-sw").forEach((el) => el.setAttribute("aria-pressed", String(el.title === def)));
+    });
+  };
+  renderExplain();
+
+  // switching surface resets colour + fonts to that surface's recommended
+  // defaults, swaps in its reduced font menu, and updates the explanation.
+  const applySurface = (s: Surface) => {
+    const cfg = SURFACES[s];
+    current.surface = s;
+    current.primary = cfg.primary; current.secondary = cfg.secondary;
+    current.fontSans = cfg.fontSans; current.fontMono = cfg.fontMono;
+    document.documentElement.setAttribute("data-surface", s);
+    applyColor("primary", hue(cfg.primary)); applyColor("secondary", hue(cfg.secondary));
+    applyFont("sans", sans(cfg.fontSans)); applyFont("mono", mono(cfg.fontMono));
+    renderFonts(); renderExplain(); syncSwatchAria(); persist(); broadcast(); updateLabel();
+  };
+  panel.querySelectorAll<HTMLElement>("[data-surface-row] button[data-surface]").forEach((b) => {
+    const val = b.dataset.surface as Surface;
+    b.setAttribute("aria-pressed", String(current.surface === val));
+    b.addEventListener("click", () => {
+      applySurface(val);
+      b.closest("[data-surface-row]")!.querySelectorAll("button").forEach((el) => el.setAttribute("aria-pressed", "false"));
       b.setAttribute("aria-pressed", "true");
     });
   });
@@ -233,22 +312,16 @@ export function initDsTheme(): void {
     });
     s.removeProperty("--ds-primary-pressed");
     s.removeProperty("--ds-font-sans"); s.removeProperty("--ds-font-mono");
-    Object.assign(current, DEFAULTS);
+    Object.assign(current, DEFAULTS); // back to the SaaS surface + its defaults
+    document.documentElement.setAttribute("data-surface", current.surface);
     applyBase(current.base);
     try { localStorage.removeItem(KEY); } catch { /* ignore */ }
     broadcast();
     panel.querySelectorAll<HTMLElement>("[data-base-row] button[data-base]").forEach((el) =>
       el.setAttribute("aria-pressed", String(el.dataset.base === current.base)));
-    panel.querySelectorAll<HTMLElement>(".ds-sw-row").forEach((row) => {
-      const def = row.dataset.role === "primary" ? current.primary : current.secondary;
-      row.querySelectorAll<HTMLElement>(".ds-sw").forEach((el) =>
-        el.setAttribute("aria-pressed", String(el.title === def)));
-    });
-    panel.querySelectorAll<HTMLElement>(".ds-font-row").forEach((row) => {
-      const def = row.dataset.font === "sans" ? current.fontSans : current.fontMono;
-      row.querySelectorAll<HTMLElement>(".ds-fontpill").forEach((el) =>
-        el.setAttribute("aria-pressed", String(el.textContent === def)));
-    });
+    panel.querySelectorAll<HTMLElement>("[data-surface-row] button[data-surface]").forEach((el) =>
+      el.setAttribute("aria-pressed", String(el.dataset.surface === current.surface)));
+    renderFonts(); renderExplain(); syncSwatchAria();
     out.classList.remove("show"); updateLabel();
   });
 

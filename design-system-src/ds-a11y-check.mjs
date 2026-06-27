@@ -25,6 +25,8 @@ const LIGHT = {
   ink: "#18191c", inkDim: "#44464d", muted: "#696c74", muted2: "#7e818b",
   // primary (deep TEAL — brand & action; dark fill + white text on light)
   primary: "#0e4a45", primaryHover: "#12605a", primaryInk: "#0e4a45", onPrimary: "#ffffff",
+  docsPrimary: "#1d5937", docsOn: "#ffffff", docsInk: "#1d5937",   // Docs surface: deep green on light
+
   // status (vivid fills + AA inks)
   greenInk: "#096540", green: "#15cf76", onGreen: "#08130d",
   redInk: "#b02a17", red: "#e5331f", danger: "#c4291a", onRed: "#ffffff",
@@ -37,6 +39,7 @@ const DARK = {
   bg: "#0c0d10", surface: "#14161b", panel: "#181a20",
   ink: "#e8eaee", inkDim: "#b4bac3", muted: "#858c97", muted2: "#646b76",
   primary: "#25d0c8", primaryInk: "#5eecd0", onPrimary: "#06231d",
+  docsPrimary: "#30f284", docsOn: "#04220f", docsInk: "#30f284",   // Docs surface: Digital Green
   greenInk: "#5fe6a8", green: "#33ff99", onGreen: "#10130d",
   redInk: "#ff9a8e", danger: "#d63420", onRed: "#ffffff", warnInk: "#f0c674", infoInk: "#8bb6ff",
   pink: "#ff7ac9", magenta: "#ff7ac9", violet: "#c4b5fd", indigo: "#a5b4fc",
@@ -57,6 +60,8 @@ const pairs = (P, on) => [
   ["primary-ink link / panel", P.primaryInk, P.panel, T],
   ["primary-ink link / bg", P.primaryInk, P.bg, T],
   ["on-primary text / primary fill", P.onPrimary, P.primary, T],
+  ["docs on-primary / green fill", P.docsOn, P.docsPrimary, T],
+  ["docs green-ink / panel", P.docsInk, P.panel, T],
   ["green-ink / panel", P.greenInk, P.panel, T],
   ["green-ink / bg", P.greenInk, P.bg, T],
   ["on-green / green fill", P.onGreen, P.green, T],
