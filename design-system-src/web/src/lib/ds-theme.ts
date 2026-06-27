@@ -104,7 +104,8 @@ const SURFACES: Record<Surface, SurfaceCfg> = {
       "<ul>" +
       "<li><b>Recommended colour — Teal (default).</b> Teal is the action colour, kept deliberately distinct from brand-green so &ldquo;do it&rdquo; reads differently from &ldquo;on brand.&rdquo; Success stays green; magenta is reserved for marketing.</li>" +
       "<li><b>Recommended type — Inter (default, UI + data).</b> Built for dense, small-size legibility (the dev-tool standard); its tabular figures keep numerals aligned, so one typeface covers both UI and data. Geist / JetBrains are offered as alternates.</li>" +
-      "<li>Everything sits on the shared brand spine — canvas, ink, spacing, radius, strand spectrum — from the design kit.</li>" +
+      "<li><b>Cool, flat ground.</b> SaaS keeps the cool near-black and stays flat — no ambient glow — engineered and calm for dense, long-session app use.</li>" +
+      "<li><b>Full categorical palette.</b> The 6 brand strands <i>plus</i> extra hues (pink, indigo, cyan, gold, orange), because data-viz needs more categories. All on the shared brand spine.</li>" +
       "</ul>" +
       "<span class=\"ds-explain-epic\">Epic — addresses: Shared token source &middot; Apply dark theme to the Platform site &middot; Brand QA (Product &rarr; Docs &rarr; Platform).</span>",
   },
@@ -116,13 +117,17 @@ const SURFACES: Record<Surface, SurfaceCfg> = {
       "<ul>" +
       "<li><b>Recommended colour — Digital Green #30F284 (default).</b> The kit assigns Docs no separate hue, so it holds the brand accent and is differentiated by restraint, not palette. On light it deepens to #1D5937; Midnight #041834 is reserved as the secondary / light-mode brand blue.</li>" +
       "<li><b>Recommended type — Poppins + IBM Plex Mono (default).</b> Poppins is the production stand-in for the brand face Beausite; IBM Plex Mono is the kit&rsquo;s canon for code and technical text.</li>" +
-      "<li>Same brand spine as SaaS — identical tokens, just the brand&rsquo;s type and accent.</li>" +
+      "<li><b>Warm brand ground + glow.</b> Docs uses the kit&rsquo;s canonical warm canvas (#100C0A, cream ink) and the one sanctioned soft green hero glow — it is the brand-facing surface.</li>" +
+      "<li><b>Restrained palette — the 6 strands only.</b> Just the formalized 6-strand spectrum (no extra hues): less colour, more brand discipline. Same shared spine as SaaS otherwise.</li>" +
       "</ul>" +
       "<span class=\"ds-explain-epic\">Epic — addresses: Extract &amp; document tokens (colour, type) &middot; Shared token source &middot; Apply dark theme to Docs &middot; Brand QA.</span>",
   },
 };
 const surfSans = () => SURFACES[current.surface as Surface].sans.map(sans);
 const surfMono = () => SURFACES[current.surface as Surface].mono.map(mono);
+// The per-surface rationale now lives in the SaaS / Docs intro views (not the
+// cramped builder panel); the examples viewer pulls it from here.
+export function surfaceExplain(s: "saas" | "docs"): string { return SURFACES[s].explain; }
 
 function persist(): void {
   try { localStorage.setItem(KEY, JSON.stringify(current)); } catch { /* ignore */ }
@@ -222,31 +227,20 @@ export function initDsTheme(): void {
   };
   renderFonts();
 
-  // base (ground) pills — cool / warm
-  panel.querySelectorAll<HTMLElement>("[data-base-row] button[data-base]").forEach((b) => {
-    const val = b.dataset.base!;
-    b.setAttribute("aria-pressed", String(current.base === val));
-    b.addEventListener("click", () => {
-      current.base = val; applyBase(val); persist(); broadcast();
-      b.closest("[data-base-row]")!.querySelectorAll("button").forEach((el) => el.setAttribute("aria-pressed", "false"));
-      b.setAttribute("aria-pressed", "true");
-    });
-  });
-
-  // explanation block — what was chosen for this surface, why, + the epic items
-  const explainEl = panel.querySelector<HTMLElement>("[data-theme-explain]");
-  const renderExplain = () => { if (explainEl) explainEl.innerHTML = SURFACES[current.surface as Surface].explain; };
   const syncSwatchAria = () => {
     panel.querySelectorAll<HTMLElement>(".ds-sw-row").forEach((row) => {
       const def = row.dataset.role === "primary" ? current.primary : current.secondary;
       row.querySelectorAll<HTMLElement>(".ds-sw").forEach((el) => el.setAttribute("aria-pressed", String(el.title === def)));
     });
   };
-  renderExplain();
+  const syncSurfaceAria = () => panel.querySelectorAll<HTMLElement>("[data-surface-row] button[data-surface]")
+    .forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.surface === current.surface)));
 
   // switching surface resets colour + fonts to that surface's recommended
-  // defaults, swaps in its reduced font menu, and updates the explanation.
+  // defaults and swaps in its reduced font menu. (The rationale lives in the
+  // SaaS / Docs intro views, not here.)
   const applySurface = (s: Surface) => {
+    if (current.surface === s) { syncSurfaceAria(); return; } // already here — keep any tweaks
     const cfg = SURFACES[s];
     current.surface = s;
     current.primary = cfg.primary; current.secondary = cfg.secondary;
@@ -254,16 +248,16 @@ export function initDsTheme(): void {
     document.documentElement.setAttribute("data-surface", s);
     applyColor("primary", hue(cfg.primary)); applyColor("secondary", hue(cfg.secondary));
     applyFont("sans", sans(cfg.fontSans)); applyFont("mono", mono(cfg.fontMono));
-    renderFonts(); renderExplain(); syncSwatchAria(); persist(); broadcast(); updateLabel();
+    renderFonts(); syncSwatchAria(); syncSurfaceAria(); persist(); broadcast(); updateLabel();
   };
   panel.querySelectorAll<HTMLElement>("[data-surface-row] button[data-surface]").forEach((b) => {
-    const val = b.dataset.surface as Surface;
-    b.setAttribute("aria-pressed", String(current.surface === val));
-    b.addEventListener("click", () => {
-      applySurface(val);
-      b.closest("[data-surface-row]")!.querySelectorAll("button").forEach((el) => el.setAttribute("aria-pressed", "false"));
-      b.setAttribute("aria-pressed", "true");
-    });
+    b.addEventListener("click", () => applySurface(b.dataset.surface as Surface));
+  });
+  syncSurfaceAria();
+  // the examples viewer auto-selects the surface when you open a screen / intro
+  document.addEventListener("ds-set-surface", (e) => {
+    const s = (e as CustomEvent).detail;
+    if (s === "saas" || s === "docs") applySurface(s);
   });
 
   updateLabel();
@@ -317,11 +311,9 @@ export function initDsTheme(): void {
     applyBase(current.base);
     try { localStorage.removeItem(KEY); } catch { /* ignore */ }
     broadcast();
-    panel.querySelectorAll<HTMLElement>("[data-base-row] button[data-base]").forEach((el) =>
-      el.setAttribute("aria-pressed", String(el.dataset.base === current.base)));
     panel.querySelectorAll<HTMLElement>("[data-surface-row] button[data-surface]").forEach((el) =>
       el.setAttribute("aria-pressed", String(el.dataset.surface === current.surface)));
-    renderFonts(); renderExplain(); syncSwatchAria();
+    renderFonts(); syncSwatchAria(); syncSurfaceAria();
     out.classList.remove("show"); updateLabel();
   });
 
