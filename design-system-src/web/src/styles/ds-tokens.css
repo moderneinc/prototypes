@@ -293,17 +293,20 @@
 }
 :root{ --ds-hero-glow:none; } /* SaaS: flat, no glow (engineered/calm) */
 
-/* ── SaaS WARM base tone (opt-in via the builder) ───────────────────────────
-   A second ground for the SaaS surface only — the EXACT moderne.ai marketing
-   tokens (warm near-black #15120F + warm cream ink), so "warm" literally matches
-   the marketing site. No glow, no gold nav (the teal accent stays). Cool (the
-   default :root) is unchanged. Scoped to the SaaS surface so it can never affect
-   Docs, whose ground is fixed. */
+/* ── SaaS WARM base tone — the DEFAULT for SaaS (the builder also offers Cool) ──
+   Matches how moderne.ai actually reads: a DEEP warm near-black ground (like the
+   site's hero "black plate" #070608), not the browner page token #15120F — warm,
+   but a lot cooler/darker than full brown. Warm surfaces float on it (the marketing
+   card tones) and the chrome stays dark so the nav never reads brown. No glow, no
+   gold nav (teal accent stays). Scoped to SaaS so it can never affect Docs, which
+   keeps the design-kit ground (#100C0A). */
 :root[data-surface="saas"][data-base="warm"]{
-  --ds-bg:#15120f; --ds-bg-alt:#100e0b; --ds-surface:#1d1a15;
-  --ds-panel:#211d17; --ds-raised:#242019; --ds-overlay:rgba(7,6,8,.62);
-  --ds-code-bg:#0c0b0f;
-  --ds-ink:#f1ece0; --ds-ink-dim:#c9bfa6; --ds-muted:#9c927e; --ds-muted2:#6f6757; --ds-on-fill:#15120f;
-  --ds-line:rgba(241,236,224,.13); --ds-line-strong:rgba(241,236,224,.22);
-  --ds-field-border:rgba(241,236,224,.28); --ds-sheen:rgba(255,255,255,.045);
+  --ds-bg:#0c0a08; --ds-bg-alt:#080706; --ds-surface:#13100d;
+  --ds-panel:#191510; --ds-raised:#1e1813; --ds-overlay:rgba(6,5,4,.64);
+  --ds-code-bg:#0a0807;
+  --ds-ink:#f1ece0; --ds-ink-dim:#c9bfa6; --ds-muted:#9c927e; --ds-muted2:#6f6757; --ds-on-fill:#0c0a08;
+  --ds-line:rgba(241,236,224,.10); --ds-line-strong:rgba(241,236,224,.20);
+  --ds-field-border:rgba(241,236,224,.24); --ds-sheen:rgba(255,255,255,.04);
+  /* dark chrome (like Docs) so the big nav areas don't read brown */
+  --ds-chrome-bg:var(--ds-bg); --ds-chrome-nav:var(--ds-bg-alt); --ds-nav-hover:var(--ds-surface);
 }
