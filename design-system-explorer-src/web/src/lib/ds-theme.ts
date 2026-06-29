@@ -3,23 +3,23 @@
 // UI/mono fonts + cool/warm base. Persisted to localStorage AND a shareable URL
 // hash. This site is built with the system, so it themes itself live.
 
+// The theme generator's swatches are EXACTLY the 6 M-FISH brand strands from the
+// UI kit (spectral order: magenta → violet → blue → teal → green → lime) — no
+// off-spine hues — so every pick is an on-brand strand. These are the AA-tuned
+// FUNCTIONAL versions of each strand (some kit fills are mid-luminance and can't
+// carry AA text as an action fill); the exact kit hexes live in the --ds-cat-*
+// categorical tokens for data-viz / tags.
 // `fillL` = the AA-deep version used on LIGHT (carries white text; also reads as
 // ink/links on white). Dark uses fill/ink/on; light uses fillL + white text.
 type Hue = { name: string; fill: string; ink: string; on: string; fillL: string };
 
 const PALETTE: Hue[] = [
-  { name: "Green",   fill: "#30f284", ink: "#5fe6a8", on: "#04220f", fillL: "#1d5937" },
-  { name: "Emerald", fill: "#19e085", ink: "#5fe6a8", on: "#08130d", fillL: "#0d7948" },
-  { name: "Teal",    fill: "#25d0c8", ink: "#5eecd0", on: "#06231d", fillL: "#0e4a45" },
-  { name: "Cyan",    fill: "#38bdf8", ink: "#7dd3fc", on: "#06202b", fillL: "#227195" },
-  { name: "Blue",    fill: "#4f8ff5", ink: "#93c5fd", on: "#071426", fillL: "#3a6ab5" },
-  { name: "Cobalt",  fill: "#3a6df0", ink: "#93b9ff", on: "#ffffff", fillL: "#3564dd" },
-  { name: "Indigo",  fill: "#5b50e6", ink: "#b0b0fb", on: "#ffffff", fillL: "#4e44c9" },
-  { name: "Violet",  fill: "#7b4fe0", ink: "#c4b5fd", on: "#ffffff", fillL: "#6d28d9" },
   { name: "Magenta", fill: "#ff5ba3", ink: "#ff7ac9", on: "#10130d", fillL: "#b24072" },
-  { name: "Crimson", fill: "#d62f44", ink: "#fca5a5", on: "#ffffff", fillL: "#c92c40" },
-  { name: "Amber",   fill: "#f5b528", ink: "#f0c674", on: "#241a02", fillL: "#896516" },
-  { name: "Orange",  fill: "#fb923c", ink: "#ffb066", on: "#1f1203", fillL: "#9c5b25" },
+  { name: "Violet",  fill: "#7b4fe0", ink: "#c4b5fd", on: "#ffffff", fillL: "#6d28d9" },
+  { name: "Blue",    fill: "#4f8ff5", ink: "#93c5fd", on: "#071426", fillL: "#3a6ab5" },
+  { name: "Teal",    fill: "#25d0c8", ink: "#5eecd0", on: "#06231d", fillL: "#0e4a45" },
+  { name: "Green",   fill: "#30f284", ink: "#5fe6a8", on: "#04220f", fillL: "#1d5937" },
+  { name: "Lime",    fill: "#c7e84b", ink: "#c7e84b", on: "#1a1f06", fillL: "#4f5a12" },
 ];
 
 type Font = { name: string; stack: string; g: string | null };
@@ -44,7 +44,7 @@ const KEY = "ds-colors";
 // dark DEFAULTS so a link round-trips unambiguously.
 const MODE_ACCENTS: Record<string, { primary: string; secondary: string }> = {
   dark: { primary: "Teal", secondary: "Violet" },
-  light: { primary: "Cyan", secondary: "Violet" },
+  light: { primary: "Blue", secondary: "Violet" }, // kit strands: blue + purple (cyan is off-spine)
 };
 const DEFAULTS = { mode: "dark", primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter", base: "cool" };
 const defaultsFor = (mode: string) => ({ ...DEFAULTS, mode, ...(MODE_ACCENTS[mode] || {}) });
