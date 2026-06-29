@@ -14,17 +14,23 @@
        default :root, so we only act on "light". -->
   <script>try{var h=location.hash.match(/mode=(light|dark)/),m=h&&h[1];if(!m){var s=JSON.parse(localStorage.getItem("ds-colors")||"{}");m=s&&s.mode;}if(m==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
   <title>Theme explorer — Moderne Design System</title>
-  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-theme-CV91Vf0w.js"></script>
-  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-boot-CkT6Jg1I.js"></script>
-  <link rel="stylesheet" crossorigin href="/prototypes/design-system-explorer/assets/ds-theme-z5iHG6jv.css">
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-theme-DMMvvJQx.js"></script>
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-boot-BJN2E9WK.js"></script>
+  <link rel="stylesheet" crossorigin href="/prototypes/design-system-explorer/assets/ds-theme-B1LbIRBm.css">
 </head>
 <body>
   <div class="ds-shell">
-    <!-- Gallery chrome: brand block (top-left) + sticky topbar. Dark-only, so there
-         is no theme toggle. This is the static "Storybook" frame, NOT a product component. -->
+    <!-- Gallery chrome: brand block (top-left) + sticky topbar. This is the static
+         "Storybook" frame, NOT a product component. -->
     <div class="ds-brand"><span class="dot"></span><b>Moderne</b><span>Design system</span></div>
     <header class="ds-topbar">
-      <h1>Theme explorer</h1>
+      <div class="ds-topbar-left">
+        <!-- mobile menu: opens the side nav as a drawer (≤880px); hidden on desktop -->
+        <button class="ds-navtoggle" data-nav-toggle aria-label="Open navigation" aria-expanded="false" aria-controls="ds-sidenav">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <h1>Theme explorer</h1>
+      </div>
       <!-- Interactive theme builder: pick a primary + secondary from our palette;
            it live-themes the whole showcase (this site is built with the system) and
            persists across pages. Swatches are populated by src/lib/ds-theme.ts. -->
@@ -92,8 +98,8 @@
         <div class="ds-page-head" style="--ds-head-measure:none">
           <div class="ds-eyebrow">Introduction</div>
           <h1 class="ds-display">Theme explorer for <span class="ds-spectral">Docs &amp; SaaS</span> based on the <a href="https://moderneinc.github.io/prototypes/moderne-design-kit-preview.html" target="_blank" rel="noopener" style="color:var(--ds-primary-ink);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1.5px">UI Kit</a>.</h1>
-          <p>A playground for exploring a <b style="color:var(--ds-ink)">dark mode</b> using a
-            <b style="color:var(--ds-ink)">theme builder</b> for Docs and Platform. The goal is to
+          <p>A playground for exploring a <b style="color:var(--ds-ink)">theme builder</b> for Docs and
+            Platform — light or dark, live. The goal is to
             <b style="color:var(--ds-ink)">explore options before we solidify</b> — a sandbox to react to, not a final spec.</p>
           <p class="ds-sm ds-muted">Derived from the Moderne <b style="color:var(--ds-ink-dim)">design kit</b> (the six <b style="color:var(--ds-ink-dim)">M-FISH</b> strands), plus a few extra SaaS-only tokens for denser data-viz — those extra hues are derived from the M-FISH approach too.</p>
         </div>
