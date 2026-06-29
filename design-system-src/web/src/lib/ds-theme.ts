@@ -313,7 +313,9 @@ export function initDsTheme(): void {
   };
   const section = sectionOf();
   if (section === "saas") { applySurface("saas"); lock("saas"); }
-  else if (section === "neutral") lock("both");
+  // Overview (intro / foundations / accessibility) is brand/public-facing, so it
+  // defaults to the Docs theme — but both toggles stay enabled for exploration.
+  else if (section === "neutral") { applySurface("docs"); lock("both"); }
 
   // the examples viewer auto-selects the surface when you open a screen / intro
   document.addEventListener("ds-set-surface", (e) => {
