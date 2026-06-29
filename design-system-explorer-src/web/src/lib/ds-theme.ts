@@ -7,21 +7,23 @@
 //
 // Color values are AA-validated for the dark theme (see .context/ds-a11y-check.mjs).
 
-type Hue = { name: string; fill: string; ink: string; on: string };
+// `fillL` = the AA-deep version used on LIGHT (carries white text; also reads as
+// ink/links on white). Dark uses fill/ink/on. Light uses fillL + white text.
+type Hue = { name: string; fill: string; ink: string; on: string; fillL: string };
 
 const PALETTE: Hue[] = [
-  { name: "Green",   fill: "#30f284", ink: "#5fe6a8", on: "#04220f" },   /* Digital Green — brand accent (kit) */
-  { name: "Emerald", fill: "#19e085", ink: "#5fe6a8", on: "#08130d" },
-  { name: "Teal",    fill: "#25d0c8", ink: "#5eecd0", on: "#06231d" },
-  { name: "Cyan",    fill: "#38bdf8", ink: "#7dd3fc", on: "#06202b" },
-  { name: "Blue",    fill: "#4f8ff5", ink: "#93c5fd", on: "#071426" },
-  { name: "Cobalt",  fill: "#3a6df0", ink: "#93b9ff", on: "#ffffff" },
-  { name: "Indigo",  fill: "#5b50e6", ink: "#b0b0fb", on: "#ffffff" },
-  { name: "Violet",  fill: "#7b4fe0", ink: "#c4b5fd", on: "#ffffff" },
-  { name: "Magenta", fill: "#ff5ba3", ink: "#ff7ac9", on: "#10130d" },
-  { name: "Crimson", fill: "#d62f44", ink: "#fca5a5", on: "#ffffff" },
-  { name: "Amber",   fill: "#f5b528", ink: "#f0c674", on: "#241a02" },
-  { name: "Orange",  fill: "#fb923c", ink: "#ffb066", on: "#1f1203" },
+  { name: "Green",   fill: "#30f284", ink: "#5fe6a8", on: "#04220f", fillL: "#1d5937" },   /* Digital Green — brand accent (kit) */
+  { name: "Emerald", fill: "#19e085", ink: "#5fe6a8", on: "#08130d", fillL: "#0d7948" },
+  { name: "Teal",    fill: "#25d0c8", ink: "#5eecd0", on: "#06231d", fillL: "#0e4a45" },
+  { name: "Cyan",    fill: "#38bdf8", ink: "#7dd3fc", on: "#06202b", fillL: "#227195" },
+  { name: "Blue",    fill: "#4f8ff5", ink: "#93c5fd", on: "#071426", fillL: "#3a6ab5" },
+  { name: "Cobalt",  fill: "#3a6df0", ink: "#93b9ff", on: "#ffffff", fillL: "#3564dd" },
+  { name: "Indigo",  fill: "#5b50e6", ink: "#b0b0fb", on: "#ffffff", fillL: "#4e44c9" },
+  { name: "Violet",  fill: "#7b4fe0", ink: "#c4b5fd", on: "#ffffff", fillL: "#6d28d9" },
+  { name: "Magenta", fill: "#ff5ba3", ink: "#ff7ac9", on: "#10130d", fillL: "#b24072" },
+  { name: "Crimson", fill: "#d62f44", ink: "#fca5a5", on: "#ffffff", fillL: "#c92c40" },
+  { name: "Amber",   fill: "#f5b528", ink: "#f0c674", on: "#241a02", fillL: "#896516" },
+  { name: "Orange",  fill: "#fb923c", ink: "#ffb066", on: "#1f1203", fillL: "#9c5b25" },
 ];
 
 // Fonts. `g` = Google Fonts family spec (loaded on demand); null = native stack.
@@ -47,7 +49,7 @@ const KEY = "ds-colors";
 // Default surface is SaaS: Teal primary (decoupled from success-green) + Violet
 // accent, Inter for UI and data, on the dark ground. (Docs surface overrides
 // these — see SURFACES below.)
-const DEFAULTS = { primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter", base: "cool", surface: "saas" };
+const DEFAULTS = { primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter", base: "cool", surface: "saas", mode: "dark" };
 const current = { ...DEFAULTS };
 
 const toRGB = (h: string) => h.replace("#", "").match(/../g)!.map((v) => parseInt(v, 16));
@@ -69,11 +71,20 @@ function ensureFont(g: string | null): void {
 
 function applyColor(role: "primary" | "secondary", h: Hue): void {
   const s = document.documentElement.style;
-  s.setProperty(`--ds-${role}`, h.fill);
-  s.setProperty(`--ds-${role}-hover`, mix(h.fill, "#ffffff", 0.14));
-  s.setProperty(`--ds-${role}-ink`, h.ink);
-  s.setProperty(`--ds-on-${role}`, h.on);
-  if (role === "primary") s.setProperty("--ds-primary-pressed", mix(h.fill, "#000000", 0.15));
+  const light = current.mode === "light";
+  // LIGHT: deep fill + white text + deep ink, hover darkens. DARK: bright fill +
+  // dark text + light ink, hover lightens.
+  const fill = light ? h.fillL : h.fill;
+  s.setProperty(`--ds-${role}`, fill);
+  s.setProperty(`--ds-${role}-hover`, mix(fill, light ? "#000000" : "#ffffff", light ? 0.12 : 0.14));
+  s.setProperty(`--ds-${role}-ink`, light ? h.fillL : h.ink);
+  s.setProperty(`--ds-on-${role}`, light ? "#ffffff" : h.on);
+  if (role === "primary") s.setProperty("--ds-primary-pressed", mix(fill, "#000000", 0.15));
+}
+// mode = light / dark; dark is the default :root (no attribute)
+function applyMode(m: string): void {
+  if (m === "light") document.documentElement.setAttribute("data-theme", "light");
+  else document.documentElement.removeAttribute("data-theme");
 }
 function applyFont(which: "sans" | "mono", f: Font): void {
   ensureFont(f.g);
@@ -130,7 +141,7 @@ const surfMono = () => SURFACES[current.surface as Surface].mono.map(mono);
 export function surfaceExplain(s: "saas" | "docs"): string { return SURFACES[s].explain; }
 
 // The tuning state that round-trips to localStorage AND the shareable URL hash.
-const HASH_KEYS = ["surface", "primary", "secondary", "fontSans", "fontMono", "base"] as const;
+const HASH_KEYS = ["mode", "surface", "primary", "secondary", "fontSans", "fontMono", "base"] as const;
 let hashReady = false; // don't write the URL until init has applied the incoming state
 
 // validate + apply a loose {key:value} object (from localStorage or the URL hash)
@@ -141,6 +152,7 @@ function assignState(s: Record<string, string | null | undefined>): void {
   if (s.fontMono && MONO.some((f) => f.name === s.fontMono)) current.fontMono = s.fontMono;
   if (s.base === "cool" || s.base === "warm") current.base = s.base;
   if (s.surface === "saas" || s.surface === "docs") current.surface = s.surface;
+  if (s.mode === "light" || s.mode === "dark") current.mode = s.mode;
 }
 
 function persist(): void {
@@ -187,8 +199,9 @@ function broadcast(): void {
   const css = document.documentElement.style.cssText;
   const base = document.documentElement.getAttribute("data-base") || "";
   const surface = document.documentElement.getAttribute("data-surface") || "saas";
+  const mode = document.documentElement.getAttribute("data-theme") || "dark";
   document.querySelectorAll("iframe").forEach((f) => {
-    try { (f as HTMLIFrameElement).contentWindow?.postMessage({ type: "ds-theme", css, base, surface }, "*"); } catch { /* ignore */ }
+    try { (f as HTMLIFrameElement).contentWindow?.postMessage({ type: "ds-theme", css, base, surface, mode }, "*"); } catch { /* ignore */ }
   });
 }
 function restore(): void {
@@ -208,6 +221,7 @@ export function initDsTheme(): void {
   // establish the surface, then apply the active (or persisted) choice on every
   // page, incl. example screens. (We apply unconditionally now: the surface can
   // move the baseline away from the CSS :root defaults.)
+  applyMode(current.mode); // before applyColor — it picks light/dark variants
   document.documentElement.setAttribute("data-surface", current.surface);
   applyColor("primary", hue(current.primary));
   applyColor("secondary", hue(current.secondary));
@@ -221,6 +235,7 @@ export function initDsTheme(): void {
       document.documentElement.style.cssText = e.data.css;
       if (typeof e.data.base === "string") applyBase(e.data.base);
       if (e.data.surface === "saas" || e.data.surface === "docs") document.documentElement.setAttribute("data-surface", e.data.surface);
+      if (e.data.mode === "light" || e.data.mode === "dark") applyMode(e.data.mode);
     }
   });
 
@@ -329,6 +344,18 @@ export function initDsTheme(): void {
   });
   syncBaseLock();
 
+  // mode pills — light / dark. Switching re-applies the colours so custom picks
+  // use the right (light vs dark) variant.
+  const modeBtns = panel.querySelectorAll<HTMLButtonElement>("[data-mode-row] button[data-mode]");
+  const applyModeFull = (m: string) => {
+    current.mode = m; applyMode(m);
+    applyColor("primary", hue(current.primary)); applyColor("secondary", hue(current.secondary));
+    modeBtns.forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.mode === m)));
+    persist(); broadcast(); updateCustomFlag();
+  };
+  modeBtns.forEach((b) => b.addEventListener("click", () => applyModeFull(b.dataset.mode!)));
+  modeBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === current.mode)));
+
   // Section lock — you can't cross-theme: inside SaaS sections the Docs pill is
   // disabled and vice-versa; neutral pages (intro/foundations/accessibility)
   // allow both. The section is derived from the page; the examples viewer locks
@@ -374,11 +401,14 @@ export function initDsTheme(): void {
   // manual edit). Our own replaceState() doesn't fire hashchange, so no loop.
   window.addEventListener("hashchange", () => {
     if (!readHash()) return;
+    applyMode(current.mode);
     document.documentElement.setAttribute("data-surface", current.surface);
     applyColor("primary", hue(current.primary)); applyColor("secondary", hue(current.secondary));
     applyFont("sans", sans(current.fontSans)); applyFont("mono", mono(current.fontMono));
     applyBase(current.base);
-    broadcast(); renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock(); updateCustomFlag(); updateLabel();
+    broadcast(); renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock();
+    modeBtns.forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.mode === current.mode)));
+    updateCustomFlag(); updateLabel();
   });
   hashReady = true; // init done — user changes now write the URL live
   updateCustomFlag(); // reflect whether we loaded a custom (shared) theme
@@ -433,11 +463,11 @@ export function initDsTheme(): void {
     applyColor("primary", hue(cfg.primary)); applyColor("secondary", hue(cfg.secondary));
     applyFont("sans", sans(cfg.fontSans)); applyFont("mono", mono(cfg.fontMono));
     applyBase(cfg.base);
-    try { localStorage.removeItem(KEY); } catch { /* ignore */ }
-    try { history.replaceState(null, "", location.pathname + location.search); } catch { /* ignore */ } // clear the share hash
+    // keep the current light/dark mode; persist() rewrites storage + the share
+    // hash (now just #mode=light if in light, else clean) and refreshes the flag.
     panel.querySelectorAll<HTMLElement>("[data-surface-row] button[data-surface]").forEach((el) =>
       el.setAttribute("aria-pressed", String(el.dataset.surface === current.surface)));
-    broadcast(); renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock(); updateCustomFlag();
+    persist(); broadcast(); renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock(); updateCustomFlag();
     out.classList.remove("show"); updateLabel();
   };
   // the reset button now lives in the top bar (outside the panel), so bind all
