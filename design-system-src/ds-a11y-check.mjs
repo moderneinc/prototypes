@@ -111,8 +111,15 @@ function run(name, P) {
 const WARM = { ...DARK, bg: "#0c0a08", surface: "#13100d", panel: "#191510",
   ink: "#f1ece0", inkDim: "#c9bfa6", muted: "#9c927e", muted2: "#6f6757" };
 
+// DOCS ground = the design-kit warm canvas (#100C0A) + cream ink; green primary.
+// Verify ink / body / muted text + the green primary clear AA on the warm cards.
+const DOCS = { ...DARK, bg: "#100c0a", surface: "#1c1714", panel: "#241d18",
+  ink: "#f2ede4", inkDim: "#aaa59e", muted: "#8a857d", muted2: "#6a655d",
+  primary: "#30f284", primaryInk: "#30f284", onPrimary: "#04220f" };
+
 const f1 = run("LIGHT theme", LIGHT);
-const f2 = run("DARK theme (cool)", DARK);
+const f2 = run("DARK theme (SaaS cool)", DARK);
 const f3 = run("DARK theme (SaaS warm · moderne.ai)", WARM);
-console.log(`\nTOTAL: ${f1 + f2 + f3} failure(s).`);
-process.exit(f1 + f2 + f3 === 0 ? 0 : 1);
+const f4 = run("DARK theme (Docs · warm kit #100C0A)", DOCS);
+console.log(`\nTOTAL: ${f1 + f2 + f3 + f4} failure(s).`);
+process.exit(f1 + f2 + f3 + f4 === 0 ? 0 : 1);
