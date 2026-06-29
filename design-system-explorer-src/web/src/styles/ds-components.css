@@ -362,7 +362,9 @@
 .ds-toast{display:flex;align-items:center;gap:12px;width:min(360px,100%);padding:12px 14px;border-radius:var(--ds-radius-md);background:var(--ds-ink);color:var(--ds-bg);box-shadow:var(--ds-shadow-3);font-size:var(--ds-fs-sm)}
 .ds-toast .ds-alert-icn{width:18px;height:18px;flex:none;color:var(--ds-green)}   /* success check */
 .ds-toast .spacer{flex:1}
-.ds-toast button{appearance:none;border:0;background:transparent;cursor:pointer;color:var(--ds-cat-violet);font-weight:var(--ds-w-semibold);font-size:var(--ds-fs-sm)}
+/* toast is an inverted (dark --ds-ink) chip in BOTH themes, so its action needs a
+   BRIGHT violet on dark — lighten the base hue (mode-stable; -ink would go dark-on-dark in light). */
+.ds-toast button{appearance:none;border:0;background:transparent;cursor:pointer;color:color-mix(in srgb,var(--ds-cat-violet) 72%,#fff);font-weight:var(--ds-w-semibold);font-size:var(--ds-fs-sm)}
 
 /* ──────────────────────────────────────────────────────────────────────────
    PROGRESS · SPINNER · SKELETON   maps → neo NeoProgressbar / NeoLoadingSpinner / NeoSkeleton
