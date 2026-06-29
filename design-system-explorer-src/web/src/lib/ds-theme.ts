@@ -37,7 +37,17 @@ const MONO: Font[] = [
 ];
 
 const KEY = "ds-colors";
+// Per-mode default accent pair. Dark (the polished default load) leads with brand
+// teal; light reads better with a brighter cyan primary + purple accent. Fonts and
+// base ground are shared. `defaultsFor` is the per-mode default used by the Reset
+// chip + the "custom?" check; the share hash always diffs against the canonical
+// dark DEFAULTS so a link round-trips unambiguously.
+const MODE_ACCENTS: Record<string, { primary: string; secondary: string }> = {
+  dark: { primary: "Teal", secondary: "Violet" },
+  light: { primary: "Cyan", secondary: "Violet" },
+};
 const DEFAULTS = { mode: "dark", primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter", base: "cool" };
+const defaultsFor = (mode: string) => ({ ...DEFAULTS, mode, ...(MODE_ACCENTS[mode] || {}) });
 const current = { ...DEFAULTS };
 
 const toRGB = (h: string) => h.replace("#", "").match(/../g)!.map((v) => parseInt(v, 16));
@@ -99,10 +109,12 @@ function assignState(s: Record<string, string | null | undefined>): void {
   if (s.mode === "light" || s.mode === "dark") current.mode = s.mode;
 }
 
-// "Custom" = differs from the single default theme (mode excluded — its toggle is always shown).
+// "Custom" = differs from THIS MODE's default theme (mode itself excluded — its
+// toggle is always shown).
 function isCustom(): boolean {
+  const d = defaultsFor(current.mode) as Record<string, string>;
   return (["primary", "secondary", "fontSans", "fontMono", "base"] as const)
-    .some((k) => (current as Record<string, string>)[k] !== (DEFAULTS as Record<string, string>)[k]);
+    .some((k) => (current as Record<string, string>)[k] !== d[k]);
 }
 function updateCustomFlag(): void {
   const el = document.querySelector<HTMLElement>("[data-customflag]");
@@ -243,9 +255,17 @@ export function initDsTheme(): void {
   const modeBtns = panel.querySelectorAll<HTMLButtonElement>("[data-mode-row] button[data-mode]");
   const syncModePills = () => modeBtns.forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.mode === current.mode)));
   modeBtns.forEach((b) => b.addEventListener("click", () => {
-    current.mode = b.dataset.mode!; applyMode(current.mode);
+    const next = b.dataset.mode!;
+    // if the accents are still at the OLD mode's defaults (untouched), move them to
+    // the NEW mode's defaults so light lands on cyan/purple and dark on teal/violet.
+    // A user's explicit colour pick is preserved across the toggle.
+    const prev = MODE_ACCENTS[current.mode];
+    if (prev && current.primary === prev.primary && current.secondary === prev.secondary) {
+      const nd = MODE_ACCENTS[next]; if (nd) { current.primary = nd.primary; current.secondary = nd.secondary; }
+    }
+    current.mode = next; applyMode(current.mode);
     applyColor("primary", hue(current.primary)); applyColor("secondary", hue(current.secondary));
-    retintSwatches(); syncModePills(); persist(); broadcast(); updateCustomFlag(); updateLabel();
+    retintSwatches(); syncSwatchAria(); syncModePills(); persist(); broadcast(); updateCustomFlag(); updateLabel();
   }));
   syncModePills();
 
@@ -292,8 +312,9 @@ export function initDsTheme(): void {
   // Reset to default (keeps the chosen light/dark mode). The button lives in the
   // top bar and only shows when the theme is custom.
   const resetTheme = () => {
-    current.primary = DEFAULTS.primary; current.secondary = DEFAULTS.secondary;
-    current.fontSans = DEFAULTS.fontSans; current.fontMono = DEFAULTS.fontMono; current.base = DEFAULTS.base;
+    const d = defaultsFor(current.mode); // reset to THIS mode's default accents
+    current.primary = d.primary; current.secondary = d.secondary;
+    current.fontSans = d.fontSans; current.fontMono = d.fontMono; current.base = d.base;
     applyColor("primary", hue(current.primary)); applyColor("secondary", hue(current.secondary));
     applyFont("sans", sans(current.fontSans)); applyFont("mono", mono(current.fontMono)); applyBase(current.base);
     persist(); broadcast(); syncSwatchAria(); renderFonts(); syncBasePills();
