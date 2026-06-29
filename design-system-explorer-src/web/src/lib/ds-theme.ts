@@ -145,7 +145,19 @@ function assignState(s: Record<string, string | null | undefined>): void {
 
 function persist(): void {
   try { localStorage.setItem(KEY, JSON.stringify(current)); } catch { /* ignore */ }
-  syncHash();
+  syncHash(); updateCustomFlag();
+}
+
+// "Custom" = the tuning deviates from THIS surface's recommended defaults (i.e. the
+// page's default look). The surface itself is page-driven, so it isn't a customization.
+const SURF_KEYS = ["primary", "secondary", "fontSans", "fontMono", "base"] as const;
+function isCustom(): boolean {
+  const d = SURFACES[current.surface as Surface] as unknown as Record<string, string>;
+  return SURF_KEYS.some((k) => (current as Record<string, string>)[k] !== d[k]);
+}
+function updateCustomFlag(): void {
+  const el = document.querySelector<HTMLElement>("[data-customflag]");
+  if (el) el.hidden = !isCustom();
 }
 
 // Shareable link: serialise the NON-default tuning values into the location hash
@@ -181,7 +193,9 @@ function broadcast(): void {
 }
 function restore(): void {
   try { assignState(JSON.parse(localStorage.getItem(KEY) || "null") || {}); } catch { /* ignore */ }
-  readHash(); // a shared link's #hash overrides saved prefs
+  // a shared link's #hash wins — and starts from the defaults so it rehydrates
+  // EXACTLY (absent keys = default, not the opener's saved prefs)
+  if (location.hash.replace(/^#/, "")) { Object.assign(current, DEFAULTS); readHash(); }
 }
 
 function cssSnippet(): string {
@@ -343,10 +357,12 @@ export function initDsTheme(): void {
     return "neutral"; // intro, foundations, accessibility
   };
   const section = sectionOf();
+  const hashSurface = new URLSearchParams(location.hash.replace(/^#/, "")).get("surface");
   if (section === "saas") { applySurface("saas"); lock("saas"); }
   // Overview (intro / foundations / accessibility) is brand/public-facing, so it
-  // defaults to the Docs theme — but both toggles stay enabled for exploration.
-  else if (section === "neutral") { applySurface("docs"); lock("both"); }
+  // defaults to the Docs theme — UNLESS a shared link specified a surface (honour it).
+  // Both toggles stay enabled for exploration.
+  else if (section === "neutral") { if (!hashSurface) applySurface("docs"); lock("both"); }
 
   // the examples viewer auto-selects the surface when you open a screen / intro
   document.addEventListener("ds-set-surface", (e) => {
@@ -362,9 +378,10 @@ export function initDsTheme(): void {
     applyColor("primary", hue(current.primary)); applyColor("secondary", hue(current.secondary));
     applyFont("sans", sans(current.fontSans)); applyFont("mono", mono(current.fontMono));
     applyBase(current.base);
-    broadcast(); renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock(); updateLabel();
+    broadcast(); renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock(); updateCustomFlag(); updateLabel();
   });
   hashReady = true; // init done — user changes now write the URL live
+  updateCustomFlag(); // reflect whether we loaded a custom (shared) theme
 
   updateLabel();
 
@@ -404,24 +421,28 @@ export function initDsTheme(): void {
       .addEventListener("click", (e) => { e.stopPropagation(); dismiss(); });
   }
 
-  panel.querySelector("[data-theme-reset]")!.addEventListener("click", () => {
-    const s = document.documentElement.style;
-    ["primary", "secondary"].forEach((r) => {
-      s.removeProperty(`--ds-${r}`); s.removeProperty(`--ds-${r}-hover`);
-      s.removeProperty(`--ds-${r}-ink`); s.removeProperty(`--ds-on-${r}`);
-    });
-    s.removeProperty("--ds-primary-pressed");
-    s.removeProperty("--ds-font-sans"); s.removeProperty("--ds-font-mono");
-    Object.assign(current, DEFAULTS); // back to the SaaS surface + its defaults
-    document.documentElement.setAttribute("data-surface", current.surface);
-    applyBase(current.base);
+  // Reset to default = this PAGE's default look (the surface its section lands on),
+  // not the global default — so resetting on a Docs/Overview page gives the Docs
+  // default, not SaaS. Clears the saved theme + the shareable hash.
+  const resetTheme = () => {
+    const def: Surface = section === "saas" ? "saas" : section === "neutral" ? "docs" : (current.surface as Surface);
+    const cfg = SURFACES[def];
+    current.surface = def; current.primary = cfg.primary; current.secondary = cfg.secondary;
+    current.fontSans = cfg.fontSans; current.fontMono = cfg.fontMono; current.base = cfg.base;
+    document.documentElement.setAttribute("data-surface", def);
+    applyColor("primary", hue(cfg.primary)); applyColor("secondary", hue(cfg.secondary));
+    applyFont("sans", sans(cfg.fontSans)); applyFont("mono", mono(cfg.fontMono));
+    applyBase(cfg.base);
     try { localStorage.removeItem(KEY); } catch { /* ignore */ }
-    broadcast();
+    try { history.replaceState(null, "", location.pathname + location.search); } catch { /* ignore */ } // clear the share hash
     panel.querySelectorAll<HTMLElement>("[data-surface-row] button[data-surface]").forEach((el) =>
       el.setAttribute("aria-pressed", String(el.dataset.surface === current.surface)));
-    renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock();
+    broadcast(); renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock(); updateCustomFlag();
     out.classList.remove("show"); updateLabel();
-  });
+  };
+  // the reset button now lives in the top bar (outside the panel), so bind all
+  document.querySelectorAll<HTMLElement>("[data-theme-reset]").forEach((b) =>
+    b.addEventListener("click", (e) => { e.stopPropagation(); resetTheme(); }));
 
   panel.querySelector("[data-theme-copy]")!.addEventListener("click", async () => {
     const css = cssSnippet();
