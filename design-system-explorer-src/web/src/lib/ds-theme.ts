@@ -242,10 +242,18 @@ export function initDsTheme(): void {
   };
   renderFonts();
 
-  const syncBasePills = () => panel.querySelectorAll<HTMLElement>("[data-base-row] button[data-base]")
-    .forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.base === current.base)));
+  // Base tone only affects DARK, so the whole control is inert in light → disable it.
+  const syncBasePills = () => {
+    const light = current.mode === "light";
+    panel.querySelectorAll<HTMLButtonElement>("[data-base-row] button[data-base]").forEach((el) => {
+      el.setAttribute("aria-pressed", String(el.dataset.base === current.base));
+      el.disabled = light;
+      el.setAttribute("aria-disabled", String(light));
+    });
+  };
   panel.querySelectorAll<HTMLButtonElement>("[data-base-row] button[data-base]").forEach((b) => {
     b.addEventListener("click", () => {
+      if (current.mode === "light") return; // inert in light
       current.base = b.dataset.base!; applyBase(current.base); persist(); broadcast(); syncBasePills();
     });
   });
@@ -265,7 +273,7 @@ export function initDsTheme(): void {
     }
     current.mode = next; applyMode(current.mode);
     applyColor("primary", hue(current.primary)); applyColor("secondary", hue(current.secondary));
-    retintSwatches(); syncSwatchAria(); syncModePills(); persist(); broadcast(); updateCustomFlag(); updateLabel();
+    retintSwatches(); syncSwatchAria(); syncModePills(); syncBasePills(); persist(); broadcast(); updateCustomFlag(); updateLabel();
   }));
   syncModePills();
 
