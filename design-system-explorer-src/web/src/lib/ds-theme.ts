@@ -129,8 +129,46 @@ const surfMono = () => SURFACES[current.surface as Surface].mono.map(mono);
 // cramped builder panel); the examples viewer pulls it from here.
 export function surfaceExplain(s: "saas" | "docs"): string { return SURFACES[s].explain; }
 
+// The tuning state that round-trips to localStorage AND the shareable URL hash.
+const HASH_KEYS = ["surface", "primary", "secondary", "fontSans", "fontMono", "base"] as const;
+let hashReady = false; // don't write the URL until init has applied the incoming state
+
+// validate + apply a loose {key:value} object (from localStorage or the URL hash)
+function assignState(s: Record<string, string | null | undefined>): void {
+  if (s.primary && PALETTE.some((h) => h.name === s.primary)) current.primary = s.primary;
+  if (s.secondary && PALETTE.some((h) => h.name === s.secondary)) current.secondary = s.secondary;
+  if (s.fontSans && SANS.some((f) => f.name === s.fontSans)) current.fontSans = s.fontSans;
+  if (s.fontMono && MONO.some((f) => f.name === s.fontMono)) current.fontMono = s.fontMono;
+  if (s.base === "cool" || s.base === "warm") current.base = s.base;
+  if (s.surface === "saas" || s.surface === "docs") current.surface = s.surface;
+}
+
 function persist(): void {
   try { localStorage.setItem(KEY, JSON.stringify(current)); } catch { /* ignore */ }
+  syncHash();
+}
+
+// Shareable link: serialise the NON-default tuning values into the location hash
+// (#primary=Teal&fontSans=Geist…). replaceState → live URL, no scroll, no history spam.
+function syncHash(): void {
+  if (!hashReady) return;
+  const p = new URLSearchParams();
+  for (const k of HASH_KEYS) {
+    const v = (current as Record<string, string>)[k];
+    if (v !== (DEFAULTS as Record<string, string>)[k]) p.set(k, v);
+  }
+  const q = p.toString();
+  try { history.replaceState(null, "", q ? "#" + q : location.pathname + location.search); } catch { /* ignore */ }
+}
+// Rehydrate from a shared link's hash. Returns true if anything was applied.
+function readHash(): boolean {
+  const raw = location.hash.replace(/^#/, "");
+  if (!raw) return false;
+  const p = new URLSearchParams(raw);
+  const obj: Record<string, string> = {}; let any = false;
+  HASH_KEYS.forEach((k) => { const v = p.get(k); if (v) { obj[k] = v; any = true; } });
+  if (any) assignState(obj);
+  return any;
 }
 // push the active overrides into any embedded screen iframes (live theming)
 function broadcast(): void {
@@ -142,15 +180,8 @@ function broadcast(): void {
   });
 }
 function restore(): void {
-  try {
-    const s = JSON.parse(localStorage.getItem(KEY) || "null");
-    if (s?.primary && PALETTE.some((h) => h.name === s.primary)) current.primary = s.primary;
-    if (s?.secondary && PALETTE.some((h) => h.name === s.secondary)) current.secondary = s.secondary;
-    if (s?.fontSans && SANS.some((f) => f.name === s.fontSans)) current.fontSans = s.fontSans;   // stale "System" → keep default
-    if (s?.fontMono && MONO.some((f) => f.name === s.fontMono)) current.fontMono = s.fontMono;
-    if (s?.base === "cool" || s?.base === "warm") current.base = s.base;
-    if (s?.surface === "saas" || s?.surface === "docs") current.surface = s.surface;
-  } catch { /* ignore */ }
+  try { assignState(JSON.parse(localStorage.getItem(KEY) || "null") || {}); } catch { /* ignore */ }
+  readHash(); // a shared link's #hash overrides saved prefs
 }
 
 function cssSnippet(): string {
@@ -322,6 +353,18 @@ export function initDsTheme(): void {
     const s = (e as CustomEvent).detail;
     if (s === "saas" || s === "docs") { applySurface(s); if (section === "examples") lock(s); }
   });
+
+  // Shareable URL: rehydrate live if the hash changes (shared link, back/forward,
+  // manual edit). Our own replaceState() doesn't fire hashchange, so no loop.
+  window.addEventListener("hashchange", () => {
+    if (!readHash()) return;
+    document.documentElement.setAttribute("data-surface", current.surface);
+    applyColor("primary", hue(current.primary)); applyColor("secondary", hue(current.secondary));
+    applyFont("sans", sans(current.fontSans)); applyFont("mono", mono(current.fontMono));
+    applyBase(current.base);
+    broadcast(); renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock(); updateLabel();
+  });
+  hashReady = true; // init done — user changes now write the URL live
 
   updateLabel();
 
