@@ -94,10 +94,10 @@ const mono = (name: string) => MONO.find((f) => f.name === name)!;
 // reduced (curated) font menu, and an explanation that states what was chosen,
 // why, and which brand-rollout epic items it addresses.
 type Surface = "saas" | "docs";
-type SurfaceCfg = { label: string; primary: string; secondary: string; fontSans: string; fontMono: string; sans: string[]; mono: string[]; explain: string };
+type SurfaceCfg = { label: string; primary: string; secondary: string; fontSans: string; fontMono: string; base: string; sans: string[]; mono: string[]; explain: string };
 const SURFACES: Record<Surface, SurfaceCfg> = {
   saas: {
-    label: "SaaS / Platform", primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter",
+    label: "SaaS / Platform", primary: "Teal", secondary: "Violet", fontSans: "Inter", fontMono: "Inter", base: "cool",
     sans: ["Inter", "Geist"], mono: ["Inter", "JetBrains"],
     explain:
       "<p>The product surface — dense application UI.</p>" +
@@ -110,7 +110,7 @@ const SURFACES: Record<Surface, SurfaceCfg> = {
       "<span class=\"ds-explain-epic\">Epic — addresses: Shared token source &middot; Apply dark theme to the Platform site &middot; Brand QA (Product &rarr; Docs &rarr; Platform).</span>",
   },
   docs: {
-    label: "Docs", primary: "Green", secondary: "Violet", fontSans: "Poppins", fontMono: "IBM Plex",
+    label: "Docs", primary: "Green", secondary: "Violet", fontSans: "Poppins", fontMono: "IBM Plex", base: "cool",
     sans: ["Poppins", "Inter"], mono: ["IBM Plex", "JetBrains"],
     explain:
       "<p>Public-facing, so it must read as the brand.</p>" +
@@ -245,9 +245,11 @@ export function initDsTheme(): void {
     current.surface = s;
     current.primary = cfg.primary; current.secondary = cfg.secondary;
     current.fontSans = cfg.fontSans; current.fontMono = cfg.fontMono;
+    current.base = cfg.base; // entering a surface resets to its default base tone (SaaS → cool)
     document.documentElement.setAttribute("data-surface", s);
     applyColor("primary", hue(cfg.primary)); applyColor("secondary", hue(cfg.secondary));
     applyFont("sans", sans(cfg.fontSans)); applyFont("mono", mono(cfg.fontMono));
+    applyBase(cfg.base);
     renderFonts(); syncSwatchAria(); syncSurfaceAria(); syncBaseLock(); persist(); broadcast(); updateLabel();
   };
   // click is a no-op on a locked (aria-disabled) pill; aria-disabled keeps the
