@@ -265,42 +265,15 @@
     var(--ds-cat-green) 80%, var(--ds-cat-lime) 100%);
 }
 
-/* ── DOCS surface canvas — the CANONICAL WARM ground from the design kit ──────
-   Docs is public-facing, so it uses the brand's warm near-black (#100C0A) + warm
-   cream ink (#F2EDE4), exactly the kit's tokens. SaaS keeps the cool ground
-   (the default :root). This is a deliberate brand-vs-product split, set by the
-   surface (not a user toggle). Overrides only the ground/ink/line; the primary
-   (green) + nav-accent follow the surface. (0,2,0) beats the default :root. */
-:root:not([data-theme="light"])[data-surface="docs"]{
-  --ds-bg:#100c0a; --ds-bg-alt:#0b0807; --ds-surface:#1c1714;
-  --ds-panel:#241d18; --ds-raised:#2a2119; --ds-overlay:rgba(6,4,3,.64);
-  --ds-code-bg:#0c0908;
+:root{ --ds-hero-glow:none; } /* flat ground — no glow (engineered/calm) */
 
-  --ds-ink:#f2ede4; --ds-ink-dim:#aaa59e; --ds-muted:#8a857d;
-  --ds-muted2:#6a655d; --ds-on-fill:#100c0a;
-
-  --ds-line:rgba(242,237,228,.10); --ds-line-strong:rgba(242,237,228,.22);
-  --ds-field-border:rgba(242,237,228,.26); --ds-sheen:rgba(255,255,255,.04);
-
-  /* tone DOWN the prototype's own nav: chrome uses the dark base, not the warm
-     panel — so the large topbar/sidenav read near-black like the marketing site.
-     Content cards stay warm (--ds-surface #1C1714, matching the design-kit preview). */
-  --ds-chrome-bg:var(--ds-bg); --ds-chrome-nav:var(--ds-bg-alt); --ds-nav-hover:var(--ds-surface);
-
-  /* soft green ambient glow behind the hero — the kit's one sanctioned glow,
-     a brand-warmth signal Docs gets and SaaS deliberately does not. */
-  --ds-hero-glow:radial-gradient(60% 50% at 50% 0%, color-mix(in srgb,var(--ds-primary) 14%, transparent) 0%, transparent 70%);
-}
-:root{ --ds-hero-glow:none; } /* SaaS: flat, no glow (engineered/calm) */
-
-/* ── SaaS WARM base tone — the DEFAULT for SaaS (the builder also offers Cool) ──
+/* ── WARM base tone — a site-wide alternative ground the builder offers (dark) ──
    Matches how moderne.ai actually reads: a DEEP warm near-black ground (like the
    site's hero "black plate" #070608), not the browner page token #15120F — warm,
    but a lot cooler/darker than full brown. Warm surfaces float on it (the marketing
-   card tones) and the chrome stays dark so the nav never reads brown. No glow, no
-   gold nav (teal accent stays). Scoped to SaaS so it can never affect Docs, which
-   keeps the design-kit ground (#100C0A). */
-:root:not([data-theme="light"])[data-surface="saas"][data-base="warm"]{
+   card tones) and the chrome stays dark so the nav never reads brown. No glow, the
+   chosen accent stays. Dark-only; light keeps its single neutral ground. */
+:root:not([data-theme="light"])[data-base="warm"]{
   --ds-bg:#0c0a08; --ds-bg-alt:#080706; --ds-surface:#13100d;
   --ds-panel:#191510; --ds-raised:#1e1813; --ds-overlay:rgba(6,5,4,.64);
   --ds-code-bg:#0a0807;
