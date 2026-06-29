@@ -14,17 +14,23 @@
        default :root, so we only act on "light". -->
   <script>try{var h=location.hash.match(/mode=(light|dark)/),m=h&&h[1];if(!m){var s=JSON.parse(localStorage.getItem("ds-colors")||"{}");m=s&&s.mode;}if(m==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
   <title>Feedback &amp; overlay — Moderne SaaS DS</title>
-  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-theme-CV91Vf0w.js"></script>
-  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-boot-CkT6Jg1I.js"></script>
-  <link rel="stylesheet" crossorigin href="/prototypes/design-system-explorer/assets/ds-theme-z5iHG6jv.css">
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-theme-DMMvvJQx.js"></script>
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-boot-BJN2E9WK.js"></script>
+  <link rel="stylesheet" crossorigin href="/prototypes/design-system-explorer/assets/ds-theme-B1LbIRBm.css">
 </head>
 <body>
   <div class="ds-shell">
-    <!-- Gallery chrome: brand block (top-left) + sticky topbar. Dark-only, so there
-         is no theme toggle. This is the static "Storybook" frame, NOT a product component. -->
+    <!-- Gallery chrome: brand block (top-left) + sticky topbar. This is the static
+         "Storybook" frame, NOT a product component. -->
     <div class="ds-brand"><span class="dot"></span><b>Moderne</b><span>Design system</span></div>
     <header class="ds-topbar">
-      <h1>Theme explorer</h1>
+      <div class="ds-topbar-left">
+        <!-- mobile menu: opens the side nav as a drawer (≤880px); hidden on desktop -->
+        <button class="ds-navtoggle" data-nav-toggle aria-label="Open navigation" aria-expanded="false" aria-controls="ds-sidenav">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <h1>Theme explorer</h1>
+      </div>
       <!-- Interactive theme builder: pick a primary + secondary from our palette;
            it live-themes the whole showcase (this site is built with the system) and
            persists across pages. Swatches are populated by src/lib/ds-theme.ts. -->
