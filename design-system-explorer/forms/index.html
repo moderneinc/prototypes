@@ -9,13 +9,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <!-- Dark-only: the dark palette is the default :root, so no pre-paint theme
-       script is needed. (A dormant [data-theme="light"] block remains in
-       ds-tokens.css for easy re-enable, but nothing ships it.) -->
+  <!-- Pre-paint: set light/dark BEFORE first paint (from a shared #mode=light hash
+       or the saved pref) so a light link doesn't flash dark first. Dark is the
+       default :root, so we only act on "light". -->
+  <script>try{var h=location.hash.match(/mode=(light|dark)/),m=h&&h[1];if(!m){var s=JSON.parse(localStorage.getItem("ds-colors")||"{}");m=s&&s.mode;}if(m==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
   <title>Forms &amp; buttons — Moderne SaaS DS</title>
-  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-theme-BrgM7zTm.js"></script>
-  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-boot-DaH2Fiq2.js"></script>
-  <link rel="stylesheet" crossorigin href="/prototypes/design-system-explorer/assets/ds-theme-oL_VVhDL.css">
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-theme-zBYEIvgN.js"></script>
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-boot-DyLHDeQc.js"></script>
+  <link rel="stylesheet" crossorigin href="/prototypes/design-system-explorer/assets/ds-theme-Dhlre4wq.css">
 </head>
 <body>
   <div class="ds-shell">
@@ -39,6 +40,12 @@
         </button>
         <div class="ds-theme-panel" id="ds-theme-panel" hidden>
           <div class="ds-theme-head"><b>Build a theme</b></div>
+          <div class="ds-theme-grp"><span class="lbl">Mode <span class="ds-sm ds-muted" style="text-transform:none;letter-spacing:0">(spike)</span></span>
+            <div class="ds-font-row" data-mode-row>
+              <button class="ds-fontpill" data-mode="dark" aria-pressed="true">Dark</button>
+              <button class="ds-fontpill" data-mode="light" aria-pressed="false">Light</button>
+            </div>
+          </div>
           <div class="ds-theme-grp"><span class="lbl">Surface · profile</span>
             <div class="ds-font-row" data-surface-row>
               <button class="ds-fontpill" data-surface="saas" aria-pressed="true">SaaS / Platform</button>

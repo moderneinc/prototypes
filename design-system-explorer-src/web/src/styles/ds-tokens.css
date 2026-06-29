@@ -92,6 +92,10 @@
   --ds-line:rgba(20,22,30,.13); --ds-line-strong:rgba(20,22,30,.24);
   --ds-field-border:rgba(20,22,30,.32); --ds-sheen:rgba(255,255,255,.7);
 
+  /* chrome (topbar + sidenav) for light; no hero glow in light */
+  --ds-chrome-bg:#ffffff; --ds-chrome-nav:var(--ds-bg-alt); --ds-nav-hover:var(--ds-bg-alt);
+  --ds-hero-glow:none;
+
   /* ── PRIMARY — brand TEAL (brand & action). On LIGHT the deep teal is a dark
        fill carrying WHITE text — it pops on white and reads at 10:1. Success is
        a separate green (--ds-green). Swap the hue on the Foundations picker. */
@@ -267,7 +271,7 @@
    (the default :root). This is a deliberate brand-vs-product split, set by the
    surface (not a user toggle). Overrides only the ground/ink/line; the primary
    (green) + nav-accent follow the surface. (0,2,0) beats the default :root. */
-:root[data-surface="docs"]{
+:root:not([data-theme="light"])[data-surface="docs"]{
   --ds-bg:#100c0a; --ds-bg-alt:#0b0807; --ds-surface:#1c1714;
   --ds-panel:#241d18; --ds-raised:#2a2119; --ds-overlay:rgba(6,4,3,.64);
   --ds-code-bg:#0c0908;
@@ -296,7 +300,7 @@
    card tones) and the chrome stays dark so the nav never reads brown. No glow, no
    gold nav (teal accent stays). Scoped to SaaS so it can never affect Docs, which
    keeps the design-kit ground (#100C0A). */
-:root[data-surface="saas"][data-base="warm"]{
+:root:not([data-theme="light"])[data-surface="saas"][data-base="warm"]{
   --ds-bg:#0c0a08; --ds-bg-alt:#080706; --ds-surface:#13100d;
   --ds-panel:#191510; --ds-raised:#1e1813; --ds-overlay:rgba(6,5,4,.64);
   --ds-code-bg:#0a0807;

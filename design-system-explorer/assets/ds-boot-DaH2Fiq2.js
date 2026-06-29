@@ -1,1 +1,0 @@
-import{t as e}from"./ds-theme-BrgM7zTm.js";function t(){let e=location.pathname.replace(/index\.html$/,``),t=null;document.querySelectorAll(`.ds-sidenav a`).forEach(n=>{let r=new URL(n.href).pathname;(e===r||r!==`/prototypes/design-system-explorer/`&&e.startsWith(r))&&(!t||r.length>new URL(t.href).pathname.length)&&(t=n)}),t&&t.setAttribute(`aria-current`,`page`)}e(),t();
