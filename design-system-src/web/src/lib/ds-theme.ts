@@ -79,7 +79,7 @@ function applyFont(which: "sans" | "mono", f: Font): void {
   ensureFont(f.g);
   document.documentElement.style.setProperty(`--ds-font-${which}`, f.stack);
 }
-// base = the ground register: "cool" (default) or "warm" (marketing black/brown + gold nav)
+// base = the SaaS ground register: "warm" (default — matches moderne.ai) or "cool" neutral
 function applyBase(base: string): void {
   if (base === "warm") document.documentElement.setAttribute("data-base", "warm");
   else document.documentElement.removeAttribute("data-base");
@@ -104,7 +104,7 @@ const SURFACES: Record<Surface, SurfaceCfg> = {
       "<ul>" +
       "<li><b>Recommended colour — Teal (default).</b> Teal is the action colour, kept deliberately distinct from brand-green so &ldquo;do it&rdquo; reads differently from &ldquo;on brand.&rdquo; Success stays green; magenta is reserved for marketing.</li>" +
       "<li><b>Recommended type — Inter (default, UI + data).</b> Built for dense, small-size legibility (the dev-tool standard); its tabular figures keep numerals aligned, so one typeface covers both UI and data. Geist / JetBrains are offered as alternates.</li>" +
-      "<li><b>Cool, flat ground.</b> SaaS keeps the cool near-black and stays flat — no ambient glow — engineered and calm for dense, long-session app use.</li>" +
+      "<li><b>Warm ground by default — matches moderne.ai.</b> A deep warm near-black (the marketing site's tone, not the browner page token); a <b>cool</b> neutral is one click away in the builder. Either way it stays <b>flat — no glow</b> — engineered and calm for dense, long-session app use.</li>" +
       "<li><b>Full categorical palette.</b> The 6 brand strands <i>plus</i> extra hues (pink, indigo, cyan, gold, orange), because data-viz needs more categories. All on the shared brand spine.</li>" +
       "</ul>" +
       "<span class=\"ds-explain-epic\">Epic — addresses: Shared token source &middot; Apply dark theme to the Platform site &middot; Brand QA (Product &rarr; Docs &rarr; Platform).</span>",
