@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Internal design-system gallery: permanently noindex (dark-launched, see docs/WORKFLOW.md). -->
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="/prototypes/design-system-explorer/brand/moderne-symbol.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Dark-only: the dark palette is the default :root, so no pre-paint theme
+       script is needed. (A dormant [data-theme="light"] block remains in
+       ds-tokens.css for easy re-enable, but nothing ships it.) -->
+  <title>Accessibility — Moderne SaaS DS</title>
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-theme-D6EjY2qJ.js"></script>
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-boot-Cvct9n6z.js"></script>
+  <link rel="stylesheet" crossorigin href="/prototypes/design-system-explorer/assets/ds-theme-vc_caQOm.css">
+</head>
+<body>
+  <div class="ds-shell">
+    <!-- Gallery chrome: brand block (top-left) + sticky topbar. Dark-only, so there
+         is no theme toggle. This is the static "Storybook" frame, NOT a product component. -->
+    <div class="ds-brand"><span class="dot"></span><b>Moderne</b><span>Design system</span></div>
+    <header class="ds-topbar">
+      <h1>Dark mode explorer</h1>
+      <!-- Interactive theme builder: pick a primary + secondary from our palette;
+           it live-themes the whole showcase (this site is built with the system) and
+           persists across pages. Swatches are populated by src/lib/ds-theme.ts. -->
+      <div class="ds-theme-ctl">
+        <button class="ds-theme-trigger" aria-expanded="false" aria-controls="ds-theme-panel">
+          <span class="sw2"><i style="background:var(--ds-primary)"></i><i style="background:var(--ds-secondary)"></i></span>
+          Theme
+        </button>
+        <div class="ds-theme-panel" id="ds-theme-panel" hidden>
+          <div class="ds-theme-head"><b>Build a theme</b>
+            <button class="ds-btn ds-btn--subtle ds-btn--sm" data-theme-reset>Reset to default</button>
+          </div>
+          <div class="ds-theme-grp"><span class="lbl">Surface · profile</span>
+            <div class="ds-font-row" data-surface-row>
+              <button class="ds-fontpill" data-surface="saas" aria-pressed="true">SaaS / Platform</button>
+              <button class="ds-fontpill" data-surface="docs" aria-pressed="false">Docs</button>
+            </div>
+          </div>
+          <div class="ds-theme-grp"><span class="lbl">Primary · brand &amp; action</span><div class="ds-sw-row" data-role="primary"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Secondary · accent</span><div class="ds-sw-row" data-role="secondary"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Primary font · UI</span><div class="ds-font-row" data-font="sans"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Secondary font · mono / data</span><div class="ds-font-row" data-font="mono"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Base tone · ground <span class="ds-sm ds-muted" style="text-transform:none;letter-spacing:0">(SaaS only)</span></span>
+            <div class="ds-font-row" data-base-row>
+              <button class="ds-fontpill" data-base="cool" aria-pressed="true">Cool neutral</button>
+              <button class="ds-fontpill" data-base="warm" aria-pressed="false">Warm · moderne.ai</button>
+            </div>
+          </div>
+          <div class="ds-theme-actions">
+            <button class="ds-btn ds-btn--secondary ds-btn--sm" data-theme-copy>Copy CSS</button>
+            <span class="ds-sm ds-muted" data-theme-current></span>
+          </div>
+          <pre class="ds-theme-out"></pre>
+          <p class="ds-theme-credit">Based on the Moderne <b>design kit</b> — its spectral palette derives from the <b>M-FISH</b> chromosome-painting approach.</p>
+        </div>
+      </div>
+    </header>
+    <nav class="ds-sidenav"><!-- Shared gallery nav. The active link is marked at runtime by ds-chrome.ts
+     (matches location.pathname), so no per-page duplication is needed. -->
+<div class="group">Overview</div>
+<a href="/prototypes/design-system-explorer/">Introduction</a>
+<a href="/prototypes/design-system-explorer/foundations/">Foundations</a>
+<a href="/prototypes/design-system-explorer/accessibility/">Accessibility</a>
+<div class="group">SaaS · Platform</div>
+<a href="/prototypes/design-system-explorer/examples/?s=saas" data-screen="saas">About the SaaS theme</a>
+<a href="/prototypes/design-system-explorer/forms/">Forms &amp; buttons</a>
+<a href="/prototypes/design-system-explorer/navigation/">Navigation</a>
+<a href="/prototypes/design-system-explorer/data-display/">Data display</a>
+<a href="/prototypes/design-system-explorer/feedback/">Feedback &amp; overlay</a>
+<a href="/prototypes/design-system-explorer/dataviz/">Data visualization</a>
+<a href="/prototypes/design-system-explorer/examples/?s=devcenter" data-screen="devcenter">DevCenter</a>
+<a href="/prototypes/design-system-explorer/examples/?s=activity" data-screen="activity">Activity</a>
+<a href="/prototypes/design-system-explorer/examples/?s=changelog" data-screen="changelog">Changelog</a>
+<div class="group">Docs</div>
+<a href="/prototypes/design-system-explorer/examples/?s=docs" data-screen="docs">About the Docs theme</a>
+<a href="/prototypes/design-system-explorer/examples/?s=docs-home" data-screen="docs-home">Docs · Home</a>
+<a href="/prototypes/design-system-explorer/examples/?s=docs-platform" data-screen="docs-platform">Docs · Platform</a>
+<a href="/prototypes/design-system-explorer/examples/?s=docs-article" data-screen="docs-article">Docs · Article</a>
+</nav>
+    <main class="ds-main">
+      <div class="ds-main-inner">
+
+        <div class="ds-page-head">
+          <div class="ds-eyebrow">Foundations</div>
+          <h1 class="ds-display">Accessibility</h1>
+          <p>Every text and UI color pair in both themes is checked against WCAG&nbsp;2.1 AA. The audit is a script —
+            <code class="ds-mono">.context/ds-a11y-check.mjs</code> — run with <code class="ds-mono">node</code>; it currently reports
+            <b style="color:var(--ds-green-ink)">0 failures</b>. Thresholds: normal text ≥ 4.5:1, large/bold text &amp; UI graphics ≥ 3.0:1.</p>
+        </div>
+
+        <div class="ds-note"><b>Color is never the only signal.</b> Status always pairs the hue with an icon, a dot, and a text
+          label (see the data-display and feedback pages), so red/green meaning survives for color-blind users
+          (DESIGN.md §8). Focus is shown with a visible <code class="ds-mono">:focus-visible</code> ring on the primary color, and
+          all looping motion honors <code class="ds-mono">prefers-reduced-motion</code>.</p>
+
+        <section class="ds-section" id="light">
+          <header><h2 class="ds-h2">Light theme — contrast ratios</h2><span class="maps">AA pass at every row</span></header>
+          <div class="ds-table-wrap"><table class="ds-table">
+            <thead><tr><th>Pair</th><th>Tokens</th><th class="num">Ratio</th><th>Min</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td>Body text on card</td><td class="ds-mono">ink-dim / panel</td><td class="num">9.76</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Labels on canvas</td><td class="ds-mono">muted / bg</td><td class="num">5.09</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Primary link / text</td><td class="ds-mono">primary-ink / panel</td><td class="num">7.10</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Button label on primary</td><td class="ds-mono">on-primary / primary</td><td class="num">7.10</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Success text</td><td class="ds-mono">green-ink / panel</td><td class="num">7.13</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Error text</td><td class="ds-mono">red-ink / panel</td><td class="num">6.58</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Label on danger button</td><td class="ds-mono">white / danger</td><td class="num">5.71</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Strand inks (darkest→lightest)</td><td class="ds-mono">cat-*-ink / panel</td><td class="num">4.88–6.32</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Faint caption (large only)</td><td class="ds-mono">muted2 / bg</td><td class="num">3.47</td><td>3.0</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section class="ds-section" id="dark">
+          <header><h2 class="ds-h2">Dark theme — contrast ratios</h2><span class="maps">AA pass at every row</span></header>
+          <div class="ds-table-wrap"><table class="ds-table">
+            <thead><tr><th>Pair</th><th>Tokens</th><th class="num">Ratio</th><th>Min</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td>Body text on card</td><td class="ds-mono">ink-dim / panel</td><td class="num">9.17</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Labels on canvas</td><td class="ds-mono">muted / bg</td><td class="num">6.07</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Primary link / text</td><td class="ds-mono">primary-ink / panel</td><td class="num">9.08</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Button label on primary</td><td class="ds-mono">on-primary / primary</td><td class="num">5.20</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Success text</td><td class="ds-mono">green-ink / panel</td><td class="num">10.67</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Error text</td><td class="ds-mono">red-ink / panel</td><td class="num">8.19</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Label on danger button</td><td class="ds-mono">white / danger</td><td class="num">4.80</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Strand inks</td><td class="ds-mono">cat-*-ink / panel</td><td class="num">6.81–11.48</td><td>4.5</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+              <tr><td>Faint caption (large only)</td><td class="ds-mono">muted2 / bg</td><td class="num">3.34</td><td>3.0</td><td><span class="ds-status ds-status--ok">Pass</span></td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        <section class="ds-section" id="rerun">
+          <header><h2 class="ds-h2">Re-run the audit</h2></header>
+          <pre class="ds-code">node .context/ds-a11y-check.mjs</pre>
+          <p class="ds-sm ds-muted" style="margin-top:12px">The script holds the literal token values and computes WCAG relative-luminance
+            contrast for every meaningful pair, exiting non-zero on any failure — so it can gate CI later. When a token changes,
+            re-run it and update the rows above.</p>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

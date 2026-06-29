@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" class="ds-screen">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Internal design-system gallery: permanently noindex (dark-launched, see docs/WORKFLOW.md). -->
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="/prototypes/design-system-explorer/brand/moderne-symbol.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Dark-only: the dark palette is the default :root, so no pre-paint theme
+       script is needed. (A dormant [data-theme="light"] block remains in
+       ds-tokens.css for easy re-enable, but nothing ships it.) -->
+  <title>DevCenter — Moderne (recreation)</title>
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-theme-D6EjY2qJ.js"></script>
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/ds-screen-boot-FRaWd5Fk.js"></script>
+  <link rel="stylesheet" crossorigin href="/prototypes/design-system-explorer/assets/ds-theme-vc_caQOm.css">
+  <link rel="stylesheet" crossorigin href="/prototypes/design-system-explorer/assets/ds-screen-boot-iz2c0sdM.css">
+</head>
+<body>
+  <div class="ex-app">
+    <!-- Shared example-screen left nav rail (mirrors moderne-ui PR #8378), restyled
+         with our tokens. Each page marks its active item via aria-current (a 1-line
+         inline script), which the .ds-rail-item[aria-current="page"] rule styles. -->
+    <nav class="ds-rail" aria-label="Primary">
+      <div class="ds-rail-top">
+        <div class="ds-rail-logo" title="Moderne"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="18" rx="3" fill="currentColor" opacity=".16"/><rect x="9" y="5.5" width="6" height="2" rx="1" fill="currentColor" opacity=".5"/><rect x="9" y="9.2" width="6" height="2.4" rx="1.2" fill="var(--ds-green)"/><rect x="9" y="13" width="6" height="2" rx="1" fill="currentColor" opacity=".42"/><rect x="9" y="16.4" width="6" height="1.7" rx=".85" fill="currentColor" opacity=".3"/></svg></div>
+        <span class="ds-rail-badge">v2</span>
+      </div>
+      <div class="ds-rail-scroll">
+        <button class="ds-rail-item" data-nav="moddy"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9 13.8 10.8 12 15.5 10.2 10.8 5.5 9l4.7-1.3z"/></svg><span class="lbl">Moddy</span><span class="beta">Beta</span></button>
+        <button class="ds-rail-item" data-nav="devcenter"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/></svg><span class="lbl">DevCenter</span></button>
+        <button class="ds-rail-item" data-nav="marketplace"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg><span class="lbl">Marketplace</span></button>
+        <button class="ds-rail-item" data-nav="builder"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 005.4-5.4l-2.5 2.5-2-2 2.5-2.5z"/></svg><span class="lbl">Builder</span></button>
+        <button class="ds-rail-item" data-nav="activity"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg><span class="lbl">Activity</span></button>
+        <button class="ds-rail-item" data-nav="changelog"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="lbl">Changelog</span><span class="beta">Beta</span></button>
+        <button class="ds-rail-item" data-nav="repositories"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 8v8M18 10c0 4-6 2-6 6"/></svg><span class="lbl">Repositories</span></button>
+        <button class="ds-rail-item" data-nav="deploy"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5M8 9l4-4 4 4"/><path d="M5 19h14"/></svg><span class="lbl">Deploy</span></button>
+      </div>
+      <div class="ds-rail-tenant" aria-hidden="true"></div>
+    </nav>
+    <div class="ex-main">
+      <div class="ex-topbar"><!-- Shared example-screen app bar (mirrors GlobalNavigationBar), restyled with
+     our tokens. Static, no data. -->
+<div class="ds-appbar">
+  <button class="org">
+    <svg class="ds-ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2.5" width="8" height="13" rx="1"/><path d="M11 6h4v9.5H3M6 5.5h2M6 8h2M6 10.5h2"/></svg>
+    Moderne
+    <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+  </button>
+  <span class="spacer"></span>
+  <span class="ds-input-wrap" style="max-width:280px">
+    <svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg>
+    <input class="ds-input ds-input--sm" placeholder="Search recipes, repos…" aria-label="Search" />
+  </span>
+  <button class="ds-btn ds-btn--icon ds-btn--subtle" aria-label="Navigation menu" title="Navigation menu">
+    <svg class="ds-ic" viewBox="0 0 16 16" fill="currentColor"><circle cx="3.5" cy="3.5" r="1.4"/><circle cx="8" cy="3.5" r="1.4"/><circle cx="12.5" cy="3.5" r="1.4"/><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/><circle cx="3.5" cy="12.5" r="1.4"/><circle cx="8" cy="12.5" r="1.4"/><circle cx="12.5" cy="12.5" r="1.4"/></svg>
+  </button>
+  <span class="ds-avatar ds-avatar--sm" title="User account">JJ</span>
+</div>
+</div>
+      <div class="ex-content"><div class="ex-inner">
+
+        <div class="ex-pagehead">
+          <div>
+            <h1 style="font-size:24px;font-weight:600;margin:0;display:flex;align-items:center;gap:8px">DevCenter <span class="ds-badge ds-badge--brand">Beta</span></h1>
+            <div class="ds-sm ds-muted" style="margin-top:4px">Last updated 23 days ago</div>
+          </div>
+          <div class="ex-actions">
+            <div class="ds-segment">
+              <button type="button" aria-pressed="true">Timeline view</button>
+            </div>
+            <button class="ds-btn ds-btn--secondary">Customize</button>
+            <button class="ds-btn ds-btn--primary">Run DevCenter recipe</button>
+            <button class="ds-btn ds-btn--icon ds-btn--subtle" aria-label="Settings">
+              <svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+                <circle cx="8" cy="8" r="2.2"/>
+                <path d="M8 1.5v1.6M8 12.9v1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M1.5 8h1.6M12.9 8h1.6M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Recipe runs -->
+        <section class="dc-sec">
+          <h2>Recipe runs</h2>
+          <p class="sub">Click and drag to select.</p>
+          <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+            <button class="ds-btn ds-btn--secondary ds-btn--sm">Reset zoom</button>
+          </div>
+          <div class="dc-range">
+            <span class="sel" style="left:62%;right:6%"></span>
+          </div>
+          <div class="dc-axis">
+            <span>May 5</span>
+            <span>May 11</span>
+            <span>May 17</span>
+            <span>May 23</span>
+            <span>May 29</span>
+            <span>Jun 3</span>
+          </div>
+        </section>
+
+        <!-- Organizational ownership -->
+        <section class="dc-sec">
+          <h2>Organizational ownership</h2>
+          <div class="dc-stats">
+            <div class="dc-stat">
+              <div>
+                <div class="n">241 / 266</div>
+                <div class="l">Repositories</div>
+                <div class="meta">25 LSTs are missing</div>
+              </div>
+              <svg class="ds-spark" viewBox="0 0 120 36" width="120" height="36" aria-hidden="true"><polyline data-line stroke="var(--ds-green-ink)" points="2,28 22,24 42,26 62,16 82,18 102,8 118,4"/></svg>
+            </div>
+            <div class="dc-stat">
+              <div>
+                <div class="n">1,110</div>
+                <div class="l">Contributing developers</div>
+                <div class="meta">last 90 days</div>
+                <a class="link" href="#">How is this calculated?</a>
+              </div>
+              <svg class="ds-spark" viewBox="0 0 120 36" width="120" height="36" aria-hidden="true"><polyline data-line stroke="var(--ds-green-ink)" points="2,22 22,26 42,18 62,20 82,12 102,14 118,6"/></svg>
+            </div>
+            <div class="dc-stat">
+              <div>
+                <div class="n">44,827,161</div>
+                <div class="l">Lines of code</div>
+              </div>
+              <svg class="ds-spark" viewBox="0 0 120 36" width="120" height="36" aria-hidden="true"><polyline data-line stroke="var(--ds-green-ink)" points="2,30 22,27 42,24 62,22 82,17 102,11 118,5"/></svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- Change campaigns -->
+        <section class="dc-sec">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <h2 style="margin:0">Change campaigns</h2>
+            <div style="display:flex;align-items:center;gap:12px">
+              <label class="ds-switch ds-sm"><input type="checkbox"> Hide N/A</label>
+              <button class="ds-btn ds-btn--icon ds-btn--subtle ds-btn--sm" aria-label="Download CSV"><svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg></button>
+            </div>
+          </div>
+          <div class="dc-camps">
+
+            <!-- Card 1: Spring Boot 4.0 -->
+            <div class="dc-camp">
+              <h3>Move to Spring Boot 4.0</h3>
+              <div class="chart">
+                <div class="ds-chart"><svg viewBox="0 0 280 130" role="img" aria-label="Migration progress over time">
+                  <line class="ds-chart-grid" x1="20" y1="22" x2="270" y2="22"/>
+                  <line class="ds-chart-grid" x1="20" y1="58" x2="270" y2="58"/>
+                  <line class="ds-chart-grid" x1="20" y1="94" x2="270" y2="94"/>
+                  <line class="ds-chart-grid" x1="20" y1="120" x2="270" y2="120"/>
+                  <path data-area fill="var(--ds-red)" fill-opacity=".85" d="M20,64 L82,46 L144,36 L206,24 L270,12 L270,120 L20,120 Z"/>
+                  <path data-area fill="var(--ds-cat-saas-gold)" fill-opacity=".9" d="M20,86 L82,66 L144,52 L206,38 L270,22 L270,120 L20,120 Z"/>
+                  <path data-area fill="var(--ds-green)" fill-opacity=".9" d="M20,104 L82,90 L144,74 L206,54 L270,34 L270,120 L20,120 Z"/>
+                  <polyline data-line stroke="var(--ds-red)" pathLength="1" points="20,64 82,46 144,36 206,24 270,12"/>
+                  <line data-target x1="20" y1="16" x2="270" y2="16"/>
+                  <line data-marker x1="206" y1="12" x2="206" y2="120"/>
+                  <text class="ds-chart-axis" x="20" y="129">May 10</text>
+                  <text class="ds-chart-axis" x="125" y="129">May 24</text>
+                  <text class="ds-chart-axis" x="244" y="129">Jun 7</text>
+                </svg></div>
+              </div>
+              <table class="dc-cat">
+                <thead>
+                  <tr><th>Category</th><th class="num">Last</th><th class="num">Max</th><th class="num">Min</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="dot" style="background:var(--ds-red)"></span>Major</td><td class="num">41</td><td class="num">47</td><td class="num">38</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-cat-saas-gold)"></span>Minor</td><td class="num">12</td><td class="num">19</td><td class="num">9</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-cat-saas-orange)"></span>Patch</td><td class="num">6</td><td class="num">11</td><td class="num">4</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-green)"></span>Completed</td><td class="num">2</td><td class="num">2</td><td class="num">0</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-muted2)"></span>N/A</td><td class="num">0</td><td class="num">—</td><td class="num">—</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-muted2)"></span>No LST</td><td class="num">3</td><td class="num">—</td><td class="num">—</td></tr>
+                </tbody>
+              </table>
+              <div class="dry"><button class="ds-btn ds-btn--secondary ds-btn--sm">Dry run</button></div>
+            </div>
+
+            <!-- Card 2: Java 25 -->
+            <div class="dc-camp">
+              <h3>Move to Java 25</h3>
+              <div class="chart">
+                <div class="ds-chart"><svg viewBox="0 0 280 130" role="img" aria-label="Migration progress over time">
+                  <line class="ds-chart-grid" x1="20" y1="22" x2="270" y2="22"/>
+                  <line class="ds-chart-grid" x1="20" y1="58" x2="270" y2="58"/>
+                  <line class="ds-chart-grid" x1="20" y1="94" x2="270" y2="94"/>
+                  <line class="ds-chart-grid" x1="20" y1="120" x2="270" y2="120"/>
+                  <path data-area fill="var(--ds-cat-saas-pink)" fill-opacity=".85" d="M20,70 L82,54 L144,40 L206,28 L270,18 L270,120 L20,120 Z"/>
+                  <path data-area fill="var(--ds-cat-violet)" fill-opacity=".9" d="M20,90 L82,72 L144,58 L206,44 L270,30 L270,120 L20,120 Z"/>
+                  <path data-area fill="var(--ds-green)" fill-opacity=".9" d="M20,106 L82,94 L144,80 L206,60 L270,40 L270,120 L20,120 Z"/>
+                  <polyline data-line stroke="var(--ds-cat-saas-pink)" pathLength="1" points="20,70 82,54 144,40 206,28 270,18"/>
+                  <line data-target x1="20" y1="16" x2="270" y2="16"/>
+                  <line data-marker x1="206" y1="28" x2="206" y2="120"/>
+                  <text class="ds-chart-axis" x="20" y="129">May 10</text>
+                  <text class="ds-chart-axis" x="125" y="129">May 24</text>
+                  <text class="ds-chart-axis" x="244" y="129">Jun 7</text>
+                </svg></div>
+              </div>
+              <table class="dc-cat">
+                <thead>
+                  <tr><th>Category</th><th class="num">Last</th><th class="num">Max</th><th class="num">Min</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="dot" style="background:var(--ds-cat-saas-pink)"></span>Java 8+</td><td class="num">102</td><td class="num">102</td><td class="num">96</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-cat-violet)"></span>Java 11+</td><td class="num">3</td><td class="num">9</td><td class="num">0</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-cat-blue)"></span>Java 17+</td><td class="num">31</td><td class="num">66</td><td class="num">3</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-cat-saas-cyan)"></span>Java 21+</td><td class="num">8</td><td class="num">8</td><td class="num">0</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-green)"></span>Completed</td><td class="num">25</td><td class="num">25</td><td class="num">0</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-muted2)"></span>N/A</td><td class="num">0</td><td class="num">—</td><td class="num">—</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-muted2)"></span>No LST</td><td class="num">25</td><td class="num">—</td><td class="num">—</td></tr>
+                </tbody>
+              </table>
+              <div class="dry"><button class="ds-btn ds-btn--secondary ds-btn--sm">Dry run</button></div>
+            </div>
+
+            <!-- Card 3: JUnit 6 -->
+            <div class="dc-camp">
+              <h3>Move to JUnit 6</h3>
+              <div class="chart">
+                <div class="ds-chart"><svg viewBox="0 0 280 130" role="img" aria-label="Migration progress over time">
+                  <line class="ds-chart-grid" x1="20" y1="22" x2="270" y2="22"/>
+                  <line class="ds-chart-grid" x1="20" y1="58" x2="270" y2="58"/>
+                  <line class="ds-chart-grid" x1="20" y1="94" x2="270" y2="94"/>
+                  <line class="ds-chart-grid" x1="20" y1="120" x2="270" y2="120"/>
+                  <path data-area fill="var(--ds-cat-magenta)" fill-opacity=".85" d="M20,58 L82,42 L144,30 L206,20 L270,10 L270,120 L20,120 Z"/>
+                  <path data-area fill="var(--ds-cat-saas-gold)" fill-opacity=".9" d="M20,82 L82,60 L144,48 L206,34 L270,20 L270,120 L20,120 Z"/>
+                  <path data-area fill="var(--ds-green)" fill-opacity=".9" d="M20,100 L82,84 L144,68 L206,48 L270,28 L270,120 L20,120 Z"/>
+                  <polyline data-line stroke="var(--ds-cat-magenta)" pathLength="1" points="20,58 82,42 144,30 206,20 270,10"/>
+                  <line data-target x1="20" y1="16" x2="270" y2="16"/>
+                  <line data-marker x1="206" y1="20" x2="206" y2="120"/>
+                  <text class="ds-chart-axis" x="20" y="129">May 10</text>
+                  <text class="ds-chart-axis" x="125" y="129">May 24</text>
+                  <text class="ds-chart-axis" x="244" y="129">Jun 7</text>
+                </svg></div>
+              </div>
+              <table class="dc-cat">
+                <thead>
+                  <tr><th>Category</th><th class="num">Last</th><th class="num">Max</th><th class="num">Min</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="dot" style="background:var(--ds-cat-magenta)"></span>JUnit 4</td><td class="num">12</td><td class="num">12</td><td class="num">0</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-cat-saas-gold)"></span>JUnit 5</td><td class="num">34</td><td class="num">83</td><td class="num">0</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-green)"></span>Completed</td><td class="num">241</td><td class="num">241</td><td class="num">0</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-muted2)"></span>N/A</td><td class="num">0</td><td class="num">—</td><td class="num">—</td></tr>
+                  <tr><td><span class="dot" style="background:var(--ds-muted2)"></span>No LST</td><td class="num">25</td><td class="num">—</td><td class="num">—</td></tr>
+                </tbody>
+              </table>
+              <div class="dry"><button class="ds-btn ds-btn--secondary ds-btn--sm">Dry run</button></div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Change campaigns · point-in-time (parliament / hemicycle dot chart) -->
+        <section class="dc-sec">
+          <h2>Change campaigns · point-in-time</h2>
+          <p class="sub">One dot per repository — the migration distance to completion. Toggle off Timeline view to see it.</p>
+          <div class="ds-card">
+            <div class="ds-card-head">
+              <h3>Move to Spring Boot 4.0</h3>
+              <button class="ds-btn ds-btn--icon ds-btn--subtle ds-btn--sm" data-replay aria-label="Replay animation" title="Replay animation"><svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.6 8a5.6 5.6 0 1 1-1.7-4"/><path d="M12.5 1.6v3h-3"/></svg></button>
+            </div>
+            <div class="ds-card-body">
+              <div class="pm-chart">
+                <svg class="pm-svg" viewBox="0 0 500 210" width="460" role="img" aria-label="164 repositories by migration status: 43% completed (green), the rest spread across major, minor and patch versions or not applicable.">
+                  <g>
+                    <circle class="pm-seat" style="--i:0" cx="104.4" cy="189.1" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:1" cx="118.3" cy="189.1" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:2" cx="132.3" cy="189.1" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:3" cx="146.3" cy="188.9" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:4" cx="160.2" cy="188.9" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:5" cx="174.2" cy="189" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:6" cx="188.2" cy="189" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:7" cx="105.7" cy="175.3" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:8" cx="119.8" cy="175.4" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:9" cx="133.9" cy="175.5" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:10" cx="148.2" cy="174.8" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:11" cx="162.5" cy="175" r="5.2" fill="var(--ds-red)"/>
+                    <circle class="pm-seat" style="--i:12" cx="108.3" cy="161.6" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:13" cx="122.7" cy="161.9" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:14" cx="176.8" cy="175.2" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:15" cx="137" cy="162.2" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:16" cx="112.2" cy="148.3" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:17" cx="191.3" cy="175.5" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:18" cx="152" cy="161.2" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:19" cx="126.9" cy="148.8" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:20" cx="166.8" cy="161.5" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:21" cx="141.7" cy="149.3" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:22" cx="117.4" cy="135.4" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:23" cx="181.9" cy="162.1" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:24" cx="132.5" cy="136.1" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:25" cx="157.7" cy="148.2" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:26" cx="123.8" cy="123.1" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:27" cx="147.9" cy="137" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:28" cx="173.2" cy="149" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:29" cx="197.4" cy="162.9" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:30" cx="139.4" cy="124.2" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:31" cx="165.1" cy="136" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:32" cx="131.3" cy="111.4" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:33" cx="155.4" cy="125.6" r="5.2" fill="var(--ds-cat-saas-orange)"/>
+                    <circle class="pm-seat" style="--i:34" cx="189.3" cy="150.1" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:35" cx="147.5" cy="113" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:36" cx="181.5" cy="137.5" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:37" cx="139.8" cy="100.5" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:38" cx="174" cy="125" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:39" cx="164.2" cy="115.1" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:40" cx="156.8" cy="102.8" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:41" cx="206" cy="152" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:42" cx="149.4" cy="90.5" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:43" cx="198.7" cy="139.8" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:44" cx="191.5" cy="127.5" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:45" cx="174.2" cy="105.7" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:46" cx="184.4" cy="115.4" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:47" cx="167" cy="93.5" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:48" cx="159.9" cy="81.4" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:49" cx="185.2" cy="97.5" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:50" cx="178.2" cy="85.4" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:51" cx="171.2" cy="73.4" r="5.2" fill="var(--ds-cat-saas-gold)"/>
+                    <circle class="pm-seat" style="--i:52" cx="216.9" cy="143.4" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:53" cx="209.9" cy="131.3" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:54" cx="203" cy="119.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:55" cx="196" cy="107.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:56" cx="183.2" cy="66.4" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:57" cx="190.1" cy="78.5" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:58" cx="197.1" cy="90.6" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:59" cx="208.6" cy="100.6" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:60" cx="215.5" cy="112.8" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:61" cx="195.8" cy="60.7" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:62" cx="222.5" cy="125" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:63" cx="202.8" cy="72.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:64" cx="209.7" cy="85.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:65" cx="229.5" cy="137.3" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:66" cx="208.9" cy="56.1" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:67" cx="221.9" cy="95.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:68" cx="215.9" cy="68.7" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:69" cx="229" cy="108.5" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:70" cx="222.8" cy="81.3" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:71" cx="222.4" cy="52.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:72" cx="236" cy="121.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:73" cx="229.4" cy="65.8" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:74" cx="235.8" cy="93" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:75" cx="236.3" cy="78.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:76" cx="243" cy="134.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:77" cx="236.1" cy="50.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:78" cx="242.9" cy="106.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:79" cx="243.1" cy="64.3" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:80" cx="250" cy="119.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:81" cx="250" cy="92" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:82" cx="250" cy="78.1" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:83" cx="250" cy="50.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:84" cx="256.9" cy="64.3" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:85" cx="257.1" cy="106.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:86" cx="263.9" cy="50.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:87" cx="257" cy="134.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:88" cx="263.7" cy="78.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:89" cx="264.2" cy="93" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:90" cx="270.6" cy="65.8" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:91" cx="264" cy="121.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:92" cx="277.6" cy="52.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:93" cx="277.2" cy="81.3" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:94" cx="271" cy="108.5" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:95" cx="284.1" cy="68.7" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:96" cx="278.1" cy="95.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:97" cx="291.1" cy="56.1" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:98" cx="270.5" cy="137.3" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:99" cx="290.3" cy="85.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:100" cx="297.2" cy="72.9" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:101" cx="277.5" cy="125" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:102" cx="304.2" cy="60.7" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:103" cx="284.5" cy="112.8" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:104" cx="291.4" cy="100.6" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:105" cx="302.9" cy="90.6" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:106" cx="309.9" cy="78.5" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:107" cx="316.8" cy="66.4" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:108" cx="304" cy="107.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:109" cx="297" cy="119.2" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:110" cx="290.1" cy="131.3" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:111" cx="283.1" cy="143.4" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:112" cx="328.8" cy="73.4" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:113" cx="321.8" cy="85.4" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:114" cx="314.8" cy="97.5" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:115" cx="340.1" cy="81.4" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:116" cx="333" cy="93.5" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:117" cx="315.6" cy="115.4" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:118" cx="325.8" cy="105.7" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:119" cx="308.5" cy="127.5" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:120" cx="301.3" cy="139.8" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:121" cx="350.6" cy="90.5" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:122" cx="294" cy="152" r="5.2" fill="var(--ds-green)"/>
+                    <circle class="pm-seat" style="--i:123" cx="343.2" cy="102.8" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:124" cx="335.8" cy="115.1" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:125" cx="326" cy="125" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:126" cx="360.2" cy="100.5" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:127" cx="318.5" cy="137.5" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:128" cx="352.5" cy="113" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:129" cx="310.7" cy="150.1" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:130" cx="344.6" cy="125.6" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:131" cx="368.7" cy="111.4" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:132" cx="334.9" cy="136" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:133" cx="360.6" cy="124.2" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:134" cx="302.6" cy="162.9" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:135" cx="326.8" cy="149" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:136" cx="352.1" cy="137" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:137" cx="376.2" cy="123.1" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:138" cx="342.3" cy="148.2" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:139" cx="367.5" cy="136.1" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:140" cx="318.1" cy="162.1" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:141" cx="382.6" cy="135.4" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:142" cx="358.3" cy="149.3" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:143" cx="333.2" cy="161.5" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:144" cx="373.1" cy="148.8" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:145" cx="348" cy="161.2" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:146" cx="308.7" cy="175.5" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:147" cx="387.8" cy="148.3" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:148" cx="363" cy="162.2" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:149" cx="323.2" cy="175.2" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:150" cx="377.3" cy="161.9" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:151" cx="391.7" cy="161.6" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:152" cx="337.5" cy="175" r="5.2" fill="var(--ds-muted2)"/>
+                    <circle class="pm-seat" style="--i:153" cx="351.8" cy="174.8" r="5.2" fill="var(--ds-muted)"/>
+                    <circle class="pm-seat" style="--i:154" cx="366.1" cy="175.5" r="5.2" fill="var(--ds-muted)"/>
+                    <circle class="pm-seat" style="--i:155" cx="380.2" cy="175.4" r="5.2" fill="var(--ds-muted)"/>
+                    <circle class="pm-seat" style="--i:156" cx="394.3" cy="175.3" r="5.2" fill="var(--ds-muted)"/>
+                    <circle class="pm-seat" style="--i:157" cx="311.8" cy="189" r="5.2" fill="var(--ds-muted)"/>
+                    <circle class="pm-seat" style="--i:158" cx="325.8" cy="189" r="5.2" fill="var(--ds-muted)"/>
+                    <circle class="pm-seat" style="--i:159" cx="339.8" cy="188.9" r="5.2" fill="var(--ds-muted)"/>
+                    <circle class="pm-seat" style="--i:160" cx="353.7" cy="188.9" r="5.2" fill="var(--ds-muted)"/>
+                    <circle class="pm-seat" style="--i:161" cx="367.7" cy="189.1" r="5.2" fill="var(--ds-muted)"/>
+                    <circle class="pm-seat" style="--i:162" cx="381.7" cy="189.1" r="5.2" fill="var(--ds-muted)"/>
+                    <circle class="pm-seat" style="--i:163" cx="395.6" cy="189.1" r="5.2" fill="var(--ds-muted)"/>                  </g>
+                </svg>
+                <table class="pm-table">
+                  <thead><tr><th>Category</th><th class="num"># repositories</th><th class="num">Percentage</th></tr></thead>
+                  <tbody>
+                    <tr><td><span class="dot" style="background:var(--ds-red)"></span>Major</td><td class="num">12</td><td class="num">7%</td></tr>
+                    <tr><td><span class="dot" style="background:var(--ds-cat-saas-orange)"></span>Minor</td><td class="num">22</td><td class="num">13%</td></tr>
+                    <tr><td><span class="dot" style="background:var(--ds-cat-saas-gold)"></span>Patch</td><td class="num">18</td><td class="num">11%</td></tr>
+                    <tr><td><span class="dot" style="background:var(--ds-green)"></span>Completed</td><td class="num">71</td><td class="num">43%</td></tr>
+                    <tr><td><span class="dot" style="background:var(--ds-muted2)"></span>N/A</td><td class="num">30</td><td class="num">18%</td></tr>
+                    <tr><td><span class="dot" style="background:var(--ds-muted)"></span>No LST</td><td class="num">11</td><td class="num">7%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- OWASP top ten -->
+        <section class="dc-sec">
+          <h2>OWASP top ten</h2>
+          <div class="dc-owasp">
+            <div>
+              <div class="list">
+                <div class="it sel"><span class="dot" style="background:var(--ds-cat-violet)"></span> Remediate OWASP A01:2021 Broken access control</div>
+                <div class="it"><span class="dot" style="background:var(--ds-green)"></span> Remediate OWASP A02:2021 Cryptographic failures</div>
+                <div class="it"><span class="dot" style="background:var(--ds-cat-saas-gold)"></span> Remediate OWASP A03:2021 Injection</div>
+                <div class="it"><span class="dot" style="background:var(--ds-green)"></span> Remediate OWASP A08:2021 Software and data integrity failures</div>
+                <div class="it"><span class="dot" style="background:var(--ds-cat-violet)"></span> Regular Expression Denial of Service (ReDOS)</div>
+                <div class="it"><span class="dot" style="background:var(--ds-cat-saas-cyan)"></span> Zip slip</div>
+                <div class="it"><span class="dot" style="background:var(--ds-cat-saas-pink)"></span> Use secure temporary file creation</div>
+              </div>
+              <button class="ds-btn ds-btn--secondary ds-btn--sm" style="margin-top:10px">Fix</button>
+            </div>
+            <div>
+              <div class="ds-chart"><svg viewBox="0 0 320 160" role="img" aria-label="OWASP remediation by week">
+                <line class="ds-chart-grid" x1="24" y1="30" x2="310" y2="30"/>
+                <line class="ds-chart-grid" x1="24" y1="70" x2="310" y2="70"/>
+                <line class="ds-chart-grid" x1="24" y1="110" x2="310" y2="110"/>
+                <line class="ds-chart-grid" x1="24" y1="150" x2="310" y2="150"/>
+                <g>
+                  <rect data-bar x="44" y="104" width="38" height="46" rx="2" fill="var(--ds-cat-blue)"/><rect data-bar x="44" y="84" width="38" height="20" rx="2" fill="var(--ds-cat-saas-gold)"/><rect data-bar x="44" y="72" width="38" height="12" rx="2" fill="var(--ds-green)"/>
+                  <rect data-bar x="104" y="92" width="38" height="58" rx="2" fill="var(--ds-cat-blue)"/><rect data-bar x="104" y="66" width="38" height="26" rx="2" fill="var(--ds-cat-saas-gold)"/><rect data-bar x="104" y="50" width="38" height="16" rx="2" fill="var(--ds-green)"/>
+                  <rect data-bar x="164" y="76" width="38" height="74" rx="2" fill="var(--ds-cat-blue)"/><rect data-bar x="164" y="52" width="38" height="24" rx="2" fill="var(--ds-cat-saas-gold)"/><rect data-bar x="164" y="34" width="38" height="18" rx="2" fill="var(--ds-green)"/>
+                  <rect data-bar x="224" y="62" width="38" height="88" rx="2" fill="var(--ds-cat-blue)"/><rect data-bar x="224" y="42" width="38" height="20" rx="2" fill="var(--ds-cat-saas-gold)"/><rect data-bar x="224" y="24" width="38" height="18" rx="2" fill="var(--ds-green)"/>
+                </g>
+                <text class="ds-chart-axis" x="44" y="159">May 10</text><text class="ds-chart-axis" x="164" y="159">May 24</text><text class="ds-chart-axis" x="228" y="159">May 31</text>
+              </svg></div>
+              <div class="ds-chart-legend" style="margin-top:10px"><span><i style="background:var(--ds-cat-blue)"></i> At risk</span><span><i style="background:var(--ds-cat-saas-gold)"></i> In progress</span><span><i style="background:var(--ds-green)"></i> Remediated</span></div>
+              <div class="callout">
+                <h4>Remediate OWASP A01:2021 Broken access control</h4>
+                <p>OWASP A01:2021 describes failures related to broken access control.</p>
+                <span class="ds-status ds-status--ok">Completed</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div></div>
+    </div>
+  </div>
+  <script>document.querySelector('.ds-rail-item[data-nav="devcenter"]')?.setAttribute('aria-current','page');</script>
+</body>
+</html>

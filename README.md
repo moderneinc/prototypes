@@ -17,13 +17,13 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 ## Prototypes
 
 > Most prototypes are single self-contained `.html` files. The exception is
-> [`design-system/`](https://moderneinc.github.io/prototypes/design-system/), a built
-> multi-page app — **edit its source in [`design-system-src/`](design-system-src/) and
-> `npm run build`**, don't hand-edit the generated `design-system/` folder.
+> [`design-system-explorer/`](https://moderneinc.github.io/prototypes/design-system-explorer/), a built
+> multi-page app — **edit its source in [`design-system-explorer-src/`](design-system-explorer-src/) and
+> `npm run build`**, don't hand-edit the generated `design-system-explorer/` folder.
 
 | File | What it explores |
 | --- | --- |
-| [`design-system/`](https://moderneinc.github.io/prototypes/design-system/) | **Dark-mode SaaS + Docs design system** — live theme builder, foundations, components, data-viz, and recreated Moderne screens. Multi-page app; source in [`design-system-src/`](design-system-src/) |
+| [`design-system-explorer/`](https://moderneinc.github.io/prototypes/design-system-explorer/) | **Dark-mode SaaS + Docs design system** — live theme builder, foundations, components, data-viz, and recreated Moderne screens. Multi-page app; source in [`design-system-explorer-src/`](design-system-explorer-src/) |
 | [`moderne-dashboard.html`](https://moderneinc.github.io/prototypes/moderne-dashboard.html) | Moderne dashboard layout |
 | [`day-zero.html`](https://moderneinc.github.io/prototypes/day-zero.html) | First-run / day-zero onboarding tour |
 | [`day-zero-revised.html`](https://moderneinc.github.io/prototypes/day-zero-revised.html) | Revised day-zero tour variant |

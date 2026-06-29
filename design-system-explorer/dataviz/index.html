@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Internal design-system gallery: permanently noindex (dark-launched, see docs/WORKFLOW.md). -->
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="/prototypes/design-system-explorer/brand/moderne-symbol.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Dark-only: the dark palette is the default :root, so no pre-paint theme
+       script is needed. (A dormant [data-theme="light"] block remains in
+       ds-tokens.css for easy re-enable, but nothing ships it.) -->
+  <title>Data visualization — Moderne SaaS DS</title>
+  <script type="module" crossorigin src="/prototypes/design-system-explorer/assets/dataviz-DGl01eSU.js"></script>
+  <link rel="modulepreload" crossorigin href="/prototypes/design-system-explorer/assets/ds-theme-D6EjY2qJ.js">
+  <link rel="modulepreload" crossorigin href="/prototypes/design-system-explorer/assets/ds-boot-Cvct9n6z.js">
+  <link rel="stylesheet" crossorigin href="/prototypes/design-system-explorer/assets/ds-theme-vc_caQOm.css">
+</head>
+<body>
+  <div class="ds-shell">
+    <!-- Gallery chrome: brand block (top-left) + sticky topbar. Dark-only, so there
+         is no theme toggle. This is the static "Storybook" frame, NOT a product component. -->
+    <div class="ds-brand"><span class="dot"></span><b>Moderne</b><span>Design system</span></div>
+    <header class="ds-topbar">
+      <h1>Dark mode explorer</h1>
+      <!-- Interactive theme builder: pick a primary + secondary from our palette;
+           it live-themes the whole showcase (this site is built with the system) and
+           persists across pages. Swatches are populated by src/lib/ds-theme.ts. -->
+      <div class="ds-theme-ctl">
+        <button class="ds-theme-trigger" aria-expanded="false" aria-controls="ds-theme-panel">
+          <span class="sw2"><i style="background:var(--ds-primary)"></i><i style="background:var(--ds-secondary)"></i></span>
+          Theme
+        </button>
+        <div class="ds-theme-panel" id="ds-theme-panel" hidden>
+          <div class="ds-theme-head"><b>Build a theme</b>
+            <button class="ds-btn ds-btn--subtle ds-btn--sm" data-theme-reset>Reset to default</button>
+          </div>
+          <div class="ds-theme-grp"><span class="lbl">Surface · profile</span>
+            <div class="ds-font-row" data-surface-row>
+              <button class="ds-fontpill" data-surface="saas" aria-pressed="true">SaaS / Platform</button>
+              <button class="ds-fontpill" data-surface="docs" aria-pressed="false">Docs</button>
+            </div>
+          </div>
+          <div class="ds-theme-grp"><span class="lbl">Primary · brand &amp; action</span><div class="ds-sw-row" data-role="primary"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Secondary · accent</span><div class="ds-sw-row" data-role="secondary"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Primary font · UI</span><div class="ds-font-row" data-font="sans"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Secondary font · mono / data</span><div class="ds-font-row" data-font="mono"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Base tone · ground <span class="ds-sm ds-muted" style="text-transform:none;letter-spacing:0">(SaaS only)</span></span>
+            <div class="ds-font-row" data-base-row>
+              <button class="ds-fontpill" data-base="cool" aria-pressed="true">Cool neutral</button>
+              <button class="ds-fontpill" data-base="warm" aria-pressed="false">Warm · moderne.ai</button>
+            </div>
+          </div>
+          <div class="ds-theme-actions">
+            <button class="ds-btn ds-btn--secondary ds-btn--sm" data-theme-copy>Copy CSS</button>
+            <span class="ds-sm ds-muted" data-theme-current></span>
+          </div>
+          <pre class="ds-theme-out"></pre>
+          <p class="ds-theme-credit">Based on the Moderne <b>design kit</b> — its spectral palette derives from the <b>M-FISH</b> chromosome-painting approach.</p>
+        </div>
+      </div>
+    </header>
+    <nav class="ds-sidenav"><!-- Shared gallery nav. The active link is marked at runtime by ds-chrome.ts
+     (matches location.pathname), so no per-page duplication is needed. -->
+<div class="group">Overview</div>
+<a href="/prototypes/design-system-explorer/">Introduction</a>
+<a href="/prototypes/design-system-explorer/foundations/">Foundations</a>
+<a href="/prototypes/design-system-explorer/accessibility/">Accessibility</a>
+<div class="group">SaaS · Platform</div>
+<a href="/prototypes/design-system-explorer/examples/?s=saas" data-screen="saas">About the SaaS theme</a>
+<a href="/prototypes/design-system-explorer/forms/">Forms &amp; buttons</a>
+<a href="/prototypes/design-system-explorer/navigation/">Navigation</a>
+<a href="/prototypes/design-system-explorer/data-display/">Data display</a>
+<a href="/prototypes/design-system-explorer/feedback/">Feedback &amp; overlay</a>
+<a href="/prototypes/design-system-explorer/dataviz/">Data visualization</a>
+<a href="/prototypes/design-system-explorer/examples/?s=devcenter" data-screen="devcenter">DevCenter</a>
+<a href="/prototypes/design-system-explorer/examples/?s=activity" data-screen="activity">Activity</a>
+<a href="/prototypes/design-system-explorer/examples/?s=changelog" data-screen="changelog">Changelog</a>
+<div class="group">Docs</div>
+<a href="/prototypes/design-system-explorer/examples/?s=docs" data-screen="docs">About the Docs theme</a>
+<a href="/prototypes/design-system-explorer/examples/?s=docs-home" data-screen="docs-home">Docs · Home</a>
+<a href="/prototypes/design-system-explorer/examples/?s=docs-platform" data-screen="docs-platform">Docs · Platform</a>
+<a href="/prototypes/design-system-explorer/examples/?s=docs-article" data-screen="docs-article">Docs · Article</a>
+</nav>
+    <main class="ds-main">
+      <div class="ds-main-inner">
+
+        <div class="ds-page-head">
+          <div class="ds-eyebrow">Foundations</div>
+          <h1 class="ds-display">Data visualization</h1>
+          <p>The place the palette earns its keep. <b style="color:var(--ds-ink)">Colour carries meaning, never decoration</b> —
+            a defect→fixed severity ramp (the immune story), an ordered sequence, or status. Personality comes from the genome
+            language: a green "surveillance" target line, mono "lab&nbsp;readout" axes, and a calm draw-on reveal — tasteful, on-brand.</p>
+        </div>
+
+        <div class="ds-note">Every chart is decorative SVG paired with a <b>legend or table</b> for the real values, uses
+          only <code class="ds-mono">var(--ds-*)</code> tokens (so it re-themes), and honours <code class="ds-mono">prefers-reduced-motion</code>.
+          A single-series chart is <b>one hue</b> — the strand spectrum is for categories, never to decorate one number.</p>
+
+        <!-- ── COLOR ROLES ─────────────────────────────────────────────────── -->
+        <section class="ds-section" id="roles">
+          <header><h2 class="ds-h2">Colour roles in charts</h2><span class="maps">meaning first</span></header>
+
+          <div class="ds-demo-label">Severity ramp — defect → fixed (the immune narrative)</div>
+          <div class="ds-chart-legend" style="margin-bottom:18px">
+            <span><i style="background:var(--ds-red)"></i> Major</span>
+            <span><i style="background:var(--ds-cat-saas-gold)"></i> Minor</span>
+            <span><i style="background:var(--ds-cat-saas-orange)"></i> Patch</span>
+            <span><i style="background:var(--ds-green)"></i> Completed</span>
+          </div>
+
+          <div class="ds-demo-label">Ordered sequence — e.g. versions (the strand spectrum as a scale)</div>
+          <div class="ds-chart-legend" style="margin-bottom:18px">
+            <span><i style="background:var(--ds-cat-saas-pink)"></i> Java 8+</span>
+            <span><i style="background:var(--ds-cat-violet)"></i> Java 11+</span>
+            <span><i style="background:var(--ds-cat-blue)"></i> Java 17+</span>
+            <span><i style="background:var(--ds-cat-saas-cyan)"></i> Java 21+</span>
+            <span><i style="background:var(--ds-green)"></i> Completed</span>
+          </div>
+
+          <div class="ds-demo-label">Status — discrete states</div>
+          <div class="ds-chart-legend">
+            <span><i style="background:var(--ds-green)"></i> Success</span>
+            <span><i style="background:var(--ds-warn)"></i> Warning</span>
+            <span><i style="background:var(--ds-red)"></i> Error</span>
+            <span><i style="background:var(--ds-cat-blue)"></i> Info</span>
+            <span><i style="background:var(--ds-muted2)"></i> Neutral</span>
+          </div>
+        </section>
+
+        <!-- ── CHART TYPES ─────────────────────────────────────────────────── -->
+        <section class="ds-section" id="types">
+          <header><h2 class="ds-h2">Chart types</h2><span class="maps">draw-on · mono axes · green target line</span></header>
+          <div class="ds-row" style="gap:18px;align-items:stretch">
+
+            <!-- stacked area: a change campaign -->
+            <div class="ds-card" style="flex:1;min-width:320px">
+              <div class="ds-card-head"><h3>Stacked area</h3><div style="display:flex;gap:8px;align-items:center"><span class="ds-badge ds-badge--green">+12%</span><button class="ds-btn ds-btn--icon ds-btn--subtle ds-btn--sm" data-replay aria-label="Replay animation" title="Replay animation"><svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.6 8a5.6 5.6 0 1 1-1.7-4"/><path d="M12.5 1.6v3h-3"/></svg></button></div></div>
+              <div class="ds-card-body">
+                <div class="ds-chart">
+                  <svg viewBox="0 0 300 150" role="img" aria-label="Migration progress: defects falling as completed work rises toward the target.">
+                    <line class="ds-chart-grid" x1="22" y1="20" x2="288" y2="20"/>
+                    <line class="ds-chart-grid" x1="22" y1="60" x2="288" y2="60"/>
+                    <line class="ds-chart-grid" x1="22" y1="100" x2="288" y2="100"/>
+                    <line class="ds-chart-grid" x1="22" y1="140" x2="288" y2="140"/>
+                    <path data-area fill="var(--ds-red)" fill-opacity=".85" d="M22,72 L88,52 L154,40 L220,26 L288,12 L288,140 L22,140 Z"/>
+                    <path data-area fill="var(--ds-cat-saas-gold)" fill-opacity=".9" d="M22,96 L88,74 L154,56 L220,40 L288,22 L288,140 L22,140 Z"/>
+                    <path data-area fill="var(--ds-green)" fill-opacity=".9" d="M22,120 L88,102 L154,82 L220,58 L288,36 L288,140 L22,140 Z"/>
+                    <polyline data-line stroke="var(--ds-red)" pathLength="1" points="22,72 88,52 154,40 220,26 288,12"/>
+                    <line data-target x1="22" y1="16" x2="288" y2="16"/>
+                    <line data-marker x1="220" y1="12" x2="220" y2="140"/>
+                    <text class="ds-chart-axis" x="22" y="148">May 10</text>
+                    <text class="ds-chart-axis" x="135" y="148">May 24</text>
+                    <text class="ds-chart-axis" x="262" y="148">Jun 7</text>
+                  </svg>
+                </div>
+                <div class="ds-chart-legend" style="margin-top:12px">
+                  <span><i style="background:var(--ds-red)"></i> Major</span>
+                  <span><i style="background:var(--ds-cat-saas-gold)"></i> Minor</span>
+                  <span><i style="background:var(--ds-green)"></i> Completed</span>
+                  <span style="color:var(--ds-green-ink)"><i style="background:var(--ds-green)"></i> Target</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- stacked bar: remediation -->
+            <div class="ds-card" style="flex:1;min-width:320px">
+              <div class="ds-card-head"><h3>Stacked bar</h3><button class="ds-btn ds-btn--icon ds-btn--subtle ds-btn--sm" data-replay aria-label="Replay animation" title="Replay animation"><svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.6 8a5.6 5.6 0 1 1-1.7-4"/><path d="M12.5 1.6v3h-3"/></svg></button></div>
+              <div class="ds-card-body">
+                <div class="ds-chart">
+                  <svg viewBox="0 0 300 150" role="img" aria-label="Remediation by week, by status.">
+                    <line class="ds-chart-grid" x1="22" y1="30" x2="288" y2="30"/>
+                    <line class="ds-chart-grid" x1="22" y1="70" x2="288" y2="70"/>
+                    <line class="ds-chart-grid" x1="22" y1="110" x2="288" y2="110"/>
+                    <line class="ds-chart-grid" x1="22" y1="140" x2="288" y2="140"/>
+                    <g>
+                      <rect data-bar x="34" y="96" width="34" height="44" rx="2" fill="var(--ds-cat-blue)"/>
+                      <rect data-bar x="34" y="78" width="34" height="18" rx="2" fill="var(--ds-cat-saas-gold)"/>
+                      <rect data-bar x="34" y="66" width="34" height="12" rx="2" fill="var(--ds-green)"/>
+                      <rect data-bar x="92" y="86" width="34" height="54" rx="2" fill="var(--ds-cat-blue)"/>
+                      <rect data-bar x="92" y="62" width="34" height="24" rx="2" fill="var(--ds-cat-saas-gold)"/>
+                      <rect data-bar x="92" y="48" width="34" height="14" rx="2" fill="var(--ds-green)"/>
+                      <rect data-bar x="150" y="70" width="34" height="70" rx="2" fill="var(--ds-cat-blue)"/>
+                      <rect data-bar x="150" y="48" width="34" height="22" rx="2" fill="var(--ds-cat-saas-gold)"/>
+                      <rect data-bar x="150" y="30" width="34" height="18" rx="2" fill="var(--ds-green)"/>
+                      <rect data-bar x="208" y="58" width="34" height="82" rx="2" fill="var(--ds-cat-blue)"/>
+                      <rect data-bar x="208" y="40" width="34" height="18" rx="2" fill="var(--ds-cat-saas-gold)"/>
+                      <rect data-bar x="208" y="22" width="34" height="18" rx="2" fill="var(--ds-green)"/>
+                    </g>
+                    <text class="ds-chart-axis" x="34" y="148">May 10</text>
+                    <text class="ds-chart-axis" x="150" y="148">May 24</text>
+                    <text class="ds-chart-axis" x="214" y="148">May 31</text>
+                  </svg>
+                </div>
+                <div class="ds-chart-legend" style="margin-top:12px">
+                  <span><i style="background:var(--ds-cat-blue)"></i> At risk</span>
+                  <span><i style="background:var(--ds-cat-saas-gold)"></i> In progress</span>
+                  <span><i style="background:var(--ds-green)"></i> Remediated</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ds-row" style="gap:18px;align-items:stretch;margin-top:14px">
+
+            <!-- line + single-series rule -->
+            <div class="ds-card" style="flex:1;min-width:300px">
+              <div class="ds-card-head"><h3>Line + target</h3><div style="display:flex;gap:8px;align-items:center"><span class="ds-sm ds-muted">single series = one hue</span><button class="ds-btn ds-btn--icon ds-btn--subtle ds-btn--sm" data-replay aria-label="Replay animation" title="Replay animation"><svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.6 8a5.6 5.6 0 1 1-1.7-4"/><path d="M12.5 1.6v3h-3"/></svg></button></div></div>
+              <div class="ds-card-body">
+                <div class="ds-chart">
+                  <svg viewBox="0 0 300 130" role="img" aria-label="Validated changesets per week, trending up toward target.">
+                    <line class="ds-chart-grid" x1="22" y1="24" x2="288" y2="24"/>
+                    <line class="ds-chart-grid" x1="22" y1="64" x2="288" y2="64"/>
+                    <line class="ds-chart-grid" x1="22" y1="104" x2="288" y2="104"/>
+                    <line data-target x1="22" y1="20" x2="288" y2="20"/>
+                    <polyline data-line stroke="var(--ds-green)" pathLength="1" points="22,96 70,84 118,90 166,62 214,48 262,28"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- donut: status split -->
+            <div class="ds-card" style="flex:1;min-width:300px">
+              <div class="ds-card-head"><h3>Donut</h3><button class="ds-btn ds-btn--icon ds-btn--subtle ds-btn--sm" data-replay aria-label="Replay animation" title="Replay animation"><svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.6 8a5.6 5.6 0 1 1-1.7-4"/><path d="M12.5 1.6v3h-3"/></svg></button></div>
+              <div class="ds-card-body">
+                <div class="ds-row" style="gap:20px;align-items:center">
+                  <div class="ds-donut" style="--seg1:.62;--seg2:.23;--seg3:.15" role="img" aria-label="62% remediated, 23% in progress, 15% at risk"></div>
+                  <div class="ds-chart-legend" style="flex-direction:column;gap:8px">
+                    <span><i style="background:var(--ds-green)"></i> Remediated <b class="ds-num" style="margin-left:4px">62%</b></span>
+                    <span><i style="background:var(--ds-cat-saas-gold)"></i> In progress <b class="ds-num" style="margin-left:4px">23%</b></span>
+                    <span><i style="background:var(--ds-cat-blue)"></i> At risk <b class="ds-num" style="margin-left:4px">15%</b></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- sparkline -->
+            <div class="ds-card" style="flex:1;min-width:240px">
+              <div class="ds-card-head"><h3>Sparkline</h3><button class="ds-btn ds-btn--icon ds-btn--subtle ds-btn--sm" data-replay aria-label="Replay animation" title="Replay animation"><svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.6 8a5.6 5.6 0 1 1-1.7-4"/><path d="M12.5 1.6v3h-3"/></svg></button></div>
+              <div class="ds-card-body">
+                <div class="n ds-num" style="font-size:26px;font-weight:700;color:var(--ds-ink)">44,827,161</div>
+                <div class="ds-sm ds-muted" style="margin:2px 0 12px">Lines of code · last 90 days</div>
+                <svg class="ds-spark" viewBox="0 0 120 36" width="160" height="36" aria-hidden="true">
+                  <polyline data-line stroke="var(--ds-green-ink)" points="2,28 22,24 42,26 62,16 82,18 102,8 118,4"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="ds-row" style="margin-top:14px">
+            <div class="ds-card" style="flex:1">
+              <div class="ds-card-head"><h3>Parliament (hemicycle dots)</h3><button class="ds-btn ds-btn--icon ds-btn--subtle ds-btn--sm" data-replay aria-label="Replay animation" title="Replay animation"><svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.6 8a5.6 5.6 0 1 1-1.7-4"/><path d="M12.5 1.6v3h-3"/></svg></button></div>
+              <div class="ds-card-body">
+                <p class="ds-sm ds-muted" style="margin:-4px 0 14px">One dot per item, filled left→right along the red→green ramp — the migration distance to completion. Reveals in sequence, ending on green (fixed).</p>
+                <div class="pm-chart">
+                  <svg class="pm-svg" viewBox="0 0 400 170" width="380" role="img" aria-label="125 repositories by status: most completed (green), the rest across major, minor and patch versions or not applicable.">
+                    <g>
+                      <circle class="pm-seat" style="--i:0" cx="89" cy="152" r="4.6" fill="var(--ds-red)"/>
+                      <circle class="pm-seat" style="--i:1" cx="101.2" cy="152" r="4.6" fill="var(--ds-red)"/>
+                      <circle class="pm-seat" style="--i:2" cx="113.4" cy="151.8" r="4.6" fill="var(--ds-red)"/>
+                      <circle class="pm-seat" style="--i:3" cx="125.6" cy="151.8" r="4.6" fill="var(--ds-red)"/>
+                      <circle class="pm-seat" style="--i:4" cx="137.8" cy="151.9" r="4.6" fill="var(--ds-red)"/>
+                      <circle class="pm-seat" style="--i:5" cx="150" cy="151.9" r="4.6" fill="var(--ds-red)"/>
+                      <circle class="pm-seat" style="--i:6" cx="90.3" cy="140" r="4.6" fill="var(--ds-red)"/>
+                      <circle class="pm-seat" style="--i:7" cx="102.6" cy="140.2" r="4.6" fill="var(--ds-red)"/>
+                      <circle class="pm-seat" style="--i:8" cx="115.2" cy="139.5" r="4.6" fill="var(--ds-red)"/>
+                      <circle class="pm-seat" style="--i:9" cx="127.6" cy="139.7" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:10" cx="92.9" cy="128.3" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:11" cx="140.1" cy="139.8" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:12" cx="105.5" cy="128.6" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:13" cx="118.6" cy="127.7" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:14" cx="152.9" cy="140.1" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:15" cx="96.8" cy="116.9" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:16" cx="131.6" cy="128" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:17" cx="109.7" cy="117.4" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:18" cx="101.8" cy="106" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:19" cx="144.8" cy="128.5" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:20" cx="123.8" cy="116.4" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:21" cx="115.3" cy="106.8" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:22" cx="137.5" cy="117.1" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:23" cx="108" cy="95.6" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:24" cx="158.5" cy="129.4" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:25" cx="130.5" cy="106" r="4.6" fill="var(--ds-cat-saas-orange)"/>
+                      <circle class="pm-seat" style="--i:26" cx="122.1" cy="97" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:27" cx="151.7" cy="118.3" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:28" cx="115.3" cy="86.1" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:29" cx="145.1" cy="107.4" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:30" cx="130" cy="88" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:31" cx="138.6" cy="96.6" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:32" cx="123.6" cy="77.3" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:33" cx="166.6" cy="120.3" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:34" cx="160.3" cy="109.7" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:35" cx="139" cy="80.1" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:36" cx="154.1" cy="99.1" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:37" cx="132.8" cy="69.5" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:38" cx="148" cy="88.5" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:39" cx="148.8" cy="73.3" r="4.6" fill="var(--ds-cat-saas-gold)"/>
+                      <circle class="pm-seat" style="--i:40" cx="142.7" cy="62.8" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:41" cx="158.4" cy="81.8" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:42" cx="164.5" cy="92.3" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:43" cx="170.5" cy="102.8" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:44" cx="176.6" cy="113.4" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:45" cx="153.3" cy="57.2" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:46" cx="159.4" cy="67.7" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:47" cx="169.7" cy="76.6" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:48" cx="175.7" cy="87.4" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:49" cx="164.5" cy="52.7" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:50" cx="170.6" cy="63.5" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:51" cx="181.8" cy="98.1" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:52" cx="187.9" cy="109.1" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:53" cx="176.1" cy="49.5" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:54" cx="181.5" cy="73.2" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:55" cx="182.2" cy="60.6" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:56" cx="187.7" cy="84.3" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:57" cx="188" cy="47.5" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:58" cx="193.9" cy="95.8" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:59" cx="193.8" cy="71.4" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:60" cx="194" cy="59.2" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:61" cx="200" cy="107.6" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:62" cx="200" cy="83.3" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:63" cx="200" cy="46.9" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:64" cx="206" cy="59.2" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:65" cx="206.2" cy="71.4" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:66" cx="206.1" cy="95.8" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:67" cx="212" cy="47.5" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:68" cx="212.3" cy="84.3" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:69" cx="217.8" cy="60.6" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:70" cx="218.5" cy="73.2" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:71" cx="223.9" cy="49.5" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:72" cx="212.1" cy="109.1" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:73" cx="218.2" cy="98.1" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:74" cx="229.4" cy="63.5" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:75" cx="235.5" cy="52.7" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:76" cx="224.3" cy="87.4" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:77" cx="230.3" cy="76.6" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:78" cx="240.6" cy="67.7" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:79" cx="246.7" cy="57.2" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:80" cx="223.4" cy="113.4" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:81" cx="229.5" cy="102.8" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:82" cx="235.5" cy="92.3" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:83" cx="241.6" cy="81.8" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:84" cx="257.3" cy="62.8" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:85" cx="251.2" cy="73.3" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:86" cx="252" cy="88.5" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:87" cx="267.2" cy="69.5" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:88" cx="245.9" cy="99.1" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:89" cx="261" cy="80.1" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:90" cx="239.7" cy="109.7" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:91" cx="233.4" cy="120.3" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:92" cx="276.4" cy="77.3" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:93" cx="261.4" cy="96.6" r="4.6" fill="var(--ds-green)"/>
+                      <circle class="pm-seat" style="--i:94" cx="270" cy="88" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:95" cx="254.9" cy="107.4" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:96" cx="284.7" cy="86.1" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:97" cx="248.3" cy="118.3" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:98" cx="277.9" cy="97" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:99" cx="269.5" cy="106" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:100" cx="241.5" cy="129.4" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:101" cx="292" cy="95.6" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:102" cx="262.5" cy="117.1" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:103" cx="284.7" cy="106.8" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:104" cx="276.2" cy="116.4" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:105" cx="255.2" cy="128.5" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:106" cx="298.2" cy="106" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:107" cx="290.3" cy="117.4" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:108" cx="268.4" cy="128" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:109" cx="303.2" cy="116.9" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:110" cx="247.1" cy="140.1" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:111" cx="281.4" cy="127.7" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:112" cx="294.5" cy="128.6" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:113" cx="259.9" cy="139.8" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:114" cx="307.1" cy="128.3" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:115" cx="272.4" cy="139.7" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:116" cx="284.8" cy="139.5" r="4.6" fill="var(--ds-muted2)"/>
+                      <circle class="pm-seat" style="--i:117" cx="297.4" cy="140.2" r="4.6" fill="var(--ds-muted)"/>
+                      <circle class="pm-seat" style="--i:118" cx="309.7" cy="140" r="4.6" fill="var(--ds-muted)"/>
+                      <circle class="pm-seat" style="--i:119" cx="250" cy="151.9" r="4.6" fill="var(--ds-muted)"/>
+                      <circle class="pm-seat" style="--i:120" cx="262.2" cy="151.9" r="4.6" fill="var(--ds-muted)"/>
+                      <circle class="pm-seat" style="--i:121" cx="274.4" cy="151.8" r="4.6" fill="var(--ds-muted)"/>
+                      <circle class="pm-seat" style="--i:122" cx="286.6" cy="151.8" r="4.6" fill="var(--ds-muted)"/>
+                      <circle class="pm-seat" style="--i:123" cx="298.8" cy="152" r="4.6" fill="var(--ds-muted)"/>
+                      <circle class="pm-seat" style="--i:124" cx="311" cy="152" r="4.6" fill="var(--ds-muted)"/>                    </g>
+                  </svg>
+                  <div class="ds-chart-legend" style="flex-direction:column;gap:8px">
+                    <span><i style="background:var(--ds-red)"></i> Major</span>
+                    <span><i style="background:var(--ds-cat-saas-orange)"></i> Minor</span>
+                    <span><i style="background:var(--ds-cat-saas-gold)"></i> Patch</span>
+                    <span><i style="background:var(--ds-green)"></i> Completed</span>
+                    <span><i style="background:var(--ds-muted2)"></i> N/A · No LST</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── PRINCIPLES ──────────────────────────────────────────────────── -->
+        <section class="ds-section" id="principles">
+          <header><h2 class="ds-h2">Principles</h2></header>
+          <ul class="ds-body" style="line-height:1.9;max-width:70ch;margin:0;padding-left:18px">
+            <li><b style="color:var(--ds-ink)">Colour = meaning.</b> Severity (red→green = defect→fixed), sequence (the strand spectrum as an ordered scale), or status. Never a rainbow on one series.</li>
+            <li><b style="color:var(--ds-ink)">The green target line</b> is the genome "surveillance line" — the watched goal a campaign is converging on.</li>
+            <li><b style="color:var(--ds-ink)">Mono axes &amp; numerals</b> give the "lab readout" texture; values are always available in a legend or table, not colour alone.</li>
+            <li><b style="color:var(--ds-ink)">Draw-on, once.</b> A calm reveal on load (the marketing site's stroke-on motion) — never looping, always reduced-motion safe.</li>
+          </ul>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>
