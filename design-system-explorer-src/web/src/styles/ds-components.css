@@ -130,7 +130,10 @@
    a flat pastel just floats. Give status pills a more saturated fill, a crisp
    same-hue ring, and a heavier label — the modern dev-tool status-pill read. */
 :root[data-theme="light"] .ds-badge:not(.ds-badge--solid):not(.ds-badge--brand):not(.ds-badge--accent){font-weight:var(--ds-w-semibold)}
-:root[data-theme="light"] .ds-badge--green{background:color-mix(in srgb,var(--ds-green) 24%,#fff);border-color:color-mix(in srgb,var(--ds-green-ink) 30%,transparent)}
+/* GREEN (success) is the bright-family exception: the neon mint is light enough to
+   carry DARK text at ~13:1, so in light mode it goes BRIGHT SOLID — the Moderne
+   neon popping instead of a pale tint. Red/amber/blue can't and stay calm tints. */
+:root[data-theme="light"] .ds-badge--green{background:var(--ds-green);color:var(--ds-on-green);border-color:transparent}
 :root[data-theme="light"] .ds-badge--red{background:color-mix(in srgb,var(--ds-red) 18%,#fff);border-color:color-mix(in srgb,var(--ds-red-ink) 30%,transparent)}
 :root[data-theme="light"] .ds-badge--warn{background:color-mix(in srgb,var(--ds-warn) 30%,#fff);border-color:color-mix(in srgb,var(--ds-warn-ink) 32%,transparent)}
 :root[data-theme="light"] .ds-badge--info{background:color-mix(in srgb,var(--ds-info) 20%,#fff);border-color:color-mix(in srgb,var(--ds-info-ink) 30%,transparent)}
@@ -157,6 +160,8 @@
 .ds-status--warn::before{background:var(--ds-warn)}
 .ds-status--busy::before{background:var(--ds-info);animation:ds-pulse 1.4s var(--ds-ease) infinite}
 @keyframes ds-pulse{50%{opacity:.35}}
+/* light: give the healthy/success dot a bright green halo so it reads as a live pop */
+:root[data-theme="light"] .ds-status--ok::before{box-shadow:0 0 0 3px var(--ds-green-wash)}
 
 /* ──────────────────────────────────────────────────────────────────────────
    AVATAR                          maps → neo NeoGeneralAvatar / NeoNavigationAvatar
