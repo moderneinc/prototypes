@@ -14,7 +14,7 @@
     --ink:#1B2230;
     --ink-dark:#041834;
     --slate:#3A4557;
-    --muted:#5D626D;
+    --muted:#1c1714;
     --meta:#7A8597;
     --line:#E3E5EC;
     --line-strong:#1B2230;
@@ -59,7 +59,6 @@
     -webkit-text-fill-color:transparent;color:transparent;
     padding:0.05em 0;font-weight:700;
   }
-  h1 .grad-img{display:none;}
   h1 .rest{font-weight:800;color:var(--ink);}
   .lede{
     font-size:15.5px;line-height:24.8px;color:var(--muted);
@@ -124,7 +123,7 @@
     padding:23px 52px 22px;border-top:1px solid var(--line);
     font-size:12.5px;color:var(--meta);line-height:18.75px;
   }
-  .foot a{color:var(--green);text-decoration:none;}
+  .foot a{color:var(--ink);text-decoration:none;}
 
   @media (max-width:680px){
     .pad{padding:30px 22px;}
@@ -211,9 +210,16 @@
     td.mod, td.value.yes, td.value.no, .val svg{
       -webkit-print-color-adjust:exact;print-color-adjust:exact;
     }
-    /* Swap CSS gradient headline for the canvas-rasterized PNG */
-    h1 .grad{display:none;}
-    h1 .grad-img{display:inline-block;vertical-align:baseline;}
+    /* PDF version drops the gradient — "Moderne" prints as solid ink
+       like " vs. OpenRewrite" next to it. */
+    h1 .grad{
+      background:none !important;background-image:none !important;
+      -webkit-background-clip:border-box !important;
+      background-clip:border-box !important;
+      -webkit-text-fill-color:currentColor !important;
+      color:var(--ink) !important;
+      display:inline;padding:0;
+    }
     /* Don't split rows across a page break */
     tr{break-inside:avoid;page-break-inside:avoid;}
   }
@@ -233,7 +239,7 @@
     </div>
 
     <h1>
-      <span class="grad">Moderne</span><img class="grad-img" alt="Moderne" /><span class="rest">&nbsp;vs. OpenRewrite</span>
+      <span class="grad">Moderne</span><span class="rest">&nbsp;vs. OpenRewrite</span>
     </h1>
     <p class="lede">OpenRewrite is the open-source engine for automated code refactoring. Moderne is the enterprise platform that operationalizes and extends OpenRewrite for large, multi-repo codebases: collaboration, agent tooling, app security, core migrations, governance, more languages.</p>
 
@@ -304,50 +310,8 @@
     return '<tr>'+cap+mod+orw+'</tr>';
   }).join("");
 
-  // Rasterize the "Moderne" gradient headline once fonts are ready. A PNG
-  // image prints identically across Chrome, Safari, and Firefox — CSS
-  // background-clip:text and SVG text-fill do not.
-  var gradReady = (async function(){
-    try { await document.fonts.ready; } catch (e) {}
-    var text = "Moderne";
-    var fontSize = 46;                              // px, matches h1
-    var letterSpacing = -1.15;                      // px, matches h1 tracking
-    var scale = Math.max(2, (window.devicePixelRatio || 1) * 2);
-    var font = "700 " + (fontSize * scale) + "px Inter, -apple-system, BlinkMacSystemFont, sans-serif";
-    var measure = document.createElement("canvas").getContext("2d");
-    measure.font = font;
-    if ("letterSpacing" in measure) measure.letterSpacing = (letterSpacing * scale) + "px";
-    var m = measure.measureText(text);
-    var ascent = m.actualBoundingBoxAscent || fontSize * scale * 0.82;
-    var descent = m.actualBoundingBoxDescent || fontSize * scale * 0.20;
-    var w = Math.ceil(m.width);
-    var h = Math.ceil(ascent + descent) + 2;
-    var canvas = document.createElement("canvas");
-    canvas.width = w; canvas.height = h;
-    var ctx = canvas.getContext("2d");
-    ctx.font = font;
-    if ("letterSpacing" in ctx) ctx.letterSpacing = (letterSpacing * scale) + "px";
-    ctx.textBaseline = "alphabetic";
-    var grad = ctx.createLinearGradient(0, 0, w, 0);
-    grad.addColorStop(0.095, "#E6399B");
-    grad.addColorStop(0.254, "#9D5BE8");
-    grad.addColorStop(0.449, "#3E7BF6");
-    grad.addColorStop(0.653, "#25D0C0");
-    grad.addColorStop(0.779, "#2BE1A2");
-    grad.addColorStop(0.941, "#C7E84B");
-    ctx.fillStyle = grad;
-    ctx.fillText(text, 0, ascent);
-    var url = canvas.toDataURL("image/png");
-    document.querySelectorAll(".grad-img").forEach(function(img){
-      img.src = url;
-      img.style.width = (w / scale) + "px";
-      img.style.height = (h / scale) + "px";
-    });
-  })();
-
   // Opens the browser's print dialog — user picks "Save as PDF".
-  async function downloadPdf(){
-    try { await gradReady; } catch (e) {}
+  function downloadPdf(){
     var original = document.title;
     document.title = "Moderne-vs-OpenRewrite";
     var restore = function(){
