@@ -44,6 +44,28 @@ Web fonts fall back to Arial / Courier in clients that block them (e.g. Gmail).
 | Footer text + social + links | `#8A857D` |
 | Wordmark asset | `moderne-wordmark-white.png` |
 
+## Content links
+
+Content links (card links + any inline body link) borrow from the primary
+button so every actionable link ties back to the CTA. Light uses the button's
+ink; dark uses the button's fill. Footer utility links (Unsubscribe / Manage
+Preferences / View in Browser) stay muted footer-grey by design — they're
+legal/util, not action.
+
+| Role | Light | Dark |
+|---|---|---|
+| Content link color | `#04220F` (button ink) | `#30F284` (button fill) |
+| Weight | 600 | 600 |
+| Card link (variant) | trailing `→`, no underline | trailing `→`, no underline |
+| Inline body link (variant) | `text-decoration: underline` | `text-decoration: underline` |
+
+Contrast on the surfaces where content links appear:
+
+- Light `#04220F` on body `#ffffff` ≈ 17:1; on card `#ECEEF3` ≈ 15:1.
+- Dark `#30F284` on body `#1C1714` ≈ 13:1; on card `#241D18` ≈ 12:1.
+
+All ≥ AA with headroom. If you introduce a new surface color, re-check.
+
 ## Accessibility (WCAG AA — all text ≥ 4.5:1)
 
 Every text/background pair in both modes was verified at or above 4.5:1. If you
