@@ -6,19 +6,21 @@
 <title>Moderne vs. OpenRewrite</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#ECEDF3;
     --panel:#FFFFFF;
-    --tint:#F7F8FC;
-    --ink:#041834;
+    --ink:#1B2230;
+    --ink-dark:#041834;
     --slate:#3A4557;
-    --muted:#7A8597;
+    --muted:#5D626D;
+    --meta:#7A8597;
     --line:#E3E5EC;
+    --line-strong:#1B2230;
     --green:#0C8A52;
-    --green-soft:#EAF7EF;
-    --green-soft-line:#CDEAD9;
+    --green-bg:#EAF7EF;
+    --green-edge:#CDEAD9;
     --red:#D7263D;
   }
   *{box-sizing:border-box;}
@@ -26,101 +28,230 @@
   body{
     background:var(--bg);
     font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
-    color:var(--slate);
+    color:var(--muted);
     -webkit-font-smoothing:antialiased;
     line-height:1.5;
     padding:40px 20px;
   }
   .page{
-    max-width:900px;
-    margin:0 auto;
-    background:var(--panel);
-    border-radius:14px;
+    max-width:900px;margin:0 auto;
+    background:var(--panel);border-radius:14px;
     box-shadow:0 1px 0 rgba(4,24,52,.04),0 18px 50px -28px rgba(4,24,52,.28);
     overflow:hidden;
   }
   .pad{padding:48px 52px;}
-  /* ---- brand ---- */
-  .brand{display:flex;align-items:center;gap:10px;margin-bottom:30px;}
-  .brand svg{display:block;}
-  .brand .word{font-size:21px;font-weight:700;letter-spacing:-.01em;color:var(--ink);}
-  .brand .word sup{font-size:9px;font-weight:600;top:-9px;}
+
+  /* brand */
+  .brand{display:flex;align-items:center;margin-bottom:30px;}
   .brand-lockup{height:30px;width:auto;display:block;}
   .foot .lockup{height:16px;width:auto;display:block;}
+
+  /* hero */
   h1{
-    font-size:46px;line-height:1.04;letter-spacing:-.025em;font-weight:800;
-    color:var(--ink);margin:0 0 18px;
+    font-size:46px;line-height:1.04;letter-spacing:-.025em;font-weight:700;
+    color:var(--ink);margin:0;
+    display:flex;flex-wrap:wrap;align-items:baseline;
   }
   h1 .grad{
-    background:linear-gradient(90deg,#30F284 0%,#25D0C0 20%,#3E7BF6 47%,#9D5BE8 72%,#E6399B 100%);
+    display:inline-block;width:fit-content;
+    background:linear-gradient(90.1deg,#E6399B 9.5%,#9D5BE8 25.4%,#3E7BF6 44.9%,#25D0C0 65.3%,#2BE1A2 77.9%,#C7E84B 94.1%);
     -webkit-background-clip:text;background-clip:text;
     -webkit-text-fill-color:transparent;color:transparent;
+    padding:0.05em 0;font-weight:700;
   }
-  .lede{font-size:15.5px;line-height:1.6;color:var(--slate);max-width:680px;margin:0;}
-  /* ---- table ---- */
-  table{width:100%;border-collapse:collapse;margin-top:34px;}
+  h1 .grad-img{display:none;}
+  h1 .rest{font-weight:800;color:var(--ink);}
+  .lede{
+    font-size:15.5px;line-height:24.8px;color:var(--muted);
+    max-width:680px;margin:18px 0 0;
+  }
+
+  /* table */
+  .table-wrap{margin-top:34px;}
+  table{width:100%;border-collapse:collapse;table-layout:fixed;}
+  table col.cap{width:319px;}
+  table col.mod{width:239px;}
+  table col.orw{width:238px;}
   thead th{
-    text-align:left;padding:0 18px 12px;vertical-align:bottom;
-    border-bottom:2px solid var(--ink);
+    text-align:left;padding:7px 18px;
+    border-bottom:1px solid var(--line-strong);
+    vertical-align:top;font-weight:normal;
   }
-  thead .eyebrow{
-    font-family:"Roboto Mono",monospace;font-size:11px;font-weight:500;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  thead .h-cap{
+    font-family:"Roboto Mono",ui-monospace,monospace;
+    font-size:12px;font-weight:500;letter-spacing:.128em;
+    text-transform:uppercase;color:var(--muted);line-height:16.5px;
+    display:block;
   }
-  thead .h-mod{font-size:17px;font-weight:700;color:var(--green);letter-spacing:-.01em;}
-  thead .h-or{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.01em;}
-  tbody td{padding:15px 18px;border-bottom:1px solid var(--line);vertical-align:top;}
-  td.cap{width:40%;}
-  td.col{width:30%;}
-  .cap-title{font-size:14.5px;font-weight:600;color:var(--ink);}
-  .cap-sub{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.4;}
-  /* moderne column tint */
-  td.mod{background:var(--green-soft);box-shadow:inset 1px 0 0 var(--green-soft-line),inset -1px 0 0 var(--green-soft-line);}
-  .val{display:flex;align-items:flex-start;gap:9px;font-size:14px;}
-  .val .ic{flex:0 0 auto;margin-top:1px;}
-  .val.yes{color:var(--green);font-weight:600;}
-  .val.no{color:var(--muted);}
-  .val.text{color:var(--slate);font-weight:500;}
-  .val.text.or{color:var(--muted);font-weight:400;}
-  /* ---- footer ---- */
+  thead .h-mod{
+    font-family:Inter,sans-serif;font-size:17px;font-weight:700;
+    color:var(--green);letter-spacing:-.01em;line-height:25.5px;
+    padding-top:2.5px;
+  }
+  thead .h-orw{
+    font-family:Inter,sans-serif;font-size:17px;font-weight:700;
+    color:var(--ink);letter-spacing:-.01em;line-height:25.5px;
+    padding-top:2.5px;
+  }
+  tbody td{
+    padding:15.5px 18px;border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  td.cap-name{
+    font-size:14.5px;font-weight:600;color:var(--ink);
+    line-height:21.75px;
+  }
+  td.cap-name .desc{
+    display:block;margin-top:3px;
+    font-size:12.5px;font-weight:400;color:var(--muted);
+    line-height:17.5px;letter-spacing:0;
+  }
+  td.mod{
+    background:var(--green-bg);
+    box-shadow:inset 1px 0 0 var(--green-edge),inset -1px 0 0 var(--green-edge);
+  }
+  td.value{font-size:14px;line-height:21px;color:var(--muted);}
+  td.value.yes{color:var(--green);font-weight:600;}
+  td.value.no{color:var(--muted);}
+  .val{display:inline-flex;align-items:flex-start;gap:9px;}
+  .val svg{flex:none;margin-top:1px;}
+  .val .lang{font-weight:500;color:var(--muted);line-height:21px;font-size:14px;}
+  td.mod .val .lang{font-weight:500;}
+
+  /* footer */
   .foot{
     display:flex;align-items:center;justify-content:space-between;
-    padding:22px 52px;border-top:1px solid var(--line);
-    font-size:12.5px;color:var(--muted);
+    padding:23px 52px 22px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--meta);line-height:18.75px;
   }
-  .foot .word{font-size:15px;font-weight:700;color:var(--ink);}
-  .foot .word sup{font-size:7px;top:-7px;}
   .foot a{color:var(--green);text-decoration:none;}
-  @media (max-width:640px){
+
+  @media (max-width:680px){
     .pad{padding:30px 22px;}
-    h1{font-size:32px;}
-    thead th,tbody td{padding-left:8px;padding-right:8px;}
-    .foot{padding:18px 22px;}
+    h1{font-size:34px;}
+    .foot{padding:18px 22px;flex-wrap:wrap;gap:6px;}
+    table col.cap,table col.mod,table col.orw{width:auto;}
+    tbody td{padding:12px 14px;}
+    .download-btn{top:12px;right:12px;padding:10px 14px;font-size:12px;}
+  }
+
+  /* download button — design-kit primary CTA */
+  .download-btn{
+    position:fixed;top:24px;right:24px;z-index:100;
+    display:inline-flex;align-items:center;gap:10px;
+    padding:13px 26px;border:none;border-radius:999px;
+    background:#30F284;color:#04220F;cursor:pointer;
+    font-family:inherit;font-size:15px;font-weight:600;
+    box-shadow:0 4px 14px rgba(4,34,15,.16),0 1px 3px rgba(4,34,15,.10);
+    transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
+  }
+  .download-btn:hover{
+    background:#22DB74;
+    box-shadow:0 6px 18px rgba(4,34,15,.22),0 1px 3px rgba(4,34,15,.10);
+    transform:translateY(-1px);
+  }
+  .download-btn:active{transform:translateY(0);}
+  .download-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* print / PDF export — single US Letter portrait page
+     The panel is ~1902px tall × 900px wide (nearly 2:1 aspect ratio).
+     Letter portrait at 0 margins is 816 × 1056px. We tighten a few
+     print-only paddings/sizes to shave the panel down, then apply a
+     `zoom` scale so the whole thing lands on a single Letter page. */
+  @media print{
+    @page{size:Letter portrait;margin:0;}
+    html,body{background:#fff;margin:0;}
+    body{
+      padding:0;color:var(--muted);
+      -webkit-print-color-adjust:exact;print-color-adjust:exact;
+      /* fit the compacted panel into Letter portrait height */
+      zoom:0.62;
+    }
+    .download-btn{display:none;}
+    .page{
+      max-width:none;width:auto;margin:0 auto;
+      border-radius:0;box-shadow:none;overflow:visible;
+      display:flex;flex-direction:column;min-height:100vh;
+      break-after:page;page-break-after:always;
+    }
+    .page > .pad{
+      flex:1 1 auto;padding:34px 44px;
+      display:flex;flex-direction:column;
+    }
+    .page > .foot{flex:0 0 auto;padding:18px 44px 16px;}
+    .page:last-of-type{break-after:auto;page-break-after:auto;}
+    /* Let the table stretch to consume any leftover vertical space
+       inside .pad so rows distribute it evenly instead of leaving a
+       gap between the last row and the footer hairline. */
+    .brand,h1,.lede{flex:0 0 auto;}
+    .table-wrap{flex:1 1 auto;display:flex;flex-direction:column;}
+    .table-wrap table{flex:1 1 auto;height:100%;}
+
+    /* Tighten header block */
+    .brand{margin-bottom:20px;}
+    h1{font-size:38px;letter-spacing:-.02em;}
+    .lede{font-size:13px;line-height:20px;margin-top:12px;max-width:660px;}
+    .table-wrap{margin-top:22px;}
+
+    /* Compact table rows — but with generous vertical padding so the
+       18 rows naturally fill the pad's available height (tables don't
+       reliably distribute leftover flex space to rows). */
+    thead th{padding:6px 14px;}
+    thead .h-cap{font-size:11px;letter-spacing:.128em;}
+    thead .h-mod,thead .h-orw{font-size:14px;line-height:20px;padding-top:2px;}
+    tbody td{padding:20px 14px;font-size:12px;line-height:16.5px;}
+    td.cap-name{font-size:12px;line-height:16.5px;}
+    td.cap-name .desc{margin-top:2px;font-size:10.5px;line-height:14px;}
+    td.value{font-size:12px;line-height:16.5px;}
+    .val{gap:6px;}
+    .val svg{width:13px;height:13px;}
+    .val .lang{font-size:12px;line-height:16.5px;}
+
+    /* Preserve tinted Moderne column, checkmarks, X's */
+    td.mod, td.value.yes, td.value.no, .val svg{
+      -webkit-print-color-adjust:exact;print-color-adjust:exact;
+    }
+    /* Swap CSS gradient headline for the canvas-rasterized PNG */
+    h1 .grad{display:none;}
+    h1 .grad-img{display:inline-block;vertical-align:baseline;}
+    /* Don't split rows across a page break */
+    tr{break-inside:avoid;page-break-inside:avoid;}
   }
 </style>
 </head>
 <body>
+
+<button class="download-btn" type="button" onclick="downloadPdf()" aria-label="Download this page as PDF">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 19h16"/></svg>
+  Download PDF
+</button>
+
 <div class="page">
   <div class="pad">
     <div class="brand">
       <img class="brand-lockup" src="assets/moderne-newsletter/moderne-lockup.png" alt="Moderne">
     </div>
 
-    <h1><span class="grad">Moderne</span> vs.&nbsp;OpenRewrite</h1>
+    <h1>
+      <span class="grad">Moderne</span><img class="grad-img" alt="Moderne" /><span class="rest">&nbsp;vs. OpenRewrite</span>
+    </h1>
     <p class="lede">OpenRewrite is the open-source engine for automated code refactoring. Moderne is the enterprise platform that operationalizes and extends OpenRewrite for large, multi-repo codebases: collaboration, agent tooling, app security, core migrations, governance, more languages.</p>
 
-    <table>
-      <thead>
-        <tr>
-          <th class="cap"><span class="eyebrow">Capability</span></th>
-          <th class="col"><span class="h-mod">Moderne</span></th>
-          <th class="col"><span class="h-or">OpenRewrite</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- rows injected -->
-      </tbody>
-    </table>
+    <div class="table-wrap">
+      <table>
+        <colgroup>
+          <col class="cap"><col class="mod"><col class="orw">
+        </colgroup>
+        <thead>
+          <tr>
+            <th><span class="h-cap">Capability</span></th>
+            <th class="mod-th"><span class="h-mod">Moderne</span></th>
+            <th><span class="h-orw">OpenRewrite</span></th>
+          </tr>
+        </thead>
+        <tbody id="tbl"></tbody>
+      </table>
+    </div>
   </div>
 
   <div class="foot">
@@ -131,12 +262,15 @@
 </div>
 
 <script>
-  const CHECK = '<svg class="ic" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3.2L13 4.5" stroke="#0C8A52" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  const CROSS = '<svg class="ic" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="#D7263D" stroke-width="2.2" stroke-linecap="round"/></svg>';
-  // type: 'yes' (green check), 'no' (red cross + muted text), 'text' (plain), 'text-or' plain muted
-  const rows = [
+  // Yes/No icons — small circle-check and circle-x, sized to 16px.
+  var ICON_YES = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="#0C8A52"/><path d="M4.5 8.3l2.4 2.2 4.6-4.9" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_NO  = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="#D7263D"/><path d="M5.4 5.4l5.2 5.2M10.6 5.4l-5.2 5.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+  // Comparison rows: [ capability, description, moderneVal, openRewriteVal ]
+  // val = ["yes"|"no"|"text", label]
+  var rows = [
     ["Lossless Semantic Tree","Compiler-accurate code model used for deterministic search & transformation",["yes","Yes"],["yes","Yes"]],
-    ["Multi-repo support","",["yes","Yes"],["no","No"]],
+    ["Multi-repo support",null,["yes","Yes"],["no","No"]],
     ["Collaboration platform","Organizations, Activity View, Recipe Marketplace, DevCenter, Changelog",["yes","Yes"],["no","No"]],
     ["DevCenter dashboard","Visualize progress of key projects and security priorities",["yes","Yes"],["no","No"]],
     ["Changelog","Unified, actionable view of PRs across SCM",["yes","Yes"],["no","No"]],
@@ -147,31 +281,82 @@
     ["Open-source recipes","Apache License 2.0",["yes","Yes"],["yes","Yes"]],
     ["Source-available recipes","Moderne Source Available License",["yes","Yes"],["yes","Yes"]],
     ["Operational reporting","Platform health and profiling",["yes","Yes"],["no","No"]],
-    ["Audit logs","",["yes","Yes"],["no","No"]],
-    ["Recipe building experience","",["yes","Recipe Builder"],["no","No"]],
-    ["Supported languages","",["text","Java, Kotlin, Groovy, JS/TS, Python, C#/.NET, Scala, Go, COBOL"],["text-or","Java, Kotlin, Groovy"]],
+    ["Audit logs",null,["yes","Yes"],["no","No"]],
+    ["Recipe building experience",null,["yes","Recipe Builder"],["no","No"]],
+    ["Supported languages",null,["lang","Java, Kotlin, Groovy, JS/TS, Python, C#/.NET, Scala, Go, COBOL"],["lang","Java, Kotlin, Groovy"]],
     ["Horizontal scalability","Run recipes across multiple LSTs simultaneously",["yes","Yes"],["no","No"]],
-    ["MTTR","Mean time to remediate",["text","Minutes across many repositories"],["no-text","Days to weeks, one repo at a time"]],
-    ["Time to value","",["text","Immediate at scale"],["no-text","Gradual, one repo at a time"]],
+    ["MTTR","Mean time to remediate",["lang","Minutes across many repositories"],["no","Days to weeks, one repo at a time"]],
+    ["Time to value",null,["lang","Immediate at scale"],["no","Gradual, one repo at a time"]],
   ];
-  function cell(spec){
-    const [type,val]=spec;
-    if(type==="yes") return `<div class="val yes">${CHECK}<span>${val}</span></div>`;
-    if(type==="no")  return `<div class="val no">${CROSS}<span>${val}</span></div>`;
-    if(type==="no-text") return `<div class="val no">${CROSS}<span>${val}</span></div>`;
-    if(type==="text") return `<div class="val text">${val}</div>`;
-    if(type==="text-or") return `<div class="val text or">${val}</div>`;
-    return `<div class="val text">${val}</div>`;
+
+  function renderVal(v){
+    var kind = v[0], label = v[1];
+    if (kind === "lang") return '<span class="val"><span class="lang">'+label+'</span></span>';
+    var icon = kind === "yes" ? ICON_YES : ICON_NO;
+    var cls = kind === "yes" ? "yes" : "no";
+    return '<span class="val">'+icon+'<span class="'+cls+'">'+label+'</span></span>';
   }
-  const tb = document.querySelector("tbody");
-  tb.innerHTML = rows.map(r=>{
-    const sub = r[1] ? `<div class="cap-sub">${r[1]}</div>` : "";
-    return `<tr>
-      <td class="cap"><div class="cap-title">${r[0]}</div>${sub}</td>
-      <td class="col mod">${cell(r[2])}</td>
-      <td class="col">${cell(r[3])}</td>
-    </tr>`;
+
+  document.getElementById("tbl").innerHTML = rows.map(function(r){
+    var cap = '<td class="cap-name">'+r[0]+(r[1] ? '<span class="desc">'+r[1]+'</span>' : '')+'</td>';
+    var mod = '<td class="mod value '+(r[2][0]==="yes"?"yes":r[2][0]==="no"?"no":"")+'">'+renderVal(r[2])+'</td>';
+    var orw = '<td class="value '+(r[3][0]==="yes"?"yes":r[3][0]==="no"?"no":"")+'">'+renderVal(r[3])+'</td>';
+    return '<tr>'+cap+mod+orw+'</tr>';
   }).join("");
+
+  // Rasterize the "Moderne" gradient headline once fonts are ready. A PNG
+  // image prints identically across Chrome, Safari, and Firefox — CSS
+  // background-clip:text and SVG text-fill do not.
+  var gradReady = (async function(){
+    try { await document.fonts.ready; } catch (e) {}
+    var text = "Moderne";
+    var fontSize = 46;                              // px, matches h1
+    var letterSpacing = -1.15;                      // px, matches h1 tracking
+    var scale = Math.max(2, (window.devicePixelRatio || 1) * 2);
+    var font = "700 " + (fontSize * scale) + "px Inter, -apple-system, BlinkMacSystemFont, sans-serif";
+    var measure = document.createElement("canvas").getContext("2d");
+    measure.font = font;
+    if ("letterSpacing" in measure) measure.letterSpacing = (letterSpacing * scale) + "px";
+    var m = measure.measureText(text);
+    var ascent = m.actualBoundingBoxAscent || fontSize * scale * 0.82;
+    var descent = m.actualBoundingBoxDescent || fontSize * scale * 0.20;
+    var w = Math.ceil(m.width);
+    var h = Math.ceil(ascent + descent) + 2;
+    var canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    var ctx = canvas.getContext("2d");
+    ctx.font = font;
+    if ("letterSpacing" in ctx) ctx.letterSpacing = (letterSpacing * scale) + "px";
+    ctx.textBaseline = "alphabetic";
+    var grad = ctx.createLinearGradient(0, 0, w, 0);
+    grad.addColorStop(0.095, "#E6399B");
+    grad.addColorStop(0.254, "#9D5BE8");
+    grad.addColorStop(0.449, "#3E7BF6");
+    grad.addColorStop(0.653, "#25D0C0");
+    grad.addColorStop(0.779, "#2BE1A2");
+    grad.addColorStop(0.941, "#C7E84B");
+    ctx.fillStyle = grad;
+    ctx.fillText(text, 0, ascent);
+    var url = canvas.toDataURL("image/png");
+    document.querySelectorAll(".grad-img").forEach(function(img){
+      img.src = url;
+      img.style.width = (w / scale) + "px";
+      img.style.height = (h / scale) + "px";
+    });
+  })();
+
+  // Opens the browser's print dialog — user picks "Save as PDF".
+  async function downloadPdf(){
+    try { await gradReady; } catch (e) {}
+    var original = document.title;
+    document.title = "Moderne-vs-OpenRewrite";
+    var restore = function(){
+      document.title = original;
+      window.removeEventListener("afterprint", restore);
+    };
+    window.addEventListener("afterprint", restore);
+    window.print();
+  }
 </script>
 </body>
 </html>
