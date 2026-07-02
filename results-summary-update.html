@@ -118,8 +118,6 @@ button{font:inherit;cursor:pointer;}
    border     = --status-{intent}-transparent   (default color at 50% alpha)
    color      = --status-{intent}-dark          (text + leading icon) */
 .run-chip.done{background:var(--neo-status-success-light);color:var(--neo-status-success-dark);border:1px solid var(--neo-status-success-transparent);}
-.run-chip.running{background:var(--neo-violet-100);color:var(--neo-violet-600);border:1px solid rgba(153,47,185,0.5);}
-.run-chip.running .spinner{width:13px;height:13px;border-radius:50%;border:2px solid var(--neo-violet-500);border-top-color:transparent;animation:run-spin 900ms linear infinite;margin-left:1px;}
 @keyframes run-spin{to{transform:rotate(360deg);}}
 .run-meta{font-size:12.5px;color:var(--text-tertiary);}
 .run-meta.only-running{color:var(--brand-grey-700);}
@@ -244,7 +242,6 @@ body.opts-none .opt-empty{display:block;}
 .repo-status-icon.active svg{animation:run-spin 900ms linear infinite;}
 @media (prefers-reduced-motion:reduce){
   .repo-status-icon.active svg{animation:none;}
-  .run-chip.running .spinner{animation:none;}
 }
 
 .load-more{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px 12px;background:var(--brand-grey-100);border:none;border-top:1px solid var(--brand-grey-200);font-size:12.5px;font-weight:600;color:var(--text-information);cursor:pointer;}
@@ -538,11 +535,10 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
         <div class="run-subhead">Results for Acme International Financial Trust and Enterprise Risk Management Solutions Department of North American Operations</div>
         <div class="run-status-row" id="run-status-row" data-state="done">
           <span class="run-chip done only-done"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed</span>
-          <span class="run-chip running only-running"><span class="spinner" aria-hidden="true"></span>Running</span>
           <span class="run-progress-inline only-running"><span class="bar"><span class="fill" id="run-fill" style="width:34%"></span></span><span class="pct" id="run-pct">34%</span></span>
           <span class="savings-chip only-done"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><strong>80 hours</strong> <span class="lbl">estimated time savings</span></span>
           <span class="run-meta only-done">241 repositories · finished in 6m 12s · 7 days ago</span>
-          <span class="run-meta only-running">241 repositories · Started <span id="run-started">10:42 AM</span> · Running <span class="live-time" id="run-elapsed">1m 34s</span></span>
+          <span class="run-meta only-running">241 repositories · Running <span class="live-time" id="run-elapsed">1m 34s</span> · Started <span id="run-started">10:42 AM</span></span>
         </div>
       </div>
       <div class="tabs">
