@@ -682,16 +682,7 @@
     .progress-fill.success { background: var(--status-success-default); }
     .progress-fill.warning { background: var(--status-warning-default); }
     .progress-fill.error   { background: var(--status-error-default); }
-    .progress-fill.active {
-      background: var(--status-active-default);
-      background-image: linear-gradient(45deg,
-        rgba(255,255,255,0.35) 25%, transparent 25%,
-        transparent 50%, rgba(255,255,255,0.35) 50%,
-        rgba(255,255,255,0.35) 75%, transparent 75%);
-      background-size: 10px 10px;
-      animation: stripes 1s linear infinite;
-    }
-    @keyframes stripes { 0% { background-position: 0 0; } 100% { background-position: 10px 0; } }
+    .progress-fill.active { background: var(--status-active-default); }
     .progress-label {
       display: flex; justify-content: space-between; align-items: center;
       gap: 8px;
@@ -942,12 +933,12 @@
       : '';
     return `<span class="neo-badge neo-badge--${intent}">${icon}<span class="neo-badge__label">${label}</span></span>`;
   };
-  // Status cell = badge + optional priority meta (inline, same line).
-  // Priority lives outside the chip so the chip stays compact; inline layout
-  // keeps every row the same height.
-  const statusChip = (intent, label, priority) => {
-    if (!priority) return badge(intent, label);
-    return `<span class="status-cell">${badge(intent, label)}<span class="status-meta">${priority} priority</span></span>`;
+  // Status cell = badge + optional meta text sitting inline to its right
+  // (priority, error count, etc.). Kept outside the chip so the chip stays
+  // compact and every row stays the same height.
+  const statusChip = (intent, label, meta) => {
+    if (!meta) return badge(intent, label);
+    return `<span class="status-cell">${badge(intent, label)}<span class="status-meta">${meta}</span></span>`;
   };
 
   /* ===== Lineage SVG primitives (recipe → commit / viz) ===== */
@@ -1070,12 +1061,12 @@
   const rows = [
     // Cluster 1 — high-priority queued (top of queue, no children yet)
     recipeRunRow('Upgrade Spring Boot', 'org.openrewrite.spring.boot3.UpgradeSpringBoot_3_3',
-      { hasCommit: false, hasVis: false, statusCell: statusChip('queued', 'Queued', 'High'),
+      { hasCommit: false, hasVis: false, statusCell: statusChip('queued', 'Queued', 'High priority'),
         runBy: 'A', time: '5 min ago', abs: 'Today 09:41' }),
 
     // Cluster 2 — actively running with a live commit job
     recipeRunRow('Migrate to JUnit 5', 'org.openrewrite.java.testing.junit5.JUnit5BestPractices',
-      { hasCommit: true, hasVis: false, statusCell: statusChip('active', 'Running', 'Medium'),
+      { hasCommit: true, hasVis: false, statusCell: statusChip('active', 'Running', 'Medium priority'),
         runBy: 'M', time: '2 min ago', abs: 'Today 09:44' }),
     commitJobRow('test: migrate to JUnit 5',
       { isLast: true, progress: { done: 8, total: 12, active: true },
@@ -1083,7 +1074,7 @@
 
     // Cluster 3 — medium-priority queued
     recipeRunRow('Static analysis pass', 'org.openrewrite.staticanalysis.CommonStaticAnalysis',
-      { hasCommit: false, hasVis: false, statusCell: statusChip('queued', 'Queued', 'Medium'),
+      { hasCommit: false, hasVis: false, statusCell: statusChip('queued', 'Queued', 'Medium priority'),
         runBy: 'A', time: '8 min ago', abs: 'Today 09:38' }),
 
     // Cluster 4 — recently finished, full lineage
@@ -1109,7 +1100,7 @@
 
     // Cluster 6 — errored
     recipeRunRow('Add structured logging context', 'org.openrewrite.java.logging.slf4j.AddMDCContext',
-      { hasCommit: false, hasVis: false, statusCell: badge('error', 'Failed · 2 errors'),
+      { hasCommit: false, hasVis: false, statusCell: statusChip('error', 'Failed', '2 errors'),
         runBy: 'A', time: '3 hr ago', abs: 'Today 06:42' }),
 
     // Cluster 7 — canceled by a user
