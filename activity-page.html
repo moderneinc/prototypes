@@ -573,6 +573,24 @@
       font-weight: 400;
       white-space: nowrap;
     }
+    .activity tbody td.status .status-info {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px; height: 14px;
+      color: var(--text-tertiary);
+      cursor: help;
+      flex-shrink: 0;
+    }
+    .activity tbody td.status .status-info:hover { color: var(--text-secondary); }
+    .activity tbody td.status .status-info svg {
+      width: 14px; height: 14px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
     .activity tbody td.runby { width: 90px; text-align: center; padding: 0; }
     .activity tbody td.runby .avatar-cell {
@@ -794,7 +812,7 @@
       </div>
       <div class="run-title"><h1>Activity</h1></div>
       <div class="run-subhead">
-        Runs are scheduled by priority — higher-priority runs are picked up first. <a href="#">Learn more</a>
+        Runs are queued in lanes by size and available capacity, so wait times can vary — especially for larger runs. <a href="#">Learn more</a>
       </div>
 
       <div class="page-actions">
@@ -934,11 +952,16 @@
     return `<span class="neo-badge neo-badge--${intent}">${icon}<span class="neo-badge__label">${label}</span></span>`;
   };
   // Status cell = badge + optional meta text sitting inline to its right
-  // (priority, error count, etc.). Kept outside the chip so the chip stays
-  // compact and every row stays the same height.
-  const statusChip = (intent, label, meta) => {
+  // (lane, error count, etc.). Kept outside the chip so the chip stays
+  // compact and every row stays the same height. `info`, when passed, adds
+  // a native-tooltip info icon after the meta (used to explain why a run
+  // landed in a High or Low lane).
+  const statusChip = (intent, label, meta, info) => {
     if (!meta) return badge(intent, label);
-    return `<span class="status-cell">${badge(intent, label)}<span class="status-meta">${meta}</span></span>`;
+    const infoIcon = info
+      ? `<span class="status-info" title="${info}" aria-label="${info}"><svg viewBox="0 0 24 24">${STATUS_ICONS.info}</svg></span>`
+      : '';
+    return `<span class="status-cell">${badge(intent, label)}<span class="status-meta">${meta}</span>${infoIcon}</span>`;
   };
 
   /* ===== Lineage SVG primitives (recipe → commit / viz) ===== */
@@ -1056,25 +1079,29 @@
     };
   };
 
-  /* ===== Row data — priority baked into status labels per prototype prompt.
-     Statuses use the 8 Foundations/Status intents. ===== */
+  /* ===== Row data — Foundations/Status intents.
+     Lane (High / Normal / Low) sits as meta text next to the badge; only
+     Queued and Running rows carry a lane. ===== */
   const rows = [
-    // Cluster 1 — high-priority queued (top of queue, no children yet)
+    // Cluster 1 — org-provisioned High lane
     recipeRunRow('Upgrade Spring Boot', 'org.openrewrite.spring.boot3.UpgradeSpringBoot_3_3',
-      { hasCommit: false, hasVis: false, statusCell: statusChip('queued', 'Queued', 'High priority'),
+      { hasCommit: false, hasVis: false,
+        statusCell: statusChip('queued', 'Queued', 'High lane', 'This org has a dedicated high-priority lane.'),
         runBy: 'A', time: '5 min ago', abs: 'Today 09:41' }),
 
-    // Cluster 2 — actively running with a live commit job
+    // Cluster 2 — Normal lane, actively running with a live commit job
     recipeRunRow('Migrate to JUnit 5', 'org.openrewrite.java.testing.junit5.JUnit5BestPractices',
-      { hasCommit: true, hasVis: false, statusCell: statusChip('active', 'Running', 'Medium priority'),
+      { hasCommit: true, hasVis: false,
+        statusCell: statusChip('active', 'Running', 'Normal lane'),
         runBy: 'M', time: '2 min ago', abs: 'Today 09:44' }),
     commitJobRow('test: migrate to JUnit 5',
       { isLast: true, progress: { done: 8, total: 12, active: true },
         runBy: 'M', time: '1 min ago', abs: 'Today 09:45' }),
 
-    // Cluster 3 — medium-priority queued
+    // Cluster 3 — large run auto-placed in Low lane (100+ repos)
     recipeRunRow('Static analysis pass', 'org.openrewrite.staticanalysis.CommonStaticAnalysis',
-      { hasCommit: false, hasVis: false, statusCell: statusChip('queued', 'Queued', 'Medium priority'),
+      { hasCommit: false, hasVis: false,
+        statusCell: statusChip('queued', 'Queued', 'Low lane', "This run spans 100+ repositories, so it's placed in the lane that keeps smaller runs moving."),
         runBy: 'A', time: '8 min ago', abs: 'Today 09:38' }),
 
     // Cluster 4 — recently finished, full lineage
