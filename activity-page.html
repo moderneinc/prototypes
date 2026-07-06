@@ -1,0 +1,1207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Activity — Moderne</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/colors.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/semantic-colors.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/border-radius.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moderneinc/neo-design@1.6.1/dist/shadows.css">
+  <style>
+    :root {
+      --brand-white: var(--neo-surfaces-white);
+      --brand-digital-blue-100: var(--neo-digital-blue-50);
+      --brand-digital-blue-200: var(--neo-digital-blue-100);
+      --brand-digital-blue-300: var(--neo-digital-blue-200);
+      --brand-digital-blue-500: var(--neo-digital-blue-500);
+      --brand-digital-blue-600: var(--neo-digital-blue-600);
+      --brand-digital-blue-700: var(--neo-digital-blue-700);
+      --brand-digital-blue-800: var(--neo-digital-blue-800);
+      --brand-red-100: var(--neo-red-50);
+      --brand-grey-100: var(--neo-grey-50);
+      --brand-grey-200: var(--neo-grey-100);
+      --brand-grey-300: var(--neo-grey-200);
+      --brand-grey-400: var(--neo-grey-300);
+      --brand-grey-500: var(--neo-grey-400);
+      --brand-grey-600: var(--neo-grey-500);
+      --brand-grey-700: var(--neo-grey-600);
+      --brand-grey-800: var(--neo-grey-700);
+      --brand-grey-900: var(--neo-grey-800);
+      --brand-grey-1000: var(--neo-grey-900);
+      --brand-violet-500: var(--neo-violet-400);
+
+      --font-body: 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+      --font-code: 'JetBrains Mono','Fira Code','Consolas',monospace;
+
+      --surface-primary: var(--neo-surfaces-white);
+      --surface-page:    var(--neo-surfaces-page);
+      --surface-tertiary: var(--brand-grey-200);
+      --text-primary:   var(--brand-grey-1000);
+      --text-secondary: var(--brand-grey-600);
+      --text-tertiary:  var(--brand-grey-500);
+      --border-primary: var(--brand-grey-300);
+      --border-secondary: var(--brand-grey-400);
+
+      --radius-sm: calc(var(--neo-border-radius-x-s) * 1px);
+      --radius-md: 6px;
+      --radius-lg: calc(var(--neo-border-radius-s) * 1px);
+      --radius-full: calc(var(--neo-border-radius-full) * 1px);
+      --shadow-sm: var(--neo-shadow-card);
+
+      --transition-fast: 150ms ease;
+
+      /* Foundations/Status — 8 intents × light / default / dark / transparent */
+      --status-success-light:       #F3FFF5;
+      --status-success-default:     #3B8948;
+      --status-success-dark:        #2C6C36;
+      --status-success-transparent: rgba(59, 137, 72, 0.6);
+
+      --status-queued-light:        #F6EEFB;
+      --status-queued-default:      #AD59C7;
+      --status-queued-dark:         #992FB9;
+      --status-queued-transparent:  rgba(173, 89, 199, 0.6);
+
+      --status-active-light:        #F6EEFB;
+      --status-active-default:      #992FB9;
+      --status-active-dark:         #7A2694;
+      --status-active-transparent:  rgba(153, 47, 185, 0.6);
+
+      --status-info-light:          #F2F3FF;
+      --status-info-default:        #2F42FF;
+      --status-info-dark:           #1E2EC2;
+      --status-info-transparent:    rgba(47, 66, 255, 0.6);
+
+      --status-warning-light:       #FEF9E8;
+      --status-warning-default:     #BD9319;
+      --status-warning-dark:        #8E6E13;
+      --status-warning-transparent: rgba(189, 147, 25, 0.6);
+
+      --status-error-light:         #FFEDEF;
+      --status-error-default:       #CB3446;
+      --status-error-dark:          #A92232;
+      --status-error-transparent:   rgba(203, 52, 70, 0.6);
+
+      --status-neutral-light:       #F3F4F6;
+      --status-neutral-default:     #6B7280;
+      --status-neutral-dark:        #374151;
+      --status-neutral-transparent: rgba(107, 114, 128, 0.6);
+
+      --status-canceled-light:      #FAF8F3;
+      --status-canceled-default:    #7B7263;
+      --status-canceled-dark:       #564E41;
+      --status-canceled-transparent:rgba(123, 114, 99, 0.6);
+
+      /* Activity type accent colors (for lineage columns) */
+      --c-recipe:  #992fb9;
+      --c-commit:  #2f42ff;
+      --c-viz:     #27aa88;
+      --c-none:    var(--brand-grey-300);
+
+      --row-h:   42px;
+      --col-act: 34px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      background: var(--surface-page);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      line-height: 1.55;
+      overflow: hidden;
+    }
+    button { font: inherit; cursor: pointer; }
+    a { color: var(--brand-digital-blue-600); }
+    .svg-stroke { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* =========================================================
+       Shell (from results-hierarchical-selection-v2)
+       ========================================================= */
+    .shell {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 98px 1fr;
+      grid-template-rows: 65px 1fr;
+      grid-template-areas: "nav topbar" "nav main";
+      background: var(--surface-page);
+      overflow: hidden;
+    }
+
+    .left-nav {
+      grid-area: nav;
+      width: 98px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2px 8px 24px;
+      background: var(--surface-page);
+      z-index: 10;
+    }
+    .left-nav-top { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+    .nav-home-stack { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 2px; padding: 4px 0; }
+    .nav-item-home { padding: 0 4px; }
+    .nav-item-home .nav-icon-container { padding: 4px; }
+    .nav-version-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 18px; padding: 0 8px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--brand-digital-blue-500), var(--brand-violet-500));
+      color: #fff; font-size: 11px; font-weight: 600; line-height: 1;
+    }
+    .nav-item {
+      width: 100%;
+      padding: 8px 4px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      border-radius: var(--radius-lg);
+      position: relative;
+      background: transparent;
+    }
+    .nav-icon-container {
+      display: flex; align-items: center; justify-content: center;
+      padding: 8px;
+      border-radius: var(--radius-lg);
+      border: 1px solid transparent;
+      background: transparent;
+      transition: background-color 150ms, border-color 150ms;
+    }
+    .nav-item:hover .nav-icon-container,
+    .nav-item.active .nav-icon-container {
+      background: var(--brand-digital-blue-100);
+      border-color: var(--brand-digital-blue-200);
+    }
+    .nav-item svg { width: 22px; height: 22px; min-width: 22px; color: var(--brand-grey-900); flex-shrink: 0; }
+    .nav-label {
+      font-size: 11px; font-weight: 400; line-height: 1;
+      color: var(--brand-grey-900);
+      text-align: center; width: 100%;
+      transition: color 150ms;
+    }
+    .nav-item:hover .nav-label { color: var(--brand-digital-blue-600); }
+    .nav-item.active .nav-label { font-weight: 600; color: var(--brand-digital-blue-800); }
+
+    .nav-tenant { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 4px 0; }
+    .tenant-logo {
+      width: 46px; height: 46px;
+      border-radius: var(--radius-lg);
+      background: var(--brand-digital-blue-800);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      font-size: 11px; font-weight: 600; line-height: 1.15;
+      letter-spacing: .01em;
+    }
+
+    .main-area {
+      grid-area: main;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      min-height: 0;
+      z-index: 11;
+      background: var(--surface-primary);
+      border-top-left-radius: 20px;
+      box-shadow: -1px 0 0 var(--border-primary),
+                  0 -1px 0 var(--border-primary),
+                  0 -5px 24px -4px rgba(176,141,152,.10),
+                  -12px 0 28px -6px rgba(176,141,152,.20);
+    }
+
+    .global-nav {
+      grid-area: topbar;
+      height: 65px;
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 20px;
+      flex-shrink: 0;
+      position: relative;
+      width: 100%;
+      background: var(--surface-page);
+    }
+    .global-nav::before {
+      content: '';
+      position: absolute;
+      left: 50%; top: 70%;
+      transform: translate(-50%, -50%);
+      width: 1000px; max-width: 90%;
+      height: 65px;
+      background: radial-gradient(ellipse at center, var(--brand-red-100) 0%, var(--brand-red-100) 40%, transparent 70%);
+      filter: blur(20px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .global-nav > * { position: relative; z-index: 1; }
+
+    .org-selector {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; color: var(--text-primary);
+      padding: 10px 16px;
+      border-radius: var(--radius-full);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-secondary);
+      white-space: nowrap;
+      transition: all var(--transition-fast);
+      min-width: 0;
+    }
+    .org-selector:hover { background: var(--brand-grey-200); }
+    .org-selector .org-name {
+      font-weight: 500;
+      max-width: 340px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      display: inline-block;
+    }
+    .nav-spacer { flex: 1; }
+    .search-input {
+      height: 40px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-secondary);
+      padding: 10px 16px;
+      font-size: 14px;
+      color: var(--text-tertiary);
+      background: var(--surface-primary);
+      display: flex; align-items: center; gap: 12px;
+      width: 280px;
+      user-select: none;
+    }
+    .search-input:hover { background: var(--brand-grey-200); }
+    .search-input > span:first-of-type { flex: 1; }
+    .search-input-keys { display: inline-flex; gap: 2px; }
+    .search-input kbd {
+      font-size: 10px;
+      background: var(--surface-tertiary);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      color: var(--text-tertiary);
+      border: 1px solid var(--border-primary);
+      min-width: 18px; text-align: center;
+    }
+    .nav-actions { display: flex; align-items: center; gap: 4px; }
+    .nav-action-btn {
+      width: 40px; height: 40px;
+      border-radius: 64px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; background: transparent;
+      color: var(--brand-grey-900);
+      transition: background var(--transition-fast);
+    }
+    .nav-action-btn:hover { background: var(--brand-grey-200); }
+    .nav-action-btn svg { width: 20px; height: 20px; }
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-full);
+      background: #E45A4F;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600;
+    }
+
+    /* =========================================================
+       Page top: crumbs + title + subhead + actions
+       ========================================================= */
+    .page-top { padding: 28px 32px 0; flex-shrink: 0; }
+    .crumbs {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      padding: 0 0 10px;
+    }
+    .crumbs a {
+      color: var(--brand-digital-blue-600);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .crumbs a:hover { text-decoration: underline; }
+    .crumbs .sep { display: inline-flex; align-items: center; color: var(--brand-grey-400); }
+    .crumbs .sep svg { width: 13px; height: 13px; }
+
+    .run-title { position: relative; display: inline-block; max-width: 720px; }
+    .run-title h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 21px;
+      line-height: 28px;
+      color: rgb(52,58,64);
+      margin-bottom: 4px;
+    }
+    .run-subhead {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      max-width: 780px;
+    }
+    .run-subhead a { color: var(--brand-digital-blue-600); text-decoration: none; font-weight: 500; }
+    .run-subhead a:hover { text-decoration: underline; }
+
+    .page-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin: 8px 0 20px;
+    }
+    .btn {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-secondary);
+      background: var(--surface-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: background 120ms, border-color 120ms;
+    }
+    .btn:hover { background: var(--brand-grey-200); }
+    .btn.primary {
+      background: var(--brand-digital-blue-600);
+      color: #fff;
+      border-color: var(--brand-digital-blue-600);
+      font-weight: 600;
+    }
+    .btn.primary:hover { background: var(--brand-digital-blue-700); border-color: var(--brand-digital-blue-700); }
+    .btn svg { width: 14px; height: 14px; }
+
+    .page-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0 32px 40px;
+      min-height: 0;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .search {
+      flex: 1 1 320px;
+      min-width: 240px;
+      max-width: 460px;
+      position: relative;
+    }
+    .search input {
+      width: 100%;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 9px 12px 9px 34px;
+      border-radius: var(--radius-md);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-secondary);
+      color: var(--text-primary);
+      outline: none;
+    }
+    .search input::placeholder { color: var(--text-tertiary); }
+    .search input:focus {
+      border-color: var(--brand-digital-blue-500);
+      box-shadow: 0 0 0 3px rgba(47,66,255,0.12);
+    }
+    .search .icn {
+      position: absolute;
+      left: 11px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      width: 14px; height: 14px;
+    }
+
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 10px 6px 8px;
+      border-radius: 999px;
+      background: var(--surface-primary);
+      border: 1px solid var(--border-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: border-color 120ms, background 120ms;
+      user-select: none;
+    }
+    .chip:hover { color: var(--text-primary); }
+    .chip .sw {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--chip-color, var(--text-tertiary));
+    }
+    .chip.t-recipe { --chip-color: var(--c-recipe); }
+    .chip.t-commit { --chip-color: var(--c-commit); }
+    .chip.t-viz    { --chip-color: var(--c-viz); }
+    .chip.active {
+      background: var(--brand-grey-200);
+      color: var(--text-primary);
+    }
+    .chip.active .sw { box-shadow: 0 0 0 3px color-mix(in srgb, var(--chip-color, var(--text-primary)) 24%, transparent); }
+    .chip.muted { opacity: 0.5; }
+
+    .toolbar-divider {
+      width: 1px; align-self: stretch;
+      background: var(--border-primary);
+      margin: 0 4px;
+    }
+
+    .select {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 28px 6px 10px;
+      border-radius: var(--radius-md);
+      background: var(--surface-primary);
+      border: 1px solid var(--border-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, var(--text-tertiary) 50%),
+                        linear-gradient(135deg, var(--text-tertiary) 50%, transparent 50%);
+      background-position: calc(100% - 14px) 50%, calc(100% - 10px) 50%;
+      background-size: 4px 4px;
+      background-repeat: no-repeat;
+    }
+    .select:hover { color: var(--text-primary); }
+
+    /* =========================================================
+       Activity table (lineage columns + core fields)
+       ========================================================= */
+    .tableCard {
+      background: var(--surface-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    table.activity {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 13px;
+    }
+    .activity thead th {
+      background: var(--surface-page);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-align: left;
+      border-bottom: 1px solid var(--border-primary);
+      padding: 0;
+      height: var(--row-h);
+      position: sticky; top: 0; z-index: 1;
+    }
+    .activity thead th.activity-col {
+      width: var(--col-act);
+      min-width: var(--col-act);
+      max-width: var(--col-act);
+      border-right: 1px solid var(--border-primary);
+      padding: 0;
+    }
+    .activity thead th.activity-col .dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      margin: 0 auto;
+      display: block;
+    }
+    .activity thead th.name   { padding: 0 16px 0 20px; min-width: 320px; }
+    .activity thead th.type   { padding: 0 16px; width: 140px; }
+    .activity thead th.org    { padding: 0 16px; width: 180px; }
+    .activity thead th.status { padding: 0 16px; width: 220px; }
+    .activity thead th.runby  { width: 90px; text-align: center; padding: 0; }
+    .activity thead th.time   { padding: 0 16px; width: 180px; text-align: right; }
+
+    .activity tbody tr { transition: background 100ms; }
+    .activity tbody tr:hover { background: var(--surface-page); }
+    .activity tbody td {
+      font-size: 13px;
+      height: var(--row-h);
+      vertical-align: middle;
+      border-bottom: 1px solid var(--brand-grey-200);
+    }
+    .activity tbody tr:last-child td { border-bottom: none; }
+    .activity tbody tr.cluster-start td { border-top: 1px solid var(--border-primary); }
+
+    .activity tbody td.activity-cell {
+      width: var(--col-act);
+      min-width: var(--col-act);
+      max-width: var(--col-act);
+      border-right: 1px solid var(--border-primary);
+      padding: 0;
+      text-align: center;
+      line-height: 0;
+    }
+
+    .activity tbody td.name { padding: 0 16px 0 20px; }
+    .activity tbody td.name a {
+      color: var(--brand-digital-blue-600);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .activity tbody td.name a:hover { text-decoration: underline; }
+    .activity tbody td.name .name-meta {
+      display: block;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 1px;
+      font-weight: 400;
+    }
+
+    .activity tbody td.type {
+      padding: 0 16px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .activity tbody td.type.t-recipe-run    { color: var(--c-recipe); }
+    .activity tbody td.type.t-commit-job    { color: var(--c-commit); }
+    .activity tbody td.type.t-visualization { color: var(--c-viz); }
+
+    .activity tbody td.org { padding: 0 16px; color: var(--text-primary); }
+    .activity tbody td.status { padding: 0 16px; }
+    .activity tbody td.status .status-cell {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .activity tbody td.status .status-meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      white-space: nowrap;
+    }
+
+    .activity tbody td.runby { width: 90px; text-align: center; padding: 0; }
+    .activity tbody td.runby .avatar-cell {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--brand-grey-300);
+      color: var(--brand-grey-800);
+      font-size: 11px; font-weight: 600;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+
+    .activity tbody td.time {
+      padding: 0 16px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .activity tbody td.time .abs {
+      display: block;
+      color: var(--text-tertiary);
+      font-size: 10.5px;
+      margin-top: 1px;
+    }
+
+    svg.scene {
+      width: 35px; height: 36px;
+      overflow: visible;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* =========================================================
+       Neo Badge — from @moderneinc/neo-design Badge.css
+       Medium: height 24px, padding 2px 10px, font-size 12px, gap 4px,
+       border 1px solid --status-{intent}-transparent, currentColor icon.
+       ========================================================= */
+    .neo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: 0;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+      border-width: 1px;
+      border-style: solid;
+      box-sizing: border-box;
+      height: 24px;
+      padding: 2px 10px;
+      font-size: 12px;
+    }
+    .neo-badge__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 14px; height: 14px;
+      color: currentColor;
+    }
+    .neo-badge__icon svg {
+      width: 100%; height: 100%;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .neo-badge--neutral  { background: var(--status-neutral-light);  border-color: var(--status-neutral-transparent);  color: var(--status-neutral-dark); }
+    .neo-badge--success  { background: var(--status-success-light);  border-color: var(--status-success-transparent);  color: var(--status-success-dark); }
+    .neo-badge--queued   { background: var(--status-queued-light);   border-color: var(--status-queued-transparent);   color: var(--status-queued-dark); }
+    .neo-badge--active   { background: var(--status-active-light);   border-color: var(--status-active-transparent);   color: var(--status-active-dark); }
+    .neo-badge--info     { background: var(--status-info-light);     border-color: var(--status-info-transparent);     color: var(--status-info-dark); }
+    .neo-badge--warning  { background: var(--status-warning-light);  border-color: var(--status-warning-transparent);  color: var(--status-warning-dark); }
+    .neo-badge--error    { background: var(--status-error-light);    border-color: var(--status-error-transparent);    color: var(--status-error-dark); }
+    .neo-badge--canceled { background: var(--status-canceled-light); border-color: var(--status-canceled-transparent); color: var(--status-canceled-dark); }
+
+    /* Active spinner: rotate loader-circle 2s linear */
+    .neo-badge--active .neo-badge__icon svg {
+      animation: neo-status-spin 2s linear infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 50%;
+    }
+    @keyframes neo-status-spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) {
+      .neo-badge--active .neo-badge__icon svg { animation: none; }
+    }
+
+    /* Progress bar (commit-job in-flight scale — colored per Status intent) */
+    .progress {
+      display: flex; flex-direction: column; gap: 4px;
+      width: 180px; max-width: 100%;
+    }
+    .progress-bar {
+      width: 100%; height: 5px;
+      border-radius: 999px;
+      background: var(--brand-grey-200);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 999px;
+      transition: width 200ms ease;
+      background: var(--status-success-default);
+    }
+    .progress-fill.success { background: var(--status-success-default); }
+    .progress-fill.warning { background: var(--status-warning-default); }
+    .progress-fill.error   { background: var(--status-error-default); }
+    .progress-fill.active {
+      background: var(--status-active-default);
+      background-image: linear-gradient(45deg,
+        rgba(255,255,255,0.35) 25%, transparent 25%,
+        transparent 50%, rgba(255,255,255,0.35) 50%,
+        rgba(255,255,255,0.35) 75%, transparent 75%);
+      background-size: 10px 10px;
+      animation: stripes 1s linear infinite;
+    }
+    @keyframes stripes { 0% { background-position: 0 0; } 100% { background-position: 10px 0; } }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .progress-label .state { font-weight: 500; }
+    .progress-label .state.success { color: var(--status-success-dark); }
+    .progress-label .state.warning { color: var(--status-warning-dark); }
+    .progress-label .state.error   { color: var(--status-error-dark); }
+    .progress-label .state.active  { color: var(--status-active-dark); }
+    .progress-label .count { color: var(--text-tertiary); font-weight: 500; }
+
+    /* Table footer / pagination */
+    .tableFoot {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px;
+      border-top: 1px solid var(--border-primary);
+      background: var(--surface-page);
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+    .tableFoot .pager { display: flex; gap: 4px; }
+    .tableFoot .pager button {
+      font-family: inherit;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: transparent;
+      border: 1px solid var(--border-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+    .tableFoot .pager button.current {
+      background: var(--brand-digital-blue-100);
+      color: var(--brand-digital-blue-700);
+      border-color: var(--brand-digital-blue-300);
+    }
+    .tableFoot .pager button:hover:not(.current) { color: var(--text-primary); }
+
+    /* Legend */
+    .legend {
+      display: flex; gap: 18px;
+      margin-top: 14px;
+      padding: 0 4px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .legend .li { display: inline-flex; align-items: center; gap: 6px; }
+    .legend .li .sw { width: 10px; height: 10px; border-radius: 50%; }
+    .legend .li.recipe .sw { background: var(--c-recipe); }
+    .legend .li.commit .sw { background: var(--c-commit); }
+    .legend .li.viz    .sw { background: var(--c-viz); }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- Left navigation rail -->
+  <nav class="left-nav" aria-label="Platform">
+    <div class="left-nav-top">
+      <div class="nav-home-stack">
+        <div class="nav-item nav-item-home" title="Home">
+          <div class="nav-icon-container">
+            <svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <span class="nav-version-badge">v2</span>
+      </div>
+      <div id="left-nav-items"></div>
+    </div>
+    <div class="nav-tenant" title="Moderne — organization">
+      <div class="tenant-logo">Moderne</div>
+    </div>
+  </nav>
+
+  <!-- Global top nav -->
+  <div class="global-nav">
+    <div class="org-selector">
+      <svg width="18" height="18" viewBox="0 0 24 24" class="svg-stroke"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="org-name">Moderne Inc</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" class="svg-stroke"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="search-input">
+      <svg width="18" height="18" viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <span>Search recipes</span>
+      <span class="search-input-keys"><kbd>⌘</kbd><kbd>K</kbd></span>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-action-btn" aria-label="Settings"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      <button class="nav-action-btn" aria-label="Help"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+      <button class="nav-action-btn" aria-label="Account"><div class="avatar">A</div></button>
+    </div>
+  </div>
+
+  <!-- Main area -->
+  <div class="main-area">
+
+    <div class="page-top">
+      <div class="crumbs">
+        <a href="#">Moderne Inc</a>
+        <span class="sep"><svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="9 18 15 12 9 6"/></svg></span>
+        <span>Activity</span>
+      </div>
+      <div class="run-title"><h1>Activity</h1></div>
+      <div class="run-subhead">
+        Runs are scheduled by priority — higher-priority runs are picked up first. <a href="#">Learn more</a>
+      </div>
+
+      <div class="page-actions">
+        <button class="btn">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1v10M4 7l4 4 4-4M2 14h12"/></svg>
+          Export
+        </button>
+        <button class="btn primary">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3v10M3 8h10"/></svg>
+          New run
+        </button>
+      </div>
+    </div>
+
+    <div class="page-body">
+
+      <div class="toolbar">
+        <div class="search">
+          <svg class="icn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+          <input type="text" placeholder="Search by name, recipe, or commit message…" />
+        </div>
+
+        <div class="chips" role="group" aria-label="Activity type filters">
+          <button class="chip t-recipe active"><span class="sw"></span>Recipe runs</button>
+          <button class="chip t-commit active"><span class="sw"></span>Commit jobs</button>
+          <button class="chip t-viz active"><span class="sw"></span>Visualizations</button>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <select class="select" aria-label="Time range">
+          <option>Last 7 days</option>
+          <option>Last 24 hours</option>
+          <option>Last 30 days</option>
+          <option>All time</option>
+        </select>
+        <select class="select" aria-label="Run by">
+          <option>Run by anyone</option>
+          <option>Run by me</option>
+          <option>Run by team</option>
+        </select>
+        <select class="select" aria-label="Status">
+          <option>Any status</option>
+          <option>Queued</option>
+          <option>Running</option>
+          <option>Finished</option>
+          <option>Failed</option>
+          <option>Canceled</option>
+        </select>
+      </div>
+
+      <div class="tableCard">
+        <table class="activity">
+          <colgroup>
+            <col style="width: 34px"><col style="width: 34px"><col style="width: 34px">
+            <col><col style="width: 140px"><col style="width: 180px"><col style="width: 220px"><col style="width: 90px"><col style="width: 180px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="activity-col" title="Recipe run"><span class="dot" style="background: var(--c-recipe)"></span></th>
+              <th class="activity-col" title="Commit job"><span class="dot" style="background: var(--c-commit)"></span></th>
+              <th class="activity-col" title="Visualization"><span class="dot" style="background: var(--c-viz)"></span></th>
+              <th class="name">Name</th>
+              <th class="type">Type</th>
+              <th class="org">Organization</th>
+              <th class="status">Status</th>
+              <th class="runby">Run by</th>
+              <th class="time">Started</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+
+        <div class="tableFoot">
+          <div>Showing <strong style="color:var(--text-primary)">9</strong> of 104 activities</div>
+          <div class="pager">
+            <button>‹</button>
+            <button class="current">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>…</button>
+            <button>12</button>
+            <button>›</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span class="li recipe"><span class="sw"></span>Recipe run</span>
+        <span class="li commit"><span class="sw"></span>Commit job</span>
+        <span class="li viz"><span class="sw"></span>Visualization</span>
+        <span style="margin-left:auto;color:var(--text-tertiary)">Lineage columns are read left → right; vertical connectors group activities that share a parent.</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ===== Left nav items ===== */
+  const NAV_ITEMS = [
+    { label: 'Moddy',        svg: '<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/>' },
+    { label: 'DevCenter',    svg: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>' },
+    { label: 'Marketplace',  svg: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>' },
+    { label: 'Builder',      svg: '<rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>' },
+    { label: 'Activity', active: true, svg: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>' },
+    { label: 'Changelog',    svg: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>' },
+    { label: 'Repositories', svg: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/>' },
+    { label: 'Deploy',       svg: '<path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' }
+  ];
+  const navList = document.getElementById('left-nav-items');
+  NAV_ITEMS.forEach(i => {
+    const el = document.createElement('div');
+    el.className = 'nav-item' + (i.active ? ' active' : '');
+    el.title = i.label;
+    el.innerHTML = `<div class="nav-icon-container"><svg width="22" height="22" viewBox="0 0 24 24" class="svg-stroke">${i.svg}</svg></div><span class="nav-label">${i.label}</span>`;
+    navList.appendChild(el);
+  });
+
+  /* ===== Foundations/Status Neo Badge ===== */
+  const STATUS_ICONS = {
+    success:  '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+    queued:   '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    active:   '<path d="M21 12a9 9 0 1 1-6.219-8.56"/>',
+    info:     '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+    warning:  '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    error:    '<path d="M15.312 2a2 2 0 0 1 1.414.586l4.688 4.688A2 2 0 0 1 22 8.688v6.624a2 2 0 0 1-.586 1.414l-4.688 4.688a2 2 0 0 1-1.414.586H8.688a2 2 0 0 1-1.414-.586l-4.688-4.688A2 2 0 0 1 2 15.312V8.688a2 2 0 0 1 .586-1.414l4.688-4.688A2 2 0 0 1 8.688 2z"/><path d="M12 8v4"/><path d="M12 16h.01"/>',
+    neutral:  '<circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/>',
+    canceled: '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'
+  };
+  // Per Badge spec: leading icon is required for `queued` and `active`, omitted otherwise.
+  const ICON_REQUIRED = new Set(['queued', 'active']);
+  const badge = (intent, label) => {
+    const icon = ICON_REQUIRED.has(intent)
+      ? `<span class="neo-badge__icon" aria-hidden="true"><svg viewBox="0 0 24 24">${STATUS_ICONS[intent]}</svg></span>`
+      : '';
+    return `<span class="neo-badge neo-badge--${intent}">${icon}<span class="neo-badge__label">${label}</span></span>`;
+  };
+  // Status cell = badge + optional priority meta (inline, same line).
+  // Priority lives outside the chip so the chip stays compact; inline layout
+  // keeps every row the same height.
+  const statusChip = (intent, label, priority) => {
+    if (!priority) return badge(intent, label);
+    return `<span class="status-cell">${badge(intent, label)}<span class="status-meta">${priority} priority</span></span>`;
+  };
+
+  /* ===== Lineage SVG primitives (recipe → commit / viz) ===== */
+  const COLORS = {
+    'recipe-run':    '#992fb9',
+    'commit-job':    '#2f42ff',
+    'visualization': '#27aa88',
+    'none':          '#e5e7eb'
+  };
+  const STROKE = 1.2;
+  const VB = '-12 -12 35 36';
+  const svg = (kids) => `<svg class="scene" viewBox="${VB}" xmlns="http://www.w3.org/2000/svg">${kids}</svg>`;
+  const circle = (color, paths = {}) => {
+    const parts = [];
+    if (paths.right)  parts.push(`<path d="M 11,5 H 35"  stroke="${paths.right}"  stroke-width="${STROKE}" fill="none"/>`);
+    if (paths.top)    parts.push(`<path d="M 5,-1 V -12" stroke="${paths.top}"    stroke-width="${STROKE}" fill="none"/>`);
+    if (paths.bottom) parts.push(`<path d="M 5,11 V 35"  stroke="${paths.bottom}" stroke-width="${STROKE}" fill="none"/>`);
+    parts.push(`<circle r="6" cx="5" cy="5" fill="${color}"/>`);
+    return svg(parts.join(''));
+  };
+  const pathVertical   = (color) => svg(`<path d="M 5,-12 V 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
+  const corner         = (color) => svg(`<path d="M -12,5 H 0 Q 5 5.5, 5 12 V 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
+  const cornerWithH    = (cC, hC) => svg(`
+    <path d="M -12,5 H 35" stroke="${hC}" stroke-width="${STROKE}" fill="none"/>
+    <path d="M -12,5 H 0 Q 5 5.5, 5 12 V 35" stroke="${cC}" stroke-width="${STROKE}" fill="none"/>
+  `);
+  const pathHorizontal = (color) => svg(`<path d="M -12,5 H 35" stroke="${color}" stroke-width="${STROKE}" fill="none"/>`);
+
+  const S = {
+    BLANK: 'blank',
+    CIRCLE: 'circle',
+    CIRCLE_R: 'circle-right',
+    CIRCLE_T: 'circle-top',
+    CIRCLE_TB: 'circle-top-bottom',
+    CORNER: 'corner',
+    CORNER_H: 'corner-h',
+    V: 'vertical',
+    H: 'horizontal'
+  };
+  const renderScene = (scene, color, pathColor) => {
+    const pc = pathColor || color;
+    switch (scene) {
+      case S.BLANK:     return '';
+      case S.CIRCLE:    return circle(color);
+      case S.CIRCLE_R:  return circle(color, { right: pc });
+      case S.CIRCLE_T:  return circle(color, { top: pc });
+      case S.CIRCLE_TB: return circle(color, { top: pc, bottom: pc });
+      case S.CORNER:    return corner(pc);
+      case S.CORNER_H:  return cornerWithH(color, pc);
+      case S.V:         return pathVertical(color);
+      case S.H:         return pathHorizontal(color);
+      default:          return '';
+    }
+  };
+
+  /* ===== Row helpers ===== */
+  const recipeRunRow = (name, recipe, opts) => {
+    const { hasCommit = false, hasVis = false,
+            org = 'Moderne Inc', statusCell = badge('success', 'Completed'),
+            runBy = 'A', time = '4 min ago', abs = 'Today 09:44', clusterStart = true } = opts || {};
+    const col0 = (hasCommit || hasVis) ? S.CIRCLE_R : S.CIRCLE;
+    let col1 = S.BLANK;
+    if (hasCommit && hasVis) col1 = S.CORNER_H;
+    else if (hasCommit)      col1 = S.CORNER;
+    else if (hasVis)         col1 = S.H;
+    const col2 = hasVis ? S.CORNER : S.BLANK;
+
+    const col1BranchColor = hasCommit ? COLORS['commit-job'] : (hasVis ? COLORS['visualization'] : COLORS['recipe-run']);
+
+    return {
+      type: 'recipe-run',
+      name, recipe, clusterStart,
+      scenes: [col0, col1, col2],
+      colors: [
+        COLORS['recipe-run'],
+        hasCommit ? COLORS['commit-job'] : (hasVis ? COLORS['visualization'] : COLORS.none),
+        hasVis ? COLORS['visualization'] : COLORS.none
+      ],
+      secondaryColors: [
+        col0 === S.CIRCLE_R ? col1BranchColor : COLORS['recipe-run'],
+        hasCommit && hasVis ? COLORS['visualization'] : (hasCommit ? COLORS['commit-job'] : COLORS['visualization']),
+        COLORS['visualization']
+      ],
+      org, statusCell, runBy, time, abs
+    };
+  };
+  const commitJobRow = (name, opts) => {
+    const { isLast = true, hasParallelVis = false,
+            org = 'Moderne Inc', statusCell,
+            progress,
+            runBy = 'A', time = '3 min ago', abs = 'Today 09:45' } = opts || {};
+    const col1 = isLast ? S.CIRCLE_T : S.CIRCLE_TB;
+    const col2 = hasParallelVis ? S.V : S.BLANK;
+    return {
+      type: 'commit-job',
+      name,
+      scenes: [S.BLANK, col1, col2],
+      colors: [COLORS.none, COLORS['commit-job'], COLORS['visualization']],
+      secondaryColors: [COLORS.none, COLORS['commit-job'], COLORS['visualization']],
+      org, statusCell, progress, runBy, time, abs
+    };
+  };
+  const visualizationRow = (name, opts) => {
+    const { isLast = true,
+            org = 'Moderne Inc', statusCell = badge('success', 'Completed'),
+            runBy = 'A', time = '2 min ago', abs = 'Today 09:46' } = opts || {};
+    const col2 = isLast ? S.CIRCLE_T : S.CIRCLE_TB;
+    return {
+      type: 'visualization',
+      name,
+      scenes: [S.BLANK, S.BLANK, col2],
+      colors: [COLORS.none, COLORS.none, COLORS['visualization']],
+      secondaryColors: [COLORS.none, COLORS.none, COLORS['visualization']],
+      org, statusCell, runBy, time, abs
+    };
+  };
+
+  /* ===== Row data — priority baked into status labels per prototype prompt.
+     Statuses use the 8 Foundations/Status intents. ===== */
+  const rows = [
+    // Cluster 1 — high-priority queued (top of queue, no children yet)
+    recipeRunRow('Upgrade Spring Boot', 'org.openrewrite.spring.boot3.UpgradeSpringBoot_3_3',
+      { hasCommit: false, hasVis: false, statusCell: statusChip('queued', 'Queued', 'High'),
+        runBy: 'A', time: '5 min ago', abs: 'Today 09:41' }),
+
+    // Cluster 2 — actively running with a live commit job
+    recipeRunRow('Migrate to JUnit 5', 'org.openrewrite.java.testing.junit5.JUnit5BestPractices',
+      { hasCommit: true, hasVis: false, statusCell: statusChip('active', 'Running', 'Medium'),
+        runBy: 'M', time: '2 min ago', abs: 'Today 09:44' }),
+    commitJobRow('test: migrate to JUnit 5',
+      { isLast: true, progress: { done: 8, total: 12, active: true },
+        runBy: 'M', time: '1 min ago', abs: 'Today 09:45' }),
+
+    // Cluster 3 — medium-priority queued
+    recipeRunRow('Static analysis pass', 'org.openrewrite.staticanalysis.CommonStaticAnalysis',
+      { hasCommit: false, hasVis: false, statusCell: statusChip('queued', 'Queued', 'Medium'),
+        runBy: 'A', time: '8 min ago', abs: 'Today 09:38' }),
+
+    // Cluster 4 — recently finished, full lineage
+    recipeRunRow('Format code', 'org.openrewrite.format.AutoFormat',
+      { hasCommit: true, hasVis: true, statusCell: badge('success', 'Finished'),
+        runBy: 'A', time: '1 hr ago', abs: 'Today 08:46' }),
+    commitJobRow('chore: apply auto-format',
+      { isLast: true, hasParallelVis: true, statusCell: badge('success', 'Finished'),
+        progress: { done: 12, total: 12 },
+        runBy: 'A', time: '58 min ago', abs: 'Today 08:48' }),
+    visualizationRow('Format diff summary',
+      { isLast: true, statusCell: badge('success', 'Finished'),
+        runBy: 'A', time: '55 min ago', abs: 'Today 08:51' }),
+
+    // Cluster 5 — finished yesterday
+    recipeRunRow('Add missing @Override', 'org.openrewrite.staticanalysis.MissingOverrideAnnotation',
+      { hasCommit: true, hasVis: false, statusCell: badge('success', 'Finished'),
+        runBy: 'R', time: 'Yesterday', abs: 'Nov 4 17:12' }),
+    commitJobRow('refactor: add @Override annotations',
+      { isLast: true, statusCell: badge('success', 'Finished'),
+        progress: { done: 9, total: 9 },
+        runBy: 'R', time: 'Yesterday', abs: 'Nov 4 17:16' }),
+
+    // Cluster 6 — errored
+    recipeRunRow('Add structured logging context', 'org.openrewrite.java.logging.slf4j.AddMDCContext',
+      { hasCommit: false, hasVis: false, statusCell: badge('error', 'Failed · 2 errors'),
+        runBy: 'A', time: '3 hr ago', abs: 'Today 06:42' }),
+
+    // Cluster 7 — canceled by a user
+    recipeRunRow('Rewrite legacy nullable annotations', 'org.openrewrite.java.migrate.jakarta.JavaxAnnotationMigrationToJakartaAnnotation',
+      { hasCommit: false, hasVis: false, statusCell: badge('canceled', 'Canceled'),
+        runBy: 'M', time: '4 hr ago', abs: 'Today 05:30' })
+  ];
+
+  /* ===== Render ===== */
+  const tbody = document.getElementById('rows');
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    if (r.clusterStart) tr.classList.add('cluster-start');
+
+    for (let i = 0; i < 3; i++) {
+      const td = document.createElement('td');
+      td.className = 'activity-cell';
+      td.innerHTML = renderScene(r.scenes[i], r.colors[i], r.secondaryColors[i]);
+      tr.appendChild(td);
+    }
+
+    const tdName = document.createElement('td');
+    tdName.className = 'name';
+    tdName.innerHTML = `<a href="#">${r.name}</a>` + (r.recipe ? `<span class="name-meta">${r.recipe}</span>` : '');
+    tr.appendChild(tdName);
+
+    const tdType = document.createElement('td');
+    tdType.className = 'type t-' + r.type;
+    tdType.textContent = ({
+      'recipe-run':    'Recipe run',
+      'commit-job':    'Commit job',
+      'visualization': 'Visualization'
+    })[r.type];
+    tr.appendChild(tdType);
+
+    const tdOrg = document.createElement('td');
+    tdOrg.className = 'org';
+    tdOrg.textContent = r.org;
+    tr.appendChild(tdOrg);
+
+    const tdStatus = document.createElement('td');
+    tdStatus.className = 'status';
+    if (r.progress) {
+      const { done, total, active, error } = r.progress;
+      const pct = total > 0 ? Math.max(0, Math.min(100, (done / total) * 100)) : 0;
+      const state = error ? 'error' : active ? 'active' : done < total ? 'warning' : 'success';
+      // Once a run finishes cleanly (done === total, not active, not error) the
+      // progress bar collapses to a Success chip — the bar only communicates
+      // in-flight scale, and it's redundant at 100%.
+      if (state === 'success') {
+        tdStatus.innerHTML = badge('success', 'Finished');
+      } else {
+        const stateLabel = ({
+          active:  'Running',
+          error:   'Failed',
+          warning: 'Partial'
+        })[state];
+        tdStatus.innerHTML = `
+          <div class="progress">
+            <div class="progress-bar"><div class="progress-fill ${state}" style="width:${pct.toFixed(1)}%"></div></div>
+            <div class="progress-label">
+              <span class="state ${state}">${stateLabel}</span>
+              <span class="count">${done} / ${total} repos</span>
+            </div>
+          </div>
+        `;
+      }
+    } else if (r.statusCell) {
+      tdStatus.innerHTML = r.statusCell;
+    }
+    tr.appendChild(tdStatus);
+
+    const tdRunBy = document.createElement('td');
+    tdRunBy.className = 'runby';
+    tdRunBy.innerHTML = `<span class="avatar-cell" title="${r.runBy}">${r.runBy}</span>`;
+    tr.appendChild(tdRunBy);
+
+    const tdTime = document.createElement('td');
+    tdTime.className = 'time';
+    tdTime.innerHTML = `${r.time}<span class="abs">${r.abs}</span>`;
+    tr.appendChild(tdTime);
+
+    tbody.appendChild(tr);
+  });
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('active');
+      chip.classList.toggle('muted');
+    });
+  });
+</script>
+
+</body>
+</html>
