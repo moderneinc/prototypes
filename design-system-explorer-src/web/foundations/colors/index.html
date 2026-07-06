@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{> ds-head }}
+  <title>Foundations · Colors — Moderne SaaS DS</title>
+  <script type="module" src="/src/pages/ds-foundations-colors.ts"></script>
+  <style>
+    /* Page-local layout — safe overrides only.
+       All swatch chips render with inline background hex so nothing here
+       leaks out to the rest of the gallery. */
+    .cp-ramp{display:grid;grid-template-columns:120px repeat(10,minmax(0,1fr));gap:2px;align-items:stretch;margin:0 0 6px}
+    .cp-ramp .lbl{display:flex;align-items:center;gap:8px;padding:0 10px;font-size:12px;color:var(--ds-ink-dim);font-weight:600}
+    .cp-ramp .stop{position:relative;height:78px;display:flex;flex-direction:column;justify-content:space-between;padding:5px 6px 4px;border-radius:2px;font-family:var(--ds-font-mono);font-size:9.5px;line-height:1.15;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.35)}
+    .cp-ramp .stop[data-ink="dark"]{color:#0b0c0e;text-shadow:none}
+    .cp-ramp .stop .k{opacity:.9}
+    .cp-ramp .stop .v{font-weight:600;letter-spacing:-.01em}
+    .cp-ramp .stop .cx{display:flex;justify-content:space-between;align-items:center;gap:3px;font-family:var(--ds-font-mono);font-size:8.5px;line-height:1;letter-spacing:0}
+    .cp-ramp .stop .cx b{font-weight:700;padding:1.5px 3px;border-radius:2px;background:rgba(0,0,0,.28);color:#fff;text-shadow:none}
+    .cp-ramp .stop[data-ink="dark"] .cx b{background:rgba(255,255,255,.7);color:#0b0c0e}
+    .cp-ramp .stop .cx b.g-aaa{background:#0f7a3a;color:#fff}
+    .cp-ramp .stop .cx b.g-aa {background:#255bb0;color:#fff}
+    .cp-ramp .stop .cx b.g-aal{background:#7e6115;color:#fff}
+    .cp-ramp .stop .cx b.g-no {background:rgba(20,22,30,.35);color:#e0e0e0}
+    /* Brand-exact stops — full-width uppercase top ribbon spelling out BRIGHT or DEEP,
+       plus a 1.5px inset outline. Both work together: ribbon is the label, outline
+       is the peripheral cue. The step number/hex/contrast badge still fit under. */
+    .cp-ramp .stop[data-brand]{outline:1.5px solid #fff;outline-offset:-2px;z-index:1}
+    .cp-ramp .stop[data-brand][data-ink="dark"]{outline-color:#0b0c0e}
+    .cp-ramp .stop[data-brand]::before{
+      content:attr(data-brand);
+      position:absolute;top:0;left:0;right:0;
+      padding:2.5px 4px;
+      font-family:var(--ds-font-mono);
+      font-size:9px;font-weight:800;letter-spacing:.14em;
+      text-align:center;text-transform:uppercase;
+      background:#ffffff;color:#0b0c0e;text-shadow:none;
+      border-bottom:1px solid rgba(0,0,0,.35);
+      z-index:2;
+    }
+    .cp-ramp .stop[data-brand] .k{padding-top:18px}
+    .cp-ramps-legend{font-family:var(--ds-font-mono);font-size:11px;color:var(--ds-muted);margin:0 0 14px 128px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .cp-ramps-legend .lg-keys{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .cp-ramps-legend .lg-keys .kchip{display:inline-flex;align-items:center;gap:5px}
+    .cp-ramps-legend .lg-keys .kchip i{display:inline-block;width:22px;height:12px;border-radius:2px;font-family:var(--ds-font-mono);font-size:8.5px;line-height:12px;text-align:center;color:#fff;font-weight:700;font-style:normal}
+    .cp-ramps-legend .lg-keys .kchip .lbr{display:inline-block;padding:1px 4px;background:#fff;color:#0b0c0e;border-radius:2px;font-size:8px;font-weight:700;text-transform:uppercase;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+
+    /* Comparison table used by the "vs. neo-design" grid */
+    .cp-cmp{border:1px solid var(--ds-line);border-radius:var(--ds-radius-md);overflow-x:auto;background:var(--ds-panel);margin:14px 0 0}
+    .cp-cmp table{width:100%;min-width:820px;border-collapse:collapse;font-size:13px}
+    .cp-cmp th{text-align:left;font-size:11px;font-family:var(--ds-font-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--ds-muted);font-weight:600;padding:10px 12px;background:var(--ds-bg-alt);border-bottom:1px solid var(--ds-line);white-space:nowrap}
+    .cp-cmp td{padding:10px 12px;border-bottom:1px solid var(--ds-line);vertical-align:middle}
+    .cp-cmp tr:last-child td{border-bottom:0}
+    .cp-cmp .role{font-weight:600;color:var(--ds-ink)}
+    .cp-cmp .tk{font-family:var(--ds-font-mono);font-size:11px;color:var(--ds-muted);white-space:nowrap}
+    .cp-cmp .cell{display:inline-flex;align-items:center;gap:8px}
+    .cp-cmp .swatch{width:20px;height:20px;border-radius:4px;border:1px solid rgba(20,22,30,.12);flex:none}
+    .cp-cmp .hex{font-family:var(--ds-font-mono);font-size:12px;color:var(--ds-ink-dim);letter-spacing:-.01em}
+    .cp-cmp .arrow{color:var(--ds-muted);padding:0 6px;font-family:var(--ds-font-mono)}
+    .cp-cmp .note{font-size:12px;color:var(--ds-muted)}
+    .cp-cmp tbody tr:nth-child(even) td:not(.prop-light):not(.prop-dark){background:color-mix(in srgb,var(--ds-bg-alt) 35%,transparent)}
+    .cp-secthd{font-family:var(--ds-font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ds-muted);padding:14px 12px 8px;background:var(--ds-bg-alt);border-top:1px solid var(--ds-line);border-bottom:1px solid var(--ds-line)}
+    /* Mode-tinted proposal cells — light-mode hex renders on white, dark-mode hex
+       renders on the dark ground so each column visually shows the mode it belongs to. */
+    .cp-cmp td.prop-light{background:#ffffff !important;color:#34373c}
+    .cp-cmp td.prop-light .hex{color:#34373c}
+    .cp-cmp td.prop-light .ds-muted{color:#797c82 !important}
+    .cp-cmp td.prop-dark {background:#0c0d10 !important;color:#e8eaee}
+    .cp-cmp td.prop-dark  .hex{color:#e8eaee}
+    .cp-cmp td.prop-dark  .ds-muted{color:#858c97 !important}
+    .cp-cmp td.prop-light .swatch{border-color:rgba(20,22,30,.15)}
+    .cp-cmp td.prop-dark  .swatch{border-color:rgba(255,255,255,.18)}
+    .cp-cmp th.prop-light{background:#ffffff;color:#34373c;border-bottom-color:#d4d7de}
+    .cp-cmp th.prop-dark {background:#0c0d10;color:#e8eaee;border-bottom-color:rgba(232,234,238,.12)}
+
+    /* Section anchor sub-links under Colors — one level deeper indent than Colors itself. */
+    .ds-sidenav a.cp-sub{padding-left:46px;font-size:12px;color:var(--ds-muted)}
+    .ds-sidenav a.cp-sub:hover{color:var(--ds-ink)}
+    .ds-sidenav a.cp-sub.is-active{color:var(--ds-primary-ink);background:var(--ds-primary-wash)}
+
+    /* Mode gating — show only the block that matches the current theme.
+       Default (no data-theme) = dark; [data-theme='light'] flips to light. */
+    .mode-light{display:none}
+    :root[data-theme="light"] .mode-light{display:block}
+    :root[data-theme="light"] .mode-dark{display:none}
+
+    /* Status grid — one card per status semantic, 3 stops rendered as chips.
+       Each card shows both modes stacked; the L/D/Dark stop hex sits under. */
+    .cp-status{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+    .cp-status .st{border:1px solid var(--ds-line);border-radius:var(--ds-radius-md);background:var(--ds-panel);overflow:hidden}
+    .cp-status .st > header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--ds-line);background:var(--ds-bg-alt)}
+    .cp-status .st > header b{font-size:13px}
+    .cp-status .st > header .m{font-family:var(--ds-font-mono);font-size:10.5px;color:var(--ds-muted);text-transform:uppercase;letter-spacing:.1em}
+    .cp-status .row{display:grid;grid-template-columns:44px repeat(3,1fr);gap:6px;padding:8px 10px;align-items:center;border-bottom:1px dashed var(--ds-line)}
+    .cp-status .row:last-child{border-bottom:0}
+    .cp-status .row .rl{font-family:var(--ds-font-mono);font-size:10px;color:var(--ds-muted);text-transform:uppercase;letter-spacing:.08em}
+    .cp-status .row .st-chip{height:40px;border-radius:4px;border:1px solid rgba(20,22,30,.10);position:relative;display:flex;align-items:flex-end;padding:4px 5px}
+    .cp-status .row .st-chip span{font-family:var(--ds-font-mono);font-size:9.5px;font-weight:600;letter-spacing:-.02em}
+
+    /* Compact brand-reference strip */
+    .cp-brand{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+    .cp-brand .bcard{border:1px solid var(--ds-line);border-radius:var(--ds-radius-md);overflow:hidden;background:var(--ds-panel)}
+    .cp-brand .bcard .b-bright{height:52px;display:flex;align-items:flex-end;padding:6px 8px;color:#0b0c0e;font-family:var(--ds-font-mono);font-size:10px;font-weight:600}
+    .cp-brand .bcard .b-deep{height:44px;display:flex;align-items:flex-end;padding:6px 8px;color:#fff;font-family:var(--ds-font-mono);font-size:10px;font-weight:600}
+    .cp-brand .bcard .b-name{padding:8px 10px;font-size:12px;font-weight:600;border-top:1px solid var(--ds-line)}
+
+    @media (max-width:900px){
+      .cp-ramp{grid-template-columns:96px repeat(10,minmax(0,1fr))}
+      .cp-brand{grid-template-columns:repeat(3,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <div class="ds-shell">
+    {{> ds-shell-top }}
+    <nav class="ds-sidenav">
+      <!-- On the Colors page the shared sidenav is inlined so we can add
+           section anchors under the ↳ Colors item. ScrollSpy in the inline
+           script below marks the active section as the user scrolls. -->
+      <div class="group">Overview</div>
+      <a href="/prototypes/design-system-explorer/">Introduction</a>
+      <a href="/prototypes/design-system-explorer/foundations/">Foundations</a>
+      <a href="/prototypes/design-system-explorer/foundations/colors/" style="padding-left:26px">↳ Colors</a>
+      <a href="#ramps" class="cp-sub" data-anchor="ramps">Tonal ramps</a>
+      <a href="#status" class="cp-sub" data-anchor="status">Status semantics</a>
+      <a href="#compare" class="cp-sub" data-anchor="compare">Proposed vs. neo-design</a>
+      <a href="#summary" class="cp-sub" data-anchor="summary">Summary</a>
+      <a href="/prototypes/design-system-explorer/accessibility/">Accessibility</a>
+      <div class="group">Platform</div>
+      <a href="/prototypes/design-system-explorer/forms/">Forms &amp; buttons</a>
+      <a href="/prototypes/design-system-explorer/navigation/">Navigation</a>
+      <a href="/prototypes/design-system-explorer/data-display/">Data display</a>
+      <a href="/prototypes/design-system-explorer/feedback/">Feedback &amp; overlay</a>
+      <a href="/prototypes/design-system-explorer/dataviz/">Data visualization</a>
+      <a href="/prototypes/design-system-explorer/examples/?s=devcenter" data-screen="devcenter">DevCenter</a>
+      <a href="/prototypes/design-system-explorer/examples/?s=activity" data-screen="activity">Activity</a>
+      <a href="/prototypes/design-system-explorer/examples/?s=changelog" data-screen="changelog">Changelog</a>
+      <div class="group">Docs</div>
+      <a href="/prototypes/design-system-explorer/examples/?s=docs-home" data-screen="docs-home">Docs · Home</a>
+      <a href="/prototypes/design-system-explorer/examples/?s=docs-platform" data-screen="docs-platform">Docs · Platform</a>
+      <a href="/prototypes/design-system-explorer/examples/?s=docs-article" data-screen="docs-article">Docs · Article</a>
+    </nav>
+    <main class="ds-main">
+      <div class="ds-main-inner">
+
+        <div class="ds-page-head">
+          <div class="ds-eyebrow">Foundations · Colors</div>
+          <h1 class="ds-display">Color tokens — proposed vs. current.</h1>
+          <p>The proposed system: 13 tonal ramps generated in OKLCH for perceptually-even steps, aliased into role tokens (<code class="ds-mono">--ds-primary-*</code>, <code class="ds-mono">--ds-secondary-*</code>), then a status semantic layer on top. This page maps every proposed value back to the corresponding <b>neo-design</b> token it replaces.</p>
+        </div>
+
+        <div class="ds-note">
+          <b>How to read this page.</b> The proposed ramp set has been reconciled with the current DS semantic system: <b>orange, cyan, indigo, pink dropped</b> (no semantic role, not in the M-FISH brand). Ten tonal ramps remain — <b>all 6 M-FISH brand strands (lime, green, teal, blue, violet, magenta) get full 10-step ramps</b> with the exact brand-bright and brand-deep sitting inline as one stop each. Where a semantic alias would have hit a brand-exact stop, it's been <b>shifted to the neighbouring stop</b> so semantic tokens never equal a brand-bright or brand-deep hex (noted per-row in the comparison table).
+        </div>
+
+        <!-- ── RAMPS ─────────────────────────────────────────────────────── -->
+        <section class="ds-section" id="ramps">
+          <header><h2 class="ds-h2">Tonal ramps</h2><span class="maps">10 hues × 10 stops · OKLCH-even · <b>all 6 M-FISH brand hues get full ramps</b> (bright + deep sit inline as exact stops); orange · cyan · indigo · pink dropped (no semantic role, not in brand)</span></header>
+
+          <div class="cp-ramps-legend">
+            <span>50 · 100 · 200 · 300 · 400 · 500 · 600 · 700 · 800 · 900</span>
+            <span class="lg-keys">
+              <span class="kchip"><i class="g-aaa" style="background:#0f7a3a">AAA</i> ≥ 7:1</span>
+              <span class="kchip"><i class="g-aa"  style="background:#255bb0">AA</i> ≥ 4.5:1</span>
+              <span class="kchip"><i class="g-aal" style="background:#7e6115">AA·L</i> ≥ 3:1 · large-text only</span>
+              <span class="kchip"><span class="lbr">BRIGHT</span> / <span class="lbr">DEEP</span> ribbon = exact M-FISH brand hex overriding this OKLCH stop</span>
+            </span>
+          </div>
+
+          <!-- neutral -->
+          <div class="cp-ramp"><div class="lbl">neutral</div>
+            <div class="stop" style="background:#f2f5fc" data-ink="dark"><span class="k">50</span><span class="v">#f2f5fc</span></div>
+            <div class="stop" style="background:#e8ebf2" data-ink="dark"><span class="k">100</span><span class="v">#e8ebf2</span></div>
+            <div class="stop" style="background:#d4d7de" data-ink="dark"><span class="k">200</span><span class="v">#d4d7de</span></div>
+            <div class="stop" style="background:#bec1c8" data-ink="dark"><span class="k">300</span><span class="v">#bec1c8</span></div>
+            <div class="stop" style="background:#a7aab1" data-ink="dark"><span class="k">400</span><span class="v">#a7aab1</span></div>
+            <div class="stop" style="background:#8f9299"><span class="k">500</span><span class="v">#8f9299</span></div>
+            <div class="stop" style="background:#797c82"><span class="k">600</span><span class="v">#797c82</span></div>
+            <div class="stop" style="background:#63666b"><span class="k">700</span><span class="v">#63666b</span></div>
+            <div class="stop" style="background:#4d5055"><span class="k">800</span><span class="v">#4d5055</span></div>
+            <div class="stop" style="background:#34373c"><span class="k">900</span><span class="v">#34373c</span></div>
+          </div>
+          <!-- warm-grey (added for Canceled state) -->
+          <div class="cp-ramp"><div class="lbl">warm-grey <span class="ds-muted" style="font-weight:400;font-size:10.5px">· canceled</span></div>
+            <div class="stop" style="background:#faf4ed" data-ink="dark"><span class="k">50</span><span class="v">#faf4ed</span></div>
+            <div class="stop" style="background:#f0eae3" data-ink="dark"><span class="k">100</span><span class="v">#f0eae3</span></div>
+            <div class="stop" style="background:#dcd6cf" data-ink="dark"><span class="k">200</span><span class="v">#dcd6cf</span></div>
+            <div class="stop" style="background:#c6c0b9" data-ink="dark"><span class="k">300</span><span class="v">#c6c0b9</span></div>
+            <div class="stop" style="background:#afa9a2" data-ink="dark"><span class="k">400</span><span class="v">#afa9a2</span></div>
+            <div class="stop" style="background:#97918a"><span class="k">500</span><span class="v">#97918a</span></div>
+            <div class="stop" style="background:#807b74"><span class="k">600</span><span class="v">#807b74</span></div>
+            <div class="stop" style="background:#6a655e"><span class="k">700</span><span class="v">#6a655e</span></div>
+            <div class="stop" style="background:#544f49"><span class="k">800</span><span class="v">#544f49</span></div>
+            <div class="stop" style="background:#3a3630"><span class="k">900</span><span class="v">#3a3630</span></div>
+          </div>
+          <!-- blue -->
+          <div class="cp-ramp"><div class="lbl">blue</div>
+            <div class="stop" style="background:#f4f5f8" data-ink="dark"><span class="k">50</span><span class="v">#f4f5f8</span></div>
+            <div class="stop" style="background:#e6ebf4" data-ink="dark"><span class="k">100</span><span class="v">#e6ebf4</span></div>
+            <div class="stop" style="background:#cad8f2" data-ink="dark"><span class="k">200</span><span class="v">#cad8f2</span></div>
+            <div class="stop" style="background:#a6c2f4" data-ink="dark"><span class="k">300</span><span class="v">#a6c2f4</span></div>
+            <div class="stop" style="background:#7fa9f9" data-ink="dark"><span class="k">400</span><span class="v">#7fa9f9</span></div>
+            <div class="stop" style="background:#558dfc"><span class="k">500</span><span class="v">#558dfc</span></div>
+            <div class="stop" style="background:#3E7BF6" data-brand="bright"><span class="k">600</span><span class="v">#3E7BF6</span></div>
+            <div class="stop" style="background:#1055e2"><span class="k">700</span><span class="v">#1055e2</span></div>
+            <div class="stop" style="background:#1245ae"><span class="k">800</span><span class="v">#1245ae</span></div>
+            <div class="stop" style="background:#16306B" data-brand="deep"><span class="k">900</span><span class="v">#16306B</span></div>
+          </div>
+          <!-- teal -->
+          <div class="cp-ramp"><div class="lbl">teal <span class="ds-muted" style="font-weight:400;font-size:10.5px">· primary</span></div>
+            <div class="stop" style="background:#edf8f6" data-ink="dark"><span class="k">50</span><span class="v">#edf8f6</span></div>
+            <div class="stop" style="background:#cef5ee" data-ink="dark"><span class="k">100</span><span class="v">#cef5ee</span></div>
+            <div class="stop" style="background:#82eee0" data-ink="dark"><span class="k">200</span><span class="v">#82eee0</span></div>
+            <div class="stop" style="background:#55d9ca" data-ink="dark"><span class="k">300</span><span class="v">#55d9ca</span></div>
+            <div class="stop" style="background:#25D0C0" data-ink="dark" data-brand="bright"><span class="k">400</span><span class="v">#25D0C0</span></div>
+            <div class="stop" style="background:#16a89b"><span class="k">500</span><span class="v">#16a89b</span></div>
+            <div class="stop" style="background:#158f83"><span class="k">600</span><span class="v">#158f83</span></div>
+            <div class="stop" style="background:#19756b"><span class="k">700</span><span class="v">#19756b</span></div>
+            <div class="stop" style="background:#1a5b54"><span class="k">800</span><span class="v">#1a5b54</span></div>
+            <div class="stop" style="background:#0E4A45" data-brand="deep"><span class="k">900</span><span class="v">#0E4A45</span></div>
+          </div>
+          <!-- green -->
+          <div class="cp-ramp"><div class="lbl">green <span class="ds-muted" style="font-weight:400;font-size:10.5px">· success</span></div>
+            <div class="stop" style="background:#eff8f1" data-ink="dark"><span class="k">50</span><span class="v">#eff8f1</span></div>
+            <div class="stop" style="background:#d6f5dd" data-ink="dark"><span class="k">100</span><span class="v">#d6f5dd</span></div>
+            <div class="stop" style="background:#87f3a7" data-ink="dark"><span class="k">200</span><span class="v">#87f3a7</span></div>
+            <div class="stop" style="background:#30F284" data-ink="dark" data-brand="bright"><span class="k">300</span><span class="v">#30F284</span></div>
+            <div class="stop" style="background:#2dc96e" data-ink="dark"><span class="k">400</span><span class="v">#2dc96e</span></div>
+            <div class="stop" style="background:#16ae5c"><span class="k">500</span><span class="v">#16ae5c</span></div>
+            <div class="stop" style="background:#15944d"><span class="k">600</span><span class="v">#15944d</span></div>
+            <div class="stop" style="background:#197940"><span class="k">700</span><span class="v">#197940</span></div>
+            <div class="stop" style="background:#1D5937" data-brand="deep"><span class="k">800</span><span class="v">#1D5937</span></div>
+            <div class="stop" style="background:#184025"><span class="k">900</span><span class="v">#184025</span></div>
+          </div>
+          <!-- lime -->
+          <div class="cp-ramp"><div class="lbl">lime</div>
+            <div class="stop" style="background:#f3f8e5" data-ink="dark"><span class="k">50</span><span class="v">#f3f8e5</span></div>
+            <div class="stop" style="background:#e2f6ab" data-ink="dark"><span class="k">100</span><span class="v">#e2f6ab</span></div>
+            <div class="stop" style="background:#cbe578" data-ink="dark"><span class="k">200</span><span class="v">#cbe578</span></div>
+            <div class="stop" style="background:#C7E84B" data-ink="dark" data-brand="bright"><span class="k">300</span><span class="v">#C7E84B</span></div>
+            <div class="stop" style="background:#9cb928" data-ink="dark"><span class="k">400</span><span class="v">#9cb928</span></div>
+            <div class="stop" style="background:#869f12"><span class="k">500</span><span class="v">#869f12</span></div>
+            <div class="stop" style="background:#718711"><span class="k">600</span><span class="v">#718711</span></div>
+            <div class="stop" style="background:#5d6e15"><span class="k">700</span><span class="v">#5d6e15</span></div>
+            <div class="stop" style="background:#4F5A12" data-brand="deep"><span class="k">800</span><span class="v">#4F5A12</span></div>
+            <div class="stop" style="background:#323b15"><span class="k">900</span><span class="v">#323b15</span></div>
+          </div>
+          <!-- violet -->
+          <div class="cp-ramp"><div class="lbl">violet <span class="ds-muted" style="font-weight:400;font-size:10.5px">· secondary · active</span></div>
+            <div class="stop" style="background:#f6f5f8" data-ink="dark"><span class="k">50</span><span class="v">#f6f5f8</span></div>
+            <div class="stop" style="background:#ede9f4" data-ink="dark"><span class="k">100</span><span class="v">#ede9f4</span></div>
+            <div class="stop" style="background:#ddd1f2" data-ink="dark"><span class="k">200</span><span class="v">#ddd1f2</span></div>
+            <div class="stop" style="background:#ccb3f4" data-ink="dark"><span class="k">300</span><span class="v">#ccb3f4</span></div>
+            <div class="stop" style="background:#bd91f9" data-ink="dark"><span class="k">400</span><span class="v">#bd91f9</span></div>
+            <div class="stop" style="background:#ad68fc"><span class="k">500</span><span class="v">#ad68fc</span></div>
+            <div class="stop" style="background:#9D5BE8" data-brand="bright"><span class="k">600</span><span class="v">#9D5BE8</span></div>
+            <div class="stop" style="background:#8320d6"><span class="k">700</span><span class="v">#8320d6</span></div>
+            <div class="stop" style="background:#6621a6"><span class="k">800</span><span class="v">#6621a6</span></div>
+            <div class="stop" style="background:#3F1340" data-brand="deep"><span class="k">900</span><span class="v">#3F1340</span></div>
+          </div>
+          <!-- magenta -->
+          <div class="cp-ramp"><div class="lbl">magenta</div>
+            <div class="stop" style="background:#f8f4f6" data-ink="dark"><span class="k">50</span><span class="v">#f8f4f6</span></div>
+            <div class="stop" style="background:#f4e7ec" data-ink="dark"><span class="k">100</span><span class="v">#f4e7ec</span></div>
+            <div class="stop" style="background:#f2cbdb" data-ink="dark"><span class="k">200</span><span class="v">#f2cbdb</span></div>
+            <div class="stop" style="background:#f5a5c9" data-ink="dark"><span class="k">300</span><span class="v">#f5a5c9</span></div>
+            <div class="stop" style="background:#fa75b8" data-ink="dark"><span class="k">400</span><span class="v">#fa75b8</span></div>
+            <div class="stop" style="background:#E6399B" data-brand="bright"><span class="k">500</span><span class="v">#E6399B</span></div>
+            <div class="stop" style="background:#d7178d"><span class="k">600</span><span class="v">#d7178d</span></div>
+            <div class="stop" style="background:#af1b73"><span class="k">700</span><span class="v">#af1b73</span></div>
+            <div class="stop" style="background:#7A1E52" data-brand="deep"><span class="k">800</span><span class="v">#7A1E52</span></div>
+            <div class="stop" style="background:#5b1a3d"><span class="k">900</span><span class="v">#5b1a3d</span></div>
+          </div>
+          <!-- red -->
+          <div class="cp-ramp"><div class="lbl">red <span class="ds-muted" style="font-weight:400;font-size:10.5px">· error</span></div>
+            <div class="stop" style="background:#f8f4f4" data-ink="dark"><span class="k">50</span><span class="v">#f8f4f4</span></div>
+            <div class="stop" style="background:#f4e8e6" data-ink="dark"><span class="k">100</span><span class="v">#f4e8e6</span></div>
+            <div class="stop" style="background:#f2cec7" data-ink="dark"><span class="k">200</span><span class="v">#f2cec7</span></div>
+            <div class="stop" style="background:#f5ac9f" data-ink="dark"><span class="k">300</span><span class="v">#f5ac9f</span></div>
+            <div class="stop" style="background:#fa826f" data-ink="dark"><span class="k">400</span><span class="v">#fa826f</span></div>
+            <div class="stop" style="background:#fc4732"><span class="k">500</span><span class="v">#fc4732</span></div>
+            <div class="stop" style="background:#e12510"><span class="k">600</span><span class="v">#e12510</span></div>
+            <div class="stop" style="background:#b82514"><span class="k">700</span><span class="v">#b82514</span></div>
+            <div class="stop" style="background:#8f2215"><span class="k">800</span><span class="v">#8f2215</span></div>
+            <div class="stop" style="background:#5f1d14"><span class="k">900</span><span class="v">#5f1d14</span></div>
+          </div>
+          <!-- gold -->
+          <div class="cp-ramp"><div class="lbl">gold <span class="ds-muted" style="font-weight:400;font-size:10.5px">· warning</span></div>
+            <div class="stop" style="background:#f8f5ee" data-ink="dark"><span class="k">50</span><span class="v">#f8f5ee</span></div>
+            <div class="stop" style="background:#f4ead5" data-ink="dark"><span class="k">100</span><span class="v">#f4ead5</span></div>
+            <div class="stop" style="background:#f2d493" data-ink="dark"><span class="k">200</span><span class="v">#f2d493</span></div>
+            <div class="stop" style="background:#e8ba4c" data-ink="dark"><span class="k">300</span><span class="v">#e8ba4c</span></div>
+            <div class="stop" style="background:#d1a327" data-ink="dark"><span class="k">400</span><span class="v">#d1a327</span></div>
+            <div class="stop" style="background:#b68b12"><span class="k">500</span><span class="v">#b68b12</span></div>
+            <div class="stop" style="background:#9a7611"><span class="k">600</span><span class="v">#9a7611</span></div>
+            <div class="stop" style="background:#7e6115"><span class="k">700</span><span class="v">#7e6115</span></div>
+            <div class="stop" style="background:#624c16"><span class="k">800</span><span class="v">#624c16</span></div>
+            <div class="stop" style="background:#423515"><span class="k">900</span><span class="v">#423515</span></div>
+          </div>
+        </section>
+
+        <!-- ── STATUS SEMANTICS ────────────────────────────────────────── -->
+        <section class="ds-section" id="status">
+          <header><h2 class="ds-h2">Status semantics</h2><span class="maps">same token names — different ramp stops per mode</span></header>
+
+          <div class="mode-light">
+          <div class="ds-demo-label">Light mode</div>
+          <div class="cp-status">
+            <!-- success -->
+            <div class="st"><header><b>Success</b><span class="m">green</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#eff8f1;color:#0b0c0e"><span>#eff8f1<br>green-50</span></div>
+                <div class="st-chip" style="background:#15944d;color:#fff"><span>#15944d<br>green-600</span></div>
+                <div class="st-chip" style="background:#184025;color:#fff"><span>#184025<br>green-900</span></div>
+              </div>
+            </div>
+            <!-- warning -->
+            <div class="st"><header><b>Warning</b><span class="m">gold</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#f8f5ee;color:#0b0c0e"><span>#f8f5ee<br>gold-50</span></div>
+                <div class="st-chip" style="background:#9a7611;color:#fff"><span>#9a7611<br>gold-600</span></div>
+                <div class="st-chip" style="background:#624c16;color:#fff"><span>#624c16<br>gold-800</span></div>
+              </div>
+            </div>
+            <!-- error -->
+            <div class="st"><header><b>Error</b><span class="m">red</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#f8f4f4;color:#0b0c0e"><span>#f8f4f4<br>red-50</span></div>
+                <div class="st-chip" style="background:#e12510;color:#fff"><span>#e12510<br>red-600</span></div>
+                <div class="st-chip" style="background:#8f2215;color:#fff"><span>#8f2215<br>red-800</span></div>
+              </div>
+            </div>
+            <!-- info -->
+            <div class="st"><header><b>Info</b><span class="m">blue</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#f4f5f8;color:#0b0c0e"><span>#f4f5f8<br>blue-50</span></div>
+                <div class="st-chip" style="background:#1055e2;color:#fff"><span>#1055e2<br>blue-700</span></div>
+                <div class="st-chip" style="background:#1245ae;color:#fff"><span>#1245ae<br>blue-800</span></div>
+              </div>
+            </div>
+            <!-- active -->
+            <div class="st"><header><b>Active</b><span class="m">violet · 600</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#f6f5f8;color:#0b0c0e"><span>#f6f5f8<br>violet-50</span></div>
+                <div class="st-chip" style="background:#8320d6;color:#fff"><span>#8320d6<br>violet-700</span></div>
+                <div class="st-chip" style="background:#6621a6;color:#fff"><span>#6621a6<br>violet-800</span></div>
+              </div>
+            </div>
+            <!-- queued -->
+            <div class="st"><header><b>Queued</b><span class="m">violet · 500</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#f6f5f8;color:#0b0c0e"><span>#f6f5f8<br>violet-50</span></div>
+                <div class="st-chip" style="background:#ad68fc;color:#0b0c0e"><span>#ad68fc<br>violet-500</span></div>
+                <div class="st-chip" style="background:#6621a6;color:#fff"><span>#6621a6<br>violet-800</span></div>
+              </div>
+            </div>
+            <!-- neutral -->
+            <div class="st"><header><b>Neutral</b><span class="m">neutral</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#f2f5fc;color:#0b0c0e"><span>#f2f5fc<br>neutral-50</span></div>
+                <div class="st-chip" style="background:#797c82;color:#fff"><span>#797c82<br>neutral-600</span></div>
+                <div class="st-chip" style="background:#4d5055;color:#fff"><span>#4d5055<br>neutral-800</span></div>
+              </div>
+            </div>
+            <!-- canceled -->
+            <div class="st"><header><b>Canceled</b><span class="m">warm-grey</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#faf4ed;color:#0b0c0e"><span>#faf4ed<br>warmgrey-50</span></div>
+                <div class="st-chip" style="background:#807b74;color:#fff"><span>#807b74<br>warmgrey-600</span></div>
+                <div class="st-chip" style="background:#544f49;color:#fff"><span>#544f49<br>warmgrey-800</span></div>
+              </div>
+            </div>
+          </div>
+
+          </div>
+
+          <div class="mode-dark">
+          <div class="ds-demo-label">Dark mode</div>
+          <div class="cp-status">
+            <div class="st"><header><b>Success</b><span class="m">green</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#184025;color:#fff"><span>#184025<br>green-900</span></div>
+                <div class="st-chip" style="background:#16ae5c;color:#0b0c0e"><span>#16ae5c<br>green-500</span></div>
+                <div class="st-chip" style="background:#87f3a7;color:#0b0c0e"><span>#87f3a7<br>green-200</span></div>
+              </div>
+            </div>
+            <div class="st"><header><b>Warning</b><span class="m">gold</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#423515;color:#fff"><span>#423515<br>gold-900</span></div>
+                <div class="st-chip" style="background:#b68b12;color:#fff"><span>#b68b12<br>gold-500</span></div>
+                <div class="st-chip" style="background:#e8ba4c;color:#0b0c0e"><span>#e8ba4c<br>gold-300</span></div>
+              </div>
+            </div>
+            <div class="st"><header><b>Error</b><span class="m">red</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#5f1d14;color:#fff"><span>#5f1d14<br>red-900</span></div>
+                <div class="st-chip" style="background:#fc4732;color:#fff"><span>#fc4732<br>red-500</span></div>
+                <div class="st-chip" style="background:#f5ac9f;color:#0b0c0e"><span>#f5ac9f<br>red-300</span></div>
+              </div>
+            </div>
+            <div class="st"><header><b>Info</b><span class="m">blue</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#1245ae;color:#fff"><span>#1245ae<br>blue-800</span></div>
+                <div class="st-chip" style="background:#558dfc;color:#0b0c0e"><span>#558dfc<br>blue-500</span></div>
+                <div class="st-chip" style="background:#a6c2f4;color:#0b0c0e"><span>#a6c2f4<br>blue-300</span></div>
+              </div>
+            </div>
+            <div class="st"><header><b>Active</b><span class="m">violet · 500</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#6621a6;color:#fff"><span>#6621a6<br>violet-800</span></div>
+                <div class="st-chip" style="background:#ad68fc;color:#0b0c0e"><span>#ad68fc<br>violet-500</span></div>
+                <div class="st-chip" style="background:#ccb3f4;color:#0b0c0e"><span>#ccb3f4<br>violet-300</span></div>
+              </div>
+            </div>
+            <div class="st"><header><b>Queued</b><span class="m">violet · 400</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#6621a6;color:#fff"><span>#6621a6<br>violet-800</span></div>
+                <div class="st-chip" style="background:#bd91f9;color:#0b0c0e"><span>#bd91f9<br>violet-400</span></div>
+                <div class="st-chip" style="background:#ccb3f4;color:#0b0c0e"><span>#ccb3f4<br>violet-300</span></div>
+              </div>
+            </div>
+            <div class="st"><header><b>Neutral</b><span class="m">neutral</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#34373c;color:#fff"><span>#34373c<br>neutral-900</span></div>
+                <div class="st-chip" style="background:#8f9299;color:#0b0c0e"><span>#8f9299<br>neutral-500</span></div>
+                <div class="st-chip" style="background:#bec1c8;color:#0b0c0e"><span>#bec1c8<br>neutral-300</span></div>
+              </div>
+            </div>
+            <div class="st"><header><b>Canceled</b><span class="m">warm-grey</span></header>
+              <div class="row"><span class="rl">L / D / D</span>
+                <div class="st-chip" style="background:#3a3630;color:#fff"><span>#3a3630<br>warmgrey-900</span></div>
+                <div class="st-chip" style="background:#97918a;color:#0b0c0e"><span>#97918a<br>warmgrey-500</span></div>
+                <div class="st-chip" style="background:#c6c0b9;color:#0b0c0e"><span>#c6c0b9<br>warmgrey-300</span></div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </section>
+
+        <!-- ── COMPARISON — proposed vs. neo-design current ──────────── -->
+        <section class="ds-section" id="compare">
+          <header><h2 class="ds-h2">Proposed vs. neo-design (current)</h2><span class="maps">every "current" hex sourced from tokens/{primitive,semantic}/color.tokens.json</span></header>
+
+          <p class="ds-body" style="margin:0 0 14px">Grouped by neo-design's own semantic sections. The <b>Proposed · Light</b> and <b>Proposed · Dark</b> columns render on their mode's background — the same semantic token, resolved twice. Neo-design didn't ship a dark token set, so the <b>Current</b> column stays light-only.</p>
+
+          <div class="cp-cmp">
+            <table>
+              <thead>
+                <tr><th style="width:22%">Role</th><th>Current (neo-design)</th><th class="prop-light">Proposed · Light</th><th class="prop-dark">Proposed · Dark</th><th style="width:18%">Note</th></tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="5" class="cp-secthd">Surfaces &amp; ink</td></tr>
+                <tr><td class="role">Page background<div class="tk">surfaces/page → --ds-bg</div></td><td><div class="cell"><span class="swatch" style="background:#f4f4f4"></span><span class="hex">#f4f4f4</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#f2f5fc"></span><span class="hex">#f2f5fc <span class="ds-muted">neutral-50</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#34373c"></span><span class="hex">#34373c <span class="ds-muted">neutral-900</span></span></div></td><td class="note">Dark mode inverts to near-black</td></tr>
+                <tr><td class="role">Card / surface<div class="tk">surfaces/card → --ds-surface</div></td><td><div class="cell"><span class="swatch" style="background:#ffffff"></span><span class="hex">#ffffff</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#ffffff"></span><span class="hex">#ffffff <span class="ds-muted">white</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#4d5055"></span><span class="hex">#4d5055 <span class="ds-muted">neutral-800</span></span></div></td><td class="note">Card sits above --ds-bg in each mode</td></tr>
+                <tr><td class="role">Body text<div class="tk">typography/body → --ds-ink</div></td><td><div class="cell"><span class="swatch" style="background:#1f2937"></span><span class="hex">#1f2937</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#34373c"></span><span class="hex">#34373c <span class="ds-muted">neutral-900</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#f2f5fc"></span><span class="hex">#f2f5fc <span class="ds-muted">neutral-50</span></span></div></td><td class="note">Ink flips with mode</td></tr>
+                <tr><td class="role">Secondary body<div class="tk">typography/body-secondary → --ds-muted</div></td><td><div class="cell"><span class="swatch" style="background:#6b7280"></span><span class="hex">#6b7280</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#797c82"></span><span class="hex">#797c82 <span class="ds-muted">neutral-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#a7aab1"></span><span class="hex">#a7aab1 <span class="ds-muted">neutral-400</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Divider / border<div class="tk">border/primary → --ds-line</div></td><td><div class="cell"><span class="swatch" style="background:#d1d5db"></span><span class="hex">#d1d5db</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#d4d7de"></span><span class="hex">#d4d7de <span class="ds-muted">neutral-200</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#63666b"></span><span class="hex">#63666b <span class="ds-muted">neutral-700</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Icon default<div class="tk">icons/default → --ds-ink</div></td><td><div class="cell"><span class="swatch" style="background:#1f2937"></span><span class="hex">#1f2937</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#34373c"></span><span class="hex">#34373c</span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#f2f5fc"></span><span class="hex">#f2f5fc</span></div></td><td class="note">Follows ink</td></tr>
+                <tr><td class="role">Icon placeholder<div class="tk">icons/placeholder → --ds-muted (400)</div></td><td><div class="cell"><span class="swatch" style="background:#9ca3af"></span><span class="hex">#9ca3af</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#a7aab1"></span><span class="hex">#a7aab1 <span class="ds-muted">neutral-400</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#a7aab1"></span><span class="hex">#a7aab1 <span class="ds-muted">neutral-400</span></span></div></td><td class="note">Same stop both modes</td></tr>
+                <tr><td class="role">Legal / caption<div class="tk">typography/legal</div></td><td><div class="cell"><span class="swatch" style="background:#9ca3af"></span><span class="hex">#9ca3af</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#a7aab1"></span><span class="hex">#a7aab1</span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#a7aab1"></span><span class="hex">#a7aab1</span></div></td><td class="note">—</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Brand · primary / action</td></tr>
+                <tr><td class="role">Brand<div class="tk">brand → --ds-primary</div></td><td><div class="cell"><span class="swatch" style="background:#2f42ff"></span><span class="hex">#2f42ff <span class="ds-muted">digital-blue-500</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#19756b"></span><span class="hex">#19756b <span class="ds-muted">teal-700</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#16a89b"></span><span class="hex">#16a89b <span class="ds-muted">teal-500</span></span></div></td><td class="note"><b>Hue change:</b> Digital Blue → Teal</td></tr>
+                <tr><td class="role">Primary button<div class="tk">buttons/primary/default → --ds-primary</div></td><td><div class="cell"><span class="swatch" style="background:#2f42ff"></span><span class="hex">#2f42ff</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#19756b"></span><span class="hex">#19756b</span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#16a89b"></span><span class="hex">#16a89b</span></div></td><td class="note">Same as brand</td></tr>
+                <tr><td class="role">Primary hover<div class="tk">buttons/primary/hover → --ds-primary-hover</div></td><td><div class="cell"><span class="swatch" style="background:#1e2ec2"></span><span class="hex">#1e2ec2</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#1a5b54"></span><span class="hex">#1a5b54 <span class="ds-muted">teal-800</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#55d9ca"></span><span class="hex">#55d9ca <span class="ds-muted">teal-300</span></span></div></td><td class="note">Deeper on light · brighter on dark</td></tr>
+                <tr><td class="role">Primary pressed<div class="tk">buttons/primary/pressed → --ds-primary-pressed</div></td><td><div class="cell"><span class="swatch" style="background:#131e7a"></span><span class="hex">#131e7a</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#164a44"></span><span class="hex">color-mix(teal-800, black 18%) <span class="ds-muted">derived</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#82eee0"></span><span class="hex">#82eee0 <span class="ds-muted">teal-200</span></span></div></td><td class="note">Derived light so it stays off brand teal-900</td></tr>
+                <tr><td class="role">Tertiary text button<div class="tk">buttons/tertiary/default → --ds-primary-ink</div></td><td><div class="cell"><span class="swatch" style="background:#2f42ff"></span><span class="hex">#2f42ff</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#19756b"></span><span class="hex">#19756b <span class="ds-muted">teal-700</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#55d9ca"></span><span class="hex">#55d9ca <span class="ds-muted">teal-300</span></span></div></td><td class="note">Follows primary</td></tr>
+                <tr><td class="role">Link<div class="tk">typography/link-default → --ds-primary-ink</div></td><td><div class="cell"><span class="swatch" style="background:#2f42ff"></span><span class="hex">#2f42ff</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#19756b"></span><span class="hex">#19756b</span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#55d9ca"></span><span class="hex">#55d9ca</span></div></td><td class="note">Follows primary-ink</td></tr>
+                <tr><td class="role">Link hover<div class="tk">typography/link-hover → --ds-primary-hover</div></td><td><div class="cell"><span class="swatch" style="background:#2637e6"></span><span class="hex">#2637e6 <span class="ds-muted">digital-blue-600</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#1a5b54"></span><span class="hex">#1a5b54</span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#55d9ca"></span><span class="hex">#55d9ca</span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Focus / border<div class="tk">border/focus → --ds-primary-border</div></td><td><div class="cell"><span class="swatch" style="background:#3bcca6"></span><span class="hex">#3bcca6 <span class="ds-muted">teal-green-500</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#55d9ca"></span><span class="hex">#55d9ca <span class="ds-muted">primary-300</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#19756b"></span><span class="hex">#19756b <span class="ds-muted">primary-700</span></span></div></td><td class="note">Follows primary ramp now</td></tr>
+                <tr><td class="role">Secondary accent<div class="tk">(new) → --ds-secondary</div></td><td><div class="cell"><span class="hex">—</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#8320d6"></span><span class="hex">#8320d6 <span class="ds-muted">violet-700</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#ad68fc"></span><span class="hex">#ad68fc <span class="ds-muted">violet-500</span></span></div></td><td class="note"><b>New role.</b> Swappable per theme</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Status · success</td></tr>
+                <tr><td class="role">Success default<div class="tk">status/success/default</div></td><td><div class="cell"><span class="swatch" style="background:#4ca75a"></span><span class="hex">#4ca75a <span class="ds-muted">digital-green-600</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#15944d"></span><span class="hex">#15944d <span class="ds-muted">green-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#16ae5c"></span><span class="hex">#16ae5c <span class="ds-muted">green-500</span></span></div></td><td class="note">Punchier / more saturated</td></tr>
+                <tr><td class="role">Success light<div class="tk">status/success/light</div></td><td><div class="cell"><span class="swatch" style="background:#f3fff5"></span><span class="hex">#f3fff5</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#eff8f1"></span><span class="hex">#eff8f1 <span class="ds-muted">green-50</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#184025"></span><span class="hex">#184025 <span class="ds-muted">green-900</span></span></div></td><td class="note">Dark-mode "light" = deep tint on dark ground</td></tr>
+                <tr><td class="role">Success dark<div class="tk">status/success/dark</div></td><td><div class="cell"><span class="swatch" style="background:#2c6c36"></span><span class="hex">#2c6c36 <span class="ds-muted">digital-green-800</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#184025"></span><span class="hex">#184025 <span class="ds-muted">green-900</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#87f3a7"></span><span class="hex">#87f3a7 <span class="ds-muted">green-200</span></span></div></td><td class="note">Shifted 2 stops past brand (green-800/300) to preserve chip contrast</td></tr>
+                <tr><td class="role">Success text<div class="tk">typography/success</div></td><td><div class="cell"><span class="swatch" style="background:#4ca75a"></span><span class="hex">#4ca75a</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#197940"></span><span class="hex">#197940 <span class="ds-muted">green-700</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#2dc96e"></span><span class="hex">#2dc96e <span class="ds-muted">green-400</span></span></div></td><td class="note">Shifted off green-300 (brand bright)</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Status · error</td></tr>
+                <tr><td class="role">Error default<div class="tk">status/error/default</div></td><td><div class="cell"><span class="swatch" style="background:#ed4a5d"></span><span class="hex">#ed4a5d <span class="ds-muted">red-400</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#e12510"></span><span class="hex">#e12510 <span class="ds-muted">red-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#fc4732"></span><span class="hex">#fc4732 <span class="ds-muted">red-500</span></span></div></td><td class="note">More saturated, less pink</td></tr>
+                <tr><td class="role">Error light<div class="tk">status/error/light</div></td><td><div class="cell"><span class="swatch" style="background:#ffedef"></span><span class="hex">#ffedef</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#f8f4f4"></span><span class="hex">#f8f4f4 <span class="ds-muted">red-50</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#5f1d14"></span><span class="hex">#5f1d14 <span class="ds-muted">red-900</span></span></div></td><td class="note">Deep tint on dark</td></tr>
+                <tr><td class="role">Error dark<div class="tk">status/error/dark</div></td><td><div class="cell"><span class="swatch" style="background:#a92232"></span><span class="hex">#a92232 <span class="ds-muted">red-600</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#8f2215"></span><span class="hex">#8f2215 <span class="ds-muted">red-800</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#f5ac9f"></span><span class="hex">#f5ac9f <span class="ds-muted">red-300</span></span></div></td><td class="note">Modes swap ramp direction</td></tr>
+                <tr><td class="role">Error text<div class="tk">typography/error</div></td><td><div class="cell"><span class="swatch" style="background:#cb3446"></span><span class="hex">#cb3446 <span class="ds-muted">red-500</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#b82514"></span><span class="hex">#b82514 <span class="ds-muted">red-700</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#f5ac9f"></span><span class="hex">#f5ac9f <span class="ds-muted">red-300</span></span></div></td><td class="note">AA text on either ground</td></tr>
+                <tr><td class="role">Destructive fill<div class="tk">buttons/destructive</div></td><td><div class="cell"><span class="swatch" style="background:#cb3446"></span><span class="hex">#cb3446</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#e12510"></span><span class="hex">#e12510 <span class="ds-muted">red-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#fc4732"></span><span class="hex">#fc4732 <span class="ds-muted">red-500</span></span></div></td><td class="note">Follows error default</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Status · warning</td></tr>
+                <tr><td class="role">Warning default<div class="tk">status/warning/default</div></td><td><div class="cell"><span class="swatch" style="background:#ffb800"></span><span class="hex">#ffb800 <span class="ds-muted">orange-500</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#9a7611"></span><span class="hex">#9a7611 <span class="ds-muted">gold-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#b68b12"></span><span class="hex">#b68b12 <span class="ds-muted">gold-500</span></span></div></td><td class="note"><b>Big shift:</b> bright yellow → deeper gold (AA)</td></tr>
+                <tr><td class="role">Warning light<div class="tk">status/warning/light</div></td><td><div class="cell"><span class="swatch" style="background:#fff8e5"></span><span class="hex">#fff8e5</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#f8f5ee"></span><span class="hex">#f8f5ee <span class="ds-muted">gold-50</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#423515"></span><span class="hex">#423515 <span class="ds-muted">gold-900</span></span></div></td><td class="note">Deep tint on dark</td></tr>
+                <tr><td class="role">Warning dark<div class="tk">status/warning/dark</div></td><td><div class="cell"><span class="swatch" style="background:#856000"></span><span class="hex">#856000 <span class="ds-muted">orange-700</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#624c16"></span><span class="hex">#624c16 <span class="ds-muted">gold-800</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#e8ba4c"></span><span class="hex">#e8ba4c <span class="ds-muted">gold-300</span></span></div></td><td class="note">Modes swap ramp direction</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Status · info</td></tr>
+                <tr><td class="role">Info default<div class="tk">status/info/default</div></td><td><div class="cell"><span class="swatch" style="background:#2f42ff"></span><span class="hex">#2f42ff <span class="ds-muted">digital-blue-500</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#1055e2"></span><span class="hex">#1055e2 <span class="ds-muted">blue-700</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#558dfc"></span><span class="hex">#558dfc <span class="ds-muted">blue-500</span></span></div></td><td class="note">Shifted off blue-600 (brand bright)</td></tr>
+                <tr><td class="role">Info light<div class="tk">status/info/light</div></td><td><div class="cell"><span class="swatch" style="background:#f2f3ff"></span><span class="hex">#f2f3ff</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#f4f5f8"></span><span class="hex">#f4f5f8 <span class="ds-muted">blue-50</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#1245ae"></span><span class="hex">#1245ae <span class="ds-muted">blue-800</span></span></div></td><td class="note">Shifted off blue-900 (brand deep)</td></tr>
+                <tr><td class="role">Info dark<div class="tk">status/info/dark</div></td><td><div class="cell"><span class="swatch" style="background:#1e2ec2"></span><span class="hex">#1e2ec2</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#1245ae"></span><span class="hex">#1245ae <span class="ds-muted">blue-800</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#a6c2f4"></span><span class="hex">#a6c2f4 <span class="ds-muted">blue-300</span></span></div></td><td class="note">Modes swap ramp direction</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Status · neutral</td></tr>
+                <tr><td class="role">Neutral default<div class="tk">status/neutral/default</div></td><td><div class="cell"><span class="swatch" style="background:#6b7280"></span><span class="hex">#6b7280 <span class="ds-muted">grey-500</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#797c82"></span><span class="hex">#797c82 <span class="ds-muted">neutral-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#8f9299"></span><span class="hex">#8f9299 <span class="ds-muted">neutral-500</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Neutral light<div class="tk">status/neutral/light</div></td><td><div class="cell"><span class="swatch" style="background:#f3f4f6"></span><span class="hex">#f3f4f6</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#f2f5fc"></span><span class="hex">#f2f5fc <span class="ds-muted">neutral-50</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#34373c"></span><span class="hex">#34373c <span class="ds-muted">neutral-900</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Neutral dark<div class="tk">status/neutral/dark</div></td><td><div class="cell"><span class="swatch" style="background:#374151"></span><span class="hex">#374151 <span class="ds-muted">grey-700</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#4d5055"></span><span class="hex">#4d5055 <span class="ds-muted">neutral-800</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#bec1c8"></span><span class="hex">#bec1c8 <span class="ds-muted">neutral-300</span></span></div></td><td class="note">Modes swap ramp direction</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Status · active</td></tr>
+                <tr><td class="role">Active default<div class="tk">status/active/default</div></td><td><div class="cell"><span class="swatch" style="background:#992FB9"></span><span class="hex">#992FB9 <span class="ds-muted">storybook</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#8320d6"></span><span class="hex">#8320d6 <span class="ds-muted">violet-700</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#ad68fc"></span><span class="hex">#ad68fc <span class="ds-muted">violet-500</span></span></div></td><td class="note">Shifted off violet-600 (brand bright)</td></tr>
+                <tr><td class="role">Active light<div class="tk">status/active/light</div></td><td><div class="cell"><span class="swatch" style="background:#F6EEF8"></span><span class="hex">#F6EEF8 <span class="ds-muted">storybook</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#f6f5f8"></span><span class="hex">#f6f5f8 <span class="ds-muted">violet-50</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#6621a6"></span><span class="hex">#6621a6 <span class="ds-muted">violet-800</span></span></div></td><td class="note">Shifted off violet-900 (brand deep) in dark</td></tr>
+                <tr><td class="role">Active dark<div class="tk">status/active/dark</div></td><td><div class="cell"><span class="swatch" style="background:#7A2694"></span><span class="hex">#7A2694 <span class="ds-muted">storybook</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#6621a6"></span><span class="hex">#6621a6 <span class="ds-muted">violet-800</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#ccb3f4"></span><span class="hex">#ccb3f4 <span class="ds-muted">violet-300</span></span></div></td><td class="note">Modes swap ramp direction</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Status · queued</td></tr>
+                <tr><td class="role">Queued default<div class="tk">status/queued/default</div></td><td><div class="cell"><span class="swatch" style="background:#AD59C7"></span><span class="hex">#AD59C7 <span class="ds-muted">storybook</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#ad68fc"></span><span class="hex">#ad68fc <span class="ds-muted">violet-500</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#bd91f9"></span><span class="hex">#bd91f9 <span class="ds-muted">violet-400</span></span></div></td><td class="note">Lighter violet than Active</td></tr>
+                <tr><td class="role">Queued light<div class="tk">status/queued/light</div></td><td><div class="cell"><span class="swatch" style="background:#F6EEF8"></span><span class="hex">#F6EEF8 <span class="ds-muted">storybook</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#f6f5f8"></span><span class="hex">#f6f5f8 <span class="ds-muted">violet-50</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#6621a6"></span><span class="hex">#6621a6 <span class="ds-muted">violet-800</span></span></div></td><td class="note">Shifted off violet-900 (brand deep) in dark</td></tr>
+                <tr><td class="role">Queued dark<div class="tk">status/queued/dark</div></td><td><div class="cell"><span class="swatch" style="background:#992FB9"></span><span class="hex">#992FB9 <span class="ds-muted">storybook</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#6621a6"></span><span class="hex">#6621a6 <span class="ds-muted">violet-800</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#ccb3f4"></span><span class="hex">#ccb3f4 <span class="ds-muted">violet-300</span></span></div></td><td class="note">Modes swap ramp direction</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Status · canceled</td></tr>
+                <tr><td class="role">Canceled default<div class="tk">status/canceled/default</div></td><td><div class="cell"><span class="swatch" style="background:#7B7263"></span><span class="hex">#7B7263 <span class="ds-muted">storybook</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#807b74"></span><span class="hex">#807b74 <span class="ds-muted">warmgrey-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#97918a"></span><span class="hex">#97918a <span class="ds-muted">warmgrey-500</span></span></div></td><td class="note">Warm neutral, distinct from disabled</td></tr>
+                <tr><td class="role">Canceled light<div class="tk">status/canceled/light</div></td><td><div class="cell"><span class="swatch" style="background:#FAF8F3"></span><span class="hex">#FAF8F3 <span class="ds-muted">storybook</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#faf4ed"></span><span class="hex">#faf4ed <span class="ds-muted">warmgrey-50</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#3a3630"></span><span class="hex">#3a3630 <span class="ds-muted">warmgrey-900</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Canceled dark<div class="tk">status/canceled/dark</div></td><td><div class="cell"><span class="swatch" style="background:#564E41"></span><span class="hex">#564E41 <span class="ds-muted">storybook</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#544f49"></span><span class="hex">#544f49 <span class="ds-muted">warmgrey-800</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#c6c0b9"></span><span class="hex">#c6c0b9 <span class="ds-muted">warmgrey-300</span></span></div></td><td class="note">Modes swap ramp direction</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Activity accents · data-viz</td></tr>
+                <tr><td class="role">Activity · recipe run<div class="tk">activity/recipe-run</div></td><td><div class="cell"><span class="swatch" style="background:#992fb9"></span><span class="hex">#992fb9 <span class="ds-muted">violet-500 (old)</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#8320d6"></span><span class="hex">#8320d6 <span class="ds-muted">violet-700</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#ad68fc"></span><span class="hex">#ad68fc <span class="ds-muted">violet-500</span></span></div></td><td class="note">Rolls into Active status</td></tr>
+                <tr><td class="role">Activity · commit job<div class="tk">activity/commit-job</div></td><td><div class="cell"><span class="swatch" style="background:#2f42ff"></span><span class="hex">#2f42ff</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#1055e2"></span><span class="hex">#1055e2 <span class="ds-muted">blue-700</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#558dfc"></span><span class="hex">#558dfc <span class="ds-muted">blue-500</span></span></div></td><td class="note">Rolls into Info status</td></tr>
+                <tr><td class="role">Activity · visualization<div class="tk">activity/visualization</div></td><td><div class="cell"><span class="swatch" style="background:#27aa88"></span><span class="hex">#27aa88 <span class="ds-muted">teal-green-600</span></span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#158f83"></span><span class="hex">#158f83 <span class="ds-muted">teal-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#16a89b"></span><span class="hex">#16a89b <span class="ds-muted">teal-500</span></span></div></td><td class="note">Rolls into primary ramp</td></tr>
+                <tr><td class="role">Data · green<div class="tk">data/green</div></td><td><div class="cell"><span class="swatch" style="background:#4ca75a"></span><span class="hex">#4ca75a</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#15944d"></span><span class="hex">#15944d <span class="ds-muted">green-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#16ae5c"></span><span class="hex">#16ae5c <span class="ds-muted">green-500</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Data · yellow<div class="tk">data/yellow</div></td><td><div class="cell"><span class="swatch" style="background:#fdda04"></span><span class="hex">#fdda04</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#9a7611"></span><span class="hex">#9a7611 <span class="ds-muted">gold-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#b68b12"></span><span class="hex">#b68b12 <span class="ds-muted">gold-500</span></span></div></td><td class="note">Follows warning</td></tr>
+                <tr><td class="role">Data · orange-1<div class="tk">data/orange-1</div></td><td><div class="cell"><span class="swatch" style="background:#ffc008"></span><span class="hex">#ffc008</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#e56912"></span><span class="hex">#e56912 <span class="ds-muted">orange-500</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#fa8646"></span><span class="hex">#fa8646 <span class="ds-muted">orange-400</span></span></div></td><td class="note">True orange, not yellow</td></tr>
+                <tr><td class="role">Data · orange-2<div class="tk">data/orange-2</div></td><td><div class="cell"><span class="swatch" style="background:#ff9800"></span><span class="hex">#ff9800</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#c25911"></span><span class="hex">#c25911 <span class="ds-muted">orange-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#e56912"></span><span class="hex">#e56912 <span class="ds-muted">orange-500</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Data · red-1<div class="tk">data/red-1</div></td><td><div class="cell"><span class="swatch" style="background:#ff5c24"></span><span class="hex">#ff5c24</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#e12510"></span><span class="hex">#e12510 <span class="ds-muted">red-600</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#fc4732"></span><span class="hex">#fc4732 <span class="ds-muted">red-500</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Data · red-3<div class="tk">data/red-3</div></td><td><div class="cell"><span class="swatch" style="background:#cb3446"></span><span class="hex">#cb3446</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#b82514"></span><span class="hex">#b82514 <span class="ds-muted">red-700</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#f5ac9f"></span><span class="hex">#f5ac9f <span class="ds-muted">red-300</span></span></div></td><td class="note">—</td></tr>
+
+                <tr><td colspan="5" class="cp-secthd">Avatar backgrounds (rotation set)</td></tr>
+                <tr><td class="role">Avatar 1 · blue<div class="tk">status/avatar/initials/background1</div></td><td><div class="cell"><span class="swatch" style="background:#dce0ff"></span><span class="hex">#dce0ff</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#e6ebf4"></span><span class="hex">#e6ebf4 <span class="ds-muted">blue-100</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#1245ae"></span><span class="hex">#1245ae <span class="ds-muted">blue-800</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Avatar 2 · green<div class="tk">…/background2</div></td><td><div class="cell"><span class="swatch" style="background:#cfffd7"></span><span class="hex">#cfffd7</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#d6f5dd"></span><span class="hex">#d6f5dd <span class="ds-muted">green-100</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#197940"></span><span class="hex">#197940 <span class="ds-muted">green-700</span></span></div></td><td class="note">Shifted off green-800 (brand deep)</td></tr>
+                <tr><td class="role">Avatar 3 · gold<div class="tk">…/background3</div></td><td><div class="cell"><span class="swatch" style="background:#fbf1d2"></span><span class="hex">#fbf1d2</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#f4ead5"></span><span class="hex">#f4ead5 <span class="ds-muted">gold-100</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#624c16"></span><span class="hex">#624c16 <span class="ds-muted">gold-800</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Avatar 4 · red<div class="tk">…/background4</div></td><td><div class="cell"><span class="swatch" style="background:#ffc6cd"></span><span class="hex">#ffc6cd</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#f4e8e6"></span><span class="hex">#f4e8e6 <span class="ds-muted">red-100</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#8f2215"></span><span class="hex">#8f2215 <span class="ds-muted">red-800</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Avatar 5 · violet<div class="tk">…/background5</div></td><td><div class="cell"><span class="swatch" style="background:#ebd5f1"></span><span class="hex">#ebd5f1</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#ede9f4"></span><span class="hex">#ede9f4 <span class="ds-muted">violet-100</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#6621a6"></span><span class="hex">#6621a6 <span class="ds-muted">violet-800</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Avatar 6 · teal<div class="tk">…/background6</div></td><td><div class="cell"><span class="swatch" style="background:#c9fff1"></span><span class="hex">#c9fff1</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#cef5ee"></span><span class="hex">#cef5ee <span class="ds-muted">teal-100</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#1a5b54"></span><span class="hex">#1a5b54 <span class="ds-muted">teal-800</span></span></div></td><td class="note">—</td></tr>
+                <tr><td class="role">Avatar 7 · orange<div class="tk">…/background7</div></td><td><div class="cell"><span class="swatch" style="background:#ffebb7"></span><span class="hex">#ffebb7</span></div></td><td class="prop-light"><div class="cell"><span class="swatch" style="background:#f4e8e3"></span><span class="hex">#f4e8e3 <span class="ds-muted">orange-100</span></span></div></td><td class="prop-dark"><div class="cell"><span class="swatch" style="background:#7b3b16"></span><span class="hex">#7b3b16 <span class="ds-muted">orange-800</span></span></div></td><td class="note">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="ds-section" id="summary">
+          <header><h2 class="ds-h2">Summary of the shift</h2><span class="maps">what changes for consumers</span></header>
+          <div class="ds-note" style="margin-bottom:14px">
+            <b>Structural.</b> Consumers stop referencing raw ramps (<code class="ds-mono">digital-blue-500</code>) directly; every UI role reads a semantic token (<code class="ds-mono">--ds-primary</code>, <code class="ds-mono">--status-error-default</code>). The ramps become the shared vocabulary the semantics are wired into.
+          </div>
+          <div class="ds-note" style="margin-bottom:14px">
+            <b>Ramp set.</b> 10 tonal ramps: <b>neutral, warm-grey</b> (structure) · <b>red, gold</b> (error, warning) · <b>lime, green, teal, blue, violet, magenta</b> (the 6 M-FISH strands — green/blue back success/info, teal backs primary, violet backs active/queued, lime/magenta stay as brand accent). Orange · cyan · indigo · pink dropped (no semantic use, not in brand).
+          </div>
+          <div class="ds-note" style="margin-bottom:14px">
+            <b>Brand.</b> The Digital Blue #2f42ff steps out of the primary role. Teal (#19756b light / #16a89b dark) becomes the default primary. All 6 M-FISH strands appear as one exact hex inside their tonal ramp (bright / deep ribbons at the closest position). Brand strand swatches live on the <a href="/prototypes/design-system-explorer/foundations/">main Foundations page</a>.
+          </div>
+          <div class="ds-note" style="margin-bottom:14px">
+            <b>Status.</b> Success · Warning · Error · Info stay 4-part but hit stronger saturation and AA-safe stops. <b>Active, Queued, Canceled</b> land as first-class status semantics (they were ad-hoc <code class="ds-mono">activity/*</code> hex values before).
+          </div>
+          <div class="ds-note" style="margin-bottom:14px">
+            <b>Brand ↔ semantic isolation.</b> No semantic token resolves to a brand-bright or brand-deep hex. Where the natural ramp stop was a brand override (e.g. status-info-default → blue-600 = brand-bright), the semantic alias shifts to the neighbouring stop (blue-700). This holds in both modes and keeps the brand palette visually distinct from status colour.
+          </div>
+          <div class="ds-note">
+            <b>Dark mode.</b> Status semantics now flip stops (light ← 900, default ← 500, dark ← 300) rather than remap to a different hex — mode-swap keeps the same visual language.
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Ramp contrast badges + scrollspy for the section anchors under Colors.
+    // Contrast is computed against ONLY the currently-active theme's background,
+    // per the user's spec ("only the respective colors when the user has selected
+    // that respective mode"). Re-runs when the theme toggle flips [data-theme].
+    (function(){
+      const BG_LIGHT = "#f2f5fc";   // --ds-bg in light mode
+      const BG_DARK  = "#34373c";   // --ds-bg in dark mode
+      const rel = c => c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
+      const lum = hex => {
+        const h = hex.replace("#","");
+        const rgb = [0,2,4].map(i => parseInt(h.slice(i,i+2),16)/255).map(rel);
+        return 0.2126*rgb[0] + 0.7152*rgb[1] + 0.0722*rgb[2];
+      };
+      const contrast = (a, b) => {
+        const [L1, L2] = [lum(a), lum(b)].sort((x,y)=>y-x);
+        return (L1 + 0.05) / (L2 + 0.05);
+      };
+      const grade = r => r >= 7 ? ["AAA","g-aaa"] : r >= 4.5 ? ["AA","g-aa"] : r >= 3 ? ["AA·L","g-aal"] : ["—","g-no"];
+      const activeBg = () => document.documentElement.getAttribute("data-theme") === "light" ? BG_LIGHT : BG_DARK;
+
+      function stamp(){
+        const bg = activeBg();
+        document.querySelectorAll(".cp-ramp .stop").forEach(stop => {
+          const v = stop.querySelector(".v");
+          if (!v) return;
+          const hex = v.textContent.trim();
+          let cx = stop.querySelector(".cx");
+          if (!cx){ cx = document.createElement("div"); cx.className = "cx"; stop.appendChild(cx); }
+          const [label, cls] = grade(contrast(hex, bg));
+          cx.innerHTML = '<b class="'+cls+'">'+label+'</b>';
+        });
+      }
+      stamp();
+      new MutationObserver(stamp).observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+
+      // ScrollSpy for the ↳ Colors section sub-links.
+      const links = [...document.querySelectorAll(".ds-sidenav a.cp-sub")];
+      const map = new Map(links.map(a => [a.dataset.anchor, a]));
+      const setActive = id => {
+        links.forEach(a => a.classList.toggle("is-active", a.dataset.anchor === id));
+      };
+      const io = new IntersectionObserver(entries => {
+        // Pick the entry whose top is closest to the viewport top-third.
+        const visible = entries.filter(e => e.isIntersecting)
+          .sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActive(visible[0].target.id);
+      }, { rootMargin:"-20% 0px -70% 0px", threshold:0 });
+      ["ramps","status","compare","summary"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) io.observe(el);
+      });
+    })();
+  </script>
+</body>
+</html>
