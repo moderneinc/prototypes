@@ -13,13 +13,17 @@
 // ink/links on white). Dark uses fill/ink/on; light uses fillL + white text.
 type Hue = { name: string; fill: string; ink: string; on: string; fillL: string };
 
+// Ramp-derived brand primaries. Each entry pairs a dark-mode fill (ramp-500),
+// dark ink (ramp-300 or 400 where 300 is brand-tainted), a dark "on" text
+// (deep companion, ramp-900), and a light-mode fill (ramp-700). Green ink
+// shifts to green-400 because green-300 = brand-bright.
 const PALETTE: Hue[] = [
-  { name: "Magenta", fill: "#ff5ba3", ink: "#ff7ac9", on: "#10130d", fillL: "#b24072" },
-  { name: "Violet",  fill: "#7b4fe0", ink: "#c4b5fd", on: "#ffffff", fillL: "#6d28d9" },
-  { name: "Blue",    fill: "#4f8ff5", ink: "#93c5fd", on: "#071426", fillL: "#3a6ab5" },
-  { name: "Teal",    fill: "#25d0c8", ink: "#5eecd0", on: "#06231d", fillL: "#0e4a45" },
-  { name: "Green",   fill: "#30f284", ink: "#5fe6a8", on: "#04220f", fillL: "#1d5937" },
-  { name: "Lime",    fill: "#c7e84b", ink: "#c7e84b", on: "#1a1f06", fillL: "#4f5a12" },
+  { name: "Magenta", fill: "#E6399B", ink: "#f5a5c9", on: "#5b1a3d", fillL: "#af1b73" },
+  { name: "Violet",  fill: "#ad68fc", ink: "#ccb3f4", on: "#3F1340", fillL: "#8320d6" },
+  { name: "Blue",    fill: "#558dfc", ink: "#a6c2f4", on: "#16306B", fillL: "#1055e2" },
+  { name: "Teal",    fill: "#16a89b", ink: "#55d9ca", on: "#0E4A45", fillL: "#19756b" },
+  { name: "Green",   fill: "#16ae5c", ink: "#2dc96e", on: "#184025", fillL: "#197940" },
+  { name: "Lime",    fill: "#869f12", ink: "#C7E84B", on: "#323b15", fillL: "#5d6e15" },
 ];
 
 type Font = { name: string; stack: string; g: string | null };

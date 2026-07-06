@@ -1,28 +1,21 @@
 /* ============================================================================
    Moderne SaaS Design System — TOKENS  (light + dark)
    ----------------------------------------------------------------------------
-   The moderne.ai marketing language (genome / immune-system; Poppins +
-   JetBrains Mono; the spectral M-FISH rainbow) expressed as SaaS application
-   UI. Light mode first; dark mode maps back to the shipped site palette.
+   Rewritten to match the proposed system documented on Foundations · Colors:
+   - 10 tonal OKLCH ramps: neutral, warm-grey, blue, teal, green, lime,
+     violet, magenta, red, gold
+   - All 6 M-FISH brand strands (lime, green, teal, blue, violet, magenta)
+     appear as one exact stop in their tonal ramp — bright + deep.
+   - Primary = TEAL. Secondary = VIOLET. Semantic tokens are aliased to ramp
+     stops. Where a semantic role would collide with a brand-exact stop
+     (green-300, green-800, blue-600, blue-900, teal-400, teal-900,
+     violet-600, violet-900), the alias is shifted one step to keep semantics
+     visually distinct from brand.
+   - Success dark shifts 2 stops past brand (600→900 in light, 500→200 in
+     dark) to preserve chip contrast.
 
-   COLOR MODEL (revised):
-     • PRIMARY = violet — a SaaS brand/action color pulled from the spectral
-       rainbow. Distinct from status, and deliberately NOT neo-design's
-       Digital Blue (#2f42ff, the blue the marketing site retired as "dated").
-     • GREEN = STATUS ONLY (success / healthy / validated). No longer the
-       primary action. This frees green to stay meaningful.
-     • RED = error/defect · AMBER = warning · BLUE = info. Two extra feedback
-       hues are a SaaS necessity, clearly fenced (status only).
-     • The RAINBOW (spectral) is expanded into a 9-hue CATEGORICAL palette for
-       wayfinding / data-viz / tags — each with an AA-legible "ink" per theme.
-
-   Namespaced --ds-*, self-contained (does not touch the live site tokens.css).
-   Every value is AA-validated — see .context/ds-a11y-check.mjs (0 failures).
-   Discipline mirrors docs/DESIGN.md §11: every color a token; derive tints with
-   color-mix(); status is only success/error/warn/info, never categorical hues.
-
-   THEMING: default :root = LIGHT; [data-theme="dark"] on <html> overrides the
-   color tokens. Toggle wired in src/lib/ds-chrome.ts.
+   Namespaced --ds-*, self-contained. Every token NAME preserved from the
+   prior version so downstream pages don't break.
    ========================================================================== */
 
 /* ── Theme-invariant tokens (shared by light + dark) ───────────────────────── */
@@ -71,121 +64,192 @@
 
   /* layout */
   --ds-shell-nav-w:248px; --ds-shell-topbar-h:56px; --ds-content-max:1100px;
+
+  /* ── 10 tonal ramps (theme-invariant) ─────────────────────────────────────
+     Brand-exact stops noted inline: those override the OKLCH-generated stop
+     with the exact M-FISH hex. Semantic tokens must never alias directly to
+     a brand-exact stop (enforced by the light/dark blocks below). */
+
+  /* neutral (cool) */
+  --ds-neutral-50:#f2f5fc; --ds-neutral-100:#e8ebf2; --ds-neutral-200:#d4d7de;
+  --ds-neutral-300:#bec1c8; --ds-neutral-400:#a7aab1; --ds-neutral-500:#8f9299;
+  --ds-neutral-600:#797c82; --ds-neutral-700:#63666b; --ds-neutral-800:#4d5055;
+  --ds-neutral-900:#34373c;
+
+  /* warm-grey (backs canceled) */
+  --ds-warmgrey-50:#faf4ed; --ds-warmgrey-100:#f0eae3; --ds-warmgrey-200:#dcd6cf;
+  --ds-warmgrey-300:#c6c0b9; --ds-warmgrey-400:#afa9a2; --ds-warmgrey-500:#97918a;
+  --ds-warmgrey-600:#807b74; --ds-warmgrey-700:#6a655e; --ds-warmgrey-800:#544f49;
+  --ds-warmgrey-900:#3a3630;
+
+  /* blue (backs info; brand at 600/900) */
+  --ds-blue-50:#f4f5f8; --ds-blue-100:#e6ebf4; --ds-blue-200:#cad8f2;
+  --ds-blue-300:#a6c2f4; --ds-blue-400:#7fa9f9; --ds-blue-500:#558dfc;
+  --ds-blue-600:#3E7BF6; /* brand-bright */
+  --ds-blue-700:#1055e2;
+  --ds-blue-800:#1245ae;
+  --ds-blue-900:#16306B; /* brand-deep */
+
+  /* teal (backs primary; brand at 400/900) */
+  --ds-teal-50:#edf8f6; --ds-teal-100:#cef5ee; --ds-teal-200:#82eee0;
+  --ds-teal-300:#55d9ca;
+  --ds-teal-400:#25D0C0; /* brand-bright */
+  --ds-teal-500:#16a89b; --ds-teal-600:#158f83; --ds-teal-700:#19756b;
+  --ds-teal-800:#1a5b54;
+  --ds-teal-900:#0E4A45; /* brand-deep */
+
+  /* green (backs success; brand at 300/800) */
+  --ds-green-50:#eff8f1; --ds-green-100:#d6f5dd; --ds-green-200:#87f3a7;
+  --ds-green-300:#30F284; /* brand-bright */
+  --ds-green-400:#2dc96e; --ds-green-500:#16ae5c; --ds-green-600:#15944d;
+  --ds-green-700:#197940;
+  --ds-green-800:#1D5937; /* brand-deep */
+  --ds-green-900:#184025;
+
+  /* lime (brand accent; not semantic; brand at 300/800) */
+  --ds-lime-50:#f3f8e5; --ds-lime-100:#e2f6ab; --ds-lime-200:#cbe578;
+  --ds-lime-300:#C7E84B; /* brand-bright */
+  --ds-lime-400:#9cb928; --ds-lime-500:#869f12; --ds-lime-600:#718711;
+  --ds-lime-700:#5d6e15;
+  --ds-lime-800:#4F5A12; /* brand-deep */
+  --ds-lime-900:#323b15;
+
+  /* violet (backs secondary + active/queued; brand at 600/900) */
+  --ds-violet-50:#f6f5f8; --ds-violet-100:#ede9f4; --ds-violet-200:#ddd1f2;
+  --ds-violet-300:#ccb3f4; --ds-violet-400:#bd91f9; --ds-violet-500:#ad68fc;
+  --ds-violet-600:#9D5BE8; /* brand-bright */
+  --ds-violet-700:#8320d6;
+  --ds-violet-800:#6621a6;
+  --ds-violet-900:#3F1340; /* brand-deep */
+
+  /* magenta (brand accent; not semantic; brand at 500/800) */
+  --ds-magenta-50:#f8f4f6; --ds-magenta-100:#f4e7ec; --ds-magenta-200:#f2cbdb;
+  --ds-magenta-300:#f5a5c9; --ds-magenta-400:#fa75b8;
+  --ds-magenta-500:#E6399B; /* brand-bright */
+  --ds-magenta-600:#d7178d; --ds-magenta-700:#af1b73;
+  --ds-magenta-800:#7A1E52; /* brand-deep */
+  --ds-magenta-900:#5b1a3d;
+
+  /* red (backs error) */
+  --ds-red-50:#f8f4f4; --ds-red-100:#f4e8e6; --ds-red-200:#f2cec7;
+  --ds-red-300:#f5ac9f; --ds-red-400:#fa826f; --ds-red-500:#fc4732;
+  --ds-red-600:#e12510; --ds-red-700:#b82514; --ds-red-800:#8f2215;
+  --ds-red-900:#5f1d14;
+
+  /* gold (backs warning) */
+  --ds-gold-50:#f8f5ee; --ds-gold-100:#f4ead5; --ds-gold-200:#f2d493;
+  --ds-gold-300:#e8ba4c; --ds-gold-400:#d1a327; --ds-gold-500:#b68b12;
+  --ds-gold-600:#9a7611; --ds-gold-700:#7e6115; --ds-gold-800:#624c16;
+  --ds-gold-900:#423515;
 }
 
-/* ── LIGHT (dormant — kept for easy re-enable; no UI toggle ships it) ───────── */
+/* ── LIGHT ────────────────────────────────────────────────────────────────── */
 :root[data-theme="light"]{
   color-scheme:light;
 
-  /* ground — crisp modern neutral (cool grey canvas, white cards), NOT cream.
-     The warm near-black brand identity lives in DARK mode (the hero); light
-     stays clean/technical like a modern dev-tool SaaS. */
+  /* Surface / ink / line tokens preserved from the pre-ramp system — the
+     ramp change is scoped to semantic + categorical roles per user request. */
   --ds-bg:#f5f6f8; --ds-bg-alt:#eaecf0; --ds-surface:#ffffff;
   --ds-panel:#ffffff; --ds-raised:#ffffff; --ds-overlay:rgba(17,19,24,.46);
   --ds-code-bg:#f2f3f5;
 
-  /* ink ramp — neutral charcoal → cool grey */
   --ds-ink:#18191c; --ds-ink-dim:#44464d; --ds-muted:#696c74; --ds-muted2:#7e818b;
   --ds-on-fill:#ffffff;
 
-  /* hairlines / field edges */
   --ds-line:rgba(20,22,30,.13); --ds-line-strong:rgba(20,22,30,.24);
   --ds-field-border:rgba(20,22,30,.32); --ds-sheen:rgba(255,255,255,.7);
 
-  /* chrome (topbar + sidenav) for light; no hero glow in light */
   --ds-chrome-bg:#ffffff; --ds-chrome-nav:var(--ds-bg-alt); --ds-nav-hover:var(--ds-bg-alt);
   --ds-hero-glow:none;
 
-  /* ── PRIMARY — brand TEAL (brand & action). On LIGHT the deep teal is a dark
-       fill carrying WHITE text — it pops on white and reads at 10:1. Success is
-       a separate green (--ds-green). Swap the hue on the Foundations picker. */
-  --ds-primary:#0e4a45;
-  --ds-primary-hover:#12605a;
-  --ds-primary-pressed:#0a3833;
-  --ds-primary-ink:#0e4a45;      /* AA teal text / links / icons on light (10.1:1 on white) */
-  --ds-primary-soft:color-mix(in srgb, var(--ds-primary) 20%, var(--ds-panel)); /* deep, punchy tint */
-  --ds-on-primary:#ffffff;       /* white text on the deep teal fill (10.1:1) */
+  /* ── PRIMARY = teal-700 (shifted OFF teal-400/900 brand stops) ─────────── */
+  --ds-primary:var(--ds-teal-700);
+  --ds-primary-hover:var(--ds-teal-800);
+  /* Pressed sits one perceptual step deeper than hover. teal-900 is brand-deep
+     (reserved for M-FISH), so pressed is derived via color-mix instead of
+     aliased to teal-900. */
+  --ds-primary-pressed:color-mix(in srgb, var(--ds-teal-800) 82%, #000);
+  --ds-primary-ink:var(--ds-teal-700);
+  --ds-primary-soft:var(--ds-teal-100);
+  --ds-on-primary:#ffffff;
   --ds-primary-wash:color-mix(in srgb, var(--ds-primary) 18%, transparent);
   --ds-primary-glow:0 1px 2px color-mix(in srgb, var(--ds-primary) 36%, transparent), 0 4px 16px color-mix(in srgb, var(--ds-primary) 30%, transparent);
 
-  /* SECONDARY — complementary accent (default violet); swappable in the theme builder */
-  --ds-secondary:#6d28d9; --ds-secondary-hover:#5b21b6; --ds-secondary-ink:#6d28d9;
-  --ds-secondary-soft:color-mix(in srgb,var(--ds-secondary) 16%, var(--ds-panel));
-  --ds-secondary-wash:color-mix(in srgb,var(--ds-secondary) 14%, transparent);
+  /* ── SECONDARY = violet-700 ────────────────────────────────────────────── */
+  --ds-secondary:var(--ds-violet-700);
+  --ds-secondary-hover:var(--ds-violet-800);
+  --ds-secondary-ink:var(--ds-violet-700);
+  --ds-secondary-soft:var(--ds-violet-100);
+  --ds-secondary-wash:color-mix(in srgb, var(--ds-secondary) 14%, transparent);
   --ds-on-secondary:#ffffff;
 
-  /* ── STATUS: success = green (status ONLY now, not primary) ─────────────── */
-  --ds-green:#15cf76;            /* vivid success fill (dark text) */
-  --ds-green-neon:#33ff99;       /* marketing mint — decorative/illustration only */
-  --ds-green-ink:#096540;        /* AA success text/icon on light */
-  --ds-green-soft:color-mix(in srgb, var(--ds-green) 22%, var(--ds-panel));
-  --ds-on-green:#08130d;
-  --ds-green-wash:color-mix(in srgb, var(--ds-green) 18%, transparent);
-  /* brand-spine extras (design kit): CVE/red-team flag + the deep brand blue */
-  --ds-flag:#ff5470; --ds-midnight:#041834;
+  /* nav accent — follows primary */
+  --ds-nav-accent:var(--ds-primary);
+  --ds-nav-accent-ink:var(--ds-primary-ink);
+  --ds-nav-accent-wash:var(--ds-primary-wash);
 
-  /* error / danger */
-  --ds-red:#e5331f;              /* vivid defect/illustration/status dot */
-  --ds-red-ink:#b02a17;          /* AA error text/icon on light */
-  --ds-red-soft:color-mix(in srgb, var(--ds-red) 18%, var(--ds-panel));
+  /* ── STATUS · SUCCESS — green (dark shifted 2 stops past brand-800) ────── */
+  --ds-green:var(--ds-green-600);                    /* status-success-default */
+  --ds-green-neon:#30F284;                           /* brand-bright, illustration only */
+  --ds-green-ink:var(--ds-green-700);                /* text on light bg */
+  --ds-green-soft:var(--ds-green-50);
+  --ds-on-green:#ffffff;
+  --ds-green-wash:color-mix(in srgb, var(--ds-green) 18%, transparent);
+  /* brand-spine extras */
+  --ds-flag:#ff5470;
+  --ds-midnight:var(--ds-blue-900);
+
+  /* ── STATUS · ERROR — red ──────────────────────────────────────────────── */
+  --ds-red:var(--ds-red-600);
+  --ds-red-ink:var(--ds-red-700);
+  --ds-red-soft:var(--ds-red-50);
   --ds-red-wash:color-mix(in srgb, var(--ds-red) 16%, transparent);
-  --ds-danger:#c4291a;           /* destructive button fill (white text, AA 5.7:1) */
+  --ds-danger:var(--ds-red-600);
   --ds-on-danger:#ffffff;
 
-  /* warning / info (feedback status only) */
-  --ds-warn-ink:#8a5300; --ds-warn:#e0a020; --ds-warn-soft:color-mix(in srgb, var(--ds-warn) 28%, var(--ds-panel));
-  --ds-info-ink:#1d5fb0; --ds-info:#2f7fe0; --ds-info-soft:color-mix(in srgb, var(--ds-info) 20%, var(--ds-panel));
+  /* ── STATUS · WARNING — gold ───────────────────────────────────────────── */
+  --ds-warn:var(--ds-gold-600);
+  --ds-warn-ink:var(--ds-gold-800);
+  --ds-warn-soft:var(--ds-gold-50);
 
-  /* focus ring — follows PRIMARY now */
+  /* ── STATUS · INFO — blue-700 (shifted off blue-600 brand-bright) ──────── */
+  --ds-info:var(--ds-blue-700);
+  --ds-info-ink:var(--ds-blue-800);
+  --ds-info-soft:var(--ds-blue-50);
+
+  /* focus follows primary */
   --ds-focus:color-mix(in srgb, var(--ds-primary) 55%, transparent);
 
-  /* elevation — light reads depth from shadow */
+  /* elevation */
   --ds-shadow-1:0 1px 2px rgba(17,19,24,.06), 0 1px 3px rgba(17,19,24,.10);
   --ds-shadow-2:0 2px 6px rgba(17,19,24,.08), 0 6px 18px rgba(17,19,24,.10);
   --ds-shadow-3:0 12px 36px rgba(17,19,24,.18);
   --ds-mark-filter:none;
 
-  /* ── CATEGORICAL RAINBOW (9 hues from the spectral gradient) ──────────────
-     `--ds-cat-<hue>`     = bright base (swatch / dot / chart series)
-     `--ds-cat-<hue>-ink` = AA-legible text on light (≥4.5:1 on panel)
-     Wayfinding / data-viz / tags ONLY — NEVER status (status is green/red/amber/blue).
-     NOTE: this is the SaaS/docs FUNCTIONAL palette (per-theme, AA-tuned). The branding
-     "Moderne Design Kit" identity palette is a separate set — only exact value matches
-     are cross-referenced below; the two are intentionally not merged. */
-  /* 6 KIT STRANDS — the shared categorical spine (Docs + SaaS). Exact design-kit
-     bright fill / deep ink. */
-  --ds-cat-magenta:#e6399b; --ds-cat-magenta-ink:#7a1e52;
-  --ds-cat-violet:#9d5be8;  --ds-cat-violet-ink:#3f1340;
-  --ds-cat-blue:#3e7bf6;    --ds-cat-blue-ink:#16306b;
-  --ds-cat-teal:#25d0c0;    --ds-cat-teal-ink:#0e4a45;
-  --ds-cat-green:#30f284;   --ds-cat-green-ink:#1d5937;
-  --ds-cat-lime:#c7e84b;    --ds-cat-lime-ink:#4f5a12;
-  /* SaaS-ONLY extras (--ds-cat-saas-*) — extra data-viz hues; not used on Docs. */
-  --ds-cat-saas-pink:#ec4899;    --ds-cat-saas-pink-ink:#c5208a;
-  --ds-cat-saas-indigo:#6366f1;  --ds-cat-saas-indigo-ink:#4f46e5;
-  --ds-cat-saas-cyan:#06b6d4;    --ds-cat-saas-cyan-ink:#0e7490;
-  --ds-cat-saas-gold:#eab308;    --ds-cat-saas-gold-ink:#8a6300;
-  --ds-cat-saas-orange:#f97316;  --ds-cat-saas-orange-ink:#b45309;
+  /* ── CATEGORICAL — the 6 M-FISH strands (wayfinding / data-viz / tags) ───
+     Uses the exact brand-bright as the base color and brand-deep as text ink.
+     Categorical is NOT semantic (not status), so it's the one place brand
+     hexes are consumed directly as UI. */
+  --ds-cat-magenta:var(--ds-magenta-500); --ds-cat-magenta-ink:var(--ds-magenta-800);
+  --ds-cat-violet:var(--ds-violet-600);   --ds-cat-violet-ink:var(--ds-violet-900);
+  --ds-cat-blue:var(--ds-blue-600);       --ds-cat-blue-ink:var(--ds-blue-900);
+  --ds-cat-teal:var(--ds-teal-400);       --ds-cat-teal-ink:var(--ds-teal-900);
+  --ds-cat-green:var(--ds-green-300);     --ds-cat-green-ink:var(--ds-green-800);
+  --ds-cat-lime:var(--ds-lime-300);       --ds-cat-lime-ink:var(--ds-lime-800);
 
-  /* spectral heading highlight — the 6 M-FISH strands (the brand spectrum, derived
-     from chromosome painting): magenta → violet → blue → teal → green → lime.
-     Vivid mid-tones (not the deep inks) so the hero gradient has real chroma /
-     punch on white while staying legible at display size (large-text AA ≥3:1). */
+  /* spectral heading highlight — 6 M-FISH strands */
   --ds-accent-spectral:linear-gradient(95deg,
-    #c81e7d 0%, #7c3aed 22%,
-    #2f6df0 44%, #0e8c80 62%,
-    #15a35e 80%, #7e9216 100%);
+    var(--ds-magenta-500) 0%, var(--ds-violet-600) 22%,
+    var(--ds-blue-600) 44%, var(--ds-teal-400) 62%,
+    var(--ds-green-300) 80%, var(--ds-lime-300) 100%);
 }
 
-/* ── DARK (the shipped theme — default) ─────────────────────────────────────
-   COOL neutral near-black + neon mint. The marketing canvas token (--bg #15120f)
-   is a deliberately WARM near-black that reads brown across large UI surfaces;
-   this uses the site's cooler register (closer to its --bg-deep #070608 hero
-   plate) and a cool off-white ink, so the product reads neutral, not sepia. */
+/* ── DARK (the shipped default) ───────────────────────────────────────────── */
 :root,
 :root[data-theme="dark"]{
   color-scheme:dark;
 
+  /* Surface / ink / line tokens preserved from the pre-ramp system. */
   --ds-bg:#0c0d10; --ds-bg-alt:#08090c; --ds-surface:#14161b;
   --ds-panel:#181a20; --ds-raised:#1c1f26; --ds-overlay:rgba(4,5,8,.66);
   --ds-code-bg:#0a0b0e;
@@ -196,44 +260,60 @@
   --ds-line:rgba(232,234,238,.12); --ds-line-strong:rgba(232,234,238,.20);
   --ds-field-border:rgba(232,234,238,.26); --ds-sheen:rgba(255,255,255,.045);
 
-  /* chrome (gallery topbar + sidenav) backgrounds — tokenised so a surface can
-     tone the prototype's own nav down without hardcoding. SaaS keeps the panel;
-     Docs (below) uses the dark base so the big nav areas read near-black, not brown. */
   --ds-chrome-bg:var(--ds-panel); --ds-chrome-nav:var(--ds-surface); --ds-nav-hover:var(--ds-bg-alt);
 
-  /* primary bright TEAL — on dark, the bright fill pops off the near-black ground
-     (10:1) and carries DARK text. soft/wash/glow DERIVE from --ds-primary so the
-     theme builder only sets the base + ink + on-primary and everything else follows. */
-  --ds-primary:#25d0c8; --ds-primary-hover:#45ded6; --ds-primary-pressed:#1fb3ac;
-  --ds-primary-ink:#5eecd0; --ds-primary-soft:color-mix(in srgb,var(--ds-primary) 18%, transparent);
-  --ds-on-primary:#06231d;
+  /* ── PRIMARY = teal-500 (hover/ink shift off teal-400 brand-bright) ────── */
+  --ds-primary:var(--ds-teal-500);
+  --ds-primary-hover:var(--ds-teal-300);             /* shifted off brand teal-400 */
+  /* Pressed goes one step brighter than hover on dark (tactile pop) — teal-200
+     is safe (teal-400 = brand-bright). */
+  --ds-primary-pressed:var(--ds-teal-200);
+  --ds-primary-ink:var(--ds-teal-300);               /* shifted */
+  --ds-primary-soft:var(--ds-teal-800);
+  --ds-on-primary:#ffffff;
   --ds-primary-wash:color-mix(in srgb, var(--ds-primary) 16%, transparent);
   --ds-primary-glow:0 2px 18px color-mix(in srgb, var(--ds-primary) 45%, transparent);
 
-  /* SECONDARY — a complementary accent (default violet); swappable in the theme builder */
-  --ds-secondary:#7b4fe0; --ds-secondary-hover:#9168e8; --ds-secondary-ink:#c4b5fd;
-  --ds-secondary-soft:color-mix(in srgb,var(--ds-secondary) 22%, transparent);
-  --ds-secondary-wash:color-mix(in srgb,var(--ds-secondary) 26%, transparent);
+  /* ── SECONDARY = violet-500 ────────────────────────────────────────────── */
+  --ds-secondary:var(--ds-violet-500);
+  --ds-secondary-hover:var(--ds-violet-400);
+  --ds-secondary-ink:var(--ds-violet-400);
+  --ds-secondary-soft:var(--ds-violet-800);
+  --ds-secondary-wash:color-mix(in srgb, var(--ds-secondary) 26%, transparent);
   --ds-on-secondary:#ffffff;
 
-  /* NAV accent — the colour the navigation chrome (rail/side-nav active, brand)
-     uses. Defaults to the primary; the WARM base overrides it to gold. */
-  --ds-nav-accent:var(--ds-primary); --ds-nav-accent-ink:var(--ds-primary-ink);
+  /* nav accent — follows primary */
+  --ds-nav-accent:var(--ds-primary);
+  --ds-nav-accent-ink:var(--ds-primary-ink);
   --ds-nav-accent-wash:var(--ds-primary-wash);
 
-  --ds-green:#33ff99; --ds-green-neon:#33ff99; --ds-green-ink:#5fe6a8;
-  --ds-green-soft:color-mix(in srgb,#33ff99 16%, transparent); --ds-on-green:#10130d;
+  /* ── STATUS · SUCCESS — green (dark shifted 2 stops past green-300) ───── */
+  --ds-green:var(--ds-green-500);
+  --ds-green-neon:#30F284;                            /* brand-bright */
+  --ds-green-ink:var(--ds-green-400);                 /* text on dark, shifted off 300 */
+  --ds-green-soft:var(--ds-green-900);
+  --ds-on-green:var(--ds-neutral-900);
   --ds-green-wash:color-mix(in srgb, var(--ds-green) 12%, transparent);
-  /* brand-spine extras (design kit): CVE/red-team flag + the deep brand blue */
-  --ds-flag:#ff5470; --ds-midnight:#041834;
+  --ds-flag:#ff5470;
+  --ds-midnight:#16306B;
 
-  --ds-red:#ff5a47; --ds-red-ink:#ff9a8e;
-  --ds-red-soft:color-mix(in srgb,#ff5a47 16%, transparent);
+  /* ── STATUS · ERROR — red ──────────────────────────────────────────────── */
+  --ds-red:var(--ds-red-500);
+  --ds-red-ink:var(--ds-red-300);
+  --ds-red-soft:var(--ds-red-900);
   --ds-red-wash:color-mix(in srgb, var(--ds-red) 16%, transparent);
-  --ds-danger:#d63420; --ds-on-danger:#ffffff;
+  --ds-danger:var(--ds-red-600);
+  --ds-on-danger:#ffffff;
 
-  --ds-warn-ink:#f0c674; --ds-warn:#e0b34d; --ds-warn-soft:color-mix(in srgb,#e0b34d 16%, transparent);
-  --ds-info-ink:#8bb6ff; --ds-info:#6a9bff; --ds-info-soft:color-mix(in srgb,#6a9bff 16%, transparent);
+  /* ── STATUS · WARNING — gold ───────────────────────────────────────────── */
+  --ds-warn:var(--ds-gold-500);
+  --ds-warn-ink:var(--ds-gold-300);
+  --ds-warn-soft:var(--ds-gold-900);
+
+  /* ── STATUS · INFO — blue (light shifted off blue-900 brand-deep) ──────── */
+  --ds-info:var(--ds-blue-500);
+  --ds-info-ink:var(--ds-blue-300);
+  --ds-info-soft:var(--ds-blue-800);                  /* shifted */
 
   --ds-focus:color-mix(in srgb, var(--ds-primary) 60%, transparent);
 
@@ -242,24 +322,15 @@
   --ds-shadow-3:0 1px 0 var(--ds-sheen) inset, 0 16px 40px rgba(0,0,0,.6);
   --ds-mark-filter:none;
 
-  /* categorical rainbow — bright on dark; ink == base (both AA on dark panel) */
-  /* 6 KIT STRANDS — shared categorical spine (Docs + SaaS). Bright kit fill;
-     ink lightened where the bright fails AA as text on the dark panel. */
-  --ds-cat-magenta:#e6399b; --ds-cat-magenta-ink:#ff7ac9;
-  --ds-cat-violet:#9d5be8;  --ds-cat-violet-ink:#c4b5fd;
-  --ds-cat-blue:#3e7bf6;    --ds-cat-blue-ink:#7cc0ff;
-  --ds-cat-teal:#25d0c0;    --ds-cat-teal-ink:#5eecd0;
-  --ds-cat-green:#30f284;   --ds-cat-green-ink:#5fe6a8;
-  --ds-cat-lime:#c7e84b;    --ds-cat-lime-ink:#c7e84b;
-  /* SaaS-ONLY extras (--ds-cat-saas-*) — extra data-viz hues; not used on Docs. */
-  --ds-cat-saas-pink:#ff7ac9;    --ds-cat-saas-pink-ink:#ff7ac9;
-  --ds-cat-saas-indigo:#a5b4fc;  --ds-cat-saas-indigo-ink:#a5b4fc;
-  --ds-cat-saas-cyan:#5fd6ff;    --ds-cat-saas-cyan-ink:#5fd6ff;
-  --ds-cat-saas-gold:#f0c674;    --ds-cat-saas-gold-ink:#f0c674;
-  --ds-cat-saas-orange:#ffb066;  --ds-cat-saas-orange-ink:#ffb066;
+  /* ── CATEGORICAL — 6 M-FISH strands; ink lightened where the brand-bright
+     needs a legible text-tone against dark panels. */
+  --ds-cat-magenta:var(--ds-magenta-500); --ds-cat-magenta-ink:var(--ds-magenta-300);
+  --ds-cat-violet:var(--ds-violet-600);   --ds-cat-violet-ink:var(--ds-violet-300);
+  --ds-cat-blue:var(--ds-blue-600);       --ds-cat-blue-ink:var(--ds-blue-300);
+  --ds-cat-teal:var(--ds-teal-400);       --ds-cat-teal-ink:var(--ds-teal-300);
+  --ds-cat-green:var(--ds-green-300);     --ds-cat-green-ink:var(--ds-green-300);
+  --ds-cat-lime:var(--ds-lime-300);       --ds-cat-lime-ink:var(--ds-lime-300);
 
-  /* spectral heading highlight — the 6 M-FISH strands, bright on dark = the
-     kit / Jonathan spectrum (magenta → violet → blue → teal → green → lime). */
   --ds-accent-spectral:linear-gradient(95deg,
     var(--ds-cat-magenta) 0%, var(--ds-cat-violet) 22%,
     var(--ds-cat-blue) 44%, var(--ds-cat-teal) 62%,
@@ -268,12 +339,9 @@
 
 :root{ --ds-hero-glow:none; } /* flat ground — no glow (engineered/calm) */
 
-/* ── WARM base tone — a site-wide alternative ground the builder offers (dark) ──
-   Matches how moderne.ai actually reads: a DEEP warm near-black ground (like the
-   site's hero "black plate" #070608), not the browner page token #15120F — warm,
-   but a lot cooler/darker than full brown. Warm surfaces float on it (the marketing
-   card tones) and the chrome stays dark so the nav never reads brown. No glow, the
-   chosen accent stays. Dark-only; light keeps its single neutral ground. */
+/* ── WARM base tone — site-wide alternative ground (dark builder option) ───
+   Marketing warm-black variant. Kept as-is for the theme builder. Chrome
+   stays dark so the big nav areas don't read brown. */
 :root:not([data-theme="light"])[data-base="warm"]{
   --ds-bg:#0c0a08; --ds-bg-alt:#080706; --ds-surface:#13100d;
   --ds-panel:#191510; --ds-raised:#1e1813; --ds-overlay:rgba(6,5,4,.64);
@@ -281,6 +349,5 @@
   --ds-ink:#f1ece0; --ds-ink-dim:#c9bfa6; --ds-muted:#9c927e; --ds-muted2:#6f6757; --ds-on-fill:#0c0a08;
   --ds-line:rgba(241,236,224,.10); --ds-line-strong:rgba(241,236,224,.20);
   --ds-field-border:rgba(241,236,224,.24); --ds-sheen:rgba(255,255,255,.04);
-  /* dark chrome (like Docs) so the big nav areas don't read brown */
   --ds-chrome-bg:var(--ds-bg); --ds-chrome-nav:var(--ds-bg-alt); --ds-nav-hover:var(--ds-surface);
 }

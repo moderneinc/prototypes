@@ -31,6 +31,7 @@ export default defineConfig({
       input: {
         index: p("index.html"),
         foundations: p("foundations/index.html"),
+        "foundations-colors": p("foundations/colors/index.html"),
         accessibility: p("accessibility/index.html"),
         dataviz: p("dataviz/index.html"),
         forms: p("forms/index.html"),
