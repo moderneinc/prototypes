@@ -1060,16 +1060,16 @@
         statusCell: badge('queued', 'Queued'),
         runBy: 'P', time: '5 min ago', abs: '' }),
 
-    // Cluster 2 — running in the org's dedicated High lane
+    // Cluster 2 — running in the org's dedicated Fast lane
     recipeRunRow('Migrate to JUnit 5', 'org.openrewrite.java.testing.junit5.JUnit5BestPractices',
       { hasCommit: false, hasVis: false, org,
-        statusCell: statusChip('active', 'Running', 'High lane', 'This org has a dedicated high-priority lane.'),
+        statusCell: statusChip('active', 'Running', 'Fast lane', 'This org has a dedicated fast lane.'),
         runBy: 'M', time: '15 min ago', abs: '' }),
 
-    // Cluster 3 — running in the Low lane (auto-placed, 100+ repos)
+    // Cluster 3 — running in the Slow lane (auto-placed, 100+ repos)
     recipeRunRow('Static analysis pass', 'org.openrewrite.staticanalysis.CommonStaticAnalysis',
       { hasCommit: false, hasVis: false, org,
-        statusCell: statusChip('active', 'Running', 'Low lane', "This run spans 100+ repositories, so it's placed in the lane that keeps smaller runs moving."),
+        statusCell: statusChip('active', 'Running', 'Slow lane', "This run spans 100+ repositories, so it's placed in the slow lane to keep smaller runs moving."),
         runBy: 'A', time: '32 min ago', abs: '' }),
 
     // Cluster 4 — recipe + visualization child (finished)
