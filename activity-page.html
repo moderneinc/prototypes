@@ -298,32 +298,24 @@
     }
 
     /* =========================================================
-       Page top: crumbs + title + subhead + actions
+       Page top: title (left) + notification button (right); subhead below.
        ========================================================= */
-    .page-top { padding: 28px 32px 0; flex-shrink: 0; }
-    .crumbs {
-      display: flex; align-items: center; gap: 8px;
-      color: var(--text-secondary);
-      font-size: 13px;
-      padding: 0 0 10px;
+    .page-top { padding: 28px 32px 20px; flex-shrink: 0; }
+    .page-head-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
     }
-    .crumbs a {
-      color: var(--brand-digital-blue-600);
-      font-weight: 600;
-      text-decoration: none;
-    }
-    .crumbs a:hover { text-decoration: underline; }
-    .crumbs .sep { display: inline-flex; align-items: center; color: var(--brand-grey-400); }
-    .crumbs .sep svg { width: 13px; height: 13px; }
-
-    .run-title { position: relative; display: inline-block; max-width: 720px; }
-    .run-title h1 {
+    .page-head-text { min-width: 0; }
+    .page-head-text h1 {
       font-family: 'Inter', sans-serif;
-      font-weight: 500;
-      font-size: 21px;
-      line-height: 28px;
-      color: rgb(52,58,64);
-      margin-bottom: 4px;
+      font-weight: 600;
+      font-size: 30px;
+      line-height: 36px;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      margin: 0 0 6px;
     }
     .run-subhead {
       font-family: 'Inter', sans-serif;
@@ -331,40 +323,29 @@
       font-size: 14px;
       line-height: 20px;
       color: var(--text-secondary);
-      margin-bottom: 12px;
-      max-width: 780px;
+      white-space: nowrap;
     }
-    .run-subhead a { color: var(--brand-digital-blue-600); text-decoration: none; font-weight: 500; }
+    .run-subhead a {
+      color: var(--brand-digital-blue-600);
+      text-decoration: none;
+      font-weight: 500;
+      white-space: nowrap;
+    }
     .run-subhead a:hover { text-decoration: underline; }
 
-    .page-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin: 8px 0 20px;
-    }
-    .btn {
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 8px 14px;
-      border-radius: var(--radius-md);
+    .notif-btn {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      border-radius: 50%;
       border: 1px solid var(--border-secondary);
       background: var(--surface-primary);
-      color: var(--text-primary);
+      color: var(--brand-grey-900);
+      display: inline-flex; align-items: center; justify-content: center;
       cursor: pointer;
-      display: inline-flex; align-items: center; gap: 6px;
-      transition: background 120ms, border-color 120ms;
+      transition: background var(--transition-fast), border-color var(--transition-fast);
     }
-    .btn:hover { background: var(--brand-grey-200); }
-    .btn.primary {
-      background: var(--brand-digital-blue-600);
-      color: #fff;
-      border-color: var(--brand-digital-blue-600);
-      font-weight: 600;
-    }
-    .btn.primary:hover { background: var(--brand-digital-blue-700); border-color: var(--brand-digital-blue-700); }
-    .btn svg { width: 14px; height: 14px; }
+    .notif-btn:hover { background: var(--brand-grey-200); border-color: var(--brand-grey-400); }
+    .notif-btn svg { width: 18px; height: 18px; }
 
     .page-body {
       flex: 1;
@@ -524,7 +505,6 @@
       border-bottom: 1px solid var(--brand-grey-200);
     }
     .activity tbody tr:last-child td { border-bottom: none; }
-    .activity tbody tr.cluster-start td { border-top: 1px solid var(--border-primary); }
 
     .activity tbody td.activity-cell {
       width: var(--col-act);
@@ -578,11 +558,21 @@
       align-items: center;
       justify-content: center;
       width: 14px; height: 14px;
-      color: var(--text-tertiary);
+      /* Neo --icon-information — the informational-blue affordance. */
+      color: var(--brand-digital-blue-600);
       cursor: help;
       flex-shrink: 0;
     }
-    .activity tbody td.status .status-info:hover { color: var(--text-secondary); }
+    .activity tbody td.status .neo-tooltip-trigger {
+      border-radius: var(--radius-sm);
+      outline: none;
+    }
+    .activity tbody td.status .neo-tooltip-trigger:hover .status-info { color: var(--brand-digital-blue-700); }
+    .activity tbody td.status .neo-tooltip-trigger:focus-visible {
+      outline: 2px solid var(--brand-digital-blue-500);
+      outline-offset: 2px;
+    }
+    .activity tbody td.status .neo-tooltip-trigger:focus-visible .status-info { color: var(--brand-digital-blue-700); }
     .activity tbody td.status .status-info svg {
       width: 14px; height: 14px;
       fill: none;
@@ -592,14 +582,59 @@
       stroke-linejoin: round;
     }
 
+    /* =========================================================
+       NeoTooltip (from @moderneinc/neo-design Tooltip.css)
+       Uses position: fixed so it escapes any parent overflow-clip;
+       coordinates set at hover/focus time by JS below.
+       ========================================================= */
+    .neo-tooltip-trigger { display: inline-flex; }
+    .neo-tooltip {
+      position: fixed;
+      padding: 6px 10px;
+      background-color: var(--brand-grey-900);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 20px rgba(15,23,42,0.18), 0 2px 6px rgba(15,23,42,0.10);
+      opacity: 0;
+      transform: translate(-50%, -100%) scale(0.95);
+      transition: opacity var(--transition-fast), transform var(--transition-fast);
+      pointer-events: none;
+      max-width: 250px;
+      width: max-content;
+      white-space: normal;
+      text-align: left;
+      z-index: 1000;
+      top: 0; left: 0;
+    }
+    .neo-tooltip--visible {
+      opacity: 1;
+      transform: translate(-50%, -100%) scale(1);
+    }
+    .neo-tooltip__arrow {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: var(--brand-grey-900);
+      transform: rotate(45deg);
+      bottom: -4px;
+      left: 50%;
+      margin-left: -4px;
+    }
+
     .activity tbody td.runby { width: 90px; text-align: center; padding: 0; }
     .activity tbody td.runby .avatar-cell {
-      width: 24px; height: 24px;
+      width: 26px; height: 26px;
       border-radius: 50%;
-      background: var(--brand-grey-300);
-      color: var(--brand-grey-800);
+      background: var(--avatar-bg, var(--brand-grey-300));
+      color: #fff;
       font-size: 11px; font-weight: 600;
       display: inline-flex; align-items: center; justify-content: center;
+      border: 2px solid var(--surface-primary);
+      box-shadow: 0 0 0 1px var(--avatar-bg, var(--brand-grey-300));
     }
 
     .activity tbody td.time {
@@ -716,47 +751,23 @@
     .progress-label .state.active  { color: var(--status-active-dark); }
     .progress-label .count { color: var(--text-tertiary); font-weight: 500; }
 
-    /* Table footer / pagination */
+    /* Table footer — center-aligned results count + Load more link */
     .tableFoot {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 18px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px;
+      padding: 14px 18px;
       border-top: 1px solid var(--border-primary);
-      background: var(--surface-page);
+      background: var(--surface-primary);
       color: var(--text-secondary);
-      font-size: 12px;
+      font-size: 13px;
     }
-    .tableFoot .pager { display: flex; gap: 4px; }
-    .tableFoot .pager button {
-      font-family: inherit;
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      background: transparent;
-      border: 1px solid var(--border-secondary);
-      color: var(--text-secondary);
-      cursor: pointer;
+    .tableFoot .results-count { color: var(--text-secondary); }
+    .tableFoot .load-more {
+      color: var(--brand-digital-blue-600);
+      text-decoration: none;
+      font-weight: 500;
     }
-    .tableFoot .pager button.current {
-      background: var(--brand-digital-blue-100);
-      color: var(--brand-digital-blue-700);
-      border-color: var(--brand-digital-blue-300);
-    }
-    .tableFoot .pager button:hover:not(.current) { color: var(--text-primary); }
-
-    /* Legend */
-    .legend {
-      display: flex; gap: 18px;
-      margin-top: 14px;
-      padding: 0 4px;
-      flex-wrap: wrap;
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-    .legend .li { display: inline-flex; align-items: center; gap: 6px; }
-    .legend .li .sw { width: 10px; height: 10px; border-radius: 50%; }
-    .legend .li.recipe .sw { background: var(--c-recipe); }
-    .legend .li.commit .sw { background: var(--c-commit); }
-    .legend .li.viz    .sw { background: var(--c-viz); }
+    .tableFoot .load-more:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -805,64 +816,20 @@
   <div class="main-area">
 
     <div class="page-top">
-      <div class="crumbs">
-        <a href="#">Moderne Inc</a>
-        <span class="sep"><svg viewBox="0 0 24 24" class="svg-stroke"><polyline points="9 18 15 12 9 6"/></svg></span>
-        <span>Activity</span>
-      </div>
-      <div class="run-title"><h1>Activity</h1></div>
-      <div class="run-subhead">
-        Runs are queued in lanes by size and available capacity, so wait times can vary — especially for larger runs. <a href="#">Learn more</a>
-      </div>
-
-      <div class="page-actions">
-        <button class="btn">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1v10M4 7l4 4 4-4M2 14h12"/></svg>
-          Export
-        </button>
-        <button class="btn primary">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3v10M3 8h10"/></svg>
-          New run
+      <div class="page-head-row">
+        <div class="page-head-text">
+          <h1>Activity</h1>
+          <div class="run-subhead">
+            Runs are queued in lanes by size and available capacity, so wait times can vary - especially for larger runs. <a href="#">Learn more</a>
+          </div>
+        </div>
+        <button class="notif-btn" aria-label="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         </button>
       </div>
     </div>
 
     <div class="page-body">
-
-      <div class="toolbar">
-        <div class="search">
-          <svg class="icn" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
-          <input type="text" placeholder="Search by name, recipe, or commit message…" />
-        </div>
-
-        <div class="chips" role="group" aria-label="Activity type filters">
-          <button class="chip t-recipe active"><span class="sw"></span>Recipe runs</button>
-          <button class="chip t-commit active"><span class="sw"></span>Commit jobs</button>
-          <button class="chip t-viz active"><span class="sw"></span>Visualizations</button>
-        </div>
-
-        <div class="toolbar-divider"></div>
-
-        <select class="select" aria-label="Time range">
-          <option>Last 7 days</option>
-          <option>Last 24 hours</option>
-          <option>Last 30 days</option>
-          <option>All time</option>
-        </select>
-        <select class="select" aria-label="Run by">
-          <option>Run by anyone</option>
-          <option>Run by me</option>
-          <option>Run by team</option>
-        </select>
-        <select class="select" aria-label="Status">
-          <option>Any status</option>
-          <option>Queued</option>
-          <option>Running</option>
-          <option>Finished</option>
-          <option>Failed</option>
-          <option>Canceled</option>
-        </select>
-      </div>
 
       <div class="tableCard">
         <table class="activity">
@@ -880,31 +847,16 @@
               <th class="org">Organization</th>
               <th class="status">Status</th>
               <th class="runby">Run by</th>
-              <th class="time">Started</th>
+              <th class="time">Start time</th>
             </tr>
           </thead>
           <tbody id="rows"></tbody>
         </table>
 
         <div class="tableFoot">
-          <div>Showing <strong style="color:var(--text-primary)">9</strong> of 104 activities</div>
-          <div class="pager">
-            <button>‹</button>
-            <button class="current">1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>…</button>
-            <button>12</button>
-            <button>›</button>
-          </div>
+          <span class="results-count">32 results</span>
+          <a href="#" class="load-more">Load more</a>
         </div>
-      </div>
-
-      <div class="legend">
-        <span class="li recipe"><span class="sw"></span>Recipe run</span>
-        <span class="li commit"><span class="sw"></span>Commit job</span>
-        <span class="li viz"><span class="sw"></span>Visualization</span>
-        <span style="margin-left:auto;color:var(--text-tertiary)">Lineage columns are read left → right; vertical connectors group activities that share a parent.</span>
       </div>
 
     </div>
@@ -956,11 +908,19 @@
   // compact and every row stays the same height. `info`, when passed, adds
   // a native-tooltip info icon after the meta (used to explain why a run
   // landed in a High or Low lane).
+  // Sequential id for aria-describedby wiring — Neo's Tooltip doc calls for
+  // `aria-describedby` linking trigger → tooltip content (not `aria-label`).
+  let tooltipUid = 0;
   const statusChip = (intent, label, meta, info) => {
     if (!meta) return badge(intent, label);
-    const infoIcon = info
-      ? `<span class="status-info" title="${info}" aria-label="${info}"><svg viewBox="0 0 24 24">${STATUS_ICONS.info}</svg></span>`
-      : '';
+    let infoIcon = '';
+    if (info) {
+      const id = `lane-tt-${++tooltipUid}`;
+      infoIcon = `<span class="neo-tooltip-trigger" tabindex="0" aria-describedby="${id}">
+           <span class="status-info" aria-hidden="true"><svg viewBox="0 0 24 24">${STATUS_ICONS.info}</svg></span>
+           <span class="neo-tooltip neo-tooltip--top" role="tooltip" id="${id}">${info}<span class="neo-tooltip__arrow"></span></span>
+         </span>`;
+    }
     return `<span class="status-cell">${badge(intent, label)}<span class="status-meta">${meta}</span>${infoIcon}</span>`;
   };
 
@@ -1079,61 +1039,97 @@
     };
   };
 
-  /* ===== Row data — Foundations/Status intents.
+  /* Avatar colors — one per user initial. */
+  const AVATAR_COLORS = {
+    P: '#4b9d5e',   // green
+    T: '#c99933',   // gold
+    J: '#5b8ac2',   // blue
+    M: '#d17e3e',   // orange
+    B: '#c47a44',   // sienna
+    A: '#7a2694'    // violet
+  };
+
+  /* Row data — Foundations/Status intents.
      Lane (High / Normal / Low) sits as meta text next to the badge; only
-     Queued and Running rows carry a lane. ===== */
+     Queued and Running rows carry a lane. */
+  const org = 'Default';
   const rows = [
-    // Cluster 1 — org-provisioned High lane
+    // Cluster 1 — org-provisioned High lane (queued, most recent activity)
     recipeRunRow('Upgrade Spring Boot', 'org.openrewrite.spring.boot3.UpgradeSpringBoot_3_3',
-      { hasCommit: false, hasVis: false,
+      { hasCommit: false, hasVis: false, org,
         statusCell: statusChip('queued', 'Queued', 'High lane', 'This org has a dedicated high-priority lane.'),
-        runBy: 'A', time: '5 min ago', abs: 'Today 09:41' }),
+        runBy: 'P', time: '5 min ago', abs: '' }),
 
-    // Cluster 2 — Normal lane, actively running with a live commit job
+    // Cluster 2 — actively running (Normal lane, no meta)
     recipeRunRow('Migrate to JUnit 5', 'org.openrewrite.java.testing.junit5.JUnit5BestPractices',
-      { hasCommit: true, hasVis: false,
-        statusCell: statusChip('active', 'Running', 'Normal lane'),
-        runBy: 'M', time: '2 min ago', abs: 'Today 09:44' }),
-    commitJobRow('test: migrate to JUnit 5',
-      { isLast: true, progress: { done: 8, total: 12, active: true },
-        runBy: 'M', time: '1 min ago', abs: 'Today 09:45' }),
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('active', 'Running'),
+        runBy: 'M', time: '15 min ago', abs: '' }),
 
-    // Cluster 3 — large run auto-placed in Low lane (100+ repos)
+    // Cluster 3 — Low lane (auto-placed, 100+ repos)
     recipeRunRow('Static analysis pass', 'org.openrewrite.staticanalysis.CommonStaticAnalysis',
-      { hasCommit: false, hasVis: false,
+      { hasCommit: false, hasVis: false, org,
         statusCell: statusChip('queued', 'Queued', 'Low lane', "This run spans 100+ repositories, so it's placed in the lane that keeps smaller runs moving."),
-        runBy: 'A', time: '8 min ago', abs: 'Today 09:38' }),
+        runBy: 'A', time: '32 min ago', abs: '' }),
 
-    // Cluster 4 — recently finished, full lineage
-    recipeRunRow('Format code', 'org.openrewrite.format.AutoFormat',
-      { hasCommit: true, hasVis: true, statusCell: badge('success', 'Finished'),
-        runBy: 'A', time: '1 hr ago', abs: 'Today 08:46' }),
-    commitJobRow('chore: apply auto-format',
-      { isLast: true, hasParallelVis: true, statusCell: badge('success', 'Finished'),
-        progress: { done: 12, total: 12 },
-        runBy: 'A', time: '58 min ago', abs: 'Today 08:48' }),
-    visualizationRow('Format diff summary',
-      { isLast: true, statusCell: badge('success', 'Finished'),
-        runBy: 'A', time: '55 min ago', abs: 'Today 08:51' }),
+    // Cluster 4 — recipe + visualization child (finished)
+    recipeRunRow('Update Prethink context (no AI)', '',
+      { hasCommit: false, hasVis: true, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'P', time: 'about 17 hours ago', abs: '' }),
+    visualizationRow('Technical debt hotspot treemap',
+      { isLast: true, org, statusCell: badge('success', 'Completed'),
+        runBy: 'P', time: 'about 3 hours ago', abs: '' }),
 
-    // Cluster 5 — finished yesterday
-    recipeRunRow('Add missing @Override', 'org.openrewrite.staticanalysis.MissingOverrideAnnotation',
-      { hasCommit: true, hasVis: false, statusCell: badge('success', 'Finished'),
-        runBy: 'R', time: 'Yesterday', abs: 'Nov 4 17:12' }),
-    commitJobRow('refactor: add @Override annotations',
-      { isLast: true, statusCell: badge('success', 'Finished'),
-        progress: { done: 9, total: 9 },
-        runBy: 'R', time: 'Yesterday', abs: 'Nov 4 17:16' }),
-
-    // Cluster 6 — errored
-    recipeRunRow('Add structured logging context', 'org.openrewrite.java.logging.slf4j.AddMDCContext',
-      { hasCommit: false, hasVis: false, statusCell: statusChip('error', 'Failed', '2 errors'),
-        runBy: 'A', time: '3 hr ago', abs: 'Today 06:42' }),
-
-    // Cluster 7 — canceled by a user
-    recipeRunRow('Rewrite legacy nullable annotations', 'org.openrewrite.java.migrate.jakarta.JavaxAnnotationMigrationToJakartaAnnotation',
-      { hasCommit: false, hasVis: false, statusCell: badge('canceled', 'Canceled'),
-        runBy: 'M', time: '4 hr ago', abs: 'Today 05:30' })
+    // Standalone recipe runs — matches the screenshot list
+    recipeRunRow('Common static analysis issues', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'T', time: '12 days ago', abs: '' }),
+    recipeRunRow('Common static analysis issues', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('canceled', 'Canceled'),
+        runBy: 'J', time: '13 days ago', abs: '' }),
+    recipeRunRow('Common static analysis issues', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'T', time: '15 days ago', abs: '' }),
+    recipeRunRow('Remediate vulnerabilities from the OWASP Top Ten', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'P', time: '19 days ago', abs: '' }),
+    recipeRunRow('Common static analysis issues', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'M', time: '19 days ago', abs: '' }),
+    recipeRunRow('Common static analysis issues', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'P', time: '19 days ago', abs: '' }),
+    recipeRunRow('Update Prethink context (no AI)', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'B', time: '20 days ago', abs: '' }),
+    recipeRunRow('Find types', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'M', time: '20 days ago', abs: '' }),
+    recipeRunRow('Update Prethink context (no AI)', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('error', 'Error'),
+        runBy: 'B', time: '22 days ago', abs: '' }),
+    recipeRunRow('Find types', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'J', time: '23 days ago', abs: '' }),
+    recipeRunRow('Find Maven dependency', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'J', time: '25 days ago', abs: '' }),
+    recipeRunRow('Find and fix vulnerable Maven/Gradle dependencies', '',
+      { hasCommit: false, hasVis: false, org,
+        statusCell: badge('success', 'Finished'),
+        runBy: 'M', time: '27 days ago', abs: '' })
   ];
 
   /* ===== Render ===== */
@@ -1202,12 +1198,13 @@
 
     const tdRunBy = document.createElement('td');
     tdRunBy.className = 'runby';
-    tdRunBy.innerHTML = `<span class="avatar-cell" title="${r.runBy}">${r.runBy}</span>`;
+    const avColor = AVATAR_COLORS[r.runBy] || '#9ca3af';
+    tdRunBy.innerHTML = `<span class="avatar-cell" title="${r.runBy}" style="--avatar-bg:${avColor}">${r.runBy}</span>`;
     tr.appendChild(tdRunBy);
 
     const tdTime = document.createElement('td');
     tdTime.className = 'time';
-    tdTime.innerHTML = `${r.time}<span class="abs">${r.abs}</span>`;
+    tdTime.innerHTML = r.time + (r.abs ? `<span class="abs">${r.abs}</span>` : '');
     tr.appendChild(tdTime);
 
     tbody.appendChild(tr);
@@ -1217,6 +1214,43 @@
     chip.addEventListener('click', () => {
       chip.classList.toggle('active');
       chip.classList.toggle('muted');
+    });
+  });
+
+  /* ===== NeoTooltip behavior =====
+     Matches Neo Tooltip docs: shows on hover + keyboard focus, ~200ms delay
+     to prevent flicker, Escape dismisses without moving focus, position:
+     fixed so it escapes any parent overflow-clip. */
+  const TOOLTIP_DELAY = 200;
+  document.querySelectorAll('.neo-tooltip-trigger').forEach(trigger => {
+    const tooltip = trigger.querySelector('.neo-tooltip');
+    if (!tooltip) return;
+    let showTimer = null;
+    const place = () => {
+      const r = trigger.getBoundingClientRect();
+      tooltip.style.left = (r.left + r.width / 2) + 'px';
+      tooltip.style.top  = (r.top - 8) + 'px';
+    };
+    const show = () => {
+      clearTimeout(showTimer);
+      showTimer = setTimeout(() => {
+        place();
+        tooltip.classList.add('neo-tooltip--visible');
+      }, TOOLTIP_DELAY);
+    };
+    const hide = () => {
+      clearTimeout(showTimer);
+      tooltip.classList.remove('neo-tooltip--visible');
+    };
+    trigger.addEventListener('mouseenter', show);
+    trigger.addEventListener('mouseleave', hide);
+    trigger.addEventListener('focus', show);
+    trigger.addEventListener('blur', hide);
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        hide();
+        e.stopPropagation();
+      }
     });
   });
 </script>
