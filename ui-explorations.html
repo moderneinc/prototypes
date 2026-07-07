@@ -6,7 +6,7 @@
 <title>Moderne — UI explorations beyond theming</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
    UI explorations beyond theming (v2)
@@ -19,12 +19,18 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
 body {
-  font-family: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-family: var(--font-sans);
   background: #0c0c0d;
   color: #e6e6e6;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
+/* font selection (demo control) — each pairs a sans with its mono */
+body.font-inter { --font-sans: 'Inter', system-ui, sans-serif; --font-mono: 'JetBrains Mono', monospace; }
+body.font-plex { --font-sans: 'IBM Plex Sans', system-ui, sans-serif; --font-mono: 'IBM Plex Mono', monospace; }
+body.font-dm { --font-sans: 'DM Sans', system-ui, sans-serif; --font-mono: 'DM Mono', monospace; }
 
 /* ---- Re-theming palette tokens ---- */
 [data-theme="dark"] {
@@ -275,6 +281,13 @@ body {
 /* colorblind simulation (applies to the whole demo) */
 .compare.cvd-deutan { filter: url(#cvd-deutan); }
 .compare.cvd-protan { filter: url(#cvd-protan); }
+/* font controls */
+.mode-switch { flex-wrap: wrap; justify-content: center; max-width: min(97vw, 1420px); row-gap: 2px; border-radius: 24px; }
+.mode-switch button[data-font="geist"] { font-family: 'Geist', sans-serif; }
+.mode-switch button[data-font="inter"] { font-family: 'Inter', sans-serif; }
+.mode-switch button[data-font="plex"] { font-family: 'IBM Plex Sans', sans-serif; }
+.mode-switch button[data-font="dm"] { font-family: 'DM Sans', sans-serif; }
+
 /* explanatory tooltips on the CVD buttons */
 .mode-switch button[data-tip] { position: relative; }
 .mode-switch button[data-tip]:hover::after {
@@ -326,7 +339,7 @@ body {
    ============================================================ */
 .app { height: 100%; display: grid; grid-template-columns: 98px 1fr; grid-template-rows: 65px 1fr; grid-template-areas: "nav topbar" "nav main"; background: var(--bg); overflow: hidden; }
 button { font: inherit; cursor: pointer; }  /* element-level so component font sizes win */
-.mono { font-family: 'Geist Mono', 'JetBrains Mono', monospace; }
+.mono { font-family: var(--font-mono); }
 
 /* ---- left icon rail (per results-focus-view) ---- */
 .left-nav { grid-area: nav; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 8px 24px; background: var(--bg); z-index: 10; overflow-y: auto; }
@@ -499,7 +512,7 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
 .repo-row:hover { background: var(--row-hover); }
 .repo-row.active { background: var(--accent-tint); }
 .repo-name { font-size: 13px; color: var(--text); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.repo-branch { font-size: 11.5px; color: var(--muted); font-family: 'Geist Mono', 'JetBrains Mono', monospace; }
+.repo-branch { font-size: 11.5px; color: var(--muted); font-family: var(--font-mono); }
 .repo-spacer { flex: 1; }
 .repo-results { font-size: 12.5px; color: var(--accent); font-weight: 600; white-space: nowrap; }
 .repo-results.none { color: var(--muted); font-weight: 500; }
@@ -522,9 +535,9 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
 .repo-detail-sub b { color: var(--text); font-weight: 600; }
 .file-head { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--card-head); border-bottom: 1px solid var(--line2); }
 .file-head svg { width: 14px; height: 14px; color: var(--muted); flex: none; }
-.file-path { font-family: 'Geist Mono', 'JetBrains Mono', monospace; font-size: 12px; color: var(--text); }
+.file-path { font-family: var(--font-mono); font-size: 12px; color: var(--text); }
 .file-count { margin-left: auto; font-size: 11.5px; color: var(--muted); }
-.diff-body { font-family: 'Geist Mono', 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.7; padding: 6px 0; overflow-x: auto; border-bottom: 1px solid var(--line2); }
+.diff-body { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.7; padding: 6px 0; overflow-x: auto; border-bottom: 1px solid var(--line2); }
 .diff-body .ln { display: grid; grid-template-columns: 46px 18px 1fr; }
 .diff-body .ln .no { text-align: right; padding-right: 12px; color: var(--muted); opacity: .6; user-select: none; }
 .diff-body .ln .mk { text-align: center; }
@@ -721,6 +734,11 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <button data-cvd="protan" data-tip="Protanopia — red-blind vision (~2% of men). Red-sensing cones are absent, so reds darken sharply and collapse toward greens and browns. Click again to turn off.">Protan</button>
     <span class="ms-div"></span>
     <button data-panel="wcag" title="WCAG contrast evaluation of the four primary color choices">WCAG</button>
+    <span class="ms-div"></span>
+    <button data-font="geist" class="active" title="Geist Sans + Geist Mono">Geist</button>
+    <button data-font="inter" title="Inter + JetBrains Mono (v1 pairing)">Inter</button>
+    <button data-font="plex" title="IBM Plex Sans + IBM Plex Mono">Plex</button>
+    <button data-font="dm" title="DM Sans + DM Mono">DM</button>
   </div>
 
   <div class="wcag-panel" id="wcagPanel" role="dialog" aria-label="WCAG contrast evaluation">
@@ -1142,6 +1160,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     if (hint) hint.style.opacity = '0';
   }
   switchEl.addEventListener('click', function (e) {
+    var fb = e.target.closest('button[data-font]');
+    if (fb) { setFont(fb.getAttribute('data-font')); return; }
     var tb = e.target.closest('button[data-tones]');
     if (tb) { setTones(tb.getAttribute('data-tones')); return; }
     var wb = e.target.closest('button[data-panel]');
@@ -1176,6 +1196,18 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     });
   }
   if (new URLSearchParams(location.search).get('tones') === 'warm') setTones('warm');
+
+  // ---- font selection (geist default) ----
+  var FONTS = ['geist', 'inter', 'plex', 'dm'];
+  function setFont(f) {
+    FONTS.forEach(function (v) { document.body.classList.remove('font-' + v); });
+    if (f !== 'geist') document.body.classList.add('font-' + f);
+    switchEl.querySelectorAll('button[data-font]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-font') === f);
+    });
+  }
+  var qsFont = new URLSearchParams(location.search).get('font');
+  if (FONTS.indexOf(qsFont) !== -1) setFont(qsFont);
 
   // ---- WCAG evaluation panel ----
   var wcagPanel = document.getElementById('wcagPanel');
