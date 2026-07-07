@@ -175,6 +175,25 @@ body {
 .compare.mode-dark .seam,  .compare.mode-dark .handle,  .compare.mode-dark .corner { display: none; }
 .compare.mode-dark .layer--light { visibility: hidden; }
 
+/* warm tones variant (demo control): warm neutrals in both modes */
+.compare.tones-warm .layer[data-theme="dark"] {
+  --surface: #1C1714; --surface2: #241D18;
+  --line: rgba(242,237,228,.10); --line2: rgba(242,237,228,.06); --line-strong: rgba(242,237,228,.22);
+  --text: #F2EDE4; --muted: #A39B90;
+  --card: #171310; --card-head: #211B16; --row-hover: #282019;
+  --ca: #A39B90; --ca-t: rgba(242,237,228,.06); --ca-b: rgba(242,237,228,.22);
+  --link-line: rgba(242,237,228,.22);
+}
+.compare.tones-warm .layer[data-theme="light"] {
+  --bg: #F1F0EE;
+  --surface: #F0EAE3; --surface2: #E3DDD4;
+  --line: rgba(58,54,48,.12); --line2: rgba(58,54,48,.08); --line-strong: rgba(58,54,48,.24);
+  --text: #292522; --muted: #7A756E;
+  --card-head: #F0EAE3; --row-hover: #F0EAE3;
+  --ca: #7A756E; --ca-t: #F3EFE9; --ca-b: rgba(58,54,48,.22);
+  --link-line: rgba(58,54,48,.22);
+}
+
 /* primary color variants (demo control): strand bright / deep pairs */
 .compare.primary-violet .layer[data-theme="dark"] {
   --accent: #9D5BE8; --accent-deep: #9D5BE8;
@@ -639,6 +658,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
     <span class="ms-div"></span>
+    <button data-tones="warm" data-tip="Warm neutrals — warm blacks in dark mode and warm off-whites in light mode, per the original palette spec. Off = the cool navy-cast set. Accents are unaffected.">Warm</button>
+    <span class="ms-div"></span>
     <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
     <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
     <button data-primary="blue-aaa" class="swatch" title="Blue AAA — mid-ramp tokens (7:1 text everywhere): #7FA9F9 dark / #1245AE light"><span class="dot dot-blue-aaa"></span><span class="swlbl">Blue AAA</span></button>
@@ -1072,6 +1093,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     if (hint) hint.style.opacity = '0';
   }
   switchEl.addEventListener('click', function (e) {
+    var tb = e.target.closest('button[data-tones]');
+    if (tb) { setTones(!compare.classList.contains('tones-warm')); return; }
     var wb = e.target.closest('button[data-panel]');
     if (wb) { setWcag(!wcagPanel.classList.contains('open')); return; }
     var cb = e.target.closest('button[data-cvd]');
@@ -1095,6 +1118,13 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   }
   var qsCvd = new URLSearchParams(location.search).get('cvd');
   if (CVDS.indexOf(qsCvd) !== -1) setCvd(qsCvd);
+
+  // ---- warm / cool tones toggle ----
+  function setTones(warm) {
+    compare.classList.toggle('tones-warm', warm);
+    switchEl.querySelectorAll('button[data-tones]').forEach(function (b) { b.classList.toggle('active', warm); });
+  }
+  if (new URLSearchParams(location.search).get('tones') === 'warm') setTones(true);
 
   // ---- WCAG evaluation panel ----
   var wcagPanel = document.getElementById('wcagPanel');
