@@ -175,7 +175,27 @@ body {
 .compare.mode-dark .seam,  .compare.mode-dark .handle,  .compare.mode-dark .corner { display: none; }
 .compare.mode-dark .layer--light { visibility: hidden; }
 
-/* green primary variant (demo control): #30F284 bright / #1D5937 deep */
+/* primary color variants (demo control): strand bright / deep pairs */
+.compare.primary-violet .layer[data-theme="dark"] {
+  --accent: #9D5BE8; --accent-deep: #9D5BE8;
+  --accent-tint: rgba(157,91,232,.14); --accent-brd: rgba(157,91,232,.40);
+  --primary-bg: #9D5BE8; --primary-fg: #FFFFFF;
+}
+.compare.primary-violet .layer[data-theme="light"] {
+  --accent: #9D5BE8; --accent-deep: #3F1340;
+  --accent-tint: rgba(157,91,232,.10); --accent-brd: rgba(157,91,232,.32);
+  --primary-bg: #9D5BE8; --primary-fg: #FFFFFF;
+}
+.compare.primary-teal .layer[data-theme="dark"] {
+  --accent: #25D0C0; --accent-deep: #25D0C0;
+  --accent-tint: rgba(37,208,192,.14); --accent-brd: rgba(37,208,192,.40);
+  --primary-bg: #25D0C0; --primary-fg: #0E4A45;
+}
+.compare.primary-teal .layer[data-theme="light"] {
+  --accent: #0E4A45; --accent-deep: #0E4A45;
+  --accent-tint: rgba(37,208,192,.16); --accent-brd: rgba(14,74,69,.32);
+  --primary-bg: #25D0C0; --primary-fg: #0E4A45;
+}
 .compare.primary-green .layer[data-theme="dark"] {
   --accent: #30F284; --accent-deep: #30F284;
   --accent-tint: rgba(48,242,132,.14); --accent-brd: rgba(48,242,132,.40);
@@ -191,7 +211,9 @@ body {
 .mode-switch .swatch { width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 2px solid transparent; }
 .mode-switch .swatch:hover { border-color: rgba(255,255,255,.45); background-clip: padding-box; }
 .mode-switch .swatch.active { border-color: #fff; }
+.mode-switch button.swatch-violet, .mode-switch button.swatch-violet:hover, .mode-switch button.swatch-violet.active { background: linear-gradient(135deg, #9D5BE8, #3F1340); }
 .mode-switch button.swatch-blue, .mode-switch button.swatch-blue:hover, .mode-switch button.swatch-blue.active { background: linear-gradient(135deg, #3E7BF6, #16306B); }
+.mode-switch button.swatch-teal, .mode-switch button.swatch-teal:hover, .mode-switch button.swatch-teal.active { background: linear-gradient(135deg, #25D0C0, #0E4A45); }
 .mode-switch button.swatch-green, .mode-switch button.swatch-green:hover, .mode-switch button.swatch-green.active { background: linear-gradient(135deg, #30F284, #1D5937); }
 
 /* ============================================================
@@ -527,7 +549,9 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
     <span class="ms-div"></span>
-    <button data-primary="blue" class="swatch swatch-blue active" title="Blue primary"></button>
+    <button data-primary="violet" class="swatch swatch-violet" title="Violet primary (#9D5BE8 / #3F1340)"></button>
+    <button data-primary="blue" class="swatch swatch-blue active" title="Blue primary (#3E7BF6 / #16306B)"></button>
+    <button data-primary="teal" class="swatch swatch-teal" title="Teal primary (#25D0C0 / #0E4A45)"></button>
     <button data-primary="green" class="swatch swatch-green" title="Green primary (#30F284 / #1D5937)"></button>
   </div>
 </div>
@@ -938,13 +962,16 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   });
 
   // ---- primary color variant (blue / green) ----
+  var PRIMARIES = ['violet', 'teal', 'green'];   // blue is the default (no class)
   function setPrimary(c) {
-    compare.classList.toggle('primary-green', c === 'green');
+    PRIMARIES.forEach(function (v) { compare.classList.remove('primary-' + v); });
+    if (PRIMARIES.indexOf(c) !== -1) compare.classList.add('primary-' + c);
     switchEl.querySelectorAll('button[data-primary]').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-primary') === c);
     });
   }
-  if (new URLSearchParams(location.search).get('primary') === 'green') setPrimary('green');
+  var qsPrimary = new URLSearchParams(location.search).get('primary');
+  if (PRIMARIES.indexOf(qsPrimary) !== -1) setPrimary(qsPrimary);
 })();
 </script>
 </body>
