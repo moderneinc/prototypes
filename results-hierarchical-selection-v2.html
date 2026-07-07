@@ -568,9 +568,9 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
 
         <div class="results-head">
           <div class="seg" role="tablist" aria-label="Filter">
-            <button class="seg-btn active" data-filter="all">All <span class="seg-count" data-c="all"></span></button>
-            <button class="seg-btn" data-filter="results">Has results <span class="seg-count" data-c="results"></span></button>
-            <button class="seg-btn" data-filter="error">Errors <span class="seg-count" data-c="error"></span></button>
+            <button class="seg-btn active" data-filter="all">All</button>
+            <button class="seg-btn" data-filter="results">Has results</button>
+            <button class="seg-btn" data-filter="error">Errors</button>
           </div>
           <div class="tbl-search">
             <svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -1072,10 +1072,6 @@ function render(){
     document.getElementById('org-results').textContent=`${totalResults.toLocaleString()} results`;
     document.getElementById('footer-summary').textContent=`Showing ${shown.toLocaleString()} of ${list.length.toLocaleString()} repositories`;
   }
-  // seg counts
-  document.querySelector('[data-c="all"]').textContent=REPOS.length;
-  document.querySelector('[data-c="results"]').textContent=REPOS.filter(r=>r.results>0).length;
-  document.querySelector('[data-c="error"]').textContent=REPOS.filter(r=>r.error).length;
   // commit count = selected files (classes)
   document.getElementById('commit-count').textContent=state.selFiles.size.toLocaleString();
   // apply indeterminate states (can't be set via attribute)
