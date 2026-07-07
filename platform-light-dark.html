@@ -54,7 +54,7 @@ body {
   --qu:          #9D5BE8; --qu-t: rgba(157,91,232,.16); --qu-b: rgba(157,91,232,.45);
   --ca:          #9598AC; --ca-t: rgba(228,232,250,.06); --ca-b: rgba(228,232,250,.22);
   --green-mid:   #30F284;
-  --link-line:   rgba(62,123,246,.45);          /* activity graph connectors */
+  --link-line:   rgba(228,232,250,.22);         /* activity graph connectors */
   --teal-mid:    #25D0C0;                      /* data-table entries */
   --card:        #181823;                      /* raised table/card surface */
   --card-head:   #222230;                      /* table header band */
@@ -95,7 +95,7 @@ body {
   --qu:          #9D5BE8; --qu-t: rgba(157,91,232,.10); --qu-b: rgba(157,91,232,.35);
   --ca:          #6A7180; --ca-t: #F0F1F5; --ca-b: rgba(27,34,48,.22);
   --green-mid:   #2CBF6E;
-  --link-line:   rgba(62,123,246,.30);          /* activity graph connectors */
+  --link-line:   rgba(27,34,48,.22);            /* activity graph connectors */
   --teal-mid:    #16A89B;                      /* data-table entries */
   --card:        #FFFFFF;                      /* raised table/card surface */
   --card-head:   #ECEEF3;                      /* table header band */
@@ -416,20 +416,23 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
    Activity (per re-themed design)
    ============================================================ */
 .act-card { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
-.act-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.act-table thead th { text-align: left; font-size: 13.5px; font-weight: 600; color: var(--muted); padding: 12px 14px; background: var(--card-head); border-bottom: 1px solid var(--line); border-left: 1px solid var(--line2); white-space: nowrap; }
+.act-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.act-table thead th { text-align: left; font-size: 11px; font-weight: 600; color: var(--muted); padding: 9px 11px; background: var(--card-head); border-bottom: 1px solid var(--line); border-left: 1px solid var(--line2); white-space: nowrap; }
 .act-table thead th:first-child { border-left: none; }
-.act-table tbody td { padding: 0 14px; height: 48px; border-bottom: 1px solid var(--line2); color: var(--text); vertical-align: middle; }
+.act-table tbody td { padding: 0 11px; height: 38px; border-bottom: 1px solid var(--line2); color: var(--text); vertical-align: middle; }
 .act-table tbody tr:last-child td { border-bottom: none; }
 .act-table tbody tr:hover td { background: var(--row-hover); }
 .act-table tbody tr { cursor: pointer; }
-.act-table td.ind, .act-table th.ind { width: 96px; padding: 0; position: relative; border-right: 1px solid var(--line2); }
-.act-table td.ind svg, .act-table th.ind svg { display: block; }
+.act-table td.ind, .act-table th.ind { width: 76px; padding: 0; position: relative; border-right: 1px solid var(--line2); }
+.act-table td.ind svg { display: block; width: 76px; height: 38px; }
+.act-table th.ind svg { display: block; width: 76px; height: 35px; }
 .ty-recipe { color: var(--violet); font-weight: 500; }
 .ty-data { color: var(--teal-mid); font-weight: 500; }
 .ty-commit { color: var(--accent); font-weight: 500; }
 .act-time { color: var(--text); white-space: nowrap; }
-.act-foot { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 14px; font-size: 14px; color: var(--text); border-top: 1px solid var(--line); }
+.act-foot { display: flex; align-items: center; justify-content: center; gap: 13px; padding: 11px; font-size: 11px; color: var(--text); border-top: 1px solid var(--line); }
+.act-table .pill { height: 19px; padding: 0 9px; font-size: 10px; }
+.act-table .miniava { width: 21px; height: 21px; font-size: 9.5px; }
 .act-foot .linklike { font-weight: 600; }
 
 /* activity view runs darker than other tables in dark mode */
@@ -719,21 +722,21 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
           <table class="act-table">
             <thead>
               <tr>
-                <th class="ind"><svg width="96" height="44" viewBox="0 0 96 44"><line x1="32" y1="0" x2="32" y2="44" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="44" stroke="var(--line2)"/><circle cx="16" cy="22" r="5" fill="var(--accent)"/><circle cx="48" cy="22" r="5" fill="var(--accent)"/><circle cx="80" cy="22" r="5" fill="var(--teal-mid)"/></svg></th>
+                <th class="ind"><svg width="96" height="44" viewBox="0 0 96 44"><line x1="32" y1="0" x2="32" y2="44" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="44" stroke="var(--line2)"/><circle cx="16" cy="22" r="5" fill="var(--violet)"/><circle cx="48" cy="22" r="5" fill="var(--accent)"/><circle cx="80" cy="22" r="5" fill="var(--teal-mid)"/></svg></th>
                 <th>Name</th><th>Type</th><th>Organization</th><th>Status</th><th>Run by</th><th>Start time</th>
               </tr>
             </thead>
             <tbody>
             <tr data-nav="results">
-              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><circle cx="16" cy="24" r="6" fill="var(--accent)"/></svg></td>
+              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><circle cx="16" cy="24" r="6" fill="var(--violet)"/></svg></td>
               <td><span class="linklike">Common static analysis issues</span></td><td class="ty-recipe">Recipe run</td><td>Default</td><td><span class="pill pill--su">Finished</span></td><td><span class="miniava miniava--a">A</span></td><td class="act-time">about 6 hours ago</td>
             </tr>
             <tr data-nav="results">
-              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><circle cx="16" cy="24" r="6" fill="var(--accent)"/></svg></td>
+              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><circle cx="16" cy="24" r="6" fill="var(--violet)"/></svg></td>
               <td><span class="linklike">Common static analysis issues</span></td><td class="ty-recipe">Recipe run</td><td>Default</td><td><span class="pill pill--su">Finished</span></td><td><span class="miniava miniava--k">K</span></td><td class="act-time">about 6 hours ago</td>
             </tr>
             <tr data-nav="results">
-              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><path d="M16 24 H66 A14 14 0 0 1 80 38 V48" fill="none" stroke="var(--link-line)" stroke-width="2"/><circle cx="16" cy="24" r="6" fill="var(--accent)"/></svg></td>
+              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><path d="M16 24 H66 A14 14 0 0 1 80 38 V48" fill="none" stroke="var(--link-line)" stroke-width="2"/><circle cx="16" cy="24" r="6" fill="var(--violet)"/></svg></td>
               <td><span class="linklike">Common static analysis issues</span></td><td class="ty-recipe">Recipe run</td><td>Default</td><td><span class="pill pill--su">Finished</span></td><td><span class="miniava miniava--l">L</span></td><td class="act-time">about 7 hours ago</td>
             </tr>
             <tr>
@@ -741,7 +744,7 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
               <td><span class="linklike">Recipe performance</span></td><td class="ty-data">Data table</td><td>Default</td><td><span class="pill pill--su">Completed</span></td><td><span class="miniava miniava--l">L</span></td><td class="act-time">4 minutes ago</td>
             </tr>
             <tr data-nav="results">
-              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><path d="M16 24 H66 A14 14 0 0 1 80 38 V48" fill="none" stroke="var(--link-line)" stroke-width="2"/><circle cx="16" cy="24" r="6" fill="var(--accent)"/></svg></td>
+              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><path d="M16 24 H66 A14 14 0 0 1 80 38 V48" fill="none" stroke="var(--link-line)" stroke-width="2"/><circle cx="16" cy="24" r="6" fill="var(--violet)"/></svg></td>
               <td><span class="linklike">Find LST provenance</span></td><td class="ty-recipe">Recipe run</td><td>FINOS</td><td><span class="pill pill--su">Finished</span></td><td><span class="miniava miniava--t">T</span></td><td class="act-time">about 14 hours ago</td>
             </tr>
             <tr>
@@ -749,11 +752,11 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
               <td><span class="linklike">LST provenance</span></td><td class="ty-data">Data table</td><td>FINOS</td><td><span class="pill pill--su">Completed</span></td><td><span class="miniava miniava--t">T</span></td><td class="act-time">about 14 hours ago</td>
             </tr>
             <tr data-nav="results">
-              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><circle cx="16" cy="24" r="6" fill="var(--accent)"/></svg></td>
+              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><circle cx="16" cy="24" r="6" fill="var(--violet)"/></svg></td>
               <td><span class="linklike">Dependency insight for Gradle and Maven</span></td><td class="ty-recipe">Recipe run</td><td>FINOS</td><td><span class="pill pill--su">Finished</span></td><td><span class="miniava miniava--t">T</span></td><td class="act-time">about 14 hours ago</td>
             </tr>
             <tr data-nav="results">
-              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><path d="M16 24 H66 A14 14 0 0 1 80 38 V48" fill="none" stroke="var(--link-line)" stroke-width="2"/><circle cx="16" cy="24" r="6" fill="var(--accent)"/></svg></td>
+              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><path d="M16 24 H66 A14 14 0 0 1 80 38 V48" fill="none" stroke="var(--link-line)" stroke-width="2"/><circle cx="16" cy="24" r="6" fill="var(--violet)"/></svg></td>
               <td><span class="linklike">Find LST provenance</span></td><td class="ty-recipe">Recipe run</td><td>Netflix + Spring</td><td><span class="pill pill--su">Finished</span></td><td><span class="miniava miniava--t">T</span></td><td class="act-time">about 14 hours ago</td>
             </tr>
             <tr>
@@ -761,11 +764,11 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
               <td><span class="linklike">LST provenance</span></td><td class="ty-data">Data table</td><td>Netflix + Spring</td><td><span class="pill pill--su">Completed</span></td><td><span class="miniava miniava--t">T</span></td><td class="act-time">about 14 hours ago</td>
             </tr>
             <tr data-nav="results">
-              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><circle cx="16" cy="24" r="6" fill="var(--accent)"/></svg></td>
+              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><circle cx="16" cy="24" r="6" fill="var(--violet)"/></svg></td>
               <td><span class="linklike">Remediate vulnerabilities from the OWASP Top Ten</span></td><td class="ty-recipe">Recipe run</td><td>FINOS</td><td><span class="pill pill--su">Finished</span></td><td><span class="miniava miniava--t">T</span></td><td class="act-time">about 14 hours ago</td>
             </tr>
             <tr data-nav="results">
-              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><circle cx="16" cy="24" r="6" fill="var(--accent)"/></svg></td>
+              <td class="ind"><svg width="96" height="48" viewBox="0 0 96 48"><line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/><circle cx="16" cy="24" r="6" fill="var(--violet)"/></svg></td>
               <td><span class="linklike">Update Prethink context (no AI)</span></td><td class="ty-recipe">Recipe run</td><td>Netflix + Spring</td><td><span class="pill pill--er">Error</span></td><td><span class="miniava miniava--t">T</span></td><td class="act-time">about 15 hours ago</td>
             </tr>
             </tbody>
