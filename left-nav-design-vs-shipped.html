@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Left navigation — design vs shipped</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand-white:#FFF;
+  --brand-digital-blue-100:#F2F3FF;--brand-digital-blue-200:#DCE0FF;--brand-digital-blue-500:#2F42FF;--brand-digital-blue-600:#2637E6;--brand-digital-blue-700:#1E2EC2;--brand-digital-blue-800:#131E7A;
+  --brand-green-100:#F3FFF5;--brand-green-700:#4CA75A;--brand-green-800:#3B8948;
+  --brand-amber-100:#FFF7ED;--brand-amber-700:#B45309;
+  --brand-red-100:#FEF2F2;--brand-red-700:#A92232;
+  --brand-grey-100:#F9FAFB;--brand-grey-200:#F3F4F6;--brand-grey-300:#E5E7EB;--brand-grey-400:#D1D5DB;
+  --brand-grey-500:#9CA3AF;--brand-grey-600:#6B7280;--brand-grey-700:#4B5563;--brand-grey-800:#374151;--brand-grey-900:#1F2937;--brand-grey-1000:#111827;
+  --brand-violet-500:#AD59C7;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --font-code:'JetBrains Mono','Fira Code','Consolas',monospace;
+  --surface-page:#f4f4f4;--surface-primary:#FFF;
+  --text-primary:var(--brand-grey-1000);--text-secondary:var(--brand-grey-600);--text-tertiary:var(--brand-grey-500);
+  --border-primary:var(--brand-grey-300);
+  --radius-md:6px;--radius-lg:8px;--radius-xl:12px;--radius-full:9999px;
+  --shadow-xs:0 1px 3px rgba(31,41,55,.08);
+  --shadow-md:0 8px 15px rgba(31,41,55,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--surface-page);color:var(--text-primary);font-family:var(--font-body);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6;}
+.mono{font-family:var(--font-code);font-size:.88em;}
+a{color:var(--brand-digital-blue-700);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+.page{max-width:1040px;margin:0 auto;padding:48px 24px 96px;}
+
+/* header */
+header{margin-bottom:36px;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:12px;}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,var(--brand-digital-blue-500),var(--brand-violet-500));}
+h1{font-size:32px;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:12px;}
+.lede{font-size:17px;color:var(--text-secondary);max-width:70ch;}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:var(--radius-full);background:var(--surface-primary);border:1px solid var(--border-primary);color:var(--text-secondary);}
+.chip .mono{color:var(--text-primary);}
+
+h2{font-size:20px;font-weight:700;letter-spacing:-.01em;margin:44px 0 6px;}
+h2 .num{color:var(--text-tertiary);font-weight:600;margin-right:8px;}
+.section-sub{color:var(--text-secondary);margin-bottom:20px;max-width:72ch;}
+
+/* state toggle */
+.toggle{display:inline-flex;background:var(--brand-grey-200);border:1px solid var(--border-primary);border-radius:var(--radius-full);padding:3px;gap:2px;margin-bottom:24px;}
+.toggle button{border:none;background:transparent;font-size:13.5px;font-weight:600;color:var(--text-secondary);padding:7px 18px;border-radius:var(--radius-full);transition:all 150ms;}
+.toggle button.active{background:var(--surface-primary);color:var(--text-primary);box-shadow:var(--shadow-xs);}
+
+/* comparison */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.rail-card{background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-xs);}
+.rail-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border-primary);}
+.rail-card-title{font-size:15px;font-weight:700;}
+.rail-card-title .sub{display:block;font-size:12px;font-weight:500;color:var(--text-tertiary);margin-top:2px;}
+.tag{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:4px 9px;border-radius:var(--radius-full);white-space:nowrap;}
+.tag.design{background:var(--brand-violet-500);color:#fff;}
+.tag.shipped{background:var(--brand-green-700);color:#fff;}
+.rail-stage{display:flex;justify-content:center;padding:28px 18px;background:
+   linear-gradient(0deg,var(--brand-grey-100),var(--brand-grey-100));
+   background-size:22px 22px;}
+.rail-stage img{height:540px;width:auto;display:block;border-radius:var(--radius-lg);}
+.state-panel{display:none;}
+.state-panel.active{display:block;}
+.callouts{display:flex;flex-wrap:wrap;gap:8px;padding:14px 18px;border-top:1px solid var(--border-primary);}
+.callout{font-size:12.5px;color:var(--text-secondary);display:inline-flex;align-items:center;gap:6px;}
+.callout b{color:var(--text-primary);font-weight:600;}
+
+/* differences table */
+.diff{width:100%;border-collapse:separate;border-spacing:0;margin-top:4px;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-xs);}
+.diff th,.diff td{text-align:left;padding:14px 18px;vertical-align:top;font-size:14px;border-bottom:1px solid var(--border-primary);}
+.diff thead th{background:var(--brand-grey-100);font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary);font-weight:600;}
+.diff tr:last-child td{border-bottom:none;}
+.diff td:first-child,.diff th:first-child{font-weight:600;width:26%;}
+.diff .design-col{color:var(--brand-grey-800);}
+.diff .shipped-col{color:var(--brand-grey-800);}
+.diff .flag{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:var(--radius-full);margin-top:6px;}
+.diff .flag.major{background:var(--brand-amber-100);color:var(--brand-amber-700);}
+.diff .flag.cosmetic{background:var(--brand-grey-200);color:var(--brand-grey-700);}
+.diff .flag.win{background:var(--brand-green-100);color:var(--brand-green-800);}
+
+/* notes */
+.notes{display:grid;gap:14px;margin-top:8px;}
+.note{background:var(--surface-primary);border:1px solid var(--border-primary);border-left:3px solid var(--brand-grey-400);border-radius:var(--radius-lg);padding:16px 18px;box-shadow:var(--shadow-xs);}
+.note.major{border-left-color:var(--brand-amber-700);}
+.note.win{border-left-color:var(--brand-green-700);}
+.note.watch{border-left-color:var(--brand-digital-blue-600);}
+.note h3{font-size:14.5px;font-weight:700;margin-bottom:4px;}
+.note p{font-size:14px;color:var(--text-secondary);}
+
+footer{margin-top:56px;padding-top:24px;border-top:1px solid var(--border-primary);font-size:13px;color:var(--text-tertiary);}
+footer p{margin-bottom:6px;}
+
+@media (max-width:760px){
+  .compare{grid-template-columns:1fr;}
+  .rail-stage img{height:440px;}
+  h1{font-size:26px;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow"><span class="dot"></span> Design review · Left navigation</div>
+    <h1>Left navigation — design vs. shipped</h1>
+    <p class="lede">Side-by-side of the left-nav rail as <b>designed</b> (the <span class="mono">left-nav-compact</span> Storybook prototype) versus what actually <b>shipped</b> to the product. Screenshots are the real rendered pixels of each — the shipped column is the live <span class="mono">&lt;LeftNavigation/&gt;</span> component, not a mockup.</p>
+    <div class="meta">
+      <span class="chip">Design source: <span class="mono">jaydjj/left-nav-compact</span></span>
+      <span class="chip">Shipped in: <span class="mono">moderne-ui #8439</span></span>
+      <span class="chip">Component: <span class="mono">NeoSideNav</span></span>
+    </div>
+  </header>
+
+  <h2><span class="num">01</span>The two rails, side by side</h2>
+  <p class="section-sub">The destinations, icons, labels, Beta tags, and the <span class="mono">v2</span> badge match. The divergence is in the rail's <b>chrome and behavior</b> — most visible at the bottom of the rail and in how it collapses. Switch states to compare.</p>
+
+  <div class="toggle" role="tablist">
+    <button class="active" data-state="expanded" role="tab">Expanded</button>
+    <button data-state="collapsed" role="tab">Collapsed / icon-only</button>
+  </div>
+
+  <!-- EXPANDED -->
+  <div class="state-panel active" data-panel="expanded">
+    <div class="compare">
+      <div class="rail-card">
+        <div class="rail-card-head">
+          <div class="rail-card-title">Design — prototype<span class="sub">Bespoke rail (NeoNavigationItem + tooltips)</span></div>
+          <span class="tag design">Design</span>
+        </div>
+        <div class="rail-stage"><img src="assets/left-nav/design-expanded.png" alt="Design prototype rail, expanded"></div>
+        <div class="callouts">
+          <span class="callout"><b>Bottom:</b> fixed tenant-logo slot (ACME)</span>
+          <span class="callout"><b>Collapse:</b> automatic (viewport height)</span>
+        </div>
+      </div>
+      <div class="rail-card">
+        <div class="rail-card-head">
+          <div class="rail-card-title">Shipped — implementation<span class="sub">Design-system NeoSideNav</span></div>
+          <span class="tag shipped">Shipped</span>
+        </div>
+        <div class="rail-stage"><img src="assets/left-nav/shipped-expanded.png" alt="Shipped LeftNavigation rail, expanded"></div>
+        <div class="callouts">
+          <span class="callout"><b>Bottom:</b> “Less” collapse toggle — no logo slot</span>
+          <span class="callout"><b>Collapse:</b> manual, saved preference</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLLAPSED -->
+  <div class="state-panel" data-panel="collapsed">
+    <div class="compare">
+      <div class="rail-card">
+        <div class="rail-card-head">
+          <div class="rail-card-title">Design — prototype<span class="sub">Icon-only, tighter spacing, hover tooltips</span></div>
+          <span class="tag design">Design</span>
+        </div>
+        <div class="rail-stage"><img src="assets/left-nav/design-collapsed.png" alt="Design prototype rail, collapsed"></div>
+        <div class="callouts">
+          <span class="callout"><b>Bottom:</b> tenant-logo slot stays pinned</span>
+          <span class="callout"><b>Trigger:</b> shrinks with the viewport</span>
+        </div>
+      </div>
+      <div class="rail-card">
+        <div class="rail-card-head">
+          <div class="rail-card-title">Shipped — implementation<span class="sub">Icon-only via the collapse toggle</span></div>
+          <span class="tag shipped">Shipped</span>
+        </div>
+        <div class="rail-stage"><img src="assets/left-nav/shipped-collapsed.png" alt="Shipped LeftNavigation rail, collapsed"></div>
+        <div class="callouts">
+          <span class="callout"><b>Bottom:</b> expand toggle — no logo slot</span>
+          <span class="callout"><b>Trigger:</b> user clicks to collapse</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2><span class="num">02</span>What actually differs</h2>
+  <p class="section-sub">Four real differences. Everything else — the destination list and its ordering, iconography, labels, Beta tags, the version badge — is identical.</p>
+  <table class="diff">
+    <thead>
+      <tr><th>Aspect</th><th>Design</th><th>Shipped</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>How it collapses</td>
+        <td class="design-col"><b>Automatic</b> — collapses to icon-only when the viewport gets short (≈≤700&nbsp;px tall). No button.<div class="flag major">Biggest delta</div></td>
+        <td class="shipped-col"><b>Manual</b> — a user-clicked “Less” / expand toggle, remembered as a saved preference.</td>
+      </tr>
+      <tr>
+        <td>Bottom slot</td>
+        <td class="design-col">Dedicated <b>tenant-logo slot</b> pinned at the bottom (dashed placeholder when none).<div class="flag major">Missing in shipped</div></td>
+        <td class="shipped-col">No logo slot; the bottom hosts the collapse toggle. Customer branding only appears if a tenant logo is configured.</td>
+      </tr>
+      <tr>
+        <td>Overflow</td>
+        <td class="design-col">All destinations scroll inside the rail (slim scrollbar + fade). Explicitly <b>no “More” menu</b>.<div class="flag cosmetic">Behavioral</div></td>
+        <td class="shipped-col">Standard <span class="mono">NeoSideNav</span> overflow behavior.</td>
+      </tr>
+      <tr>
+        <td>What it's built on</td>
+        <td class="design-col">A <b>bespoke rail</b> hand-assembled from <span class="mono">NeoNavigationItem</span> + <span class="mono">NeoTooltip</span> — a one-off exploration.</td>
+        <td class="shipped-col">The shared design-system <span class="mono">NeoSideNav</span> component.<div class="flag win">Deliberate — reuse</div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2><span class="num">03</span>Reading the divergence</h2>
+  <p class="section-sub">For the “it differs greatly” conversation — what's real, what's a fair trade, and what's worth pushing back into the design system.</p>
+  <div class="notes">
+    <div class="note major">
+      <h3>The one substantive behavior change: auto → manual collapse</h3>
+      <p>The design was a <b>responsive</b> rail that collapsed itself when space got tight; engineering shipped a <b>manual, user-toggled, persisted</b> collapse. That's the change that makes it “feel different,” even though the contents match. Worth an explicit decision on which model we want.</p>
+    </div>
+    <div class="note win">
+      <h3>Adopting NeoSideNav was the right call</h3>
+      <p>The prototype was bespoke; the shipped rail uses the shared design-system component. That's less code to own and it stays consistent as Neo evolves — a win, not drift. The flip side: behaviors the prototype invented (auto-collapse, the tenant-logo slot) only exist if we add them to <span class="mono">NeoSideNav</span>.</p>
+    </div>
+    <div class="note watch">
+      <h3>The genuine gaps to close</h3>
+      <p>If the auto-collapse and the pinned <b>tenant-logo slot</b> matter, those are the two things to add back — ideally into <span class="mono">NeoSideNav</span> so every product surface gets them, not just this rail.</p>
+    </div>
+    <div class="note">
+      <h3>Fidelity note</h3>
+      <p>The shipped column is the live component rendered in a scoped Storybook (no backend), so capability-gated items like Moddy and Changelog are forced visible and the customer logo uses a generic “ACME” stand-in. Layout, states, and chrome are faithful.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Generated from the running Moderne UI Storybook — design column: <span class="mono">Prototypes/Left Navigation Rail</span>; shipped column: the real <span class="mono">&lt;LeftNavigation/&gt;</span> (<span class="mono">Components/Navigation/Side&nbsp;Bar</span>).</p>
+    <p>Screenshots are ground-truth renders, not redrawn mockups.</p>
+  </footer>
+
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.toggle button');
+  const panels = document.querySelectorAll('.state-panel');
+  buttons.forEach((b) => b.addEventListener('click', () => {
+    buttons.forEach((x) => x.classList.toggle('active', x === b));
+    const state = b.dataset.state;
+    panels.forEach((p) => p.classList.toggle('active', p.dataset.panel === state));
+  }));
+</script>
+</body>
+</html>
