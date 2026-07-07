@@ -622,35 +622,6 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
   </div>
 </div>
 
-<div class="demo-dock" id="demo-dock">
-  <button class="demo-trigger" id="demo-trigger" aria-label="Show demo controls"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>Demo controls</button>
-  <div class="demo-panel" role="group" aria-label="Demo controls">
-    <div class="demo-panel-head">
-      <span>Demo controls <span class="dim">— not part of the app</span></span>
-      <button class="demo-close" id="demo-close" aria-label="Hide demo controls"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-    <div class="demo-row"><span class="demo-row-label">View</span><div class="demo-row-btns">
-      <button class="demo-btn active" data-view="tree">Unified tree</button>
-      <button class="demo-btn" data-view="group">Group by</button>
-    </div></div>
-    <div class="demo-row"><span class="demo-row-label">Roll up</span><div class="demo-row-btns">
-      <button class="demo-btn active" data-root="repo" title="Group by the source-control repository (the default).">Repository</button>
-      <button class="demo-btn" data-root="vcs" title="VCS org = source-control ownership / location (e.g. the GitHub org).">VCS org</button>
-      <button class="demo-btn" data-root="moderne" title="Moderne org = customer / team / business ownership structure (nested sub-orgs; a repo can belong to more than one).">Moderne org</button>
-    </div></div>
-    <div class="demo-row"><span class="demo-row-label">Group by</span><div class="demo-row-btns">
-      <button class="demo-btn gb active" data-group="repository" disabled>Repository</button>
-      <button class="demo-btn gb" data-group="package" disabled>Package</button>
-      <button class="demo-btn gb" data-group="file" disabled>File</button>
-      <button class="demo-btn gb" data-group="class" disabled>Class</button>
-      <button class="demo-btn gb" data-group="method" disabled>Method</button>
-    </div></div>
-    <div class="demo-row"><span class="demo-row-label">Buttons</span><div class="demo-row-btns">
-      <button class="demo-btn" data-btnstyle="pill">Pill</button>
-      <button class="demo-btn active" data-btnstyle="rounded">Rounded</button>
-    </div></div>
-  </div>
-</div>
 
 <div class="gh-menu" id="gh-menu" hidden></div>
 
@@ -994,8 +965,9 @@ function repoNodeHTML(r,d=0){
   const resTxt = r.error ? 'Error' : (r.results>0 ? `${r.results.toLocaleString()} result${r.results===1?'':'s'}` : 'No results');
   const resCls = r.error ? 'error' : (r.results>0 ? '' : 'none');
   const shared = (state.rootBy==='moderne' && repoShared(r.id)) ? `<span class="hn-badge shared" title="Belongs to ${(repoOrgs[r.id]||[]).length} sub-orgs">shared</span>` : '';
-  let html=`<div class="hn-row n-repo ${act('repo',r.id,{})?'active':''}" data-node="repo" data-rid="${r.id}" ${PAD(d)}>
-    ${expandable?chevHTML(expanded):'<span class="chev-spacer"></span>'}
+  // repository is a leaf — the tree shows only repositories (no package/class/method drill-down)
+  return `<div class="hn-row n-repo ${act('repo',r.id,{})?'active':''}" data-node="repo" data-rid="${r.id}" ${PAD(d)}>
+    <span class="chev-spacer"></span>
     ${expandable?cbHTML('repo', r.id, repoSel(r.id)):'<span class="cb-spacer"></span>'}
     <span class="repo-status-dot ${st}" title="${STATUS_LABEL[st]}"></span>
     <span class="repo-main">
@@ -1005,8 +977,6 @@ function repoNodeHTML(r,d=0){
     <span class="repo-spacer"></span>
     <span class="repo-results ${resCls}">${resTxt}</span>
   </div>`;
-  if(expandable && expanded){ HTREE.forEach(p=>{ html+=pkgNodeHTML(r.id,p,d+1); }); }
-  return html;
 }
 function pkgNodeHTML(rid,p,d){
   const key=`${rid}|${p.pkg}`;
@@ -1700,14 +1670,6 @@ document.querySelectorAll('.demo-btn[data-root]').forEach(b=>b.addEventListener(
   if(state.rootBy==='moderne'){ state.noteDismissed=false; state.expanded.add('MORG|acme'); MORG.children.forEach(c=>state.expanded.add('MORG|'+c.id)); }
   resetScope(); render();
 }));
-
-/* Demo controls dock — collapsed by default; trigger opens, × / click-away closes */
-(function(){
-  const dock=document.getElementById('demo-dock');
-  document.getElementById('demo-trigger').addEventListener('click',e=>{ e.stopPropagation(); dock.classList.add('open'); });
-  document.getElementById('demo-close').addEventListener('click',e=>{ e.stopPropagation(); dock.classList.remove('open'); });
-  document.addEventListener('click',e=>{ if(!dock.contains(e.target)) dock.classList.remove('open'); });
-})();
 
 render();
 
