@@ -175,6 +175,26 @@ body {
 .compare.mode-dark .seam,  .compare.mode-dark .handle,  .compare.mode-dark .corner { display: none; }
 .compare.mode-dark .layer--light { visibility: hidden; }
 
+/* warm tones variant (demo control): warm neutrals in both modes */
+.compare.tones-warm .layer[data-theme="dark"] {
+  --surface: #1C1714; --surface2: #241D18;
+  --line: rgba(242,237,228,.10); --line2: rgba(242,237,228,.06); --line-strong: rgba(242,237,228,.22);
+  --text: #F2EDE4; --muted: #A39B90;
+  --card: #171310; --card-head: #211B16; --row-hover: #282019;
+  --ca: #A39B90; --ca-t: rgba(242,237,228,.06); --ca-b: rgba(242,237,228,.22);
+  --link-line: rgba(242,237,228,.22);
+  --glow-v: rgba(230,57,155,.16); --glow-b: rgba(157,91,232,.22);  /* warm purple glow */
+}
+.compare.tones-warm .layer[data-theme="light"] {
+  --bg: #F1F0EE;
+  --surface: #F0EAE3; --surface2: #E3DDD4;
+  --line: rgba(58,54,48,.12); --line2: rgba(58,54,48,.08); --line-strong: rgba(58,54,48,.24);
+  --text: #292522; --muted: #7A756E;
+  --card-head: #F0EAE3; --row-hover: #F0EAE3;
+  --ca: #7A756E; --ca-t: #F3EFE9; --ca-b: rgba(58,54,48,.22);
+  --link-line: rgba(58,54,48,.22);
+}
+
 /* primary color variants (demo control): strand bright / deep pairs */
 .compare.primary-violet .layer[data-theme="dark"] {
   --accent: #9D5BE8; --accent-deep: #9D5BE8;
@@ -639,6 +659,9 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
     <span class="ms-div"></span>
+    <button data-tones="cool" class="active" data-tip="Cool neutrals — navy-cast darks and cool grey-whites. The current shipped set.">Cool</button>
+    <button data-tones="warm" data-tip="Warm neutrals — warm blacks in dark mode and warm off-whites in light mode, per the original palette spec. Accents are unaffected.">Warm</button>
+    <span class="ms-div"></span>
     <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
     <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
     <button data-primary="blue-aaa" class="swatch" title="Blue AAA — mid-ramp tokens (7:1 text everywhere): #7FA9F9 dark / #1245AE light"><span class="dot dot-blue-aaa"></span><span class="swlbl">Blue AAA</span></button>
@@ -666,6 +689,7 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
       <p><b>The contract terms get sharp.</b> Expect accessibility warranties, indemnification clauses, and the right to audit baked into the MSA. If you attest AA conformance and a row is actually failing, you’re not just losing a sale, you’re exposed on a signed representation.</p>
       <p><b>The bar is higher than the general case.</b> Banks tend to want AA across the board plus documented testing, keyboard-only operability, and screen reader support with tools like JAWS and NVDA. Contrast is the easy, visible part. They’ll also probe focus order, form error handling, and ARIA.</p>
       <p><b>So with banks as your main customers, those two failing fills aren’t a UX rounding error.</b> They’re a line item a procurement officer can point to and say “fix this before we sign.” The upside is unchanged: it’s a token-level fix, and clearing 3:1 turns a red row in your VPAT into a pass.</p>
+      <p><b>In order to support accessibility requirements per Section 508,</b> Moderne UI will need to use the violet and blue primaries for all UI component boundaries and interactive elements, as both clear the WCAG 2.1 minimum of 3:1 for non-text contrast (SC 1.4.11), and avoid the teal and green fills in light mode, which fall short at 1.9:1 and 1.5:1.</p>
     </details>
   </div>
 </div>
@@ -1071,6 +1095,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     if (hint) hint.style.opacity = '0';
   }
   switchEl.addEventListener('click', function (e) {
+    var tb = e.target.closest('button[data-tones]');
+    if (tb) { setTones(tb.getAttribute('data-tones')); return; }
     var wb = e.target.closest('button[data-panel]');
     if (wb) { setWcag(!wcagPanel.classList.contains('open')); return; }
     var cb = e.target.closest('button[data-cvd]');
@@ -1094,6 +1120,15 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   }
   var qsCvd = new URLSearchParams(location.search).get('cvd');
   if (CVDS.indexOf(qsCvd) !== -1) setCvd(qsCvd);
+
+  // ---- warm / cool tones toggle (cool is the default) ----
+  function setTones(t) {
+    compare.classList.toggle('tones-warm', t === 'warm');
+    switchEl.querySelectorAll('button[data-tones]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-tones') === t);
+    });
+  }
+  if (new URLSearchParams(location.search).get('tones') === 'warm') setTones('warm');
 
   // ---- WCAG evaluation panel ----
   var wcagPanel = document.getElementById('wcagPanel');
