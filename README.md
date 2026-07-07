@@ -25,6 +25,7 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | --- | --- |
 | [`design-system-explorer/`](https://moderneinc.github.io/prototypes/design-system-explorer/) | **Dark-mode SaaS + Docs design system** — live theme builder, foundations, components, data-viz, and recreated Moderne screens. Multi-page app; source in [`design-system-explorer-src/`](design-system-explorer-src/) |
 | [`moderne-dashboard.html`](https://moderneinc.github.io/prototypes/moderne-dashboard.html) | Moderne dashboard layout |
+| [`left-nav-design-vs-shipped.html`](https://moderneinc.github.io/prototypes/left-nav-design-vs-shipped.html) | Left-nav rail **design vs. shipped** — real renders of the `left-nav-compact` prototype next to the shipped `NeoSideNav` (`#8439`), expanded/collapsed, with a breakdown of what actually differs |
 | [`day-zero.html`](https://moderneinc.github.io/prototypes/day-zero.html) | First-run / day-zero onboarding tour |
 | [`day-zero-revised.html`](https://moderneinc.github.io/prototypes/day-zero-revised.html) | Revised day-zero tour variant |
 | [`org-selector.html`](https://moderneinc.github.io/prototypes/org-selector.html) | Org selector with centered modal picker |
