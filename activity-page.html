@@ -1054,22 +1054,22 @@
      Queued and Running rows carry a lane. */
   const org = 'Default';
   const rows = [
-    // Cluster 1 — org-provisioned High lane (queued, most recent activity)
+    // Cluster 1 — plain queued (lane meta only appears once a run is running)
     recipeRunRow('Upgrade Spring Boot', 'org.openrewrite.spring.boot3.UpgradeSpringBoot_3_3',
       { hasCommit: false, hasVis: false, org,
-        statusCell: statusChip('queued', 'Queued', 'High lane', 'This org has a dedicated high-priority lane.'),
+        statusCell: badge('queued', 'Queued'),
         runBy: 'P', time: '5 min ago', abs: '' }),
 
-    // Cluster 2 — actively running (Normal lane, no meta)
+    // Cluster 2 — running in the org's dedicated High lane
     recipeRunRow('Migrate to JUnit 5', 'org.openrewrite.java.testing.junit5.JUnit5BestPractices',
       { hasCommit: false, hasVis: false, org,
-        statusCell: badge('active', 'Running'),
+        statusCell: statusChip('active', 'Running', 'High lane', 'This org has a dedicated high-priority lane.'),
         runBy: 'M', time: '15 min ago', abs: '' }),
 
-    // Cluster 3 — Low lane (auto-placed, 100+ repos)
+    // Cluster 3 — running in the Low lane (auto-placed, 100+ repos)
     recipeRunRow('Static analysis pass', 'org.openrewrite.staticanalysis.CommonStaticAnalysis',
       { hasCommit: false, hasVis: false, org,
-        statusCell: statusChip('queued', 'Queued', 'Low lane', "This run spans 100+ repositories, so it's placed in the lane that keeps smaller runs moving."),
+        statusCell: statusChip('active', 'Running', 'Low lane', "This run spans 100+ repositories, so it's placed in the lane that keeps smaller runs moving."),
         runBy: 'A', time: '32 min ago', abs: '' }),
 
     // Cluster 4 — recipe + visualization child (finished)
