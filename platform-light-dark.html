@@ -175,6 +175,25 @@ body {
 .compare.mode-dark .seam,  .compare.mode-dark .handle,  .compare.mode-dark .corner { display: none; }
 .compare.mode-dark .layer--light { visibility: hidden; }
 
+/* green primary variant (demo control): #30F284 bright / #1D5937 deep */
+.compare.primary-green .layer[data-theme="dark"] {
+  --accent: #30F284; --accent-deep: #30F284;
+  --accent-tint: rgba(48,242,132,.14); --accent-brd: rgba(48,242,132,.40);
+  --primary-bg: #30F284; --primary-fg: #04220F;
+}
+.compare.primary-green .layer[data-theme="light"] {
+  --accent: #1D5937; --accent-deep: #1D5937;
+  --accent-tint: rgba(48,242,132,.16); --accent-brd: rgba(29,89,55,.34);
+  --primary-bg: #30F284; --primary-fg: #04220F;
+}
+/* swatch buttons in the mode switch */
+.mode-switch .ms-div { width: 1px; height: 18px; background: rgba(255,255,255,.18); margin: 0 5px; }
+.mode-switch .swatch { width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 2px solid transparent; }
+.mode-switch .swatch:hover { border-color: rgba(255,255,255,.45); background-clip: padding-box; }
+.mode-switch .swatch.active { border-color: #fff; }
+.swatch-blue { background: linear-gradient(135deg, #3E7BF6, #16306B); }
+.swatch-green { background: linear-gradient(135deg, #30F284, #1D5937); }
+
 /* ============================================================
    App shell — 98px icon rail · 65px global nav · rounded panel
    ============================================================ */
@@ -507,6 +526,9 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <button data-mode="dark" title="Full dark mode"><svg><use href="#i-moon"/></svg> Dark</button>
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
+    <span class="ms-div"></span>
+    <button data-primary="blue" class="swatch swatch-blue active" title="Blue primary"></button>
+    <button data-primary="green" class="swatch swatch-green" title="Green primary (#30F284 / #1D5937)"></button>
   </div>
 </div>
 
@@ -909,9 +931,20 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     if (hint) hint.style.opacity = '0';
   }
   switchEl.addEventListener('click', function (e) {
+    var pb = e.target.closest('button[data-primary]');
+    if (pb) { setPrimary(pb.getAttribute('data-primary')); return; }
     var b = e.target.closest('button[data-mode]');
     if (b) setMode(b.getAttribute('data-mode'));
   });
+
+  // ---- primary color variant (blue / green) ----
+  function setPrimary(c) {
+    compare.classList.toggle('primary-green', c === 'green');
+    switchEl.querySelectorAll('button[data-primary]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-primary') === c);
+    });
+  }
+  if (new URLSearchParams(location.search).get('primary') === 'green') setPrimary('green');
 })();
 </script>
 </body>
