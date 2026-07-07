@@ -221,6 +221,21 @@ body {
 /* colorblind simulation (applies to the whole demo) */
 .compare.cvd-deutan { filter: url(#cvd-deutan); }
 .compare.cvd-protan { filter: url(#cvd-protan); }
+/* explanatory tooltips on the CVD buttons */
+.mode-switch button[data-tip] { position: relative; }
+.mode-switch button[data-tip]:hover::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%);
+  width: 250px; padding: 9px 12px; border-radius: 9px;
+  background: rgba(18,18,28,.96); border: 1px solid rgba(228,232,250,.18);
+  color: #E9EAF2; font-size: 11px; font-weight: 400; line-height: 1.55; text-align: left;
+  white-space: normal; pointer-events: none; z-index: 10;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.mode-switch button[data-tip]:hover::before {
+  content: ''; position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%);
+  border: 5px solid transparent; border-top-color: rgba(18,18,28,.96); pointer-events: none; z-index: 10;
+}
 
 /* ============================================================
    App shell — 98px icon rail · 65px global nav · rounded panel
@@ -566,8 +581,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <button data-primary="teal" class="swatch" title="Teal primary (#25D0C0 / #0E4A45)"><span class="dot dot-teal"></span><span class="swlbl">Teal</span></button>
     <button data-primary="green" class="swatch" title="Green primary (#30F284 / #1D5937)"><span class="dot dot-green"></span><span class="swlbl">Green</span></button>
     <span class="ms-div"></span>
-    <button data-cvd="deutan" title="Simulate deuteranopia (red-green, most common — ~6% of men). Click again to turn off.">Deutan</button>
-    <button data-cvd="protan" title="Simulate protanopia (red-green — ~2% of men). Click again to turn off.">Protan</button>
+    <button data-cvd="deutan" data-tip="Deuteranopia — the most common red–green color blindness (~6% of men). Green-sensing cones are absent, so greens, reds and oranges converge into muted yellows and greys. Click again to turn off.">Deutan</button>
+    <button data-cvd="protan" data-tip="Protanopia — red-blind vision (~2% of men). Red-sensing cones are absent, so reds darken sharply and collapse toward greens and browns. Click again to turn off.">Protan</button>
   </div>
 </div>
 
