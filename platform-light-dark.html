@@ -237,6 +237,26 @@ body {
   border: 5px solid transparent; border-top-color: rgba(18,18,28,.96); pointer-events: none; z-index: 10;
 }
 
+/* WCAG evaluation panel */
+.wcag-panel { position: absolute; z-index: 8; left: 50%; bottom: 76px; transform: translateX(-50%); width: 660px; max-width: 94vw; background: rgba(18,18,28,.97); border: 1px solid rgba(228,232,250,.18); border-radius: 14px; box-shadow: 0 18px 48px rgba(0,0,0,.5); padding: 16px 18px 14px; color: #E9EAF2; display: none; backdrop-filter: blur(10px); }
+.wcag-panel.open { display: block; }
+.wcag-head { display: flex; align-items: center; margin-bottom: 4px; }
+.wcag-title { font-size: 13px; font-weight: 700; }
+.wcag-x { margin-left: auto; width: 24px; height: 24px; border: none; background: transparent; color: #9598AC; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.wcag-x:hover { color: #E9EAF2; background: rgba(255,255,255,.08); }
+.wcag-x svg { width: 13px; height: 13px; }
+.wcag-sub { font-size: 10.5px; color: #9598AC; margin: 0 0 12px; line-height: 1.55; }
+.wcag-panel table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.wcag-panel th { text-align: left; font-size: 9.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #9598AC; padding: 5px 8px; border-bottom: 1px solid rgba(228,232,250,.14); }
+.wcag-panel td { padding: 6px 8px; border-bottom: 1px solid rgba(228,232,250,.07); white-space: nowrap; }
+.wcag-panel td:first-child { color: #C9CCDD; white-space: normal; }
+.wg { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 9px; font-weight: 700; margin-left: 5px; vertical-align: 1px; }
+.wg-aaa { background: rgba(48,242,132,.20); color: #30F284; }
+.wg-aa { background: rgba(48,242,132,.12); color: #8BE8B4; }
+.wg-lg { background: rgba(232,186,76,.16); color: #E8BA4C; }
+.wg-fail { background: rgba(248,81,73,.16); color: #F85149; }
+.wcag-foot { font-size: 9.5px; color: #9598AC; margin: 10px 0 0; line-height: 1.5; }
+
 /* ============================================================
    App shell — 98px icon rail · 65px global nav · rounded panel
    ============================================================ */
@@ -583,6 +603,16 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <span class="ms-div"></span>
     <button data-cvd="deutan" data-tip="Deuteranopia — the most common red–green color blindness (~6% of men). Green-sensing cones are absent, so greens, reds and oranges converge into muted yellows and greys. Click again to turn off.">Deutan</button>
     <button data-cvd="protan" data-tip="Protanopia — red-blind vision (~2% of men). Red-sensing cones are absent, so reds darken sharply and collapse toward greens and browns. Click again to turn off.">Protan</button>
+    <span class="ms-div"></span>
+    <button data-panel="wcag" title="WCAG contrast evaluation of the four primary color choices">WCAG</button>
+  </div>
+
+  <div class="wcag-panel" id="wcagPanel" role="dialog" aria-label="WCAG contrast evaluation">
+    <div class="wcag-head"><span class="wcag-title">WCAG contrast — primary color choices</span>
+      <button class="wcag-x" title="Close"><svg><use href="#i-x"/></svg></button></div>
+    <p class="wcag-sub">Ratios computed with the WCAG 2.1 relative-luminance formula from the exact theme tokens each primary ships with (teal and green switch to their deep pair for light-mode text).</p>
+    <table id="wcagTable"></table>
+    <p class="wcag-foot">Text (SC 1.4.3 / 1.4.6): AA ≥ 4.5:1 · AA Large ≥ 3:1 · AAA ≥ 7:1. UI components (SC 1.4.11): ≥ 3:1 against adjacent colors. Dark checks use the #100C0A panel; light checks use #FFFFFF.</p>
   </div>
 </div>
 
@@ -907,6 +937,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   }
 
   document.getElementById('compare').addEventListener('click', function (e) {
+    var wx = e.target.closest('.wcag-x');
+    if (wx) { setWcag(false); return; }
     var x = e.target.closest('.toast-x');
     if (x) {
       document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = 'none'; });
@@ -985,6 +1017,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     if (hint) hint.style.opacity = '0';
   }
   switchEl.addEventListener('click', function (e) {
+    var wb = e.target.closest('button[data-panel]');
+    if (wb) { setWcag(!wcagPanel.classList.contains('open')); return; }
     var cb = e.target.closest('button[data-cvd]');
     if (cb) { setCvd(cb.getAttribute('data-cvd')); return; }
     var pb = e.target.closest('button[data-primary]');
@@ -1006,6 +1040,56 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   }
   var qsCvd = new URLSearchParams(location.search).get('cvd');
   if (CVDS.indexOf(qsCvd) !== -1) setCvd(qsCvd);
+
+  // ---- WCAG evaluation panel ----
+  var wcagPanel = document.getElementById('wcagPanel');
+  function lum(hex) {
+    var c = hex.replace('#', '');
+    var v = [0, 2, 4].map(function (i) {
+      var x = parseInt(c.substr(i, 2), 16) / 255;
+      return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+  }
+  function ratio(a, b) {
+    var A = lum(a), B = lum(b), hi = Math.max(A, B), lo = Math.min(A, B);
+    return (hi + 0.05) / (lo + 0.05);
+  }
+  function grade(r, type) {
+    if (type === 'ui') return r >= 3 ? '<span class="wg wg-aa">Pass</span>' : '<span class="wg wg-fail">Fail</span>';
+    if (r >= 7) return '<span class="wg wg-aaa">AAA</span>';
+    if (r >= 4.5) return '<span class="wg wg-aa">AA</span>';
+    if (r >= 3) return '<span class="wg wg-lg">AA Large</span>';
+    return '<span class="wg wg-fail">Fail</span>';
+  }
+  var WCAG_PRIMS = [
+    { name: 'Violet', darkLink: '#9D5BE8', lightLink: '#9D5BE8', btnFg: '#FFFFFF', btnBg: '#9D5BE8' },
+    { name: 'Blue',   darkLink: '#3E7BF6', lightLink: '#3E7BF6', btnFg: '#FFFFFF', btnBg: '#3E7BF6' },
+    { name: 'Teal',   darkLink: '#25D0C0', lightLink: '#0E4A45', btnFg: '#0E4A45', btnBg: '#25D0C0' },
+    { name: 'Green',  darkLink: '#30F284', lightLink: '#1D5937', btnFg: '#04220F', btnBg: '#30F284' }
+  ];
+  var WCAG_CHECKS = [
+    { label: 'Link text — dark mode', type: 'text', calc: function (p) { return ratio(p.darkLink, '#100C0A'); } },
+    { label: 'Link text — light mode', type: 'text', calc: function (p) { return ratio(p.lightLink, '#FFFFFF'); } },
+    { label: 'Button label on primary', type: 'text', calc: function (p) { return ratio(p.btnFg, p.btnBg); } },
+    { label: 'UI component — dark mode', type: 'ui', calc: function (p) { return ratio(p.darkLink, '#100C0A'); } },
+    { label: 'UI component — light mode (bright fill)', type: 'ui', calc: function (p) { return ratio(p.btnBg, '#FFFFFF'); } }
+  ];
+  (function buildWcag() {
+    var h = '<tr><th>Check</th>' + WCAG_PRIMS.map(function (p) { return '<th>' + p.name + '</th>'; }).join('') + '</tr>';
+    WCAG_CHECKS.forEach(function (c) {
+      h += '<tr><td>' + c.label + '</td>' + WCAG_PRIMS.map(function (p) {
+        var r = c.calc(p);
+        return '<td>' + r.toFixed(1) + ':1' + grade(r, c.type) + '</td>';
+      }).join('') + '</tr>';
+    });
+    document.getElementById('wcagTable').innerHTML = h;
+  })();
+  function setWcag(open) {
+    wcagPanel.classList.toggle('open', open);
+    switchEl.querySelectorAll('button[data-panel]').forEach(function (b) { b.classList.toggle('active', open); });
+  }
+  if (new URLSearchParams(location.search).get('wcag') === '1') setWcag(true);
 
   // ---- primary color variant (blue / green) ----
   var PRIMARIES = ['violet', 'teal', 'green'];   // blue is the default (no class)
