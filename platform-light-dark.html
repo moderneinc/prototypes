@@ -208,13 +208,54 @@ body {
 }
 /* swatch buttons in the mode switch */
 .mode-switch .ms-div { width: 1px; height: 18px; background: rgba(255,255,255,.18); margin: 0 5px; }
-.mode-switch .swatch { width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 2px solid transparent; }
-.mode-switch .swatch:hover { border-color: rgba(255,255,255,.45); background-clip: padding-box; }
-.mode-switch .swatch.active { border-color: #fff; }
-.mode-switch button.swatch-violet, .mode-switch button.swatch-violet:hover, .mode-switch button.swatch-violet.active { background: linear-gradient(135deg, #9D5BE8, #3F1340); }
-.mode-switch button.swatch-blue, .mode-switch button.swatch-blue:hover, .mode-switch button.swatch-blue.active { background: linear-gradient(135deg, #3E7BF6, #16306B); }
-.mode-switch button.swatch-teal, .mode-switch button.swatch-teal:hover, .mode-switch button.swatch-teal.active { background: linear-gradient(135deg, #25D0C0, #0E4A45); }
-.mode-switch button.swatch-green, .mode-switch button.swatch-green:hover, .mode-switch button.swatch-green.active { background: linear-gradient(135deg, #30F284, #1D5937); }
+.mode-switch button.swatch, .mode-switch button.swatch:hover, .mode-switch button.swatch.active { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 7px; border-radius: 8px; background: transparent; }
+.mode-switch button.swatch:hover { background: rgba(255,255,255,.08); }
+.swatch .dot { width: 17px; height: 17px; border-radius: 50%; border: 2px solid transparent; }
+.mode-switch button.swatch.active .dot { border-color: #fff; }
+.swatch .swlbl { font-size: 9px; font-weight: 600; letter-spacing: .05em; line-height: 1; color: #C9CCDD; }
+.mode-switch button.swatch.active .swlbl { color: #fff; }
+.dot-violet { background: #9D5BE8; }
+.dot-blue { background: #3E7BF6; }
+.dot-teal { background: #25D0C0; }
+.dot-green { background: #30F284; }
+/* colorblind simulation (applies to the whole demo) */
+.compare.cvd-deutan { filter: url(#cvd-deutan); }
+.compare.cvd-protan { filter: url(#cvd-protan); }
+/* explanatory tooltips on the CVD buttons */
+.mode-switch button[data-tip] { position: relative; }
+.mode-switch button[data-tip]:hover::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%);
+  width: 250px; padding: 9px 12px; border-radius: 9px;
+  background: rgba(18,18,28,.96); border: 1px solid rgba(228,232,250,.18);
+  color: #E9EAF2; font-size: 11px; font-weight: 400; line-height: 1.55; text-align: left;
+  white-space: normal; pointer-events: none; z-index: 10;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+.mode-switch button[data-tip]:hover::before {
+  content: ''; position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%);
+  border: 5px solid transparent; border-top-color: rgba(18,18,28,.96); pointer-events: none; z-index: 10;
+}
+
+/* WCAG evaluation panel */
+.wcag-panel { position: absolute; z-index: 8; left: 50%; bottom: 76px; transform: translateX(-50%); width: 660px; max-width: 94vw; background: rgba(18,18,28,.97); border: 1px solid rgba(228,232,250,.18); border-radius: 14px; box-shadow: 0 18px 48px rgba(0,0,0,.5); padding: 16px 18px 14px; color: #E9EAF2; display: none; backdrop-filter: blur(10px); }
+.wcag-panel.open { display: block; }
+.wcag-head { display: flex; align-items: center; margin-bottom: 4px; }
+.wcag-title { font-size: 13px; font-weight: 700; }
+.wcag-x { margin-left: auto; width: 24px; height: 24px; border: none; background: transparent; color: #9598AC; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.wcag-x:hover { color: #E9EAF2; background: rgba(255,255,255,.08); }
+.wcag-x svg { width: 13px; height: 13px; }
+.wcag-sub { font-size: 10.5px; color: #9598AC; margin: 0 0 12px; line-height: 1.55; }
+.wcag-panel table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.wcag-panel th { text-align: left; font-size: 9.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: #9598AC; padding: 5px 8px; border-bottom: 1px solid rgba(228,232,250,.14); }
+.wcag-panel td { padding: 6px 8px; border-bottom: 1px solid rgba(228,232,250,.07); white-space: nowrap; }
+.wcag-panel td:first-child { color: #C9CCDD; white-space: normal; }
+.wg { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 9px; font-weight: 700; margin-left: 5px; vertical-align: 1px; }
+.wg-aaa { background: rgba(48,242,132,.20); color: #30F284; }
+.wg-aa { background: rgba(48,242,132,.12); color: #8BE8B4; }
+.wg-lg { background: rgba(232,186,76,.16); color: #E8BA4C; }
+.wg-fail { background: rgba(248,81,73,.16); color: #F85149; }
+.wcag-foot { font-size: 9.5px; color: #9598AC; margin: 10px 0 0; line-height: 1.5; }
 
 /* ============================================================
    App shell — 98px icon rail · 65px global nav · rounded panel
@@ -423,10 +464,14 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
 .diff-body .ln { display: grid; grid-template-columns: 46px 18px 1fr; }
 .diff-body .ln .no { text-align: right; padding-right: 12px; color: var(--muted); opacity: .6; user-select: none; }
 .diff-body .ln .mk { text-align: center; }
-.diff-body .ln.add { background: color-mix(in srgb, var(--green) 13%, transparent); }
-.diff-body .ln.del { background: color-mix(in srgb, var(--er) 11%, transparent); }
-.diff-body .ln.add .mk { color: var(--green-hi); }
-.diff-body .ln.del .mk { color: var(--er); }
+[data-theme="light"] .diff-body .ln.add { background: #E6FFEC; }
+[data-theme="light"] .diff-body .ln.del { background: #FFEBE9; }
+[data-theme="light"] .diff-body .ln.add .mk { color: #1A7F37; }
+[data-theme="light"] .diff-body .ln.del .mk { color: #CF222E; }
+[data-theme="dark"] .diff-body .ln.add { background: rgba(63,185,80,.15); }
+[data-theme="dark"] .diff-body .ln.del { background: rgba(248,81,73,.15); }
+[data-theme="dark"] .diff-body .ln.add .mk { color: #3FB950; }
+[data-theme="dark"] .diff-body .ln.del .mk { color: #F85149; }
 .diff-body .ln pre { margin: 0; white-space: pre; color: var(--text); }
 [data-theme="dark"] .tok-k { color: #C586C0; } [data-theme="dark"] .tok-t { color: #4EC9B0; } [data-theme="dark"] .tok-s { color: #CE9178; }
 [data-theme="light"] .tok-k { color: #AF00DB; } [data-theme="light"] .tok-t { color: #267F99; } [data-theme="light"] .tok-s { color: #A31515; }
@@ -525,6 +570,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   <symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L4 7l4 4"/><path d="M4 7h16"/><path d="M16 21l4-4-4-4"/><path d="M20 17H4"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></symbol>
+  <filter id="cvd-deutan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.625 0.375 0 0 0  0.7 0.3 0 0 0  0 0.3 0.7 0 0  0 0 0 1 0"/></filter>
+  <filter id="cvd-protan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.567 0.433 0 0 0  0.558 0.442 0 0 0  0 0.242 0.758 0 0  0 0 0 1 0"/></filter>
   <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
   <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
@@ -549,10 +596,23 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
     <span class="ms-div"></span>
-    <button data-primary="violet" class="swatch swatch-violet" title="Violet primary (#9D5BE8 / #3F1340)"></button>
-    <button data-primary="blue" class="swatch swatch-blue active" title="Blue primary (#3E7BF6 / #16306B)"></button>
-    <button data-primary="teal" class="swatch swatch-teal" title="Teal primary (#25D0C0 / #0E4A45)"></button>
-    <button data-primary="green" class="swatch swatch-green" title="Green primary (#30F284 / #1D5937)"></button>
+    <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
+    <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
+    <button data-primary="teal" class="swatch" title="Teal primary (#25D0C0 / #0E4A45)"><span class="dot dot-teal"></span><span class="swlbl">Teal</span></button>
+    <button data-primary="green" class="swatch" title="Green primary (#30F284 / #1D5937)"><span class="dot dot-green"></span><span class="swlbl">Green</span></button>
+    <span class="ms-div"></span>
+    <button data-cvd="deutan" data-tip="Deuteranopia — the most common red–green color blindness (~6% of men). Green-sensing cones are absent, so greens, reds and oranges converge into muted yellows and greys. Click again to turn off.">Deutan</button>
+    <button data-cvd="protan" data-tip="Protanopia — red-blind vision (~2% of men). Red-sensing cones are absent, so reds darken sharply and collapse toward greens and browns. Click again to turn off.">Protan</button>
+    <span class="ms-div"></span>
+    <button data-panel="wcag" title="WCAG contrast evaluation of the four primary color choices">WCAG</button>
+  </div>
+
+  <div class="wcag-panel" id="wcagPanel" role="dialog" aria-label="WCAG contrast evaluation">
+    <div class="wcag-head"><span class="wcag-title">WCAG contrast — primary color choices</span>
+      <button class="wcag-x" title="Close"><svg><use href="#i-x"/></svg></button></div>
+    <p class="wcag-sub">Ratios computed with the WCAG 2.1 relative-luminance formula from the exact theme tokens each primary ships with (teal and green switch to their deep pair for light-mode text).</p>
+    <table id="wcagTable"></table>
+    <p class="wcag-foot">Text (SC 1.4.3 / 1.4.6): AA ≥ 4.5:1 · AA Large ≥ 3:1 · AAA ≥ 7:1. UI components (SC 1.4.11): ≥ 3:1 against adjacent colors. Dark checks use the #100C0A panel; light checks use #FFFFFF.</p>
   </div>
 </div>
 
@@ -877,6 +937,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   }
 
   document.getElementById('compare').addEventListener('click', function (e) {
+    var wx = e.target.closest('.wcag-x');
+    if (wx) { setWcag(false); return; }
     var x = e.target.closest('.toast-x');
     if (x) {
       document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = 'none'; });
@@ -955,11 +1017,79 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     if (hint) hint.style.opacity = '0';
   }
   switchEl.addEventListener('click', function (e) {
+    var wb = e.target.closest('button[data-panel]');
+    if (wb) { setWcag(!wcagPanel.classList.contains('open')); return; }
+    var cb = e.target.closest('button[data-cvd]');
+    if (cb) { setCvd(cb.getAttribute('data-cvd')); return; }
     var pb = e.target.closest('button[data-primary]');
     if (pb) { setPrimary(pb.getAttribute('data-primary')); return; }
     var b = e.target.closest('button[data-mode]');
     if (b) setMode(b.getAttribute('data-mode'));
   });
+
+  // ---- colorblind simulation (deutan / protan, click active to turn off) ----
+  var CVDS = ['deutan', 'protan'];
+  var cvdActive = null;
+  function setCvd(c) {
+    cvdActive = (cvdActive === c) ? null : c;
+    CVDS.forEach(function (v) { compare.classList.remove('cvd-' + v); });
+    if (cvdActive) compare.classList.add('cvd-' + cvdActive);
+    switchEl.querySelectorAll('button[data-cvd]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-cvd') === cvdActive);
+    });
+  }
+  var qsCvd = new URLSearchParams(location.search).get('cvd');
+  if (CVDS.indexOf(qsCvd) !== -1) setCvd(qsCvd);
+
+  // ---- WCAG evaluation panel ----
+  var wcagPanel = document.getElementById('wcagPanel');
+  function lum(hex) {
+    var c = hex.replace('#', '');
+    var v = [0, 2, 4].map(function (i) {
+      var x = parseInt(c.substr(i, 2), 16) / 255;
+      return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+  }
+  function ratio(a, b) {
+    var A = lum(a), B = lum(b), hi = Math.max(A, B), lo = Math.min(A, B);
+    return (hi + 0.05) / (lo + 0.05);
+  }
+  function grade(r, type) {
+    if (type === 'ui') return r >= 3 ? '<span class="wg wg-aa">Pass</span>' : '<span class="wg wg-fail">Fail</span>';
+    if (r >= 7) return '<span class="wg wg-aaa">AAA</span>';
+    if (r >= 4.5) return '<span class="wg wg-aa">AA</span>';
+    if (r >= 3) return '<span class="wg wg-lg">AA Large</span>';
+    return '<span class="wg wg-fail">Fail</span>';
+  }
+  var WCAG_PRIMS = [
+    { name: 'Violet', darkLink: '#9D5BE8', lightLink: '#9D5BE8', btnFg: '#FFFFFF', btnBg: '#9D5BE8' },
+    { name: 'Blue',   darkLink: '#3E7BF6', lightLink: '#3E7BF6', btnFg: '#FFFFFF', btnBg: '#3E7BF6' },
+    { name: 'Teal',   darkLink: '#25D0C0', lightLink: '#0E4A45', btnFg: '#0E4A45', btnBg: '#25D0C0' },
+    { name: 'Green',  darkLink: '#30F284', lightLink: '#1D5937', btnFg: '#04220F', btnBg: '#30F284' }
+  ];
+  var WCAG_CHECKS = [
+    { label: 'Link text — dark mode', type: 'text', calc: function (p) { return ratio(p.darkLink, '#100C0A'); } },
+    { label: 'Link text — light mode', type: 'text', calc: function (p) { return ratio(p.lightLink, '#FFFFFF'); } },
+    { label: 'Button label on primary', type: 'text', calc: function (p) { return ratio(p.btnFg, p.btnBg); } },
+    { label: 'UI component — dark mode', type: 'ui', calc: function (p) { return ratio(p.darkLink, '#100C0A'); } },
+    { label: 'UI component — light mode (bright fill)', type: 'ui', calc: function (p) { return ratio(p.btnBg, '#FFFFFF'); } }
+  ];
+  (function buildWcag() {
+    var h = '<tr><th>Check</th>' + WCAG_PRIMS.map(function (p) { return '<th>' + p.name + '</th>'; }).join('') + '</tr>';
+    WCAG_CHECKS.forEach(function (c) {
+      h += '<tr><td>' + c.label + '</td>' + WCAG_PRIMS.map(function (p) {
+        var r = c.calc(p);
+        return '<td>' + r.toFixed(1) + ':1' + grade(r, c.type) + '</td>';
+      }).join('') + '</tr>';
+    });
+    document.getElementById('wcagTable').innerHTML = h;
+  })();
+  function setWcag(open) {
+    wcagPanel.classList.toggle('open', open);
+    switchEl.querySelectorAll('button[data-panel]').forEach(function (b) { b.classList.toggle('active', open); });
+  }
+  if (new URLSearchParams(location.search).get('wcag') === '1') setWcag(true);
 
   // ---- primary color variant (blue / green) ----
   var PRIMARIES = ['violet', 'teal', 'green'];   // blue is the default (no class)
