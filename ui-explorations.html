@@ -6,7 +6,7 @@
 <title>Moderne — UI explorations beyond theming</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
    UI explorations beyond theming (v2)
@@ -31,6 +31,8 @@ body {
 body.font-inter { --font-sans: 'Inter', system-ui, sans-serif; --font-mono: 'JetBrains Mono', monospace; }
 body.font-plex { --font-sans: 'IBM Plex Sans', system-ui, sans-serif; --font-mono: 'IBM Plex Mono', monospace; }
 body.font-dm { --font-sans: 'DM Sans', system-ui, sans-serif; --font-mono: 'DM Mono', monospace; }
+body.font-figtree { --font-sans: 'Figtree', system-ui, sans-serif; --font-mono: 'Geist Mono', monospace; }
+body.font-jakarta { --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif; --font-mono: 'Geist Mono', monospace; }
 
 /* ---- Re-theming palette tokens ---- */
 [data-theme="dark"] {
@@ -287,6 +289,8 @@ body.font-dm { --font-sans: 'DM Sans', system-ui, sans-serif; --font-mono: 'DM M
 .mode-switch button[data-font="inter"] { font-family: 'Inter', sans-serif; }
 .mode-switch button[data-font="plex"] { font-family: 'IBM Plex Sans', sans-serif; }
 .mode-switch button[data-font="dm"] { font-family: 'DM Sans', sans-serif; }
+.mode-switch button[data-font="figtree"] { font-family: 'Figtree', sans-serif; }
+.mode-switch button[data-font="jakarta"] { font-family: 'Plus Jakarta Sans', sans-serif; }
 
 /* explanatory tooltips on the CVD buttons */
 .mode-switch button[data-tip] { position: relative; }
@@ -739,6 +743,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <button data-font="inter" title="Inter + JetBrains Mono (v1 pairing)">Inter</button>
     <button data-font="plex" title="IBM Plex Sans + IBM Plex Mono">Plex</button>
     <button data-font="dm" title="DM Sans + DM Mono">DM</button>
+    <button data-font="figtree" title="Figtree + Geist Mono">Figtree</button>
+    <button data-font="jakarta" title="Plus Jakarta Sans + Geist Mono">Jakarta</button>
   </div>
 
   <div class="wcag-panel" id="wcagPanel" role="dialog" aria-label="WCAG contrast evaluation">
@@ -1198,7 +1204,7 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   if (new URLSearchParams(location.search).get('tones') === 'warm') setTones('warm');
 
   // ---- font selection (geist default) ----
-  var FONTS = ['geist', 'inter', 'plex', 'dm'];
+  var FONTS = ['geist', 'inter', 'plex', 'dm', 'figtree', 'jakarta'];
   function setFont(f) {
     FONTS.forEach(function (v) { document.body.classList.remove('font-' + v); });
     if (f !== 'geist') document.body.classList.add('font-' + f);
