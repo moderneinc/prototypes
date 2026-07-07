@@ -56,6 +56,7 @@ body {
   --green-mid:   #30F284;
   --link-line:   rgba(228,232,250,.22);         /* activity graph connectors */
   --teal-mid:    #25D0C0;                      /* data-table entries */
+  --toast-fg:    #F76A62; --toast-bg: #2A1012; --toast-bd: #4A1D1E;  /* error toast */
   --card:        #131319;                      /* raised table/card surface */
   --card-head:   #1B1B26;                      /* table header band */
   --row-hover:   #202030;
@@ -97,6 +98,7 @@ body {
   --green-mid:   #2CBF6E;
   --link-line:   rgba(27,34,48,.22);            /* activity graph connectors */
   --teal-mid:    #16A89B;                      /* data-table entries */
+  --toast-fg:    #C9291C; --toast-bg: #FBEFED; --toast-bd: #F0B4AC;  /* error toast */
   --card:        #FFFFFF;                      /* raised table/card surface */
   --card-head:   #ECEEF3;                      /* table header band */
   --row-hover:   #ECEEF3;
@@ -220,7 +222,7 @@ button { font: inherit; cursor: pointer; }  /* element-level so component font s
 .avatar { width: 34px; height: 34px; border-radius: 999px; background: var(--brand-violet); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
 
 /* ---- main panel ---- */
-.main-area { grid-area: main; display: flex; flex-direction: column; overflow: hidden; min-height: 0; z-index: 11; background: var(--field); border-top-left-radius: 20px; box-shadow: var(--panel-shadow); }
+.main-area { position: relative; grid-area: main; display: flex; flex-direction: column; overflow: hidden; min-height: 0; z-index: 11; background: var(--field); border-top-left-radius: 20px; box-shadow: var(--panel-shadow); }
 .content { flex: 1; min-height: 0; overflow-y: auto; }
 .content::-webkit-scrollbar { width: 10px; }
 .content::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 999px; border: 3px solid var(--field); }
@@ -433,6 +435,22 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
 .act-foot { display: flex; align-items: center; justify-content: center; gap: 13px; padding: 11px; font-size: 11px; color: var(--text); border-top: 1px solid var(--line); }
 .act-table .pill { height: 19px; padding: 0 9px; font-size: 10px; }
 .act-table .miniava { width: 21px; height: 21px; font-size: 9.5px; }
+
+/* ============================================================
+   Error toast (demo, results view)
+   ============================================================ */
+.toast { position: absolute; right: 22px; bottom: 22px; z-index: 30; width: 340px; display: flex; gap: 11px; padding: 13px 14px; border: 1px solid var(--toast-bd); border-radius: 12px; background: var(--toast-bg); box-shadow: 0 12px 32px rgba(0,0,0,.35); animation: toast-in .35s ease; }
+@keyframes toast-in { from { transform: translateY(12px); opacity: 0; } }
+.toast-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--toast-fg); margin-top: 5px; flex: none; }
+.toast-body { min-width: 0; flex: 1; }
+.toast-title { font-size: 13px; font-weight: 600; color: var(--toast-fg); margin-bottom: 3px; }
+.toast-msg { margin: 0; font-size: 12px; color: var(--text); line-height: 1.5; }
+.toast-actions { display: flex; gap: 14px; margin-top: 8px; }
+.toast-link { font-size: 11.5px; font-weight: 600; color: var(--toast-fg); cursor: pointer; }
+.toast-link:hover { text-decoration: underline; }
+.toast-x { width: 24px; height: 24px; border: none; background: transparent; color: var(--muted); border-radius: 6px; flex: none; display: flex; align-items: center; justify-content: center; }
+.toast-x:hover { color: var(--text); background: rgba(128,128,128,.12); }
+.toast-x svg { width: 13px; height: 13px; }
 .act-foot .linklike { font-weight: 600; }
 </style>
 </head>
@@ -466,6 +484,7 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   <symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L4 7l4 4"/><path d="M4 7h16"/><path d="M16 21l4-4-4-4"/><path d="M20 17H4"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
   <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
   <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M12 16V8M8.5 11.5L12 8l3.5 3.5"/></symbol>
@@ -705,6 +724,16 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
             </div>
           </div>
         </div>
+
+        <div class="toast" role="alert">
+          <span class="toast-dot"></span>
+          <div class="toast-body">
+            <div class="toast-title">Error</div>
+            <p class="toast-msg">Commit failed for <b>space-sdk</b> — the branch has diverged and the working tree could not be updated.</p>
+            <div class="toast-actions"><span class="toast-link">Retry</span><span class="toast-link">View repository status</span></div>
+          </div>
+          <button class="toast-x" title="Dismiss"><svg><use href="#i-x"/></svg></button>
+        </div>
       </section>
 
       <!-- ========== ACTIVITY ========== -->
@@ -795,9 +824,18 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
       n.classList.toggle('active', target === name || (name === 'results' && target === 'activity'));
     });
     document.querySelectorAll('.layer .content').forEach(function (c) { c.scrollTop = 0; });
+    // the demo error toast reappears on each visit to results
+    if (name === 'results') {
+      document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = ''; });
+    }
   }
 
   document.getElementById('compare').addEventListener('click', function (e) {
+    var x = e.target.closest('.toast-x');
+    if (x) {
+      document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = 'none'; });
+      return;
+    }
     var el = e.target.closest('[data-nav]');
     if (el) {
       var name = el.getAttribute('data-nav');
