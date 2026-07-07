@@ -208,13 +208,16 @@ body {
 }
 /* swatch buttons in the mode switch */
 .mode-switch .ms-div { width: 1px; height: 18px; background: rgba(255,255,255,.18); margin: 0 5px; }
-.mode-switch .swatch { width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 2px solid transparent; }
-.mode-switch .swatch:hover { border-color: rgba(255,255,255,.45); background-clip: padding-box; }
-.mode-switch .swatch.active { border-color: #fff; }
-.mode-switch button.swatch-violet, .mode-switch button.swatch-violet:hover, .mode-switch button.swatch-violet.active { background: linear-gradient(135deg, #9D5BE8, #3F1340); }
-.mode-switch button.swatch-blue, .mode-switch button.swatch-blue:hover, .mode-switch button.swatch-blue.active { background: linear-gradient(135deg, #3E7BF6, #16306B); }
-.mode-switch button.swatch-teal, .mode-switch button.swatch-teal:hover, .mode-switch button.swatch-teal.active { background: linear-gradient(135deg, #25D0C0, #0E4A45); }
-.mode-switch button.swatch-green, .mode-switch button.swatch-green:hover, .mode-switch button.swatch-green.active { background: linear-gradient(135deg, #30F284, #1D5937); }
+.mode-switch button.swatch, .mode-switch button.swatch:hover, .mode-switch button.swatch.active { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 7px; border-radius: 8px; background: transparent; }
+.mode-switch button.swatch:hover { background: rgba(255,255,255,.08); }
+.swatch .dot { width: 17px; height: 17px; border-radius: 50%; border: 2px solid transparent; }
+.mode-switch button.swatch.active .dot { border-color: #fff; }
+.swatch .swlbl { font-size: 9px; font-weight: 600; letter-spacing: .05em; line-height: 1; color: #C9CCDD; }
+.mode-switch button.swatch.active .swlbl { color: #fff; }
+.dot-violet { background: linear-gradient(135deg, #9D5BE8, #3F1340); }
+.dot-blue { background: linear-gradient(135deg, #3E7BF6, #16306B); }
+.dot-teal { background: linear-gradient(135deg, #25D0C0, #0E4A45); }
+.dot-green { background: linear-gradient(135deg, #30F284, #1D5937); }
 /* colorblind simulation (applies to the whole demo) */
 .compare.cvd-deutan { filter: url(#cvd-deutan); }
 .compare.cvd-protan { filter: url(#cvd-protan); }
@@ -558,10 +561,10 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
     <span class="ms-div"></span>
-    <button data-primary="violet" class="swatch swatch-violet" title="Violet primary (#9D5BE8 / #3F1340)"></button>
-    <button data-primary="blue" class="swatch swatch-blue active" title="Blue primary (#3E7BF6 / #16306B)"></button>
-    <button data-primary="teal" class="swatch swatch-teal" title="Teal primary (#25D0C0 / #0E4A45)"></button>
-    <button data-primary="green" class="swatch swatch-green" title="Green primary (#30F284 / #1D5937)"></button>
+    <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
+    <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
+    <button data-primary="teal" class="swatch" title="Teal primary (#25D0C0 / #0E4A45)"><span class="dot dot-teal"></span><span class="swlbl">Teal</span></button>
+    <button data-primary="green" class="swatch" title="Green primary (#30F284 / #1D5937)"><span class="dot dot-green"></span><span class="swlbl">Green</span></button>
     <span class="ms-div"></span>
     <button data-cvd="deutan" title="Simulate deuteranopia (red-green, most common — ~6% of men). Click again to turn off.">Deutan</button>
     <button data-cvd="protan" title="Simulate protanopia (red-green — ~2% of men). Click again to turn off.">Protan</button>
