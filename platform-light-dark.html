@@ -238,7 +238,7 @@ body {
 }
 
 /* WCAG evaluation panel */
-.wcag-panel { position: absolute; z-index: 8; left: 50%; bottom: 76px; transform: translateX(-50%); width: 660px; max-width: 94vw; background: rgba(18,18,28,.97); border: 1px solid rgba(228,232,250,.18); border-radius: 14px; box-shadow: 0 18px 48px rgba(0,0,0,.5); padding: 16px 18px 14px; color: #E9EAF2; display: none; backdrop-filter: blur(10px); }
+.wcag-panel { position: absolute; z-index: 8; left: 50%; bottom: 76px; transform: translateX(-50%); width: 660px; max-width: 94vw; max-height: calc(100vh - 140px); overflow-y: auto; background: rgba(18,18,28,.97); border: 1px solid rgba(228,232,250,.18); border-radius: 14px; box-shadow: 0 18px 48px rgba(0,0,0,.5); padding: 16px 18px 14px; color: #E9EAF2; display: none; backdrop-filter: blur(10px); }
 .wcag-panel.open { display: block; }
 .wcag-head { display: flex; align-items: center; margin-bottom: 4px; }
 .wcag-title { font-size: 13px; font-weight: 700; }
@@ -258,6 +258,14 @@ body {
 .wg-rec { background: rgba(62,123,246,.24); color: #9CC0FF; }
 .wcag-panel th.wcag-best, .wcag-panel td.wcag-best { background: rgba(62,123,246,.10); }
 .wcag-foot { font-size: 9.5px; color: #9598AC; margin: 10px 0 0; line-height: 1.5; }
+.wcag-why { margin-top: 12px; border-top: 1px solid rgba(228,232,250,.10); padding-top: 9px; }
+.wcag-why summary { cursor: pointer; font-size: 11px; font-weight: 600; color: #C9CCDD; list-style: none; display: flex; align-items: center; gap: 7px; }
+.wcag-why summary::-webkit-details-marker { display: none; }
+.wcag-why summary::before { content: '\25B8'; color: #9598AC; font-size: 10px; }
+.wcag-why[open] summary::before { content: '\25BE'; }
+.wcag-why summary:hover { color: #FFFFFF; }
+.wcag-why p { font-size: 10.5px; color: #9598AC; line-height: 1.6; margin: 8px 0 0; }
+.wcag-why p b { color: #C9CCDD; font-weight: 600; }
 
 /* ============================================================
    App shell — 98px icon rail · 65px global nav · rounded panel
@@ -615,6 +623,14 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     <p class="wcag-sub">Ratios computed with the WCAG 2.1 relative-luminance formula from the exact theme tokens each primary ships with (teal and green switch to their deep pair for light-mode text; blue uses Blue&nbsp;700 for light-mode links). Blue is the recommended default — the best balance of color-vision-deficiency safety and contrast.</p>
     <table id="wcagTable"></table>
     <p class="wcag-foot">Text (SC 1.4.3 / 1.4.6): AA ≥ 4.5:1 · AA Large ≥ 3:1 · AAA ≥ 7:1. UI components (SC 1.4.11): ≥ 3:1 against adjacent colors. Dark checks use the #100C0A panel; light checks use #FFFFFF.</p>
+    <details class="wcag-why">
+      <summary>Why this matters — selling to banks</summary>
+      <p><b>Accessibility becomes a procurement requirement, not a preference.</b> Banks will almost always ask for a VPAT (Voluntary Product Accessibility Template) or an ACR conforming to WCAG 2.1 AA, and often 2.2 AA now. Their vendor risk and procurement teams read it. A product with light-mode UI components failing the 3:1 contrast threshold, like the teal and green rows in this table, is a documented AA failure that shows up right there in the VPAT. That can stall or kill the deal in security review, which is the most expensive place to lose one.</p>
+      <p><b>Banks themselves are legally on the hook.</b> US banks fall under ADA Title III, Section 508 if they touch government programs, and financial regulators expect accessible services. When they buy your software and put it in front of their customers or staff, your failures become their liability. So they contractually require you to meet the bar, and they audit it. “We’ll fix it later” doesn’t survive a bank’s third-party risk assessment.</p>
+      <p><b>The contract terms get sharp.</b> Expect accessibility warranties, indemnification clauses, and the right to audit baked into the MSA. If you attest AA conformance and a row is actually failing, you’re not just losing a sale, you’re exposed on a signed representation.</p>
+      <p><b>The bar is higher than the general case.</b> Banks tend to want AA across the board plus documented testing, keyboard-only operability, and screen reader support with tools like JAWS and NVDA. Contrast is the easy, visible part. They’ll also probe focus order, form error handling, and ARIA.</p>
+      <p><b>So with banks as your main customers, those two failing fills aren’t a UX rounding error.</b> They’re a line item a procurement officer can point to and say “fix this before we sign.” The upside is unchanged: it’s a token-level fix, and clearing 3:1 turns a red row in your VPAT into a pass.</p>
+    </details>
   </div>
 </div>
 
