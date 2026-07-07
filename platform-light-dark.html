@@ -81,7 +81,7 @@ body {
   --muted:       #6A7180;
 
   /* strand spectrum — brights for fills, deeps for text contrast */
-  --accent:      #3E7BF6;                      /* Blue bright: links / info */
+  --accent:      #1055E2;                      /* Blue 700: links pass AA (6.1:1) on white */
   --accent-deep: #16306B;                      /* Blue deep: active nav label */
   --accent-tint: rgba(62,123,246,.10);
   --accent-brd:  rgba(62,123,246,.30);
@@ -255,6 +255,8 @@ body {
 .wg-aa { background: rgba(48,242,132,.12); color: #8BE8B4; }
 .wg-lg { background: rgba(232,186,76,.16); color: #E8BA4C; }
 .wg-fail { background: rgba(248,81,73,.16); color: #F85149; }
+.wg-rec { background: rgba(62,123,246,.24); color: #9CC0FF; }
+.wcag-panel th.wcag-best, .wcag-panel td.wcag-best { background: rgba(62,123,246,.10); }
 .wcag-foot { font-size: 9.5px; color: #9598AC; margin: 10px 0 0; line-height: 1.5; }
 
 /* ============================================================
@@ -610,7 +612,7 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   <div class="wcag-panel" id="wcagPanel" role="dialog" aria-label="WCAG contrast evaluation">
     <div class="wcag-head"><span class="wcag-title">WCAG contrast — primary color choices</span>
       <button class="wcag-x" title="Close"><svg><use href="#i-x"/></svg></button></div>
-    <p class="wcag-sub">Ratios computed with the WCAG 2.1 relative-luminance formula from the exact theme tokens each primary ships with (teal and green switch to their deep pair for light-mode text).</p>
+    <p class="wcag-sub">Ratios computed with the WCAG 2.1 relative-luminance formula from the exact theme tokens each primary ships with (teal and green switch to their deep pair for light-mode text; blue uses Blue&nbsp;700 for light-mode links). Blue is the recommended default — the best balance of color-vision-deficiency safety and contrast.</p>
     <table id="wcagTable"></table>
     <p class="wcag-foot">Text (SC 1.4.3 / 1.4.6): AA ≥ 4.5:1 · AA Large ≥ 3:1 · AAA ≥ 7:1. UI components (SC 1.4.11): ≥ 3:1 against adjacent colors. Dark checks use the #100C0A panel; light checks use #FFFFFF.</p>
   </div>
@@ -1064,7 +1066,7 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
   }
   var WCAG_PRIMS = [
     { name: 'Violet', darkLink: '#9D5BE8', lightLink: '#9D5BE8', btnFg: '#FFFFFF', btnBg: '#9D5BE8' },
-    { name: 'Blue',   darkLink: '#3E7BF6', lightLink: '#3E7BF6', btnFg: '#FFFFFF', btnBg: '#3E7BF6' },
+    { name: 'Blue',   darkLink: '#3E7BF6', lightLink: '#1055E2', btnFg: '#FFFFFF', btnBg: '#3E7BF6', best: true },
     { name: 'Teal',   darkLink: '#25D0C0', lightLink: '#0E4A45', btnFg: '#0E4A45', btnBg: '#25D0C0' },
     { name: 'Green',  darkLink: '#30F284', lightLink: '#1D5937', btnFg: '#04220F', btnBg: '#30F284' }
   ];
@@ -1076,11 +1078,14 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
     { label: 'UI component — light mode (bright fill)', type: 'ui', calc: function (p) { return ratio(p.btnBg, '#FFFFFF'); } }
   ];
   (function buildWcag() {
-    var h = '<tr><th>Check</th>' + WCAG_PRIMS.map(function (p) { return '<th>' + p.name + '</th>'; }).join('') + '</tr>';
+    var h = '<tr><th>Check</th>' + WCAG_PRIMS.map(function (p) {
+      return '<th' + (p.best ? ' class="wcag-best"' : '') + '>' + p.name +
+        (p.best ? ' <span class="wg wg-rec">\u2605 Recommended</span>' : '') + '</th>';
+    }).join('') + '</tr>';
     WCAG_CHECKS.forEach(function (c) {
       h += '<tr><td>' + c.label + '</td>' + WCAG_PRIMS.map(function (p) {
         var r = c.calc(p);
-        return '<td>' + r.toFixed(1) + ':1' + grade(r, c.type) + '</td>';
+        return '<td' + (p.best ? ' class="wcag-best"' : '') + '>' + r.toFixed(1) + ':1' + grade(r, c.type) + '</td>';
       }).join('') + '</tr>';
     });
     document.getElementById('wcagTable').innerHTML = h;
