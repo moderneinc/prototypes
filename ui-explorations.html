@@ -1073,6 +1073,59 @@ body.skin-technical2 [data-theme="light"] .left-nav { background: #0A0A0A; }
 body.skin-technical2 [data-theme="light"] .left-nav .nav-item svg { color: #F2F2F2; }
 body.skin-technical2 [data-theme="light"] .nav-item.active svg { color: #30F284; }
 body.skin-technical2 [data-theme="light"] .home-mark { color: #30F284; }
+
+/* ============================================================
+   V2 EXPLORATION 11: NORDIC SKIN
+   på() × kron: warm cream canvas, ink-navy text and buttons,
+   mint success accents, periwinkle links, lilac→coral gradient
+   moments. Dark mode is kron's deep ink navy.
+   ============================================================ */
+body.skin-nordic [data-theme="light"] {
+  --bg: #F2F0EA; --field: #FBFAF6;
+  --card: #FBFAF6; --card-head: #F2EFE7;
+  --surface: #EDEBE2; --surface2: #E4E1D6; --row-hover: #F4F2EB;
+  --line: rgba(35,35,66,.12); --line2: rgba(35,35,66,.08); --line-strong: rgba(35,35,66,.22);
+  --text: #232342; --muted: #6E6E85;
+  --su-t: #DFF6DD; --su-b: #A9E3A6; --green-hi: #1F7A3D;
+  --link-line: rgba(35,35,66,.22);
+}
+body.skin-nordic [data-theme="dark"] {
+  --bg: #1D1D36; --field: #232342;
+  --card: #282849; --card-head: #2F2F55;
+  --surface: #2B2B4E; --surface2: #34345C; --row-hover: #31315A;
+  --line: rgba(240,240,252,.12); --line2: rgba(240,240,252,.08); --line-strong: rgba(240,240,252,.24);
+  --text: #F1F0EA; --muted: #A9A9C4;
+  --su-t: rgba(166,239,163,.14); --su-b: rgba(166,239,163,.40); --green-hi: #A6EFA3;
+  --link-line: rgba(240,240,252,.24);
+}
+/* chrome: ink mark, mint badge, ink avatar */
+body.skin-nordic .home-mark { color: #232342; }
+body.skin-nordic [data-theme="dark"] .home-mark { color: #F1F0EA; }
+body.skin-nordic .nav-version-badge { background: #A6EFA3; color: #1E2E1D; }
+body.skin-nordic .avatar { background: #232342; color: #FBFAF6; border-radius: 999px; }
+body.skin-nordic [data-theme="dark"] .avatar { background: #A6EFA3; color: #1E2E1D; }
+body.skin-nordic .tenant-logo { background: #232342; color: #FBFAF6; }
+body.skin-nordic [data-theme="dark"] .tenant-logo { background: #F1F0EA; color: #232342; }
+/* soft nordic geometry */
+body.skin-nordic .sumopt, body.skin-nordic .summary, body.skin-nordic .tree,
+body.skin-nordic .repo-detail, body.skin-nordic .act-card, body.skin-nordic .toast,
+body.skin-nordic .moddy-input, body.skin-nordic .moddy-input-inner { border-radius: 12px; }
+body.skin-nordic .org-selector, body.skin-nordic .search-input, body.skin-nordic .mkt-search,
+body.skin-nordic .filter-bar, body.skin-nordic .seg { border-radius: 10px; }
+body.skin-nordic .seg-btn { border-radius: 8px; }
+body.skin-nordic .main-area { border-top-left-radius: 16px; }
+body.skin-nordic .miniava { border-radius: 999px; }
+/* ink buttons (the på/kron signature); accents stay swatch-driven */
+body.skin-nordic .pill-btn, body.skin-nordic .round-btn { background: var(--field); border: 1px solid var(--line-strong); }
+body.skin-nordic .pill-btn:hover, body.skin-nordic .round-btn:hover { background: var(--surface); }
+body.skin-nordic .pill-btn--primary { background: #232342; color: #FBFAF6; border-color: transparent; }
+body.skin-nordic .pill-btn--primary:hover { background: #2C2C50; filter: none; }
+body.skin-nordic [data-theme="dark"] .pill-btn--primary { background: #F1F0EA; color: #232342; }
+body.skin-nordic [data-theme="dark"] .pill-btn--primary:hover { background: #FFFFFF; }
+/* kron gradient on the Moddy input rim */
+body.skin-nordic .moddy-input { background: linear-gradient(90deg, #3E5BE8, #B39DEB, #F0916F); }
+body.skin-nordic [data-theme="light"] .moddy-input-inner { background: #FBFAF6; }
+body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #232342; }
 </style>
 </head>
 <body>
@@ -1140,6 +1193,7 @@ body.skin-technical2 [data-theme="light"] .home-mark { color: #30F284; }
     <button data-skin="glass" data-tip="Glass skin — frosted translucent panels with backdrop blur over an ambient indigo gradient; rounded geometry and a glowing primary button.">Glass</button>
     <button data-skin="editorial" data-tip="Editorial skin — warm paper surfaces, serif display type, deep-teal primary, pill buttons, orange logomark.">Editorial</button>
     <button data-skin="outline" data-tip="Outline skin — Figma-like minimalism: white surfaces, hairline structure, outlined controls, accent-ring active states. Fully driven by the font and color controls.">Outline</button>
+    <button data-skin="nordic" data-tip="Nordic skin — på() × kron: warm cream canvas, ink-navy buttons, mint accents, periwinkle links, lilac→coral gradient moments; deep ink-navy dark mode.">Nordic</button>
     <span class="ms-div"></span>
     <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
     <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
@@ -1633,7 +1687,7 @@ body.skin-technical2 [data-theme="light"] .home-mark { color: #30F284; }
 
   // ---- style skin toggle (standard default) ----
   // the font and primary-color controls stay in charge across every skin
-  var SKINS = ['technical', 'technical2', 'glass', 'editorial', 'outline'];
+  var SKINS = ['technical', 'technical2', 'glass', 'editorial', 'outline', 'nordic'];
   function setSkin(s) {
     SKINS.forEach(function (v) { document.body.classList.remove('skin-' + v); });
     if (s === 'technical2') {
