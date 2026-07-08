@@ -1052,6 +1052,17 @@ body.skin-outline [data-theme="light"] .global-nav { background: #FCFCFC; }
    The entire app renders at 90% (demo harness stays full size).
    ============================================================ */
 .app { zoom: 0.9; }
+
+/* ============================================================
+   V2 EXPLORATION 10: TECHNICAL II
+   Technical skin variant: the side nav stays black and inverted
+   (white icons, green mark/active) even in light mode.
+   Applied as skin-technical + skin-technical2 together.
+   ============================================================ */
+body.skin-technical2 [data-theme="light"] .left-nav { background: #0A0A0A; }
+body.skin-technical2 [data-theme="light"] .left-nav .nav-item svg { color: #F2F2F2; }
+body.skin-technical2 [data-theme="light"] .nav-item.active svg { color: #30F284; }
+body.skin-technical2 [data-theme="light"] .home-mark { color: #30F284; }
 </style>
 </head>
 <body>
@@ -1115,6 +1126,7 @@ body.skin-outline [data-theme="light"] .global-nav { background: #FCFCFC; }
     <span class="ms-div"></span>
     <button data-skin="standard" class="active" data-tip="Standard v2 styling — 4px corners, flat surfaces, hairline separation.">Standard</button>
     <button data-skin="technical" data-tip="Technical / neo-brutalist skin — black chrome, neon-green primary, square panels cut by solid black lines, uppercase mono labels, pill action buttons.">Technical</button>
+    <button data-skin="technical2" data-tip="Technical II — same skin, but the side nav stays black and inverted (white icons, green mark) in light mode.">Tech II</button>
     <button data-skin="glass" data-tip="Glass skin — frosted translucent panels with backdrop blur over an ambient indigo gradient; rounded geometry and a glowing primary button.">Glass</button>
     <button data-skin="editorial" data-tip="Editorial skin — warm paper surfaces, serif display type, deep-teal primary, pill buttons, orange logomark.">Editorial</button>
     <button data-skin="outline" data-tip="Outline skin — Figma-like minimalism: white surfaces, hairline structure, outlined controls, accent-ring active states. Fully driven by the font and color controls.">Outline</button>
@@ -1598,10 +1610,15 @@ body.skin-outline [data-theme="light"] .global-nav { background: #FCFCFC; }
 
   // ---- style skin toggle (standard default) ----
   // the font and primary-color controls stay in charge across every skin
-  var SKINS = ['technical', 'glass', 'editorial', 'outline'];
+  var SKINS = ['technical', 'technical2', 'glass', 'editorial', 'outline'];
   function setSkin(s) {
     SKINS.forEach(function (v) { document.body.classList.remove('skin-' + v); });
-    if (SKINS.indexOf(s) !== -1) document.body.classList.add('skin-' + s);
+    if (s === 'technical2') {
+      document.body.classList.add('skin-technical');   // Tech II extends Technical
+      document.body.classList.add('skin-technical2');
+    } else if (SKINS.indexOf(s) !== -1) {
+      document.body.classList.add('skin-' + s);
+    }
     switchEl.querySelectorAll('button[data-skin]').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-skin') === s);
     });
