@@ -10,7 +10,7 @@
      Aktiv Grotesk at https://fonts.adobe.com, then replace KITID below and
      uncomment. Until then the Aktiv option falls back to Archivo. -->
 <!-- <link rel="stylesheet" href="https://use.typekit.net/KITID.css" /> -->
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Inter:opsz,wght@14..32,400..700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400..700&family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Inter:opsz,wght@14..32,400..700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400..700&family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
    UI explorations beyond theming (v2)
@@ -910,6 +910,67 @@ body.skin-glass .pill-btn, body.skin-glass .round-btn { background: var(--surfac
 body.skin-glass .pill-btn:hover, body.skin-glass .round-btn:hover { background: var(--surface2); }
 body.skin-glass .pill-btn--primary { background: var(--primary-bg); border: 1px solid rgba(255,255,255,.28); box-shadow: 0 6px 22px color-mix(in srgb, var(--primary-bg) 45%, transparent); }
 body.skin-glass .pill-btn--primary:hover { background: var(--primary-bg); filter: brightness(1.08); }
+
+/* ============================================================
+   V2 EXPLORATION 7: EDITORIAL SKIN (Standard | Technical | Glass | Editorial)
+   Warm paper surfaces, serif display type, deep-teal primary,
+   pill buttons, orange logomark. Active when body.skin-editorial.
+   ============================================================ */
+body.skin-editorial [data-theme="light"] {
+  --bg: #F6F4EF; --field: #FDFCF9;
+  --card: #FDFCF9; --card-head: #F4F1EA;
+  --surface: #F1EEE7; --surface2: #E9E5DC; --row-hover: #F4F1EA;
+  --line: rgba(70,60,45,.14); --line2: rgba(70,60,45,.09); --line-strong: rgba(70,60,45,.26);
+  --text: #22261F; --muted: #716C60;
+  --accent: #1F5B5E; --accent-deep: #17474A;
+  --accent-tint: rgba(31,91,94,.10); --accent-brd: rgba(31,91,94,.30);
+  --primary-bg: #1F5B5E; --primary-fg: #FFFFFF;
+  --link-line: rgba(70,60,45,.26);
+}
+body.skin-editorial [data-theme="dark"] {
+  --bg: #161814; --field: #1B1D19;
+  --card: #20221D; --card-head: #262822;
+  --surface: #23251F; --surface2: #2B2D26; --row-hover: #2A2C25;
+  --line: rgba(240,235,220,.11); --line2: rgba(240,235,220,.07); --line-strong: rgba(240,235,220,.22);
+  --text: #EFEDE4; --muted: #A09B8D;
+  --accent: #8FD0D2; --accent-deep: #8FD0D2;
+  --accent-tint: rgba(76,154,158,.16); --accent-brd: rgba(76,154,158,.40);
+  --primary-bg: #2E8488; --primary-fg: #FFFFFF;
+  --link-line: rgba(240,235,220,.22);
+}
+/* orange logomark, teal chrome accents */
+body.skin-editorial .home-mark { color: #E8712E; }
+body.skin-editorial .nav-version-badge { background: #1F5B5E; color: #fff; }
+body.skin-editorial [data-theme="dark"] .nav-version-badge { background: #2E8488; }
+body.skin-editorial .avatar { background: #1F5B5E; color: #fff; border-radius: 999px; }
+body.skin-editorial [data-theme="dark"] .avatar { background: #2E8488; }
+body.skin-editorial .tenant-logo { background: #1F5B5E; color: #fff; }
+/* serif display + spaced caps labels */
+body.skin-editorial .pagehead h1, body.skin-editorial .run-title h1, body.skin-editorial .moddy-hero h1 {
+  font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; font-weight: 600; letter-spacing: 0;
+}
+body.skin-editorial .tree-head, body.skin-editorial .sumopt {
+  font-family: 'Source Serif 4', Georgia, serif; text-transform: uppercase; letter-spacing: .14em; font-size: 11px; font-weight: 600;
+}
+body.skin-editorial .act-table thead th { letter-spacing: .10em; text-transform: uppercase; font-size: 10.5px; }
+/* soft paper geometry: rounded cards, pill controls */
+body.skin-editorial .sumopt, body.skin-editorial .summary, body.skin-editorial .tree,
+body.skin-editorial .repo-detail, body.skin-editorial .act-card, body.skin-editorial .toast,
+body.skin-editorial .moddy-input, body.skin-editorial .moddy-input-inner { border-radius: 12px; }
+body.skin-editorial .main-area { border-top-left-radius: 16px; }
+body.skin-editorial .org-selector, body.skin-editorial .search-input, body.skin-editorial .mkt-search,
+body.skin-editorial .filter-bar, body.skin-editorial .pill-btn, body.skin-editorial .round-btn,
+body.skin-editorial .moddy-send, body.skin-editorial .seg, body.skin-editorial .seg-btn,
+body.skin-editorial .badge, body.skin-editorial .catrow .t .n { border-radius: 999px; }
+body.skin-editorial .nav-item, body.skin-editorial .nav-icon-container, body.skin-editorial .icon-btn { border-radius: 10px; }
+body.skin-editorial .miniava { border-radius: 999px; }
+body.skin-editorial .tck { border-radius: 4px; }
+body.skin-editorial .catrow .ico { border-radius: 12px; }
+/* paper buttons */
+body.skin-editorial .pill-btn, body.skin-editorial .round-btn { background: var(--field); border: 1px solid var(--line-strong); }
+body.skin-editorial .pill-btn:hover, body.skin-editorial .round-btn:hover { background: var(--surface); }
+body.skin-editorial .pill-btn--primary { background: var(--primary-bg); color: var(--primary-fg); border-color: transparent; }
+body.skin-editorial .pill-btn--primary:hover { background: var(--primary-bg); filter: brightness(1.08); }
 </style>
 </head>
 <body>
@@ -974,6 +1035,7 @@ body.skin-glass .pill-btn--primary:hover { background: var(--primary-bg); filter
     <button data-skin="standard" class="active" data-tip="Standard v2 styling — 4px corners, flat surfaces, hairline separation.">Standard</button>
     <button data-skin="technical" data-tip="Technical / neo-brutalist skin — black chrome, neon-green primary, square panels cut by solid black lines, uppercase mono labels, pill action buttons.">Technical</button>
     <button data-skin="glass" data-tip="Glass skin — frosted translucent panels with backdrop blur over an ambient indigo gradient; rounded geometry and a glowing primary button.">Glass</button>
+    <button data-skin="editorial" data-tip="Editorial skin — warm paper surfaces, serif display type, deep-teal primary, pill buttons, orange logomark.">Editorial</button>
     <span class="ms-div"></span>
     <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
     <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
@@ -1456,13 +1518,21 @@ body.skin-glass .pill-btn--primary:hover { background: var(--primary-bg); filter
   if (new URLSearchParams(location.search).get('tones') === 'warm') setTones('warm');
 
   // ---- style skin toggle (standard default) ----
-  var SKINS = ['technical', 'glass'];
+  var SKINS = ['technical', 'glass', 'editorial'];
+  var SKIN_NATIVE_PRIMARY = { technical: true, editorial: true };  // skins with their own default primary
   function setSkin(s) {
     SKINS.forEach(function (v) { document.body.classList.remove('skin-' + v); });
     if (SKINS.indexOf(s) !== -1) document.body.classList.add('skin-' + s);
     switchEl.querySelectorAll('button[data-skin]').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-skin') === s);
     });
+    if (SKIN_NATIVE_PRIMARY[s]) {
+      // show the skin's native primary; swatches still override on click
+      PRIMARIES.forEach(function (v) { compare.classList.remove('primary-' + v); });
+      switchEl.querySelectorAll('button[data-primary]').forEach(function (b) { b.classList.remove('active'); });
+    } else {
+      setPrimary('blue');
+    }
   }
   var qsSkin = new URLSearchParams(location.search).get('skin');
   if (SKINS.indexOf(qsSkin) !== -1) setSkin(qsSkin);
