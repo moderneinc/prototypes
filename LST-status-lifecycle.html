@@ -10,10 +10,15 @@
     --line:#e3e0d7; --line2:#cfccc1;
     --input:#6b5ce7; --input-bg:#efedfd;
     --process:#bf7a12; --process-bg:#fbf0db;
-    --success:#2f8f4e; --success-bg:#e7f4ea;
-    --info:#2f6fb0; --info-bg:#e6f0fa;
-    --fail:#c0392b; --fail-bg:#fbe9e7;
-    --neutral:#6b6b6b; --neutral-bg:#f0efe9;
+    /* Aligned with Moderne design system Status foundation (8 intents). */
+    --success:#3B8948; --success-bg:#F3FFF5;   /* status/success  */
+    --info:#2F42FF; --info-bg:#F2F3FF;         /* status/info     */
+    --fail:#CB3446; --fail-bg:#FFEDEF;         /* status/error    */
+    --warning:#BD9319; --warning-bg:#FEF9E8;   /* status/warning (gold ramp — replaces old amber) */
+    --queued:#AD59C7; --queued-bg:#F6EEFB;     /* status/queued  (violet ramp)  */
+    --active:#992FB9; --active-bg:#F6EEFB;     /* status/active  (violet ramp, spinner) */
+    --neutral:#6B7280; --neutral-bg:#F3F4F6;   /* status/neutral (cool grey)    */
+    --canceled:#7B7263; --canceled-bg:#FAF8F3; /* status/canceled (warm grey — distinct namespace) */
     --shadow:0 1px 2px rgba(0,0,0,.06),0 2px 8px rgba(0,0,0,.05);
   }
   @media (prefers-color-scheme: dark){
@@ -23,9 +28,13 @@
       --input:#a99bff; --input-bg:#2c2945;
       --process:#e0a443; --process-bg:#3a3018;
       --success:#74c98c; --success-bg:#1c3322;
-      --info:#7db4ec; --info-bg:#16293c;
+      --info:#7d8bff; --info-bg:#1c2140;
       --fail:#ef8d82; --fail-bg:#3a201c;
+      --warning:#e0b53d; --warning-bg:#3a3018;
+      --queued:#c98cdb; --queued-bg:#2f213a;
+      --active:#b466cc; --active-bg:#2f213a;
       --neutral:#a9a79e; --neutral-bg:#2f2d28;
+      --canceled:#a8a09a; --canceled-bg:#2c2926;
       --shadow:0 1px 2px rgba(0,0,0,.3),0 2px 10px rgba(0,0,0,.35);
     }
   }
@@ -118,16 +127,21 @@
     font-size:22px;cursor:pointer;line-height:1;padding:6px;border-radius:8px;}
   .drawer .close:hover{background:var(--neutral-bg);color:var(--ink);}
 
-  /* status chips (UI-status lane + drawer) */
-  .chips{display:flex;flex-wrap:wrap;gap:6px;}
-  .chip{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:12px;padding:3px 9px;border-radius:999px;white-space:nowrap;}
-  .chip .sw{width:9px;height:9px;border-radius:50%;flex:none;}
-  .chip.click{cursor:pointer;border:1px solid transparent;font-family:inherit;}
+  /* status chips — Moderne DS Badge spec (medium): 24px tall, padding 2px 10px, font 12px / 500, line-height 1, gap 4px, 14px leading-icon (stroke 1.5), 6px dot, 1px transparent-shade border. */
+  .chips{display:flex;flex-wrap:wrap;gap:8px 10px;}
+  .chip{display:inline-flex;align-items:center;gap:4px;height:24px;padding:2px 10px;font-family:inherit;font-weight:500;font-size:12px;line-height:1;letter-spacing:0;border-radius:999px;border:1px solid transparent;white-space:nowrap;box-sizing:border-box;}
+  .chip .sw{width:6px;height:6px;border-radius:50%;flex:none;}
+  .chip .badgeicon{width:14px;height:14px;flex:none;color:currentColor;display:inline-flex;align-items:center;justify-content:center;}
+  .chip .badgeicon svg{width:100%;height:100%;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .chip .badgeicon.spin svg{animation:activespin 4s linear infinite;transform-box:fill-box;transform-origin:50% 50%;}
+  @keyframes activespin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion: reduce){.chip .badgeicon.spin svg{animation:none;}}
+  .chip.click{cursor:pointer;font-family:inherit;}
   .chip.click:hover{filter:brightness(1.06) saturate(1.1);box-shadow:var(--shadow);}
   .pbar{flex:1 0 100%;display:flex;flex-direction:column;gap:5px;min-width:150px;background:none;border:none;padding:0;margin:0 0 3px;cursor:pointer;text-align:left;}
   .pbar .track{height:8px;border-radius:5px;background:color-mix(in srgb,var(--neutral) 22%,transparent);overflow:hidden;}
   .pbar .fill{height:100%;border-radius:5px;}
-  .pbar .fill.blue{background-color:var(--info);} .pbar .fill.green{background-color:var(--success);} .pbar .fill.red{background-color:var(--fail);}
+  .pbar .fill.blue{background-color:var(--active);} .pbar .fill.green{background-color:var(--success);} .pbar .fill.red{background-color:var(--fail);}
   .pbar .fill.striped{background-image:linear-gradient(45deg,rgba(255,255,255,.4) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.4) 50%,rgba(255,255,255,.4) 75%,transparent 75%,transparent);background-size:13px 13px;animation:pbarstripe .9s linear infinite;}
   @keyframes pbarstripe{to{background-position:13px 0;}}
   .pbar .pends{display:flex;justify-content:space-between;align-items:center;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);}
@@ -141,13 +155,35 @@
   .chip.warned{outline:2px solid var(--process);outline-offset:1px;font-weight:700;animation:warnpulse 2.2s ease-in-out infinite;}
   @keyframes warnpulse{0%,100%{box-shadow:0 0 0 1px color-mix(in srgb,var(--process) 38%,transparent);}50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--process) 14%,transparent);}}
   @media (prefers-reduced-motion: reduce){.chip.warned{animation:none;}}
-  .c-grey{background:color-mix(in srgb,#8a887f 18%,var(--panel));color:var(--ink2);} .c-grey .sw{background:#8a887f;}
-  .c-green{background:var(--success-bg);color:var(--success);} .c-green .sw{background:var(--success);}
-  .c-red{background:var(--fail-bg);color:var(--fail);} .c-red .sw{background:var(--fail);}
-  .c-amber{background:var(--process-bg);color:var(--process);} .c-amber .sw{background:#d99a2b;}
-  .c-blue{background:var(--info-bg);color:var(--info);} .c-blue .sw{background:var(--info);}
-  .c-gold{background:color-mix(in srgb,#c9a227 20%,var(--panel));color:#a07f0f;} .c-gold .sw{background:#c9a227;}
-  .c-none{background:var(--neutral-bg);color:var(--ink3);} .c-none .sw{background:transparent;border:1px dashed var(--ink3);}
+  /* Chip colour classes — bg = --{intent}-bg (light shade), border = 60%-alpha (transparent shade), text/icon = --{intent} (default shade). Dot = solid default. */
+  .c-grey,.c-neutral{background:var(--neutral-bg);color:var(--neutral);border-color:color-mix(in srgb,var(--neutral) 40%,transparent);} .c-grey .sw,.c-neutral .sw{background:var(--neutral);}
+  .c-green,.c-success{background:var(--success-bg);color:var(--success);border-color:color-mix(in srgb,var(--success) 40%,transparent);} .c-green .sw,.c-success .sw{background:var(--success);}
+  .c-red,.c-error{background:var(--fail-bg);color:var(--fail);border-color:color-mix(in srgb,var(--fail) 40%,transparent);} .c-red .sw,.c-error .sw{background:var(--fail);}
+  .c-amber,.c-warning,.c-gold{background:var(--warning-bg);color:var(--warning);border-color:color-mix(in srgb,var(--warning) 40%,transparent);} .c-amber .sw,.c-warning .sw,.c-gold .sw{background:var(--warning);}
+  .c-blue,.c-info{background:var(--info-bg);color:var(--info);border-color:color-mix(in srgb,var(--info) 40%,transparent);} .c-blue .sw,.c-info .sw{background:var(--info);}
+  .c-queued{background:var(--queued-bg);color:var(--queued);border-color:color-mix(in srgb,var(--queued) 40%,transparent);} .c-queued .sw{background:var(--queued);}
+  .c-active{background:var(--active-bg);color:var(--active);border-color:color-mix(in srgb,var(--active) 40%,transparent);} .c-active .sw{background:var(--active);}
+  .c-canceled{background:var(--canceled-bg);color:var(--canceled);border-color:color-mix(in srgb,var(--canceled) 40%,transparent);} .c-canceled .sw{background:var(--canceled);}
+  .c-none{background:var(--neutral-bg);color:var(--ink3);border-color:transparent;} .c-none .sw{background:transparent;border:1px dashed var(--ink3);}
+
+  /* Legacy "today" chip look — the pre-DS-alignment style used before this pass. Larger padding, 600-weight,
+     9 px dot instead of a Lucide icon, original hex palette. Applied only to the today half of the
+     split "today | proposed" cells. */
+  .chip.legacy{height:auto;padding:3px 9px;font-weight:600;gap:6px;border-color:transparent;}
+  .chip.legacy .badgeicon{display:none;}
+  .chip.legacy .sw{width:9px;height:9px;}
+  .chip.legacy.c-grey,.chip.legacy.c-neutral{background:color-mix(in srgb,#8a887f 18%,var(--panel));color:var(--ink2);border-color:transparent;} .chip.legacy.c-grey .sw,.chip.legacy.c-neutral .sw{background:#8a887f;}
+  .chip.legacy.c-green,.chip.legacy.c-success{background:#e7f4ea;color:#2f8f4e;border-color:transparent;} .chip.legacy.c-green .sw,.chip.legacy.c-success .sw{background:#2f8f4e;}
+  .chip.legacy.c-red,.chip.legacy.c-error{background:#fbe9e7;color:#c0392b;border-color:transparent;} .chip.legacy.c-red .sw,.chip.legacy.c-error .sw{background:#c0392b;}
+  .chip.legacy.c-amber,.chip.legacy.c-warning{background:#fbf0db;color:#bf7a12;border-color:transparent;} .chip.legacy.c-amber .sw,.chip.legacy.c-warning .sw{background:#d99a2b;}
+  .chip.legacy.c-blue,.chip.legacy.c-info{background:#e6f0fa;color:#2f6fb0;border-color:transparent;} .chip.legacy.c-blue .sw,.chip.legacy.c-info .sw{background:#2f6fb0;}
+  .chip.legacy.c-gold{background:color-mix(in srgb,#c9a227 20%,var(--panel));color:#a07f0f;border-color:transparent;} .chip.legacy.c-gold .sw{background:#c9a227;}
+  @media (prefers-color-scheme: dark){
+    .chip.legacy.c-green,.chip.legacy.c-success{background:#1c3322;color:#74c98c;}
+    .chip.legacy.c-red,.chip.legacy.c-error{background:#3a201c;color:#ef8d82;} .chip.legacy.c-red .sw,.chip.legacy.c-error .sw{background:#ef8d82;}
+    .chip.legacy.c-amber,.chip.legacy.c-warning{background:#3a3018;color:#e0a443;} .chip.legacy.c-amber .sw,.chip.legacy.c-warning .sw{background:#e0a443;}
+    .chip.legacy.c-blue,.chip.legacy.c-info{background:#16293c;color:#7db4ec;} .chip.legacy.c-blue .sw,.chip.legacy.c-info .sw{background:#7db4ec;}
+  }
   .line-row.toggle-line{cursor:pointer;user-select:none;color:var(--ink2);}
   .line-row.toggle-line .toggle{color:var(--ink2);margin-right:5px;}
   .line-row.toggle-line .tlhint{color:var(--ink3);font-weight:400;text-transform:none;letter-spacing:0;margin-left:7px;}
@@ -224,10 +260,23 @@
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <!-- Lucide 24×24 viewBoxes; rendered at 14px inside the badge, stroke set from CSS. -->
+    <symbol id="dsicon-circle-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="dsicon-circle-minus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></symbol>
+    <symbol id="dsicon-circle-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
+    <symbol id="dsicon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="dsicon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+    <symbol id="dsicon-loader-circle" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></symbol>
+    <symbol id="dsicon-octagon-alert" viewBox="0 0 24 24"><path d="M2.586 16.726A2 2 0 0 1 2 15.312V8.688a2 2 0 0 1 .586-1.414l4.688-4.688A2 2 0 0 1 8.688 2h6.624a2 2 0 0 1 1.414.586l4.688 4.688A2 2 0 0 1 22 8.688v6.624a2 2 0 0 1-.586 1.414l-4.688 4.688a2 2 0 0 1-1.414.586H8.688a2 2 0 0 1-1.414-.586z"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+    <symbol id="dsicon-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  </defs>
+</svg>
 <div class="page">
   <header class="top">
     <h1>Moderne LST — service blueprint</h1>
-    <p class="sub">From registered repo to finished recipe run. Phases 1–4 are per-repo (long-lived); 5–7 fire on every run.</p>
+    <p class="sub">From registered repo to finished recipe run. Phases 1–4 are per-repo (long-lived); 5–7 fire on every run. Row statuses in phases 5–6 reflect the post-PR&nbsp;#1518 world where Sync and State are independent (see callout below).</p>
     <div class="legend" id="legend"></div>
   </header>
 
@@ -235,6 +284,19 @@
   <p class="viewlead">Rows are layers, columns are phases. The <strong>Platform UI status</strong> row splits today | <span style="color:var(--success);font-weight:500">proposed</span>. Click any cell or chip for detail; toggle rows to expand CLI status and Engine &amp; Storage.</p>
   <div class="scroll">
     <div class="grid" id="grid"></div>
+  </div>
+
+  <div style="border:1px solid var(--info);border-radius:var(--border-radius-lg);padding:12px;margin-top:14px;background:color-mix(in srgb,var(--info-bg) 32%,var(--panel));">
+    <div style="font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:7px;"><span style="color:var(--info)">▸</span> PR #1518 · Sync and State are now independent</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.45;color:var(--ink2)">
+      <div><strong style="color:var(--ink)">Sync is no longer a prerequisite for State.</strong> Previously safe assumption <em>“State advances only after Sync=SYNCED”</em> is now false. Any code that reads <code style="font-family:ui-monospace,monospace">syncStatus</code> to decide whether to render / enable the State column must be relaxed.</div>
+      <div><strong style="color:var(--ink)">Event ordering can interleave.</strong> <code style="font-family:ui-monospace,monospace">RepoSynced</code> and <code style="font-family:ui-monospace,monospace">RepoRunFinished</code> arrive in either order for the same repo. Row-derivation logic that assumes sync-then-run must handle run-then-sync too — check <code style="font-family:ui-monospace,monospace">repository-results.rows.ts</code> and <code style="font-family:ui-monospace,monospace">changeset-status.helpers.ts</code>.</div>
+      <div><strong style="color:var(--ink)">resultsCount gating.</strong> <code style="font-family:ui-monospace,monospace">isRepositoryNotYetRun(row.state)</code> currently returns <code style="font-family:ui-monospace,monospace">-</code> for pre-run states. Confirm <code style="font-family:ui-monospace,monospace">SYNCING</code> is still treated as “not yet run” for legacy rows, and that a row in <code style="font-family:ui-monospace,monospace">RUNNING</code> with Sync=<code style="font-family:ui-monospace,monospace">PENDING</code> doesn't render a stale count.</div>
+      <div><strong style="color:var(--ink)">Error messages are capped server-side.</strong> The worker truncates <code style="font-family:ui-monospace,monospace">RepoRunFinished.errorMessage</code> at <code style="font-family:ui-monospace,monospace">PIPE_BUF</code>. Nothing to change in the UI, but tooltip / popover copy-full-message is now working on a shorter payload.</div>
+      <div><strong style="color:var(--ink)">State filter valueOptions omits SYNCING.</strong> Correct for new runs. If the backend can return <code style="font-family:ui-monospace,monospace">SYNCING</code> on legacy rows, those rows are unfilterable — decide whether to add SYNCING back as a legacy-only option.</div>
+      <div><strong style="color:var(--ink)">Cancel-file consolidated.</strong> <code style="font-family:ui-monospace,monospace">RecipeRunService.cancel</code> now writes one cancel file, not two. The Sync=<code style="font-family:ui-monospace,monospace">CANCELED</code> status still exists on repos.</div>
+      <div><strong style="color:var(--ink)">Run-level <code style="font-family:ui-monospace,monospace">SYNCING</code> is @deprecated.</strong> New runs jump straight to <code style="font-family:ui-monospace,monospace">RUNNING</code>. Consumers of <code style="font-family:ui-monospace,monospace">OrganizationRecipeRunSyncing</code> — <code style="font-family:ui-monospace,monospace">state-status-cell</code> (run header), <code style="font-family:ui-monospace,monospace">results-progress-bar</code>, <code style="font-family:ui-monospace,monospace">changeset-status.helpers</code>, <code style="font-family:ui-monospace,monospace">use-chat-recipe-run-status</code>, <code style="font-family:ui-monospace,monospace">recent-activity-neo.rows</code> — should keep the SYNCING branch for legacy / in-flight only.</div>
+    </div>
   </div>
 
   <div style="border:1px solid var(--process);border-radius:var(--border-radius-lg);padding:12px;margin-top:14px;">
@@ -247,17 +309,64 @@
   </div>
 
   <h2 class="viewh">Proposed status colour model</h2>
+  <p class="viewlead">Aligned with the Moderne <a href="https://moderneinc.github.io/design-system/?path=/docs/foundations-status--documentation" style="color:var(--info)">design system Status foundation</a> — eight intents, semantic tokens <code style="font-family:ui-monospace,monospace">--status-{intent}-{light|default|dark}</code>.</p>
   <div class="layoutwrap" style="padding:16px">
-    <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
-      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:#8a887f;margin-top:2px"></span><div><strong style="color:var(--ink)">Neutral — grey</strong> <span style="color:var(--ink2)">· Queued · Canceled · Not started</span></div></div>
-      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--info);margin-top:2px"></span><div><strong style="color:var(--ink)">Working — blue</strong> <span style="color:var(--ink2)">· Building · Running</span></div></div>
-      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--success);margin-top:2px"></span><div><strong style="color:var(--ink)">Done — green</strong> <span style="color:var(--ink2)">· Available · Finished · Published</span></div></div>
-      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--process);margin-top:2px"></span><div><strong style="color:var(--ink)">Needs attention — amber</strong> <span style="color:var(--ink2)">· No LST</span></div></div>
-      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--fail);margin-top:2px"></span><div><strong style="color:var(--ink)">Failure — red</strong> <span style="color:var(--ink2)">· Error</span></div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;font-size:13.5px">
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--success);margin-top:2px"></span><div><strong style="color:var(--ink)">Success</strong><br><span style="color:var(--ink2);font-size:12.5px">Finished · Synced · Available · Merged · Approved</span></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--queued);margin-top:2px"></span><div><strong style="color:var(--ink)">Queued</strong> <span style="color:var(--ink3);font-size:11.5px">· clock icon</span><br><span style="color:var(--ink2);font-size:12.5px">Queued · Pending · Awaiting work</span></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--active);margin-top:2px"></span><div><strong style="color:var(--ink)">Active</strong> <span style="color:var(--ink3);font-size:11.5px">· spinner (open arc)</span><br><span style="color:var(--ink2);font-size:12.5px">Running · Processing · Syncing · In progress</span></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--info);margin-top:2px"></span><div><strong style="color:var(--ink)">Info</strong><br><span style="color:var(--ink2);font-size:12.5px">Open (PR) · Feature labels · Metadata</span></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--warning);margin-top:2px"></span><div><strong style="color:var(--ink)">Warning</strong> <span style="color:var(--ink3);font-size:11.5px">· gold (was amber)</span><br><span style="color:var(--ink2);font-size:12.5px">No LST · LST out of date · Partially parsed · Needs approval</span></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--fail);margin-top:2px"></span><div><strong style="color:var(--ink)">Error</strong><br><span style="color:var(--ink2);font-size:12.5px">Error · Failed · Timeout · Blocked</span></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--neutral);margin-top:2px"></span><div><strong style="color:var(--ink)">Neutral</strong> <span style="color:var(--ink3);font-size:11.5px">· cool grey</span><br><span style="color:var(--ink2);font-size:12.5px">Unknown · Draft · No changes · Not required · Closed</span></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:4px;background:var(--canceled);margin-top:2px"></span><div><strong style="color:var(--ink)">Canceled</strong> <span style="color:var(--ink3);font-size:11.5px">· warm grey · own namespace</span><br><span style="color:var(--ink2);font-size:12.5px">Canceled (distinct from Neutral so “draft” vs “canceled” read differently)</span></div></div>
     </div>
     <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
       <div style="padding:9px 12px;border-radius:var(--border-radius-lg);background:color-mix(in srgb,var(--info-bg) 40%,var(--panel));font-size:13.5px;color:var(--ink2);line-height:1.5"><strong style="color:var(--info)">Sync collapses into Run.</strong> One status column. Queued covers fetch + slot-wait; Failed → Error, Skipped → No LST, Canceled stays Canceled.</div>
-      <div style="padding:9px 12px;border-radius:var(--border-radius-lg);background:color-mix(in srgb,var(--info-bg) 40%,var(--panel));font-size:13.5px;color:var(--ink2);line-height:1.5"><strong style="color:var(--info)">Indeterminate progress.</strong> Running shows an animated blue bar, no percentage — we can't compute reliable per-repo progress. Terminal outcome replaces it.</div>
+      <div style="padding:9px 12px;border-radius:var(--border-radius-lg);background:color-mix(in srgb,var(--info-bg) 40%,var(--panel));font-size:13.5px;color:var(--ink2);line-height:1.5"><strong style="color:var(--info)">Indeterminate progress.</strong> Running uses the Active intent (violet, spinning open-arc) — no percentage, we can't compute reliable per-repo progress. Terminal outcome replaces the spinner.</div>
+      <div style="padding:9px 12px;border-radius:var(--border-radius-lg);background:color-mix(in srgb,var(--info-bg) 40%,var(--panel));font-size:13.5px;color:var(--ink2);line-height:1.5"><strong style="color:var(--info)">Queued and Active share the violet ramp.</strong> Same intent family — Queued (clock) → Active (spinner) reads as a single motion story. Canceled uses a separate warm-grey ramp so it does not blend into Neutral / Draft rows.</div>
+    </div>
+
+    <h3 style="margin:22px 0 6px;font-size:15px;font-weight:600;color:var(--ink)">Badge spec</h3>
+    <p style="margin:0 0 10px;font-size:13px;color:var(--ink2);line-height:1.5">Chips in this prototype render at the DS Badge <strong>medium</strong> size (Figma "Badge" node 4091:17230). The Figma file defines only one size; small / large scale proportionally for cases layered on top.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:10px">
+      <thead>
+        <tr style="text-align:left;color:var(--ink3);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
+          <th style="padding:6px 8px;border-bottom:1px solid var(--line);font-weight:600">Size</th>
+          <th style="padding:6px 8px;border-bottom:1px solid var(--line);font-weight:600">Height</th>
+          <th style="padding:6px 8px;border-bottom:1px solid var(--line);font-weight:600">Padding</th>
+          <th style="padding:6px 8px;border-bottom:1px solid var(--line);font-weight:600">Font</th>
+          <th style="padding:6px 8px;border-bottom:1px solid var(--line);font-weight:600">Sample</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="padding:8px;color:var(--ink2)">small</td><td style="padding:8px;color:var(--ink2)">20&nbsp;px</td><td style="padding:8px;color:var(--ink2)">1&nbsp;px&nbsp;8&nbsp;px</td><td style="padding:8px;color:var(--ink2)">10&nbsp;px&nbsp;/&nbsp;500</td><td style="padding:8px"><span class="chip c-success" style="height:20px;padding:1px 8px;font-size:10px"><span class="badgeicon" style="width:12px;height:12px" aria-hidden="true"><svg><use href="#dsicon-circle-check"/></svg></span>Success</span></td></tr>
+        <tr><td style="padding:8px;color:var(--ink);font-weight:600">medium <span style="color:var(--ink3);font-weight:400">· Figma spec</span></td><td style="padding:8px;color:var(--ink2)">24&nbsp;px</td><td style="padding:8px;color:var(--ink2)">2&nbsp;px&nbsp;10&nbsp;px</td><td style="padding:8px;color:var(--ink2)">12&nbsp;px&nbsp;/&nbsp;500</td><td style="padding:8px"><span class="chip c-success"><span class="badgeicon" aria-hidden="true"><svg><use href="#dsicon-circle-check"/></svg></span>Success</span></td></tr>
+        <tr><td style="padding:8px;color:var(--ink2)">large</td><td style="padding:8px;color:var(--ink2)">28&nbsp;px</td><td style="padding:8px;color:var(--ink2)">3&nbsp;px&nbsp;12&nbsp;px</td><td style="padding:8px;color:var(--ink2)">14&nbsp;px&nbsp;/&nbsp;500</td><td style="padding:8px"><span class="chip c-success" style="height:28px;padding:3px 12px;font-size:14px;gap:6px"><span class="badgeicon" style="width:16px;height:16px" aria-hidden="true"><svg><use href="#dsicon-circle-check"/></svg></span>Success</span></td></tr>
+      </tbody>
+    </table>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px 16px;font-size:12.5px;color:var(--ink2);line-height:1.5;margin-bottom:14px">
+      <div><strong style="color:var(--ink)">Radius</strong> · <code style="font-family:ui-monospace,monospace">radius-full</code> (pill)</div>
+      <div><strong style="color:var(--ink)">Border</strong> · 1&nbsp;px solid, <code style="font-family:ui-monospace,monospace">--status-{intent}-transparent</code> (60% alpha — softer than the solid default)</div>
+      <div><strong style="color:var(--ink)">Text + icon colour</strong> · <code style="font-family:ui-monospace,monospace">--status-{intent}-dark</code></div>
+      <div><strong style="color:var(--ink)">Background</strong> · <code style="font-family:ui-monospace,monospace">--status-{intent}-light</code></div>
+      <div><strong style="color:var(--ink)">Line-height</strong> · 1 (text-box-trim: cap → alphabetic centres label between pill caps)</div>
+      <div><strong style="color:var(--ink)">Gap</strong> · 4&nbsp;px between icon / dot and label</div>
+      <div><strong style="color:var(--ink)">Leading icon slot</strong> · 14&nbsp;px box, stroke 1.5, currentColor</div>
+      <div><strong style="color:var(--ink)">Dot (icon-less variant)</strong> · 6&nbsp;px, filled <code style="font-family:ui-monospace,monospace">--status-{intent}-default</code></div>
+    </div>
+
+    <h3 style="margin:18px 0 6px;font-size:15px;font-weight:600;color:var(--ink)">Icon per intent</h3>
+    <p style="margin:0 0 10px;font-size:13px;color:var(--ink2);line-height:1.5">Lucide outline names — Queued (<code style="font-family:ui-monospace,monospace">clock</code>) and Active (<code style="font-family:ui-monospace,monospace">loader-circle</code>) are <strong>mandatory</strong> because they share the violet ramp; nothing else disambiguates them. Active is the one outline-only intent — the open-arc loader cannot fill — and spins at <code style="font-family:ui-monospace,monospace">4s linear infinite</code> honouring <code style="font-family:ui-monospace,monospace">prefers-reduced-motion</code>. For standalone status icons outside a badge: minimum 16&nbsp;px, filled silhouette only at 16–17&nbsp;px, outline at 18&nbsp;px+.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 12px;">
+      <span class="chip c-success"><span class="badgeicon" aria-hidden="true"><svg><use href="#dsicon-circle-check"/></svg></span>Success · circle-check</span>
+      <span class="chip c-queued"><span class="badgeicon" aria-hidden="true"><svg><use href="#dsicon-clock"/></svg></span>Queued · clock <em style="font-style:normal;color:var(--queued);opacity:.75">(mandatory)</em></span>
+      <span class="chip c-active"><span class="badgeicon spin" aria-hidden="true"><svg><use href="#dsicon-loader-circle"/></svg></span>Active · loader-circle <em style="font-style:normal;color:var(--active);opacity:.75">(mandatory · spin)</em></span>
+      <span class="chip c-info"><span class="badgeicon" aria-hidden="true"><svg><use href="#dsicon-info"/></svg></span>Info · info</span>
+      <span class="chip c-warning"><span class="badgeicon" aria-hidden="true"><svg><use href="#dsicon-triangle-alert"/></svg></span>Warning · triangle-alert</span>
+      <span class="chip c-error"><span class="badgeicon" aria-hidden="true"><svg><use href="#dsicon-octagon-alert"/></svg></span>Error · octagon-alert</span>
+      <span class="chip c-neutral"><span class="badgeicon" aria-hidden="true"><svg><use href="#dsicon-circle-minus"/></svg></span>Neutral · circle-minus</span>
+      <span class="chip c-canceled"><span class="badgeicon" aria-hidden="true"><svg><use href="#dsicon-circle-x"/></svg></span>Canceled · circle-x</span>
     </div>
   </div>
 
@@ -397,8 +506,8 @@ const C={
   {t:"CLI logs & metrics",s:"mod build output · Grafana",cat:"neutral",d:"During ingestion the CLI emits build logs and a metrics endpoint; the optional observability stack (Prometheus + Grafana) tracks throughput and failures."},
   {t:"-ast.jar",s:"in artifact repo · published date",cat:"process",d:"The serialized LST artifact (historical “-ast.jar” name — same thing as the LST) lands in your Maven-format artifact repository, stamped with a publish timestamp."},
   {t:"Repositories grid",s:"“LST available” · published · “Unknown” badge",cat:"success",d:"The org & repositories grid shows lstArtifact.available as a boolean column plus the published date. available:false renders an “Unknown” badge. A toolbar toggle “Include not ingested” filters server-side on available _eq true."},
-  {t:"Sync chips",s:"Pending · Synced · Failed · Skipped · Canceled",cat:"info",d:"Per-repo RepositorySyncStatus chips: grey Pending, green Synced, red Failed, amber Skipped, grey/gold Canceled."},
-  {t:"Status column",s:"Queued · Running · Finished · Error · No lst",cat:"info",d:"Run-phase status derived from the RepositoryChangeset union typename. The run header shows aggregate counts like “180/220 synced”."},
+  {t:"Sync chips",s:"Pending · Synced · Failed · Skipped · Canceled",cat:"info",d:"Per-repo RepositorySyncStatus chips: grey Pending, green Synced, red Failed, amber Skipped, grey/gold Canceled. After PR #1518 these chips no longer track the row's state 1:1 — Pending can coexist with a top-level RUNNING run, and SYNCED can arrive after RepoRunFinished."},
+  {t:"Status column",s:"Queued · Running · Finished · Error · No LST · (Syncing legacy)",cat:"info",d:"Run-phase status derived from the RepositoryChangeset union typename. After PR #1518, new rows skip SYNCING and go straight QUEUED → RUNNING; SYNCING remains only as a legacy mapping for historical / in-flight runs (and is not in the state filter's valueOptions). The run header shows aggregate counts like “180/220 synced”."},
   {t:"Change list / patches",s:"search.patch · fix.patch · diffs",cat:"neutral",d:"The changes the recipe derived from the LST surface as a reviewable change list (Platform) or patch files (CLI); you commit or open a PR to push them to the git repo (GitHub / GitLab / …). The LST itself is never pushed."}
  ],
  user:[
@@ -469,19 +578,21 @@ const STATUSES={
   [],
   [{label:"LST available",color:"green",value:"available: true · published: <date>",field:"lstArtifact.available / .published",where:"Org & repositories grid",warn:"‘Published’ tells you when the LST was built, not whether the repo has moved since — and we can't reliably compute staleness from inside the platform (Repository.changeset is the SCM HEAD as last observed, which may itself be stale; nothing polls the SCM continuously). So a drifted LST looks identical to a fresh one. There is also no in-UI build/refresh action (requestRepositoryLstDetails has no client caller).",d:"Worker reported finishedAt; the grid shows the green available column and a published date."}],
   [
-   {label:"Pending",color:"grey",value:"PENDING",field:"RepositorySyncStatus",where:"Sync column chip",d:"Fetch not yet initiated or in flight."},
-   {label:"Synced",color:"green",value:"SYNCED",field:"RepositorySyncStatus",where:"Sync column chip",d:"LST fetched and decrypted; ready for the recipe to read."},
-   {label:"Failed",color:"red",value:"FAILED",field:"RepositorySyncStatus",where:"Sync column chip · tooltip “Sync failed”",d:"Fetch or decryption failed; can also surface later as FAILED_LOAD_AST during the run."},
-   {label:"Skipped",color:"amber",value:"SKIPPED",field:"RepositorySyncStatus",where:"Sync column chip",d:"Repo had no LST artifact to fetch (Axis-A state was No artifact)."},
-   {label:"Canceled",color:"grey",value:"CANCELED",field:"RepositorySyncStatus",where:"Sync column chip",d:"Run canceled before sync completed."}
+   {label:"Pending",color:"grey",value:"PENDING",field:"RepositorySyncStatus",where:"Sync column chip",warn:"After PR #1518 PENDING can coexist with the run being RUNNING at the top level (under --sync-csv). A row may sit in Sync=Pending while other rows already stream Finished. Any UI logic that assumed “Pending means nothing else is happening yet” is now wrong.",d:"Fetch not yet initiated or in flight. Under --sync-csv, PENDING can now coexist with a top-level RUNNING run — do not treat Pending as a global gate."},
+   {label:"Synced",color:"green",value:"SYNCED",field:"RepositorySyncStatus",where:"Sync column chip",warn:"After PR #1518 SYNCED can arrive after RepoRunFinished for the same row (concurrent monitors, interleaved events). Downstream code must not gate the State column on Sync=SYNCED.",d:"LST fetched and decrypted. Event ordering is no longer guaranteed vs. the run phase — SYNCED may land after the same row's FINISHED. Treat syncStatus and state as independent."},
+   {label:"Failed",color:"red",value:"FAILED",field:"RepositorySyncStatus",where:"Sync column chip · tooltip “Sync failed”",d:"Fetch or decryption failed. Downstream State typically becomes ERROR or NO_LST — verify both fields are handled independently, since sync/state are no longer strictly sequenced."},
+   {label:"Skipped",color:"amber",value:"SKIPPED",field:"RepositorySyncStatus",where:"Sync column chip",d:"No LST to fetch (Axis-A state was No artifact). Row will typically show State=NO_LST."},
+   {label:"Canceled",color:"grey",value:"CANCELED",field:"RepositorySyncStatus",where:"Sync column chip",d:"Run canceled before sync finished. PR #1518 removed the sync cancel-file (RecipeRunService.cancel now writes one cancel file, not two), but the CANCELED status value still exists on repos."}
   ],
   [
    {label:"Queued",color:"grey",value:"QUEUED",field:"RepositoryRecipeRunQueued",where:"Status column",d:"LST ready, recipe scheduled but not started."},
-   {label:"Running",color:"blue",value:"RUNNING",field:"RepositoryRecipeRunRunning",where:"Status column",d:"Recipe actively reading / transforming the LST."},
-   {label:"Finished",color:"green",value:"FINISHED",field:"RepositoryRecipeRunFinished / RepositoryBatchChange",where:"Status column",d:"Recipe completed; results captured (the modified LST is then discarded)."},
-   {label:"Error",color:"red",value:"ERROR",field:"RepositoryRecipeRunError (+ RepositoryErrorReason)",where:"Status column · error tooltip",d:"Recipe threw or worker failed. Error reasons: FAILED_LOAD_AST, FAILED_LOAD_RECIPE, RECIPE_ERROR, TIMEOUT."},
-   {label:"Canceled",color:"gold",value:"CANCELED",field:"RepositoryRecipeRunCanceled",where:"Status column",d:"Run canceled. Gold in the status column."},
-   {label:"No LST",color:"amber",value:"NO_LST",field:"RepositoryRecipeRunNoLst",where:"Status column",d:"Short-circuit: no LST was available, the recipe cannot run."}
+   {label:"Syncing",color:"gold",value:"SYNCING (legacy)",field:"ChangesetStatus",where:"Status column · legacy runs only",warn:"After PR #1518 SYNCING is effectively dead for new rows — per-repo state no longer passes through a distinct syncing phase; repos transition straight to RUNNING. Keep the mapping for historical / in-flight runs, but expect it to be rare. Also note: the state filter valueOptions list does not include SYNCING — if the backend can return SYNCING on legacy rows, users cannot filter for those rows.",d:"Legacy-only. Previously a distinct pre-run phase; PR #1518 removes it from the new-run lifecycle (rows go straight from QUEUED to RUNNING). Historical rows and mid-flight runs can still land here."},
+   {label:"Running",color:"blue",value:"RUNNING",field:"RepositoryRecipeRunRunning",where:"Status column",warn:"After PR #1518 RUNNING is the first “active” state a row shows — it may be present while the same row's syncStatus is still PENDING. Row-derivation logic that assumes sync-then-run must handle run-then-sync too (repository-results.rows.ts, changeset-status.helpers.ts). Also verify resultsCount gating: a row in RUNNING with Sync=PENDING must not render a stale count.",d:"Recipe actively reading / transforming the LST. Now the first active state — may be present while syncStatus is still PENDING. Do not gate rendering on Sync=SYNCED."},
+   {label:"Finished",color:"green",value:"FINISHED",field:"RepositoryRecipeRunFinished / RepositoryBatchChange",where:"Status column",warn:"After PR #1518 FINISHED can arrive with syncStatus not yet SYNCED. RepoSynced and RepoRunFinished interleave in either order for the same repo.",d:"Recipe completed; results captured (the modified LST is then discarded). Can arrive with syncStatus still PENDING — event ordering is no longer guaranteed."},
+   {label:"Error",color:"red",value:"ERROR",field:"RepositoryRecipeRunError (+ RepositoryErrorReason)",where:"Status column · error tooltip",warn:"After PR #1518 errorMessage may be truncated at PIPE_BUF by the worker (cap on RepoRunFinished.errorMessage). Nothing to change in the UI — ErrorStatusPopover's copy-full-message affordance still works, just on a shorter payload.",d:"Recipe threw or worker failed. Error reasons: FAILED_LOAD_AST, FAILED_LOAD_RECIPE, RECIPE_ERROR, TIMEOUT. Message body is now capped server-side at PIPE_BUF; tooltip / popover copy still works."},
+   {label:"Canceled",color:"gold",value:"CANCELED",field:"RepositoryRecipeRunCanceled",where:"Status column",d:"Run canceled. Gold in the status column today."},
+   {label:"No LST",color:"amber",value:"NO_LST",field:"RepositoryRecipeRunNoLst",where:"Status column",d:"Short-circuit: no LST was available, the recipe cannot run. Pairs with Sync=SKIPPED."},
+   {label:"Unknown",color:"grey",value:"UNKNOWN",field:"ChangesetStatus",where:"Status column · fallback",d:"Fallback mapping — should not appear from the server. Kept so unmapped values fail safe rather than crashing the row renderer."}
   ],
   []
  ],
@@ -490,17 +601,17 @@ const STATUSES={
   [],
   [],
   [
-   {label:"Available",color:"green",value:"ready",field:"suggested",where:"grid",d:"Ready / done (green) — a discrete per-repo state, so a chip."},
-   {label:"No LST",color:"amber",value:"evicted / gone / never built",field:"suggested",where:"grid",d:"Proposed: if the artifact is evicted, missing, or was never built, the row falls back to the same ‘No LST’ state — re-ingest to recover. No separate ‘evicted’ badge. (No ‘Stale’ state either: we can't reliably detect drift — see gap note.)"}
+   {label:"Available",color:"success",value:"ready",field:"suggested",where:"grid",d:"Ready / done — a discrete per-repo state, so a chip. Design system: Success intent (green)."},
+   {label:"No LST",color:"warning",value:"evicted / gone / never built",field:"suggested",where:"grid",d:"Proposed: if the artifact is evicted, missing, or was never built, the row falls back to the same ‘No LST’ state — re-ingest to recover. Design system: Warning intent (gold). No separate ‘evicted’ badge. (No ‘Stale’ state either: we can't reliably detect drift — see gap note.)"}
   ],
   [{label:"— collapsed into Run",color:"none",value:"no separate sync phase",field:"suggested",where:"run page",d:"Proposed: the platform stops surfacing Sync as its own phase. ‘Pending’ (LST being fetched) folds into Queued, ‘Synced’ becomes the moment a repo starts Running, and the terminal sync states (Failed / Skipped / Canceled) collapse into the run-phase terminal states. Some repos are already synced and start Running immediately. See the Run column for the unified status set."}],
   [
-   {label:"Queued",color:"grey",value:"waiting (LST fetch or run slot)",field:"suggested",where:"status column",d:"Neutral (grey) — covers both ‘LST is being fetched & decrypted’ (old Pending) and ‘LST is ready, waiting for a run slot’ (old Queued). One waiting state; the user doesn't need to distinguish which kind of waiting it is."},
-   {bar:true,color:"blue",striped:true,pct:100,label:"Running",value:"executing recipe",field:"suggested",where:"status column",d:"Working (blue) indeterminate progress bar — recipe is actively reading & transforming the LST. Animated motion, no percentage (same reason as Building / Ingesting). Repos that were already synced enter Running immediately."},
-   {label:"Finished",color:"green",value:"FINISHED",field:"suggested",where:"status column",d:"Done (green) — discrete terminal state."},
-   {label:"Error",color:"red",value:"ERROR / sync failure",field:"suggested",where:"status column",d:"Failure (red) — covers both run-time errors (old Error) and sync failures (old Failed). The user-facing outcome is the same: this repo did not produce results."},
-   {label:"Canceled",color:"grey",value:"CANCELED",field:"suggested",where:"status column",d:"Neutral (grey) — consistent everywhere, covers cancellation at any point in the run."},
-   {label:"No LST",color:"amber",value:"NO_LST / skipped",field:"suggested",where:"status column",d:"Needs attention (amber) — no LST available for this repo, so the recipe can't run. Covers both the old Skipped (no artifact to fetch) and NoLst (short-circuit) cases."}
+   {label:"Queued",color:"queued",value:"waiting (LST fetch or run slot)",field:"suggested",where:"status column",d:"Design system: Queued intent (violet, clock leading icon). Covers both ‘LST is being fetched & decrypted’ (old Pending) and ‘LST is ready, waiting for a run slot’ (old Queued). One waiting state; the user doesn't need to distinguish which kind of waiting it is."},
+   {label:"Running",color:"active",value:"executing recipe · indeterminate",field:"suggested",where:"status column",d:"Design system: Active intent (violet, spinning open-arc) — “Running · Processing · Syncing · In progress” all live under Active. Indeterminate motion carried by the loader-circle icon (no percentage; we can't compute reliable per-repo progress). Repos that were already synced enter Running immediately."},
+   {label:"Finished",color:"success",value:"FINISHED",field:"suggested",where:"status column",d:"Design system: Success intent (green) — discrete terminal state."},
+   {label:"Error",color:"error",value:"ERROR / sync failure",field:"suggested",where:"status column",d:"Design system: Error intent (red) — covers both run-time errors (old Error) and sync failures (old Failed). The user-facing outcome is the same: this repo did not produce results."},
+   {label:"Canceled",color:"canceled",value:"CANCELED",field:"suggested",where:"status column",d:"Design system: dedicated Canceled intent (warm grey) — distinct from Neutral so an inactive / draft chip and a canceled chip read differently. Consistent everywhere, covers cancellation at any point in the run."},
+   {label:"No LST",color:"warning",value:"NO_LST / skipped",field:"suggested",where:"status column",d:"Design system: Warning intent (gold) — no LST available for this repo, so the recipe can't run. Covers both the old Skipped (no artifact to fetch) and NoLst (short-circuit) cases."}
   ],
   []
  ]
@@ -508,7 +619,28 @@ const STATUSES={
 
 const grid=document.getElementById("grid");
 function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
-function fillChips(box,arr,i){
+/* DS Badge leading-icon per intent. Queued (clock) and Active (loader-circle) are mandatory
+   because they share the violet ramp — the icon is the only differentiator. Others
+   follow the StatusPage foundation table. */
+const DS_ICON={
+  neutral:"circle-minus", grey:"circle-minus",
+  success:"circle-check", green:"circle-check",
+  queued:"clock",
+  active:"loader-circle",
+  info:"info", blue:"info",
+  warning:"triangle-alert", amber:"triangle-alert", gold:"triangle-alert",
+  error:"octagon-alert", red:"octagon-alert",
+  canceled:"circle-x",
+  none:null
+};
+function iconMarkup(color,legacy){
+  if(legacy) return '<span class="sw"></span>';
+  const name=DS_ICON[color];
+  if(!name) return '<span class="sw"></span>';
+  const spin=name==="loader-circle"?" spin":"";
+  return '<span class="badgeicon'+spin+'" aria-hidden="true"><svg><use href="#dsicon-'+name+'"/></svg></span>';
+}
+function fillChips(box,arr,i,legacy){
   (arr||[]).forEach(st=>{
     if(st.bar){
       const pb=el("button","pbar click");
@@ -517,8 +649,8 @@ function fillChips(box,arr,i){
       pb.addEventListener("click",()=>openStatus(PHASES[i],st));
       box.appendChild(pb);return;
     }
-    const c=el("button","chip c-"+st.color+" click"+(st.warn?" warned":""));
-    c.innerHTML='<span class="sw"></span>'+st.label+(st.warn?' <span class="warn">⚠</span>':'');
+    const c=el("button","chip c-"+st.color+" click"+(legacy?" legacy":"")+(st.warn?" warned":""));
+    c.innerHTML=iconMarkup(st.color,legacy)+'<span class="chiplabel">'+st.label+'</span>'+(st.warn?' <span class="warn">⚠</span>':'');
     c.addEventListener("click",()=>openStatus(PHASES[i],st));
     box.appendChild(c);
   });
@@ -579,9 +711,9 @@ ROWS.forEach(row=>{
       const td=el("div","cell statuscell splitcell"+(bandToggle?"":" row-even")+(i===2?" zbound":"")+(hasWarn?" cell-warn":""));
       if(!bandToggle)td.style.background="color-mix(in srgb,var(--bg) 45%,var(--panel))";
       const hT=el("div","half today"); hT.appendChild(el("span","hlabel","today"));
-      const tb=el("div","chips"); fillChips(tb,today,i); if(!today||!today.length)tb.appendChild(el("div","empty","—")); hT.appendChild(tb);
+      const tb=el("div","chips"); fillChips(tb,today,i,true); if(!today||!today.length)tb.appendChild(el("div","empty","—")); hT.appendChild(tb);
       const hP=el("div","half prop"); hP.appendChild(el("span","hlabel","proposed"));
-      const pb2=el("div","chips"); fillChips(pb2,prop,i); if(!prop||!prop.length)pb2.appendChild(el("div","empty","—")); hP.appendChild(pb2);
+      const pb2=el("div","chips"); fillChips(pb2,prop,i,false); if(!prop||!prop.length)pb2.appendChild(el("div","empty","—")); hP.appendChild(pb2);
       td.appendChild(hT);td.appendChild(hP);grid.appendChild(td);
     });
     return;
@@ -622,7 +754,17 @@ function openDrawer(laneId,laneName,phase,cell){
   drawer.classList.add("on");backdrop.classList.add("on");
 }
 function openStatus(phase,st){
-  const map={grey:["Grey","#8a887f"],green:["Green",getCss("--success")],red:["Red",getCss("--fail")],amber:["Amber","#d99a2b"],blue:["Blue",getCss("--info")],gold:["Gold","#c9a227"],none:["No badge","#8a887f"]};
+  const map={
+    grey:["Neutral",getCss("--neutral")], neutral:["Neutral",getCss("--neutral")],
+    green:["Success",getCss("--success")], success:["Success",getCss("--success")],
+    red:["Error",getCss("--fail")], error:["Error",getCss("--fail")],
+    amber:["Warning",getCss("--warning")], warning:["Warning",getCss("--warning")], gold:["Warning",getCss("--warning")],
+    blue:["Info",getCss("--info")], info:["Info",getCss("--info")],
+    queued:["Queued",getCss("--queued")],
+    active:["Active",getCss("--active")],
+    canceled:["Canceled",getCss("--canceled")],
+    none:["No badge",getCss("--neutral")]
+  };
   const [cn,fg]=map[st.color]||["",getCss("--neutral")];
   const b=document.getElementById("dBadge");
   b.textContent=cn+" status";b.style.color=fg;b.style.background="color-mix(in srgb,"+fg+" 16%, var(--panel))";
@@ -645,11 +787,14 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer();});
 // legend
 const legend=document.getElementById("legend");
 const LEG=[
-  ["Neutral · queued / canceled / not started","#8a887f"],
-  ["Working · building / running",getCss("--info")],
-  ["Done · available / finished / published",getCss("--success")],
-  ["Needs attention · no LST",getCss("--process")],
-  ["Failure · error",getCss("--fail")]
+  ["Success · finished / synced / available",getCss("--success")],
+  ["Queued · pending / awaiting slot",getCss("--queued")],
+  ["Active · running / syncing / processing",getCss("--active")],
+  ["Info · open / feature label",getCss("--info")],
+  ["Warning · no LST / partially parsed",getCss("--warning")],
+  ["Error · failed / timeout",getCss("--fail")],
+  ["Neutral · unknown / draft / no changes",getCss("--neutral")],
+  ["Canceled · canceled",getCss("--canceled")]
 ];
 LEG.forEach(([label,fg])=>{
   const it=el("div","it");
