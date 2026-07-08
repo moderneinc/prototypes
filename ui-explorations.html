@@ -971,6 +971,56 @@ body.skin-editorial .pill-btn, body.skin-editorial .round-btn { background: var(
 body.skin-editorial .pill-btn:hover, body.skin-editorial .round-btn:hover { background: var(--surface); }
 body.skin-editorial .pill-btn--primary { background: var(--primary-bg); color: var(--primary-fg); border-color: transparent; }
 body.skin-editorial .pill-btn--primary:hover { background: var(--primary-bg); filter: brightness(1.08); }
+
+/* ============================================================
+   V2 EXPLORATION 8: OUTLINE SKIN
+   Figma-like minimalism: white surfaces, hairline structure,
+   controls drawn as outlines, active states as accent rings.
+   Fonts and primary colors are fully driven by the demo controls.
+   ============================================================ */
+body.skin-outline [data-theme="light"] {
+  --bg: #F5F5F5; --field: #FFFFFF;
+  --card: #FFFFFF; --card-head: #FAFAFA;
+  --surface: #F5F5F5; --surface2: #EEEEEE; --row-hover: #FAFAFA;
+  --line: #E6E6E6; --line2: #F0F0F0; --line-strong: #D8D8D8;
+  --text: #1E1E1E; --muted: #7A7A7A;
+  --link-line: #D8D8D8;
+}
+body.skin-outline [data-theme="dark"] {
+  --bg: #151515; --field: #1C1C1C;
+  --card: #1C1C1C; --card-head: #212121;
+  --surface: #222222; --surface2: #2A2A2A; --row-hover: #242424;
+  --line: rgba(255,255,255,.14); --line2: rgba(255,255,255,.08); --line-strong: rgba(255,255,255,.26);
+  --text: #ECECEC; --muted: #9C9C9C;
+  --link-line: rgba(255,255,255,.26);
+}
+/* geometry: quiet 8px rounded rects */
+body.skin-outline .org-selector, body.skin-outline .search-input, body.skin-outline .mkt-search,
+body.skin-outline .filter-bar, body.skin-outline .sumopt, body.skin-outline .summary,
+body.skin-outline .tree, body.skin-outline .repo-detail, body.skin-outline .act-card,
+body.skin-outline .toast, body.skin-outline .moddy-input, body.skin-outline .moddy-input-inner,
+body.skin-outline .pill-btn, body.skin-outline .round-btn, body.skin-outline .moddy-send,
+body.skin-outline .nav-item, body.skin-outline .nav-icon-container, body.skin-outline .icon-btn,
+body.skin-outline .seg, body.skin-outline .avatar, body.skin-outline .tenant-logo { border-radius: 8px; }
+body.skin-outline .seg-btn, body.skin-outline .miniava, body.skin-outline .search-input kbd { border-radius: 6px; }
+body.skin-outline .main-area { border-top-left-radius: 12px; }
+/* outline-first controls */
+body.skin-outline .pill-btn, body.skin-outline .round-btn { background: transparent; border: 1px solid var(--line-strong); }
+body.skin-outline .pill-btn:hover, body.skin-outline .round-btn:hover { background: var(--surface); }
+body.skin-outline .pill-btn--primary { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+body.skin-outline .pill-btn--primary:hover { background: var(--accent-tint); filter: none; }
+body.skin-outline .nav-item:hover .nav-icon-container { background: transparent; border-color: var(--line-strong); }
+body.skin-outline .nav-item.active .nav-icon-container { background: transparent; border: 1.5px solid var(--accent); }
+body.skin-outline .seg { background: transparent; border: 1px solid var(--line); }
+body.skin-outline .seg-btn.active { background: transparent; box-shadow: inset 0 0 0 1.5px var(--accent); color: var(--accent); }
+body.skin-outline .pill, body.skin-outline .run-chip, body.skin-outline .miniava { background: transparent; }
+body.skin-outline .repo-row.active { background: transparent; box-shadow: inset 0 0 0 1.5px var(--accent); }
+body.skin-outline .tck { background: transparent; }
+body.skin-outline .tck.on { background: transparent; color: var(--accent); border-color: var(--accent); }
+body.skin-outline .avatar { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); }
+body.skin-outline .nav-version-badge { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); }
+body.skin-outline .tenant-logo { background: transparent; border: 1.5px solid var(--line-strong); color: var(--text); }
+body.skin-outline .badge { background: transparent; border: 1px solid var(--accent-brd); }
 </style>
 </head>
 <body>
@@ -1036,6 +1086,7 @@ body.skin-editorial .pill-btn--primary:hover { background: var(--primary-bg); fi
     <button data-skin="technical" data-tip="Technical / neo-brutalist skin — black chrome, neon-green primary, square panels cut by solid black lines, uppercase mono labels, pill action buttons.">Technical</button>
     <button data-skin="glass" data-tip="Glass skin — frosted translucent panels with backdrop blur over an ambient indigo gradient; rounded geometry and a glowing primary button.">Glass</button>
     <button data-skin="editorial" data-tip="Editorial skin — warm paper surfaces, serif display type, deep-teal primary, pill buttons, orange logomark.">Editorial</button>
+    <button data-skin="outline" data-tip="Outline skin — Figma-like minimalism: white surfaces, hairline structure, outlined controls, accent-ring active states. Fully driven by the font and color controls.">Outline</button>
     <span class="ms-div"></span>
     <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
     <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
@@ -1518,21 +1569,14 @@ body.skin-editorial .pill-btn--primary:hover { background: var(--primary-bg); fi
   if (new URLSearchParams(location.search).get('tones') === 'warm') setTones('warm');
 
   // ---- style skin toggle (standard default) ----
-  var SKINS = ['technical', 'glass', 'editorial'];
-  var SKIN_NATIVE_PRIMARY = { technical: true, editorial: true };  // skins with their own default primary
+  // the font and primary-color controls stay in charge across every skin
+  var SKINS = ['technical', 'glass', 'editorial', 'outline'];
   function setSkin(s) {
     SKINS.forEach(function (v) { document.body.classList.remove('skin-' + v); });
     if (SKINS.indexOf(s) !== -1) document.body.classList.add('skin-' + s);
     switchEl.querySelectorAll('button[data-skin]').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-skin') === s);
     });
-    if (SKIN_NATIVE_PRIMARY[s]) {
-      // show the skin's native primary; swatches still override on click
-      PRIMARIES.forEach(function (v) { compare.classList.remove('primary-' + v); });
-      switchEl.querySelectorAll('button[data-primary]').forEach(function (b) { b.classList.remove('active'); });
-    } else {
-      setPrimary('blue');
-    }
   }
   var qsSkin = new URLSearchParams(location.search).get('skin');
   if (SKINS.indexOf(qsSkin) !== -1) setSkin(qsSkin);
