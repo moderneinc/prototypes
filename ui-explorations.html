@@ -747,6 +747,88 @@ body { font-size: 14px; }
 [data-theme="light"] .catrow { border-top-width: 1px; }
 [data-theme="light"] .catrow:last-child { border-bottom-width: 1px; }
 [data-theme="light"] .moddy-sug + .moddy-sug { border-top-width: 1px; }
+
+/* ============================================================
+   V2 EXPLORATION 5: TECHNICAL SKIN (toggle: Standard | Technical)
+   Black chrome, neon-green primary, square panels cut by solid
+   black lines, uppercase mono labels, pill action buttons.
+   Active when body.skin-technical is set.
+   ============================================================ */
+body.skin-technical [data-theme="light"] {
+  --bg: #E9E9E9; --field: #F5F5F5;
+  --card: #F5F5F5; --card-head: #EFEFEF;
+  --surface: #EAEAEA; --surface2: #E0E0E0; --row-hover: #ECECEC;
+  --line: #111111; --line2: #D9D9D9; --line-strong: #111111;
+  --text: #0E0E0E; --muted: #5F5F5F;
+  --accent: #0E0E0E; --accent-deep: #0E0E0E;
+  --accent-tint: rgba(48,242,132,.28); --accent-brd: #111111;
+  --primary-bg: #30F284; --primary-fg: #061407;
+  --link-line: #B5B5B5;
+}
+body.skin-technical [data-theme="dark"] {
+  --bg: #0A0A0A; --field: #111111;
+  --card: #141414; --card-head: #1B1B1B;
+  --surface: #181818; --surface2: #202020; --row-hover: #1F1F1F;
+  --line: rgba(255,255,255,.30); --line2: rgba(255,255,255,.12); --line-strong: rgba(255,255,255,.45);
+  --text: #F2F2F2; --muted: #9A9A9A;
+  --accent: #30F284; --accent-deep: #30F284;
+  --accent-tint: rgba(48,242,132,.16); --accent-brd: rgba(48,242,132,.5);
+  --primary-bg: #30F284; --primary-fg: #061407;
+  --link-line: rgba(255,255,255,.30);
+}
+/* black chrome (both modes) */
+body.skin-technical .global-nav { background: #0A0A0A; }
+body.skin-technical .global-nav::before { display: none; }
+body.skin-technical .left-nav { background: #0A0A0A; }
+body.skin-technical .left-nav .nav-item svg { color: #F2F2F2; }
+body.skin-technical .nav-item:hover .nav-icon-container { background: rgba(48,242,132,.15); border-color: rgba(48,242,132,.4); }
+body.skin-technical .nav-item.active .nav-icon-container { background: rgba(48,242,132,.22); border-color: #30F284; }
+body.skin-technical .nav-item.active svg { color: #30F284; }
+body.skin-technical .home-mark { color: #30F284; }
+body.skin-technical .nav-version-badge { background: #30F284; color: #061407; }
+body.skin-technical .tenant-logo { background: #F2F2F2; color: #0A0A0A; }
+body.skin-technical .org-selector { background: #0A0A0A; color: #F2F2F2; border: 1px solid rgba(255,255,255,.35); }
+body.skin-technical .org-selector:hover { background: #181818; }
+body.skin-technical .org-selector svg { color: #9A9A9A; }
+body.skin-technical .search-input { background: #0A0A0A; color: #9A9A9A; border: 1px solid rgba(255,255,255,.35); }
+body.skin-technical .search-input:hover { background: #181818; }
+body.skin-technical .search-input kbd { background: #1D1D1D; color: #9A9A9A; border-color: rgba(255,255,255,.25); }
+body.skin-technical .nav-action-btn { color: #F2F2F2; }
+body.skin-technical .nav-action-btn:hover { background: #1D1D1D; }
+body.skin-technical .avatar { background: #30F284; color: #061407; border-radius: 0; }
+/* square panels, solid boundary lines */
+body.skin-technical .main-area { border-top-left-radius: 0; border-left-width: 1px; border-top-width: 1px; }
+body.skin-technical .org-selector, body.skin-technical .search-input, body.skin-technical .search-input kbd,
+body.skin-technical .mkt-search, body.skin-technical .filter-bar, body.skin-technical .sumopt,
+body.skin-technical .summary, body.skin-technical .tree, body.skin-technical .repo-detail,
+body.skin-technical .act-card, body.skin-technical .toast, body.skin-technical .moddy-input,
+body.skin-technical .moddy-input-inner, body.skin-technical .moddy-sug, body.skin-technical .badge,
+body.skin-technical .catrow .ico, body.skin-technical .catrow .t .n, body.skin-technical .run-chip,
+body.skin-technical .pill, body.skin-technical .miniava, body.skin-technical .tck,
+body.skin-technical .nav-item, body.skin-technical .nav-icon-container,
+body.skin-technical .seg, body.skin-technical .seg-btn, body.skin-technical .icon-btn { border-radius: 0; }
+body.skin-technical [data-theme="light"] .sumopt, body.skin-technical [data-theme="light"] .summary,
+body.skin-technical [data-theme="light"] .tree, body.skin-technical [data-theme="light"] .repo-detail,
+body.skin-technical [data-theme="light"] .act-card, body.skin-technical [data-theme="light"] .toast,
+body.skin-technical [data-theme="light"] .filter-bar, body.skin-technical [data-theme="light"] .mkt-search { border: 1px solid #111; }
+/* uppercase mono labels */
+body.skin-technical .pagehead h1, body.skin-technical .run-title h1 { font-family: var(--font-mono); text-transform: uppercase; font-size: 13px; font-weight: 600; letter-spacing: .07em; }
+body.skin-technical .pagehead .sub, body.skin-technical .run-subhead { font-family: var(--font-mono); font-size: 11px; letter-spacing: .03em; }
+body.skin-technical .tab { font-family: var(--font-mono); text-transform: uppercase; font-size: 10.5px; letter-spacing: .06em; }
+body.skin-technical .act-table thead th, body.skin-technical .tree-head { font-family: var(--font-mono); letter-spacing: .09em; text-transform: uppercase; }
+body.skin-technical .sumopt { font-family: var(--font-mono); text-transform: uppercase; font-size: 11px; letter-spacing: .07em; }
+body.skin-technical .seg-btn, body.skin-technical .filter-bar, body.skin-technical .load-more, body.skin-technical .act-foot { font-family: var(--font-mono); }
+body.skin-technical .summary-key, body.skin-technical .summary-val, body.skin-technical .run-meta,
+body.skin-technical .act-time, body.skin-technical .org-results, body.skin-technical .repo-results { font-family: var(--font-mono); font-size: 12px; }
+body.skin-technical .savings-chip, body.skin-technical .savings-chip .lbl { font-family: var(--font-mono); font-size: 11.5px; }
+body.skin-technical .pill { font-family: var(--font-mono); letter-spacing: .04em; }
+/* pill action buttons, neon primary */
+body.skin-technical .pill-btn, body.skin-technical .round-btn, body.skin-technical .moddy-send { border-radius: 999px; font-family: var(--font-mono); text-transform: uppercase; font-size: 11px; letter-spacing: .04em; }
+body.skin-technical [data-theme="light"] .pill-btn, body.skin-technical [data-theme="light"] .round-btn { background: #E6E6E6; border: 1px solid #111; color: #0E0E0E; }
+body.skin-technical [data-theme="light"] .pill-btn:hover, body.skin-technical [data-theme="light"] .round-btn:hover { background: #DDDDDD; }
+body.skin-technical .pill-btn--primary, body.skin-technical [data-theme="light"] .pill-btn--primary { background: #30F284; color: #061407; border: 1px solid #111; }
+body.skin-technical [data-theme="dark"] .pill-btn--primary { border-color: #30F284; }
+body.skin-technical .pill-btn--primary:hover { background: #4DF596; }
 </style>
 </head>
 <body>
@@ -807,6 +889,9 @@ body { font-size: 14px; }
     <span class="ms-div"></span>
     <button data-tones="cool" class="active" data-tip="Cool neutrals — navy-cast darks and cool grey-whites. The current shipped set.">Cool</button>
     <button data-tones="warm" data-tip="Warm neutrals — warm blacks in dark mode and warm off-whites in light mode, per the original palette spec. Accents are unaffected.">Warm</button>
+    <span class="ms-div"></span>
+    <button data-skin="standard" class="active" data-tip="Standard v2 styling — 4px corners, flat surfaces, hairline separation.">Standard</button>
+    <button data-skin="technical" data-tip="Technical / neo-brutalist skin — black chrome, neon-green primary, square panels cut by solid black lines, uppercase mono labels, pill action buttons.">Technical</button>
     <span class="ms-div"></span>
     <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
     <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
@@ -1251,6 +1336,8 @@ body { font-size: 14px; }
   switchEl.addEventListener('click', function (e) {
     var fb = e.target.closest('button[data-font]');
     if (fb) { setFont(fb.getAttribute('data-font')); return; }
+    var sk = e.target.closest('button[data-skin]');
+    if (sk) { setSkin(sk.getAttribute('data-skin')); return; }
     var tb = e.target.closest('button[data-tones]');
     if (tb) { setTones(tb.getAttribute('data-tones')); return; }
     var wb = e.target.closest('button[data-panel]');
@@ -1285,6 +1372,15 @@ body { font-size: 14px; }
     });
   }
   if (new URLSearchParams(location.search).get('tones') === 'warm') setTones('warm');
+
+  // ---- style skin toggle (standard default) ----
+  function setSkin(s) {
+    document.body.classList.toggle('skin-technical', s === 'technical');
+    switchEl.querySelectorAll('button[data-skin]').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-skin') === s);
+    });
+  }
+  if (new URLSearchParams(location.search).get('skin') === 'technical') setSkin('technical');
 
   // ---- font selection (geist default) ----
   var FONTS = ['geist', 'inter', 'plex', 'dm', 'figtree', 'jakarta', 'aktiv'];
