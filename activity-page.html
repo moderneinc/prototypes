@@ -581,6 +581,27 @@
       stroke-linecap: round;
       stroke-linejoin: round;
     }
+    /* Turtle icon: reuses the tooltip-trigger affordances, but the glyph is a
+       filled illustration (not a stroked icon), so it inherits `fill` from
+       `color` and needs no stroke overrides. */
+    .activity tbody td.status .status-turtle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px; height: 14px;
+      color: var(--text-secondary);
+      cursor: help;
+      flex-shrink: 0;
+    }
+    .activity tbody td.status .neo-tooltip-trigger:hover .status-turtle,
+    .activity tbody td.status .neo-tooltip-trigger:focus-visible .status-turtle {
+      color: var(--text-primary);
+    }
+    .activity tbody td.status .status-turtle svg {
+      width: 14px; height: 14px;
+      fill: currentColor;
+    }
+    .activity tbody td.status .status-turtle svg path { fill: currentColor; }
 
     /* =========================================================
        NeoTooltip (from @moderneinc/neo-design Tooltip.css)
@@ -904,10 +925,9 @@
     return `<span class="neo-badge neo-badge--${intent}">${icon}<span class="neo-badge__label">${label}</span></span>`;
   };
   // Status cell = badge + optional meta text sitting inline to its right
-  // (lane, error count, etc.). Kept outside the chip so the chip stays
-  // compact and every row stays the same height. `info`, when passed, adds
-  // a native-tooltip info icon after the meta (used to explain why a run
-  // landed in a High or Low lane).
+  // (error count, etc.). Kept outside the chip so the chip stays compact
+  // and every row stays the same height. `info`, when passed, adds a
+  // native-tooltip info icon after the meta.
   // Sequential id for aria-describedby wiring — Neo's Tooltip doc calls for
   // `aria-describedby` linking trigger → tooltip content (not `aria-label`).
   let tooltipUid = 0;
@@ -922,6 +942,18 @@
          </span>`;
     }
     return `<span class="status-cell">${badge(intent, label)}<span class="status-meta">${meta}</span>${infoIcon}</span>`;
+  };
+  // Slow-lane variant: badge + subtle turtle glyph carrying the tooltip.
+  // No text label — the icon alone signals "this run is in the slow lane",
+  // and the tooltip explains why. Fast lane has no visual indicator at all.
+  const TURTLE_SVG = '<svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11.6036 7.91165C11.3335 7.81226 11.0752 7.74876 10.8465 7.72323C10.0946 7.00917 9.07891 6.57041 7.96263 6.57041C7.08932 6.57041 6.27765 6.83906 5.60562 7.29784C4.61058 7.22396 3.77509 6.47651 3.60523 5.47907L3.60359 5.47896C3.47018 4.7488 2.90157 4.19577 2.21139 4.18527C1.4124 4.17313 0.170668 4.88812 0.0676643 5.78185C-0.0802381 7.0649 1.06415 7.08324 2.07245 7.08316C2.5312 7.93932 3.27643 8.61113 4.16879 8.98167C3.91414 9.52225 3.77146 10.1255 3.77146 10.7616C3.77146 11.3126 4.21804 11.7595 4.76934 11.7595C5.32064 11.7595 5.76725 11.3126 5.76725 10.7616C5.76725 10.1791 5.99571 9.64937 6.36715 9.25598C6.98468 9.16025 7.28975 8.92293 7.38165 8.64485C7.5709 8.59268 7.76632 8.56623 7.96263 8.56621C9.17294 8.56621 10.158 9.55102 10.158 10.7616C10.158 11.3126 10.6046 11.7595 11.1559 11.7595C11.7072 11.7595 12.1538 11.3126 12.1538 10.7616C12.1538 10.2844 12.0734 9.82558 11.9258 9.39784C12.8344 9.25223 13.9072 8.82119 13.9375 8.44584C13.9769 7.95833 13.1761 8.49033 11.6036 7.91165Z"/><path d="M2.15472 4.68491C2.36704 4.68491 2.53917 4.85703 2.53917 5.06936V5.54197C2.53917 5.75429 2.36704 5.92642 2.15472 5.92642C1.94239 5.92642 1.77026 5.75429 1.77026 5.54197V5.06936C1.77024 4.85703 1.94237 4.68491 2.15472 4.68491Z"/><path d="M11.0735 6.59504C11.0676 6.58282 11.0621 6.57093 11.0559 6.55854C10.3998 5.2322 9.37919 4.60302 9.16553 4.7675C8.99321 4.90017 9.332 4.93238 9.67636 6.24789C9.3358 6.19276 8.97822 6.15352 8.60802 6.13233C8.42446 5.37084 8.15518 4.74182 7.96273 4.74182C7.77029 4.74182 7.501 5.37084 7.31745 6.13233C6.94724 6.15352 6.58966 6.19276 6.2491 6.24789C6.59346 4.93238 6.93228 4.90017 6.75993 4.7675C6.54627 4.60302 5.52566 5.23223 4.86952 6.55854C4.8634 6.57093 4.85785 6.58285 4.85191 6.59504C3.67818 7.00796 2.92432 7.6492 2.92432 8.36927C2.92432 9.61483 5.18009 10.6246 7.9627 10.6246C10.7453 10.6246 13.0011 9.61483 13.0011 8.36927C13.0011 7.6492 12.2473 7.00796 11.0735 6.59504Z"/><path d="M7.99933 3.69211V3.68716C7.99741 3.68716 7.99563 3.68766 7.99372 3.68766C7.99181 3.68766 7.99006 3.68716 7.98814 3.68716V3.68815C7.97978 3.68815 7.97108 3.68968 7.96271 3.68976C7.95435 3.68971 7.94562 3.68815 7.93726 3.68815V3.68716C7.93534 3.68716 7.93359 3.68766 7.93168 3.68766C7.92976 3.68766 7.92607 3.69211 7.92607 3.69211C6.00449 3.73411 3.58276 5.48742 3.58276 7.81388C3.58276 8.12894 3.97671 9.78146 7.92613 9.8027V9.80467C7.9281 9.80467 7.92974 9.80454 7.93171 9.80454C7.93367 9.80454 7.93529 9.80467 7.93726 9.80467V9.80437C7.94625 9.80437 7.9538 9.80369 7.96274 9.80369C7.97168 9.80369 7.9792 9.80437 7.9882 9.80437V9.80467C7.99017 9.80467 7.99178 9.80454 7.99375 9.80454C7.99572 9.80454 7.99736 9.80467 7.99933 9.80467V9.8027C11.9487 9.78146 12.3427 8.12894 12.3427 7.81388C12.3426 5.48742 9.92091 3.73411 7.99933 3.69211ZM6.00736 7.43443C5.74984 9.06303 5.01823 8.23014 4.80456 8.06566C4.5909 7.90119 4.39769 7.51228 4.86953 6.5585C5.52567 5.23217 6.54628 4.60299 6.75994 4.76746C6.97361 4.93193 6.40155 4.94148 6.00736 7.43443ZM7.96271 8.74702C7.64353 8.74702 7.11279 8.86312 7.11279 7.66762C7.11279 6.47212 7.64353 4.74181 7.96271 4.74181C8.2819 4.74181 8.81264 6.47215 8.81264 7.66762C8.81264 8.86309 8.2819 8.74702 7.96271 8.74702ZM11.1209 8.06566C10.9072 8.23014 10.1756 9.06303 9.91806 7.43443C9.52388 4.94148 8.95185 4.93193 9.16551 4.76746C9.37917 4.60299 10.3998 5.2322 11.0559 6.5585C11.5277 7.51231 11.3345 7.90119 11.1209 8.06566Z"/></svg>';
+  const slowLaneChip = (intent, label, tooltip) => {
+    const id = `lane-tt-${++tooltipUid}`;
+    const turtle = `<span class="neo-tooltip-trigger" tabindex="0" aria-describedby="${id}" aria-label="Slow lane">
+         <span class="status-turtle">${TURTLE_SVG}</span>
+         <span class="neo-tooltip neo-tooltip--top" role="tooltip" id="${id}">${tooltip}<span class="neo-tooltip__arrow"></span></span>
+       </span>`;
+    return `<span class="status-cell">${badge(intent, label)}${turtle}</span>`;
   };
 
   /* ===== Lineage SVG primitives (recipe → commit / viz) ===== */
@@ -1060,16 +1092,18 @@
         statusCell: badge('queued', 'Queued'),
         runBy: 'P', time: '5 min ago', abs: '' }),
 
-    // Cluster 2 — running in the org's dedicated Fast lane
+    // Cluster 2 — running normally. Fast lane placement is no longer surfaced
+    // in the UI; a run in the fast lane looks the same as any other running run.
     recipeRunRow('Migrate to JUnit 5', 'org.openrewrite.java.testing.junit5.JUnit5BestPractices',
       { hasCommit: false, hasVis: false, org,
-        statusCell: statusChip('active', 'Running', 'Fast lane', 'This org has a dedicated fast lane.'),
+        statusCell: badge('active', 'Running'),
         runBy: 'M', time: '15 min ago', abs: '' }),
 
-    // Cluster 3 — running in the Slow lane (auto-placed, 100+ repos)
+    // Cluster 3 — running in the slow lane. Surfaced subtly via a turtle glyph
+    // whose tooltip explains the placement; no "Slow lane" label text.
     recipeRunRow('Static analysis pass', 'org.openrewrite.staticanalysis.CommonStaticAnalysis',
       { hasCommit: false, hasVis: false, org,
-        statusCell: statusChip('active', 'Running', 'Slow lane', "This run spans 100+ repositories, so it's placed in the slow lane to keep smaller runs moving."),
+        statusCell: slowLaneChip('active', 'Running', "This run spans 100+ repositories, so it's placed in the slow lane to keep smaller runs moving."),
         runBy: 'A', time: '32 min ago', abs: '' }),
 
     // Cluster 4 — recipe + visualization child (finished)
