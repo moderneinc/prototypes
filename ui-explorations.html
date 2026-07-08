@@ -310,6 +310,16 @@ body.font-aktiv { --font-sans: 'aktiv-grotesk', 'Archivo', system-ui, sans-serif
 .mode-switch button[data-font="jakarta"] { font-family: 'Plus Jakarta Sans', sans-serif; }
 .mode-switch button[data-font="aktiv"] { font-family: 'aktiv-grotesk', 'Archivo', sans-serif; }
 
+/* collapsible controls */
+.mode-switch button.ms-collapse { width: 26px; height: 26px; border-radius: 999px; border: none; background: transparent; color: #C9CCDD; display: flex; align-items: center; justify-content: center; padding: 0; }
+.mode-switch button.ms-collapse:hover { background: rgba(255,255,255,.10); color: #fff; }
+.mode-switch button.ms-collapse svg { width: 14px; height: 14px; }
+.mode-switch.ms-hidden { display: none; }
+.ms-reopen { position: absolute; z-index: 7; bottom: 18px; left: 50%; transform: translateX(-50%); display: none; align-items: center; gap: 7px; font: inherit; font-size: 12px; font-weight: 600; color: #C9CCDD; background: rgba(18,18,28,.82); border: 1px solid rgba(228,232,250,.18); border-radius: 999px; padding: 7px 14px; cursor: pointer; backdrop-filter: blur(8px); box-shadow: 0 6px 20px rgba(0,0,0,.35); }
+.ms-reopen.show { display: inline-flex; }
+.ms-reopen:hover { color: #fff; }
+.ms-reopen svg { width: 14px; height: 14px; }
+
 /* explanatory tooltips on the CVD buttons */
 .mode-switch button[data-tip] { position: relative; }
 .mode-switch button[data-tip]:hover::after {
@@ -450,7 +460,7 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
 .catrow { display: flex; align-items: center; gap: 16px; padding: 18px 10px; border-top: 1px solid var(--line2); cursor: pointer; }
 .catrow:hover { background: var(--surface); }
 .catrow:last-child { border-bottom: 1px solid var(--line2); }
-.catrow .ico { width: 44px; height: 44px; border-radius: 10px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--accent-tint); color: var(--accent); border: 1px solid var(--accent-brd); }
+.catrow .ico { display: none; }
 .catrow .ico svg { width: 22px; height: 22px; }
 .catrow .body { min-width: 0; flex: 1; }
 .catrow .t { display: flex; align-items: center; gap: 10px; }
@@ -922,8 +932,8 @@ body.skin-glass .avatar, body.skin-glass .tenant-logo { border-radius: 10px; }
 body.skin-glass .miniava { border-radius: 8px; }
 body.skin-glass .tck { border-radius: 5px; }
 /* the spectrum border on the Moddy input stays an outline — opaque inner fill */
-body.skin-glass [data-theme="light"] .moddy-input-inner { background: rgba(255,255,255,.92); }
-body.skin-glass [data-theme="dark"] .moddy-input-inner { background: rgba(13,16,35,.92); }
+body.skin-glass [data-theme="light"] .moddy-input-inner { background: #FFFFFF; }
+body.skin-glass [data-theme="dark"] .moddy-input-inner { background: #0D1023; }
 /* glassy buttons + glowing primary */
 body.skin-glass .pill-btn, body.skin-glass .round-btn { background: var(--surface); border: 1px solid var(--line-strong); }
 body.skin-glass .pill-btn:hover, body.skin-glass .round-btn:hover { background: var(--surface2); }
@@ -1052,6 +1062,17 @@ body.skin-outline [data-theme="light"] .global-nav { background: #FCFCFC; }
    The entire app renders at 90% (demo harness stays full size).
    ============================================================ */
 .app { zoom: 0.9; }
+
+/* ============================================================
+   V2 EXPLORATION 10: TECHNICAL II
+   Technical skin variant: the side nav stays black and inverted
+   (white icons, green mark/active) even in light mode.
+   Applied as skin-technical + skin-technical2 together.
+   ============================================================ */
+body.skin-technical2 [data-theme="light"] .left-nav { background: #0A0A0A; }
+body.skin-technical2 [data-theme="light"] .left-nav .nav-item svg { color: #F2F2F2; }
+body.skin-technical2 [data-theme="light"] .nav-item.active svg { color: #30F284; }
+body.skin-technical2 [data-theme="light"] .home-mark { color: #30F284; }
 </style>
 </head>
 <body>
@@ -1115,6 +1136,7 @@ body.skin-outline [data-theme="light"] .global-nav { background: #FCFCFC; }
     <span class="ms-div"></span>
     <button data-skin="standard" class="active" data-tip="Standard v2 styling — 4px corners, flat surfaces, hairline separation.">Standard</button>
     <button data-skin="technical" data-tip="Technical / neo-brutalist skin — black chrome, neon-green primary, square panels cut by solid black lines, uppercase mono labels, pill action buttons.">Technical</button>
+    <button data-skin="technical2" data-tip="Technical II — same skin, but the side nav stays black and inverted (white icons, green mark) in light mode.">Tech II</button>
     <button data-skin="glass" data-tip="Glass skin — frosted translucent panels with backdrop blur over an ambient indigo gradient; rounded geometry and a glowing primary button.">Glass</button>
     <button data-skin="editorial" data-tip="Editorial skin — warm paper surfaces, serif display type, deep-teal primary, pill buttons, orange logomark.">Editorial</button>
     <button data-skin="outline" data-tip="Outline skin — Figma-like minimalism: white surfaces, hairline structure, outlined controls, accent-ring active states. Fully driven by the font and color controls.">Outline</button>
@@ -1139,7 +1161,10 @@ body.skin-outline [data-theme="light"] .global-nav { background: #FCFCFC; }
     <button data-font="figtree" title="Figtree + Geist Mono">Figtree</button>
     <button data-font="jakarta" title="Plus Jakarta Sans + Geist Mono">Jakarta</button>
     <button data-font="aktiv" title="Aktiv Grotesk (needs an Adobe Fonts kit — see comment in <head>; falls back to Archivo) + Geist Mono">Aktiv</button>
+    <span class="ms-div"></span>
+    <button class="ms-collapse" title="Hide demo controls"><svg><use href="#i-x"/></svg></button>
   </div>
+  <button class="ms-reopen" id="msReopen" title="Show demo controls"><svg><use href="#i-gear"/></svg> Controls</button>
 
   <div class="wcag-panel" id="wcagPanel" role="dialog" aria-label="WCAG contrast evaluation">
     <div class="wcag-head"><span class="wcag-title">WCAG contrast — primary color choices</span>
@@ -1556,7 +1581,17 @@ body.skin-outline [data-theme="light"] .global-nav { background: #FCFCFC; }
     });
     if (hint) hint.style.opacity = '0';
   }
+  // ---- collapsible controls ----
+  var reopenBtn = document.getElementById('msReopen');
+  function setControls(hidden) {
+    switchEl.classList.toggle('ms-hidden', hidden);
+    reopenBtn.classList.toggle('show', hidden);
+    if (hidden) setWcag(false);
+  }
+  reopenBtn.addEventListener('click', function () { setControls(false); });
+
   switchEl.addEventListener('click', function (e) {
+    if (e.target.closest('.ms-collapse')) { setControls(true); return; }
     var fb = e.target.closest('button[data-font]');
     if (fb) { setFont(fb.getAttribute('data-font')); return; }
     var sk = e.target.closest('button[data-skin]');
@@ -1598,10 +1633,15 @@ body.skin-outline [data-theme="light"] .global-nav { background: #FCFCFC; }
 
   // ---- style skin toggle (standard default) ----
   // the font and primary-color controls stay in charge across every skin
-  var SKINS = ['technical', 'glass', 'editorial', 'outline'];
+  var SKINS = ['technical', 'technical2', 'glass', 'editorial', 'outline'];
   function setSkin(s) {
     SKINS.forEach(function (v) { document.body.classList.remove('skin-' + v); });
-    if (SKINS.indexOf(s) !== -1) document.body.classList.add('skin-' + s);
+    if (s === 'technical2') {
+      document.body.classList.add('skin-technical');   // Tech II extends Technical
+      document.body.classList.add('skin-technical2');
+    } else if (SKINS.indexOf(s) !== -1) {
+      document.body.classList.add('skin-' + s);
+    }
     switchEl.querySelectorAll('button[data-skin]').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-skin') === s);
     });
