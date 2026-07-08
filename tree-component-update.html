@@ -593,16 +593,9 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
         </div>
 
         <div class="results-head">
-          <div class="seg" role="tablist" aria-label="Filter">
-            <button class="seg-btn active" data-filter="all">All <span class="seg-count" data-c="all"></span></button>
-            <button class="seg-btn" data-filter="results">Has results <span class="seg-count" data-c="results"></span></button>
-            <button class="seg-btn" data-filter="error">Errors <span class="seg-count" data-c="error"></span></button>
-          </div>
           <div class="filter-bar" id="filter-bar">
-            <svg class="fb-ic" viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <div class="filter-chips" id="filter-chips"></div>
-            <input id="repo-search" type="search" placeholder="Filter…" autocomplete="off" spellcheck="false">
-            <button class="filter-add" id="filter-add" title="Add a filter"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Filter</button>
+            <svg class="fb-ic svg-stroke" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <input id="repo-search" type="search" placeholder="Search for repository or organization" autocomplete="off" spellcheck="false">
           </div>
         </div>
 
@@ -1099,10 +1092,6 @@ function render(){
       + (remaining>0 ? `<button class="load-more" id="load-more">Load ${Math.min(PAGE_INC,remaining)} more <span class="lm-rest">${remaining.toLocaleString()} remaining</span></button>` : '');
     document.getElementById('footer-summary').textContent=`Showing ${shown.toLocaleString()} of ${list.length.toLocaleString()} repositories`;
   }
-  // seg counts
-  document.querySelector('[data-c="all"]').textContent=REPOS.length;
-  document.querySelector('[data-c="results"]').textContent=REPOS.filter(r=>r.results>0).length;
-  document.querySelector('[data-c="error"]').textContent=REPOS.filter(r=>r.error).length;
   // commit count = selected files (classes)
   document.getElementById('commit-count').textContent=state.selFiles.size.toLocaleString();
   // apply indeterminate states (can't be set via attribute)
@@ -1533,16 +1522,13 @@ document.getElementById('repo-search').addEventListener('input',e=>{ state.query
 /* ===== Faceted filter chips ===== */
 function renderFilters(){
   const c=document.getElementById('filter-chips');
+  if(!c) return;   // faceted filter chips removed — search input handles filtering
   c.innerHTML = state.filters.map((f,i)=>`<span class="filter-chip"><span class="fc-key">${FACET_LABEL[f.key]}:</span>${f.value}<button class="fc-x" data-i="${i}" aria-label="Remove ${f.key} filter"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>`).join('');
 }
 function addFilter(key,value){
   if(!state.filters.some(f=>f.key===key && f.value===value)) state.filters.push({key,value});
   renderFilters(); state.shown=PAGE_INIT; render();
 }
-document.getElementById('filter-chips').addEventListener('click',e=>{
-  const x=e.target.closest('.fc-x'); if(!x)return;
-  state.filters.splice(+x.dataset.i,1); renderFilters(); state.shown=PAGE_INIT; render();
-});
 function openFacetMenu(anchor){
   document.getElementById('gh-menu').classList.remove('wide');
   const caret='<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
@@ -1561,7 +1547,6 @@ function openFacetValues(anchor, fk){
     return true;
   });
 }
-document.getElementById('filter-add').addEventListener('click',function(e){ e.stopPropagation(); openFacetMenu(this); });
 renderFilters();
 
 /* Load more on scroll near the bottom of the left panel */
