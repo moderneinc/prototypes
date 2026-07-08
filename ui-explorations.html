@@ -311,6 +311,12 @@ body.font-aktiv { --font-sans: 'aktiv-grotesk', 'Archivo', system-ui, sans-serif
 .mode-switch button[data-font="aktiv"] { font-family: 'aktiv-grotesk', 'Archivo', sans-serif; }
 
 /* collapsible controls */
+/* advanced segment (colors, typography, CVD, WCAG) collapses behind the More button */
+.mode-switch .ms-adv { display: none; }
+.mode-switch.adv-open .ms-adv { display: contents; }
+.mode-switch button.ms-more { gap: 4px; }
+.mode-switch button.ms-more .chev { transition: transform .15s; }
+.mode-switch.adv-open button.ms-more .chev { transform: rotate(180deg); }
 .mode-switch button.ms-collapse { width: 26px; height: 26px; border-radius: 999px; border: none; background: transparent; color: #C9CCDD; display: flex; align-items: center; justify-content: center; padding: 0; }
 .mode-switch button.ms-collapse:hover { background: rgba(255,255,255,.10); color: #fff; }
 .mode-switch button.ms-collapse svg { width: 14px; height: 14px; }
@@ -628,6 +634,9 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
 .act-table th.ind svg { display: block; width: 76px; height: 35px; }
 .ty-recipe { color: var(--violet); font-weight: 500; }
 .ty-data { color: var(--teal-mid); font-weight: 500; }
+/* type + organization are secondary metadata: smaller than the run name, org muted */
+.act-table tbody td:nth-child(3), .act-table tbody td:nth-child(4) { font-size: 12px; }
+.act-table tbody td:nth-child(4) { color: var(--muted); }
 .ty-commit { color: var(--accent); font-weight: 500; }
 .act-time { color: var(--text); white-space: nowrap; }
 .act-foot { display: flex; align-items: center; justify-content: center; gap: 13px; padding: 11px; font-size: 11px; color: var(--text); border-top: 1px solid var(--line); }
@@ -1090,13 +1099,13 @@ body.skin-nordic [data-theme="light"] {
   --link-line: rgba(35,35,66,.22);
 }
 body.skin-nordic [data-theme="dark"] {
-  --bg: #1D1D36; --field: #232342;
-  --card: #282849; --card-head: #2F2F55;
-  --surface: #2B2B4E; --surface2: #34345C; --row-hover: #31315A;
-  --line: rgba(240,240,252,.12); --line2: rgba(240,240,252,.08); --line-strong: rgba(240,240,252,.24);
-  --text: #F1F0EA; --muted: #A9A9C4;
+  --bg: #141419; --field: #1B1B21;
+  --card: #1F1F26; --card-head: #25252D;
+  --surface: #222229; --surface2: #2A2A33; --row-hover: #26262F;
+  --line: rgba(240,240,246,.12); --line2: rgba(240,240,246,.08); --line-strong: rgba(240,240,246,.24);
+  --text: #F1F0EA; --muted: #9C9CA8;
   --su-t: rgba(166,239,163,.14); --su-b: rgba(166,239,163,.40); --green-hi: #A6EFA3;
-  --link-line: rgba(240,240,252,.24);
+  --link-line: rgba(240,240,246,.24);
 }
 /* chrome: ink mark, mint badge, ink avatar */
 body.skin-nordic .home-mark { color: #232342; }
@@ -1105,7 +1114,7 @@ body.skin-nordic .nav-version-badge { background: #A6EFA3; color: #1E2E1D; }
 body.skin-nordic .avatar { background: #232342; color: #FBFAF6; border-radius: 999px; }
 body.skin-nordic [data-theme="dark"] .avatar { background: #A6EFA3; color: #1E2E1D; }
 body.skin-nordic .tenant-logo { background: #232342; color: #FBFAF6; }
-body.skin-nordic [data-theme="dark"] .tenant-logo { background: #F1F0EA; color: #232342; }
+body.skin-nordic [data-theme="dark"] .tenant-logo { background: #F1F0EA; color: #17171C; }
 /* soft nordic geometry */
 body.skin-nordic .sumopt, body.skin-nordic .summary, body.skin-nordic .tree,
 body.skin-nordic .repo-detail, body.skin-nordic .act-card, body.skin-nordic .toast,
@@ -1120,12 +1129,12 @@ body.skin-nordic .pill-btn, body.skin-nordic .round-btn { background: var(--fiel
 body.skin-nordic .pill-btn:hover, body.skin-nordic .round-btn:hover { background: var(--surface); }
 body.skin-nordic .pill-btn--primary { background: #232342; color: #FBFAF6; border-color: transparent; }
 body.skin-nordic .pill-btn--primary:hover { background: #2C2C50; filter: none; }
-body.skin-nordic [data-theme="dark"] .pill-btn--primary { background: #F1F0EA; color: #232342; }
+body.skin-nordic [data-theme="dark"] .pill-btn--primary { background: #F1F0EA; color: #17171C; }
 body.skin-nordic [data-theme="dark"] .pill-btn--primary:hover { background: #FFFFFF; }
 /* kron gradient on the Moddy input rim */
 body.skin-nordic .moddy-input { background: linear-gradient(90deg, #3E5BE8, #B39DEB, #F0916F); }
 body.skin-nordic [data-theme="light"] .moddy-input-inner { background: #FBFAF6; }
-body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #232342; }
+body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
 </style>
 </head>
 <body>
@@ -1195,6 +1204,9 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #232342; }
     <button data-skin="outline" data-tip="Outline skin — Figma-like minimalism: white surfaces, hairline structure, outlined controls, accent-ring active states. Fully driven by the font and color controls.">Outline</button>
     <button data-skin="nordic" data-tip="Nordic skin — på() × kron: warm cream canvas, ink-navy buttons, mint accents, periwinkle links, lilac→coral gradient moments; deep ink-navy dark mode.">Nordic</button>
     <span class="ms-div"></span>
+    <button class="ms-more" data-tip="Show or hide the primary color, typography, colorblind simulation and WCAG contrast controls.">More <svg class="chev"><use href="#i-chevd"/></svg></button>
+    <div class="ms-adv">
+    <span class="ms-div"></span>
     <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
     <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
     <button data-primary="blue-aaa" class="swatch" title="Blue AAA — mid-ramp tokens (7:1 text everywhere): #7FA9F9 dark / #1245AE light"><span class="dot dot-blue-aaa"></span><span class="swlbl">Blue AAA</span></button>
@@ -1215,6 +1227,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #232342; }
     <button data-font="figtree" title="Figtree + Geist Mono">Figtree</button>
     <button data-font="jakarta" title="Plus Jakarta Sans + Geist Mono">Jakarta</button>
     <button data-font="aktiv" title="Aktiv Grotesk (needs an Adobe Fonts kit — see comment in <head>; falls back to Archivo) + Geist Mono">Aktiv</button>
+    </div>
     <span class="ms-div"></span>
     <button class="ms-collapse" title="Hide demo controls"><svg><use href="#i-x"/></svg></button>
   </div>
@@ -1643,8 +1656,15 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #232342; }
   }
   reopenBtn.addEventListener('click', function () { setControls(false); });
 
+  // ---- advanced segment (colors / typography / CVD / WCAG) ----
+  function setAdv(open) {
+    switchEl.classList.toggle('adv-open', open);
+    if (!open) setWcag(false);
+  }
+
   switchEl.addEventListener('click', function (e) {
     if (e.target.closest('.ms-collapse')) { setControls(true); return; }
+    if (e.target.closest('.ms-more')) { setAdv(!switchEl.classList.contains('adv-open')); return; }
     var fb = e.target.closest('button[data-font]');
     if (fb) { setFont(fb.getAttribute('data-font')); return; }
     var sk = e.target.closest('button[data-skin]');
@@ -1769,6 +1789,10 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #232342; }
     switchEl.querySelectorAll('button[data-panel]').forEach(function (b) { b.classList.toggle('active', open); });
   }
   if (new URLSearchParams(location.search).get('wcag') === '1') setWcag(true);
+
+  // URL params that target the collapsed segment expand it so their state is visible
+  var advQs = new URLSearchParams(location.search);
+  if (advQs.get('cvd') || advQs.get('font') || advQs.get('primary') || advQs.get('wcag') === '1') setAdv(true);
 
   // ---- primary color variant (blue / green) ----
   var PRIMARIES = ['violet', 'blue', 'teal', 'green', 'blue-aaa', 'magenta', 'lime'];
