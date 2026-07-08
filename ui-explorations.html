@@ -841,6 +841,75 @@ body.skin-technical [data-theme="light"] .pill-btn:hover, body.skin-technical [d
 body.skin-technical .pill-btn--primary, body.skin-technical [data-theme="light"] .pill-btn--primary { background: var(--primary-bg); color: var(--primary-fg); border: 1px solid #111; }
 body.skin-technical [data-theme="dark"] .pill-btn--primary { border-color: var(--primary-bg); }
 body.skin-technical .pill-btn--primary:hover { background: var(--primary-bg); filter: brightness(1.08); }
+
+/* ============================================================
+   V2 EXPLORATION 6: GLASS SKIN (toggle: Standard | Technical | Glass)
+   Frosted translucent panels (backdrop blur) over an ambient
+   indigo gradient; soft light borders, rounded geometry, glowing
+   primary. Active when body.skin-glass is set.
+   ============================================================ */
+body.skin-glass .layer[data-theme="dark"] {
+  background:
+    radial-gradient(1200px 800px at 18% -10%, rgba(93,95,239,.28), transparent 60%),
+    radial-gradient(1000px 700px at 108% 15%, rgba(157,91,232,.20), transparent 55%),
+    radial-gradient(900px 700px at 50% 120%, rgba(37,208,192,.10), transparent 55%),
+    #0B0E20;
+}
+body.skin-glass .layer[data-theme="light"] {
+  background:
+    radial-gradient(1100px 750px at 15% -10%, rgba(120,130,246,.22), transparent 60%),
+    radial-gradient(900px 650px at 108% 18%, rgba(230,57,155,.12), transparent 55%),
+    radial-gradient(900px 700px at 55% 120%, rgba(37,208,192,.14), transparent 55%),
+    #ECEFF9;
+}
+body.skin-glass [data-theme="dark"] {
+  --bg: rgba(255,255,255,.03); --field: rgba(255,255,255,.04);
+  --card: rgba(255,255,255,.05); --card-head: rgba(255,255,255,.07);
+  --surface: rgba(255,255,255,.06); --surface2: rgba(255,255,255,.10); --row-hover: rgba(255,255,255,.08);
+  --line: rgba(255,255,255,.10); --line2: rgba(255,255,255,.07); --line-strong: rgba(255,255,255,.18);
+  --text: #EEF0FC; --muted: #A9AECE;
+  --panel-shadow: 0 24px 70px rgba(0,0,0,.45);
+}
+body.skin-glass [data-theme="light"] {
+  --bg: rgba(255,255,255,.30); --field: rgba(255,255,255,.42);
+  --card: rgba(255,255,255,.55); --card-head: rgba(255,255,255,.65);
+  --surface: rgba(255,255,255,.48); --surface2: rgba(110,120,180,.14); --row-hover: rgba(255,255,255,.70);
+  --line: rgba(30,40,90,.13); --line2: rgba(30,40,90,.09); --line-strong: rgba(30,40,90,.22);
+  --text: #1D2340; --muted: #5A6285;
+  --panel-shadow: 0 24px 70px rgba(31,38,135,.16);
+}
+/* frosted surfaces */
+body.skin-glass .main-area { box-shadow: var(--panel-shadow); border-left: 1px solid var(--line); border-top: 1px solid var(--line); backdrop-filter: blur(6px); }
+body.skin-glass .act-card, body.skin-glass .tree, body.skin-glass .repo-detail,
+body.skin-glass .summary, body.skin-glass .sumopt, body.skin-glass .toast,
+body.skin-glass .filter-bar, body.skin-glass .mkt-search, body.skin-glass .moddy-input-inner,
+body.skin-glass .org-selector, body.skin-glass .search-input {
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid var(--line);
+}
+/* ambient glow returns behind the top bar */
+body.skin-glass .global-nav::before { display: block; }
+/* rounded glass geometry */
+body.skin-glass .org-selector, body.skin-glass .search-input, body.skin-glass .mkt-search,
+body.skin-glass .filter-bar, body.skin-glass .sumopt, body.skin-glass .summary,
+body.skin-glass .tree, body.skin-glass .repo-detail, body.skin-glass .act-card,
+body.skin-glass .toast, body.skin-glass .moddy-input, body.skin-glass .moddy-input-inner,
+body.skin-glass .moddy-sug, body.skin-glass .badge, body.skin-glass .catrow .ico { border-radius: 12px; }
+body.skin-glass .search-input kbd, body.skin-glass .catrow .t .n { border-radius: 6px; }
+body.skin-glass .main-area { border-top-left-radius: 18px; }
+body.skin-glass .pill-btn, body.skin-glass .round-btn, body.skin-glass .moddy-send { border-radius: 10px; }
+body.skin-glass .nav-item, body.skin-glass .nav-icon-container, body.skin-glass .icon-btn { border-radius: 10px; }
+body.skin-glass .seg { border-radius: 10px; }
+body.skin-glass .seg-btn { border-radius: 8px; }
+body.skin-glass .avatar, body.skin-glass .tenant-logo { border-radius: 10px; }
+body.skin-glass .miniava { border-radius: 8px; }
+body.skin-glass .tck { border-radius: 5px; }
+/* glassy buttons + glowing primary */
+body.skin-glass .pill-btn, body.skin-glass .round-btn { background: var(--surface); border: 1px solid var(--line-strong); }
+body.skin-glass .pill-btn:hover, body.skin-glass .round-btn:hover { background: var(--surface2); }
+body.skin-glass .pill-btn--primary { background: var(--primary-bg); border: 1px solid rgba(255,255,255,.28); box-shadow: 0 6px 22px color-mix(in srgb, var(--primary-bg) 45%, transparent); }
+body.skin-glass .pill-btn--primary:hover { background: var(--primary-bg); filter: brightness(1.08); }
 </style>
 </head>
 <body>
@@ -904,6 +973,7 @@ body.skin-technical .pill-btn--primary:hover { background: var(--primary-bg); fi
     <span class="ms-div"></span>
     <button data-skin="standard" class="active" data-tip="Standard v2 styling — 4px corners, flat surfaces, hairline separation.">Standard</button>
     <button data-skin="technical" data-tip="Technical / neo-brutalist skin — black chrome, neon-green primary, square panels cut by solid black lines, uppercase mono labels, pill action buttons.">Technical</button>
+    <button data-skin="glass" data-tip="Glass skin — frosted translucent panels with backdrop blur over an ambient indigo gradient; rounded geometry and a glowing primary button.">Glass</button>
     <span class="ms-div"></span>
     <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
     <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
@@ -1386,13 +1456,16 @@ body.skin-technical .pill-btn--primary:hover { background: var(--primary-bg); fi
   if (new URLSearchParams(location.search).get('tones') === 'warm') setTones('warm');
 
   // ---- style skin toggle (standard default) ----
+  var SKINS = ['technical', 'glass'];
   function setSkin(s) {
-    document.body.classList.toggle('skin-technical', s === 'technical');
+    SKINS.forEach(function (v) { document.body.classList.remove('skin-' + v); });
+    if (SKINS.indexOf(s) !== -1) document.body.classList.add('skin-' + s);
     switchEl.querySelectorAll('button[data-skin]').forEach(function (b) {
       b.classList.toggle('active', b.getAttribute('data-skin') === s);
     });
   }
-  if (new URLSearchParams(location.search).get('skin') === 'technical') setSkin('technical');
+  var qsSkin = new URLSearchParams(location.search).get('skin');
+  if (SKINS.indexOf(qsSkin) !== -1) setSkin(qsSkin);
 
   // ---- font selection (geist default) ----
   var FONTS = ['geist', 'inter', 'plex', 'dm', 'figtree', 'jakarta', 'aktiv'];
