@@ -583,12 +583,16 @@
     }
     /* Turtle icon: reuses the tooltip-trigger affordances, but the glyph is a
        filled illustration (not a stroked icon), so it inherits `fill` from
-       `color` and needs no stroke overrides. */
+       `color` and needs no stroke overrides. Sized via `--sz` so the drawn
+       silhouette hits ~18 px optical height; container stays 20 px tall to
+       align with the badge. Mirrors the "current" variant in turtle-icons.html. */
     .activity tbody td.status .status-turtle {
+      --sz: 18px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 14px; height: 14px;
+      width: var(--sz);
+      height: 20px;
       color: var(--text-secondary);
       cursor: help;
       flex-shrink: 0;
@@ -598,7 +602,8 @@
       color: var(--text-primary);
     }
     .activity tbody td.status .status-turtle svg {
-      width: 14px; height: 14px;
+      width: var(--sz);
+      height: var(--sz);
       fill: currentColor;
     }
     .activity tbody td.status .status-turtle svg path { fill: currentColor; }
@@ -1103,7 +1108,7 @@
     // whose tooltip explains the placement; no "Slow lane" label text.
     recipeRunRow('Static analysis pass', 'org.openrewrite.staticanalysis.CommonStaticAnalysis',
       { hasCommit: false, hasVis: false, org,
-        statusCell: slowLaneChip('active', 'Running', "This run spans 100+ repositories, so it's placed in the slow lane to keep smaller runs moving."),
+        statusCell: slowLaneChip('active', 'Running', "Turtle mode: this run spans 100+ repositories, so it's taking the slow lane to keep smaller runs moving."),
         runBy: 'A', time: '32 min ago', abs: '' }),
 
     // Cluster 4 — recipe + visualization child (finished)
