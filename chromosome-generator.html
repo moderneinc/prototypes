@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderne — chromosome SVG generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#100C0A; --surface:#1C1714; --surface-2:#241E1A; --line:#2C2520;
+    --text:#F2EDE4; --muted:#A39B90; --dim:#6E6559;
+    --accent:#30F284; --link:#30F284;
+    --font:"Poppins",system-ui,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  body[data-bg="light"]{
+    --bg:#F6F7FA; --surface:#ECEEF3; --surface-2:#E1E4EC; --line:#DCE0E8;
+    --text:#1B2230; --muted:#6A7180; --dim:#8B92A1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;padding:24px 20px 60px;transition:background .25s,color .25s}
+  .page{max-width:1360px;margin:0 auto}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:16px;flex-wrap:wrap}
+  .topbar .lbl{color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  .toggle{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);color:var(--text);font-family:var(--mono);font-size:12px;font-weight:500;padding:8px 14px;border-radius:20px;cursor:pointer}
+  .toggle .dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+
+  h1{font-size:28px;font-weight:600;letter-spacing:-.5px;margin-bottom:6px}
+  .lede{color:var(--muted);font-size:14.5px;line-height:1.55;max-width:720px;margin-bottom:22px}
+  .lede a{color:var(--link)}
+
+  .layout{display:grid;grid-template-columns:320px 1fr;gap:20px}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+  /* ---- controls panel ---- */
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .panel h2{font-size:11px;font-weight:600;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .field{margin-bottom:16px}
+  .field:last-of-type{margin-bottom:0}
+  .field label{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--text);margin-bottom:6px;font-weight:500}
+  .field label .val{color:var(--muted);font-family:var(--mono);font-size:11px}
+  .field input[type=range]{width:100%;accent-color:var(--accent);height:20px}
+  .field input[type=number],.field input[type=text],.field select{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);font-family:var(--mono);font-size:12.5px;padding:8px 10px;border-radius:8px}
+  .field input[type=number]{-moz-appearance:textfield}
+  .field input[type=number]::-webkit-outer-spin-button,.field input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .field select{cursor:pointer;padding-right:26px}
+  .row{display:flex;gap:8px;align-items:center}
+  .row input[type=number]{flex:1}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--bg);border:1px solid var(--line);color:var(--text);font-family:var(--mono);font-size:12px;font-weight:500;padding:8px 12px;border-radius:8px;cursor:pointer;transition:border-color .15s,background .15s}
+  .btn:hover{border-color:var(--muted)}
+  .btn.primary{background:var(--accent);color:#04220f;border-color:var(--accent);font-weight:600}
+  .btn.primary:hover{background:#22d972;border-color:#22d972}
+  .btn.wide{width:100%}
+  .btn-group{display:flex;gap:6px;flex-wrap:wrap}
+  .seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px;gap:2px}
+  .seg button{flex:1;background:transparent;border:none;color:var(--muted);font-family:var(--mono);font-size:11.5px;font-weight:500;padding:7px 8px;border-radius:6px;cursor:pointer;text-transform:capitalize}
+  .seg button.on{background:var(--surface-2);color:var(--text)}
+  .swatches{display:flex;flex-wrap:wrap;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px}
+  .swatches button{width:24px;height:24px;padding:0;border-radius:50%;border:2px solid transparent;background:var(--sw);cursor:pointer;position:relative;transition:transform .1s}
+  .swatches button:hover{transform:scale(1.1)}
+  .swatches button.on{border-color:var(--text)}
+  .swatches button.on::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid var(--accent);pointer-events:none}
+  /* Focus indicators — visible for keyboard users, invisible on mouse click. */
+  :focus{outline:none}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .seg button:focus-visible{outline-offset:0}
+  .swatches button:focus-visible{outline-offset:3px}
+  .btn:focus-visible,.toggle:focus-visible,.card:focus-visible,.set-remove:focus-visible{outline-offset:2px}
+  input[type=range]:focus-visible{outline-offset:4px;border-radius:4px}
+  input[type=checkbox]:focus-visible{outline-offset:3px}
+  a:focus-visible{outline-offset:3px;border-radius:2px}
+  /* Screen-reader-only text for extra context on icon-only controls. */
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .hint{font-size:11px;color:var(--dim);margin-top:4px;line-height:1.5}
+  .chk{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text);cursor:pointer}
+  .chk input{accent-color:var(--accent);width:14px;height:14px}
+  hr{border:none;border-top:1px solid var(--line);margin:18px 0}
+
+  /* ---- preview panel ---- */
+  .stage{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:18px;min-height:520px}
+  .stage-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .stage-header h2{font-size:11px;font-weight:600;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .stage-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+  .preview{flex:1;display:flex;align-items:center;justify-content:center;background:#0a0709;border:1px solid var(--line);border-radius:12px;min-height:400px;padding:20px;position:relative;overflow:hidden}
+  .preview[data-bg="light"]{background:#f4f5f8}
+  .preview[data-bg="trans"]{background:transparent;background-image:linear-gradient(45deg,#221d19 25%,transparent 25%),linear-gradient(-45deg,#221d19 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#221d19 75%),linear-gradient(-45deg,transparent 75%,#221d19 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0px}
+  body[data-bg="light"] .preview[data-bg="trans"]{background-image:linear-gradient(45deg,#d8dae2 25%,transparent 25%),linear-gradient(-45deg,#d8dae2 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d8dae2 75%),linear-gradient(-45deg,transparent 75%,#d8dae2 75%)}
+  .preview svg{max-width:100%;max-height:520px;height:auto;display:block}
+
+  .meta{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;color:var(--muted);gap:12px;flex-wrap:wrap}
+  .meta code{background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:2px 7px;color:var(--text)}
+
+  /* ---- presets grid ---- */
+  .grid-section{margin-top:26px}
+  .grid-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;gap:12px;flex-wrap:wrap}
+  .grid-head h2{font-size:11px;font-weight:600;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .grid-head .sub{font-family:var(--mono);font-size:11px;color:var(--dim)}
+  .grid{display:grid;grid-template-columns:repeat(9,1fr);gap:10px}
+  @media(max-width:1200px){.grid{grid-template-columns:repeat(6,1fr)}}
+  @media(max-width:800px){.grid{grid-template-columns:repeat(4,1fr)}}
+  @media(max-width:520px){.grid{grid-template-columns:repeat(3,1fr)}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 8px 10px;cursor:pointer;transition:border-color .15s,transform .15s;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .card:hover{border-color:var(--muted);transform:translateY(-1px)}
+  .card.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .card .cell{width:100%;height:150px;display:flex;align-items:center;justify-content:center;background:#0a0709;border-radius:8px}
+  body[data-bg="light"] .card .cell{background:#f4f5f8}
+  .card .cell svg{max-height:138px;max-width:100%}
+  .card .lbl{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.03em}
+
+  /* ---- sets ---- */
+  .set-section{margin-top:26px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .set-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+  .set-head h2{font-size:11px;font-weight:600;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .set-head .sub{font-family:var(--mono);font-size:11px;color:var(--dim)}
+  .set-row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;background:#0a0709;border:1px solid var(--line);border-radius:12px;padding:20px 22px;min-height:220px}
+  .set-row[data-bg="light"]{background:#f4f5f8}
+  .set-row[data-bg="trans"]{background:transparent;background-image:linear-gradient(45deg,#221d19 25%,transparent 25%),linear-gradient(-45deg,#221d19 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#221d19 75%),linear-gradient(-45deg,transparent 75%,#221d19 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0}
+  body[data-bg="light"] .set-row{background:#f4f5f8}
+  .set-empty{color:var(--dim);font-family:var(--mono);font-size:12px;letter-spacing:.05em;width:100%;text-align:center;padding:30px 0}
+  .set-item{position:relative;display:flex;align-items:flex-end;justify-content:center}
+  .set-item svg{max-height:260px;height:auto;display:block}
+  .set-remove{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:var(--surface);color:var(--muted);border:1px solid var(--line);cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;font-family:var(--mono);z-index:2}
+  .set-remove:hover{color:var(--text);border-color:var(--muted);background:var(--surface-2)}
+  .set-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+
+  footer{margin-top:24px;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:.03em;text-align:center;line-height:1.6}
+  footer a{color:var(--link)}
+</style>
+</head>
+<body data-bg="dark">
+<div class="page">
+
+  <div class="topbar">
+    <span class="lbl">Marketing tool · Moderne · chromosome SVG generator</span>
+    <button class="toggle" id="themeToggle" aria-label="Toggle page theme" aria-pressed="false"><span class="dot" aria-hidden="true"></span><span id="tlabel">Dark</span></button>
+  </div>
+
+  <h1>Chromosome SVG generator</h1>
+  <p class="lede">Same drawing algorithm as the animated karyotype on <a href="https://moderne.ai/" target="_blank" rel="noopener">moderne.ai</a>: a curved spine with a centromere pinch, tapered ends, and banded strokes. Tune the palette, seed, and dimensions, then download a standalone SVG. Every combination is deterministic — the URL captures your settings, so shareable links regenerate the exact same chromosome.</p>
+
+  <div class="layout">
+
+    <!-- ============ CONTROLS ============ -->
+    <aside class="panel">
+      <h2>Controls</h2>
+
+      <div class="field">
+        <label id="modeLabel">Mode</label>
+        <div class="seg" id="modeSeg" role="radiogroup" aria-labelledby="modeLabel">
+          <button data-v="pair"   class="on" role="radio" aria-checked="true">Pair · 2</button>
+          <button data-v="single"             role="radio" aria-checked="false">Single · 1</button>
+        </div>
+        <div class="hint">Two chromosomes (site default) or one.</div>
+      </div>
+
+      <div class="field">
+        <label id="colorLabel">Color <span class="val" id="colorVal" aria-live="polite">Pink</span></label>
+        <div class="swatches" id="colorSeg" role="radiogroup" aria-labelledby="colorLabel">
+          <button data-v="pink"    class="on" role="radio" aria-checked="true"  style="--sw:hsl(330 95% 58%)" aria-label="Pink"    title="Pink"></button>
+          <button data-v="magenta"             role="radio" aria-checked="false" style="--sw:hsl(300 95% 58%)" aria-label="Magenta" title="Magenta"></button>
+          <button data-v="purple"              role="radio" aria-checked="false" style="--sw:hsl(276 95% 58%)" aria-label="Purple"  title="Purple"></button>
+          <button data-v="violet"              role="radio" aria-checked="false" style="--sw:hsl(250 95% 62%)" aria-label="Violet"  title="Violet"></button>
+          <button data-v="blue"                role="radio" aria-checked="false" style="--sw:hsl(214 95% 60%)" aria-label="Blue"    title="Blue"></button>
+          <button data-v="cyan"                role="radio" aria-checked="false" style="--sw:hsl(192 90% 55%)" aria-label="Cyan"    title="Cyan"></button>
+          <button data-v="mint"                role="radio" aria-checked="false" style="--sw:hsl(168 85% 55%)" aria-label="Mint"    title="Mint"></button>
+          <button data-v="green"               role="radio" aria-checked="false" style="--sw:hsl(150 85% 55%)" aria-label="Green"   title="Green"></button>
+        </div>
+        <div class="hint">Eight hues from the moderne.ai karyotype palette.</div>
+      </div>
+
+      <div class="field">
+        <label id="devLabel">Deviant bands</label>
+        <div class="seg" id="devSeg" role="radiogroup" aria-labelledby="devLabel" aria-describedby="devHint">
+          <button data-v="accent" class="on" role="radio" aria-checked="true">Accent</button>
+          <button data-v="red"                role="radio" aria-checked="false">Red</button>
+          <button data-v="green"              role="radio" aria-checked="false">Green</button>
+          <button data-v="none"               role="radio" aria-checked="false">None</button>
+        </div>
+        <div class="hint" id="devHint" aria-live="polite">Site default — uses accent hues from the palette.</div>
+      </div>
+
+      <hr>
+
+      <div class="field">
+        <label>Chromosome <span class="val" aria-live="polite">#<span id="seedVal">2000</span></span></label>
+        <button class="btn wide" id="randomizeBtn" aria-label="Generate a new random chromosome">↻ New chromosome</button>
+        <div class="hint">Each number is a unique specimen. The number is in the URL, so you can share a link to any specific one.</div>
+      </div>
+
+      <div class="field">
+        <label for="heightRange">Height <span class="val" id="heightVal" aria-live="polite">226 px</span></label>
+        <input type="range" id="heightRange" min="120" max="360" step="1" value="226" aria-valuemin="120" aria-valuemax="360" aria-label="Chromosome height in pixels">
+      </div>
+
+      <hr>
+
+      <div class="field">
+        <label id="bgLabel">Background</label>
+        <div class="seg" id="bgSeg" role="radiogroup" aria-labelledby="bgLabel">
+          <button data-v="dark"  class="on" role="radio" aria-checked="true">Dark</button>
+          <button data-v="light"             role="radio" aria-checked="false">Light</button>
+          <button data-v="trans"             role="radio" aria-checked="false">None</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="chk"><input type="checkbox" id="showCentromere" checked>Centromere marker</label>
+      </div>
+
+      <hr>
+
+      <div class="btn-group">
+        <button class="btn primary wide" id="downloadBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 4 5-4"/><path d="M5 21h14"/></svg>
+          Download SVG
+        </button>
+        <button class="btn wide" id="addToSetBtn">＋ Add to set</button>
+        <button class="btn wide" id="copyBtn">Copy SVG markup</button>
+        <button class="btn wide" id="copyLinkBtn">Copy shareable link</button>
+      </div>
+    </aside>
+
+    <!-- ============ PREVIEW ============ -->
+    <section class="stage" aria-labelledby="previewLabel">
+      <div class="stage-header">
+        <h2 id="previewLabel">Preview</h2>
+        <div class="stage-actions">
+          <button class="btn" id="rerollBtn" aria-label="Generate a new random chromosome">↻ New chromosome</button>
+        </div>
+      </div>
+
+      <div class="preview" id="preview" data-bg="dark" aria-live="polite"></div>
+
+      <div class="meta" aria-live="polite">
+        <span>chromosome <code id="metaSeed">#2000</code> · color <code id="metaPal">pink</code> · hue <code id="metaHue">330°</code></span>
+        <span id="metaSize">120 × 260 px</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ SET ============ -->
+  <section class="set-section" aria-labelledby="setLabel">
+    <div class="set-head">
+      <h2 id="setLabel">Your set</h2>
+      <span class="sub">Bundle chromosomes/pairs into one exportable SVG. Click "Add to set" in the controls.</span>
+    </div>
+    <div class="set-row" id="setRow" data-bg="dark" aria-label="Items in your set">
+      <div class="set-empty" id="setEmpty">The set is empty. Configure a chromosome above and click <b>＋ Add to set</b>.</div>
+    </div>
+    <div class="set-actions" id="setActions" style="display:none">
+      <button class="btn primary" id="downloadSetBtn">Download set SVG</button>
+      <button class="btn" id="copySetBtn">Copy set markup</button>
+      <button class="btn" id="clearSetBtn">Clear set</button>
+    </div>
+  </section>
+
+  <!-- ============ PRESETS ============ -->
+  <section class="grid-section" aria-labelledby="presetsLabel">
+    <div class="grid-head">
+      <h2 id="presetsLabel">Moderne.ai karyotype presets</h2>
+      <span class="sub">18 chromosome pairs from the homepage hero · click to load</span>
+    </div>
+    <div class="grid" id="grid" aria-label="Karyotype preset pairs"></div>
+  </section>
+
+  <footer>Chromosomes drawn with the same routine as <a href="https://moderne.ai/" target="_blank" rel="noopener">moderne.ai</a> · deterministic per seed · SVGs export standalone (no external refs).</footer>
+</div>
+
+<script>
+/* ============================================================
+   Chromosome renderer — ported from karyotype.ts on moderne.ai
+   ============================================================ */
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+/* Electric palette hues, in karyotype order (magenta → mint) */
+const ELECTRIC_HUES = [330, 300, 276, 250, 214, 192, 168, 150];
+
+/* Deviant-band fixed hues for "red" (defect) / "green" (healed) overrides. */
+const DEV_HUE = { red: 354, green: 142 };
+
+/* Seeded RNG — matches the site's implementation. */
+function seedRng(seed){
+  return function(){
+    seed |= 0;
+    seed = seed + 1831565813 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+/* All 8 site colors, in the same order as the karyotype cycles through them.
+   Each entry pairs a base hue with the accent hue(s) the site would pick for
+   that hue when the "Accent" deviant-band mode is on. */
+const COLORS = {
+  pink:    { hue: 330, accentHues: [214, 150] },
+  magenta: { hue: 300, accentHues: [192, 150] },
+  purple:  { hue: 276, accentHues: [168, 150] },
+  violet:  { hue: 250, accentHues: [150, 150] },
+  blue:    { hue: 214, accentHues: [330, 150] },
+  cyan:    { hue: 192, accentHues: [300, 150] },
+  mint:    { hue: 168, accentHues: [276, 150] },
+  green:   { hue: 150, accentHues: [250, 150] }
+};
+
+/* Palette lookup for the presets grid — uses the full electric palette. */
+function palettePick(i){
+  const hue = ELECTRIC_HUES[(i * 3) % ELECTRIC_HUES.length];
+  const accent = ELECTRIC_HUES[(i * 3 + 4) % ELECTRIC_HUES.length];
+  return { hue, accentHues: [accent, 150] };
+}
+
+/* Width along the spine. Cosine-eases the centromere pinch, sqrt-tapers the ends. */
+function widthAt(t, cen, maxW, pinchW){
+  const dist = Math.abs(t - cen);
+  const pinchRange = 0.085;
+  let w = maxW;
+  if (dist < pinchRange){
+    const k = dist / pinchRange;
+    w = pinchW + (maxW - pinchW) * (0.5 - 0.5 * Math.cos(k * Math.PI));
+  }
+  const endTaper = Math.min(Math.min(1, t / 0.06), Math.min(1, (1 - t) / 0.06));
+  w *= 0.4 + 0.6 * Math.sqrt(Math.max(0, endTaper));
+  return w;
+}
+
+/* Band placement — returns list of {t0,t1,inten,dev} bands, filling the two arms. */
+function planBands(seed, cen){
+  const rng = seedRng(seed);
+  const bands = [];
+  const fill = (a, b) => {
+    let i = a;
+    while (i < b - 0.012){
+      let len = 0.028 + rng() * 0.055;
+      if (i + len > b) len = b - i;
+      if (len < 0.016) break;
+      bands.push({ t0: i, t1: i + len, inten: 0.12 + rng() * 0.88, dev: rng() < 0.3 });
+      i += len;
+      if (rng() < 0.26){
+        const gap = 0.01 + rng() * 0.018;
+        if (i + gap < b){
+          bands.push({ t0: i, t1: i + gap, inten: 0.05, dev: false });
+          i += gap;
+        }
+      }
+    }
+  };
+  fill(0.03, cen - 0.03);
+  fill(cen + 0.03, 0.97);
+  return bands;
+}
+
+function mkPath(d, attrs){
+  const p = document.createElementNS(SVG_NS, 'path');
+  p.setAttribute('d', d);
+  if (attrs) for (const k in attrs) p.setAttribute(k, attrs[k]);
+  return p;
+}
+
+/* Draw one band as short perpendicular strokes across the strand — matches the
+   site's rendering: denser + brighter strokes for higher-intensity bands, still
+   individually visible as tightly grouped parallel lines (not a solid block). */
+function drawBand(parent, band, sample, height, stroke, opacity){
+  const step = (2 + (1 - band.inten) * 4.6) * 2 / height;
+  const strokeWidth = 0.7 + band.inten * 0.5;
+  for (let t = band.t0; t <= band.t1; t += step){
+    const s = sample(t);
+    const half = s.w + 3;
+    const line = document.createElementNS(SVG_NS, 'line');
+    line.setAttribute('x1', (s.p.x - s.n.x * half).toFixed(1));
+    line.setAttribute('y1', (s.p.y - s.n.y * half).toFixed(1));
+    line.setAttribute('x2', (s.p.x + s.n.x * half).toFixed(1));
+    line.setAttribute('y2', (s.p.y + s.n.y * half).toFixed(1));
+    line.setAttribute('stroke', stroke);
+    line.setAttribute('stroke-width', strokeWidth.toFixed(2));
+    line.setAttribute('opacity', opacity.toFixed(2));
+    line.setAttribute('stroke-linecap', 'round');
+    parent.appendChild(line);
+  }
+}
+
+/* Build one chromosome into `svg` (with `defs` shared for clip paths).
+   Returns its bounding box so the caller can size the viewBox. */
+function drawChromosomeInto(svg, defs, opts){
+  const {
+    seed = 2000,
+    hue = 168,
+    accentHues = [214, 150],
+    devMode = 'accent',
+    height = 226,
+    showCentromere = true,
+    cxOffset = 0,
+    yOffset = 0,
+    idPrefix = 'ch'
+  } = opts;
+
+  const rng = seedRng(seed);
+  const cen = 0.4 + rng() * 0.12;
+  const maxW = Math.max(9, height * 0.085);
+  const pinchW = maxW * 0.36;
+  const bend = (rng() * 2 - 1) * 0.16;
+  const waveAmp = height * (0.05 + rng() * 0.09);
+  const wavePhase = rng() * Math.PI * 2;
+  const waveFreq = 1 + rng() * 1.1;
+
+  const STEPS = 120;
+  const cx0 = 60 + cxOffset;
+  const y0 = yOffset;
+
+  const spine = [];
+  for (let r = 0; r <= STEPS; r++){
+    const t = r / STEPS;
+    const py = y0 + height * t;
+    const bx = bend * height * (t - 0.5);
+    const wx = Math.sin(t * Math.PI * waveFreq + wavePhase) * waveAmp * Math.sin(t * Math.PI);
+    spine.push({ x: cx0 + bx + wx, y: py });
+  }
+
+  const normalAt = (i) => {
+    const a = spine[Math.max(0, i - 1)];
+    const b = spine[Math.min(STEPS, i + 1)];
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const len = Math.hypot(dx, dy) || 1;
+    return { x: -dy / len, y: dx / len };
+  };
+
+  const tToIdx = (t) => Math.max(0, Math.min(STEPS, Math.round(t * STEPS)));
+  const sample = (t) => {
+    const i = tToIdx(t);
+    return { p: spine[i], n: normalAt(i), w: widthAt(t, cen, maxW, pinchW) };
+  };
+
+  let envelope = '';
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  const track = (x, y) => {
+    if (x < minX) minX = x; if (x > maxX) maxX = x;
+    if (y < minY) minY = y; if (y > maxY) maxY = y;
+  };
+  for (let i = 0; i <= STEPS; i++){
+    const n = normalAt(i);
+    const w = widthAt(i / STEPS, cen, maxW, pinchW);
+    const x = spine[i].x + n.x * w, y = spine[i].y + n.y * w;
+    envelope += (i ? 'L ' : 'M ') + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
+    track(x, y);
+  }
+  for (let i = STEPS; i >= 0; i--){
+    const n = normalAt(i);
+    const w = widthAt(i / STEPS, cen, maxW, pinchW);
+    const x = spine[i].x - n.x * w, y = spine[i].y - n.y * w;
+    envelope += 'L ' + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
+    track(x, y);
+  }
+  envelope += 'Z';
+
+  const clipId = `${idPrefix}-clip-${seed}-${Math.floor(Math.random()*99999)}`;
+  const clip = document.createElementNS(SVG_NS, 'clipPath');
+  clip.setAttribute('id', clipId);
+  clip.appendChild(mkPath(envelope));
+  defs.appendChild(clip);
+
+  const g = document.createElementNS(SVG_NS, 'g');
+  g.appendChild(mkPath(envelope, { fill: `hsl(${hue} 95% 58%)`, 'fill-opacity': '0.20' }));
+  g.appendChild(mkPath(envelope, { fill: `hsl(${hue} 80% 50%)`, 'fill-opacity': '0.07' }));
+
+  const clipG = document.createElementNS(SVG_NS, 'g');
+  clipG.setAttribute('clip-path', `url(#${clipId})`);
+
+  const bands = planBands(seed * 7 + 11, cen);
+
+  bands.forEach((band, idx) => {
+    const isDev = band.dev && band.inten > 0.45;
+    const paintAsDev = isDev && devMode !== 'none';
+    let bandHue;
+    if (paintAsDev){
+      if (devMode === 'red' || devMode === 'green') bandHue = DEV_HUE[devMode];
+      else bandHue = accentHues[(idx * 7 + seed % 97) % accentHues.length];
+    } else {
+      bandHue = hue;
+    }
+    const light = 42 + band.inten * 30;
+    const sat = paintAsDev ? 92 : 86;
+    drawBand(clipG, band, sample, height,
+      `hsl(${bandHue} ${sat}% ${light}%)`,
+      0.55 + band.inten * 0.42);
+  });
+
+  g.appendChild(clipG);
+
+  g.appendChild(mkPath(envelope, {
+    fill: 'none',
+    stroke: `hsl(${hue} 100% 80%)`,
+    'stroke-width': '0.9',
+    opacity: '0.55',
+    'stroke-linejoin': 'round'
+  }));
+
+  if (showCentromere){
+    const p = sample(cen).p;
+    const dot = document.createElementNS(SVG_NS, 'circle');
+    dot.setAttribute('cx', p.x.toFixed(1));
+    dot.setAttribute('cy', p.y.toFixed(1));
+    dot.setAttribute('r', '2.1');
+    dot.setAttribute('fill', '#070608');
+    dot.setAttribute('stroke', `hsl(${hue} 100% 75%)`);
+    dot.setAttribute('stroke-width', '0.9');
+    dot.setAttribute('opacity', '0.7');
+    g.appendChild(dot);
+  }
+
+  svg.appendChild(g);
+  return { minX, maxX, minY, maxY };
+}
+
+function packSvg(bbox, seed, ariaLabel){
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  const pad = 12;
+  const vbX = Math.floor(bbox.minX - pad);
+  const vbY = Math.floor(bbox.minY - pad);
+  const vbW = Math.ceil(bbox.maxX - vbX + pad);
+  const vbH = Math.ceil(bbox.maxY - vbY + pad);
+  svg.setAttribute('xmlns', SVG_NS);
+  svg.setAttribute('viewBox', `${vbX} ${vbY} ${vbW} ${vbH}`);
+  svg.setAttribute('width', vbW);
+  svg.setAttribute('height', vbH);
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', ariaLabel);
+  return svg;
+}
+
+/* Build a standalone SVG for one chromosome. */
+function buildChromosome(opts){
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('xmlns', SVG_NS);
+  const defs = document.createElementNS(SVG_NS, 'defs');
+  svg.appendChild(defs);
+  const bbox = drawChromosomeInto(svg, defs, opts);
+  const wrapper = packSvg(bbox, opts.seed, `Chromosome (seed ${opts.seed})`);
+  // Move defs + children into wrapper
+  wrapper.appendChild(defs);
+  while (svg.firstChild) wrapper.appendChild(svg.firstChild);
+  return wrapper;
+}
+
+/* Build a standalone SVG for a pair of chromosomes — matches the site's karyotype
+   where every "chromosome" on the hero is actually two strands side by side. */
+function buildPair(opts){
+  const wrap = document.createElementNS(SVG_NS, 'svg');
+  wrap.setAttribute('xmlns', SVG_NS);
+  const defs = document.createElementNS(SVG_NS, 'defs');
+  wrap.appendChild(defs);
+  const height = opts.height || 226;
+  const c = Math.max(9, height * 0.085) + 3.5;
+  const b1 = drawChromosomeInto(wrap, defs, {
+    ...opts, cxOffset: -c, height: height * 0.97,
+    idPrefix: (opts.idPrefix || 'ch') + 'L'
+  });
+  const b2 = drawChromosomeInto(wrap, defs, {
+    ...opts, cxOffset: c, height: height * 0.99, seed: (opts.seed | 0) + 7,
+    idPrefix: (opts.idPrefix || 'ch') + 'R'
+  });
+  const bbox = {
+    minX: Math.min(b1.minX, b2.minX), maxX: Math.max(b1.maxX, b2.maxX),
+    minY: Math.min(b1.minY, b2.minY), maxY: Math.max(b1.maxY, b2.maxY)
+  };
+  const packed = packSvg(bbox, opts.seed, `Chromosome pair (seed ${opts.seed})`);
+  packed.appendChild(defs);
+  while (wrap.firstChild) packed.appendChild(wrap.firstChild);
+  return packed;
+}
+
+function buildFromState(opts){
+  return (opts.mode === 'single') ? buildChromosome(opts) : buildPair(opts);
+}
+
+/* ============================================================
+   Page wiring
+   ============================================================ */
+
+const state = {
+  mode: 'pair',
+  color: 'pink',
+  devMode: 'accent',
+  seed: 2000,
+  height: 226,
+  bg: 'dark',
+  showCentromere: true,
+  set: []            // Set of chromosomes to export together. See "sets" section.
+};
+
+const DEFAULTS = {
+  mode: 'pair', color: 'pink', devMode: 'accent',
+  seed: 2000, height: 226, bg: 'dark', showCentromere: true
+};
+
+/* ---- URL persistence ---- */
+const COLOR_VALS = ['pink','magenta','purple','violet','blue','cyan','mint','green'];
+const DEV_VALS = ['accent','red','green','none'];
+const BG_VALS = ['dark','light','trans'];
+const MODE_VALS = ['pair','single'];
+
+function readUrl(){
+  const q = new URLSearchParams(location.search);
+  const num = (k, min, max) => {
+    if (!q.has(k)) return null;
+    const v = +q.get(k);
+    if (!Number.isFinite(v)) return null;
+    if (min != null && v < min) return null;
+    if (max != null && v > max) return null;
+    return v;
+  };
+  const oneOf = (k, allowed) => {
+    if (!q.has(k)) return null;
+    const v = q.get(k);
+    return allowed.includes(v) ? v : null;
+  };
+  const b = (k) => q.has(k) ? q.get(k) === '1' : null;
+
+  const m  = oneOf('m',  MODE_VALS);      if (m  != null) state.mode = m;
+  const k  = oneOf('k',  COLOR_VALS);     if (k  != null) state.color = k;
+  const d  = oneOf('d',  DEV_VALS);       if (d  != null) state.devMode = d;
+  const s  = num('s', 0, 999999);         if (s  != null) state.seed = s | 0;
+  const y  = num('y', 120, 360);          if (y  != null) state.height = y | 0;
+  const bg = oneOf('bg', BG_VALS);        if (bg != null) state.bg = bg;
+  const cm = b('cm');                     if (cm != null) state.showCentromere = cm;
+
+  // Optional serialized set: "set" = comma-separated list of "mode:color:devMode:seed:height"
+  if (q.has('set')){
+    const items = q.get('set').split(',').map(decodeSetItem).filter(Boolean);
+    state.set = items;
+  }
+}
+
+function encodeSetItem(item){
+  return [item.mode, item.color, item.devMode, item.seed, item.height, item.showCentromere ? 1 : 0].join(':');
+}
+function decodeSetItem(s){
+  const parts = s.split(':');
+  if (parts.length < 5) return null;
+  const [mode, color, devMode, seedS, heightS, cenS] = parts;
+  if (!MODE_VALS.includes(mode) || !COLOR_VALS.includes(color) || !DEV_VALS.includes(devMode)) return null;
+  const seed = +seedS, height = +heightS;
+  if (!Number.isFinite(seed) || !Number.isFinite(height)) return null;
+  return { mode, color, devMode, seed: seed|0, height: height|0, showCentromere: cenS !== '0' };
+}
+
+function writeUrl(){
+  const q = new URLSearchParams();
+  const put = (k, v) => q.set(k, v);
+  if (state.mode !== DEFAULTS.mode) put('m', state.mode);
+  if (state.color !== DEFAULTS.color) put('k', state.color);
+  if (state.devMode !== DEFAULTS.devMode) put('d', state.devMode);
+  if (state.seed !== DEFAULTS.seed) put('s', state.seed);
+  if (state.height !== DEFAULTS.height) put('y', state.height);
+  if (state.bg !== DEFAULTS.bg) put('bg', state.bg);
+  if (state.showCentromere !== DEFAULTS.showCentromere) put('cm', state.showCentromere ? '1' : '0');
+  if (state.set && state.set.length) put('set', state.set.map(encodeSetItem).join(','));
+  const qs = q.toString();
+  history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+}
+
+function currentColors(){ return COLORS[state.color]; }
+
+function render(){
+  const preview = document.getElementById('preview');
+  preview.innerHTML = '';
+  const { hue, accentHues } = currentColors();
+  const svg = buildFromState({
+    mode: state.mode,
+    seed: state.seed,
+    hue, accentHues,
+    devMode: state.devMode,
+    height: state.height,
+    showCentromere: state.showCentromere,
+    idPrefix: 'main'
+  });
+  preview.appendChild(svg);
+
+  document.getElementById('metaSeed').textContent = '#' + state.seed;
+  document.getElementById('metaPal').textContent = state.color;
+  document.getElementById('metaHue').textContent = Math.round(hue) + '°';
+  const vb = svg.getAttribute('viewBox').split(' ');
+  document.getElementById('metaSize').textContent = `${vb[2]} × ${vb[3]} px`;
+
+  writeUrl();
+}
+
+/* ---- Karyotype presets (the 18 chromosome pairs from moderne.ai's hero) ----
+   Same {size, seed-offset-D} table as karyotype.ts. */
+const KARYOTYPE_PRESETS = (() => {
+  const sizes = [0.8,0.82,0.86,0.9,0.93,0.97,1.0,0.77,0.74,0.71,0.68,0.65,0.61,0.54,0.51,0.48,0.45,0.42];
+  const rowH = [226, 226, 174];
+  const rowStart = [0, 7, 13];
+  return sizes.map((sz, D) => {
+    let row = 0;
+    for (let r = rowStart.length - 1; r >= 0; r--) if (D >= rowStart[r]) { row = r; break; }
+    return {
+      D,
+      seed: 2000 + D * 53,
+      index: D,
+      height: Math.round(rowH[row] * (0.66 + 0.34 * sz))
+    };
+  });
+})();
+
+/* Map a hue to the nearest named color — for round-tripping the swatch state
+   after loading a preset. */
+function nearestColorFromHue(hue){
+  let best = 'pink', bestD = Infinity;
+  for (const k in COLORS){
+    let d = Math.abs(COLORS[k].hue - hue);
+    if (d > 180) d = 360 - d;
+    if (d < bestD){ bestD = d; best = k; }
+  }
+  return best;
+}
+
+function renderPresets(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  KARYOTYPE_PRESETS.forEach((preset) => {
+    const { hue, accentHues } = palettePick(preset.index);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<div class="cell"></div><span class="lbl">#${preset.D + 1} · seed ${preset.seed}</span>`;
+    const cell = card.querySelector('.cell');
+    const svg = buildPair({
+      seed: preset.seed,
+      hue, accentHues,
+      devMode: state.devMode,
+      height: preset.height * 0.8,
+      showCentromere: state.showCentromere,
+      idPrefix: `p${preset.D}`
+    });
+    cell.appendChild(svg);
+    const activate = () => {
+      // Preset defines: mode (pair), color, seed. Height, background, deviant
+      // bands, and centromere marker all persist across preset clicks so the
+      // user's chosen styling isn't stomped when browsing pairs.
+      state.mode = 'pair';
+      state.color = nearestColorFromHue(hue);
+      state.seed = preset.seed;
+      syncControls();
+      render();
+      grid.querySelectorAll('.card').forEach(c => { c.classList.remove('active'); c.setAttribute('aria-pressed', 'false'); });
+      card.classList.add('active');
+      card.setAttribute('aria-pressed', 'true');
+    };
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-pressed', 'false');
+    card.setAttribute('aria-label',
+      `Load preset ${preset.D + 1} of 18, chromosome pair #${preset.seed}`);
+    card.addEventListener('click', activate);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activate(); }
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* Reflect state to any radiogroup — sets both the .on class (visual) and
+   aria-checked (assistive tech). Used everywhere a segmented/swatch control
+   needs syncing. */
+function syncRadioGroup(selector, value){
+  document.querySelectorAll(`${selector} button`).forEach(b => {
+    const active = b.dataset.v === value;
+    b.classList.toggle('on', active);
+    b.setAttribute('aria-checked', active ? 'true' : 'false');
+  });
+}
+
+function syncControls(){
+  document.getElementById('seedVal').textContent = state.seed;
+  document.getElementById('heightRange').value = state.height;
+  document.getElementById('heightVal').textContent = state.height + ' px';
+  document.getElementById('showCentromere').checked = state.showCentromere;
+
+  syncRadioGroup('#modeSeg',  state.mode);
+  syncRadioGroup('#colorSeg', state.color);
+  syncRadioGroup('#devSeg',   state.devMode);
+  syncRadioGroup('#bgSeg',    state.bg);
+
+  document.getElementById('colorVal').textContent = state.color.charAt(0).toUpperCase() + state.color.slice(1);
+  document.getElementById('preview').dataset.bg = state.bg;
+
+  document.getElementById('devHint').textContent = ({
+    accent: 'Site default — uses accent hues from the palette.',
+    red: 'Deviant bands forced to red — reads as "defect" / flagged locus.',
+    green: 'Deviant bands forced to green — reads as "healed" / watched locus.',
+    none: 'No deviant bands — a calm, uniform chromosome in the base hue only.'
+  })[state.devMode];
+}
+
+/* ---- event wiring ---- */
+
+function wireSeg(id, field, opts){
+  const group = document.getElementById(id);
+  const select = (btn) => {
+    state[field] = btn.dataset.v;
+    syncControls();
+    if (opts && opts.onChange) opts.onChange();
+    render();
+    if (opts && opts.rerenderPresets) renderPresets();
+  };
+  group.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (btn) select(btn);
+  });
+  // Arrow-key navigation within a radiogroup — WAI-ARIA pattern.
+  group.addEventListener('keydown', (e) => {
+    if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key)) return;
+    const buttons = Array.from(group.querySelectorAll('button'));
+    const currentIdx = buttons.findIndex(b => b === document.activeElement);
+    if (currentIdx === -1) return;
+    e.preventDefault();
+    let nextIdx = currentIdx;
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   nextIdx = (currentIdx - 1 + buttons.length) % buttons.length;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextIdx = (currentIdx + 1) % buttons.length;
+    if (e.key === 'Home') nextIdx = 0;
+    if (e.key === 'End')  nextIdx = buttons.length - 1;
+    buttons[nextIdx].focus();
+    select(buttons[nextIdx]);
+  });
+}
+
+wireSeg('modeSeg',    'mode',    { rerenderPresets: false });
+wireSeg('colorSeg',   'color',   { rerenderPresets: false });
+wireSeg('devSeg',     'devMode', { rerenderPresets: true });
+wireSeg('bgSeg',      'bg',      { rerenderPresets: false });
+
+document.getElementById('heightRange').addEventListener('input', (e) => {
+  state.height = +e.target.value;
+  document.getElementById('heightVal').textContent = state.height + ' px';
+  render();
+});
+
+const randomize = () => {
+  state.seed = Math.floor(Math.random() * 900000) + 1000;
+  syncControls();
+  render();
+};
+document.getElementById('randomizeBtn').addEventListener('click', randomize);
+document.getElementById('rerollBtn').addEventListener('click', randomize);
+
+document.getElementById('showCentromere').addEventListener('change', (e) => {
+  state.showCentromere = e.target.checked;
+  render();
+  renderPresets();
+});
+
+/* ============================================================
+   Sets — bundle chromosomes/pairs into one SVG
+   ============================================================ */
+
+function currentItemForSet(){
+  return {
+    mode: state.mode,
+    color: state.color,
+    devMode: state.devMode,
+    seed: state.seed,
+    height: state.height,
+    showCentromere: state.showCentromere
+  };
+}
+
+function buildItemSvg(item, idPrefix){
+  const { hue, accentHues } = COLORS[item.color];
+  return buildFromState({
+    mode: item.mode,
+    seed: item.seed,
+    hue, accentHues,
+    devMode: item.devMode,
+    height: item.height,
+    showCentromere: item.showCentromere,
+    idPrefix
+  });
+}
+
+/* Compose a set of chromosome SVGs side-by-side into one SVG using nested <svg>
+   elements. Nested <svg> establishes its own viewport, so each item keeps its
+   own coordinate system without needing transform math. Items are baseline-
+   aligned (bottoms flush) since chromosomes vary in height. */
+function buildSetSvg(items, gap = 24){
+  const wrap = document.createElementNS(SVG_NS, 'svg');
+  wrap.setAttribute('xmlns', SVG_NS);
+  let x = 0, maxH = 0;
+  const parts = items.map((item, i) => {
+    const svg = buildItemSvg(item, `set${i}`);
+    const w = +svg.getAttribute('width');
+    const h = +svg.getAttribute('height');
+    if (h > maxH) maxH = h;
+    return { svg, w, h };
+  });
+  parts.forEach((part) => {
+    part.svg.setAttribute('x', x);
+    part.svg.setAttribute('y', maxH - part.h); // baseline-align
+    wrap.appendChild(part.svg);
+    x += part.w + gap;
+  });
+  const totalW = Math.max(x - gap, 1);
+  wrap.setAttribute('viewBox', `0 0 ${totalW} ${maxH}`);
+  wrap.setAttribute('width', totalW);
+  wrap.setAttribute('height', maxH);
+  wrap.setAttribute('role', 'img');
+  wrap.setAttribute('aria-label', `Chromosome set (${items.length} items)`);
+  return wrap;
+}
+
+function renderSet(){
+  const row = document.getElementById('setRow');
+  const empty = document.getElementById('setEmpty');
+  const actions = document.getElementById('setActions');
+  row.dataset.bg = state.bg;
+  // Wipe existing item wrappers (keep empty message node)
+  Array.from(row.querySelectorAll('.set-item')).forEach(n => n.remove());
+  if (!state.set.length){
+    empty.style.display = '';
+    actions.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  actions.style.display = '';
+  state.set.forEach((item, idx) => {
+    const cell = document.createElement('div');
+    cell.className = 'set-item';
+    cell.appendChild(buildItemSvg(item, `row${idx}`));
+    const rm = document.createElement('button');
+    rm.className = 'set-remove';
+    rm.type = 'button';
+    rm.innerHTML = '<span aria-hidden="true">×</span>';
+    rm.setAttribute('aria-label', `Remove item ${idx + 1} (${item.mode} · ${item.color} · #${item.seed}) from set`);
+    rm.title = 'Remove from set';
+    rm.addEventListener('click', () => {
+      state.set.splice(idx, 1);
+      writeUrl();
+      renderSet();
+    });
+    cell.appendChild(rm);
+    row.appendChild(cell);
+  });
+}
+
+document.getElementById('addToSetBtn').addEventListener('click', (e) => {
+  state.set.push(currentItemForSet());
+  writeUrl();
+  renderSet();
+  flashBtn(e.currentTarget, `✓ Added (${state.set.length})`);
+});
+
+document.getElementById('clearSetBtn').addEventListener('click', () => {
+  state.set = [];
+  writeUrl();
+  renderSet();
+});
+
+function currentSetSvgString(){
+  const svg = buildSetSvg(state.set);
+  return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(svg);
+}
+
+document.getElementById('downloadSetBtn').addEventListener('click', () => {
+  if (!state.set.length) return;
+  const s = currentSetSvgString();
+  const blob = new Blob([s], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `moderne-chromosome-set-${state.set.length}.svg`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+});
+
+document.getElementById('copySetBtn').addEventListener('click', async (e) => {
+  if (!state.set.length) return;
+  try {
+    await navigator.clipboard.writeText(currentSetSvgString());
+    flashBtn(e.currentTarget, '✓ Copied');
+  } catch { alert('Copy failed — download the set SVG instead.'); }
+});
+
+/* ---- theme (page chrome) toggle ---- */
+document.getElementById('themeToggle').addEventListener('click', (e) => {
+  const cur = document.body.dataset.bg === 'light' ? 'dark' : 'light';
+  document.body.dataset.bg = cur;
+  document.getElementById('tlabel').textContent = cur[0].toUpperCase() + cur.slice(1);
+  e.currentTarget.setAttribute('aria-pressed', cur === 'light' ? 'true' : 'false');
+});
+
+/* ---- download / copy ---- */
+function currentSvgString(){
+  const { hue, accentHues } = currentColors();
+  const svg = buildFromState({
+    mode: state.mode,
+    seed: state.seed,
+    hue, accentHues,
+    devMode: state.devMode,
+    height: state.height,
+    showCentromere: state.showCentromere,
+    idPrefix: 'export'
+  });
+  return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(svg);
+}
+
+function flashBtn(btn, msg){
+  const orig = btn.textContent;
+  btn.textContent = msg;
+  setTimeout(() => btn.textContent = orig, 1400);
+}
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const s = currentSvgString();
+  const blob = new Blob([s], { type: 'image/svg+xml' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `moderne-chromosome-${state.mode}-${state.color}-${state.seed}.svg`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+});
+
+document.getElementById('copyBtn').addEventListener('click', async (e) => {
+  try {
+    await navigator.clipboard.writeText(currentSvgString());
+    flashBtn(e.currentTarget, '✓ Copied');
+  } catch { alert('Copy failed — download the SVG instead.'); }
+});
+
+document.getElementById('copyLinkBtn').addEventListener('click', async (e) => {
+  writeUrl();
+  try {
+    await navigator.clipboard.writeText(location.href);
+    flashBtn(e.currentTarget, '✓ Link copied');
+  } catch { alert('Copy failed — copy the URL from the address bar.'); }
+});
+
+/* Update the set row's background to match the preview when bg changes. */
+document.getElementById('bgSeg').addEventListener('click', () => {
+  document.getElementById('setRow').dataset.bg = state.bg;
+});
+
+/* ---- initial paint ---- */
+readUrl();
+syncControls();
+render();
+renderPresets();
+renderSet();
+
+</script>
+</body>
+</html>
