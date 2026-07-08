@@ -311,6 +311,12 @@ body.font-aktiv { --font-sans: 'aktiv-grotesk', 'Archivo', system-ui, sans-serif
 .mode-switch button[data-font="aktiv"] { font-family: 'aktiv-grotesk', 'Archivo', sans-serif; }
 
 /* collapsible controls */
+/* advanced segment (colors, typography, CVD, WCAG) collapses behind the More button */
+.mode-switch .ms-adv { display: none; }
+.mode-switch.adv-open .ms-adv { display: contents; }
+.mode-switch button.ms-more { gap: 4px; }
+.mode-switch button.ms-more .chev { transition: transform .15s; }
+.mode-switch.adv-open button.ms-more .chev { transform: rotate(180deg); }
 .mode-switch button.ms-collapse { width: 26px; height: 26px; border-radius: 999px; border: none; background: transparent; color: #C9CCDD; display: flex; align-items: center; justify-content: center; padding: 0; }
 .mode-switch button.ms-collapse:hover { background: rgba(255,255,255,.10); color: #fff; }
 .mode-switch button.ms-collapse svg { width: 14px; height: 14px; }
@@ -1198,6 +1204,9 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #232342; }
     <button data-skin="outline" data-tip="Outline skin — Figma-like minimalism: white surfaces, hairline structure, outlined controls, accent-ring active states. Fully driven by the font and color controls.">Outline</button>
     <button data-skin="nordic" data-tip="Nordic skin — på() × kron: warm cream canvas, ink-navy buttons, mint accents, periwinkle links, lilac→coral gradient moments; deep ink-navy dark mode.">Nordic</button>
     <span class="ms-div"></span>
+    <button class="ms-more" data-tip="Show or hide the primary color, typography, colorblind simulation and WCAG contrast controls.">More <svg class="chev"><use href="#i-chevd"/></svg></button>
+    <div class="ms-adv">
+    <span class="ms-div"></span>
     <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
     <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
     <button data-primary="blue-aaa" class="swatch" title="Blue AAA — mid-ramp tokens (7:1 text everywhere): #7FA9F9 dark / #1245AE light"><span class="dot dot-blue-aaa"></span><span class="swlbl">Blue AAA</span></button>
@@ -1218,6 +1227,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #232342; }
     <button data-font="figtree" title="Figtree + Geist Mono">Figtree</button>
     <button data-font="jakarta" title="Plus Jakarta Sans + Geist Mono">Jakarta</button>
     <button data-font="aktiv" title="Aktiv Grotesk (needs an Adobe Fonts kit — see comment in <head>; falls back to Archivo) + Geist Mono">Aktiv</button>
+    </div>
     <span class="ms-div"></span>
     <button class="ms-collapse" title="Hide demo controls"><svg><use href="#i-x"/></svg></button>
   </div>
@@ -1646,8 +1656,15 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #232342; }
   }
   reopenBtn.addEventListener('click', function () { setControls(false); });
 
+  // ---- advanced segment (colors / typography / CVD / WCAG) ----
+  function setAdv(open) {
+    switchEl.classList.toggle('adv-open', open);
+    if (!open) setWcag(false);
+  }
+
   switchEl.addEventListener('click', function (e) {
     if (e.target.closest('.ms-collapse')) { setControls(true); return; }
+    if (e.target.closest('.ms-more')) { setAdv(!switchEl.classList.contains('adv-open')); return; }
     var fb = e.target.closest('button[data-font]');
     if (fb) { setFont(fb.getAttribute('data-font')); return; }
     var sk = e.target.closest('button[data-skin]');
@@ -1772,6 +1789,10 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #232342; }
     switchEl.querySelectorAll('button[data-panel]').forEach(function (b) { b.classList.toggle('active', open); });
   }
   if (new URLSearchParams(location.search).get('wcag') === '1') setWcag(true);
+
+  // URL params that target the collapsed segment expand it so their state is visible
+  var advQs = new URLSearchParams(location.search);
+  if (advQs.get('cvd') || advQs.get('font') || advQs.get('primary') || advQs.get('wcag') === '1') setAdv(true);
 
   // ---- primary color variant (blue / green) ----
   var PRIMARIES = ['violet', 'blue', 'teal', 'green', 'blue-aaa', 'magenta', 'lime'];
