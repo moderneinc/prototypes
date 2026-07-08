@@ -247,6 +247,16 @@ body.font-aktiv { --font-sans: 'aktiv-grotesk', 'Archivo', system-ui, sans-serif
   --accent-tint: rgba(199,232,75,.20); --accent-brd: rgba(79,90,18,.32);
   --primary-bg: #C7E84B; --primary-fg: #4F5A12;
 }
+.compare.primary-blue .layer[data-theme="dark"] {
+  --accent: #3E7BF6; --accent-deep: #3E7BF6;
+  --accent-tint: rgba(62,123,246,.16); --accent-brd: rgba(62,123,246,.40);
+  --primary-bg: #3E7BF6; --primary-fg: #FFFFFF;
+}
+.compare.primary-blue .layer[data-theme="light"] {
+  --accent: #1055E2; --accent-deep: #16306B;
+  --accent-tint: rgba(62,123,246,.10); --accent-brd: rgba(62,123,246,.30);
+  --primary-bg: #3E7BF6; --primary-fg: #FFFFFF;
+}
 .compare.primary-blue-aaa .layer[data-theme="dark"] {
   --accent: #7FA9F9; --accent-deep: #7FA9F9;
   --accent-tint: rgba(127,169,249,.14); --accent-brd: rgba(127,169,249,.40);
@@ -1453,7 +1463,7 @@ body.skin-technical .pill-btn--primary:hover { background: var(--primary-bg); fi
   if (new URLSearchParams(location.search).get('wcag') === '1') setWcag(true);
 
   // ---- primary color variant (blue / green) ----
-  var PRIMARIES = ['violet', 'teal', 'green', 'blue-aaa', 'magenta', 'lime'];   // blue is the default (no class)
+  var PRIMARIES = ['violet', 'blue', 'teal', 'green', 'blue-aaa', 'magenta', 'lime'];
   function setPrimary(c) {
     PRIMARIES.forEach(function (v) { compare.classList.remove('primary-' + v); });
     if (PRIMARIES.indexOf(c) !== -1) compare.classList.add('primary-' + c);
@@ -1462,7 +1472,7 @@ body.skin-technical .pill-btn--primary:hover { background: var(--primary-bg); fi
     });
   }
   var qsPrimary = new URLSearchParams(location.search).get('primary');
-  if (PRIMARIES.indexOf(qsPrimary) !== -1) setPrimary(qsPrimary);
+  setPrimary(PRIMARIES.indexOf(qsPrimary) !== -1 ? qsPrimary : 'blue');
 })();
 </script>
 </body>
