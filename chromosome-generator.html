@@ -464,8 +464,8 @@ function drawChromosomeInto(svg, defs, opts){
   defs.appendChild(clip);
 
   const g = document.createElementNS(SVG_NS, 'g');
-  g.appendChild(mkPath(envelope, { fill: `hsl(${hue} 95% 58%)`, 'fill-opacity': '0.20' }));
-  g.appendChild(mkPath(envelope, { fill: `hsl(${hue} 80% 50%)`, 'fill-opacity': '0.07' }));
+  g.appendChild(mkPath(envelope, { fill: `hsl(${hue}, 95%, 58%)`, 'fill-opacity': '0.20' }));
+  g.appendChild(mkPath(envelope, { fill: `hsl(${hue}, 80%, 50%)`, 'fill-opacity': '0.07' }));
 
   const clipG = document.createElementNS(SVG_NS, 'g');
   clipG.setAttribute('clip-path', `url(#${clipId})`);
@@ -485,7 +485,7 @@ function drawChromosomeInto(svg, defs, opts){
     const light = 42 + band.inten * 30;
     const sat = paintAsDev ? 92 : 86;
     drawBand(clipG, band, sample, height,
-      `hsl(${bandHue} ${sat}% ${light}%)`,
+      `hsl(${bandHue}, ${sat}%, ${light}%)`,
       0.55 + band.inten * 0.42);
   });
 
@@ -493,7 +493,7 @@ function drawChromosomeInto(svg, defs, opts){
 
   g.appendChild(mkPath(envelope, {
     fill: 'none',
-    stroke: `hsl(${hue} 100% 80%)`,
+    stroke: `hsl(${hue}, 100%, 80%)`,
     'stroke-width': '0.9',
     opacity: '0.55',
     'stroke-linejoin': 'round'
@@ -505,10 +505,10 @@ function drawChromosomeInto(svg, defs, opts){
     dot.setAttribute('cx', p.x.toFixed(1));
     dot.setAttribute('cy', p.y.toFixed(1));
     dot.setAttribute('r', '2.1');
-    dot.setAttribute('fill', '#070608');
-    dot.setAttribute('stroke', `hsl(${hue} 100% 75%)`);
-    dot.setAttribute('stroke-width', '0.9');
-    dot.setAttribute('opacity', '0.7');
+    dot.setAttribute('fill', 'none');
+    dot.setAttribute('stroke', `hsl(${hue}, 100%, 75%)`);
+    dot.setAttribute('stroke-width', '1.1');
+    dot.setAttribute('opacity', '0.85');
     g.appendChild(dot);
   }
 
