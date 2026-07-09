@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Moderne — UI explorations beyond theming</title>
+<title>Moderne — Nordic theme (v3)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <!-- Aktiv Grotesk is served via Adobe Fonts: create a Web Project with
@@ -13,8 +13,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Inter:opsz,wght@14..32,400..700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400..700&family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
-   UI explorations beyond theming (v2)
-   Base: platform-light-dark.html — Re-theming of the Platform
+   Nordic theme (v3)
+   Base: ui-explorations.html — the Nordic skin baked in as the
+   one theme (på() × kron: cream/ink/mint light, near-black dark).
    Chrome (icon rail, global nav, results tree) mirrors
    results-focus-view.html. Palette: warm blacks (dark) /
    cool whites (light) per the re-theming token spec.
@@ -190,26 +191,6 @@ body.font-aktiv { --font-sans: 'aktiv-grotesk', 'Archivo', system-ui, sans-serif
 .compare.mode-light .seam, .compare.mode-light .handle, .compare.mode-light .corner,
 .compare.mode-dark .seam,  .compare.mode-dark .handle,  .compare.mode-dark .corner { display: none; }
 .compare.mode-dark .layer--light { visibility: hidden; }
-
-/* warm tones variant (demo control): warm neutrals in both modes */
-.compare.tones-warm .layer[data-theme="dark"] {
-  --surface: #1C1714; --surface2: #241D18;
-  --line: rgba(242,237,228,.10); --line2: rgba(242,237,228,.06); --line-strong: rgba(242,237,228,.22);
-  --text: #F2EDE4; --muted: #A39B90;
-  --card: #171310; --card-head: #211B16; --row-hover: #282019;
-  --ca: #A39B90; --ca-t: rgba(242,237,228,.06); --ca-b: rgba(242,237,228,.22);
-  --link-line: rgba(242,237,228,.22);
-  --glow-v: rgba(230,57,155,.16); --glow-b: rgba(157,91,232,.22);  /* warm purple glow */
-}
-.compare.tones-warm .layer[data-theme="light"] {
-  --bg: #F1F0EE;
-  --surface: #F0EAE3; --surface2: #E3DDD4;
-  --line: rgba(58,54,48,.12); --line2: rgba(58,54,48,.08); --line-strong: rgba(58,54,48,.24);
-  --text: #292522; --muted: #7A756E;
-  --card-head: #F0EAE3; --row-hover: #F0EAE3;
-  --ca: #7A756E; --ca-t: #F3EFE9; --ca-b: rgba(58,54,48,.22);
-  --link-line: rgba(58,54,48,.22);
-}
 
 /* primary color variants (demo control): strand bright / deep pairs */
 .compare.primary-violet .layer[data-theme="dark"] {
@@ -782,309 +763,13 @@ body { font-size: 14px; }
 [data-theme="light"] .moddy-sug + .moddy-sug { border-top-width: 1px; }
 
 /* ============================================================
-   V2 EXPLORATION 5: TECHNICAL SKIN (toggle: Standard | Technical)
-   Black chrome, neon-green primary, square panels cut by solid
-   black lines, uppercase mono labels, pill action buttons.
-   Active when body.skin-technical is set.
-   ============================================================ */
-body.skin-technical [data-theme="light"] {
-  --bg: #DFDFDF; --field: #F5F5F5;
-  --card: #F5F5F5; --card-head: #EFEFEF;
-  --surface: #EAEAEA; --surface2: #DCDCDC; --row-hover: #ECECEC;
-  --line: #DEDEDE; --line2: #E8E8E8; --line-strong: #DEDEDE;
-  --text: #0E0E0E; --muted: #5F5F5F;
-  --accent: #0E0E0E; --accent-deep: #0E0E0E;
-  --accent-tint: rgba(48,242,132,.28); --accent-brd: #111111;
-  --primary-bg: #30F284; --primary-fg: #061407;
-  --link-line: #B5B5B5;
-}
-body.skin-technical [data-theme="dark"] {
-  --bg: #0A0A0A; --field: #111111;
-  --card: #141414; --card-head: #1B1B1B;
-  --surface: #181818; --surface2: #202020; --row-hover: #1F1F1F;
-  --line: rgba(255,255,255,.30); --line2: rgba(255,255,255,.12); --line-strong: rgba(255,255,255,.45);
-  --text: #F2F2F2; --muted: #9A9A9A;
-  --accent: #30F284; --accent-deep: #30F284;
-  --accent-tint: rgba(48,242,132,.16); --accent-brd: rgba(48,242,132,.5);
-  --primary-bg: #30F284; --primary-fg: #061407;
-  --link-line: rgba(255,255,255,.30);
-}
-/* black chrome (both modes) */
-body.skin-technical .global-nav { background: #0A0A0A; }
-body.skin-technical .global-nav::before { display: none; }
-body.skin-technical .left-nav { background: #0A0A0A; }
-body.skin-technical .left-nav .nav-item svg { color: #F2F2F2; }
-body.skin-technical .nav-item:hover .nav-icon-container { background: rgba(48,242,132,.15); border-color: rgba(48,242,132,.4); }
-body.skin-technical .nav-item.active .nav-icon-container { background: rgba(48,242,132,.22); border-color: #30F284; }
-body.skin-technical .nav-item.active svg { color: #30F284; }
-body.skin-technical .home-mark { color: #30F284; }
-body.skin-technical .nav-version-badge { background: #30F284; color: #061407; }
-body.skin-technical .tenant-logo { background: #F2F2F2; color: #0A0A0A; }
-body.skin-technical .org-selector { background: #0A0A0A; color: #F2F2F2; border: 1px solid rgba(255,255,255,.35); }
-body.skin-technical .org-selector:hover { background: #181818; }
-body.skin-technical .org-selector svg { color: #9A9A9A; }
-body.skin-technical .search-input { background: #0A0A0A; color: #9A9A9A; border: 1px solid rgba(255,255,255,.35); }
-body.skin-technical .search-input:hover { background: #181818; }
-body.skin-technical .search-input kbd { background: #1D1D1D; color: #9A9A9A; border-color: rgba(255,255,255,.25); }
-body.skin-technical .nav-action-btn { color: #F2F2F2; }
-body.skin-technical .nav-action-btn:hover { background: #1D1D1D; }
-body.skin-technical .avatar { background: #30F284; color: #061407; border-radius: 0; }
-/* light mode: chrome zones go #FCFCFC with dark-on-light contents */
-body.skin-technical [data-theme="light"] .global-nav,
-body.skin-technical [data-theme="light"] .left-nav { background: #FCFCFC; }
-body.skin-technical [data-theme="light"] .left-nav .nav-item svg { color: #0E0E0E; }
-body.skin-technical [data-theme="light"] .nav-item.active svg { color: #0E9A54; }
-body.skin-technical [data-theme="light"] .org-selector { background: #FFFFFF; color: #0E0E0E; border: 1px solid #DEDEDE; }
-body.skin-technical [data-theme="light"] .org-selector:hover { background: #F2F2F2; }
-body.skin-technical [data-theme="light"] .org-selector svg { color: #5F5F5F; }
-body.skin-technical [data-theme="light"] .search-input { background: #FFFFFF; color: #5F5F5F; border: 1px solid #DEDEDE; }
-body.skin-technical [data-theme="light"] .search-input:hover { background: #F2F2F2; }
-body.skin-technical [data-theme="light"] .search-input kbd { background: #EFEFEF; color: #5F5F5F; border-color: #DEDEDE; }
-body.skin-technical [data-theme="light"] .nav-action-btn { color: #0E0E0E; }
-body.skin-technical [data-theme="light"] .nav-action-btn:hover { background: #EFEFEF; }
-body.skin-technical [data-theme="light"] .home-mark { color: #0E0E0E; }
-/* square panels, solid boundary lines */
-body.skin-technical .main-area { border-top-left-radius: 0; border-left-width: 1px; border-top-width: 1px; }
-body.skin-technical .org-selector, body.skin-technical .search-input, body.skin-technical .search-input kbd,
-body.skin-technical .mkt-search, body.skin-technical .filter-bar, body.skin-technical .sumopt,
-body.skin-technical .summary, body.skin-technical .tree, body.skin-technical .repo-detail,
-body.skin-technical .act-card, body.skin-technical .toast, body.skin-technical .moddy-input,
-body.skin-technical .moddy-input-inner, body.skin-technical .moddy-sug, body.skin-technical .badge,
-body.skin-technical .catrow .ico, body.skin-technical .catrow .t .n,
-body.skin-technical .miniava, body.skin-technical .tck,
-body.skin-technical .nav-item, body.skin-technical .nav-icon-container,
-body.skin-technical .seg, body.skin-technical .seg-btn, body.skin-technical .icon-btn { border-radius: 0; }
-body.skin-technical [data-theme="light"] .sumopt, body.skin-technical [data-theme="light"] .summary,
-body.skin-technical [data-theme="light"] .tree, body.skin-technical [data-theme="light"] .repo-detail,
-body.skin-technical [data-theme="light"] .act-card, body.skin-technical [data-theme="light"] .toast,
-body.skin-technical [data-theme="light"] .filter-bar, body.skin-technical [data-theme="light"] .mkt-search { border: 1px solid #DEDEDE; }
-body.skin-technical [data-theme="light"] .tree, body.skin-technical [data-theme="light"] .repo-detail { background: #FAFAFA; }
-/* uppercase mono labels */
-body.skin-technical .pagehead h1, body.skin-technical .run-title h1 { font-size: 14px; font-weight: 600; letter-spacing: .04em; }
-body.skin-technical .pagehead .sub, body.skin-technical .run-subhead { font-size: 11px; letter-spacing: .03em; }
-body.skin-technical .tab { text-transform: uppercase; font-size: 10.5px; letter-spacing: .06em; }
-body.skin-technical .act-table thead th, body.skin-technical .tree-head { letter-spacing: .09em; text-transform: uppercase; }
-body.skin-technical .sumopt { text-transform: uppercase; font-size: 11px; letter-spacing: .07em; }
-body.skin-technical .summary-key, body.skin-technical .summary-val, body.skin-technical .run-meta,
-body.skin-technical .act-time, body.skin-technical .org-results, body.skin-technical .repo-results { font-size: 12px; }
-body.skin-technical .savings-chip, body.skin-technical .savings-chip .lbl { font-size: 11.5px; }
-body.skin-technical .pill { letter-spacing: .04em; }
-body.skin-technical .pill, body.skin-technical .run-chip { border-radius: 999px; }
-/* pill action buttons, neon primary */
-body.skin-technical .pill-btn, body.skin-technical .round-btn, body.skin-technical .moddy-send { border-radius: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: .04em; }
-body.skin-technical [data-theme="light"] .pill-btn, body.skin-technical [data-theme="light"] .round-btn { background: #F7F7F7; border: 1px solid #DEDEDE; color: #5F5F5F; }
-body.skin-technical [data-theme="light"] .pill-btn:hover, body.skin-technical [data-theme="light"] .round-btn:hover { background: #EFEFEF; color: #0E0E0E; }
-body.skin-technical .pill-btn--primary, body.skin-technical [data-theme="light"] .pill-btn--primary { background: var(--primary-bg); color: var(--primary-fg); border: 1px solid transparent; }
-body.skin-technical .pill-btn--primary:hover { background: var(--primary-bg); filter: brightness(1.08); }
-
-/* ============================================================
-   V2 EXPLORATION 6: GLASS SKIN (toggle: Standard | Technical | Glass)
-   Frosted translucent panels (backdrop blur) over an ambient
-   indigo gradient; soft light borders, rounded geometry, glowing
-   primary. Active when body.skin-glass is set.
-   ============================================================ */
-body.skin-glass .layer[data-theme="dark"] {
-  background:
-    radial-gradient(1200px 800px at 18% -10%, rgba(93,95,239,.28), transparent 60%),
-    radial-gradient(1000px 700px at 108% 15%, rgba(157,91,232,.20), transparent 55%),
-    radial-gradient(900px 700px at 50% 120%, rgba(37,208,192,.10), transparent 55%),
-    #0B0E20;
-}
-body.skin-glass .layer[data-theme="light"] {
-  background:
-    radial-gradient(1100px 750px at 15% -10%, rgba(120,130,246,.22), transparent 60%),
-    radial-gradient(900px 650px at 108% 18%, rgba(230,57,155,.12), transparent 55%),
-    radial-gradient(900px 700px at 55% 120%, rgba(37,208,192,.14), transparent 55%),
-    #ECEFF9;
-}
-body.skin-glass [data-theme="dark"] {
-  --bg: rgba(255,255,255,.03); --field: rgba(255,255,255,.04);
-  --card: rgba(255,255,255,.05); --card-head: rgba(255,255,255,.07);
-  --surface: rgba(255,255,255,.06); --surface2: rgba(255,255,255,.10); --row-hover: rgba(255,255,255,.08);
-  --line: rgba(255,255,255,.10); --line2: rgba(255,255,255,.07); --line-strong: rgba(255,255,255,.18);
-  --text: #EEF0FC; --muted: #A9AECE;
-  --panel-shadow: 0 24px 70px rgba(0,0,0,.45);
-}
-body.skin-glass [data-theme="light"] {
-  --bg: rgba(255,255,255,.30); --field: rgba(255,255,255,.42);
-  --card: rgba(255,255,255,.55); --card-head: rgba(255,255,255,.65);
-  --surface: rgba(255,255,255,.48); --surface2: rgba(110,120,180,.14); --row-hover: rgba(255,255,255,.70);
-  --line: rgba(30,40,90,.13); --line2: rgba(30,40,90,.09); --line-strong: rgba(30,40,90,.22);
-  --text: #1D2340; --muted: #5A6285;
-  --panel-shadow: 0 24px 70px rgba(31,38,135,.16);
-}
-/* frosted surfaces */
-body.skin-glass .main-area { box-shadow: var(--panel-shadow); border-left: 1px solid var(--line); border-top: 1px solid var(--line); backdrop-filter: blur(6px); }
-body.skin-glass .act-card, body.skin-glass .tree, body.skin-glass .repo-detail,
-body.skin-glass .summary, body.skin-glass .sumopt, body.skin-glass .toast,
-body.skin-glass .filter-bar, body.skin-glass .mkt-search, body.skin-glass .moddy-input-inner,
-body.skin-glass .org-selector, body.skin-glass .search-input {
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  border: 1px solid var(--line);
-}
-/* ambient glow returns behind the top bar */
-body.skin-glass .global-nav::before { display: block; }
-/* rounded glass geometry */
-body.skin-glass .org-selector, body.skin-glass .search-input, body.skin-glass .mkt-search,
-body.skin-glass .filter-bar, body.skin-glass .sumopt, body.skin-glass .summary,
-body.skin-glass .tree, body.skin-glass .repo-detail, body.skin-glass .act-card,
-body.skin-glass .toast, body.skin-glass .moddy-input, body.skin-glass .moddy-input-inner,
-body.skin-glass .moddy-sug, body.skin-glass .badge, body.skin-glass .catrow .ico { border-radius: 12px; }
-body.skin-glass .search-input kbd, body.skin-glass .catrow .t .n { border-radius: 6px; }
-body.skin-glass .main-area { border-top-left-radius: 18px; }
-body.skin-glass .pill-btn, body.skin-glass .round-btn, body.skin-glass .moddy-send { border-radius: 4px; }
-body.skin-glass .nav-item, body.skin-glass .nav-icon-container, body.skin-glass .icon-btn { border-radius: 10px; }
-body.skin-glass .seg { border-radius: 10px; }
-body.skin-glass .seg-btn { border-radius: 8px; }
-body.skin-glass .avatar, body.skin-glass .tenant-logo { border-radius: 10px; }
-body.skin-glass .miniava { border-radius: 8px; }
-body.skin-glass .tck { border-radius: 5px; }
-/* the spectrum border on the Moddy input stays an outline — opaque inner fill */
-body.skin-glass [data-theme="light"] .moddy-input-inner { background: #FFFFFF; }
-body.skin-glass [data-theme="dark"] .moddy-input-inner { background: #0D1023; }
-/* glassy buttons + glowing primary */
-body.skin-glass .pill-btn, body.skin-glass .round-btn { background: var(--surface); border: 1px solid var(--line-strong); }
-body.skin-glass .pill-btn:hover, body.skin-glass .round-btn:hover { background: var(--surface2); }
-body.skin-glass .pill-btn--primary { background: var(--primary-bg); border: 1px solid rgba(255,255,255,.28); box-shadow: 0 6px 22px color-mix(in srgb, var(--primary-bg) 45%, transparent); }
-body.skin-glass .pill-btn--primary:hover { background: var(--primary-bg); filter: brightness(1.08); }
-
-/* ============================================================
-   V2 EXPLORATION 7: EDITORIAL SKIN (Standard | Technical | Glass | Editorial)
-   Warm paper surfaces, serif display type, deep-teal primary,
-   pill buttons, orange logomark. Active when body.skin-editorial.
-   ============================================================ */
-body.skin-editorial [data-theme="light"] {
-  --bg: #F6F4EF; --field: #FDFCF9;
-  --card: #FDFCF9; --card-head: #F4F1EA;
-  --surface: #F1EEE7; --surface2: #E9E5DC; --row-hover: #F4F1EA;
-  --line: rgba(70,60,45,.14); --line2: rgba(70,60,45,.09); --line-strong: rgba(70,60,45,.26);
-  --text: #22261F; --muted: #716C60;
-  --accent: #1F5B5E; --accent-deep: #17474A;
-  --accent-tint: rgba(31,91,94,.10); --accent-brd: rgba(31,91,94,.30);
-  --primary-bg: #1F5B5E; --primary-fg: #FFFFFF;
-  --link-line: rgba(70,60,45,.26);
-}
-body.skin-editorial [data-theme="dark"] {
-  --bg: #161814; --field: #1B1D19;
-  --card: #20221D; --card-head: #262822;
-  --surface: #23251F; --surface2: #2B2D26; --row-hover: #2A2C25;
-  --line: rgba(240,235,220,.11); --line2: rgba(240,235,220,.07); --line-strong: rgba(240,235,220,.22);
-  --text: #EFEDE4; --muted: #A09B8D;
-  --accent: #8FD0D2; --accent-deep: #8FD0D2;
-  --accent-tint: rgba(76,154,158,.16); --accent-brd: rgba(76,154,158,.40);
-  --primary-bg: #2E8488; --primary-fg: #FFFFFF;
-  --link-line: rgba(240,235,220,.22);
-}
-/* orange logomark, teal chrome accents */
-body.skin-editorial .home-mark { color: #E8712E; }
-body.skin-editorial .nav-version-badge { background: #1F5B5E; color: #fff; }
-body.skin-editorial [data-theme="dark"] .nav-version-badge { background: #2E8488; }
-body.skin-editorial .avatar { background: #1F5B5E; color: #fff; border-radius: 999px; }
-body.skin-editorial [data-theme="dark"] .avatar { background: #2E8488; }
-body.skin-editorial .tenant-logo { background: #1F5B5E; color: #fff; }
-/* serif display + spaced caps labels */
-body.skin-editorial .pagehead h1, body.skin-editorial .run-title h1, body.skin-editorial .moddy-hero h1 {
-  font-family: 'Source Serif 4', Georgia, serif; font-size: 22px; font-weight: 600; letter-spacing: 0;
-}
-body.skin-editorial .tree-head, body.skin-editorial .sumopt {
-  font-family: 'Source Serif 4', Georgia, serif; text-transform: uppercase; letter-spacing: .14em; font-size: 11px; font-weight: 600;
-}
-body.skin-editorial .act-table thead th { letter-spacing: .10em; text-transform: uppercase; font-size: 10.5px; }
-/* soft paper geometry: rounded cards, pill controls */
-body.skin-editorial .sumopt, body.skin-editorial .summary, body.skin-editorial .tree,
-body.skin-editorial .repo-detail, body.skin-editorial .act-card, body.skin-editorial .toast,
-body.skin-editorial .moddy-input, body.skin-editorial .moddy-input-inner { border-radius: 12px; }
-body.skin-editorial .main-area { border-top-left-radius: 16px; }
-body.skin-editorial .org-selector, body.skin-editorial .search-input, body.skin-editorial .mkt-search,
-body.skin-editorial .filter-bar, body.skin-editorial .seg, body.skin-editorial .seg-btn,
-body.skin-editorial .badge, body.skin-editorial .catrow .t .n { border-radius: 999px; }
-body.skin-editorial .pill-btn, body.skin-editorial .round-btn, body.skin-editorial .moddy-send { border-radius: 4px; }
-body.skin-editorial .nav-item, body.skin-editorial .nav-icon-container, body.skin-editorial .icon-btn { border-radius: 10px; }
-body.skin-editorial .miniava { border-radius: 999px; }
-body.skin-editorial .tck { border-radius: 4px; }
-body.skin-editorial .catrow .ico { border-radius: 12px; }
-/* paper buttons */
-body.skin-editorial .pill-btn, body.skin-editorial .round-btn { background: var(--field); border: 1px solid var(--line-strong); }
-body.skin-editorial .pill-btn:hover, body.skin-editorial .round-btn:hover { background: var(--surface); }
-body.skin-editorial .pill-btn--primary { background: var(--primary-bg); color: var(--primary-fg); border-color: transparent; }
-body.skin-editorial .pill-btn--primary:hover { background: var(--primary-bg); filter: brightness(1.08); }
-
-/* ============================================================
-   V2 EXPLORATION 8: OUTLINE SKIN
-   Figma-like minimalism: white surfaces, hairline structure,
-   controls drawn as outlines, active states as accent rings.
-   Fonts and primary colors are fully driven by the demo controls.
-   ============================================================ */
-body.skin-outline [data-theme="light"] {
-  --bg: #F5F5F5; --field: #FFFFFF;
-  --card: #FFFFFF; --card-head: #FAFAFA;
-  --surface: #F5F5F5; --surface2: #EEEEEE; --row-hover: #FAFAFA;
-  --line: #E6E6E6; --line2: #F0F0F0; --line-strong: #D8D8D8;
-  --text: #1E1E1E; --muted: #7A7A7A;
-  --link-line: #D8D8D8;
-}
-body.skin-outline [data-theme="dark"] {
-  --bg: #151515; --field: #1C1C1C;
-  --card: #1C1C1C; --card-head: #212121;
-  --surface: #222222; --surface2: #2A2A2A; --row-hover: #242424;
-  --line: rgba(255,255,255,.14); --line2: rgba(255,255,255,.08); --line-strong: rgba(255,255,255,.26);
-  --text: #ECECEC; --muted: #9C9C9C;
-  --link-line: rgba(255,255,255,.26);
-}
-/* geometry: quiet 8px rounded rects */
-body.skin-outline .org-selector, body.skin-outline .search-input, body.skin-outline .mkt-search,
-body.skin-outline .filter-bar, body.skin-outline .sumopt, body.skin-outline .summary,
-body.skin-outline .tree, body.skin-outline .repo-detail, body.skin-outline .act-card,
-body.skin-outline .toast, body.skin-outline .moddy-input, body.skin-outline .moddy-input-inner,
-body.skin-outline .pill-btn, body.skin-outline .round-btn, body.skin-outline .moddy-send,
-body.skin-outline .nav-item, body.skin-outline .nav-icon-container, body.skin-outline .icon-btn,
-body.skin-outline .seg, body.skin-outline .avatar, body.skin-outline .tenant-logo { border-radius: 4px; }
-body.skin-outline .seg-btn, body.skin-outline .miniava, body.skin-outline .search-input kbd { border-radius: 4px; }
-body.skin-outline .main-area { border-top-left-radius: 4px; }
-/* outline-first controls */
-body.skin-outline .pill-btn, body.skin-outline .round-btn { background: transparent; border: 1px solid var(--line-strong); }
-body.skin-outline .pill-btn:hover, body.skin-outline .round-btn:hover { background: var(--surface); }
-body.skin-outline .pill-btn--primary { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
-body.skin-outline .pill-btn--primary:hover { background: var(--accent-tint); filter: none; }
-body.skin-outline .nav-item:hover .nav-icon-container { background: transparent; border-color: var(--line-strong); }
-body.skin-outline .nav-item.active .nav-icon-container { background: transparent; border: 1.5px solid var(--accent); }
-body.skin-outline .seg { background: transparent; border: 1px solid var(--line); }
-body.skin-outline .seg-btn.active { background: transparent; box-shadow: inset 0 0 0 1.5px var(--accent); color: var(--accent); }
-body.skin-outline .pill, body.skin-outline .run-chip, body.skin-outline .miniava { background: transparent; }
-body.skin-outline .repo-row.active { background: transparent; box-shadow: inset 0 0 0 1.5px var(--accent); }
-body.skin-outline .tck { background: transparent; }
-body.skin-outline .tck.on { background: transparent; color: var(--accent); border-color: var(--accent); }
-body.skin-outline .avatar { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); }
-body.skin-outline .nav-version-badge { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); }
-body.skin-outline .tenant-logo { background: transparent; border: 1.5px solid var(--line-strong); color: var(--text); }
-body.skin-outline .badge { background: transparent; border: 1px solid var(--accent-brd); }
-/* outline light: squared off, no panel separation — one white canvas, lines only */
-body.skin-outline [data-theme="light"] { --bg: #FFFFFF; }
-body.skin-outline [data-theme="light"] .main-area { box-shadow: none; }
-/* chrome zones sit on #DFDFDF; content stays white */
-body.skin-outline [data-theme="light"] .left-nav,
-body.skin-outline [data-theme="light"] .global-nav { background: #FCFCFC; }
-
-/* ============================================================
    V2 EXPLORATION 9: global 90% scale
    The entire app renders at 90% (demo harness stays full size).
    ============================================================ */
 .app { zoom: 0.9; }
 
 /* ============================================================
-   V2 EXPLORATION 10: TECHNICAL II
-   Technical skin variant: the side nav stays black and inverted
-   (white icons, green mark/active) even in light mode.
-   Applied as skin-technical + skin-technical2 together.
-   ============================================================ */
-body.skin-technical2 [data-theme="light"] .left-nav { background: #0A0A0A; }
-body.skin-technical2 [data-theme="light"] .left-nav .nav-item svg { color: #F2F2F2; }
-body.skin-technical2 [data-theme="light"] .nav-item.active svg { color: #30F284; }
-body.skin-technical2 [data-theme="light"] .home-mark { color: #30F284; }
-
-/* ============================================================
-   V2 EXPLORATION 11: NORDIC SKIN
+   NORDIC THEME (baked in: body.skin-nordic)
    på() × kron: warm cream canvas, ink-navy text and buttons,
    mint success accents, periwinkle links, lilac→coral gradient
    moments. Dark mode is kron's deep ink navy.
@@ -1137,7 +822,7 @@ body.skin-nordic [data-theme="light"] .moddy-input-inner { background: #FBFAF6; 
 body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
 </style>
 </head>
-<body>
+<body class="skin-nordic">
 
 <!-- icon sprite -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1193,17 +878,6 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
     <span class="ms-div"></span>
-    <button data-tones="cool" class="active" data-tip="Cool neutrals — navy-cast darks and cool grey-whites. The current shipped set.">Cool</button>
-    <button data-tones="warm" data-tip="Warm neutrals — warm blacks in dark mode and warm off-whites in light mode, per the original palette spec. Accents are unaffected.">Warm</button>
-    <span class="ms-div"></span>
-    <button data-skin="standard" class="active" data-tip="Standard v2 styling — 4px corners, flat surfaces, hairline separation.">Standard</button>
-    <button data-skin="technical" data-tip="Technical / neo-brutalist skin — black chrome, neon-green primary, square panels cut by solid black lines, uppercase mono labels, pill action buttons.">Technical</button>
-    <button data-skin="technical2" data-tip="Technical II — same skin, but the side nav stays black and inverted (white icons, green mark) in light mode.">Tech II</button>
-    <button data-skin="glass" data-tip="Glass skin — frosted translucent panels with backdrop blur over an ambient indigo gradient; rounded geometry and a glowing primary button.">Glass</button>
-    <button data-skin="editorial" data-tip="Editorial skin — warm paper surfaces, serif display type, deep-teal primary, pill buttons, orange logomark.">Editorial</button>
-    <button data-skin="outline" data-tip="Outline skin — Figma-like minimalism: white surfaces, hairline structure, outlined controls, accent-ring active states. Fully driven by the font and color controls.">Outline</button>
-    <button data-skin="nordic" data-tip="Nordic skin — på() × kron: warm cream canvas, ink-navy buttons, mint accents, periwinkle links, lilac→coral gradient moments; deep ink-navy dark mode.">Nordic</button>
-    <span class="ms-div"></span>
     <button class="ms-more" data-tip="Show or hide the primary color, typography, colorblind simulation and WCAG contrast controls.">More <svg class="chev"><use href="#i-chevd"/></svg></button>
     <div class="ms-adv">
     <span class="ms-div"></span>
@@ -1258,7 +932,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
     <div class="left-nav-top">
       <div class="nav-home-stack">
         <div class="nav-item nav-item-home" title="Home"><span class="nav-icon-container"><svg class="home-mark"><use href="#i-moderne-flat"/></svg></span></div>
-        <span class="nav-version-badge">v2</span>
+        <span class="nav-version-badge">v3</span>
       </div>
       <button class="nav-item" data-nav="moddy" title="Moddy"><span class="nav-icon-container"><svg><use href="#i-sparkles"/></svg></span></button>
       <button class="nav-item" data-nav="none" title="DevCenter"><span class="nav-icon-container"><svg><use href="#i-pie"/></svg></span></button>
@@ -1667,10 +1341,6 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
     if (e.target.closest('.ms-more')) { setAdv(!switchEl.classList.contains('adv-open')); return; }
     var fb = e.target.closest('button[data-font]');
     if (fb) { setFont(fb.getAttribute('data-font')); return; }
-    var sk = e.target.closest('button[data-skin]');
-    if (sk) { setSkin(sk.getAttribute('data-skin')); return; }
-    var tb = e.target.closest('button[data-tones]');
-    if (tb) { setTones(tb.getAttribute('data-tones')); return; }
     var wb = e.target.closest('button[data-panel]');
     if (wb) { setWcag(!wcagPanel.classList.contains('open')); return; }
     var cb = e.target.closest('button[data-cvd]');
@@ -1694,33 +1364,6 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
   }
   var qsCvd = new URLSearchParams(location.search).get('cvd');
   if (CVDS.indexOf(qsCvd) !== -1) setCvd(qsCvd);
-
-  // ---- warm / cool tones toggle (cool is the default) ----
-  function setTones(t) {
-    compare.classList.toggle('tones-warm', t === 'warm');
-    switchEl.querySelectorAll('button[data-tones]').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-tones') === t);
-    });
-  }
-  if (new URLSearchParams(location.search).get('tones') === 'warm') setTones('warm');
-
-  // ---- style skin toggle (standard default) ----
-  // the font and primary-color controls stay in charge across every skin
-  var SKINS = ['technical', 'technical2', 'glass', 'editorial', 'outline', 'nordic'];
-  function setSkin(s) {
-    SKINS.forEach(function (v) { document.body.classList.remove('skin-' + v); });
-    if (s === 'technical2') {
-      document.body.classList.add('skin-technical');   // Tech II extends Technical
-      document.body.classList.add('skin-technical2');
-    } else if (SKINS.indexOf(s) !== -1) {
-      document.body.classList.add('skin-' + s);
-    }
-    switchEl.querySelectorAll('button[data-skin]').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-skin') === s);
-    });
-  }
-  var qsSkin = new URLSearchParams(location.search).get('skin');
-  if (SKINS.indexOf(qsSkin) !== -1) setSkin(qsSkin);
 
   // ---- font selection (geist default) ----
   var FONTS = ['geist', 'inter', 'plex', 'dm', 'figtree', 'jakarta', 'aktiv'];
