@@ -1018,6 +1018,27 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
 .bl-row code { font-family: var(--font-mono); font-size: 11.5px; background: var(--surface); border-radius: 4px; padding: 1px 4px; }
 .bl-row .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bl-foot { display: flex; align-items: center; padding: 11px 14px; font-size: 12.5px; font-weight: 600; border-top: 1px solid var(--line); }
+
+/* ============================================================
+   WCAG AA VARIANT (demo toggle: body.wcag-aa / ?aa=1)
+   Tokens tightened to clear WCAG 2.1 AA per the contrast audit:
+   SC 1.4.3 text and SC 1.4.11 non-text at their minimums.
+   ============================================================ */
+body.wcag-aa.skin-nordic [data-theme="light"] {
+  --muted: #62627A;                         /* 4.5:1+ on the card-head tone */
+  --line-strong: rgba(35,35,66,.50);        /* input borders 3.1:1 */
+  --link-line: rgba(35,35,66,.50);
+  --su-b: rgba(29,89,55,.65);               /* success pill border 3.4:1 */
+  --ch-orange: #B4662A; --ch-orange2: #AE5540; --ch-yellow: #94781A;  /* chart ramp 4:1+ */
+  --ch-na: #8F8C7E;                         /* N/A dots 3.2:1 */
+}
+body.wcag-aa.skin-nordic [data-theme="dark"] {
+  --accent: #7FA9F9; --accent-deep: #7FA9F9; /* links 6.4:1 (Blue AAA token) */
+  --line-strong: rgba(240,240,246,.38);      /* input borders 3.2:1 */
+  --link-line: rgba(240,240,246,.38);
+  --su-b: rgba(48,242,132,.55);              /* success pill border 4:1 */
+  --ch-na: #75757F;                          /* N/A dots 3.1:1 */
+}
 </style>
 </head>
 <body class="skin-nordic">
@@ -1094,6 +1115,8 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
     <button data-mode="dark" title="Full dark mode"><svg><use href="#i-moon"/></svg> Dark</button>
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
+    <span class="ms-div"></span>
+    <button data-aa="1" data-tip="WCAG AA variant — tokens tightened to clear WCAG 2.1 AA: Blue AAA links in dark mode, 3:1 input borders and pill outlines, deeper light-mode chart oranges/yellows, darker muted header text, 3:1 N/A chart dots. Toggle to compare against the standard Nordic tokens.">WCAG AA</button>
     <span class="ms-div"></span>
     <button class="ms-more" data-tip="Show or hide the primary color, typography, colorblind simulation and WCAG contrast controls.">More <svg class="chev"><use href="#i-chevd"/></svg></button>
     <div class="ms-adv">
@@ -2168,9 +2191,18 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
     if (!open) setWcag(false);
   }
 
+  // ---- WCAG AA variant toggle ----
+  function setAA(on) {
+    document.body.classList.toggle('wcag-aa', on);
+    switchEl.querySelectorAll('button[data-aa]').forEach(function (b) { b.classList.toggle('active', on); });
+  }
+  if (new URLSearchParams(location.search).get('aa') === '1') setAA(true);
+
   switchEl.addEventListener('click', function (e) {
     if (e.target.closest('.ms-collapse')) { setControls(true); return; }
     if (e.target.closest('.ms-more')) { setAdv(!switchEl.classList.contains('adv-open')); return; }
+    var ab = e.target.closest('button[data-aa]');
+    if (ab) { setAA(!document.body.classList.contains('wcag-aa')); return; }
     var fb = e.target.closest('button[data-font]');
     if (fb) { setFont(fb.getAttribute('data-font')); return; }
     var wb = e.target.closest('button[data-panel]');
