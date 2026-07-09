@@ -820,6 +820,69 @@ body.skin-nordic [data-theme="dark"] .pill-btn--primary:hover { background: #FFF
 body.skin-nordic .moddy-input { background: linear-gradient(90deg, #3E5BE8, #B39DEB, #F0916F); }
 body.skin-nordic [data-theme="light"] .moddy-input-inner { background: #FBFAF6; }
 body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
+
+/* ============================================================
+   DEV CENTER page
+   Waffle-arch campaign charts + OWASP rose chart, drawn from
+   Nordic chart tokens (mint success, softened severity ramp,
+   periwinkle rose fills).
+   ============================================================ */
+[data-theme="light"] {
+  --ch-red: #BF5A5A; --ch-orange2: #CE6F4B; --ch-orange: #DD9349; --ch-yellow: #DFC055;
+  --ch-green: #4E9A58; --ch-na: #DEDBD0;
+  --ch-ghost-f: rgba(191,90,90,.14); --ch-ghost-s: rgba(191,90,90,.55);
+  --ch-p1: #3E5BE8; --ch-grid: rgba(35,35,66,.10);
+}
+[data-theme="dark"] {
+  --ch-red: #D98B85; --ch-orange2: #E39A78; --ch-orange: #E7AE6A; --ch-yellow: #E4CD7C;
+  --ch-green: #A6EFA3; --ch-na: #33333C;
+  --ch-ghost-f: rgba(217,139,133,.12); --ch-ghost-s: rgba(217,139,133,.55);
+  --ch-p1: #8CA0F5; --ch-grid: rgba(240,240,246,.12);
+}
+.dc-help { width: 15px; height: 15px; color: var(--muted); vertical-align: -2px; margin-left: 4px; }
+.dc-updated { font-family: var(--font-mono); }
+.dc-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; user-select: none; margin-right: 4px; }
+.dc-track { width: 34px; height: 20px; border-radius: 999px; background: var(--surface2); border: 1px solid var(--line-strong); position: relative; transition: background .15s, border-color .15s; }
+.dc-knob { position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 999px; background: var(--card); box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: left .15s; }
+.dc-toggle.on .dc-track { background: var(--primary-bg); border-color: transparent; }
+.dc-toggle.on .dc-knob { left: 16px; background: var(--primary-fg); }
+.dc-sec { display: flex; align-items: center; margin: 24px 0 10px; }
+.dc-sec h2 { margin: 0; font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.005em; }
+.dc-sec .pill-btn { margin-left: auto; color: var(--muted); }
+.dc-stats, .dc-camps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.dc-stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px 16px; }
+.dc-num { font-family: var(--font-mono); font-size: 25px; font-weight: 500; letter-spacing: -.02em; color: var(--text); }
+.dc-denom { color: var(--muted); font-size: 17px; }
+.dc-lbl { font-size: 13px; color: var(--text); margin-top: 5px; }
+.dc-lbl .dc-sub { font-size: 12px; color: var(--muted); margin-left: 6px; }
+.dc-note { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.dc-camp { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px 14px; display: flex; flex-direction: column; }
+.dc-camp h3 { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--text); }
+.dc-arch svg { display: block; margin: 2px auto 0; max-width: 100%; height: auto; }
+.dc-legend { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+.dc-legend th { text-align: left; font-weight: 600; font-size: 11px; color: var(--muted); padding: 4px 0 5px; border-bottom: 1px solid var(--line2); }
+.dc-legend td { padding: 4.5px 0; border-bottom: 1px solid var(--line2); color: var(--text); }
+.dc-legend tr:last-child td { border-bottom: none; }
+.dc-legend .num { text-align: right; font-family: var(--font-mono); font-size: 11.5px; }
+.dc-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; vertical-align: -1px; margin-right: 8px; }
+.dc-dot--ghost { background: var(--ch-ghost-f); border: 1px dashed var(--ch-ghost-s); }
+.dc-campfoot { display: flex; justify-content: flex-end; padding-top: 12px; margin-top: auto; }
+.dc-owasp { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 20px; }
+.dc-owleft { display: flex; flex-direction: column; min-height: 100%; }
+.dc-owlist { list-style: none; margin: 0; padding: 0; }
+.dc-owlist li { display: flex; gap: 12px; align-items: baseline; padding: 10px 12px; border-radius: 6px; font-size: 13px; color: var(--text); cursor: pointer; }
+.dc-owlist li .n { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); }
+.dc-owlist li:hover { background: var(--row-hover); }
+.dc-owlist li.sel { background: var(--surface); }
+.dc-owfix { margin-top: auto; padding-top: 16px; }
+.dc-owviz { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.dc-rose svg { display: block; max-width: 100%; height: auto; }
+.dc-rose text { font-family: var(--font-mono); font-size: 10px; fill: var(--muted); }
+.dc-owinfo { width: 100%; box-sizing: border-box; background: var(--accent-tint); border: 1px solid var(--accent-brd); border-radius: 10px; padding: 14px 16px; }
+.dc-owinfo h4 { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--text); }
+.dc-owinfo p { margin: 0 0 6px; font-size: 12.5px; line-height: 1.5; color: var(--text); }
+.dc-owinfo .dc-occ { margin: 0; }
+.dc-owinfo .dc-occ b { font-family: var(--font-mono); font-weight: 600; }
 </style>
 </head>
 <body class="skin-nordic">
@@ -935,7 +998,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
         <span class="nav-version-badge">v3</span>
       </div>
       <button class="nav-item" data-nav="moddy" title="Moddy"><span class="nav-icon-container"><svg><use href="#i-sparkles"/></svg></span></button>
-      <button class="nav-item" data-nav="none" title="DevCenter"><span class="nav-icon-container"><svg><use href="#i-pie"/></svg></span></button>
+      <button class="nav-item" data-nav="devcenter" title="DevCenter"><span class="nav-icon-container"><svg><use href="#i-pie"/></svg></span></button>
       <button class="nav-item" data-nav="marketplace" title="Marketplace"><span class="nav-icon-container"><svg><use href="#i-globe"/></svg></span></button>
       <button class="nav-item" data-nav="none" title="Builder"><span class="nav-icon-container"><svg><use href="#i-blocks"/></svg></span></button>
       <button class="nav-item" data-nav="activity" title="Activity"><span class="nav-icon-container"><svg><use href="#i-history"/></svg></span></button>
@@ -1212,6 +1275,104 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
         </div>
       </section>
 
+      <!-- ============ DEV CENTER ============ -->
+      <section class="page" data-page="devcenter">
+        <div class="pagehead">
+          <div>
+            <h1>Dev Center <svg class="dc-help"><use href="#i-help"/></svg></h1>
+            <p class="sub dc-updated">Last updated 12 days ago</p>
+          </div>
+          <div class="actions">
+            <span class="dc-toggle"><span class="dc-track"><span class="dc-knob"></span></span> Timeline view</span>
+            <button class="pill-btn">Customize</button>
+            <button class="pill-btn pill-btn--primary">Run DevCenter recipe</button>
+            <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
+          </div>
+        </div>
+
+        <div class="dc-sec"><h2>Organizational ownership</h2></div>
+        <div class="dc-stats">
+          <div class="dc-stat">
+            <div class="dc-num">241 <span class="dc-denom">/ 266</span></div>
+            <div class="dc-lbl">Repositories</div>
+            <div class="dc-note">25 LSTs are missing</div>
+          </div>
+          <div class="dc-stat">
+            <div class="dc-num">1,117</div>
+            <div class="dc-lbl">Contributing developers <span class="dc-sub">last 90 days</span></div>
+            <div class="dc-note"><span class="linklike">How is this calculated?</span></div>
+          </div>
+          <div class="dc-stat">
+            <div class="dc-num">49,128,909</div>
+            <div class="dc-lbl">Lines of code</div>
+          </div>
+        </div>
+
+        <div class="dc-sec"><h2>Change campaigns</h2><button class="pill-btn">Data tables <svg><use href="#i-chevd"/></svg></button></div>
+        <div class="dc-camps">
+          <div class="dc-camp" data-camp="spring">
+            <h3>Move to Spring Boot 4.0</h3>
+            <div class="dc-arch"></div>
+            <table class="dc-legend">
+              <thead><tr><th>Category</th><th class="num"># of repositories</th><th class="num">Percentage</th></tr></thead>
+              <tbody>
+                <tr><td><span class="dc-dot" style="background:var(--ch-red)"></span>Major</td><td class="num">47</td><td class="num">18%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-orange)"></span>Minor</td><td class="num">0</td><td class="num">0%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-yellow)"></span>Patch</td><td class="num">0</td><td class="num">0%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-green)"></span>Completed</td><td class="num">3</td><td class="num">1%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-na)"></span>N/A</td><td class="num">191</td><td class="num">72%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--ghost"></span>No LST</td><td class="num">25</td><td class="num">9%</td></tr>
+              </tbody>
+            </table>
+            <div class="dc-campfoot"><button class="pill-btn">Dry run</button></div>
+          </div>
+          <div class="dc-camp" data-camp="java">
+            <h3>Move to Java 25</h3>
+            <div class="dc-arch"></div>
+            <table class="dc-legend">
+              <thead><tr><th>Category</th><th class="num"># of repositories</th><th class="num">Percentage</th></tr></thead>
+              <tbody>
+                <tr><td><span class="dc-dot" style="background:var(--ch-red)"></span>Java 8+</td><td class="num">102</td><td class="num">38%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-orange2)"></span>Java 11+</td><td class="num">3</td><td class="num">1%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-orange)"></span>Java 17+</td><td class="num">33</td><td class="num">12%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-yellow)"></span>Java 21+</td><td class="num">86</td><td class="num">32%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-green)"></span>Completed</td><td class="num">9</td><td class="num">3%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-na)"></span>N/A</td><td class="num">8</td><td class="num">3%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--ghost"></span>No LST</td><td class="num">25</td><td class="num">9%</td></tr>
+              </tbody>
+            </table>
+            <div class="dc-campfoot"><button class="pill-btn">Dry run</button></div>
+          </div>
+          <div class="dc-camp" data-camp="junit">
+            <h3>Move to JUnit 6</h3>
+            <div class="dc-arch"></div>
+            <table class="dc-legend">
+              <thead><tr><th>Category</th><th class="num"># of repositories</th><th class="num">Percentage</th></tr></thead>
+              <tbody>
+                <tr><td><span class="dc-dot" style="background:var(--ch-red)"></span>JUnit 4</td><td class="num">12</td><td class="num">5%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-orange)"></span>JUnit 5</td><td class="num">35</td><td class="num">13%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-green)"></span>Completed</td><td class="num">85</td><td class="num">32%</td></tr>
+                <tr><td><span class="dc-dot" style="background:var(--ch-na)"></span>N/A</td><td class="num">109</td><td class="num">41%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--ghost"></span>No LST</td><td class="num">25</td><td class="num">9%</td></tr>
+              </tbody>
+            </table>
+            <div class="dc-campfoot"><button class="pill-btn">Dry run</button></div>
+          </div>
+        </div>
+
+        <div class="dc-sec"><h2>OWASP top ten</h2><button class="pill-btn">Data tables <svg><use href="#i-chevd"/></svg></button></div>
+        <div class="dc-owasp">
+          <div class="dc-owleft">
+            <ol class="dc-owlist"></ol>
+            <div class="dc-owfix"><button class="pill-btn">Fix</button></div>
+          </div>
+          <div class="dc-owviz">
+            <div class="dc-rose"></div>
+            <div class="dc-owinfo"></div>
+          </div>
+        </div>
+      </section>
+
     </div><!-- /content -->
   </div><!-- /main-area -->
 </div><!-- /app -->
@@ -1257,10 +1418,109 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
     }
   });
 
-  // deep-link: #marketplace / #results / #activity
+  // deep-link: #marketplace / #results / #activity / #devcenter
   function fromHash() { setScreen((location.hash || '').replace('#', '') || 'marketplace'); }
   window.addEventListener('hashchange', fromHash);
   fromHash();
+
+  // ---- Dev Center: waffle-arch campaign charts ----
+  // arc order runs reverse of the legend (No LST at bottom-left, worst at bottom-right)
+  var CH = { red: 'var(--ch-red)', orange2: 'var(--ch-orange2)', orange: 'var(--ch-orange)',
+             yellow: 'var(--ch-yellow)', green: 'var(--ch-green)', na: 'var(--ch-na)' };
+  var CAMPS = {
+    spring: [['red', 47], ['orange', 0], ['yellow', 0], ['green', 3], ['na', 191], ['ghost', 25]],
+    java:   [['red', 102], ['orange2', 3], ['orange', 33], ['yellow', 86], ['green', 9], ['na', 8], ['ghost', 25]],
+    junit:  [['red', 12], ['orange', 35], ['green', 85], ['na', 109], ['ghost', 25]]
+  };
+  function archSvg(cats) {
+    var total = cats.reduce(function (s, c) { return s + c[1]; }, 0);
+    var W = 290, H = 152, cx = W / 2, cy = H - 6;
+    var rings = 8, r0 = 48, r1 = 122;
+    var radii = [], sum = 0, i, k;
+    for (i = 0; i < rings; i++) { var r = r0 + (r1 - r0) * i / (rings - 1); radii.push(r); sum += r; }
+    var counts = radii.map(function (r) { return Math.round(r / sum * total); });
+    counts[rings - 1] += total - counts.reduce(function (a, b) { return a + b; }, 0);
+    var dots = [];
+    for (i = 0; i < rings; i++) {
+      for (k = 0; k < counts[i]; k++) {
+        var a = Math.PI - (k + 0.5) * Math.PI / counts[i];
+        dots.push({ x: cx + radii[i] * Math.cos(a), y: cy - radii[i] * Math.sin(a), a: a, ring: i });
+      }
+    }
+    dots.sort(function (p, q) { return q.a - p.a || p.ring - q.ring; });
+    var out = '', idx = 0;
+    cats.slice().reverse().forEach(function (c) {
+      for (k = 0; k < c[1] && idx < dots.length; k++) {
+        var d = dots[idx++];
+        out += c[0] === 'ghost'
+          ? '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="3.3" fill="var(--ch-ghost-f)" stroke="var(--ch-ghost-s)" stroke-width="0.8" stroke-dasharray="1.6 1.3"/>'
+          : '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="3.7" fill="' + CH[c[0]] + '"/>';
+      }
+    });
+    return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' + out + '</svg>';
+  }
+  Object.keys(CAMPS).forEach(function (key) {
+    var svg = archSvg(CAMPS[key]);
+    document.querySelectorAll('.layer .dc-camp[data-camp="' + key + '"] .dc-arch').forEach(function (el) { el.innerHTML = svg; });
+  });
+
+  // ---- Dev Center: OWASP top ten (rose chart + selectable list) ----
+  var OWASP = [
+    { t: 'Remediate OWASP A01:2021 Broken access control', d: 'OWASP <span class="linklike">A01:2021</span> describes failures related to broken access control.', n: 214 },
+    { t: 'Remediate OWASP A02:2021 Cryptographic failures', d: 'OWASP <span class="linklike">A02:2021</span> covers weak or missing cryptography that exposes sensitive data.', n: 96 },
+    { t: 'Remediate OWASP A03:2021 Injection', d: 'OWASP <span class="linklike">A03:2021</span> describes injection flaws such as SQL, NoSQL and command injection.', n: 83 },
+    { t: 'Remediate OWASP A08:2021 Software and data integrity failures', d: 'OWASP <span class="linklike">A08:2021</span> covers code and infrastructure that fails to protect against integrity violations.', n: 342 },
+    { t: 'Regular Expression Denial of Service (ReDOS)', d: 'Catastrophic backtracking in regular expressions lets crafted input consume unbounded CPU.', n: 28 },
+    { t: 'Zip slip', d: 'Archive extraction without path validation lets crafted entries write outside the target directory.', n: 14 },
+    { t: 'Use secure temporary file creation', d: 'Predictable temporary file names allow local attackers to pre-create or swap files.', n: 57 }
+  ];
+  function roseSvg(sel) {
+    var W = 320, H = 300, cx = W / 2, cy = H / 2 + 4, R = 128, MAX = 350;
+    var out = '', i;
+    for (i = 1; i <= 7; i++) {
+      out += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * i * 50 / MAX).toFixed(1) + '" fill="none" stroke="var(--ch-grid)"/>';
+      out += '<text x="' + (cx - 5) + '" y="' + (cy - R * i * 50 / MAX + 3).toFixed(1) + '" text-anchor="end">' + (i * 50) + '</text>';
+    }
+    var step = 2 * Math.PI / 7, gap = 0.05;
+    for (i = 0; i < 7; i++) {
+      var mid = -Math.PI / 2 + (i + 0.5) * step;
+      var r = R * Math.min(OWASP[i].n, MAX) / MAX;
+      if (OWASP[i].n > 0) {
+        var a0 = mid - step / 2 + gap, a1 = mid + step / 2 - gap;
+        out += '<path d="M' + cx + ' ' + cy + ' L' + (cx + r * Math.cos(a0)).toFixed(1) + ' ' + (cy + r * Math.sin(a0)).toFixed(1) +
+               ' A' + r.toFixed(1) + ' ' + r.toFixed(1) + ' 0 0 1 ' + (cx + r * Math.cos(a1)).toFixed(1) + ' ' + (cy + r * Math.sin(a1)).toFixed(1) +
+               ' Z" fill="var(--ch-p1)" opacity="' + (i === sel ? '0.85' : '0.30') + '"/>';
+      }
+      out += '<text x="' + (cx + (R + 13) * Math.cos(mid)).toFixed(1) + '" y="' + (cy + (R + 13) * Math.sin(mid) + 3).toFixed(1) + '" text-anchor="middle">' + (i + 1) + '</text>';
+    }
+    return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' + out + '</svg>';
+  }
+  document.querySelectorAll('.layer .dc-owlist').forEach(function (ol) {
+    ol.innerHTML = OWASP.map(function (o, i) {
+      return '<li data-ow="' + i + '"><span class="n">' + (i + 1) + '.</span><span>' + o.t + '</span></li>';
+    }).join('');
+  });
+  function setOwasp(i) {
+    document.querySelectorAll('.layer .dc-owlist li').forEach(function (li) {
+      li.classList.toggle('sel', +li.getAttribute('data-ow') === i);
+    });
+    document.querySelectorAll('.layer .dc-owinfo').forEach(function (el) {
+      el.innerHTML = '<h4>' + OWASP[i].t + '</h4><p>' + OWASP[i].d + '</p><p class="dc-occ"><b>' + OWASP[i].n + '</b> occurrences</p>';
+    });
+    var svg = roseSvg(i);
+    document.querySelectorAll('.layer .dc-rose').forEach(function (el) { el.innerHTML = svg; });
+  }
+  setOwasp(0);
+
+  document.getElementById('compare').addEventListener('click', function (e) {
+    var li = e.target.closest('.dc-owlist li');
+    if (li) { setOwasp(+li.getAttribute('data-ow')); return; }
+    var tg = e.target.closest('.dc-toggle');
+    if (tg) {
+      var on = !tg.classList.contains('on');
+      document.querySelectorAll('.layer .dc-toggle').forEach(function (t) { t.classList.toggle('on', on); });
+    }
+  });
 
   // ---- keep the two scroll containers mirrored ----
   var contents = document.querySelectorAll('.layer .content');
