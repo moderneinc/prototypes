@@ -936,6 +936,25 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
 .cl-nums { font-family: var(--font-mono); font-size: 11px; }
 .cl-nums .add { color: var(--green-hi); }
 .cl-nums .del { color: var(--er); margin-left: 6px; }
+
+/* ============================================================
+   REPOSITORIES page
+   Index of ingested repositories: search + ingest toggle toolbar,
+   link rows, mono branch/changeset, LST availability pills.
+   ============================================================ */
+.rp-toolbar { display: flex; align-items: center; gap: 16px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.rp-toolbar .cl-search { width: 230px; }
+.rp-tright { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.pill-btn[disabled] { opacity: .5; cursor: default; }
+.pill-btn[disabled]:hover { background: var(--field); }
+.rp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rp-table thead th { text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--card-head); padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.rp-table tbody td { padding: 12px; border-bottom: 1px solid var(--line2); color: var(--text); vertical-align: middle; }
+.rp-table tbody tr:last-child td { border-bottom: none; }
+.rp-table tbody tr:hover td { background: var(--row-hover); }
+.rp-mono { font-family: var(--font-mono); font-size: 12px; }
+.rp-branch { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.rp-when { color: var(--muted); white-space: nowrap; }
 </style>
 </head>
 <body class="skin-nordic">
@@ -1061,7 +1080,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
       <button class="nav-item" data-nav="none" title="Builder"><span class="nav-icon-container"><svg><use href="#i-blocks"/></svg></span></button>
       <button class="nav-item" data-nav="activity" title="Activity"><span class="nav-icon-container"><svg><use href="#i-history"/></svg></span></button>
       <button class="nav-item" data-nav="changelog" title="Changelog"><span class="nav-icon-container"><svg><use href="#i-activity"/></svg></span></button>
-      <button class="nav-item" data-nav="none" title="Repositories"><span class="nav-icon-container"><svg><use href="#i-repo"/></svg></span></button>
+      <button class="nav-item" data-nav="repositories" title="Repositories"><span class="nav-icon-container"><svg><use href="#i-repo"/></svg></span></button>
       <button class="nav-item" data-nav="none" title="Deploy"><span class="nav-icon-container"><svg><use href="#i-package"/></svg></span></button>
     </div>
     <div class="nav-tenant" title="Acme Bank — organization"><div class="tenant-logo">Acme<br>Bank</div></div>
@@ -1551,6 +1570,102 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
             </tbody>
           </table>
           <div class="act-foot"><span>50 results</span><span class="linklike">Load more</span></div>
+        </div>
+      </section>
+
+      <!-- ============ REPOSITORIES ============ -->
+      <section class="page" data-page="repositories">
+        <div class="pagehead">
+          <div>
+            <h1>Repositories</h1>
+            <p class="sub">Currently displaying <b>245</b> repositories</p>
+          </div>
+          <div class="actions">
+            <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
+          </div>
+        </div>
+
+        <div class="cl-card">
+          <div class="rp-toolbar">
+            <div class="cl-search"><svg><use href="#i-search"/></svg> Search…</div>
+            <span class="dc-toggle"><span class="dc-track"><span class="dc-knob"></span></span> Include not ingested</span>
+            <div class="rp-tright">
+              <button class="pill-btn" disabled>Create organization</button>
+              <button class="pill-btn"><svg><use href="#i-download"/></svg> Export</button>
+            </div>
+          </div>
+          <table class="rp-table">
+            <thead>
+              <tr>
+                <th class="cl-cbcol cl-c"><span class="cl-cb"></span></th>
+                <th>Organization</th>
+                <th>Repository</th>
+                <th>Branch</th>
+                <th>Changeset</th>
+                <th>LST available</th>
+                <th>Origin</th>
+                <th>Last published</th>
+                <th>Partition</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td>moderneinc</td><td><span class="linklike">demo-public</span></td><td class="rp-branch">main</td>
+                <td class="rp-mono">1a1cbe83</td><td><span class="pill pill--su">Available</span></td>
+                <td>bitbucket.org</td><td class="rp-when">about 13 hours ago</td><td></td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td>moderneinc/moderne</td><td><span class="linklike">git-test</span></td><td class="rp-branch">main</td>
+                <td class="rp-mono">f8cdc143</td><td><span class="pill pill--su">Available</span></td>
+                <td>dev.azure.com</td><td class="rp-when">about 13 hours ago</td><td></td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td>moderneinc/moderne</td><td><span class="linklike">smoke-test</span></td><td class="rp-branch">main</td>
+                <td class="rp-mono">27a63c73</td><td><span class="pill pill--su">Available</span></td>
+                <td>dev.azure.com</td><td class="rp-when">about 11 hours ago</td><td></td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td>moderneinc/moderne_public</td><td><span class="linklike">WebGoat-azure</span></td><td class="rp-branch">main</td>
+                <td class="rp-mono">58b762ea</td><td><span class="pill pill--su">Available</span></td>
+                <td>dev.azure.com</td><td class="rp-when">about 11 hours ago</td><td></td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td>moderneinc</td><td><span class="linklike">access-requests</span></td><td class="rp-branch">main</td>
+                <td class="rp-mono">31d338ce</td><td><span class="pill pill--su">Available</span></td>
+                <td>github.com</td><td class="rp-when">about 14 hours ago</td><td></td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td>moderneinc</td><td><span class="linklike">actions-playground</span></td><td class="rp-branch">main</td>
+                <td class="rp-mono">9931c521</td><td><span class="pill pill--su">Available</span></td>
+                <td>github.com</td><td class="rp-when">about 14 hours ago</td><td></td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td>moderneinc</td><td><span class="linklike">ai-code-search</span></td><td class="rp-branch">main</td>
+                <td class="rp-mono">63e59ba3</td><td><span class="pill pill--su">Available</span></td>
+                <td>github.com</td><td class="rp-when">about 12 hours ago</td><td></td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td>moderneinc</td><td><span class="linklike">artifacts</span></td><td class="rp-branch">main</td>
+                <td class="rp-mono">2116215d</td><td><span class="pill pill--su">Available</span></td>
+                <td>github.com</td><td class="rp-when">about 12 hours ago</td><td></td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td>moderneinc</td><td><span class="linklike">bitbucket-data-center</span></td><td class="rp-branch">main</td>
+                <td class="rp-mono">98e11c85</td><td><span class="pill pill--su">Available</span></td>
+                <td>github.com</td><td class="rp-when">about 13 hours ago</td><td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="act-foot"><span>9 of 245 repositories</span><span class="linklike">Load more</span></div>
         </div>
       </section>
 
