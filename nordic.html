@@ -1128,6 +1128,39 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .dt-split .pill-btn { color: var(--accent); border-radius: 4px 0 0 4px; }
 .dt-split .dt-chev { border-radius: 0 4px 4px 0; border-left: none; padding: 6px 7px; }
 .dt-split .dt-chev svg { width: 13px; height: 13px; }
+.dt-grid[hidden], .dt-list[hidden], .dt-lfoot[hidden] { display: none !important; }
+.dt-list td { vertical-align: middle; }
+.dt-acts { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+.dt-acts .icon-btn svg { width: 16px; height: 16px; }
+.dt-acts .pill-btn { padding: 5px 11px; font-size: 12px; }
+.dt-lfoot { padding: 12px 16px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); }
+
+/* ---- Moddy active chat ---- */
+.page[data-page="moddy"].chatting { flex-direction: column; }
+.page[data-page="moddy"].chatting .moddy-hero,
+.page[data-page="moddy"].chatting .moddy-sugs { display: none; }
+.page[data-page="moddy"].chatting .moddy-chat { display: block; }
+.page[data-page="moddy"].chatting .moddy-wrap { margin: 0 auto; max-width: 760px; }
+.moddy-chat { flex: 1; width: 100%; max-width: 980px; margin: 0 auto; padding: 4px 0 20px; }
+.moddy-chat[hidden] { display: none !important; }
+.mc-new { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text); background: transparent; border: none; padding: 8px 4px; }
+.mc-new svg { width: 17px; height: 17px; color: var(--muted); }
+.mc-new:hover svg { color: var(--text); }
+.mc-thread { max-width: 760px; margin: 18px auto 0; }
+.mc-user { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.mc-ava { width: 28px; height: 28px; border-radius: 999px; background: #232342; color: #FBFAF6; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+[data-theme="dark"] .mc-ava { background: #30F284; color: #1D5937; }
+.mc-msg { font-size: 13.5px; font-weight: 600; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; }
+.mc-ai { display: flex; align-items: flex-start; gap: 12px; }
+.mc-spark { width: 28px; height: 28px; border-radius: 999px; flex: none; display: inline-flex; align-items: center; justify-content: center; color: #FBFAF6; background: linear-gradient(135deg, #E6399B, #9D5BE8 40%, #3E7BF6 75%, #30F284); }
+.mc-spark svg { width: 15px; height: 15px; }
+.mc-body { font-size: 14px; line-height: 1.65; color: var(--text); padding-top: 3px; }
+.mc-body p { margin: 0 0 12px; }
+.mc-body p:last-child { margin-bottom: 0; }
+.mc-body ul { margin: 0 0 12px; padding-left: 8px; list-style: none; }
+.mc-body li { margin: 7px 0; padding-left: 16px; position: relative; }
+.mc-body li::before { content: ''; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 999px; background: var(--accent); }
+.mc-body code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surface); border: 1px solid var(--line2); border-radius: 5px; padding: 2px 7px; }
 </style>
 </head>
 <body class="skin-nordic">
@@ -1169,6 +1202,8 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
   <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4.2l-8.1 14A2 2 0 004 21.2h16.2a2 2 0 001.7-3l-8.1-14a2 2 0 00-3.5 0z"/><path d="M12 10v4M12 17.5h.01"/></symbol>
   <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></symbol>
   <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
   <symbol id="i-logo-npm" viewBox="0 0 24 24" fill="currentColor"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"/></symbol>
   <symbol id="i-logo-go" viewBox="0 0 24 24" fill="currentColor"><path d="M1.811 10.231c-.047 0-.058-.023-.035-.059l.246-.315c.023-.035.081-.058.128-.058h4.172c.046 0 .058.035.035.07l-.199.303c-.023.036-.082.07-.117.07zM.047 11.306c-.047 0-.059-.023-.035-.058l.245-.316c.023-.035.082-.058.129-.058h5.328c.047 0 .07.035.058.07l-.093.28c-.012.047-.058.07-.105.07zm2.828 1.075c-.047 0-.059-.035-.035-.07l.163-.292c.023-.035.07-.07.117-.07h2.337c.047 0 .07.035.07.082l-.023.28c0 .047-.047.082-.082.082zm12.129-2.36c-.736.187-1.239.327-1.963.514-.176.046-.187.058-.34-.117-.174-.199-.303-.327-.548-.444-.737-.362-1.45-.257-2.115.175-.795.514-1.204 1.274-1.192 2.22.011.935.654 1.706 1.577 1.835.795.105 1.46-.175 1.987-.77.105-.13.198-.27.315-.434H10.47c-.245 0-.304-.152-.222-.35.152-.362.432-.97.596-1.274a.315.315 0 01.292-.187h4.253c-.023.316-.023.631-.07.947a4.983 4.983 0 01-.958 2.29c-.841 1.11-1.94 1.8-3.33 1.986-1.145.152-2.209-.07-3.143-.77-.865-.655-1.356-1.52-1.484-2.595-.152-1.274.222-2.419.993-3.424.83-1.086 1.928-1.776 3.272-2.02 1.098-.2 2.15-.07 3.096.571.62.41 1.063.97 1.356 1.648.07.105.023.164-.117.2m3.868 6.461c-1.064-.024-2.034-.328-2.852-1.029a3.665 3.665 0 01-1.262-2.255c-.21-1.32.152-2.489.947-3.529.853-1.122 1.881-1.706 3.272-1.95 1.192-.21 2.314-.095 3.33.595.923.63 1.496 1.484 1.648 2.605.198 1.578-.257 2.863-1.344 3.962-.771.783-1.718 1.273-2.805 1.495-.315.06-.63.07-.934.106zm2.78-4.72c-.011-.153-.011-.27-.034-.387-.21-1.157-1.274-1.81-2.384-1.554-1.087.245-1.788.935-2.045 2.033-.21.912.234 1.835 1.075 2.21.643.28 1.285.244 1.905-.07.923-.48 1.425-1.228 1.484-2.233z"/></symbol>
   <symbol id="i-logo-maven" viewBox="0 0 24 24" fill="currentColor"><path d="M4.237.001c-.312-.013-.665.072-.828.457-.158.374-.283 1.188-.34 2.276l1.223.591c-.02-.737.007-1.43.076-2.066-.026.299-.056.96.006 2.039.019.342.049.725.088 1.15.002.024.002.047.007.069a45.485 45.485 0 0 0 .309 2.412c.057.368.126.752.195 1.16l-.01.01c.014.01.015.018.014.023l.03.16c.03.162.06.328.093.494l.108.553.056.289a61.72 61.72 0 0 0 .457 2.068c.09.382.186.78.287 1.186.098.386.199.783.309 1.193.096.362.199.735.303 1.117.003.018.012.036.015.055a145.826 145.826 0 0 0 .34 1.185l.049.174c.078.261.158.533.242.805a4.2 4.2 0 0 1-.293-.135l-.19-.654c-.02-.077-.042-.148-.062-.225l-.002-.004-.004-.002c-.087-.3-.17-.607-.257-.916-.023-.087-.044-.173-.069-.263l-.314-1.178c-.1-.381-.194-.765-.29-1.154-.094-.39-.185-.78-.277-1.172-.093-.401-.181-.8-.265-1.203-.085-.396-.161-.798-.24-1.193a50.315 50.315 0 0 1-.211-1.17c-.004-.013-.006-.03-.01-.041l.004-.002c-.057-.386-.116-.77-.174-1.15a60.905 60.905 0 0 1-.154-1.204 27.447 27.447 0 0 1-.172-2.41l-1.22-.59c-.004.074-.01.15-.013.23-.012.294-.02.605-.023.93a45.3 45.3 0 0 0 .006 1.157c.009.37.025.755.045 1.148.02.336.042.675.07 1.022l.002.039.006.004c.003.023.007.05.006.076.033.368.064.739.107 1.115a34.493 34.493 0 0 0 .303 2.125c.01.064.024.131.035.195a23.418 23.418 0 0 0 .547 2.32c.07.237.14.464.21.68.063.182.13.365.194.545.155.422.327.832.512 1.232l.006.004a.318.318 0 0 0 .02.05c.225.485.475.95.755 1.395.01.013.02.033.03.047-.455-.183-1.259-.098-1.253-.097.83.288 1.557.64 2.016 1.175-.183.2-.523.352-.953.477.594.064.924-.039 1.045-.092-.31.26-.483.732-.635 1.24.35-.57.696-.949 1.033-1.094.078.258.162.524.244.788A147.532 147.532 0 0 0 5.157 24a.56.56 0 0 0 .43-.312c.13-.282.83-1.775 1.908-3.875.413 1.303.88 2.679 1.386 4.109a.494.494 0 0 0 .076-.465 103.735 103.735 0 0 1-1.308-3.945c.154-.299.316-.612.484-.932.125.04.255.094.389.155.203.186.352.491.482.84a1.515 1.515 0 0 0-.334-1.098c1.335.258 2.547.09 3.287-.81a3.97 3.97 0 0 0 .192-.258c-.325.304-.682.404-1.313.273.996-.281 1.523-.617 2.035-1.22.12-.145.244-.303.371-.48-.943.722-1.927.822-2.9.493l-.045-.018c.914.02 2.203-.474 3.092-1.189.41-.33.796-.73 1.17-1.21.28-.359.55-.76.82-1.216.234-.393.468-.824.7-1.293a2.83 2.83 0 0 1-.74.137l-.144.008c-.048.002-.093 0-.146.002.885-.198 1.5-.74 1.994-1.447-.24.117-.628.262-1.07.297-.058.006-.12.006-.182.006-.013-.002-.028 0-.047-.002.306-.078.574-.178.81-.309a3.363 3.363 0 0 0 .358-.236c.044-.037.088-.07.13-.106.099-.086.193-.18.28-.287.028-.034.056-.063.08-.098.036-.05.073-.098.104-.146a8.388 8.388 0 0 0 .51-.828c.015-.031.032-.057.046-.088.04-.084.08-.16.11-.227.042-.099.074-.179.092-.238a.515.515 0 0 1-.108.051c-.273.112-.727.187-1.086.201-.004 0-.008 0-.013.004h-.067c.72-.214 1.067-.45 1.422-.818a13.883 13.883 0 0 0 1.154-1.428c.264-.37.505-.738.692-1.072a6.5 6.5 0 0 0 .298-.592c.066-.157.122-.305.172-.45-.466.01-.986.011-1.48 0 .495.01 1.015.007 1.484-.005.5-1.485.063-2.262.063-2.262s-.526-1.212-1.4-.851c-.426.175-1.172.73-2.083 1.56l.514 1.45a17.561 17.561 0 0 1 1.703-1.602c-.257.22-.807.726-1.615 1.644-.256.29-.537.624-.844.997-.017.02-.035.038-.047.06a51.435 51.435 0 0 0-1.666 2.187c-.248.34-.498.704-.765 1.088h-.016c.002.02-.004.028-.01.032l-.101.152c-.104.155-.213.31-.318.47l-.352.534c-.061.09-.124.181-.186.277-.184.282-.367.573-.558.873a97.351 97.351 0 0 0-1.428 2.338 96.866 96.866 0 0 0-1.341 2.343c-.012.017-.02.04-.034.057a197.256 197.256 0 0 0-.668 1.223l-.097.181c-.17.318-.346.642-.52.979 0 .004-.005.008-.006.013-.026.048-.05.093-.072.141-.117.222-.218.424-.45.87a1.352 1.352 0 0 0-.233-.182l.345-.65c.047-.089.096-.177.143-.27l.04-.077.546-1.001.13-.233v-.006l-.001-.006c.169-.31.345-.62.52-.94.051-.087.102-.173.153-.265.224-.395.454-.794.684-1.197a91.685 91.685 0 0 1 2.135-3.504c.247-.386.503-.77.754-1.152.092-.138.182-.272.279-.41a72.9 72.9 0 0 1 .48-.701c.007-.012.019-.024.026-.037h.006c.26-.356.517-.713.773-1.065.278-.373.554-.735.83-1.09a31.075 31.075 0 0 1 1.777-2.075l-.515-1.446c-.06.057-.126.116-.192.178a32.37 32.37 0 0 0-.758.729c-.295.294-.597.606-.912.935a46.032 46.032 0 0 0-1.632 1.838l-.03.033.002.008c-.017.02-.033.044-.054.064-.266.323-.538.649-.801.985a39.105 39.105 0 0 0-1.445 1.95c-.043.06-.085.126-.127.186a26.458 26.458 0 0 0-1.403 2.303c-.13.247-.256.485-.37.715-.096.195-.187.395-.278.591-.21.463-.398.93-.566 1.399l.002.006a.36.36 0 0 0-.026.058c-.108.303-.203.608-.29.914-.14.174-.302.325-.483.46a3.505 3.505 0 0 0-.131-.153 5.148 5.148 0 0 0 .824-2.211 6.4 6.4 0 0 0-.016-1.488c-.046-.4-.126-.82-.238-1.274-.097-.393-.217-.81-.363-1.248-.091.185-.22.367-.379.545l-.086.094c-.029.032-.06.06-.092.094.434-.674.486-1.397.358-2.148a2.722 2.722 0 0 1-.49.85c-.033.038-.072.077-.11.116-.01.007-.019.018-.033.028.144-.24.25-.467.318-.698a1.29 1.29 0 0 0 .04-.146 2.85 2.85 0 0 0 .038-.225l.018-.146a2.11 2.11 0 0 0-.002-.354c-.003-.04-.004-.076-.01-.113-.01-.055-.016-.105-.027-.154a7.416 7.416 0 0 0-.193-.84c-.01-.028-.015-.056-.026-.084-.027-.079-.048-.149-.072-.209a2.1 2.1 0 0 0-.09-.209.455.455 0 0 1-.035.1c-.102.24-.34.57-.557.8-.003.003-.007.005-.007.01l-.04.043c.318-.58.39-.946.385-1.398a12.274 12.274 0 0 0-.16-1.615 10.68 10.68 0 0 0-.232-1.104 5.853 5.853 0 0 0-.18-.558 6.337 6.337 0 0 0-.172-.391 26.18 26.18 0 0 0 .002-.004C5.576.341 4.82.124 4.82.124s-.27-.11-.582-.123zm3.38 15.783l.032.082v.002c-.06.033-.116.067-.178.097-.012.004-.024.012-.039.018a2.41 2.41 0 0 0 .186-.2zm-.603 1.626c.13.136.25.242.354.32l.07.227a1.866 1.866 0 0 0-.246.053l-.03-.098c-.024-.084-.048-.17-.076-.257l-.021-.073zm.26.875a2.34 2.34 0 0 1 .271.01l.07.229a.778.778 0 0 1 .247-.004l-.326.627a127.643 127.643 0 0 1-.262-.862z"/></symbol>
@@ -1283,6 +1318,24 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 
       <!-- ========== MODDY ========== -->
       <section class="page" data-page="moddy">
+        <div class="moddy-chat" hidden>
+          <button class="mc-new"><svg><use href="#i-plus"/></svg> New chat</button>
+          <div class="mc-thread">
+            <div class="mc-user"><span class="mc-ava">L</span><span class="mc-msg">find types</span></div>
+            <div class="mc-ai">
+              <span class="mc-spark"><svg><use href="#i-sparkles"/></svg></span>
+              <div class="mc-body">
+                <p>I can help you find types in your codebase. Could you please specify which type (fully qualified class name) you'd like to search for? For example:</p>
+                <ul>
+                  <li><code>java.util.ArrayList</code></li>
+                  <li><code>org.springframework.boot.SpringApplication</code></li>
+                  <li><code>com.example.MyClass</code></li>
+                </ul>
+                <p>Also, would you like to use a pattern (e.g., <code>java.util.*</code> for wildcard matching)?</p>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="moddy-wrap">
           <div class="moddy-hero">
             <h1>Hi Lindsay, Let's work on your code!</h1>
@@ -1548,8 +1601,8 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
             <div class="dt-filter"><div class="cl-search"><svg><use href="#i-search"/></svg> Filter tables…</div></div>
             <div class="dt-controls">
               <span class="seg">
-                <button class="seg-btn active" title="Grid view"><svg><use href="#i-blocks"/></svg></button>
-                <button class="seg-btn" title="List view"><svg><use href="#i-list"/></svg></button>
+                <button class="seg-btn active" data-dtview="grid" title="Grid view"><svg><use href="#i-blocks"/></svg></button>
+                <button class="seg-btn" data-dtview="list" title="List view"><svg><use href="#i-list"/></svg></button>
               </span>
               <button class="pill-btn">Default format: CSV <svg><use href="#i-chevd"/></svg></button>
             </div>
@@ -1600,6 +1653,32 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
                 </div>
               </div>
             </div>
+            <table class="rp-table dt-list" hidden>
+              <thead><tr><th>Name</th><th>Type</th><th>Description</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>SQL anti-patterns</td><td></td><td class="rs-det" style="max-width:none">SQL statements matching performance anti-pattern rules.</td>
+                  <td><span class="dt-acts"><button class="icon-btn" title="Inspect"><svg><use href="#i-eye"/></svg></button><button class="icon-btn" title="Copy"><svg><use href="#i-copy"/></svg></button><span class="dt-split"><button class="pill-btn">Download CSV</button><button class="pill-btn dt-chev"><svg><use href="#i-chevd"/></svg></button></span></span></td>
+                </tr>
+                <tr>
+                  <td>Recipe performance</td><td></td><td class="rs-det" style="max-width:none">Statistics used in analyzing the performance of recipes.</td>
+                  <td><span class="dt-acts"><button class="icon-btn" title="Inspect"><svg><use href="#i-eye"/></svg></button><button class="icon-btn" title="Copy"><svg><use href="#i-copy"/></svg></button><span class="dt-split"><button class="pill-btn">Download CSV</button><button class="pill-btn dt-chev"><svg><use href="#i-chevd"/></svg></button></span></span></td>
+                </tr>
+                <tr>
+                  <td>Source files that had search results</td><td></td><td class="rs-det" style="max-width:none">Search results that were found during the recipe run.</td>
+                  <td><span class="dt-acts"><button class="icon-btn" title="Inspect"><svg><use href="#i-eye"/></svg></button><button class="icon-btn" title="Copy"><svg><use href="#i-copy"/></svg></button><span class="dt-split"><button class="pill-btn">Download CSV</button><button class="pill-btn dt-chev"><svg><use href="#i-chevd"/></svg></button></span></span></td>
+                </tr>
+                <tr>
+                  <td>Source files that errored on a recipe</td><td></td><td class="rs-det" style="max-width:none">The details of all errors produced by a recipe run.</td>
+                  <td><span class="dt-acts"><button class="icon-btn" title="Inspect"><svg><use href="#i-eye"/></svg></button><button class="icon-btn" title="Copy"><svg><use href="#i-copy"/></svg></button><span class="dt-split"><button class="pill-btn">Download CSV</button><button class="pill-btn dt-chev"><svg><use href="#i-chevd"/></svg></button></span></span></td>
+                </tr>
+                <tr>
+                  <td>Source files that had results</td><td></td><td class="rs-det" style="max-width:none">Source files that were modified by the recipe run.</td>
+                  <td><span class="dt-acts"><button class="icon-btn" title="Inspect"><svg><use href="#i-eye"/></svg></button><button class="icon-btn" title="Copy"><svg><use href="#i-copy"/></svg></button><span class="dt-split"><button class="pill-btn">Download CSV</button><button class="pill-btn dt-chev"><svg><use href="#i-chevd"/></svg></button></span></span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="dt-lfoot" hidden>Showing 5 of 5 tables</div>
           </div>
         </div>
 
@@ -2262,6 +2341,12 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
     }
   }
 
+  // ---- Moddy active chat state ----
+  function setModdyChat(on) {
+    document.querySelectorAll('.layer .page[data-page="moddy"]').forEach(function (p) { p.classList.toggle('chatting', on); });
+    document.querySelectorAll('.layer .moddy-chat').forEach(function (c) { c.hidden = !on; });
+  }
+
   // ---- themed modals (org selector / recipe search), synced across layers ----
   function setModal(name, open) {
     document.querySelectorAll('.layer .mo-ov[data-modal="' + name + '"]').forEach(function (m) {
@@ -2293,6 +2378,18 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
       document.querySelectorAll('.layer .dtab').forEach(function (p) { p.hidden = tab !== 'datatables'; });
       return;
     }
+    var dv = e.target.closest('.seg-btn[data-dtview]');
+    if (dv) {
+      var view = dv.getAttribute('data-dtview');
+      document.querySelectorAll('.layer .seg-btn[data-dtview]').forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-dtview') === view);
+      });
+      document.querySelectorAll('.layer .dt-grid').forEach(function (g) { g.hidden = view !== 'grid'; });
+      document.querySelectorAll('.layer .dt-list, .layer .dt-lfoot').forEach(function (l) { l.hidden = view !== 'list'; });
+      return;
+    }
+    if (e.target.closest('.mc-new')) { setModdyChat(false); return; }
+    if (e.target.closest('.moddy-input')) { setModdyChat(true); return; }
     var x = e.target.closest('.toast-x');
     if (x) {
       document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = 'none'; });
