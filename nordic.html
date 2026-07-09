@@ -969,6 +969,52 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
 .dp-eco--maven i { background: var(--ch-orange); }
 .dp-trunc { display: block; max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rp-table th .sort { color: var(--muted); font-size: 11px; margin-left: 3px; }
+
+/* ============================================================
+   BUILDER page
+   Recipe graph canvas (tool rail + node label) beside the
+   recipe list panel (run bar, search, tabs, tree, options).
+   ============================================================ */
+.bl-picker { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 8px; padding: 9px 14px; margin-bottom: 12px; }
+.bl-picker svg { width: 15px; height: 15px; }
+.bl-picker .chev { width: 13px; height: 13px; color: var(--muted); }
+.bl-wrap { display: grid; grid-template-columns: minmax(0, 46fr) minmax(0, 54fr); gap: 14px; }
+.bl-canvas { position: relative; background: var(--field); border: 1px solid var(--line); border-radius: 12px; min-height: 640px; overflow: hidden; }
+.bl-graph, .bl-graph svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bl-rail { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; padding: 6px; background: var(--card); border: 1px solid var(--line-strong); border-radius: 10px; }
+.bl-rail button { width: 30px; height: 30px; border: none; border-radius: 6px; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+.bl-rail button:hover { background: var(--surface); color: var(--text); }
+.bl-rail button.on { color: var(--accent); background: var(--accent-tint); }
+.bl-rail svg { width: 15px; height: 15px; }
+.bl-nodelabel { position: absolute; left: 46%; top: 54%; display: flex; align-items: center; gap: 8px; }
+.bl-nodelabel .lbl { background: var(--primary-bg); color: var(--primary-fg); font-size: 12.5px; font-weight: 600; padding: 8px 15px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.bl-nodelabel .menu { width: 34px; height: 34px; border-radius: 999px; border: none; background: var(--primary-bg); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-size: 15px; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.bl-panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; min-height: 640px; }
+.bl-top { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--line2); }
+.bl-top .dl { color: var(--green-hi); display: flex; }
+.bl-top .dl svg { width: 20px; height: 20px; }
+.bl-runinfo { margin-left: auto; font-size: 12.5px; color: var(--text); }
+.bl-top .pill-btn { padding: 7px 13px; }
+.bl-search { display: flex; align-items: center; gap: 9px; padding: 12px 14px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line2); }
+.bl-search svg { width: 15px; height: 15px; }
+.bl-tabs { display: flex; align-items: center; gap: 16px; padding: 10px 14px; font-size: 12.5px; font-weight: 600; color: var(--text); border-bottom: 1px solid var(--line2); }
+.bl-count { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; color: var(--accent-deep); background: var(--accent-tint); border-radius: 999px; padding: 2px 8px; margin-left: 5px; }
+.bl-count--muted { color: var(--muted); background: var(--surface); }
+.bl-tabs .chev { margin-left: auto; width: 14px; height: 14px; color: var(--muted); }
+.bl-tree { flex: 1; overflow: auto; padding: 6px 0; font-size: 13px; }
+.bl-row { display: flex; align-items: center; gap: 7px; padding: 6px 14px; color: var(--text); cursor: pointer; }
+.bl-row:hover { background: var(--row-hover); }
+.bl-row .tw { width: 15px; height: 15px; color: var(--muted); flex: none; }
+.bl-row.sel { background: var(--accent-tint); }
+.bl-chip { background: var(--primary-bg); color: var(--primary-fg); font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 5px; }
+.bl-pre { background: color-mix(in srgb, var(--violet) 7%, transparent); }
+.bl-prechip { border: 1px solid color-mix(in srgb, var(--violet) 45%, transparent); color: var(--text); font-size: 12px; padding: 2.5px 9px; border-radius: 5px; }
+.bl-row .ok { color: var(--green-hi); width: 15px; height: 15px; flex: none; }
+.bl-java { width: 15px; height: 15px; border-radius: 4px; background: var(--ch-orange); color: #FBFAF6; font-family: var(--font-mono); font-size: 8px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-style: normal; flex: none; }
+.bl-row .rooti { width: 15px; height: 15px; color: var(--accent); flex: none; }
+.bl-row code { font-family: var(--font-mono); font-size: 11.5px; background: var(--surface); border-radius: 4px; padding: 1px 4px; }
+.bl-row .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bl-foot { display: flex; align-items: center; padding: 11px 14px; font-size: 12.5px; font-weight: 600; border-top: 1px solid var(--line); }
 </style>
 </head>
 <body class="skin-nordic">
@@ -999,6 +1045,13 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
   <symbol id="i-cols" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></symbol>
   <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></symbol>
   <symbol id="i-upcircle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16V8M8 12l4-4 4 4"/></symbol>
+  <symbol id="i-downcircle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12l4 4 4-4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 19 12 6 20 6 4"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.83z"/><circle cx="7" cy="7" r="1.5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></symbol>
   <symbol id="i-gql" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"/><path d="M4.2 16.5L12 3l7.8 13.5z"/><circle cx="12" cy="3" r="1.4" fill="currentColor"/><circle cx="19.8" cy="7.5" r="1.4" fill="currentColor"/><circle cx="19.8" cy="16.5" r="1.4" fill="currentColor"/><circle cx="12" cy="21" r="1.4" fill="currentColor"/><circle cx="4.2" cy="16.5" r="1.4" fill="currentColor"/><circle cx="4.2" cy="7.5" r="1.4" fill="currentColor"/></symbol>
   <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
@@ -1095,7 +1148,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
       <button class="nav-item" data-nav="moddy" title="Moddy"><span class="nav-icon-container"><svg><use href="#i-sparkles"/></svg></span></button>
       <button class="nav-item" data-nav="devcenter" title="DevCenter"><span class="nav-icon-container"><svg><use href="#i-pie"/></svg></span></button>
       <button class="nav-item" data-nav="marketplace" title="Marketplace"><span class="nav-icon-container"><svg><use href="#i-globe"/></svg></span></button>
-      <button class="nav-item" data-nav="none" title="Builder"><span class="nav-icon-container"><svg><use href="#i-blocks"/></svg></span></button>
+      <button class="nav-item" data-nav="builder" title="Builder"><span class="nav-icon-container"><svg><use href="#i-blocks"/></svg></span></button>
       <button class="nav-item" data-nav="activity" title="Activity"><span class="nav-icon-container"><svg><use href="#i-history"/></svg></span></button>
       <button class="nav-item" data-nav="changelog" title="Changelog"><span class="nav-icon-container"><svg><use href="#i-activity"/></svg></span></button>
       <button class="nav-item" data-nav="repositories" title="Repositories"><span class="nav-icon-container"><svg><use href="#i-repo"/></svg></span></button>
@@ -1808,6 +1861,55 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
         </div>
       </section>
 
+      <!-- ============ BUILDER ============ -->
+      <section class="page" data-page="builder">
+        <button class="bl-picker"><svg><use href="#i-blocks"/></svg> new name spring thing <svg class="chev"><use href="#i-chevd"/></svg></button>
+        <div class="bl-wrap">
+          <div class="bl-canvas">
+            <div class="bl-graph"></div>
+            <div class="bl-rail">
+              <button title="Collapse panel"><svg><use href="#i-collapse"/></svg></button>
+              <button title="Run"><svg><use href="#i-play"/></svg></button>
+              <button title="Fit view"><svg><use href="#i-eye"/></svg></button>
+              <button title="Locate"><svg><use href="#i-target"/></svg></button>
+              <button class="on" title="Labels"><svg><use href="#i-tag"/></svg></button>
+              <button title="Help"><svg><use href="#i-help"/></svg></button>
+              <button title="Theme"><svg><use href="#i-sun"/></svg></button>
+              <button title="About"><svg><use href="#i-info"/></svg></button>
+            </div>
+            <div class="bl-nodelabel"><span class="lbl">new name spring thing</span><button class="menu">≡</button></div>
+          </div>
+          <div class="bl-panel">
+            <div class="bl-top">
+              <span class="dl"><svg><use href="#i-downcircle"/></svg></span>
+              <span class="bl-runinfo">Will run on <b>271</b> repositories</span>
+              <button class="pill-btn pill-btn--primary"><svg><use href="#i-play"/></svg> Dry run</button>
+              <button class="pill-btn" disabled><svg><use href="#i-undo"/></svg> Undo</button>
+            </div>
+            <div class="bl-search"><svg><use href="#i-search"/></svg> Search and filter recipe</div>
+            <div class="bl-tabs">
+              <span>Recipe list<span class="bl-count">56</span></span>
+              <span>Preconditions<span class="bl-count">1</span></span>
+              <svg class="chev"><use href="#i-chevd"/></svg>
+            </div>
+            <div class="bl-tree">
+              <div class="bl-row sel" style="padding-left:14px"><svg class="tw"><use href="#i-chevd"/></svg><svg class="rooti"><use href="#i-code"/></svg><span class="bl-chip">new name spring thing</span></div>
+              <div class="bl-row bl-pre" style="padding-left:36px"><svg class="ok"><use href="#i-check-c"/></svg><span class="bl-prechip">Is likely a Spring Framework project</span></div>
+              <div class="bl-row" style="padding-left:36px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Migrate to DataNucleus 5.0</span></div>
+              <div class="bl-row" style="padding-left:36px"><svg class="tw"><use href="#i-chevd"/></svg><i class="bl-java">J</i><span class="txt">Migrate to DataNucleus 5.0</span></div>
+              <div class="bl-row" style="padding-left:58px"><svg class="tw"><use href="#i-chevd"/></svg><i class="bl-java">J</i><span class="txt">Migrate to DataNucleus 4.0</span></div>
+              <div class="bl-row" style="padding-left:80px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Upgrade Gradle or Maven dependency versions</span></div>
+              <div class="bl-row" style="padding-left:80px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Remove a Gradle or Maven dependency</span></div>
+              <div class="bl-row" style="padding-left:80px"><svg class="tw"><use href="#i-chevd"/></svg><i class="bl-java">J</i><span class="txt">DataNucleus 4.0 package moves</span></div>
+              <div class="bl-row" style="padding-left:102px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Rename package name <code>org.datanucleus.store.types.simple</code> to <code>org.datanucleus.store.types.wrappers</code></span></div>
+              <div class="bl-row" style="padding-left:102px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Rename package name <code>org.datanucleus.store.types.backed</code> to <code>org.datanucleus.store.types.wrapper…</code></span></div>
+              <div class="bl-row" style="padding-left:102px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Rename package name <code>org.datanucleus.query.evaluator.memory</code> to <code>org.datanucleus.query.inmemory</code></span></div>
+            </div>
+            <div class="bl-foot">Options<span class="bl-count bl-count--muted">0</span></div>
+          </div>
+        </div>
+      </section>
+
     </div><!-- /content -->
   </div><!-- /main-area -->
 </div><!-- /app -->
@@ -1956,6 +2058,37 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
       document.querySelectorAll('.layer .dc-toggle').forEach(function (t) { t.classList.toggle('on', on); });
     }
   });
+
+  // ---- Builder: recipe graph canvas (deterministic star clusters) ----
+  function builderGraph() {
+    var seed = 7;
+    function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+    var hubs = [
+      { x: 150, y: 340, n: 16 }, { x: 262, y: 250, n: 7 }, { x: 335, y: 205, n: 5 },
+      { x: 305, y: 430, n: 9 }, { x: 398, y: 285, n: 4, sel: true }
+    ];
+    var links = [[0, 1], [1, 2], [2, 4], [3, 4]];
+    var edges = '', dots = '', sel = '';
+    links.forEach(function (l) {
+      edges += '<line x1="' + hubs[l[0]].x + '" y1="' + hubs[l[0]].y + '" x2="' + hubs[l[1]].x + '" y2="' + hubs[l[1]].y + '" stroke="var(--line-strong)"/>';
+    });
+    hubs.forEach(function (h) {
+      for (var k = 0; k < h.n; k++) {
+        var a = rnd() * Math.PI * 2, r = 34 + rnd() * 44;
+        var x = h.x + r * Math.cos(a), y = h.y + r * Math.sin(a);
+        edges += '<line x1="' + h.x + '" y1="' + h.y + '" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="var(--line-strong)"/>';
+        dots += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="4.2" fill="var(--accent)"/>';
+      }
+      if (h.sel) {
+        sel += '<circle cx="' + h.x + '" cy="' + h.y + '" r="22" fill="var(--ch-p1)" opacity="0.25"/><circle cx="' + h.x + '" cy="' + h.y + '" r="11" fill="var(--ch-p1)"/>';
+      } else {
+        dots += '<circle cx="' + h.x + '" cy="' + h.y + '" r="6" fill="var(--accent)"/>';
+      }
+    });
+    return '<svg viewBox="0 0 600 660" preserveAspectRatio="xMidYMid meet">' + edges + sel + dots + '</svg>';
+  }
+  var blSvg = builderGraph();
+  document.querySelectorAll('.layer .bl-graph').forEach(function (el) { el.innerHTML = blSvg; });
 
   // ---- keep the two scroll containers mirrored ----
   var contents = document.querySelectorAll('.layer .content');
