@@ -762,11 +762,8 @@ body { font-size: 14px; }
 [data-theme="light"] .catrow:last-child { border-bottom-width: 1px; }
 [data-theme="light"] .moddy-sug + .moddy-sug { border-top-width: 1px; }
 
-/* ============================================================
-   V2 EXPLORATION 9: global 90% scale
-   The entire app renders at 90% (demo harness stays full size).
-   ============================================================ */
-.app { zoom: 0.9; }
+/* (the v2 global 90% scale was removed for WCAG: declared sizes now
+   render 1:1, so no text paints below its stated px size) */
 
 /* ============================================================
    NORDIC THEME (baked in: body.skin-nordic)
@@ -840,7 +837,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
   --ch-p1: #8CA0F5; --ch-grid: rgba(240,240,246,.12);
 }
 .dc-help { width: 15px; height: 15px; color: var(--muted); flex: none; }
-.dc-updated { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+.dc-updated { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
 .dc-toolbar { display: inline-flex; align-items: center; gap: 10px; padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--field); }
 .dc-toolbar .pill-btn { padding: 7px 13px; }
 .dc-toolbar .round-btn { width: 33px; height: 33px; }
@@ -901,7 +898,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
 body.tlview .dc-sec.tl-only { display: flex; }
 body.tlview .tl-brush { display: block; }
 .tl-sub { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
-.tl-dates { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); margin-bottom: 6px; }
+.tl-dates { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); margin-bottom: 6px; }
 .tl-band { position: relative; height: 52px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; }
 .tl-mark { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--qu); }
 .tl-handle { position: absolute; top: -1px; bottom: -1px; width: 8px; background: var(--card); border: 1px solid var(--line-strong); border-radius: 4px; }
@@ -914,7 +911,7 @@ body.tlview .dc-spark { display: block; }
 body.tlview .dc-tlpane { display: block; }
 body.tlview .dc-arch, body.tlview .dc-camp > .dc-legend { display: none; }
 .dc-tlpane svg { display: block; margin: 2px auto 0; max-width: 100%; height: auto; }
-.dc-tlpane text { font-family: var(--font-mono); font-size: 8px; fill: var(--muted); }
+.dc-tlpane text { font-family: var(--font-mono); font-size: 9.5px; fill: var(--muted); }
 .dc-tlpane .dc-legend { margin-top: 10px; }
 .dc-bar { width: 3px; height: 12px; border-radius: 1px; display: inline-block; vertical-align: -2px; margin-right: 9px; }
 .dc-bar--ghost { background: var(--ch-ghost-f); border: 1px dashed var(--ch-ghost-s); width: 2px; }
@@ -924,7 +921,7 @@ body.tlview .dc-rose, body.tlview .dc-owinfo { display: none; }
 .dc-owbar { display: none; }
 body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .dc-owbar svg { display: block; width: 100%; height: auto; }
-.dc-owbar text { font-family: var(--font-mono); font-size: 9px; fill: var(--muted); }
+.dc-owbar text { font-family: var(--font-mono); font-size: 9.5px; fill: var(--muted); }
 
 /* ============================================================
    CHANGELOG page
@@ -960,8 +957,8 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .cl-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 8px; }
 .cl-chip { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--field); font-size: 11.5px; color: var(--text); white-space: nowrap; }
 .cl-chip svg { width: 12px; height: 12px; color: var(--muted); flex: none; }
-.cl-chip--mono { font-family: var(--font-mono); font-size: 11px; }
-.cl-when { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.cl-chip--mono { font-family: var(--font-mono); font-size: 11.5px; }
+.cl-when { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); }
 .cl-status { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11.5px; color: var(--muted); }
 .cl-status svg { width: 16px; height: 16px; }
 .cl-status--fail svg { color: var(--er); }
@@ -971,7 +968,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .cl-bars { display: flex; gap: 2px; }
 .cl-bars span { width: 4px; height: 13px; border-radius: 1px; background: var(--green-hi); }
 .cl-bars span.r { background: var(--er); }
-.cl-nums { font-family: var(--font-mono); font-size: 11px; }
+.cl-nums { font-family: var(--font-mono); font-size: 11.5px; }
 .cl-nums .add { color: var(--green-hi); }
 .cl-nums .del { color: var(--er); margin-left: 6px; }
 
@@ -1038,7 +1035,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .bl-search { display: flex; align-items: center; gap: 9px; padding: 12px 14px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line2); }
 .bl-search svg { width: 15px; height: 15px; }
 .bl-tabs { display: flex; align-items: center; gap: 16px; padding: 10px 14px; font-size: 12.5px; font-weight: 600; color: var(--text); border-bottom: 1px solid var(--line2); }
-.bl-count { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; color: var(--accent-deep); background: var(--accent-tint); border-radius: 999px; padding: 2px 8px; margin-left: 5px; }
+.bl-count { font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; color: var(--accent-deep); background: var(--accent-tint); border-radius: 999px; padding: 2px 8px; margin-left: 5px; }
 .bl-count--muted { color: var(--muted); background: var(--surface); }
 .bl-tabs .chev { margin-left: auto; width: 14px; height: 14px; color: var(--muted); }
 .bl-tree { flex: 1; overflow: auto; padding: 6px 0; font-size: 13px; }
@@ -1187,19 +1184,19 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
   <button class="ms-reopen" id="msReopen" title="Show demo controls"><svg><use href="#i-gear"/></svg> Controls</button>
 
   <div class="wcag-panel" id="wcagPanel" role="dialog" aria-label="WCAG contrast evaluation">
-    <div class="wcag-head"><span class="wcag-title">WCAG contrast — primary color choices</span>
+    <div class="wcag-head"><span class="wcag-title">WCAG contrast — Nordic theme audit</span>
       <button class="wcag-x" title="Close"><svg><use href="#i-x"/></svg></button></div>
-    <p class="wcag-sub">Ratios computed with the WCAG 2.1 relative-luminance formula from the exact theme tokens each primary ships with (teal and green switch to their deep pair for light-mode text; blue uses Blue&nbsp;700 for light-mode links). Blue is the recommended default — the best balance of color-vision-deficiency safety and contrast. The Blue&nbsp;AAA column is the mid-ramp token set (blue-400 dark / blue-800 light buttons and links) that reaches 7:1 everywhere — flip the app to it with the Blue&nbsp;AAA swatch.</p>
+    <p class="wcag-sub">Ratios computed live with the WCAG 2.1 relative-luminance formula from the shipped Nordic tokens, in both modes. The Standard columns are the theme as designed; the WCAG&nbsp;AA columns are the AA variant (the WCAG&nbsp;AA toggle in the controls, or <code>?aa=1</code>), which lifts dark-mode links to the Blue&nbsp;AAA token, raises input and pill borders to the 3:1 non-text minimum, and rings the light-mode chart dots with deep same-hue boundaries. Translucent borders are composited over their backing surface before measuring.</p>
     <table id="wcagTable"></table>
-    <p class="wcag-foot">Text (SC 1.4.3 / 1.4.6): AA ≥ 4.5:1 · AA Large ≥ 3:1 · AAA ≥ 7:1. UI components (SC 1.4.11): ≥ 3:1 against adjacent colors. Dark checks use the #100C0A panel; light checks use #FFFFFF.</p>
+    <p class="wcag-foot">Text (SC 1.4.3 / 1.4.6): AA ≥ 4.5:1 · AA Large ≥ 3:1 · AAA ≥ 7:1. UI components &amp; meaningful graphics (SC 1.4.11): ≥ 3:1 against adjacent colors. Light checks run against the #FBFAF6 card; dark checks against the #26262E card (charts against the #2B2B34 Dev&nbsp;Center cards). Chart values are also published in each chart's legend table, which independently satisfies the 1.4.11 alternative-presentation path.</p>
     <details class="wcag-why">
       <summary>Why this matters — selling to banks</summary>
-      <p><b>Accessibility becomes a procurement requirement, not a preference.</b> Banks will almost always ask for a VPAT (Voluntary Product Accessibility Template) or an ACR conforming to WCAG 2.1 AA, and often 2.2 AA now. Their vendor risk and procurement teams read it. A product with light-mode UI components failing the 3:1 contrast threshold, like the teal and green rows in this table, is a documented AA failure that shows up right there in the VPAT. That can stall or kill the deal in security review, which is the most expensive place to lose one.</p>
+      <p><b>Accessibility becomes a procurement requirement, not a preference.</b> Banks will almost always ask for a VPAT (Voluntary Product Accessibility Template) or an ACR conforming to WCAG 2.1 AA, and often 2.2 AA now. Their vendor risk and procurement teams read it. A product with UI components failing the 3:1 contrast threshold, like a failing border or chart-fill row in this table, is a documented AA failure that shows up right there in the VPAT. That can stall or kill the deal in security review, which is the most expensive place to lose one.</p>
       <p><b>Banks themselves are legally on the hook.</b> US banks fall under ADA Title III, Section 508 if they touch government programs, and financial regulators expect accessible services. When they buy your software and put it in front of their customers or staff, your failures become their liability. So they contractually require you to meet the bar, and they audit it. “We’ll fix it later” doesn’t survive a bank’s third-party risk assessment.</p>
       <p><b>The contract terms get sharp.</b> Expect accessibility warranties, indemnification clauses, and the right to audit baked into the MSA. If you attest AA conformance and a row is actually failing, you’re not just losing a sale, you’re exposed on a signed representation.</p>
       <p><b>The bar is higher than the general case.</b> Banks tend to want AA across the board plus documented testing, keyboard-only operability, and screen reader support with tools like JAWS and NVDA. Contrast is the easy, visible part. They’ll also probe focus order, form error handling, and ARIA.</p>
       <p><b>So with banks as your main customers, those two failing fills aren’t a UX rounding error.</b> They’re a line item a procurement officer can point to and say “fix this before we sign.” The upside is unchanged: it’s a token-level fix, and clearing 3:1 turns a red row in your VPAT into a pass.</p>
-      <p><b>In order to support accessibility requirements per Section 508,</b> Moderne UI will need to use the violet and blue primaries for all UI component boundaries and interactive elements, as both clear the WCAG 2.1 minimum of 3:1 for non-text contrast (SC 1.4.11), and avoid the teal and green fills in light mode, which fall short at 1.9:1 and 1.5:1.</p>
+      <p><b>In order to support accessibility requirements per Section 508,</b> the Nordic theme ships a WCAG&nbsp;AA variant (the WCAG&nbsp;AA toggle, or <code>?aa=1</code>): dark-mode links move to the Blue&nbsp;AAA token (6.4:1), input borders and success-pill outlines rise to the SC&nbsp;1.4.11 minimum of 3:1, muted table headers clear 4.5:1, and the light-mode chart dots keep their bright fills while deep same-hue boundary rings (3.8–7.9:1) carry the non-text contrast. With the variant applied, every row in this table reads AA or better.</p>
     </details>
   </div>
 </div>
@@ -2408,31 +2405,50 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
     if (r >= 3) return '<span class="wg wg-lg">AA Large</span>';
     return '<span class="wg wg-fail">Fail</span>';
   }
-  var WCAG_PRIMS = [
-    { name: 'Violet', darkLink: '#9D5BE8', lightLink: '#9D5BE8', btnFg: '#FFFFFF', btnBg: '#9D5BE8' },
-    { name: 'Blue',   darkLink: '#3E7BF6', lightLink: '#1055E2', btnFg: '#FFFFFF', btnBg: '#3E7BF6', best: true },
-    { name: 'Blue AAA', darkLink: '#7FA9F9', lightLink: '#1245AE', btnFg: '#FFFFFF', btnBg: '#1245AE' },
-    { name: 'Teal',   darkLink: '#25D0C0', lightLink: '#0E4A45', btnFg: '#0E4A45', btnBg: '#25D0C0' },
-    { name: 'Green',  darkLink: '#30F284', lightLink: '#1D5937', btnFg: '#04220F', btnBg: '#30F284' },
-    { name: 'Magenta', darkLink: '#E6399B', lightLink: '#7A1E52', btnFg: '#FFFFFF', btnBg: '#E6399B' },
-    { name: 'Lime',   darkLink: '#C7E84B', lightLink: '#4F5A12', btnFg: '#4F5A12', btnBg: '#C7E84B' }
-  ];
-  var WCAG_CHECKS = [
-    { label: 'Link text — dark mode', type: 'text', calc: function (p) { return ratio(p.darkLink, '#100C0A'); } },
-    { label: 'Link text — light mode', type: 'text', calc: function (p) { return ratio(p.lightLink, '#FFFFFF'); } },
-    { label: 'Button label on primary', type: 'text', calc: function (p) { return ratio(p.btnFg, p.btnBg); } },
-    { label: 'UI component — dark mode', type: 'ui', calc: function (p) { return ratio(p.darkLink, '#100C0A'); } },
-    { label: 'UI component — light mode (bright fill)', type: 'ui', calc: function (p) { return ratio(p.btnBg, '#FFFFFF'); } }
+  function mixOver(rgba, hexBg) {
+    var c = hexBg.replace('#', '');
+    var bg = [0, 2, 4].map(function (i) { return parseInt(c.substr(i, 2), 16); });
+    return '#' + rgba.slice(0, 3).map(function (v, i) {
+      return ('0' + Math.round(v * rgba[3] + bg[i] * (1 - rgba[3])).toString(16)).slice(-2);
+    }).join('');
+  }
+  // Nordic audit rows: [label, sc-type, light std [fg,bg], light AA, dark std, dark AA]
+  var LC = '#FBFAF6', LH = '#F2EFE7', DC = '#26262E', DCC = '#2B2B34';
+  var WROWS = [
+    ['Body text on cards (1.4.3)', 'text',
+      ['#232342', LC], ['#232342', LC], ['#F1F0EA', DC], ['#F1F0EA', DC]],
+    ['Muted text on table headers (1.4.3)', 'text',
+      ['#6E6E85', LH], ['#62627A', LH], ['#9C9CA8', DC], ['#9C9CA8', DC]],
+    ['Link text (1.4.3)', 'text',
+      ['#1055E2', LC], ['#1055E2', LC], ['#3E7BF6', DC], ['#7FA9F9', DC]],
+    ['Primary button label (1.4.3)', 'text',
+      ['#FBFAF6', '#232342'], ['#FBFAF6', '#232342'], ['#17171C', '#F1F0EA'], ['#17171C', '#F1F0EA']],
+    ['Success pill text (1.4.3)', 'text',
+      ['#1D5937', mixOver([48, 242, 132, .15], LC)], ['#1D5937', mixOver([48, 242, 132, .15], LC)],
+      ['#30F284', mixOver([48, 242, 132, .13], DC)], ['#30F284', mixOver([48, 242, 132, .13], DC)]],
+    ['Input &amp; control borders (1.4.11)', 'ui',
+      [mixOver([35, 35, 66, .22], LC), LC], [mixOver([35, 35, 66, .50], LC), LC],
+      [mixOver([240, 240, 246, .24], DC), DC], [mixOver([240, 240, 246, .38], DC), DC]],
+    ['Success pill border (1.4.11)', 'ui',
+      [mixOver([29, 89, 55, .40], LC), LC], [mixOver([29, 89, 55, .65], LC), LC],
+      [mixOver([48, 242, 132, .40], DC), DC], [mixOver([48, 242, 132, .55], DC), DC]],
+    ['Chart dot \u2014 coral (1.4.11; AA adds ring)', 'ui',
+      ['#FF6F61', LC], ['#A63325', LC], ['#FF6F61', DCC], ['#FF6F61', DCC]],
+    ['Chart dot \u2014 gold (1.4.11; AA adds ring)', 'ui',
+      ['#FFD34D', LC], ['#806A00', LC], ['#FFD34D', DCC], ['#FFD34D', DCC]],
+    ['Chart dot \u2014 green (1.4.11; AA adds ring)', 'ui',
+      ['#30F284', LC], ['#1D5937', LC], ['#30F284', DCC], ['#30F284', DCC]],
+    ['Chart dot \u2014 N/A (1.4.11; AA adds ring)', 'ui',
+      ['#DEDBD0', LC], ['#82806F', LC], ['#3B3B46', DCC], ['#75757F', DCC]],
+    ['Rose chart wedge (1.4.11)', 'ui',
+      ['#3E5BE8', LC], ['#3E5BE8', LC], ['#8CA0F5', DCC], ['#8CA0F5', DCC]]
   ];
   (function buildWcag() {
-    var h = '<tr><th>Check</th>' + WCAG_PRIMS.map(function (p) {
-      return '<th' + (p.best ? ' class="wcag-best"' : '') + '>' + p.name +
-        (p.best ? ' <span class="wg wg-rec">\u2605 Recommended</span>' : '') + '</th>';
-    }).join('') + '</tr>';
-    WCAG_CHECKS.forEach(function (c) {
-      h += '<tr><td>' + c.label + '</td>' + WCAG_PRIMS.map(function (p) {
-        var r = c.calc(p);
-        return '<td' + (p.best ? ' class="wcag-best"' : '') + '>' + r.toFixed(1) + ':1' + grade(r, c.type) + '</td>';
+    var h = '<tr><th>Check</th><th>Light \u00B7 Standard</th><th>Light \u00B7 WCAG AA</th><th>Dark \u00B7 Standard</th><th>Dark \u00B7 WCAG AA</th></tr>';
+    WROWS.forEach(function (row) {
+      h += '<tr><td>' + row[0] + '</td>' + row.slice(2).map(function (pair) {
+        var r = ratio(pair[0], pair[1]);
+        return '<td>' + r.toFixed(1) + ':1' + grade(r, row[1]) + '</td>';
       }).join('') + '</tr>';
     });
     document.getElementById('wcagTable').innerHTML = h;
