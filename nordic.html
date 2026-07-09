@@ -775,19 +775,19 @@ body.skin-nordic [data-theme="light"] {
   --bg: #F2F0EA; --field: #FBFAF6;
   --card: #FBFAF6; --card-head: #F2EFE7;
   --surface: #EDEBE2; --surface2: #E4E1D6; --row-hover: #F4F2EB;
-  --line: rgba(35,35,66,.12); --line2: rgba(35,35,66,.08); --line-strong: rgba(35,35,66,.16);
-  --text: #232342; --muted: #6E6E85;
-  --su-t: rgba(48,242,132,.15); --su-b: rgba(29,89,55,.40); --green-hi: #1D5937;
-  --link-line: rgba(35,35,66,.22);
+  --line: rgba(35,35,66,.12); --line2: rgba(35,35,66,.08); --line-strong: rgba(35,35,66,.50);
+  --text: #232342; --muted: #62627A;
+  --su-t: rgba(48,242,132,.15); --su-b: rgba(29,89,55,.65); --green-hi: #1D5937;
+  --link-line: rgba(35,35,66,.50);
 }
 body.skin-nordic [data-theme="dark"] {
   --bg: #141419; --field: #222229;
   --card: #26262E; --card-head: #2D2D36;
   --surface: #2A2A32; --surface2: #33333D; --row-hover: #2E2E38;
-  --line: rgba(240,240,246,.12); --line2: rgba(240,240,246,.08); --line-strong: rgba(240,240,246,.16);
+  --line: rgba(240,240,246,.12); --line2: rgba(240,240,246,.08); --line-strong: rgba(240,240,246,.38);
   --text: #F1F0EA; --muted: #9C9CA8;
-  --su-t: rgba(48,242,132,.13); --su-b: rgba(48,242,132,.40); --green-hi: #30F284;
-  --link-line: rgba(240,240,246,.24);
+  --su-t: rgba(48,242,132,.13); --su-b: rgba(48,242,132,.55); --green-hi: #30F284;
+  --link-line: rgba(240,240,246,.38);
 }
 /* chrome: ink mark, mint badge, ink avatar */
 body.skin-nordic .home-mark { color: #232342; }
@@ -826,15 +826,20 @@ body.skin-nordic [data-theme="dark"] .main-area { background: #1B1B21; }
    periwinkle rose fills).
    ============================================================ */
 [data-theme="light"] {
-  /* same bright fills as dark mode; the WCAG AA toggle adds 3:1 rings */
-  --ch-red: #FF6F61; --ch-orange2: #FF8F52; --ch-orange: #FFA83D; --ch-yellow: #FFD34D;
-  --ch-green: #30F284; --ch-na: #DEDBD0;
+  /* same bright fills as dark mode; deep same-hue rings carry
+     SC 1.4.11 at the object boundary (3.8-7.9:1) */
+  --ch-red: #FF6F61; --ch-red-s: #A63325;
+  --ch-orange2: #FF8F52; --ch-orange2-s: #A34E14;
+  --ch-orange: #FFA83D; --ch-orange-s: #935B00;
+  --ch-yellow: #FFD34D; --ch-yellow-s: #806A00;
+  --ch-green: #30F284; --ch-green-s: #1D5937;
+  --ch-na: #DEDBD0; --ch-na-s: #82806F;
   --ch-ghost-f: rgba(166,51,37,.12); --ch-ghost-s: rgba(166,51,37,.55);
   --ch-p1: #3E5BE8; --ch-grid: rgba(35,35,66,.10);
 }
 [data-theme="dark"] {
   --ch-red: #FF6F61; --ch-orange2: #FF8F52; --ch-orange: #FFA83D; --ch-yellow: #FFD34D;
-  --ch-green: #30F284; --ch-na: #3B3B46;
+  --ch-green: #30F284; --ch-na: #75757F;
   --ch-ghost-f: rgba(217,139,133,.12); --ch-ghost-s: rgba(217,139,133,.55);
   --ch-p1: #8CA0F5; --ch-grid: rgba(240,240,246,.12);
 }
@@ -1054,21 +1059,8 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .bl-row .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bl-foot { display: flex; align-items: center; padding: 11px 14px; font-size: 12.5px; font-weight: 600; border-top: 1px solid var(--line); }
 
-/* ============================================================
-   WCAG AA VARIANT (demo toggle: body.wcag-aa / ?aa=1)
-   Tokens tightened to clear WCAG 2.1 AA per the contrast audit:
-   SC 1.4.3 text and SC 1.4.11 non-text at their minimums.
-   ============================================================ */
-body.wcag-aa.skin-nordic [data-theme="light"] {
-  --muted: #62627A;                         /* 4.5:1+ on the card-head tone */
-  --line-strong: rgba(35,35,66,.50);        /* input borders 3.1:1 */
-  --link-line: rgba(35,35,66,.50);
-  --su-b: rgba(29,89,55,.65);               /* success pill border 3.4:1 */
-  /* chart dots gain deep same-hue rings: fills stay bright, the ring
-     carries SC 1.4.11 at the object boundary (3.8-7.9:1) */
-  --ch-red-s: #A63325; --ch-orange2-s: #A34E14; --ch-orange-s: #935B00;
-  --ch-yellow-s: #806A00; --ch-green-s: #1D5937; --ch-na-s: #82806F;
-}
+/* (WCAG 2.1 AA is the default: the former AA-variant tokens are baked
+   into the theme blocks above; links default to the Blue AAA pairing) */
 /* ============================================================
    THEMED MODALS (org selector + recipe search)
    Rendered inside each layer so the compare seam shows both modes.
@@ -1109,13 +1101,6 @@ body.wcag-aa.skin-nordic [data-theme="light"] {
 .sm-row code { font-family: var(--font-mono); font-size: 12px; background: var(--surface); border-radius: 4px; padding: 1px 5px; }
 .sm-spring { color: #6DB33F; }
 .sm-kotlin { color: #7F52FF; }
-body.wcag-aa.skin-nordic [data-theme="dark"] {
-  --accent: #7FA9F9; --accent-deep: #7FA9F9; /* links 6.4:1 (Blue AAA token) */
-  --line-strong: rgba(240,240,246,.38);      /* input borders 3.2:1 */
-  --link-line: rgba(240,240,246,.38);
-  --su-b: rgba(48,242,132,.55);              /* success pill border 4:1 */
-  --ch-na: #75757F;                          /* N/A dots 3.1:1 */
-}
 </style>
 </head>
 <body class="skin-nordic">
@@ -1197,8 +1182,6 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
     <span class="ms-div"></span>
-    <button data-aa="1" data-tip="WCAG AA variant — tokens tightened to clear WCAG 2.1 AA: Blue AAA links in dark mode, 3:1 input borders and pill outlines, deeper light-mode chart oranges/yellows, darker muted header text, 3:1 N/A chart dots. Toggle to compare against the standard Nordic tokens.">WCAG AA</button>
-    <span class="ms-div"></span>
     <button class="ms-more" data-tip="Show or hide the primary color, typography, colorblind simulation and WCAG contrast controls.">More <svg class="chev"><use href="#i-chevd"/></svg></button>
     <div class="ms-adv">
     <span class="ms-div"></span>
@@ -1231,7 +1214,7 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
   <div class="wcag-panel" id="wcagPanel" role="dialog" aria-label="WCAG contrast evaluation">
     <div class="wcag-head"><span class="wcag-title">WCAG contrast — Nordic theme audit</span>
       <button class="wcag-x" title="Close"><svg><use href="#i-x"/></svg></button></div>
-    <p class="wcag-sub">Ratios computed live with the WCAG 2.1 relative-luminance formula from the shipped Nordic tokens, in both modes. The Standard columns are the theme as designed; the WCAG&nbsp;AA columns are the AA variant (the WCAG&nbsp;AA toggle in the controls, or <code>?aa=1</code>), which lifts dark-mode links to the Blue&nbsp;AAA token, raises input and pill borders to the 3:1 non-text minimum, and rings the light-mode chart dots with deep same-hue boundaries. Translucent borders are composited over their backing surface before measuring.</p>
+    <p class="wcag-sub">Ratios computed live with the WCAG 2.1 relative-luminance formula from the shipped Nordic tokens, in both modes. The theme meets AA by default: links use the Blue&nbsp;AAA pairing (#1245AE light / #7FA9F9 dark), input and pill borders clear the 3:1 non-text minimum, and light-mode chart dots keep bright fills while deep same-hue boundary rings carry SC&nbsp;1.4.11. Translucent borders are composited over their backing surface before measuring.</p>
     <table id="wcagTable"></table>
     <p class="wcag-foot">Text (SC 1.4.3 / 1.4.6): AA ≥ 4.5:1 · AA Large ≥ 3:1 · AAA ≥ 7:1. UI components &amp; meaningful graphics (SC 1.4.11): ≥ 3:1 against adjacent colors. Light checks run against the #FBFAF6 card; dark checks against the #26262E card. Chart values are also published in each chart's legend table, which independently satisfies the 1.4.11 alternative-presentation path.</p>
     <details class="wcag-why">
@@ -1241,7 +1224,7 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
       <p><b>The contract terms get sharp.</b> Expect accessibility warranties, indemnification clauses, and the right to audit baked into the MSA. If you attest AA conformance and a row is actually failing, you’re not just losing a sale, you’re exposed on a signed representation.</p>
       <p><b>The bar is higher than the general case.</b> Banks tend to want AA across the board plus documented testing, keyboard-only operability, and screen reader support with tools like JAWS and NVDA. Contrast is the easy, visible part. They’ll also probe focus order, form error handling, and ARIA.</p>
       <p><b>So with banks as your main customers, those two failing fills aren’t a UX rounding error.</b> They’re a line item a procurement officer can point to and say “fix this before we sign.” The upside is unchanged: it’s a token-level fix, and clearing 3:1 turns a red row in your VPAT into a pass.</p>
-      <p><b>In order to support accessibility requirements per Section 508,</b> the Nordic theme ships a WCAG&nbsp;AA variant (the WCAG&nbsp;AA toggle, or <code>?aa=1</code>): dark-mode links move to the Blue&nbsp;AAA token (6.4:1), input borders and success-pill outlines rise to the SC&nbsp;1.4.11 minimum of 3:1, muted table headers clear 4.5:1, and the light-mode chart dots keep their bright fills while deep same-hue boundary rings (3.8–7.9:1) carry the non-text contrast. With the variant applied, every row in this table reads AA or better.</p>
+      <p><b>In order to support accessibility requirements per Section 508,</b> the Nordic theme meets WCAG&nbsp;2.1&nbsp;AA by default: links use the Blue&nbsp;AAA pairing (6.4:1 in dark mode), input borders and success-pill outlines clear the SC&nbsp;1.4.11 minimum of 3:1, muted table headers clear 4.5:1, and the light-mode chart dots keep their bright fills while deep same-hue boundary rings (3.8–7.9:1) carry the non-text contrast. Every row in this table reads AA or better.</p>
     </details>
   </div>
 </div>
@@ -2449,18 +2432,9 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
     if (!open) setWcag(false);
   }
 
-  // ---- WCAG AA variant toggle ----
-  function setAA(on) {
-    document.body.classList.toggle('wcag-aa', on);
-    switchEl.querySelectorAll('button[data-aa]').forEach(function (b) { b.classList.toggle('active', on); });
-  }
-  if (new URLSearchParams(location.search).get('aa') === '1') setAA(true);
-
   switchEl.addEventListener('click', function (e) {
     if (e.target.closest('.ms-collapse')) { setControls(true); return; }
     if (e.target.closest('.ms-more')) { setAdv(!switchEl.classList.contains('adv-open')); return; }
-    var ab = e.target.closest('button[data-aa]');
-    if (ab) { setAA(!document.body.classList.contains('wcag-aa')); return; }
     var fb = e.target.closest('button[data-font]');
     if (fb) { setFont(fb.getAttribute('data-font')); return; }
     var wb = e.target.closest('button[data-panel]');
@@ -2527,39 +2501,27 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
       return ('0' + Math.round(v * rgba[3] + bg[i] * (1 - rgba[3])).toString(16)).slice(-2);
     }).join('');
   }
-  // Nordic audit rows: [label, sc-type, light std [fg,bg], light AA, dark std, dark AA]
-  var LC = '#FBFAF6', LH = '#F2EFE7', DC = '#26262E', DCC = '#26262E';
+  // Nordic audit rows: [label, sc-type, light [fg,bg], dark [fg,bg]] — AA is the shipped default
+  var LC = '#FBFAF6', LH = '#F2EFE7', DC = '#26262E';
   var WROWS = [
-    ['Body text on cards (1.4.3)', 'text',
-      ['#232342', LC], ['#232342', LC], ['#F1F0EA', DC], ['#F1F0EA', DC]],
-    ['Muted text on table headers (1.4.3)', 'text',
-      ['#6E6E85', LH], ['#62627A', LH], ['#9C9CA8', DC], ['#9C9CA8', DC]],
-    ['Link text (1.4.3)', 'text',
-      ['#1055E2', LC], ['#1055E2', LC], ['#3E7BF6', DC], ['#7FA9F9', DC]],
-    ['Primary button label (1.4.3)', 'text',
-      ['#FBFAF6', '#232342'], ['#FBFAF6', '#232342'], ['#17171C', '#F1F0EA'], ['#17171C', '#F1F0EA']],
+    ['Body text on cards (1.4.3)', 'text', ['#232342', LC], ['#F1F0EA', DC]],
+    ['Muted text on table headers (1.4.3)', 'text', ['#62627A', LH], ['#9C9CA8', DC]],
+    ['Link text \u2014 Blue AAA pairing (1.4.3)', 'text', ['#1245AE', LC], ['#7FA9F9', DC]],
+    ['Primary button label (1.4.3)', 'text', ['#FBFAF6', '#232342'], ['#17171C', '#F1F0EA']],
     ['Success pill text (1.4.3)', 'text',
-      ['#1D5937', mixOver([48, 242, 132, .15], LC)], ['#1D5937', mixOver([48, 242, 132, .15], LC)],
-      ['#30F284', mixOver([48, 242, 132, .13], DC)], ['#30F284', mixOver([48, 242, 132, .13], DC)]],
+      ['#1D5937', mixOver([48, 242, 132, .15], LC)], ['#30F284', mixOver([48, 242, 132, .13], DC)]],
     ['Input &amp; control borders (1.4.11)', 'ui',
-      [mixOver([35, 35, 66, .16], LC), LC], [mixOver([35, 35, 66, .50], LC), LC],
-      [mixOver([240, 240, 246, .16], DC), DC], [mixOver([240, 240, 246, .38], DC), DC]],
+      [mixOver([35, 35, 66, .50], LC), LC], [mixOver([240, 240, 246, .38], DC), DC]],
     ['Success pill border (1.4.11)', 'ui',
-      [mixOver([29, 89, 55, .40], LC), LC], [mixOver([29, 89, 55, .65], LC), LC],
-      [mixOver([48, 242, 132, .40], DC), DC], [mixOver([48, 242, 132, .55], DC), DC]],
-    ['Chart dot \u2014 coral (1.4.11; AA adds ring)', 'ui',
-      ['#FF6F61', LC], ['#A63325', LC], ['#FF6F61', DCC], ['#FF6F61', DCC]],
-    ['Chart dot \u2014 gold (1.4.11; AA adds ring)', 'ui',
-      ['#FFD34D', LC], ['#806A00', LC], ['#FFD34D', DCC], ['#FFD34D', DCC]],
-    ['Chart dot \u2014 green (1.4.11; AA adds ring)', 'ui',
-      ['#30F284', LC], ['#1D5937', LC], ['#30F284', DCC], ['#30F284', DCC]],
-    ['Chart dot \u2014 N/A (1.4.11; AA adds ring)', 'ui',
-      ['#DEDBD0', LC], ['#82806F', LC], ['#3B3B46', DCC], ['#75757F', DCC]],
-    ['Rose chart wedge (1.4.11)', 'ui',
-      ['#3E5BE8', LC], ['#3E5BE8', LC], ['#8CA0F5', DCC], ['#8CA0F5', DCC]]
+      [mixOver([29, 89, 55, .65], LC), LC], [mixOver([48, 242, 132, .55], DC), DC]],
+    ['Chart dot \u2014 coral (1.4.11; ring in light)', 'ui', ['#A63325', LC], ['#FF6F61', DC]],
+    ['Chart dot \u2014 gold (1.4.11; ring in light)', 'ui', ['#806A00', LC], ['#FFD34D', DC]],
+    ['Chart dot \u2014 green (1.4.11; ring in light)', 'ui', ['#1D5937', LC], ['#30F284', DC]],
+    ['Chart dot \u2014 N/A (1.4.11; ring in light)', 'ui', ['#82806F', LC], ['#75757F', DC]],
+    ['Rose chart wedge (1.4.11)', 'ui', ['#3E5BE8', LC], ['#8CA0F5', DC]]
   ];
   (function buildWcag() {
-    var h = '<tr><th>Check</th><th>Light \u00B7 Standard</th><th>Light \u00B7 WCAG AA</th><th>Dark \u00B7 Standard</th><th>Dark \u00B7 WCAG AA</th></tr>';
+    var h = '<tr><th>Check</th><th>Light</th><th>Dark</th></tr>';
     WROWS.forEach(function (row) {
       h += '<tr><td>' + row[0] + '</td>' + row.slice(2).map(function (pair) {
         var r = ratio(pair[0], pair[1]);
@@ -2588,7 +2550,7 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
     });
   }
   var qsPrimary = new URLSearchParams(location.search).get('primary');
-  setPrimary(PRIMARIES.indexOf(qsPrimary) !== -1 ? qsPrimary : 'blue');
+  setPrimary(PRIMARIES.indexOf(qsPrimary) !== -1 ? qsPrimary : 'blue-aaa');
 })();
 </script>
 </body>
