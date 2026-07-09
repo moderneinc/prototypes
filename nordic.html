@@ -6,11 +6,7 @@
 <title>Moderne — Nordic theme (v3)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<!-- Aktiv Grotesk is served via Adobe Fonts: create a Web Project with
-     Aktiv Grotesk at https://fonts.adobe.com, then replace KITID below and
-     uncomment. Until then the Aktiv option falls back to Archivo. -->
-<!-- <link rel="stylesheet" href="https://use.typekit.net/KITID.css" /> -->
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Inter:opsz,wght@14..32,400..700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400..700&family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
    Nordic theme (v3)
@@ -35,12 +31,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 /* font selection (demo control) — each pairs a sans with its mono */
-body.font-inter { --font-sans: 'Inter', system-ui, sans-serif; --font-mono: 'JetBrains Mono', monospace; }
-body.font-plex { --font-sans: 'IBM Plex Sans', system-ui, sans-serif; --font-mono: 'IBM Plex Mono', monospace; }
-body.font-dm { --font-sans: 'DM Sans', system-ui, sans-serif; --font-mono: 'DM Mono', monospace; }
-body.font-figtree { --font-sans: 'Figtree', system-ui, sans-serif; --font-mono: 'Geist Mono', monospace; }
-body.font-jakarta { --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif; --font-mono: 'Geist Mono', monospace; }
-body.font-aktiv { --font-sans: 'aktiv-grotesk', 'Archivo', system-ui, sans-serif; --font-mono: 'Geist Mono', monospace; }
 
 /* ---- Re-theming palette tokens ---- */
 [data-theme="dark"] {
@@ -283,13 +273,6 @@ body.font-aktiv { --font-sans: 'aktiv-grotesk', 'Archivo', system-ui, sans-serif
 .compare.cvd-protan { filter: url(#cvd-protan); }
 /* font controls */
 .mode-switch { flex-wrap: wrap; justify-content: center; max-width: min(97vw, 1420px); row-gap: 2px; border-radius: 24px; }
-.mode-switch button[data-font="geist"] { font-family: 'Geist', sans-serif; }
-.mode-switch button[data-font="inter"] { font-family: 'Inter', sans-serif; }
-.mode-switch button[data-font="plex"] { font-family: 'IBM Plex Sans', sans-serif; }
-.mode-switch button[data-font="dm"] { font-family: 'DM Sans', sans-serif; }
-.mode-switch button[data-font="figtree"] { font-family: 'Figtree', sans-serif; }
-.mode-switch button[data-font="jakarta"] { font-family: 'Plus Jakarta Sans', sans-serif; }
-.mode-switch button[data-font="aktiv"] { font-family: 'aktiv-grotesk', 'Archivo', sans-serif; }
 
 /* collapsible controls */
 /* advanced segment (colors, typography, CVD, WCAG) collapses behind the More button */
@@ -1230,29 +1213,13 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
     <span class="ms-div"></span>
-    <button class="ms-more" data-tip="Show or hide the primary color, typography, colorblind simulation and WCAG contrast controls.">More <svg class="chev"><use href="#i-chevd"/></svg></button>
+    <button class="ms-more" data-tip="Show or hide the colorblind simulation and WCAG contrast controls.">More <svg class="chev"><use href="#i-chevd"/></svg></button>
     <div class="ms-adv">
-    <span class="ms-div"></span>
-    <button data-primary="violet" class="swatch" title="Violet primary (#9D5BE8 / #3F1340)"><span class="dot dot-violet"></span><span class="swlbl">Violet</span></button>
-    <button data-primary="blue" class="swatch active" title="Blue primary (#3E7BF6 / #16306B)"><span class="dot dot-blue"></span><span class="swlbl">Blue</span></button>
-    <button data-primary="blue-aaa" class="swatch" title="Blue AAA — mid-ramp tokens (7:1 text everywhere): #7FA9F9 dark / #1245AE light"><span class="dot dot-blue-aaa"></span><span class="swlbl">Blue AAA</span></button>
-    <button data-primary="teal" class="swatch" title="Teal primary (#25D0C0 / #0E4A45)"><span class="dot dot-teal"></span><span class="swlbl">Teal</span></button>
-    <button data-primary="green" class="swatch" title="Green primary (#30F284 / #1D5937)"><span class="dot dot-green"></span><span class="swlbl">Green</span></button>
-    <button data-primary="magenta" class="swatch" title="Magenta primary (#E6399B / #7A1E52)"><span class="dot dot-magenta"></span><span class="swlbl">Magenta</span></button>
-    <button data-primary="lime" class="swatch" title="Lime primary (#C7E84B / #4F5A12)"><span class="dot dot-lime"></span><span class="swlbl">Lime</span></button>
     <span class="ms-div"></span>
     <button data-cvd="deutan" data-tip="Deuteranopia — the most common red–green color blindness (~6% of men). Green-sensing cones are absent, so greens, reds and oranges converge into muted yellows and greys. Click again to turn off.">Deutan</button>
     <button data-cvd="protan" data-tip="Protanopia — red-blind vision (~2% of men). Red-sensing cones are absent, so reds darken sharply and collapse toward greens and browns. Click again to turn off.">Protan</button>
     <span class="ms-div"></span>
-    <button data-panel="wcag" title="WCAG contrast evaluation of the four primary color choices">WCAG</button>
-    <span class="ms-div"></span>
-    <button data-font="geist" class="active" title="Geist Sans + Geist Mono">Geist</button>
-    <button data-font="inter" title="Inter + JetBrains Mono (v1 pairing)">Inter</button>
-    <button data-font="plex" title="IBM Plex Sans + IBM Plex Mono">Plex</button>
-    <button data-font="dm" title="DM Sans + DM Mono">DM</button>
-    <button data-font="figtree" title="Figtree + Geist Mono">Figtree</button>
-    <button data-font="jakarta" title="Plus Jakarta Sans + Geist Mono">Jakarta</button>
-    <button data-font="aktiv" title="Aktiv Grotesk (needs an Adobe Fonts kit — see comment in <head>; falls back to Archivo) + Geist Mono">Aktiv</button>
+    <button data-panel="wcag" title="WCAG contrast evaluation of the Nordic theme">WCAG</button>
     </div>
     <span class="ms-div"></span>
     <button class="ms-collapse" title="Hide demo controls"><svg><use href="#i-x"/></svg></button>
@@ -2642,14 +2609,10 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
   switchEl.addEventListener('click', function (e) {
     if (e.target.closest('.ms-collapse')) { setControls(true); return; }
     if (e.target.closest('.ms-more')) { setAdv(!switchEl.classList.contains('adv-open')); return; }
-    var fb = e.target.closest('button[data-font]');
-    if (fb) { setFont(fb.getAttribute('data-font')); return; }
     var wb = e.target.closest('button[data-panel]');
     if (wb) { setWcag(!wcagPanel.classList.contains('open')); return; }
     var cb = e.target.closest('button[data-cvd]');
     if (cb) { setCvd(cb.getAttribute('data-cvd')); return; }
-    var pb = e.target.closest('button[data-primary]');
-    if (pb) { setPrimary(pb.getAttribute('data-primary')); return; }
     var b = e.target.closest('button[data-mode]');
     if (b) setMode(b.getAttribute('data-mode'));
   });
@@ -2668,17 +2631,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
   var qsCvd = new URLSearchParams(location.search).get('cvd');
   if (CVDS.indexOf(qsCvd) !== -1) setCvd(qsCvd);
 
-  // ---- font selection (geist default) ----
-  var FONTS = ['geist', 'inter', 'plex', 'dm', 'figtree', 'jakarta', 'aktiv'];
-  function setFont(f) {
-    FONTS.forEach(function (v) { document.body.classList.remove('font-' + v); });
-    if (f !== 'geist') document.body.classList.add('font-' + f);
-    switchEl.querySelectorAll('button[data-font]').forEach(function (b) {
-      b.classList.toggle('active', b.getAttribute('data-font') === f);
-    });
-  }
-  var qsFont = new URLSearchParams(location.search).get('font');
-  if (FONTS.indexOf(qsFont) !== -1) setFont(qsFont);
+  // (typography is fixed: Geist Sans + Geist Mono)
 
   // ---- WCAG evaluation panel ----
   var wcagPanel = document.getElementById('wcagPanel');
@@ -2745,7 +2698,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 
   // URL params that target the collapsed segment expand it so their state is visible
   var advQs = new URLSearchParams(location.search);
-  if (advQs.get('cvd') || advQs.get('font') || advQs.get('primary') || advQs.get('wcag') === '1') setAdv(true);
+  if (advQs.get('cvd') || advQs.get('wcag') === '1') setAdv(true);
 
   // ---- primary color variant (blue / green) ----
   var PRIMARIES = ['violet', 'blue', 'teal', 'green', 'blue-aaa', 'magenta', 'lime'];
@@ -2756,8 +2709,8 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
       b.classList.toggle('active', b.getAttribute('data-primary') === c);
     });
   }
-  var qsPrimary = new URLSearchParams(location.search).get('primary');
-  setPrimary(PRIMARIES.indexOf(qsPrimary) !== -1 ? qsPrimary : 'blue-aaa');
+  // primary is fixed: Blue AAA (7:1 link pairing)
+  setPrimary('blue-aaa');
 })();
 </script>
 </body>
