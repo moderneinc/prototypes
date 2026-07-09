@@ -955,6 +955,68 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
 .rp-mono { font-family: var(--font-mono); font-size: 12px; }
 .rp-branch { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
 .rp-when { color: var(--muted); white-space: nowrap; }
+
+/* ============================================================
+   DEPLOY ARTIFACTS page
+   Artifact deploy queue: ecosystem glyphs, mono versions,
+   truncated coordinates, Redeploy/Add actions.
+   ============================================================ */
+.dp-kebab { color: var(--muted); font-size: 15px; letter-spacing: 0; cursor: pointer; }
+.dp-eco { display: inline-flex; align-items: center; gap: 8px; }
+.dp-eco .eco { width: 16px; height: 16px; flex: none; }
+.dp-eco--npm .eco { color: #CB3837; }
+.dp-eco--go .eco { color: #00ADD8; }
+.dp-eco--maven .eco { color: #C71A36; }
+[data-theme="dark"] .dp-eco--npm .eco { color: #E05A52; }
+[data-theme="dark"] .dp-eco--maven .eco { color: #E1526B; }
+.dp-trunc { display: block; max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rp-table th .sort { color: var(--muted); font-size: 11px; margin-left: 3px; }
+
+/* ============================================================
+   BUILDER page
+   Recipe graph canvas (tool rail + node label) beside the
+   recipe list panel (run bar, search, tabs, tree, options).
+   ============================================================ */
+.bl-picker { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 8px; padding: 9px 14px; margin-bottom: 12px; }
+.bl-picker svg { width: 15px; height: 15px; }
+.bl-picker .chev { width: 13px; height: 13px; color: var(--muted); }
+.bl-wrap { display: grid; grid-template-columns: minmax(0, 46fr) minmax(0, 54fr); gap: 14px; }
+.bl-canvas { position: relative; background: var(--field); border: 1px solid var(--line); border-radius: 12px; min-height: 640px; overflow: hidden; }
+.bl-graph, .bl-graph svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bl-rail { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; padding: 6px; background: var(--card); border: 1px solid var(--line-strong); border-radius: 10px; }
+.bl-rail button { width: 30px; height: 30px; border: none; border-radius: 6px; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+.bl-rail button:hover { background: var(--surface); color: var(--text); }
+.bl-rail button.on { color: var(--accent); background: var(--accent-tint); }
+.bl-rail svg { width: 15px; height: 15px; }
+.bl-nodelabel { position: absolute; left: 46%; top: 54%; display: flex; align-items: center; gap: 8px; }
+.bl-nodelabel .lbl { background: var(--primary-bg); color: var(--primary-fg); font-size: 12.5px; font-weight: 600; padding: 8px 15px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.bl-nodelabel .menu { width: 34px; height: 34px; border-radius: 999px; border: none; background: var(--primary-bg); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-size: 15px; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.bl-panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; min-height: 640px; }
+.bl-top { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--line2); }
+.bl-top .dl { color: var(--green-hi); display: flex; }
+.bl-top .dl svg { width: 20px; height: 20px; }
+.bl-runinfo { margin-left: auto; font-size: 12.5px; color: var(--text); }
+.bl-top .pill-btn { padding: 7px 13px; }
+.bl-search { display: flex; align-items: center; gap: 9px; padding: 12px 14px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line2); }
+.bl-search svg { width: 15px; height: 15px; }
+.bl-tabs { display: flex; align-items: center; gap: 16px; padding: 10px 14px; font-size: 12.5px; font-weight: 600; color: var(--text); border-bottom: 1px solid var(--line2); }
+.bl-count { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; color: var(--accent-deep); background: var(--accent-tint); border-radius: 999px; padding: 2px 8px; margin-left: 5px; }
+.bl-count--muted { color: var(--muted); background: var(--surface); }
+.bl-tabs .chev { margin-left: auto; width: 14px; height: 14px; color: var(--muted); }
+.bl-tree { flex: 1; overflow: auto; padding: 6px 0; font-size: 13px; }
+.bl-row { display: flex; align-items: center; gap: 7px; padding: 6px 14px; color: var(--text); cursor: pointer; }
+.bl-row:hover { background: var(--row-hover); }
+.bl-row .tw { width: 15px; height: 15px; color: var(--muted); flex: none; }
+.bl-row.sel { background: var(--accent-tint); }
+.bl-chip { background: var(--primary-bg); color: var(--primary-fg); font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 5px; }
+.bl-pre { background: color-mix(in srgb, var(--violet) 7%, transparent); }
+.bl-prechip { border: 1px solid color-mix(in srgb, var(--violet) 45%, transparent); color: var(--text); font-size: 12px; padding: 2.5px 9px; border-radius: 5px; }
+.bl-row .ok { color: var(--green-hi); width: 15px; height: 15px; flex: none; }
+.bl-java { width: 15px; height: 15px; border-radius: 4px; background: var(--ch-orange); color: #FBFAF6; font-family: var(--font-mono); font-size: 8px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-style: normal; flex: none; }
+.bl-row .rooti { width: 15px; height: 15px; color: var(--accent); flex: none; }
+.bl-row code { font-family: var(--font-mono); font-size: 11.5px; background: var(--surface); border-radius: 4px; padding: 1px 4px; }
+.bl-row .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bl-foot { display: flex; align-items: center; padding: 11px 14px; font-size: 12.5px; font-weight: 600; border-top: 1px solid var(--line); }
 </style>
 </head>
 <body class="skin-nordic">
@@ -981,6 +1043,20 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
   <symbol id="i-git-draft" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M18 6V5M18 11v-1"/><line x1="6" y1="9" x2="6" y2="21"/></symbol>
   <symbol id="i-git-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 01-9 9"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
+  <symbol id="i-cols" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-upcircle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16V8M8 12l4-4 4 4"/></symbol>
+  <symbol id="i-downcircle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12l4 4 4-4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 19 12 6 20 6 4"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.83z"/><circle cx="7" cy="7" r="1.5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-logo-npm" viewBox="0 0 24 24" fill="currentColor"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"/></symbol>
+  <symbol id="i-logo-go" viewBox="0 0 24 24" fill="currentColor"><path d="M1.811 10.231c-.047 0-.058-.023-.035-.059l.246-.315c.023-.035.081-.058.128-.058h4.172c.046 0 .058.035.035.07l-.199.303c-.023.036-.082.07-.117.07zM.047 11.306c-.047 0-.059-.023-.035-.058l.245-.316c.023-.035.082-.058.129-.058h5.328c.047 0 .07.035.058.07l-.093.28c-.012.047-.058.07-.105.07zm2.828 1.075c-.047 0-.059-.035-.035-.07l.163-.292c.023-.035.07-.07.117-.07h2.337c.047 0 .07.035.07.082l-.023.28c0 .047-.047.082-.082.082zm12.129-2.36c-.736.187-1.239.327-1.963.514-.176.046-.187.058-.34-.117-.174-.199-.303-.327-.548-.444-.737-.362-1.45-.257-2.115.175-.795.514-1.204 1.274-1.192 2.22.011.935.654 1.706 1.577 1.835.795.105 1.46-.175 1.987-.77.105-.13.198-.27.315-.434H10.47c-.245 0-.304-.152-.222-.35.152-.362.432-.97.596-1.274a.315.315 0 01.292-.187h4.253c-.023.316-.023.631-.07.947a4.983 4.983 0 01-.958 2.29c-.841 1.11-1.94 1.8-3.33 1.986-1.145.152-2.209-.07-3.143-.77-.865-.655-1.356-1.52-1.484-2.595-.152-1.274.222-2.419.993-3.424.83-1.086 1.928-1.776 3.272-2.02 1.098-.2 2.15-.07 3.096.571.62.41 1.063.97 1.356 1.648.07.105.023.164-.117.2m3.868 6.461c-1.064-.024-2.034-.328-2.852-1.029a3.665 3.665 0 01-1.262-2.255c-.21-1.32.152-2.489.947-3.529.853-1.122 1.881-1.706 3.272-1.95 1.192-.21 2.314-.095 3.33.595.923.63 1.496 1.484 1.648 2.605.198 1.578-.257 2.863-1.344 3.962-.771.783-1.718 1.273-2.805 1.495-.315.06-.63.07-.934.106zm2.78-4.72c-.011-.153-.011-.27-.034-.387-.21-1.157-1.274-1.81-2.384-1.554-1.087.245-1.788.935-2.045 2.033-.21.912.234 1.835 1.075 2.21.643.28 1.285.244 1.905-.07.923-.48 1.425-1.228 1.484-2.233z"/></symbol>
+  <symbol id="i-logo-maven" viewBox="0 0 24 24" fill="currentColor"><path d="M4.237.001c-.312-.013-.665.072-.828.457-.158.374-.283 1.188-.34 2.276l1.223.591c-.02-.737.007-1.43.076-2.066-.026.299-.056.96.006 2.039.019.342.049.725.088 1.15.002.024.002.047.007.069a45.485 45.485 0 0 0 .309 2.412c.057.368.126.752.195 1.16l-.01.01c.014.01.015.018.014.023l.03.16c.03.162.06.328.093.494l.108.553.056.289a61.72 61.72 0 0 0 .457 2.068c.09.382.186.78.287 1.186.098.386.199.783.309 1.193.096.362.199.735.303 1.117.003.018.012.036.015.055a145.826 145.826 0 0 0 .34 1.185l.049.174c.078.261.158.533.242.805a4.2 4.2 0 0 1-.293-.135l-.19-.654c-.02-.077-.042-.148-.062-.225l-.002-.004-.004-.002c-.087-.3-.17-.607-.257-.916-.023-.087-.044-.173-.069-.263l-.314-1.178c-.1-.381-.194-.765-.29-1.154-.094-.39-.185-.78-.277-1.172-.093-.401-.181-.8-.265-1.203-.085-.396-.161-.798-.24-1.193a50.315 50.315 0 0 1-.211-1.17c-.004-.013-.006-.03-.01-.041l.004-.002c-.057-.386-.116-.77-.174-1.15a60.905 60.905 0 0 1-.154-1.204 27.447 27.447 0 0 1-.172-2.41l-1.22-.59c-.004.074-.01.15-.013.23-.012.294-.02.605-.023.93a45.3 45.3 0 0 0 .006 1.157c.009.37.025.755.045 1.148.02.336.042.675.07 1.022l.002.039.006.004c.003.023.007.05.006.076.033.368.064.739.107 1.115a34.493 34.493 0 0 0 .303 2.125c.01.064.024.131.035.195a23.418 23.418 0 0 0 .547 2.32c.07.237.14.464.21.68.063.182.13.365.194.545.155.422.327.832.512 1.232l.006.004a.318.318 0 0 0 .02.05c.225.485.475.95.755 1.395.01.013.02.033.03.047-.455-.183-1.259-.098-1.253-.097.83.288 1.557.64 2.016 1.175-.183.2-.523.352-.953.477.594.064.924-.039 1.045-.092-.31.26-.483.732-.635 1.24.35-.57.696-.949 1.033-1.094.078.258.162.524.244.788A147.532 147.532 0 0 0 5.157 24a.56.56 0 0 0 .43-.312c.13-.282.83-1.775 1.908-3.875.413 1.303.88 2.679 1.386 4.109a.494.494 0 0 0 .076-.465 103.735 103.735 0 0 1-1.308-3.945c.154-.299.316-.612.484-.932.125.04.255.094.389.155.203.186.352.491.482.84a1.515 1.515 0 0 0-.334-1.098c1.335.258 2.547.09 3.287-.81a3.97 3.97 0 0 0 .192-.258c-.325.304-.682.404-1.313.273.996-.281 1.523-.617 2.035-1.22.12-.145.244-.303.371-.48-.943.722-1.927.822-2.9.493l-.045-.018c.914.02 2.203-.474 3.092-1.189.41-.33.796-.73 1.17-1.21.28-.359.55-.76.82-1.216.234-.393.468-.824.7-1.293a2.83 2.83 0 0 1-.74.137l-.144.008c-.048.002-.093 0-.146.002.885-.198 1.5-.74 1.994-1.447-.24.117-.628.262-1.07.297-.058.006-.12.006-.182.006-.013-.002-.028 0-.047-.002.306-.078.574-.178.81-.309a3.363 3.363 0 0 0 .358-.236c.044-.037.088-.07.13-.106.099-.086.193-.18.28-.287.028-.034.056-.063.08-.098.036-.05.073-.098.104-.146a8.388 8.388 0 0 0 .51-.828c.015-.031.032-.057.046-.088.04-.084.08-.16.11-.227.042-.099.074-.179.092-.238a.515.515 0 0 1-.108.051c-.273.112-.727.187-1.086.201-.004 0-.008 0-.013.004h-.067c.72-.214 1.067-.45 1.422-.818a13.883 13.883 0 0 0 1.154-1.428c.264-.37.505-.738.692-1.072a6.5 6.5 0 0 0 .298-.592c.066-.157.122-.305.172-.45-.466.01-.986.011-1.48 0 .495.01 1.015.007 1.484-.005.5-1.485.063-2.262.063-2.262s-.526-1.212-1.4-.851c-.426.175-1.172.73-2.083 1.56l.514 1.45a17.561 17.561 0 0 1 1.703-1.602c-.257.22-.807.726-1.615 1.644-.256.29-.537.624-.844.997-.017.02-.035.038-.047.06a51.435 51.435 0 0 0-1.666 2.187c-.248.34-.498.704-.765 1.088h-.016c.002.02-.004.028-.01.032l-.101.152c-.104.155-.213.31-.318.47l-.352.534c-.061.09-.124.181-.186.277-.184.282-.367.573-.558.873a97.351 97.351 0 0 0-1.428 2.338 96.866 96.866 0 0 0-1.341 2.343c-.012.017-.02.04-.034.057a197.256 197.256 0 0 0-.668 1.223l-.097.181c-.17.318-.346.642-.52.979 0 .004-.005.008-.006.013-.026.048-.05.093-.072.141-.117.222-.218.424-.45.87a1.352 1.352 0 0 0-.233-.182l.345-.65c.047-.089.096-.177.143-.27l.04-.077.546-1.001.13-.233v-.006l-.001-.006c.169-.31.345-.62.52-.94.051-.087.102-.173.153-.265.224-.395.454-.794.684-1.197a91.685 91.685 0 0 1 2.135-3.504c.247-.386.503-.77.754-1.152.092-.138.182-.272.279-.41a72.9 72.9 0 0 1 .48-.701c.007-.012.019-.024.026-.037h.006c.26-.356.517-.713.773-1.065.278-.373.554-.735.83-1.09a31.075 31.075 0 0 1 1.777-2.075l-.515-1.446c-.06.057-.126.116-.192.178a32.37 32.37 0 0 0-.758.729c-.295.294-.597.606-.912.935a46.032 46.032 0 0 0-1.632 1.838l-.03.033.002.008c-.017.02-.033.044-.054.064-.266.323-.538.649-.801.985a39.105 39.105 0 0 0-1.445 1.95c-.043.06-.085.126-.127.186a26.458 26.458 0 0 0-1.403 2.303c-.13.247-.256.485-.37.715-.096.195-.187.395-.278.591-.21.463-.398.93-.566 1.399l.002.006a.36.36 0 0 0-.026.058c-.108.303-.203.608-.29.914-.14.174-.302.325-.483.46a3.505 3.505 0 0 0-.131-.153 5.148 5.148 0 0 0 .824-2.211 6.4 6.4 0 0 0-.016-1.488c-.046-.4-.126-.82-.238-1.274-.097-.393-.217-.81-.363-1.248-.091.185-.22.367-.379.545l-.086.094c-.029.032-.06.06-.092.094.434-.674.486-1.397.358-2.148a2.722 2.722 0 0 1-.49.85c-.033.038-.072.077-.11.116-.01.007-.019.018-.033.028.144-.24.25-.467.318-.698a1.29 1.29 0 0 0 .04-.146 2.85 2.85 0 0 0 .038-.225l.018-.146a2.11 2.11 0 0 0-.002-.354c-.003-.04-.004-.076-.01-.113-.01-.055-.016-.105-.027-.154a7.416 7.416 0 0 0-.193-.84c-.01-.028-.015-.056-.026-.084-.027-.079-.048-.149-.072-.209a2.1 2.1 0 0 0-.09-.209.455.455 0 0 1-.035.1c-.102.24-.34.57-.557.8-.003.003-.007.005-.007.01l-.04.043c.318-.58.39-.946.385-1.398a12.274 12.274 0 0 0-.16-1.615 10.68 10.68 0 0 0-.232-1.104 5.853 5.853 0 0 0-.18-.558 6.337 6.337 0 0 0-.172-.391 26.18 26.18 0 0 0 .002-.004C5.576.341 4.82.124 4.82.124s-.27-.11-.582-.123zm3.38 15.783l.032.082v.002c-.06.033-.116.067-.178.097-.012.004-.024.012-.039.018a2.41 2.41 0 0 0 .186-.2zm-.603 1.626c.13.136.25.242.354.32l.07.227a1.866 1.866 0 0 0-.246.053l-.03-.098c-.024-.084-.048-.17-.076-.257l-.021-.073zm.26.875a2.34 2.34 0 0 1 .271.01l.07.229a.778.778 0 0 1 .247-.004l-.326.627a127.643 127.643 0 0 1-.262-.862z"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></symbol>
   <symbol id="i-gql" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"/><path d="M4.2 16.5L12 3l7.8 13.5z"/><circle cx="12" cy="3" r="1.4" fill="currentColor"/><circle cx="19.8" cy="7.5" r="1.4" fill="currentColor"/><circle cx="19.8" cy="16.5" r="1.4" fill="currentColor"/><circle cx="12" cy="21" r="1.4" fill="currentColor"/><circle cx="4.2" cy="16.5" r="1.4" fill="currentColor"/><circle cx="4.2" cy="7.5" r="1.4" fill="currentColor"/></symbol>
   <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
@@ -1077,11 +1153,11 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
       <button class="nav-item" data-nav="moddy" title="Moddy"><span class="nav-icon-container"><svg><use href="#i-sparkles"/></svg></span></button>
       <button class="nav-item" data-nav="devcenter" title="DevCenter"><span class="nav-icon-container"><svg><use href="#i-pie"/></svg></span></button>
       <button class="nav-item" data-nav="marketplace" title="Marketplace"><span class="nav-icon-container"><svg><use href="#i-globe"/></svg></span></button>
-      <button class="nav-item" data-nav="none" title="Builder"><span class="nav-icon-container"><svg><use href="#i-blocks"/></svg></span></button>
+      <button class="nav-item" data-nav="builder" title="Builder"><span class="nav-icon-container"><svg><use href="#i-blocks"/></svg></span></button>
       <button class="nav-item" data-nav="activity" title="Activity"><span class="nav-icon-container"><svg><use href="#i-history"/></svg></span></button>
       <button class="nav-item" data-nav="changelog" title="Changelog"><span class="nav-icon-container"><svg><use href="#i-activity"/></svg></span></button>
       <button class="nav-item" data-nav="repositories" title="Repositories"><span class="nav-icon-container"><svg><use href="#i-repo"/></svg></span></button>
-      <button class="nav-item" data-nav="none" title="Deploy"><span class="nav-icon-container"><svg><use href="#i-package"/></svg></span></button>
+      <button class="nav-item" data-nav="deploy" title="Deploy"><span class="nav-icon-container"><svg><use href="#i-package"/></svg></span></button>
     </div>
     <div class="nav-tenant" title="Acme Bank — organization"><div class="tenant-logo">Acme<br>Bank</div></div>
   </nav>
@@ -1669,6 +1745,176 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
         </div>
       </section>
 
+      <!-- ============ DEPLOY ARTIFACTS ============ -->
+      <section class="page" data-page="deploy">
+        <div class="pagehead">
+          <div><h1>Deploy artifacts</h1></div>
+          <div class="actions">
+            <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
+          </div>
+        </div>
+
+        <div class="cl-card">
+          <div class="rp-toolbar">
+            <div class="cl-search"><svg><use href="#i-search"/></svg> Search…</div>
+            <button class="pill-btn"><svg><use href="#i-filter"/></svg> Filters</button>
+            <button class="pill-btn"><svg><use href="#i-cols"/></svg> Columns</button>
+            <div class="rp-tright">
+              <button class="pill-btn" disabled><svg><use href="#i-refresh"/></svg> Redeploy</button>
+              <button class="pill-btn pill-btn--primary"><svg><use href="#i-upcircle"/></svg> Add</button>
+            </div>
+          </div>
+          <table class="rp-table">
+            <thead>
+              <tr>
+                <th class="cl-cbcol cl-c"><span class="cl-cb"></span></th>
+                <th></th>
+                <th>Requested</th>
+                <th>Status</th>
+                <th>Ecosystem</th>
+                <th>Version</th>
+                <th>Name <span class="sort">↑</span></th>
+                <th>Last deployed</th>
+                <th>Scoped</th>
+                <th>Recipe count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>
+                <td class="rp-mono">next</td><td><span class="pill pill--su">Finished</span></td>
+                <td><span class="dp-eco dp-eco--npm"><svg class="eco"><use href="#i-logo-npm"/></svg>Npm</span></td>
+                <td class="rp-mono"><span class="dp-trunc">0.48.0-20260702.141522</span></td>
+                <td class="rp-mono"><span class="dp-trunc">@openrewrite/recipes-npm</span></td>
+                <td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">36</td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>
+                <td class="rp-mono">v0.4.1</td><td><span class="pill pill--su">Finished</span></td>
+                <td><span class="dp-eco dp-eco--go"><svg class="eco"><use href="#i-logo-go"/></svg>Go</span></td>
+                <td class="rp-mono"><span class="dp-trunc">v0.4.1</span></td>
+                <td class="rp-mono"><span class="dp-trunc">github.com/moderneinc/recipes-go</span></td>
+                <td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">14</td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>
+                <td class="rp-mono">LATEST</td><td><span class="pill pill--su">Finished</span></td>
+                <td><span class="dp-eco dp-eco--maven"><svg class="eco"><use href="#i-logo-maven"/></svg>Maven</span></td>
+                <td class="rp-mono"><span class="dp-trunc">0.1.0-20260707.083011</span></td>
+                <td class="rp-mono"><span class="dp-trunc">io.moderne.recipe:recipe-ai</span></td>
+                <td class="rp-when">2 days ago</td><td>Universal</td><td class="rp-mono">9</td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>
+                <td class="rp-mono">LATEST</td><td><span class="pill pill--su">Finished</span></td>
+                <td><span class="dp-eco dp-eco--maven"><svg class="eco"><use href="#i-logo-maven"/></svg>Maven</span></td>
+                <td class="rp-mono"><span class="dp-trunc">0.2.0-20260702.114205</span></td>
+                <td class="rp-mono"><span class="dp-trunc">io.moderne.recipe:recipe-cloud-suitability-analyzer</span></td>
+                <td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">21</td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>
+                <td class="rp-mono">0.1.0-SNAPSHOT</td><td><span class="pill pill--su">Finished</span></td>
+                <td><span class="dp-eco dp-eco--maven"><svg class="eco"><use href="#i-logo-maven"/></svg>Maven</span></td>
+                <td class="rp-mono"><span class="dp-trunc">0.1.0-20260702.114237</span></td>
+                <td class="rp-mono"><span class="dp-trunc">io.moderne.recipe:rewrite-comprehension</span></td>
+                <td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">7</td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>
+                <td class="rp-mono">LATEST</td><td><span class="pill pill--su">Finished</span></td>
+                <td><span class="dp-eco dp-eco--maven"><svg class="eco"><use href="#i-logo-maven"/></svg>Maven</span></td>
+                <td class="rp-mono"><span class="dp-trunc">0.15.0-20260702.114301</span></td>
+                <td class="rp-mono"><span class="dp-trunc">io.moderne.recipe:rewrite-devcenter</span></td>
+                <td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">18</td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>
+                <td class="rp-mono">RELEASE</td><td><span class="pill pill--su">Finished</span></td>
+                <td><span class="dp-eco dp-eco--maven"><svg class="eco"><use href="#i-logo-maven"/></svg>Maven</span></td>
+                <td class="rp-mono"><span class="dp-trunc">0.3.0</span></td>
+                <td class="rp-mono"><span class="dp-trunc">io.moderne.recipe:rewrite-hibernate</span></td>
+                <td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">26</td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>
+                <td class="rp-mono">LATEST</td><td><span class="pill pill--su">Finished</span></td>
+                <td><span class="dp-eco dp-eco--maven"><svg class="eco"><use href="#i-logo-maven"/></svg>Maven</span></td>
+                <td class="rp-mono"><span class="dp-trunc">1.28.0-20260702.114322</span></td>
+                <td class="rp-mono"><span class="dp-trunc">io.moderne.recipe:rewrite-java-security</span></td>
+                <td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">64</td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>
+                <td class="rp-mono">LATEST</td><td><span class="pill pill--su">Finished</span></td>
+                <td><span class="dp-eco dp-eco--maven"><svg class="eco"><use href="#i-logo-maven"/></svg>Maven</span></td>
+                <td class="rp-mono"><span class="dp-trunc">0.9.0-20260702.114348</span></td>
+                <td class="rp-mono"><span class="dp-trunc">io.moderne.recipe:rewrite-micrometer</span></td>
+                <td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">12</td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>
+                <td class="rp-mono">LATEST</td><td><span class="pill pill--su">Finished</span></td>
+                <td><span class="dp-eco dp-eco--maven"><svg class="eco"><use href="#i-logo-maven"/></svg>Maven</span></td>
+                <td class="rp-mono"><span class="dp-trunc">0.1.0-20260702.114419</span></td>
+                <td class="rp-mono"><span class="dp-trunc">io.moderne.recipe:rewrite-nodejs</span></td>
+                <td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">11</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="act-foot"><span>85 results</span><span class="linklike">Load more</span></div>
+        </div>
+      </section>
+
+      <!-- ============ BUILDER ============ -->
+      <section class="page" data-page="builder">
+        <button class="bl-picker"><svg><use href="#i-blocks"/></svg> new name spring thing <svg class="chev"><use href="#i-chevd"/></svg></button>
+        <div class="bl-wrap">
+          <div class="bl-canvas">
+            <div class="bl-graph"></div>
+            <div class="bl-rail">
+              <button title="Collapse panel"><svg><use href="#i-collapse"/></svg></button>
+              <button title="Run"><svg><use href="#i-play"/></svg></button>
+              <button title="Fit view"><svg><use href="#i-eye"/></svg></button>
+              <button title="Locate"><svg><use href="#i-target"/></svg></button>
+              <button class="on" title="Labels"><svg><use href="#i-tag"/></svg></button>
+              <button title="Help"><svg><use href="#i-help"/></svg></button>
+              <button title="Theme"><svg><use href="#i-sun"/></svg></button>
+              <button title="About"><svg><use href="#i-info"/></svg></button>
+            </div>
+            <div class="bl-nodelabel"><span class="lbl">new name spring thing</span><button class="menu">≡</button></div>
+          </div>
+          <div class="bl-panel">
+            <div class="bl-top">
+              <span class="dl"><svg><use href="#i-downcircle"/></svg></span>
+              <span class="bl-runinfo">Will run on <b>271</b> repositories</span>
+              <button class="pill-btn pill-btn--primary"><svg><use href="#i-play"/></svg> Dry run</button>
+              <button class="pill-btn" disabled><svg><use href="#i-undo"/></svg> Undo</button>
+            </div>
+            <div class="bl-search"><svg><use href="#i-search"/></svg> Search and filter recipe</div>
+            <div class="bl-tabs">
+              <span>Recipe list<span class="bl-count">56</span></span>
+              <span>Preconditions<span class="bl-count">1</span></span>
+              <svg class="chev"><use href="#i-chevd"/></svg>
+            </div>
+            <div class="bl-tree">
+              <div class="bl-row sel" style="padding-left:14px"><svg class="tw"><use href="#i-chevd"/></svg><svg class="rooti"><use href="#i-code"/></svg><span class="bl-chip">new name spring thing</span></div>
+              <div class="bl-row bl-pre" style="padding-left:36px"><svg class="ok"><use href="#i-check-c"/></svg><span class="bl-prechip">Is likely a Spring Framework project</span></div>
+              <div class="bl-row" style="padding-left:36px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Migrate to DataNucleus 5.0</span></div>
+              <div class="bl-row" style="padding-left:36px"><svg class="tw"><use href="#i-chevd"/></svg><i class="bl-java">J</i><span class="txt">Migrate to DataNucleus 5.0</span></div>
+              <div class="bl-row" style="padding-left:58px"><svg class="tw"><use href="#i-chevd"/></svg><i class="bl-java">J</i><span class="txt">Migrate to DataNucleus 4.0</span></div>
+              <div class="bl-row" style="padding-left:80px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Upgrade Gradle or Maven dependency versions</span></div>
+              <div class="bl-row" style="padding-left:80px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Remove a Gradle or Maven dependency</span></div>
+              <div class="bl-row" style="padding-left:80px"><svg class="tw"><use href="#i-chevd"/></svg><i class="bl-java">J</i><span class="txt">DataNucleus 4.0 package moves</span></div>
+              <div class="bl-row" style="padding-left:102px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Rename package name <code>org.datanucleus.store.types.simple</code> to <code>org.datanucleus.store.types.wrappers</code></span></div>
+              <div class="bl-row" style="padding-left:102px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Rename package name <code>org.datanucleus.store.types.backed</code> to <code>org.datanucleus.store.types.wrapper…</code></span></div>
+              <div class="bl-row" style="padding-left:102px"><span class="tw"></span><i class="bl-java">J</i><span class="txt">Rename package name <code>org.datanucleus.query.evaluator.memory</code> to <code>org.datanucleus.query.inmemory</code></span></div>
+            </div>
+            <div class="bl-foot">Options<span class="bl-count bl-count--muted">0</span></div>
+          </div>
+        </div>
+      </section>
+
     </div><!-- /content -->
   </div><!-- /main-area -->
 </div><!-- /app -->
@@ -1817,6 +2063,37 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
       document.querySelectorAll('.layer .dc-toggle').forEach(function (t) { t.classList.toggle('on', on); });
     }
   });
+
+  // ---- Builder: recipe graph canvas (deterministic star clusters) ----
+  function builderGraph() {
+    var seed = 7;
+    function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+    var hubs = [
+      { x: 150, y: 340, n: 16 }, { x: 262, y: 250, n: 7 }, { x: 335, y: 205, n: 5 },
+      { x: 305, y: 430, n: 9 }, { x: 398, y: 285, n: 4, sel: true }
+    ];
+    var links = [[0, 1], [1, 2], [2, 4], [3, 4]];
+    var edges = '', dots = '', sel = '';
+    links.forEach(function (l) {
+      edges += '<line x1="' + hubs[l[0]].x + '" y1="' + hubs[l[0]].y + '" x2="' + hubs[l[1]].x + '" y2="' + hubs[l[1]].y + '" stroke="var(--line-strong)"/>';
+    });
+    hubs.forEach(function (h) {
+      for (var k = 0; k < h.n; k++) {
+        var a = rnd() * Math.PI * 2, r = 34 + rnd() * 44;
+        var x = h.x + r * Math.cos(a), y = h.y + r * Math.sin(a);
+        edges += '<line x1="' + h.x + '" y1="' + h.y + '" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="var(--line-strong)"/>';
+        dots += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="4.2" fill="var(--accent)"/>';
+      }
+      if (h.sel) {
+        sel += '<circle cx="' + h.x + '" cy="' + h.y + '" r="22" fill="var(--ch-p1)" opacity="0.25"/><circle cx="' + h.x + '" cy="' + h.y + '" r="11" fill="var(--ch-p1)"/>';
+      } else {
+        dots += '<circle cx="' + h.x + '" cy="' + h.y + '" r="6" fill="var(--accent)"/>';
+      }
+    });
+    return '<svg viewBox="0 0 600 660" preserveAspectRatio="xMidYMid meet">' + edges + sel + dots + '</svg>';
+  }
+  var blSvg = builderGraph();
+  document.querySelectorAll('.layer .bl-graph').forEach(function (el) { el.innerHTML = blSvg; });
 
   // ---- keep the two scroll containers mirrored ----
   var contents = document.querySelectorAll('.layer .content');
