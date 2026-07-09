@@ -827,9 +827,15 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
    periwinkle rose fills).
    ============================================================ */
 [data-theme="light"] {
-  --ch-red: #BF5A5A; --ch-orange2: #CE6F4B; --ch-orange: #DD9349; --ch-yellow: #DFC055;
-  --ch-green: #1D5937; --ch-na: #DEDBD0;
-  --ch-ghost-f: rgba(191,90,90,.14); --ch-ghost-s: rgba(191,90,90,.55);
+  /* same fills as dark mode; deep same-hue rings give definition on cream
+     and carry SC 1.4.11 (5:1+ each) */
+  --ch-red: #D98B85; --ch-red-s: #9E4038;
+  --ch-orange2: #E39A78; --ch-orange2-s: #9B4E22;
+  --ch-orange: #E7AE6A; --ch-orange-s: #96591B;
+  --ch-yellow: #E4CD7C; --ch-yellow-s: #86690F;
+  --ch-green: #30F284; --ch-green-s: #1D5937;
+  --ch-na: #DEDBD0;
+  --ch-ghost-f: rgba(158,64,56,.12); --ch-ghost-s: rgba(158,64,56,.55);
   --ch-p1: #3E5BE8; --ch-grid: rgba(35,35,66,.10);
 }
 [data-theme="dark"] {
@@ -938,8 +944,8 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
 .cl-status--pass svg { color: var(--green-hi); }
 .cl-diff { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
 .cl-bars { display: flex; gap: 2px; }
-.cl-bars span { width: 4px; height: 13px; border-radius: 1px; background: var(--ch-green); }
-.cl-bars span.r { background: var(--ch-red); }
+.cl-bars span { width: 4px; height: 13px; border-radius: 1px; background: var(--green-hi); }
+.cl-bars span.r { background: var(--er); }
 .cl-nums { font-family: var(--font-mono); font-size: 11px; }
 .cl-nums .add { color: var(--green-hi); }
 .cl-nums .del { color: var(--er); margin-left: 6px; }
@@ -1035,12 +1041,7 @@ body.wcag-aa.skin-nordic [data-theme="light"] {
   --line-strong: rgba(35,35,66,.50);        /* input borders 3.1:1 */
   --link-line: rgba(35,35,66,.50);
   --su-b: rgba(29,89,55,.65);               /* success pill border 3.4:1 */
-  /* chart ramp: vivid fills carry the color, same-hue 3:1+ rings carry
-     the SC 1.4.11 contrast at the object boundary */
-  --ch-orange: #E58A34; --ch-orange-s: #9C551A;
-  --ch-orange2: #D2643D; --ch-orange2-s: #99401F;
-  --ch-yellow: #F0C63C; --ch-yellow-s: #7D6407;
-  --ch-na: #D6D2C4; --ch-na-s: #82806F;
+  --ch-na-s: #82806F;                       /* N/A dots gain a 3.8:1 ring */
 }
 body.wcag-aa.skin-nordic [data-theme="dark"] {
   --accent: #7FA9F9; --accent-deep: #7FA9F9; /* links 6.4:1 (Blue AAA token) */
