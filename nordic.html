@@ -827,13 +827,14 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
    periwinkle rose fills).
    ============================================================ */
 [data-theme="light"] {
-  --ch-red: #BF5A5A; --ch-orange2: #CE6F4B; --ch-orange: #DD9349; --ch-yellow: #DFC055;
-  --ch-green: #1D5937; --ch-na: #DEDBD0;
-  --ch-ghost-f: rgba(191,90,90,.14); --ch-ghost-s: rgba(191,90,90,.55);
+  /* same bright fills as dark mode; the WCAG AA toggle adds 3:1 rings */
+  --ch-red: #FF6F61; --ch-orange2: #FF8F52; --ch-orange: #FFA83D; --ch-yellow: #FFD34D;
+  --ch-green: #30F284; --ch-na: #DEDBD0;
+  --ch-ghost-f: rgba(166,51,37,.12); --ch-ghost-s: rgba(166,51,37,.55);
   --ch-p1: #3E5BE8; --ch-grid: rgba(35,35,66,.10);
 }
 [data-theme="dark"] {
-  --ch-red: #D98B85; --ch-orange2: #E39A78; --ch-orange: #E7AE6A; --ch-yellow: #E4CD7C;
+  --ch-red: #FF6F61; --ch-orange2: #FF8F52; --ch-orange: #FFA83D; --ch-yellow: #FFD34D;
   --ch-green: #30F284; --ch-na: #3B3B46;
   --ch-ghost-f: rgba(217,139,133,.12); --ch-ghost-s: rgba(217,139,133,.55);
   --ch-p1: #8CA0F5; --ch-grid: rgba(240,240,246,.12);
@@ -869,7 +870,13 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
 .dc-legend tr:last-child td { border-bottom: none; }
 .dc-legend th.num { text-align: right; }
 .dc-legend td.num { text-align: right; font-family: var(--font-mono); font-size: 11.5px; }
-.dc-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; vertical-align: -1px; margin-right: 8px; }
+.dc-dot { width: 10px; height: 10px; box-sizing: border-box; border-radius: 999px; display: inline-block; vertical-align: -1px; margin-right: 8px; }
+.dc-dot--red { background: var(--ch-red); border: 1.2px solid var(--ch-red-s, transparent); }
+.dc-dot--orange { background: var(--ch-orange); border: 1.2px solid var(--ch-orange-s, transparent); }
+.dc-dot--orange2 { background: var(--ch-orange2); border: 1.2px solid var(--ch-orange2-s, transparent); }
+.dc-dot--yellow { background: var(--ch-yellow); border: 1.2px solid var(--ch-yellow-s, transparent); }
+.dc-dot--green { background: var(--ch-green); border: 1.2px solid var(--ch-green-s, transparent); }
+.dc-dot--na { background: var(--ch-na); border: 1.2px solid var(--ch-na-s, transparent); }
 .dc-dot--ghost { background: var(--ch-ghost-f); border: 1px dashed var(--ch-ghost-s); }
 .dc-campfoot { display: flex; justify-content: flex-end; padding-top: 12px; margin-top: auto; }
 .dc-owasp { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1fr); gap: 26px; align-items: center; }
@@ -888,6 +895,36 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
 .dc-owinfo p { margin: 0 0 6px; font-size: 12.5px; line-height: 1.5; color: var(--text); }
 .dc-owinfo .dc-occ { margin: 0; }
 .dc-owinfo .dc-occ b { font-family: var(--font-mono); font-weight: 600; }
+/* ---- timeline view (Timeline toggle / ?tl=1): brush, sparklines,
+        stacked-area campaigns, OWASP occurrences bars ---- */
+.tl-only { display: none; }
+body.tlview .dc-sec.tl-only { display: flex; }
+body.tlview .tl-brush { display: block; }
+.tl-sub { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
+.tl-dates { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); margin-bottom: 6px; }
+.tl-band { position: relative; height: 52px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; }
+.tl-mark { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--qu); }
+.tl-handle { position: absolute; top: -1px; bottom: -1px; width: 8px; background: var(--card); border: 1px solid var(--line-strong); border-radius: 4px; }
+.tl-handle--l { left: -1px; }
+.tl-handle--r { right: -1px; }
+.dc-stat { position: relative; }
+.dc-spark { display: none; position: absolute; top: 20px; right: 20px; width: 96px; height: 30px; color: var(--text); }
+body.tlview .dc-spark { display: block; }
+.dc-tlpane { display: none; }
+body.tlview .dc-tlpane { display: block; }
+body.tlview .dc-arch, body.tlview .dc-camp > .dc-legend { display: none; }
+.dc-tlpane svg { display: block; margin: 2px auto 0; max-width: 100%; height: auto; }
+.dc-tlpane text { font-family: var(--font-mono); font-size: 8px; fill: var(--muted); }
+.dc-tlpane .dc-legend { margin-top: 10px; }
+.dc-bar { width: 3px; height: 12px; border-radius: 1px; display: inline-block; vertical-align: -2px; margin-right: 9px; }
+.dc-bar--ghost { background: var(--ch-ghost-f); border: 1px dashed var(--ch-ghost-s); width: 2px; }
+.ow-dot { display: none; width: 9px; height: 9px; border-radius: 999px; flex: none; align-self: center; }
+body.tlview .ow-dot { display: inline-block; }
+body.tlview .dc-rose, body.tlview .dc-owinfo { display: none; }
+.dc-owbar { display: none; }
+body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
+.dc-owbar svg { display: block; width: 100%; height: auto; }
+.dc-owbar text { font-family: var(--font-mono); font-size: 9px; fill: var(--muted); }
 
 /* ============================================================
    CHANGELOG page
@@ -932,8 +969,8 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
 .cl-status--pass svg { color: var(--green-hi); }
 .cl-diff { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
 .cl-bars { display: flex; gap: 2px; }
-.cl-bars span { width: 4px; height: 13px; border-radius: 1px; background: var(--ch-green); }
-.cl-bars span.r { background: var(--ch-red); }
+.cl-bars span { width: 4px; height: 13px; border-radius: 1px; background: var(--green-hi); }
+.cl-bars span.r { background: var(--er); }
 .cl-nums { font-family: var(--font-mono); font-size: 11px; }
 .cl-nums .add { color: var(--green-hi); }
 .cl-nums .del { color: var(--er); margin-left: 6px; }
@@ -1018,6 +1055,29 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
 .bl-row code { font-family: var(--font-mono); font-size: 11.5px; background: var(--surface); border-radius: 4px; padding: 1px 4px; }
 .bl-row .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bl-foot { display: flex; align-items: center; padding: 11px 14px; font-size: 12.5px; font-weight: 600; border-top: 1px solid var(--line); }
+
+/* ============================================================
+   WCAG AA VARIANT (demo toggle: body.wcag-aa / ?aa=1)
+   Tokens tightened to clear WCAG 2.1 AA per the contrast audit:
+   SC 1.4.3 text and SC 1.4.11 non-text at their minimums.
+   ============================================================ */
+body.wcag-aa.skin-nordic [data-theme="light"] {
+  --muted: #62627A;                         /* 4.5:1+ on the card-head tone */
+  --line-strong: rgba(35,35,66,.50);        /* input borders 3.1:1 */
+  --link-line: rgba(35,35,66,.50);
+  --su-b: rgba(29,89,55,.65);               /* success pill border 3.4:1 */
+  /* chart dots gain deep same-hue rings: fills stay bright, the ring
+     carries SC 1.4.11 at the object boundary (3.8-7.9:1) */
+  --ch-red-s: #A63325; --ch-orange2-s: #A34E14; --ch-orange-s: #935B00;
+  --ch-yellow-s: #806A00; --ch-green-s: #1D5937; --ch-na-s: #82806F;
+}
+body.wcag-aa.skin-nordic [data-theme="dark"] {
+  --accent: #7FA9F9; --accent-deep: #7FA9F9; /* links 6.4:1 (Blue AAA token) */
+  --line-strong: rgba(240,240,246,.38);      /* input borders 3.2:1 */
+  --link-line: rgba(240,240,246,.38);
+  --su-b: rgba(48,242,132,.55);              /* success pill border 4:1 */
+  --ch-na: #75757F;                          /* N/A dots 3.1:1 */
+}
 </style>
 </head>
 <body class="skin-nordic">
@@ -1094,6 +1154,8 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
     <button data-mode="dark" title="Full dark mode"><svg><use href="#i-moon"/></svg> Dark</button>
     <button data-mode="compare" class="active" title="Side-by-side compare"><svg><use href="#i-swap"/></svg> Compare</button>
     <button data-mode="light" title="Full light mode"><svg><use href="#i-sun"/></svg> Light</button>
+    <span class="ms-div"></span>
+    <button data-aa="1" data-tip="WCAG AA variant — tokens tightened to clear WCAG 2.1 AA: Blue AAA links in dark mode, 3:1 input borders and pill outlines, deeper light-mode chart oranges/yellows, darker muted header text, 3:1 N/A chart dots. Toggle to compare against the standard Nordic tokens.">WCAG AA</button>
     <span class="ms-div"></span>
     <button class="ms-more" data-tip="Show or hide the primary color, typography, colorblind simulation and WCAG contrast controls.">More <svg class="chev"><use href="#i-chevd"/></svg></button>
     <div class="ms-adv">
@@ -1440,7 +1502,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
               <span class="dc-updated">Last updated 12 days ago</span>
               <svg class="dc-help"><use href="#i-help"/></svg>
               <span class="dc-tb-div"></span>
-              <span class="dc-toggle"><span class="dc-track"><span class="dc-knob"></span></span> Timeline view</span>
+              <span class="dc-toggle" data-tgl="timeline"><span class="dc-track"><span class="dc-knob"></span></span> Timeline view</span>
               <span class="dc-tb-div"></span>
               <button class="pill-btn">Customize</button>
               <button class="pill-btn pill-btn--primary">Run DevCenter recipe</button>
@@ -1452,19 +1514,31 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
         <div class="dc-sec"><h2>Organizational ownership</h2></div>
         <div class="dc-stats">
           <div class="dc-stat">
+            <svg class="dc-spark" viewBox="0 0 96 30"><polyline points="4,8 30,10 55,22 92,24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div class="dc-num">241 <span class="dc-denom">/ 266</span></div>
             <div class="dc-lbl">Repositories</div>
             <div class="dc-note">25 LSTs are missing</div>
           </div>
           <div class="dc-stat">
+            <svg class="dc-spark" viewBox="0 0 96 30"><polyline points="4,24 34,21 58,7 92,7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div class="dc-num">1,117</div>
             <div class="dc-lbl">Contributing developers <span class="dc-sub">last 90 days</span></div>
             <div class="dc-note"><span class="linklike">How is this calculated?</span></div>
           </div>
           <div class="dc-stat">
+            <svg class="dc-spark" viewBox="0 0 96 30"><polyline points="4,26 40,10 92,8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <div class="dc-num">49,128,909</div>
             <div class="dc-lbl">Lines of code</div>
           </div>
+        </div>
+
+        <div class="dc-sec tl-only">
+          <div><h2>Recipe runs</h2><p class="tl-sub">Click and drag to select.</p></div>
+          <button class="pill-btn">Reset zoom</button>
+        </div>
+        <div class="tl-brush tl-only">
+          <div class="tl-dates"><span>May 5</span><span>May 16</span><span>May 26</span><span>Jun 6</span><span>Jun 16</span><span>Jun 27</span></div>
+          <div class="tl-band"><span class="tl-mark" style="left:38%"></span><span class="tl-mark" style="left:53%"></span><span class="tl-handle tl-handle--l"></span><span class="tl-handle tl-handle--r"></span></div>
         </div>
 
         <div class="dc-sec"><h2>Change campaigns</h2><button class="pill-btn">Data tables <svg><use href="#i-chevd"/></svg></button></div>
@@ -1475,14 +1549,15 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
             <table class="dc-legend">
               <thead><tr><th>Category</th><th class="num"># of repositories</th><th class="num">Percentage</th></tr></thead>
               <tbody>
-                <tr><td><span class="dc-dot" style="background:var(--ch-red)"></span>Major</td><td class="num">47</td><td class="num">18%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-orange)"></span>Minor</td><td class="num">0</td><td class="num">0%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-yellow)"></span>Patch</td><td class="num">0</td><td class="num">0%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-green)"></span>Completed</td><td class="num">3</td><td class="num">1%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-na)"></span>N/A</td><td class="num">191</td><td class="num">72%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--red"></span>Major</td><td class="num">47</td><td class="num">18%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--orange"></span>Minor</td><td class="num">0</td><td class="num">0%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--yellow"></span>Patch</td><td class="num">0</td><td class="num">0%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--green"></span>Completed</td><td class="num">3</td><td class="num">1%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--na"></span>N/A</td><td class="num">191</td><td class="num">72%</td></tr>
                 <tr><td><span class="dc-dot dc-dot--ghost"></span>No LST</td><td class="num">25</td><td class="num">9%</td></tr>
               </tbody>
             </table>
+            <div class="dc-tlpane"></div>
             <div class="dc-campfoot"><button class="pill-btn">Dry run</button></div>
           </div>
           <div class="dc-camp" data-camp="java">
@@ -1491,15 +1566,16 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
             <table class="dc-legend">
               <thead><tr><th>Category</th><th class="num"># of repositories</th><th class="num">Percentage</th></tr></thead>
               <tbody>
-                <tr><td><span class="dc-dot" style="background:var(--ch-red)"></span>Java 8+</td><td class="num">102</td><td class="num">38%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-orange2)"></span>Java 11+</td><td class="num">3</td><td class="num">1%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-orange)"></span>Java 17+</td><td class="num">33</td><td class="num">12%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-yellow)"></span>Java 21+</td><td class="num">86</td><td class="num">32%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-green)"></span>Completed</td><td class="num">9</td><td class="num">3%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-na)"></span>N/A</td><td class="num">8</td><td class="num">3%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--red"></span>Java 8+</td><td class="num">102</td><td class="num">38%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--orange2"></span>Java 11+</td><td class="num">3</td><td class="num">1%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--orange"></span>Java 17+</td><td class="num">33</td><td class="num">12%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--yellow"></span>Java 21+</td><td class="num">86</td><td class="num">32%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--green"></span>Completed</td><td class="num">9</td><td class="num">3%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--na"></span>N/A</td><td class="num">8</td><td class="num">3%</td></tr>
                 <tr><td><span class="dc-dot dc-dot--ghost"></span>No LST</td><td class="num">25</td><td class="num">9%</td></tr>
               </tbody>
             </table>
+            <div class="dc-tlpane"></div>
             <div class="dc-campfoot"><button class="pill-btn">Dry run</button></div>
           </div>
           <div class="dc-camp" data-camp="junit">
@@ -1508,13 +1584,14 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
             <table class="dc-legend">
               <thead><tr><th>Category</th><th class="num"># of repositories</th><th class="num">Percentage</th></tr></thead>
               <tbody>
-                <tr><td><span class="dc-dot" style="background:var(--ch-red)"></span>JUnit 4</td><td class="num">12</td><td class="num">5%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-orange)"></span>JUnit 5</td><td class="num">35</td><td class="num">13%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-green)"></span>Completed</td><td class="num">85</td><td class="num">32%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-na)"></span>N/A</td><td class="num">109</td><td class="num">41%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--red"></span>JUnit 4</td><td class="num">12</td><td class="num">5%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--orange"></span>JUnit 5</td><td class="num">35</td><td class="num">13%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--green"></span>Completed</td><td class="num">85</td><td class="num">32%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--na"></span>N/A</td><td class="num">109</td><td class="num">41%</td></tr>
                 <tr><td><span class="dc-dot dc-dot--ghost"></span>No LST</td><td class="num">25</td><td class="num">9%</td></tr>
               </tbody>
             </table>
+            <div class="dc-tlpane"></div>
             <div class="dc-campfoot"><button class="pill-btn">Dry run</button></div>
           </div>
         </div>
@@ -1527,6 +1604,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
           </div>
           <div class="dc-rose"></div>
           <div class="dc-owinfo"></div>
+          <div class="dc-owbar"></div>
         </div>
       </section>
 
@@ -1663,7 +1741,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
         <div class="cl-card">
           <div class="rp-toolbar">
             <div class="cl-search"><svg><use href="#i-search"/></svg> Search…</div>
-            <span class="dc-toggle"><span class="dc-track"><span class="dc-knob"></span></span> Include not ingested</span>
+            <span class="dc-toggle" data-tgl="ingest"><span class="dc-track"><span class="dc-knob"></span></span> Include not ingested</span>
             <div class="rp-tright">
               <button class="pill-btn" disabled>Create organization</button>
               <button class="pill-btn"><svg><use href="#i-download"/></svg> Export</button>
@@ -1995,7 +2073,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
         var d = dots[idx++];
         out += c[0] === 'ghost'
           ? '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="4.2" fill="var(--ch-ghost-f)" stroke="var(--ch-ghost-s)" stroke-width="1" stroke-dasharray="2 1.6"/>'
-          : '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="4.8" fill="' + CH[c[0]] + '"/>';
+          : '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="4.4" fill="' + CH[c[0]] + '" stroke="var(--ch-' + c[0] + '-s, transparent)" stroke-width="1.3"/>';
       }
     });
     return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' + out + '</svg>';
@@ -2004,6 +2082,94 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
     var svg = archSvg(CAMPS[key]);
     document.querySelectorAll('.layer .dc-camp[data-camp="' + key + '"] .dc-arch').forEach(function (el) { el.innerHTML = svg; });
   });
+
+  // ---- Dev Center timeline view: stacked-area campaign charts ----
+  var XL = ['May 10', 'May 17', 'May 24', 'May 31', 'Jun 7', 'Jun 14', 'Jun 21', 'Jun 28', 'Jul 5'];
+  var TLC = {
+    spring: { na: 191, cats: [
+      ['Major', 'red', [0, 18, 40, 8, 14, 22, 30, 38, 47]],
+      ['Minor', 'orange', [0, 0, 0, 0, 0, 0, 0, 0, 0]],
+      ['Patch', 'yellow', [0, 0, 0, 0, 0, 0, 0, 0, 0]],
+      ['Completed', 'green', [0, 0, 1, 0, 1, 1, 2, 2, 3]] ] },
+    java: { na: 8, cats: [
+      ['Java 8+', 'red', [0, 55, 102, 12, 40, 60, 78, 92, 102]],
+      ['Java 11+', 'orange2', [0, 0, 2, 0, 1, 1, 2, 3, 3]],
+      ['Java 17+', 'orange', [0, 10, 28, 4, 12, 18, 24, 30, 33]],
+      ['Java 21+', 'yellow', [0, 30, 70, 10, 35, 50, 65, 78, 86]],
+      ['Completed', 'green', [0, 2, 5, 1, 3, 5, 7, 8, 9]] ] },
+    junit: { na: 109, cats: [
+      ['JUnit 4', 'red', [0, 4, 10, 2, 5, 7, 9, 11, 12]],
+      ['JUnit 5', 'orange', [0, 40, 83, 10, 50, 45, 40, 38, 35]],
+      ['Completed', 'green', [0, 10, 25, 5, 30, 45, 60, 75, 85]] ] }
+  };
+  function areaSvg(camp) {
+    var W = 380, H = 212, L = 30, R = 374, T = 12, B = 168, MAX = 300, n = XL.length;
+    function X(i) { return L + (R - L) * i / (n - 1); }
+    function Y(v) { return B - (B - T) * Math.min(v, MAX) / MAX; }
+    var out = '', i, g;
+    for (g = 50; g <= 300; g += 50) {
+      out += '<line x1="' + L + '" y1="' + Y(g).toFixed(1) + '" x2="' + R + '" y2="' + Y(g).toFixed(1) + '" stroke="var(--ch-grid)"/>';
+      out += '<text x="' + (L - 5) + '" y="' + (Y(g) + 3).toFixed(1) + '" text-anchor="end">' + g + '</text>';
+    }
+    var base = XL.map(function () { return 0; });
+    camp.cats.forEach(function (c) {
+      var upper = base.map(function (b, k) { return b + c[2][k]; });
+      var d = 'M' + X(0).toFixed(1) + ' ' + Y(base[0]).toFixed(1);
+      for (i = 1; i < n; i++) d += ' L' + X(i).toFixed(1) + ' ' + Y(base[i]).toFixed(1);
+      for (i = n - 1; i >= 0; i--) d += ' L' + X(i).toFixed(1) + ' ' + Y(upper[i]).toFixed(1);
+      d += ' Z';
+      out += '<path d="' + d + '" fill="' + CH[c[1]] + '" fill-opacity="0.8"/>';
+      base = upper;
+    });
+    out += '<polyline points="' + X(0).toFixed(1) + ',' + Y(0).toFixed(1) + ' ' + X(2).toFixed(1) + ',' + Y(255).toFixed(1) + ' ' + X(8).toFixed(1) + ',' + Y(255).toFixed(1) + '" fill="none" stroke="var(--muted)" stroke-dasharray="4 3" opacity="0.7"/>';
+    out += '<line x1="' + L + '" y1="' + Y(266).toFixed(1) + '" x2="' + R + '" y2="' + Y(266).toFixed(1) + '" stroke="var(--ch-yellow)" stroke-dasharray="4 3"/>';
+    out += '<line x1="' + X(2).toFixed(1) + '" y1="' + T + '" x2="' + X(2).toFixed(1) + '" y2="' + B + '" stroke="var(--ch-orange)"/>';
+    for (i = 0; i < n; i++) out += '<text x="' + X(i).toFixed(1) + '" y="' + (B + 12) + '" text-anchor="middle">' + XL[i] + '</text>';
+    out += '<rect x="' + L + '" y="' + (B + 20) + '" width="' + (R - L) + '" height="8" rx="4" fill="var(--surface2)"/>';
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '">' + out + '</svg>';
+  }
+  function tlLegend(camp) {
+    var rows = camp.cats.map(function (c) {
+      var last = c[2][c[2].length - 1];
+      var mx = Math.max.apply(null, c[2]), mn = Math.min.apply(null, c[2]);
+      return '<tr><td><span class="dc-bar" style="background:' + CH[c[1]] + '"></span>' + c[0] + '</td><td class="num">' + last + '</td><td class="num">' + mx + '</td><td class="num">' + mn + '</td></tr>';
+    }).join('');
+    rows += '<tr><td><span class="dc-bar" style="background:var(--ch-na)"></span>N/A</td><td class="num">' + camp.na + '</td><td class="num">–</td><td class="num">–</td></tr>';
+    rows += '<tr><td><span class="dc-bar dc-bar--ghost"></span>No LST</td><td class="num">25</td><td class="num">–</td><td class="num">–</td></tr>';
+    return '<table class="dc-legend"><thead><tr><th>Category</th><th class="num">Last</th><th class="num">Max</th><th class="num">Min</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+  Object.keys(TLC).forEach(function (key) {
+    var html = areaSvg(TLC[key]) + tlLegend(TLC[key]);
+    document.querySelectorAll('.layer .dc-camp[data-camp="' + key + '"] .dc-tlpane').forEach(function (el) { el.innerHTML = html; });
+  });
+
+  // ---- Dev Center timeline view: OWASP occurrences bar chart ----
+  function owBarSvg() {
+    var W = 620, H = 296, L = 42, R = 604, T = 14, B = 252, MAX = 700;
+    var ticks = ['May 10', 'May 17', 'May 24', 'May 31', 'Jun 7', 'Jun 14', 'Jun 21'];
+    function X(i) { return L + (R - L) * i / (ticks.length - 1); }
+    function Y(v) { return B - (B - T) * v / MAX; }
+    var out = '', i, g;
+    for (g = 0; g <= 700; g += 100) {
+      out += '<line x1="' + L + '" y1="' + Y(g).toFixed(1) + '" x2="' + R + '" y2="' + Y(g).toFixed(1) + '" stroke="var(--ch-grid)"/>';
+      out += '<text x="' + (L - 6) + '" y="' + (Y(g) + 3).toFixed(1) + '" text-anchor="end">' + g + '</text>';
+    }
+    var segs = [[214, 'var(--ch-p1)'], [83, 'var(--ch-yellow)'], [25, '#25D0C0']];
+    var x = X(3) - 24, y = B;
+    segs.forEach(function (s) {
+      var h = (B - T) * s[0] / MAX;
+      y -= h;
+      out += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="48" height="' + h.toFixed(1) + '" fill="' + s[1] + '"/>';
+    });
+    for (i = 0; i < ticks.length; i++) out += '<text x="' + X(i).toFixed(1) + '" y="' + (B + 14) + '" text-anchor="middle">' + ticks[i] + '</text>';
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '">' + out + '</svg>';
+  }
+  var owBar = owBarSvg();
+  document.querySelectorAll('.layer .dc-owbar').forEach(function (el) { el.innerHTML = owBar; });
+  if (new URLSearchParams(location.search).get('tl') === '1') {
+    document.querySelectorAll('.layer .dc-toggle[data-tgl="timeline"]').forEach(function (t) { t.classList.add('on'); });
+    document.body.classList.add('tlview');
+  }
 
   // ---- Dev Center: OWASP top ten (rose chart + selectable list) ----
   var OWASP = [
@@ -2036,9 +2202,10 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
     }
     return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' + out + '</svg>';
   }
+  var OWDOTS = ['#3E5BE8', '#25D0C0', '#FFD34D', '#30F284', '#8CA0F5', '#B39DEB', '#F0916F'];
   document.querySelectorAll('.layer .dc-owlist').forEach(function (ol) {
     ol.innerHTML = OWASP.map(function (o, i) {
-      return '<li data-ow="' + i + '"><span class="n">' + (i + 1) + '.</span><span>' + o.t + '</span></li>';
+      return '<li data-ow="' + i + '"><span class="ow-dot" style="background:' + OWDOTS[i] + '"></span><span class="n">' + (i + 1) + '.</span><span>' + o.t + '</span></li>';
     }).join('');
   });
   function setOwasp(i) {
@@ -2058,8 +2225,10 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
     if (li) { setOwasp(+li.getAttribute('data-ow')); return; }
     var tg = e.target.closest('.dc-toggle');
     if (tg) {
+      var role = tg.getAttribute('data-tgl');
       var on = !tg.classList.contains('on');
-      document.querySelectorAll('.layer .dc-toggle').forEach(function (t) { t.classList.toggle('on', on); });
+      document.querySelectorAll('.layer .dc-toggle[data-tgl="' + role + '"]').forEach(function (t) { t.classList.toggle('on', on); });
+      if (role === 'timeline') document.body.classList.toggle('tlview', on);
     }
   });
 
@@ -2168,9 +2337,18 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
     if (!open) setWcag(false);
   }
 
+  // ---- WCAG AA variant toggle ----
+  function setAA(on) {
+    document.body.classList.toggle('wcag-aa', on);
+    switchEl.querySelectorAll('button[data-aa]').forEach(function (b) { b.classList.toggle('active', on); });
+  }
+  if (new URLSearchParams(location.search).get('aa') === '1') setAA(true);
+
   switchEl.addEventListener('click', function (e) {
     if (e.target.closest('.ms-collapse')) { setControls(true); return; }
     if (e.target.closest('.ms-more')) { setAdv(!switchEl.classList.contains('adv-open')); return; }
+    var ab = e.target.closest('button[data-aa]');
+    if (ab) { setAA(!document.body.classList.contains('wcag-aa')); return; }
     var fb = e.target.closest('button[data-font]');
     if (fb) { setFont(fb.getAttribute('data-font')); return; }
     var wb = e.target.closest('button[data-panel]');
