@@ -839,8 +839,8 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
   --ch-ghost-f: rgba(217,139,133,.12); --ch-ghost-s: rgba(217,139,133,.55);
   --ch-p1: #8CA0F5; --ch-grid: rgba(240,240,246,.12);
 }
-.dc-help { width: 15px; height: 15px; color: var(--muted); vertical-align: -2px; margin-left: 4px; }
-.dc-updated { font-family: var(--font-mono); }
+.dc-help { width: 15px; height: 15px; color: var(--muted); vertical-align: -2px; margin-left: 2px; }
+.dc-updated { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px 10px; margin-left: 8px; vertical-align: 2px; white-space: nowrap; }
 .dc-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; user-select: none; margin-right: 4px; }
 .dc-track { width: 34px; height: 20px; border-radius: 999px; background: var(--surface2); border: 1px solid var(--line-strong); position: relative; transition: background .15s, border-color .15s; }
 .dc-knob { position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 999px; background: var(--card); box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: left .15s; }
@@ -1279,8 +1279,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
       <section class="page" data-page="devcenter">
         <div class="pagehead">
           <div>
-            <h1>Dev Center <svg class="dc-help"><use href="#i-help"/></svg></h1>
-            <p class="sub dc-updated">Last updated 12 days ago</p>
+            <h1>Dev Center <span class="dc-updated">Last updated 12 days ago</span> <svg class="dc-help"><use href="#i-help"/></svg></h1>
           </div>
           <div class="actions">
             <span class="dc-toggle"><span class="dc-track"><span class="dc-knob"></span></span> Timeline view</span>
@@ -1432,8 +1431,8 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
   };
   function archSvg(cats) {
     var total = cats.reduce(function (s, c) { return s + c[1]; }, 0);
-    var W = 290, H = 152, cx = W / 2, cy = H - 6;
-    var rings = 8, r0 = 48, r1 = 122;
+    var W = 380, H = 196, cx = W / 2, cy = H - 8;
+    var rings = 10, r0 = 58, r1 = 168;
     var radii = [], sum = 0, i, k;
     for (i = 0; i < rings; i++) { var r = r0 + (r1 - r0) * i / (rings - 1); radii.push(r); sum += r; }
     var counts = radii.map(function (r) { return Math.round(r / sum * total); });
@@ -1451,8 +1450,8 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
       for (k = 0; k < c[1] && idx < dots.length; k++) {
         var d = dots[idx++];
         out += c[0] === 'ghost'
-          ? '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="3.3" fill="var(--ch-ghost-f)" stroke="var(--ch-ghost-s)" stroke-width="0.8" stroke-dasharray="1.6 1.3"/>'
-          : '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="3.7" fill="' + CH[c[0]] + '"/>';
+          ? '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="4.2" fill="var(--ch-ghost-f)" stroke="var(--ch-ghost-s)" stroke-width="1" stroke-dasharray="2 1.6"/>'
+          : '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="4.8" fill="' + CH[c[0]] + '"/>';
       }
     });
     return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' + out + '</svg>';
