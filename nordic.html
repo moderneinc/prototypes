@@ -1161,6 +1161,19 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .mc-body li { margin: 7px 0; padding-left: 16px; position: relative; }
 .mc-body li::before { content: ''; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; border-radius: 999px; background: var(--accent); }
 .mc-body code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surface); border: 1px solid var(--line2); border-radius: 5px; padding: 2px 7px; }
+/* staged entrance for the hero <-> chat swap */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes mc-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes mc-pop { from { opacity: 0; transform: scale(.5); } to { opacity: 1; transform: none; } }
+  .page[data-page="moddy"].chatting .mc-new { animation: mc-in .3s ease both; }
+  .page[data-page="moddy"].chatting .mc-user { animation: mc-in .35s ease both .05s; }
+  .page[data-page="moddy"].chatting .mc-ai .mc-spark { animation: mc-pop .35s cubic-bezier(.3,1.4,.5,1) both .3s; }
+  .page[data-page="moddy"].chatting .mc-ai .mc-body { animation: mc-in .45s ease both .38s; }
+  .page[data-page="moddy"].chatting .moddy-wrap { animation: mc-in .4s ease both .12s; }
+  .page[data-page="moddy"]:not(.chatting) .moddy-hero { animation: mc-in .4s ease both; }
+  .page[data-page="moddy"]:not(.chatting) .moddy-sugs { animation: mc-in .45s ease both .08s; }
+  .page[data-page="moddy"]:not(.chatting) .moddy-foot { animation: mc-in .5s ease both .14s; }
+}
 </style>
 </head>
 <body class="skin-nordic">
