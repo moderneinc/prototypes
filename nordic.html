@@ -887,6 +887,55 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
 .dc-owinfo p { margin: 0 0 6px; font-size: 12.5px; line-height: 1.5; color: var(--text); }
 .dc-owinfo .dc-occ { margin: 0; }
 .dc-owinfo .dc-occ b { font-family: var(--font-mono); font-weight: 600; }
+
+/* ============================================================
+   CHANGELOG page
+   PR/commit feed: filter row, type icons, chip metadata,
+   checks / review status columns, diff bars.
+   ============================================================ */
+.cl-filters { display: flex; align-items: center; gap: 8px; margin: 14px 0; flex-wrap: wrap; }
+.cl-search { display: flex; align-items: center; gap: 8px; height: 34px; width: 200px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--field); color: var(--muted); font-size: 12.5px; }
+.cl-search svg { width: 14px; height: 14px; flex: none; }
+.cl-filters .pill-btn { padding: 7px 12px; font-weight: 500; }
+.cl-fright { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.cl-sort { display: inline-flex; align-items: center; gap: 6px; border: none; background: transparent; color: var(--text); font-size: 13px; font-weight: 500; padding: 6px 4px; }
+.cl-sort svg { width: 14px; height: 14px; }
+.cl-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.cl-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cl-table thead th { text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--card-head); padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.cl-table tbody td { padding: 14px 12px; border-bottom: 1px solid var(--line2); vertical-align: middle; }
+.cl-table tbody tr:last-child td { border-bottom: none; }
+.cl-table tbody tr:hover td { background: var(--row-hover); }
+.cl-c { text-align: center !important; }
+.cl-cbcol { width: 44px; }
+.cl-typecol { width: 84px; }
+.cl-stcol { width: 106px; }
+.cl-diffcol { width: 120px; text-align: right !important; }
+.cl-cb { width: 15px; height: 15px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--field); display: inline-block; vertical-align: middle; }
+.cl-type { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--muted); font-size: 11.5px; }
+.cl-type svg { width: 18px; height: 18px; }
+.cl-type--merged svg { color: var(--violet); }
+.cl-type--commit svg { color: var(--accent); }
+.cl-type--open svg { color: var(--green-hi); }
+.cl-title { font-size: 13.5px; font-weight: 600; color: var(--text); }
+.cl-title code { font-family: var(--font-mono); font-weight: 500; font-size: 12px; background: var(--surface); border: 1px solid var(--line2); border-radius: 4px; padding: 1px 5px; }
+.cl-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 8px; }
+.cl-chip { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--field); font-size: 11.5px; color: var(--text); white-space: nowrap; }
+.cl-chip svg { width: 12px; height: 12px; color: var(--muted); flex: none; }
+.cl-chip--mono { font-family: var(--font-mono); font-size: 11px; }
+.cl-when { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.cl-status { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11.5px; color: var(--muted); }
+.cl-status svg { width: 16px; height: 16px; }
+.cl-status--fail svg { color: var(--er); }
+.cl-status--pend svg { color: var(--ch-orange); }
+.cl-status--pass svg { color: var(--green-hi); }
+.cl-diff { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.cl-bars { display: flex; gap: 2px; }
+.cl-bars span { width: 4px; height: 13px; border-radius: 1px; background: var(--ch-green); }
+.cl-bars span.r { background: var(--ch-red); }
+.cl-nums { font-family: var(--font-mono); font-size: 11px; }
+.cl-nums .add { color: var(--green-hi); }
+.cl-nums .del { color: var(--er); margin-left: 6px; }
 </style>
 </head>
 <body class="skin-nordic">
@@ -908,6 +957,11 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
   <symbol id="i-check-c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.2l2.4 2.4 4.6-4.9"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
   <symbol id="i-pr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6M18 15V9a3 3 0 00-3-3h-3l2-2m0 4l-2-2"/></symbol>
+  <symbol id="i-git-commit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/></symbol>
+  <symbol id="i-git-merge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 009 9"/></symbol>
+  <symbol id="i-git-draft" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M18 6V5M18 11v-1"/><line x1="6" y1="9" x2="6" y2="21"/></symbol>
+  <symbol id="i-git-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 01-9 9"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></symbol>
   <symbol id="i-gql" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"/><path d="M4.2 16.5L12 3l7.8 13.5z"/><circle cx="12" cy="3" r="1.4" fill="currentColor"/><circle cx="19.8" cy="7.5" r="1.4" fill="currentColor"/><circle cx="19.8" cy="16.5" r="1.4" fill="currentColor"/><circle cx="12" cy="21" r="1.4" fill="currentColor"/><circle cx="4.2" cy="16.5" r="1.4" fill="currentColor"/><circle cx="4.2" cy="7.5" r="1.4" fill="currentColor"/></symbol>
   <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
@@ -1006,7 +1060,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
       <button class="nav-item" data-nav="marketplace" title="Marketplace"><span class="nav-icon-container"><svg><use href="#i-globe"/></svg></span></button>
       <button class="nav-item" data-nav="none" title="Builder"><span class="nav-icon-container"><svg><use href="#i-blocks"/></svg></span></button>
       <button class="nav-item" data-nav="activity" title="Activity"><span class="nav-icon-container"><svg><use href="#i-history"/></svg></span></button>
-      <button class="nav-item" data-nav="none" title="Changelog"><span class="nav-icon-container"><svg><use href="#i-activity"/></svg></span></button>
+      <button class="nav-item" data-nav="changelog" title="Changelog"><span class="nav-icon-container"><svg><use href="#i-activity"/></svg></span></button>
       <button class="nav-item" data-nav="none" title="Repositories"><span class="nav-icon-container"><svg><use href="#i-repo"/></svg></span></button>
       <button class="nav-item" data-nav="none" title="Deploy"><span class="nav-icon-container"><svg><use href="#i-package"/></svg></span></button>
     </div>
@@ -1377,6 +1431,126 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
           </div>
           <div class="dc-rose"></div>
           <div class="dc-owinfo"></div>
+        </div>
+      </section>
+
+      <!-- ============ CHANGELOG ============ -->
+      <section class="page" data-page="changelog">
+        <div class="pagehead">
+          <div><h1>Changelog <svg class="dc-help"><use href="#i-help"/></svg></h1></div>
+          <div class="actions">
+            <button class="pill-btn pill-btn--primary">Actions <svg><use href="#i-chevd"/></svg></button>
+          </div>
+        </div>
+
+        <div class="cl-filters">
+          <div class="cl-search"><svg><use href="#i-search"/></svg> Search titles…</div>
+          <button class="pill-btn">Type</button>
+          <button class="pill-btn">Check results</button>
+          <button class="pill-btn">Review state</button>
+          <button class="pill-btn">Contributors</button>
+          <button class="pill-btn">Repositories</button>
+          <div class="cl-fright">
+            <button class="pill-btn"><svg><use href="#i-cal"/></svg> Last 30 days</button>
+            <button class="cl-sort">Sort: Newest <svg><use href="#i-chevd"/></svg></button>
+          </div>
+        </div>
+
+        <div class="cl-card">
+          <table class="cl-table">
+            <thead>
+              <tr>
+                <th class="cl-cbcol cl-c"><span class="cl-cb"></span></th>
+                <th class="cl-typecol cl-c">Type</th>
+                <th>Title/Info</th>
+                <th class="cl-stcol cl-c">Checks</th>
+                <th class="cl-stcol cl-c">Review</th>
+                <th class="cl-diffcol">Diff</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td><div class="cl-type"><svg><use href="#i-git-draft"/></svg>Draft</div></td>
+                <td>
+                  <div class="cl-title">go tidy composite recipe</div>
+                  <div class="cl-meta">
+                    <span class="cl-chip"><svg><use href="#i-user"/></svg>greg-at-moderne</span>
+                    <span class="cl-when">#44 · 3m ago</span>
+                    <span class="cl-chip cl-chip--mono"><svg><use href="#i-repo"/></svg>moderneinc/recipes-go</span>
+                    <span class="cl-chip cl-chip--mono"><svg><use href="#i-git-branch"/></svg>greg-go-tidy-composite-recipe → main</span>
+                  </div>
+                </td>
+                <td><div class="cl-status cl-status--fail"><svg><use href="#i-x"/></svg>Failed</div></td>
+                <td></td>
+                <td><div class="cl-diff"><div class="cl-bars"><span></span><span></span><span></span><span></span><span></span></div><div class="cl-nums"><span class="add">+1987</span><span class="del">-3</span></div></div></td>
+              </tr>
+              <tr>
+                <td class="cl-c"></td>
+                <td><div class="cl-type cl-type--merged"><svg><use href="#i-git-merge"/></svg>Merged</div></td>
+                <td>
+                  <div class="cl-title">Fix false positives when a SQL statement is split across concatenation</div>
+                  <div class="cl-meta">
+                    <span class="cl-chip"><svg><use href="#i-user"/></svg>jkschneider</span>
+                    <span class="cl-when">#53 · 5m ago</span>
+                    <span class="cl-chip cl-chip--mono"><svg><use href="#i-repo"/></svg>moderneinc/rewrite-sql</span>
+                    <span class="cl-chip cl-chip--mono"><svg><use href="#i-git-branch"/></svg>fix/concatenated-sql-false-positives → main</span>
+                  </div>
+                </td>
+                <td><div class="cl-status cl-status--pend"><svg><use href="#i-clock"/></svg>Pending</div></td>
+                <td></td>
+                <td><div class="cl-diff"><div class="cl-bars"><span></span><span></span><span></span><span></span><span></span></div><div class="cl-nums"><span class="add">+347</span><span class="del">-2</span></div></div></td>
+              </tr>
+              <tr>
+                <td class="cl-c"></td>
+                <td><div class="cl-type cl-type--commit"><svg><use href="#i-git-commit"/></svg>Commit</div></td>
+                <td>
+                  <div class="cl-title">Release moderne-cli v4.3.10</div>
+                  <div class="cl-meta">
+                    <span class="cl-chip"><svg><use href="#i-user"/></svg>TeamModerne</span>
+                    <span class="cl-when">91a381c · 34m ago</span>
+                    <span class="cl-chip cl-chip--mono"><svg><use href="#i-repo"/></svg>moderneinc/moderne-docs</span>
+                  </div>
+                </td>
+                <td><div class="cl-status cl-status--pass"><svg><use href="#i-check"/></svg>Passed</div></td>
+                <td></td>
+                <td><div class="cl-diff"><div class="cl-bars"><span></span><span></span><span></span><span class="r"></span><span class="r"></span></div><div class="cl-nums"><span class="add">+55</span><span class="del">-44</span></div></div></td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td><div class="cl-type cl-type--open"><svg><use href="#i-pr"/></svg>Open</div></td>
+                <td>
+                  <div class="cl-title">Balance sibling class braces in <code>AnnotationTemplateGenerator</code> stubs</div>
+                  <div class="cl-meta">
+                    <span class="cl-chip"><svg><use href="#i-user"/></svg>MBoegers</span>
+                    <span class="cl-when">#8208 · 34m ago</span>
+                    <span class="cl-chip cl-chip--mono"><svg><use href="#i-repo"/></svg>openrewrite/rewrite</span>
+                    <span class="cl-chip cl-chip--mono"><svg><use href="#i-git-branch"/></svg>cri-2718 → main</span>
+                  </div>
+                </td>
+                <td><div class="cl-status cl-status--pass"><svg><use href="#i-check"/></svg>Passed</div></td>
+                <td><div class="cl-status cl-status--pass"><svg><use href="#i-check"/></svg>Approved</div></td>
+                <td><div class="cl-diff"><div class="cl-bars"><span></span><span></span><span></span><span></span><span class="r"></span></div><div class="cl-nums"><span class="add">+196</span><span class="del">-7</span></div></div></td>
+              </tr>
+              <tr>
+                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td><div class="cl-type cl-type--merged"><svg><use href="#i-git-merge"/></svg>Merged</div></td>
+                <td>
+                  <div class="cl-title">Render moved <code>@Autowired</code> field types as written instead of fully qualified</div>
+                  <div class="cl-meta">
+                    <span class="cl-chip"><svg><use href="#i-user"/></svg>sambsnyd</span>
+                    <span class="cl-when">#8199 · 1h ago</span>
+                    <span class="cl-chip cl-chip--mono"><svg><use href="#i-repo"/></svg>openrewrite/rewrite-spring</span>
+                    <span class="cl-chip cl-chip--mono"><svg><use href="#i-git-branch"/></svg>autowired-field-types → main</span>
+                  </div>
+                </td>
+                <td><div class="cl-status cl-status--pass"><svg><use href="#i-check"/></svg>Passed</div></td>
+                <td><div class="cl-status cl-status--pass"><svg><use href="#i-check"/></svg>Approved</div></td>
+                <td><div class="cl-diff"><div class="cl-bars"><span></span><span></span><span></span><span></span><span class="r"></span></div><div class="cl-nums"><span class="add">+82</span><span class="del">-19</span></div></div></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="act-foot"><span>50 results</span><span class="linklike">Load more</span></div>
         </div>
       </section>
 
