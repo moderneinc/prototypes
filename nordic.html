@@ -780,24 +780,24 @@ body.skin-nordic [data-theme="light"] {
   --surface: #EDEBE2; --surface2: #E4E1D6; --row-hover: #F4F2EB;
   --line: rgba(35,35,66,.12); --line2: rgba(35,35,66,.08); --line-strong: rgba(35,35,66,.22);
   --text: #232342; --muted: #6E6E85;
-  --su-t: #DFF6DD; --su-b: #A9E3A6; --green-hi: #1F7A3D;
+  --su-t: rgba(48,242,132,.15); --su-b: rgba(29,89,55,.40); --green-hi: #1D5937;
   --link-line: rgba(35,35,66,.22);
 }
 body.skin-nordic [data-theme="dark"] {
-  --bg: #141419; --field: #1B1B21;
-  --card: #1F1F26; --card-head: #25252D;
-  --surface: #222229; --surface2: #2A2A33; --row-hover: #26262F;
+  --bg: #141419; --field: #222229;
+  --card: #26262E; --card-head: #2D2D36;
+  --surface: #2A2A32; --surface2: #33333D; --row-hover: #2E2E38;
   --line: rgba(240,240,246,.12); --line2: rgba(240,240,246,.08); --line-strong: rgba(240,240,246,.24);
   --text: #F1F0EA; --muted: #9C9CA8;
-  --su-t: rgba(166,239,163,.14); --su-b: rgba(166,239,163,.40); --green-hi: #A6EFA3;
+  --su-t: rgba(48,242,132,.13); --su-b: rgba(48,242,132,.40); --green-hi: #30F284;
   --link-line: rgba(240,240,246,.24);
 }
 /* chrome: ink mark, mint badge, ink avatar */
 body.skin-nordic .home-mark { color: #232342; }
 body.skin-nordic [data-theme="dark"] .home-mark { color: #F1F0EA; }
-body.skin-nordic .nav-version-badge { background: #A6EFA3; color: #1E2E1D; }
+body.skin-nordic .nav-version-badge { background: #30F284; color: #1D5937; }
 body.skin-nordic .avatar { background: #232342; color: #FBFAF6; border-radius: 999px; }
-body.skin-nordic [data-theme="dark"] .avatar { background: #A6EFA3; color: #1E2E1D; }
+body.skin-nordic [data-theme="dark"] .avatar { background: #30F284; color: #1D5937; }
 body.skin-nordic .tenant-logo { background: #232342; color: #FBFAF6; }
 body.skin-nordic [data-theme="dark"] .tenant-logo { background: #F1F0EA; color: #17171C; }
 /* soft nordic geometry */
@@ -816,10 +816,9 @@ body.skin-nordic .pill-btn--primary { background: #232342; color: #FBFAF6; borde
 body.skin-nordic .pill-btn--primary:hover { background: #2C2C50; filter: none; }
 body.skin-nordic [data-theme="dark"] .pill-btn--primary { background: #F1F0EA; color: #17171C; }
 body.skin-nordic [data-theme="dark"] .pill-btn--primary:hover { background: #FFFFFF; }
-/* kron gradient on the Moddy input rim */
-body.skin-nordic .moddy-input { background: linear-gradient(90deg, #3E5BE8, #B39DEB, #F0916F); }
+/* Moddy input rim keeps the strand-spectrum gradient from the base styles */
 body.skin-nordic [data-theme="light"] .moddy-input-inner { background: #FBFAF6; }
-body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
+body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
 
 /* ============================================================
    DEV CENTER page
@@ -829,13 +828,13 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
    ============================================================ */
 [data-theme="light"] {
   --ch-red: #BF5A5A; --ch-orange2: #CE6F4B; --ch-orange: #DD9349; --ch-yellow: #DFC055;
-  --ch-green: #4E9A58; --ch-na: #DEDBD0;
+  --ch-green: #1D5937; --ch-na: #DEDBD0;
   --ch-ghost-f: rgba(191,90,90,.14); --ch-ghost-s: rgba(191,90,90,.55);
   --ch-p1: #3E5BE8; --ch-grid: rgba(35,35,66,.10);
 }
 [data-theme="dark"] {
   --ch-red: #D98B85; --ch-orange2: #E39A78; --ch-orange: #E7AE6A; --ch-yellow: #E4CD7C;
-  --ch-green: #A6EFA3; --ch-na: #33333C;
+  --ch-green: #30F284; --ch-na: #3B3B46;
   --ch-ghost-f: rgba(217,139,133,.12); --ch-ghost-s: rgba(217,139,133,.55);
   --ch-p1: #8CA0F5; --ch-grid: rgba(240,240,246,.12);
 }
@@ -855,6 +854,7 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
 .dc-sec .pill-btn { margin-left: auto; color: var(--muted); }
 .dc-stats, .dc-camps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .dc-stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px 16px; }
+[data-theme="dark"] .dc-stat, [data-theme="dark"] .dc-camp, [data-theme="dark"] .dc-owasp { background: #2B2B34; }
 .dc-num { font-family: var(--font-mono); font-size: 25px; font-weight: 500; letter-spacing: -.02em; color: var(--text); }
 .dc-denom { color: var(--muted); font-size: 17px; }
 .dc-lbl { font-size: 13px; color: var(--text); margin-top: 5px; }
@@ -867,7 +867,8 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
 .dc-legend th { text-align: left; font-weight: 600; font-size: 11px; color: var(--muted); padding: 4px 0 5px; border-bottom: 1px solid var(--line2); }
 .dc-legend td { padding: 4.5px 0; border-bottom: 1px solid var(--line2); color: var(--text); }
 .dc-legend tr:last-child td { border-bottom: none; }
-.dc-legend .num { text-align: right; font-family: var(--font-mono); font-size: 11.5px; }
+.dc-legend th.num { text-align: right; }
+.dc-legend td.num { text-align: right; font-family: var(--font-mono); font-size: 11.5px; }
 .dc-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; vertical-align: -1px; margin-right: 8px; }
 .dc-dot--ghost { background: var(--ch-ghost-f); border: 1px dashed var(--ch-ghost-s); }
 .dc-campfoot { display: flex; justify-content: flex-end; padding-top: 12px; margin-top: auto; }
@@ -1652,10 +1653,8 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #1B1B21; }
       <!-- ============ REPOSITORIES ============ -->
       <section class="page" data-page="repositories">
         <div class="pagehead">
-          <div>
-            <h1>Repositories</h1>
-            <p class="sub">Currently displaying <b>245</b> repositories</p>
-          </div>
+          <h1>Repositories</h1>
+          <span class="badge">Currently displaying 245 repositories</span>
           <div class="actions">
             <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
           </div>
