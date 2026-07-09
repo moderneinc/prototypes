@@ -869,7 +869,13 @@ body.skin-nordic [data-theme="dark"] .moddy-input-inner { background: #222229; }
 .dc-legend tr:last-child td { border-bottom: none; }
 .dc-legend th.num { text-align: right; }
 .dc-legend td.num { text-align: right; font-family: var(--font-mono); font-size: 11.5px; }
-.dc-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; vertical-align: -1px; margin-right: 8px; }
+.dc-dot { width: 10px; height: 10px; box-sizing: border-box; border-radius: 999px; display: inline-block; vertical-align: -1px; margin-right: 8px; }
+.dc-dot--red { background: var(--ch-red); border: 1.2px solid var(--ch-red-s, transparent); }
+.dc-dot--orange { background: var(--ch-orange); border: 1.2px solid var(--ch-orange-s, transparent); }
+.dc-dot--orange2 { background: var(--ch-orange2); border: 1.2px solid var(--ch-orange2-s, transparent); }
+.dc-dot--yellow { background: var(--ch-yellow); border: 1.2px solid var(--ch-yellow-s, transparent); }
+.dc-dot--green { background: var(--ch-green); border: 1.2px solid var(--ch-green-s, transparent); }
+.dc-dot--na { background: var(--ch-na); border: 1.2px solid var(--ch-na-s, transparent); }
 .dc-dot--ghost { background: var(--ch-ghost-f); border: 1px dashed var(--ch-ghost-s); }
 .dc-campfoot { display: flex; justify-content: flex-end; padding-top: 12px; margin-top: auto; }
 .dc-owasp { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1fr); gap: 26px; align-items: center; }
@@ -1029,8 +1035,12 @@ body.wcag-aa.skin-nordic [data-theme="light"] {
   --line-strong: rgba(35,35,66,.50);        /* input borders 3.1:1 */
   --link-line: rgba(35,35,66,.50);
   --su-b: rgba(29,89,55,.65);               /* success pill border 3.4:1 */
-  --ch-orange: #B4662A; --ch-orange2: #AE5540; --ch-yellow: #94781A;  /* chart ramp 4:1+ */
-  --ch-na: #8F8C7E;                         /* N/A dots 3.2:1 */
+  /* chart ramp: vivid fills carry the color, same-hue 3:1+ rings carry
+     the SC 1.4.11 contrast at the object boundary */
+  --ch-orange: #E58A34; --ch-orange-s: #9C551A;
+  --ch-orange2: #D2643D; --ch-orange2-s: #99401F;
+  --ch-yellow: #F0C63C; --ch-yellow-s: #7D6407;
+  --ch-na: #D6D2C4; --ch-na-s: #82806F;
 }
 body.wcag-aa.skin-nordic [data-theme="dark"] {
   --accent: #7FA9F9; --accent-deep: #7FA9F9; /* links 6.4:1 (Blue AAA token) */
@@ -1498,11 +1508,11 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
             <table class="dc-legend">
               <thead><tr><th>Category</th><th class="num"># of repositories</th><th class="num">Percentage</th></tr></thead>
               <tbody>
-                <tr><td><span class="dc-dot" style="background:var(--ch-red)"></span>Major</td><td class="num">47</td><td class="num">18%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-orange)"></span>Minor</td><td class="num">0</td><td class="num">0%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-yellow)"></span>Patch</td><td class="num">0</td><td class="num">0%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-green)"></span>Completed</td><td class="num">3</td><td class="num">1%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-na)"></span>N/A</td><td class="num">191</td><td class="num">72%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--red"></span>Major</td><td class="num">47</td><td class="num">18%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--orange"></span>Minor</td><td class="num">0</td><td class="num">0%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--yellow"></span>Patch</td><td class="num">0</td><td class="num">0%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--green"></span>Completed</td><td class="num">3</td><td class="num">1%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--na"></span>N/A</td><td class="num">191</td><td class="num">72%</td></tr>
                 <tr><td><span class="dc-dot dc-dot--ghost"></span>No LST</td><td class="num">25</td><td class="num">9%</td></tr>
               </tbody>
             </table>
@@ -1514,12 +1524,12 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
             <table class="dc-legend">
               <thead><tr><th>Category</th><th class="num"># of repositories</th><th class="num">Percentage</th></tr></thead>
               <tbody>
-                <tr><td><span class="dc-dot" style="background:var(--ch-red)"></span>Java 8+</td><td class="num">102</td><td class="num">38%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-orange2)"></span>Java 11+</td><td class="num">3</td><td class="num">1%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-orange)"></span>Java 17+</td><td class="num">33</td><td class="num">12%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-yellow)"></span>Java 21+</td><td class="num">86</td><td class="num">32%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-green)"></span>Completed</td><td class="num">9</td><td class="num">3%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-na)"></span>N/A</td><td class="num">8</td><td class="num">3%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--red"></span>Java 8+</td><td class="num">102</td><td class="num">38%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--orange2"></span>Java 11+</td><td class="num">3</td><td class="num">1%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--orange"></span>Java 17+</td><td class="num">33</td><td class="num">12%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--yellow"></span>Java 21+</td><td class="num">86</td><td class="num">32%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--green"></span>Completed</td><td class="num">9</td><td class="num">3%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--na"></span>N/A</td><td class="num">8</td><td class="num">3%</td></tr>
                 <tr><td><span class="dc-dot dc-dot--ghost"></span>No LST</td><td class="num">25</td><td class="num">9%</td></tr>
               </tbody>
             </table>
@@ -1531,10 +1541,10 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
             <table class="dc-legend">
               <thead><tr><th>Category</th><th class="num"># of repositories</th><th class="num">Percentage</th></tr></thead>
               <tbody>
-                <tr><td><span class="dc-dot" style="background:var(--ch-red)"></span>JUnit 4</td><td class="num">12</td><td class="num">5%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-orange)"></span>JUnit 5</td><td class="num">35</td><td class="num">13%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-green)"></span>Completed</td><td class="num">85</td><td class="num">32%</td></tr>
-                <tr><td><span class="dc-dot" style="background:var(--ch-na)"></span>N/A</td><td class="num">109</td><td class="num">41%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--red"></span>JUnit 4</td><td class="num">12</td><td class="num">5%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--orange"></span>JUnit 5</td><td class="num">35</td><td class="num">13%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--green"></span>Completed</td><td class="num">85</td><td class="num">32%</td></tr>
+                <tr><td><span class="dc-dot dc-dot--na"></span>N/A</td><td class="num">109</td><td class="num">41%</td></tr>
                 <tr><td><span class="dc-dot dc-dot--ghost"></span>No LST</td><td class="num">25</td><td class="num">9%</td></tr>
               </tbody>
             </table>
@@ -2018,7 +2028,7 @@ body.wcag-aa.skin-nordic [data-theme="dark"] {
         var d = dots[idx++];
         out += c[0] === 'ghost'
           ? '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="4.2" fill="var(--ch-ghost-f)" stroke="var(--ch-ghost-s)" stroke-width="1" stroke-dasharray="2 1.6"/>'
-          : '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="4.8" fill="' + CH[c[0]] + '"/>';
+          : '<circle cx="' + d.x.toFixed(1) + '" cy="' + d.y.toFixed(1) + '" r="4.4" fill="' + CH[c[0]] + '" stroke="var(--ch-' + c[0] + '-s, transparent)" stroke-width="1.3"/>';
       }
     });
     return '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">' + out + '</svg>';
