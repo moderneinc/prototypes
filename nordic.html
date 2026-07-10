@@ -1960,7 +1960,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
             </tr>
             </tbody>
           </table>
-          <div class="act-foot"><span>25 results</span><span class="linklike">Load more</span></div>
+          <div class="act-foot"><span>23 of 25 results</span><span class="linklike">Load more</span></div>
         </div>
       </section>
 
@@ -2335,7 +2335,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
               </tr>
             </tbody>
           </table>
-          <div class="act-foot"><span>9 of 245 repositories</span><span class="linklike">Load more</span></div>
+          <div class="act-foot"><span>25 of 245 repositories</span><span class="linklike">Load more</span></div>
         </div>
       </section>
 
@@ -2653,6 +2653,85 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
       document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = ''; });
     }
   }
+
+  // ---- extra demo rows so the big tables fill tall viewports ----
+  var RP_ROWS = [
+    ['moderneinc', 'moderne-cli', '4f2a91be', 'github.com', 'about 12 hours ago'],
+    ['moderneinc', 'moderne-docs', '91a381c7', 'github.com', 'about 13 hours ago'],
+    ['moderneinc', 'moderne-ui', '2db8ef3c', 'github.com', 'about 11 hours ago'],
+    ['moderneinc', 'recipe-bom', 'c04d17aa', 'github.com', 'about 14 hours ago'],
+    ['moderneinc/recipes', 'jackson-migrations', '7be20d94', 'github.com', 'about 12 hours ago'],
+    ['moderneinc/recipes', 'recipe-ai', '5c88e1f2', 'github.com', 'about 12 hours ago'],
+    ['openrewrite', 'rewrite', 'ab1592c8', 'github.com', 'about 10 hours ago'],
+    ['openrewrite', 'rewrite-spring', 'e3305b17', 'github.com', 'about 10 hours ago'],
+    ['openrewrite', 'rewrite-migrate-java', '19c46dd0', 'github.com', 'about 11 hours ago'],
+    ['openrewrite', 'rewrite-static-analysis', '84fa02e9', 'github.com', 'about 11 hours ago'],
+    ['openrewrite', 'rewrite-testing-frameworks', 'f61b9a33', 'github.com', 'about 13 hours ago'],
+    ['openrewrite', 'rewrite-kotlin', '3d7702c5', 'github.com', 'about 13 hours ago'],
+    ['openrewrite', 'rewrite-python', '6a91f0be', 'github.com', 'about 14 hours ago'],
+    ['openrewrite', 'rewrite-gradle-plugin', 'b25c48d1', 'github.com', 'about 14 hours ago'],
+    ['moderneinc/moderne', 'integration-tests', '08cd3ea6', 'dev.azure.com', 'about 15 hours ago'],
+    ['moderneinc', 'platform-deploy', 'd4419c72', 'gitlab.com', 'about 15 hours ago']
+  ];
+  var rpHtml = RP_ROWS.map(function (r) {
+    return '<tr><td class="cl-c"><span class="cl-cb"></span></td><td>' + r[0] + '</td><td><span class="linklike">' + r[1] +
+      '</span></td><td class="rp-branch">main</td><td class="rp-mono">' + r[2] +
+      '</td><td><span class="pill pill--su">Available</span></td><td>' + r[3] +
+      '</td><td class="rp-when">' + r[4] + '</td><td></td></tr>';
+  }).join('');
+  document.querySelectorAll('.layer .page[data-page="repositories"] .rp-table tbody').forEach(function (tb) {
+    tb.insertAdjacentHTML('beforeend', rpHtml);
+  });
+
+  var DP_ROWS = [
+    ['rewrite-quarkus', '0.4.0-20260702.114501', 16], ['rewrite-logging-frameworks', '1.12.0-20260702.114522', 13],
+    ['rewrite-openapi', '0.6.0-20260702.114544', 8], ['rewrite-terraform', '0.9.0-20260702.114601', 12],
+    ['rewrite-docker', '0.3.0-20260702.114627', 6], ['rewrite-jenkins', '0.5.0-20260702.114650', 9],
+    ['rewrite-github-actions', '2.1.0-20260702.114713', 17], ['rewrite-sql', '0.8.0-20260702.114736', 11],
+    ['rewrite-struts', '0.2.0-20260702.114758', 5], ['rewrite-jackson', '0.7.0-20260702.114820', 10],
+    ['rewrite-okhttp', '0.4.0-20260702.114843', 7], ['rewrite-graphql', '0.3.0-20260702.114906', 6],
+    ['rewrite-micronaut', '2.6.0-20260702.114929', 14], ['rewrite-liberty', '1.3.0-20260702.114951', 9]
+  ];
+  var dpHtml = DP_ROWS.map(function (r) {
+    return '<tr><td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>' +
+      '<td class="rp-mono">LATEST</td><td><span class="pill pill--su">Finished</span></td>' +
+      '<td><span class="dp-eco dp-eco--maven"><svg class="eco"><use href="#i-logo-maven"/></svg>Maven</span></td>' +
+      '<td class="rp-mono"><span class="dp-trunc">' + r[1] + '</span></td>' +
+      '<td class="rp-mono"><span class="dp-trunc">io.moderne.recipe:' + r[0] + '</span></td>' +
+      '<td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">' + r[2] + '</td></tr>';
+  }).join('');
+  document.querySelectorAll('.layer .page[data-page="deploy"] .rp-table tbody').forEach(function (tb) {
+    tb.insertAdjacentHTML('beforeend', dpHtml);
+  });
+
+  var ACT_ROWS = [
+    ['Migrate to Java 21', 'recipe', 'Default', 'Finished', 'l', 'L', '1 day ago'],
+    ['Upgrade Spring Boot 3.x', 'recipe', 'Netflix + Spring', 'Finished', 't', 'T', '1 day ago'],
+    ['Recipe performance', 'data', 'Default', 'Completed', 'l', 'L', '1 day ago'],
+    ['Find and fix vulnerable dependencies', 'recipe', 'FINOS', 'Finished', 'a', 'A', '1 day ago'],
+    ['Order imports', 'recipe', 'Default', 'Finished', 'k', 'K', '2 days ago'],
+    ['Remove unused imports', 'recipe', 'JetBrains', 'Finished', 'k', 'K', '2 days ago'],
+    ['SLF4J best practices', 'recipe', 'FINOS', 'Finished', 't', 'T', '2 days ago'],
+    ['Source files that had results', 'data', 'FINOS', 'Completed', 't', 'T', '2 days ago'],
+    ['JUnit Jupiter migration', 'recipe', 'JetBrains', 'Finished', 'a', 'A', '3 days ago'],
+    ['Dependency insight for Gradle and Maven', 'recipe', 'Default', 'Finished', 'l', 'L', '3 days ago'],
+    ['Common static analysis issues', 'recipe', 'Netflix + Spring', 'Finished', 'k', 'K', '3 days ago'],
+    ['LST provenance', 'data', 'JetBrains', 'Completed', 'a', 'A', '3 days ago']
+  ];
+  var actHtml = ACT_ROWS.map(function (r) {
+    var isData = r[1] === 'data';
+    var ind = isData
+      ? '<circle cx="80" cy="24" r="6" fill="var(--teal-mid)"/>'
+      : '<circle cx="16" cy="24" r="6" fill="var(--violet)"/>';
+    return '<tr' + (isData ? '' : ' data-nav="results"') + '><td class="ind"><svg width="96" height="48" viewBox="0 0 96 48">' +
+      '<line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/>' + ind + '</svg></td>' +
+      '<td><span class="linklike">' + r[0] + '</span></td><td class="' + (isData ? 'ty-data' : 'ty-recipe') + '">' + (isData ? 'Data table' : 'Recipe run') + '</td>' +
+      '<td>' + r[2] + '</td><td><span class="pill pill--su">' + r[3] + '</span></td>' +
+      '<td><span class="miniava miniava--' + r[4] + '">' + r[5] + '</span></td><td class="act-time">' + r[6] + '</td></tr>';
+  }).join('');
+  document.querySelectorAll('.layer .page[data-page="activity"] .act-table tbody').forEach(function (tb) {
+    tb.insertAdjacentHTML('beforeend', actHtml);
+  });
 
   // ---- Configure DevCenter sub-view ----
   function setDcConfig(on) {
