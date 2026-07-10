@@ -1049,6 +1049,52 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .bl-row .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bl-foot { display: flex; align-items: center; padding: 11px 14px; font-size: 12.5px; font-weight: 600; border-top: 1px solid var(--line); }
 
+/* ============================================================
+   TOPBAR MENUS (admin / help / account)
+   ============================================================ */
+.menu-pop { position: absolute; top: 58px; z-index: 45; min-width: 210px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 16px 44px rgba(10,10,25,.20); padding: 6px; }
+.menu-pop[hidden] { display: none !important; }
+.mp-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; font-size: 13.5px; color: var(--text); border-radius: 7px; cursor: pointer; }
+.mp-item:hover { background: var(--row-hover); }
+.mp-head { padding: 10px 12px 3px; font-size: 12px; font-weight: 700; color: var(--text); }
+.mp-sep { height: 1px; background: var(--line2); margin: 6px 0; }
+.mp-foot { padding: 8px 12px 6px; font-size: 11.5px; color: var(--muted); font-family: var(--font-mono); line-height: 1.8; }
+.mp-tourico { width: 24px; height: 24px; border-radius: 999px; background: var(--accent-tint); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.mp-tourico svg { width: 11px; height: 11px; }
+.mp-user { padding: 10px 12px 6px; }
+.mp-name { font-size: 13.5px; font-weight: 600; color: var(--text); }
+.mp-provs { display: flex; align-items: center; gap: 8px; margin: 10px 0 8px; }
+.mp-prov { position: relative; width: 26px; height: 26px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; color: var(--text); }
+.mp-prov svg { width: 13px; height: 13px; }
+.mp-prov .st { position: absolute; top: -2px; right: -2px; width: 9px; height: 9px; border-radius: 999px; border: 1.5px solid var(--card); }
+.st--ok { background: var(--green-hi); }
+.st--er { background: var(--er); }
+.mp-plus { font-family: var(--font-mono); font-size: 11px; color: var(--muted); border: 1px solid var(--line-strong); border-radius: 999px; padding: 1px 7px; }
+.mp-email { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.mp-kbds { margin-left: auto; display: inline-flex; gap: 4px; }
+.kbd { font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 4px; padding: 2px 7px; }
+
+/* ============================================================
+   LOGIN SCREEN (#login)
+   Cream canvas with a soft strand-spectrum glow behind a framed
+   card; ink SSO button, underlined links, Moderne mark.
+   ============================================================ */
+.login-ov { position: absolute; inset: 0; z-index: 60; background: var(--bg); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.login-ov[hidden] { display: none !important; }
+.login-ov::before, .login-ov::after { content: ''; position: absolute; width: 700px; height: 700px; border-radius: 999px; filter: blur(70px); }
+.login-ov::before { background: radial-gradient(closest-side, rgba(62,91,232,.30), transparent 72%); transform: translate(-170px, -70px); }
+.login-ov::after { background: radial-gradient(closest-side, rgba(230,57,155,.20), transparent 72%); transform: translate(190px, 90px); }
+[data-theme="dark"] .login-ov::before { background: radial-gradient(closest-side, rgba(125,147,245,.20), transparent 72%); }
+[data-theme="dark"] .login-ov::after { background: radial-gradient(closest-side, rgba(230,57,155,.14), transparent 72%); }
+.login-card { position: relative; z-index: 1; width: 470px; max-width: 88%; background: color-mix(in srgb, var(--card) 78%, transparent); backdrop-filter: blur(26px); border: 1px solid var(--line); border-radius: 18px; padding: 22px; box-shadow: 0 30px 90px rgba(15,15,35,.16); }
+.login-inner { border: 1px solid var(--line2); border-radius: 12px; padding: 74px 44px 58px; text-align: center; }
+.login-inner h1 { margin: 0 0 28px; font-size: 19px; font-weight: 500; color: var(--text); letter-spacing: -.01em; }
+.login-sso { width: 100%; justify-content: center; }
+.login-links { margin-top: 28px; display: flex; flex-direction: column; gap: 15px; }
+.login-link { font-size: 13.5px; color: var(--text); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.login-link:hover { color: var(--accent); }
+.login-mark { width: 30px; height: 30px; margin-top: 36px; color: var(--text); }
+
 /* (WCAG 2.1 AA is the default: the former AA-variant tokens are baked
    into the theme blocks above; links default to the Blue AAA pairing) */
 /* ============================================================
@@ -1058,7 +1104,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .mo-ov { position: absolute; inset: 0; z-index: 40; display: none; align-items: flex-start; justify-content: center; padding-top: 6vh; background: rgba(15,15,20,.45); }
 [data-theme="light"] .mo-ov { background: rgba(35,35,66,.14); }
 .mo-ov.open { display: flex; }
-.mo { width: 660px; max-width: 92%; max-height: 80vh; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line-strong); border-radius: 14px; box-shadow: 0 24px 64px rgba(0,0,0,.35); overflow: hidden; }
+.mo { width: 760px; max-width: 92%; max-height: 80vh; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line-strong); border-radius: 14px; box-shadow: 0 24px 64px rgba(0,0,0,.35); overflow: hidden; }
 .mo--search { width: 720px; }
 .mo-search { display: flex; align-items: center; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--muted); }
 .mo-search svg { width: 17px; height: 17px; flex: none; }
@@ -1134,6 +1180,96 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .dt-acts .icon-btn svg { width: 16px; height: 16px; }
 .dt-acts .pill-btn { padding: 5px 11px; font-size: 12px; }
 .dt-lfoot { padding: 12px 16px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); }
+
+/* ---- visualizations tab ---- */
+.vtab { margin-top: 18px; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 14px; align-items: start; }
+.vtab[hidden] { display: none !important; }
+.vz-nav { padding: 6px; }
+.vz-navhead { padding: 10px 12px 6px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.vz-navitem { padding: 10px 12px; font-size: 13.5px; color: var(--text); border-radius: 7px; cursor: pointer; }
+.vz-navitem:hover { background: var(--row-hover); }
+.vz-navitem.sel { background: var(--accent-tint); font-weight: 600; }
+.vz-head { padding: 18px 20px 16px; }
+.vz-titlerow { display: flex; align-items: center; gap: 12px; }
+.vz-titlerow h3 { margin: 0; font-size: 16px; font-weight: 600; color: var(--text); flex: 1; }
+.vz-lede { margin: 12px 0 6px; font-size: 13.5px; font-weight: 600; color: var(--text); }
+.vz-desc { margin: 0 0 14px; font-size: 13px; line-height: 1.6; color: var(--muted); max-width: 720px; }
+.vz-more { display: flex; align-items: center; gap: 9px; padding: 11px 14px; font-size: 13px; color: var(--text); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.vz-more:hover { background: var(--row-hover); }
+.vz-more svg { width: 14px; height: 14px; color: var(--muted); }
+.vz-more .chev { margin-left: auto; }
+.vz-runrow { display: flex; align-items: center; gap: 14px; padding: 12px 20px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.vz-api { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; }
+.vz-api svg { width: 14px; height: 14px; color: var(--muted); }
+.vz-hint { margin-left: auto; display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--muted); }
+.vz-hint svg { width: 13px; height: 13px; }
+.vz-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+.vz-config { padding: 18px 20px; border-right: 1px solid var(--line); }
+.vz-config h4, .vz-preview h4 { margin: 0 0 12px; font-size: 13.5px; font-weight: 600; color: var(--text); }
+.vz-opt { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.vz-optbadge { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); background: var(--surface); border-radius: 4px; padding: 2px 7px; }
+.vz-sub { margin: 5px 0 12px; font-size: 12.5px; line-height: 1.55; color: var(--muted); }
+.vz-sub code { font-family: var(--font-mono); font-size: 11.5px; background: var(--surface); border-radius: 4px; padding: 1px 5px; }
+.vz-lbl { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 16px; }
+.vz-radio { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; cursor: pointer; }
+.vz-radio .rd { width: 16px; height: 16px; border-radius: 999px; border: 1.5px solid var(--line-strong); background: var(--field); flex: none; margin-top: 1px; }
+.vz-radio.on .rd { border-color: var(--accent); background: radial-gradient(circle, var(--accent) 0 4px, transparent 4.5px); }
+.vz-radio .rl { font-size: 13px; font-weight: 500; color: var(--text); }
+.vz-radio .rs { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.vz-field { display: flex; align-items: center; height: 36px; padding: 0 12px; margin-top: 8px; max-width: 260px; font-size: 13px; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 8px; }
+.vz-field .sfx { margin-left: auto; color: var(--muted); font-size: 12px; padding-left: 12px; border-left: 1px solid var(--line2); }
+.vz-preview { padding: 18px 20px; }
+.vz-sample { border: 1.5px dashed var(--line-strong); border-radius: 10px; padding: 12px; }
+.vz-samplehead { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+.vz-samplechip { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text); background: var(--surface); border-radius: 999px; padding: 3px 10px; }
+.vz-samplechip svg { width: 12px; height: 12px; }
+.vz-treemap { position: relative; height: 380px; }
+.tm { position: absolute; border-radius: 6px; padding: 12px 14px; font-size: 12.5px; overflow: hidden; }
+.tm b { display: block; font-size: 14px; margin-bottom: 2px; }
+.tm--faded { background: var(--surface2); color: var(--muted); opacity: .75; }
+.vz-runpill { position: absolute; left: 50%; top: 55%; transform: translateX(-50%); background: var(--card); color: var(--text); font-size: 12.5px; font-weight: 500; border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; box-shadow: 0 8px 26px rgba(10,10,25,.18); white-space: nowrap; }
+
+/* ---- Marketplace category detail (drill-in) ---- */
+.mkt-detail[hidden] { display: none !important; }
+.page[data-page="marketplace"].mkt-viewing > :not(.mkt-detail) { display: none !important; }
+.mkd-crumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); padding: 2px 0 10px; }
+.mkd-crumb .c { width: 13px; height: 13px; }
+.catrow--d .ico { display: flex; }
+.catrow--d .ico.ico--spring { color: #6DB33F; }
+.catrow--d .t .om-count { margin-left: 10px; }
+
+/* ---- Configure DevCenter (Customize sub-view) ---- */
+.dc-config[hidden] { display: none !important; }
+.page[data-page="devcenter"].configuring > :not(.dc-config) { display: none !important; }
+.cfg-back { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: var(--muted); background: none; border: none; padding: 2px 0 12px; }
+.cfg-back svg { width: 13px; height: 13px; transform: scaleX(-1); }
+.cfg-back:hover { color: var(--text); }
+.cfg-title { margin: 0; font-size: 18px; font-weight: 500; color: var(--text); letter-spacing: -.01em; }
+.cfg-lede { margin: 10px 0 4px; font-size: 13.5px; font-weight: 600; color: var(--text); }
+.cfg-sub { margin: 0 0 14px; font-size: 13px; color: var(--muted); }
+.cfg-note { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--muted); }
+.cfg-note svg { width: 15px; height: 15px; flex: none; }
+.cfg-note--warn { color: var(--text); }
+.cfg-note--warn svg { color: #935B00; }
+[data-theme="dark"] .cfg-note--warn svg { color: #FFA83D; }
+.cfg-grid { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 14px; margin-top: 14px; align-items: stretch; }
+.cfg-list { padding: 6px; max-height: 620px; overflow-y: auto; }
+.cfg-listhead { padding: 12px 12px 8px; font-size: 14px; font-weight: 600; color: var(--text); }
+.cfg-item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; font-size: 13.5px; color: var(--text); border-radius: 7px; cursor: pointer; }
+.cfg-item svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
+.cfg-item:hover { background: var(--row-hover); }
+.cfg-item.sel { background: var(--accent-tint); font-weight: 600; }
+.cfg-detail { border-color: var(--accent-brd); padding: 22px 24px; }
+.cfg-dethead { display: flex; align-items: center; gap: 12px; }
+.cfg-dethead svg { width: 20px; height: 20px; color: var(--muted); flex: none; }
+.cfg-dethead h3 { margin: 0; flex: 1; font-size: 17px; font-weight: 600; color: var(--text); }
+.cfg-desc { margin: 18px 0 22px; font-size: 13.5px; line-height: 1.65; color: var(--text); max-width: 780px; }
+.cfg-more { display: flex; align-items: center; padding: 12px 16px; border: 1px solid var(--line); border-radius: 8px; font-size: 13.5px; cursor: pointer; }
+.cfg-more:hover { background: var(--row-hover); }
+.cfg-more .pl { margin-left: auto; font-size: 18px; color: var(--muted); line-height: 1; }
+.cfg-foot { display: flex; align-items: center; gap: 14px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+.cfg-foot .cfg-note { flex: 1; }
+.cfg-foot .pill-btn { flex: none; }
 
 /* ---- Moddy active chat ---- */
 .page[data-page="moddy"].chatting { flex-direction: column; }
@@ -1217,6 +1353,9 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
   <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-logo-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
+  <symbol id="i-logo-bitbucket" viewBox="0 0 24 24" fill="currentColor"><path d="M.778 1.213a.768.768 0 00-.768.892l3.263 19.81c.084.5.515.868 1.022.873H19.95a.772.772 0 00.77-.646l3.27-20.03a.768.768 0 00-.768-.891zM14.52 15.53H9.522L8.17 8.466h7.561z"/></symbol>
+  <symbol id="i-logo-slack" viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></symbol>
   <symbol id="i-logo-npm" viewBox="0 0 24 24" fill="currentColor"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"/></symbol>
   <symbol id="i-logo-go" viewBox="0 0 24 24" fill="currentColor"><path d="M1.811 10.231c-.047 0-.058-.023-.035-.059l.246-.315c.023-.035.081-.058.128-.058h4.172c.046 0 .058.035.035.07l-.199.303c-.023.036-.082.07-.117.07zM.047 11.306c-.047 0-.059-.023-.035-.058l.245-.316c.023-.035.082-.058.129-.058h5.328c.047 0 .07.035.058.07l-.093.28c-.012.047-.058.07-.105.07zm2.828 1.075c-.047 0-.059-.035-.035-.07l.163-.292c.023-.035.07-.07.117-.07h2.337c.047 0 .07.035.07.082l-.023.28c0 .047-.047.082-.082.082zm12.129-2.36c-.736.187-1.239.327-1.963.514-.176.046-.187.058-.34-.117-.174-.199-.303-.327-.548-.444-.737-.362-1.45-.257-2.115.175-.795.514-1.204 1.274-1.192 2.22.011.935.654 1.706 1.577 1.835.795.105 1.46-.175 1.987-.77.105-.13.198-.27.315-.434H10.47c-.245 0-.304-.152-.222-.35.152-.362.432-.97.596-1.274a.315.315 0 01.292-.187h4.253c-.023.316-.023.631-.07.947a4.983 4.983 0 01-.958 2.29c-.841 1.11-1.94 1.8-3.33 1.986-1.145.152-2.209-.07-3.143-.77-.865-.655-1.356-1.52-1.484-2.595-.152-1.274.222-2.419.993-3.424.83-1.086 1.928-1.776 3.272-2.02 1.098-.2 2.15-.07 3.096.571.62.41 1.063.97 1.356 1.648.07.105.023.164-.117.2m3.868 6.461c-1.064-.024-2.034-.328-2.852-1.029a3.665 3.665 0 01-1.262-2.255c-.21-1.32.152-2.489.947-3.529.853-1.122 1.881-1.706 3.272-1.95 1.192-.21 2.314-.095 3.33.595.923.63 1.496 1.484 1.648 2.605.198 1.578-.257 2.863-1.344 3.962-.771.783-1.718 1.273-2.805 1.495-.315.06-.63.07-.934.106zm2.78-4.72c-.011-.153-.011-.27-.034-.387-.21-1.157-1.274-1.81-2.384-1.554-1.087.245-1.788.935-2.045 2.033-.21.912.234 1.835 1.075 2.21.643.28 1.285.244 1.905-.07.923-.48 1.425-1.228 1.484-2.233z"/></symbol>
   <symbol id="i-logo-maven" viewBox="0 0 24 24" fill="currentColor"><path d="M4.237.001c-.312-.013-.665.072-.828.457-.158.374-.283 1.188-.34 2.276l1.223.591c-.02-.737.007-1.43.076-2.066-.026.299-.056.96.006 2.039.019.342.049.725.088 1.15.002.024.002.047.007.069a45.485 45.485 0 0 0 .309 2.412c.057.368.126.752.195 1.16l-.01.01c.014.01.015.018.014.023l.03.16c.03.162.06.328.093.494l.108.553.056.289a61.72 61.72 0 0 0 .457 2.068c.09.382.186.78.287 1.186.098.386.199.783.309 1.193.096.362.199.735.303 1.117.003.018.012.036.015.055a145.826 145.826 0 0 0 .34 1.185l.049.174c.078.261.158.533.242.805a4.2 4.2 0 0 1-.293-.135l-.19-.654c-.02-.077-.042-.148-.062-.225l-.002-.004-.004-.002c-.087-.3-.17-.607-.257-.916-.023-.087-.044-.173-.069-.263l-.314-1.178c-.1-.381-.194-.765-.29-1.154-.094-.39-.185-.78-.277-1.172-.093-.401-.181-.8-.265-1.203-.085-.396-.161-.798-.24-1.193a50.315 50.315 0 0 1-.211-1.17c-.004-.013-.006-.03-.01-.041l.004-.002c-.057-.386-.116-.77-.174-1.15a60.905 60.905 0 0 1-.154-1.204 27.447 27.447 0 0 1-.172-2.41l-1.22-.59c-.004.074-.01.15-.013.23-.012.294-.02.605-.023.93a45.3 45.3 0 0 0 .006 1.157c.009.37.025.755.045 1.148.02.336.042.675.07 1.022l.002.039.006.004c.003.023.007.05.006.076.033.368.064.739.107 1.115a34.493 34.493 0 0 0 .303 2.125c.01.064.024.131.035.195a23.418 23.418 0 0 0 .547 2.32c.07.237.14.464.21.68.063.182.13.365.194.545.155.422.327.832.512 1.232l.006.004a.318.318 0 0 0 .02.05c.225.485.475.95.755 1.395.01.013.02.033.03.047-.455-.183-1.259-.098-1.253-.097.83.288 1.557.64 2.016 1.175-.183.2-.523.352-.953.477.594.064.924-.039 1.045-.092-.31.26-.483.732-.635 1.24.35-.57.696-.949 1.033-1.094.078.258.162.524.244.788A147.532 147.532 0 0 0 5.157 24a.56.56 0 0 0 .43-.312c.13-.282.83-1.775 1.908-3.875.413 1.303.88 2.679 1.386 4.109a.494.494 0 0 0 .076-.465 103.735 103.735 0 0 1-1.308-3.945c.154-.299.316-.612.484-.932.125.04.255.094.389.155.203.186.352.491.482.84a1.515 1.515 0 0 0-.334-1.098c1.335.258 2.547.09 3.287-.81a3.97 3.97 0 0 0 .192-.258c-.325.304-.682.404-1.313.273.996-.281 1.523-.617 2.035-1.22.12-.145.244-.303.371-.48-.943.722-1.927.822-2.9.493l-.045-.018c.914.02 2.203-.474 3.092-1.189.41-.33.796-.73 1.17-1.21.28-.359.55-.76.82-1.216.234-.393.468-.824.7-1.293a2.83 2.83 0 0 1-.74.137l-.144.008c-.048.002-.093 0-.146.002.885-.198 1.5-.74 1.994-1.447-.24.117-.628.262-1.07.297-.058.006-.12.006-.182.006-.013-.002-.028 0-.047-.002.306-.078.574-.178.81-.309a3.363 3.363 0 0 0 .358-.236c.044-.037.088-.07.13-.106.099-.086.193-.18.28-.287.028-.034.056-.063.08-.098.036-.05.073-.098.104-.146a8.388 8.388 0 0 0 .51-.828c.015-.031.032-.057.046-.088.04-.084.08-.16.11-.227.042-.099.074-.179.092-.238a.515.515 0 0 1-.108.051c-.273.112-.727.187-1.086.201-.004 0-.008 0-.013.004h-.067c.72-.214 1.067-.45 1.422-.818a13.883 13.883 0 0 0 1.154-1.428c.264-.37.505-.738.692-1.072a6.5 6.5 0 0 0 .298-.592c.066-.157.122-.305.172-.45-.466.01-.986.011-1.48 0 .495.01 1.015.007 1.484-.005.5-1.485.063-2.262.063-2.262s-.526-1.212-1.4-.851c-.426.175-1.172.73-2.083 1.56l.514 1.45a17.561 17.561 0 0 1 1.703-1.602c-.257.22-.807.726-1.615 1.644-.256.29-.537.624-.844.997-.017.02-.035.038-.047.06a51.435 51.435 0 0 0-1.666 2.187c-.248.34-.498.704-.765 1.088h-.016c.002.02-.004.028-.01.032l-.101.152c-.104.155-.213.31-.318.47l-.352.534c-.061.09-.124.181-.186.277-.184.282-.367.573-.558.873a97.351 97.351 0 0 0-1.428 2.338 96.866 96.866 0 0 0-1.341 2.343c-.012.017-.02.04-.034.057a197.256 197.256 0 0 0-.668 1.223l-.097.181c-.17.318-.346.642-.52.979 0 .004-.005.008-.006.013-.026.048-.05.093-.072.141-.117.222-.218.424-.45.87a1.352 1.352 0 0 0-.233-.182l.345-.65c.047-.089.096-.177.143-.27l.04-.077.546-1.001.13-.233v-.006l-.001-.006c.169-.31.345-.62.52-.94.051-.087.102-.173.153-.265.224-.395.454-.794.684-1.197a91.685 91.685 0 0 1 2.135-3.504c.247-.386.503-.77.754-1.152.092-.138.182-.272.279-.41a72.9 72.9 0 0 1 .48-.701c.007-.012.019-.024.026-.037h.006c.26-.356.517-.713.773-1.065.278-.373.554-.735.83-1.09a31.075 31.075 0 0 1 1.777-2.075l-.515-1.446c-.06.057-.126.116-.192.178a32.37 32.37 0 0 0-.758.729c-.295.294-.597.606-.912.935a46.032 46.032 0 0 0-1.632 1.838l-.03.033.002.008c-.017.02-.033.044-.054.064-.266.323-.538.649-.801.985a39.105 39.105 0 0 0-1.445 1.95c-.043.06-.085.126-.127.186a26.458 26.458 0 0 0-1.403 2.303c-.13.247-.256.485-.37.715-.096.195-.187.395-.278.591-.21.463-.398.93-.566 1.399l.002.006a.36.36 0 0 0-.026.058c-.108.303-.203.608-.29.914-.14.174-.302.325-.483.46a3.505 3.505 0 0 0-.131-.153 5.148 5.148 0 0 0 .824-2.211 6.4 6.4 0 0 0-.016-1.488c-.046-.4-.126-.82-.238-1.274-.097-.393-.217-.81-.363-1.248-.091.185-.22.367-.379.545l-.086.094c-.029.032-.06.06-.092.094.434-.674.486-1.397.358-2.148a2.722 2.722 0 0 1-.49.85c-.033.038-.072.077-.11.116-.01.007-.019.018-.033.028.144-.24.25-.467.318-.698a1.29 1.29 0 0 0 .04-.146 2.85 2.85 0 0 0 .038-.225l.018-.146a2.11 2.11 0 0 0-.002-.354c-.003-.04-.004-.076-.01-.113-.01-.055-.016-.105-.027-.154a7.416 7.416 0 0 0-.193-.84c-.01-.028-.015-.056-.026-.084-.027-.079-.048-.149-.072-.209a2.1 2.1 0 0 0-.09-.209.455.455 0 0 1-.035.1c-.102.24-.34.57-.557.8-.003.003-.007.005-.007.01l-.04.043c.318-.58.39-.946.385-1.398a12.274 12.274 0 0 0-.16-1.615 10.68 10.68 0 0 0-.232-1.104 5.853 5.853 0 0 0-.18-.558 6.337 6.337 0 0 0-.172-.391 26.18 26.18 0 0 0 .002-.004C5.576.341 4.82.124 4.82.124s-.27-.11-.582-.123zm3.38 15.783l.032.082v.002c-.06.033-.116.067-.178.097-.012.004-.024.012-.039.018a2.41 2.41 0 0 0 .186-.2zm-.603 1.626c.13.136.25.242.354.32l.07.227a1.866 1.866 0 0 0-.246.053l-.03-.098c-.024-.084-.048-.17-.076-.257l-.021-.073zm.26.875a2.34 2.34 0 0 1 .271.01l.07.229a.778.778 0 0 1 .247-.004l-.326.627a127.643 127.643 0 0 1-.262-.862z"/></symbol>
@@ -1319,9 +1458,9 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
     <div class="nav-spacer"></div>
     <div class="search-input"><svg><use href="#i-search"/></svg><span>Search recipes</span><span class="search-input-keys"><kbd>⌘</kbd><kbd>K</kbd></span></div>
     <div class="nav-actions">
-      <button class="nav-action-btn" title="Settings"><svg><use href="#i-gear"/></svg></button>
-      <button class="nav-action-btn" title="Help &amp; resources"><svg><use href="#i-help"/></svg></button>
-      <div class="avatar">L</div>
+      <button class="nav-action-btn" data-menu-t="admin" title="Admin menu"><svg><use href="#i-gear"/></svg></button>
+      <button class="nav-action-btn" data-menu-t="help" title="Help &amp; resources"><svg><use href="#i-help"/></svg></button>
+      <div class="avatar" data-menu-t="user">L</div>
     </div>
   </header>
 
@@ -1378,6 +1517,100 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 
       <!-- ========== MARKETPLACE ========== -->
       <section class="page is-active" data-page="marketplace">
+        <div class="mkt-detail" hidden>
+          <div class="mkd-crumb"><span class="linklike mkd-back">Marketplace</span><svg class="c"><use href="#i-chevr"/></svg><span>Java</span></div>
+          <div class="pagehead">
+            <h1>Java</h1>
+            <div class="actions">
+              <button class="pill-btn">Recipe count : High → Low <svg><use href="#i-chevd"/></svg></button>
+              <button class="pill-btn"><svg><use href="#i-download"/></svg> Export CSV</button>
+              <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
+            </div>
+          </div>
+          <div>
+            <div class="catrow catrow--d">
+              <div class="ico ico--spring"><svg><use href="#i-logo-spring"/></svg></div>
+              <div class="body">
+                <div class="t"><b>Spring</b><span class="om-count">465</span></div>
+                <p class="d">Recipes for upgrading and patching <span class="linklike">Spring</span> applications.</p>
+              </div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-blocks"/></svg></div>
+              <div class="body">
+                <div class="t"><b>Modernize</b><span class="om-count">457</span></div>
+                <p class="d">Modernize your code to best use the project's current JDK version. Take advantage of newly available APIs and reduce the dependency of your code on third party dependencies where there is equivalent functionality in the Java standard library.</p>
+              </div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-blocks"/></svg></div>
+              <div class="body"><div class="t"><b>Testing</b><span class="om-count">274</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-blocks"/></svg></div>
+              <div class="body">
+                <div class="t"><b>Logging</b><span class="om-count">134</span></div>
+                <p class="d">Enforce logging best practices and migrate between logging frameworks.</p>
+              </div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-blocks"/></svg></div>
+              <div class="body">
+                <div class="t"><b>Security</b><span class="om-count">107</span></div>
+                <p class="d">Recipes that find and eliminate vulnerable patterns in Java code.</p>
+              </div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-blocks"/></svg></div>
+              <div class="body">
+                <div class="t"><b>Jackson</b><span class="om-count">44</span></div>
+                <p class="d">Recipes to perform <span class="linklike">Jackson</span> migration tasks.</p>
+              </div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-blocks"/></svg></div>
+              <div class="body">
+                <div class="t"><b>Micronaut</b><span class="om-count">39</span></div>
+                <p class="d">Recipes for upgrading and patching <span class="linklike">Micronaut</span> applications.</p>
+              </div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-blocks"/></svg></div>
+              <div class="body"><div class="t"><b>Recipes</b><span class="om-count">38</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-search"/></svg></div>
+              <div class="body"><div class="t"><b>Search</b><span class="om-count">37</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-blocks"/></svg></div>
+              <div class="body">
+                <div class="t"><b>Dropwizard</b><span class="om-count">31</span></div>
+                <p class="d">Recipes for upgrading and patching <span class="linklike">Dropwizard</span> applications.</p>
+              </div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-blocks"/></svg></div>
+              <div class="body"><div class="t"><b>Dependencies</b><span class="om-count">23</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="ico"><svg><use href="#i-package"/></svg></div>
+              <div class="body"><div class="t"><b>Struts</b><span class="om-count">22</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+          </div>
+        </div>
         <div class="pagehead">
           <h1>Recipe marketplace</h1>
           <span class="badge">3,412 recipes across 128 projects</span>
@@ -1449,7 +1682,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
         <div class="tabs">
           <button class="tab active" data-rtab="results">Results</button>
           <button class="tab" data-rtab="repostatus">Repository status <svg class="tab-alert"><use href="#i-alert"/></svg></button>
-          <button class="tab">Visualizations</button>
+          <button class="tab" data-rtab="viz">Visualizations</button>
           <button class="tab" data-rtab="datatables">Data tables</button>
           <span class="tabs-spacer"></span>
           <span class="tabs-actions">
@@ -1695,6 +1928,72 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
           </div>
         </div>
 
+        <!-- Visualizations tab -->
+        <div class="vtab" hidden>
+          <div class="vz-nav cl-card">
+            <div class="vz-navhead">Visualizations</div>
+            <div class="vz-navitem sel">Language composition</div>
+            <div class="vz-navitem">Language by folder</div>
+            <div class="vz-navitem">Language by repository</div>
+            <div class="vz-navitem">Composite recipe results</div>
+            <div class="vz-navitem">Security severity mix</div>
+            <div class="vz-navitem">Dependency heatmap</div>
+          </div>
+          <div class="cl-card vz-main">
+            <div class="vz-head">
+              <div class="vz-titlerow">
+                <h3>Language composition</h3>
+                <span class="pill pill--pend"><span class="dot"></span>Not run</span>
+              </div>
+              <p class="vz-lede">See which programming languages make up your codebase.</p>
+              <p class="vz-desc">Renders a treemap of language usage across the working set. Measure by lines of code or by file count — note that measuring by lines only includes successfully-parsed files, since unparsed files have no line counts.</p>
+              <div class="vz-more"><svg><use href="#i-info"/></svg> More details <svg class="chev"><use href="#i-chevr"/></svg></div>
+            </div>
+            <div class="vz-runrow">
+              <span class="vz-api"><svg><use href="#i-code"/></svg> API example</span>
+              <span class="vz-hint"><svg><use href="#i-info"/></svg> Fine-tune the output. All settings are optional.</span>
+              <button class="pill-btn pill-btn--primary"><svg><use href="#i-play"/></svg> Run</button>
+            </div>
+            <div class="vz-body">
+              <div class="vz-config">
+                <h4>Configuration</h4>
+                <div class="vz-opt">Optional <span class="vz-optbadge">Optional</span></div>
+                <p class="vz-sub">Fine-tune the output. Leave blank to use recipe defaults.</p>
+                <div class="vz-lbl">Measurement unit</div>
+                <p class="vz-sub">Which unit to use when measuring language composition. <code>lines</code> measures by lines of code; <code>files</code> counts the number of files per language. Defaults to lines.</p>
+                <div class="vz-radio on"><span class="rd"></span><div><div class="rl">Lines of code</div><div class="rs">Successfully-parsed files only</div></div></div>
+                <div class="vz-radio"><span class="rd"></span><div><div class="rl">File count</div><div class="rs">Includes unparsed files</div></div></div>
+                <div class="vz-lbl">Top N languages</div>
+                <p class="vz-sub">Show this many languages; group the remainder into a single bucket.</p>
+                <div class="vz-field">12 <span class="sfx">languages</span></div>
+                <div class="vz-lbl">Remainder label</div>
+                <p class="vz-sub">Label used for the grouped remainder bucket.</p>
+                <div class="vz-field">Other</div>
+              </div>
+              <div class="vz-preview">
+                <h4>Output preview</h4>
+                <div class="vz-sample">
+                  <div class="vz-samplehead"><span class="vz-samplechip"><svg><use href="#i-eye"/></svg> Sample preview</span> Example output · not your data yet</div>
+                  <div class="vz-treemap">
+                    <div class="tm" style="left:0;top:0;width:47%;height:66%;background:linear-gradient(160deg,#3E5BE8,#8CA0F5);color:#FBFAF6"><b>TypeScript</b>34%</div>
+                    <div class="tm" style="left:47.6%;top:0;width:27%;height:34%;background:#FF6F61;color:#FBFAF6"><b>Java</b>18%</div>
+                    <div class="tm" style="left:75.2%;top:0;width:24.8%;height:34%;background:#B39DEB;color:#232342"><b>Kotlin</b>12%</div>
+                    <div class="tm" style="left:47.6%;top:34.8%;width:25%;height:31.2%;background:#FFD34D;color:#232342"><b>Go</b>8%</div>
+                    <div class="tm" style="left:73.2%;top:34.8%;width:26.8%;height:14.5%;background:#8CA0F5;color:#232342"><b>CSS</b>6%</div>
+                    <div class="tm" style="left:73.2%;top:50%;width:13%;height:16%;background:#DFA9E0;color:#232342"><b>SQL</b>4%</div>
+                    <div class="tm" style="left:86.8%;top:50%;width:13.2%;height:16%;background:#F0916F;color:#232342"><b>YAML</b>3%</div>
+                    <div class="tm tm--faded" style="left:0;top:66.8%;width:31%;height:33.2%"><b>Shell</b>5%</div>
+                    <div class="tm tm--faded" style="left:31.6%;top:66.8%;width:28%;height:33.2%"><b>Python</b>5%</div>
+                    <div class="tm tm--faded" style="left:60.2%;top:66.8%;width:22%;height:33.2%"><b>JSON</b>3%</div>
+                    <div class="tm tm--faded" style="left:82.8%;top:66.8%;width:17.2%;height:33.2%"><b>Other</b>1%</div>
+                    <div class="vz-runpill">Run to generate with your working set</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="toast" role="alert">
           <span class="toast-dot"></span>
           <div class="toast-body">
@@ -1767,12 +2066,56 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
             </tr>
             </tbody>
           </table>
-          <div class="act-foot"><span>25 results</span><span class="linklike">Load more</span></div>
+          <div class="act-foot"><span>23 of 25 results</span><span class="linklike">Load more</span></div>
         </div>
       </section>
 
       <!-- ============ DEV CENTER ============ -->
       <section class="page" data-page="devcenter">
+        <div class="dc-config" hidden>
+          <button class="cfg-back"><svg><use href="#i-chevr"/></svg> Back to Dev Center</button>
+          <h1 class="cfg-title">Configure DevCenter</h1>
+          <p class="cfg-lede">Select from available DevCenter recipes, only one DevCenter recipe can be configured.</p>
+          <p class="cfg-sub">For more information on how to customize your DevCenter configuration, see the <span class="linklike">DevCenter documentation</span>.</p>
+          <div class="cfg-note cfg-note--warn"><svg><use href="#i-warn"/></svg> This will replace your current DevCenter configuration with the selected configuration.</div>
+          <div class="cfg-grid">
+            <div class="cl-card cfg-list">
+              <div class="cfg-listhead">Select a configuration</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter Kotlin</div>
+              <div class="cfg-item sel"><svg><use href="#i-blocks"/></svg>DevCenter</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Apache</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Quarkus</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>OWASP top ten</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Apache Maven</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>Apache Maven best practices</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>Post quantum cryptography</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>Class cohesion DevCenter</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Gradle and Maven</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Angular</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for C#</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Go</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Node.js</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Python</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Vulnerability Management</div>
+              <div class="cfg-item"><svg><use href="#i-package"/></svg>Move to a later Angular version</div>
+              <div class="cfg-item"><svg><use href="#i-package"/></svg>DevCenter card from a data table column</div>
+              <div class="cfg-item"><svg><use href="#i-package"/></svg>Build tool</div>
+            </div>
+            <div class="cl-card cfg-detail">
+              <div class="cfg-dethead">
+                <svg><use href="#i-blocks"/></svg>
+                <h3>DevCenter</h3>
+                <span class="pill pill--su">Currently configured</span>
+              </div>
+              <p class="cfg-desc">This is a default DevCenter configuration that can be used as a starting point for your own DevCenter configuration. It includes a combination of upgrades, migrations, and security fixes. You can customize this configuration to suit your needs. For more information on how to customize your DevCenter configuration, see the <span class="linklike">DevCenter documentation</span>.</p>
+              <div class="cfg-more"><span class="linklike">More details</span><span class="pl">+</span></div>
+            </div>
+          </div>
+          <div class="cfg-foot">
+            <div class="cfg-note"><svg><use href="#i-info"/></svg> Recipe will be applied to the DevCenter for Default and all organizations configured under it.</div>
+            <button class="pill-btn pill-btn--primary cfg-save">Save and Run</button>
+          </div>
+        </div>
         <div class="pagehead">
           <div>
             <h1>Dev Center</h1>
@@ -1784,7 +2127,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
               <span class="dc-tb-div"></span>
               <span class="dc-toggle" data-tgl="timeline"><span class="dc-track"><span class="dc-knob"></span></span> Timeline view</span>
               <span class="dc-tb-div"></span>
-              <button class="pill-btn">Customize</button>
+              <button class="pill-btn dc-customize">Customize</button>
               <button class="pill-btn pill-btn--primary">Run DevCenter recipe</button>
               <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
             </div>
@@ -2098,7 +2441,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
               </tr>
             </tbody>
           </table>
-          <div class="act-foot"><span>9 of 245 repositories</span><span class="linklike">Load more</span></div>
+          <div class="act-foot"><span>25 of 245 repositories</span><span class="linklike">Load more</span></div>
         </div>
       </section>
 
@@ -2327,6 +2670,66 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
       </div>
     </div>
   </div>
+  <!-- ============ TOPBAR MENUS ============ -->
+  <div class="menu-pop" data-menu="admin" hidden style="right:100px">
+    <div class="mp-item">Connectors</div>
+    <div class="mp-item">Audit logs</div>
+    <div class="mp-item">Access tokens</div>
+    <div class="mp-item">Users</div>
+    <div class="mp-item">Settings</div>
+  </div>
+  <div class="menu-pop" data-menu="help" hidden style="right:58px; width:290px">
+    <div class="mp-item"><span class="mp-tourico"><svg><use href="#i-play"/></svg></span>Getting started tour</div>
+    <div class="mp-sep"></div>
+    <div class="mp-head">Resources</div>
+    <div class="mp-item">What's New</div>
+    <div class="mp-item">Documentation</div>
+    <div class="mp-item">Changelog</div>
+    <div class="mp-item">Status</div>
+    <div class="mp-item">Feedback</div>
+    <div class="mp-sep"></div>
+    <div class="mp-head">Tools</div>
+    <div class="mp-item">API explorer</div>
+    <div class="mp-item">MCP explorer</div>
+    <div class="mp-item">Moderne CLI</div>
+    <div class="mp-sep"></div>
+    <div class="mp-head">Need more help?</div>
+    <div class="mp-item">support@moderne.io</div>
+    <div class="mp-sep"></div>
+    <div class="mp-foot">© 2026 Moderne, Inc.<br>Version: 13.7.0</div>
+  </div>
+  <div class="menu-pop" data-menu="user" hidden style="right:16px; width:280px">
+    <div class="mp-user">
+      <div class="mp-name">Lindsay Auchinachie</div>
+      <div class="mp-provs">
+        <span class="mp-prov"><svg><use href="#i-logo-github"/></svg><span class="st st--ok"></span></span>
+        <span class="mp-prov"><svg><use href="#i-logo-bitbucket"/></svg><span class="st st--er"></span></span>
+        <span class="mp-prov"><svg><use href="#i-logo-slack"/></svg><span class="st st--er"></span></span>
+        <span class="mp-plus">+1</span>
+      </div>
+      <div class="mp-email">lindsay@moderne.io</div>
+    </div>
+    <div class="mp-sep"></div>
+    <div class="mp-item">Account settings</div>
+    <div class="mp-item">Command menu <span class="mp-kbds"><span class="kbd">shift</span><span class="kbd">?</span></span></div>
+    <div class="mp-sep"></div>
+    <div class="mp-item" data-nav="login">Sign out</div>
+  </div>
+
+  <!-- ============ LOGIN SCREEN (#login) ============ -->
+  <div class="login-ov" hidden>
+    <div class="login-card">
+      <div class="login-inner">
+        <h1>Sign in to Moderne</h1>
+        <button class="pill-btn pill-btn--primary login-sso">Sign in with SSO</button>
+        <div class="login-links">
+          <span class="login-link">Learn about Moderne</span>
+          <span class="login-link">Contact support</span>
+        </div>
+        <svg class="login-mark"><use href="#i-moderne-flat"/></svg>
+      </div>
+    </div>
+  </div>
 </div><!-- /app -->
 </template>
 
@@ -2339,6 +2742,9 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
   // ---- screen / nav sync across BOTH layers ----
   function setScreen(name) {
     if (!name || name === 'none') return;
+    var login = name === 'login';
+    document.querySelectorAll('.layer .login-ov').forEach(function (l) { l.hidden = !login; });
+    if (login) return;
     document.querySelectorAll('.layer .page').forEach(function (p) {
       p.classList.toggle('is-active', p.getAttribute('data-page') === name);
     });
@@ -2352,6 +2758,97 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
     if (name === 'results') {
       document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = ''; });
     }
+  }
+
+  // ---- extra demo rows so the big tables fill tall viewports ----
+  var RP_ROWS = [
+    ['moderneinc', 'moderne-cli', '4f2a91be', 'github.com', 'about 12 hours ago'],
+    ['moderneinc', 'moderne-docs', '91a381c7', 'github.com', 'about 13 hours ago'],
+    ['moderneinc', 'moderne-ui', '2db8ef3c', 'github.com', 'about 11 hours ago'],
+    ['moderneinc', 'recipe-bom', 'c04d17aa', 'github.com', 'about 14 hours ago'],
+    ['moderneinc/recipes', 'jackson-migrations', '7be20d94', 'github.com', 'about 12 hours ago'],
+    ['moderneinc/recipes', 'recipe-ai', '5c88e1f2', 'github.com', 'about 12 hours ago'],
+    ['openrewrite', 'rewrite', 'ab1592c8', 'github.com', 'about 10 hours ago'],
+    ['openrewrite', 'rewrite-spring', 'e3305b17', 'github.com', 'about 10 hours ago'],
+    ['openrewrite', 'rewrite-migrate-java', '19c46dd0', 'github.com', 'about 11 hours ago'],
+    ['openrewrite', 'rewrite-static-analysis', '84fa02e9', 'github.com', 'about 11 hours ago'],
+    ['openrewrite', 'rewrite-testing-frameworks', 'f61b9a33', 'github.com', 'about 13 hours ago'],
+    ['openrewrite', 'rewrite-kotlin', '3d7702c5', 'github.com', 'about 13 hours ago'],
+    ['openrewrite', 'rewrite-python', '6a91f0be', 'github.com', 'about 14 hours ago'],
+    ['openrewrite', 'rewrite-gradle-plugin', 'b25c48d1', 'github.com', 'about 14 hours ago'],
+    ['moderneinc/moderne', 'integration-tests', '08cd3ea6', 'dev.azure.com', 'about 15 hours ago'],
+    ['moderneinc', 'platform-deploy', 'd4419c72', 'gitlab.com', 'about 15 hours ago']
+  ];
+  var rpHtml = RP_ROWS.map(function (r) {
+    return '<tr><td class="cl-c"><span class="cl-cb"></span></td><td>' + r[0] + '</td><td><span class="linklike">' + r[1] +
+      '</span></td><td class="rp-branch">main</td><td class="rp-mono">' + r[2] +
+      '</td><td><span class="pill pill--su">Available</span></td><td>' + r[3] +
+      '</td><td class="rp-when">' + r[4] + '</td><td></td></tr>';
+  }).join('');
+  document.querySelectorAll('.layer .page[data-page="repositories"] .rp-table tbody').forEach(function (tb) {
+    tb.insertAdjacentHTML('beforeend', rpHtml);
+  });
+
+  var DP_ROWS = [
+    ['rewrite-quarkus', '0.4.0-20260702.114501', 16], ['rewrite-logging-frameworks', '1.12.0-20260702.114522', 13],
+    ['rewrite-openapi', '0.6.0-20260702.114544', 8], ['rewrite-terraform', '0.9.0-20260702.114601', 12],
+    ['rewrite-docker', '0.3.0-20260702.114627', 6], ['rewrite-jenkins', '0.5.0-20260702.114650', 9],
+    ['rewrite-github-actions', '2.1.0-20260702.114713', 17], ['rewrite-sql', '0.8.0-20260702.114736', 11],
+    ['rewrite-struts', '0.2.0-20260702.114758', 5], ['rewrite-jackson', '0.7.0-20260702.114820', 10],
+    ['rewrite-okhttp', '0.4.0-20260702.114843', 7], ['rewrite-graphql', '0.3.0-20260702.114906', 6],
+    ['rewrite-micronaut', '2.6.0-20260702.114929', 14], ['rewrite-liberty', '1.3.0-20260702.114951', 9]
+  ];
+  var dpHtml = DP_ROWS.map(function (r) {
+    return '<tr><td class="cl-c"><span class="cl-cb"></span></td><td><span class="dp-kebab">⋮</span></td>' +
+      '<td class="rp-mono">LATEST</td><td><span class="pill pill--su">Finished</span></td>' +
+      '<td><span class="dp-eco dp-eco--maven"><svg class="eco"><use href="#i-logo-maven"/></svg>Maven</span></td>' +
+      '<td class="rp-mono"><span class="dp-trunc">' + r[1] + '</span></td>' +
+      '<td class="rp-mono"><span class="dp-trunc">io.moderne.recipe:' + r[0] + '</span></td>' +
+      '<td class="rp-when">7 days ago</td><td>Universal</td><td class="rp-mono">' + r[2] + '</td></tr>';
+  }).join('');
+  document.querySelectorAll('.layer .page[data-page="deploy"] .rp-table tbody').forEach(function (tb) {
+    tb.insertAdjacentHTML('beforeend', dpHtml);
+  });
+
+  var ACT_ROWS = [
+    ['Migrate to Java 21', 'recipe', 'Default', 'Finished', 'l', 'L', '1 day ago'],
+    ['Upgrade Spring Boot 3.x', 'recipe', 'Netflix + Spring', 'Finished', 't', 'T', '1 day ago'],
+    ['Recipe performance', 'data', 'Default', 'Completed', 'l', 'L', '1 day ago'],
+    ['Find and fix vulnerable dependencies', 'recipe', 'FINOS', 'Finished', 'a', 'A', '1 day ago'],
+    ['Order imports', 'recipe', 'Default', 'Finished', 'k', 'K', '2 days ago'],
+    ['Remove unused imports', 'recipe', 'JetBrains', 'Finished', 'k', 'K', '2 days ago'],
+    ['SLF4J best practices', 'recipe', 'FINOS', 'Finished', 't', 'T', '2 days ago'],
+    ['Source files that had results', 'data', 'FINOS', 'Completed', 't', 'T', '2 days ago'],
+    ['JUnit Jupiter migration', 'recipe', 'JetBrains', 'Finished', 'a', 'A', '3 days ago'],
+    ['Dependency insight for Gradle and Maven', 'recipe', 'Default', 'Finished', 'l', 'L', '3 days ago'],
+    ['Common static analysis issues', 'recipe', 'Netflix + Spring', 'Finished', 'k', 'K', '3 days ago'],
+    ['LST provenance', 'data', 'JetBrains', 'Completed', 'a', 'A', '3 days ago']
+  ];
+  var actHtml = ACT_ROWS.map(function (r) {
+    var isData = r[1] === 'data';
+    var ind = isData
+      ? '<circle cx="80" cy="24" r="6" fill="var(--teal-mid)"/>'
+      : '<circle cx="16" cy="24" r="6" fill="var(--violet)"/>';
+    return '<tr' + (isData ? '' : ' data-nav="results"') + '><td class="ind"><svg width="96" height="48" viewBox="0 0 96 48">' +
+      '<line x1="32" y1="0" x2="32" y2="48" stroke="var(--line2)"/><line x1="64" y1="0" x2="64" y2="48" stroke="var(--line2)"/>' + ind + '</svg></td>' +
+      '<td><span class="linklike">' + r[0] + '</span></td><td class="' + (isData ? 'ty-data' : 'ty-recipe') + '">' + (isData ? 'Data table' : 'Recipe run') + '</td>' +
+      '<td>' + r[2] + '</td><td><span class="pill pill--su">' + r[3] + '</span></td>' +
+      '<td><span class="miniava miniava--' + r[4] + '">' + r[5] + '</span></td><td class="act-time">' + r[6] + '</td></tr>';
+  }).join('');
+  document.querySelectorAll('.layer .page[data-page="activity"] .act-table tbody').forEach(function (tb) {
+    tb.insertAdjacentHTML('beforeend', actHtml);
+  });
+
+  // ---- Marketplace category drill-in ----
+  function setMktDetail(on) {
+    document.querySelectorAll('.layer .page[data-page="marketplace"]').forEach(function (p) { p.classList.toggle('mkt-viewing', on); });
+    document.querySelectorAll('.layer .mkt-detail').forEach(function (c) { c.hidden = !on; });
+  }
+
+  // ---- Configure DevCenter sub-view ----
+  function setDcConfig(on) {
+    document.querySelectorAll('.layer .page[data-page="devcenter"]').forEach(function (p) { p.classList.toggle('configuring', on); });
+    document.querySelectorAll('.layer .dc-config').forEach(function (c) { c.hidden = !on; });
   }
 
   // ---- Moddy active chat state ----
@@ -2370,7 +2867,23 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
     if (e.key === 'Escape') { setModal('org', false); setModal('search', false); }
   });
 
+  // ---- topbar menus (admin / help / account), synced across layers ----
+  var openMenu = null;
+  function setMenu(name) {
+    openMenu = name;
+    document.querySelectorAll('.layer .menu-pop').forEach(function (m) {
+      m.hidden = m.getAttribute('data-menu') !== name;
+    });
+  }
+
   document.getElementById('compare').addEventListener('click', function (e) {
+    var mt = e.target.closest('[data-menu-t]');
+    if (mt) {
+      var which = mt.getAttribute('data-menu-t');
+      setMenu(openMenu === which ? null : which);
+      return;
+    }
+    if (!e.target.closest('.menu-pop')) setMenu(null);
     var wx = e.target.closest('.wcag-x');
     if (wx) { setWcag(false); return; }
     var mx = e.target.closest('.mo-x');
@@ -2389,6 +2902,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
       document.querySelectorAll('.layer .page[data-page="results"] .results-layout').forEach(function (p) { p.hidden = tab !== 'results'; });
       document.querySelectorAll('.layer .repo-status').forEach(function (p) { p.hidden = tab !== 'repostatus'; });
       document.querySelectorAll('.layer .dtab').forEach(function (p) { p.hidden = tab !== 'datatables'; });
+      document.querySelectorAll('.layer .vtab').forEach(function (p) { p.hidden = tab !== 'viz'; });
       return;
     }
     var dv = e.target.closest('.seg-btn[data-dtview]');
@@ -2403,6 +2917,12 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
     }
     if (e.target.closest('.mc-new')) { setModdyChat(false); return; }
     if (e.target.closest('.moddy-input')) { setModdyChat(true); return; }
+    if (e.target.closest('.login-sso')) { location.hash = 'marketplace'; setScreen('marketplace'); return; }
+    if (e.target.closest('.dc-customize')) { setDcConfig(true); return; }
+    if (e.target.closest('.cfg-back') || e.target.closest('.cfg-save')) { setDcConfig(false); return; }
+    if (e.target.closest('.mkd-back')) { setMktDetail(false); return; }
+    var cr = e.target.closest('.catrow');
+    if (cr && !cr.closest('.mkt-detail')) { setMktDetail(true); return; }
     var x = e.target.closest('.toast-x');
     if (x) {
       document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = 'none'; });
