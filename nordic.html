@@ -1236,14 +1236,41 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .tscroll { flex: 1; min-height: 0; overflow-y: auto; }
 .tscroll thead th { position: sticky; top: 0; z-index: 2; }
 
-/* ---- Marketplace category detail (drill-in) ---- */
-.mkt-detail[hidden] { display: none !important; }
-.page[data-page="marketplace"].mkt-viewing > :not(.mkt-detail) { display: none !important; }
-.mkd-crumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); padding: 2px 0 10px; }
-.mkd-crumb .c { width: 13px; height: 13px; }
-.catrow--d .ico { display: flex; }
-.catrow--d .ico.ico--spring { color: #6DB33F; }
+/* ---- readable max width: text-heavy list/detail content centers at
+        ~900px instead of spanning the full browser width ---- */
+.page[data-page="marketplace"] { max-width: 944px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+
+/* ---- Marketplace drill-in (category > subcategory > recipes > detail) ---- */
+.mkt-view[hidden] { display: none !important; }
+.page[data-page="marketplace"].mkt-viewing > :not(.mkt-view) { display: none !important; }
+.mkd-crumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); padding: 2px 0 10px; flex-wrap: wrap; }
+.mkd-crumb .c { width: 13px; height: 13px; flex: none; }
 .catrow--d .t .om-count { margin-left: 10px; }
+.mkt-sechead { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--text); padding: 4px 0 12px; border-bottom: 1px solid var(--line); }
+.mkr-row { padding: 15px 6px 16px; border-bottom: 1px solid var(--line2); cursor: pointer; border-radius: 6px; }
+.mkr-row:hover { background: var(--row-hover); }
+.mkr-row .rt { font-size: 15px; font-weight: 600; color: var(--text); }
+.mkr-row .rdsc { margin: 6px 0 0; font-size: 13px; line-height: 1.6; color: var(--muted); max-width: 920px; }
+.rd-head { display: flex; gap: 22px; padding: 22px 24px; }
+.rd-logo { flex: none; width: 44px; height: 44px; color: #6DB33F; margin-top: -2px; }
+.rd-logo svg { width: 100%; height: 100%; }
+.rd-main { flex: 1; min-width: 0; }
+.rd-main + .rd-tags { margin-left: 12px; }
+.rd-title { margin: 0; font-size: 18px; font-weight: 600; color: var(--text); }
+.rd-desc { margin: 12px 0 14px; font-size: 13.5px; color: var(--text); }
+.rd-coord { display: inline-flex; align-items: center; gap: 9px; background: var(--surface); border-radius: 6px; padding: 7px 12px; margin-bottom: 18px; }
+.rd-coord code { font-family: var(--font-mono); font-size: 12px; color: var(--text); }
+.rd-coord svg { width: 14px; height: 14px; color: var(--muted); cursor: pointer; }
+.rd-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rd-runline { margin: 12px 0 0; font-size: 12.5px; color: var(--muted); }
+.rd-runline b { color: var(--text); }
+.rd-tags { flex: none; width: 170px; padding-top: 4px; }
+.rd-taglbl { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 9px; }
+.rd-tag { display: inline-block; font-size: 11px; color: var(--muted); border: 1px solid var(--line-strong); border-radius: 999px; padding: 2px 9px; margin: 0 5px 5px 0; }
+.rd-sect { margin-top: 14px; }
+.rd-secttitle { padding: 15px 20px 11px; font-size: 14px; font-weight: 600; color: var(--text); }
+.rd-tagcol { width: 220px; }
+.rd-name { font-weight: 600; }
 
 /* ---- Configure DevCenter (Customize sub-view) ---- */
 .dc-config[hidden] { display: none !important; }
@@ -1524,8 +1551,133 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 
       <!-- ========== MARKETPLACE ========== -->
       <section class="page is-active" data-page="marketplace">
-        <div class="mkt-detail" hidden>
-          <div class="mkd-crumb"><span class="linklike mkd-back">Marketplace</span><svg class="c"><use href="#i-chevr"/></svg><span>Java</span></div>
+        <div class="mkt-view" data-view="spring" hidden>
+          <div class="mkd-crumb"><span class="linklike" data-mkt="root">Marketplace</span><svg class="c"><use href="#i-chevr"/></svg><span class="linklike" data-mkt="java">Java</span><svg class="c"><use href="#i-chevr"/></svg><span>Spring</span></div>
+          <div class="pagehead">
+            <h1>Spring</h1>
+            <div class="actions">
+              <button class="pill-btn">Recipe count : High → Low <svg><use href="#i-chevd"/></svg></button>
+              <button class="pill-btn"><svg><use href="#i-download"/></svg> Export CSV</button>
+              <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
+            </div>
+          </div>
+          <div>
+            <div class="catrow catrow--d" data-mkt="boot3x">
+              <div class="body"><div class="t"><b>Spring Boot 3.x</b><span class="om-count">86</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Spring Boot 2.x</b><span class="om-count">72</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Spring Framework</b><span class="om-count">58</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Spring Boot 4.x</b><span class="om-count">49</span></div><p class="d">Recipes for upgrading to Spring Boot 4.x.</p></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Framework7</b><span class="om-count">21</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Spring Security 6.x</b><span class="om-count">20</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Spring Batch</b><span class="om-count">15</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Spring Data</b><span class="om-count">14</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Spring Security 5.x</b><span class="om-count">14</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Boot4</b><span class="om-count">10</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Cloud2025</b><span class="om-count">10</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+            <div class="catrow catrow--d">
+              <div class="body"><div class="t"><b>Boot</b><span class="om-count">8</span></div></div>
+              <span class="chev"><svg><use href="#i-chevr"/></svg></span>
+            </div>
+          </div>
+        </div>
+        <div class="mkt-view" data-view="boot3x" hidden>
+          <div class="mkd-crumb"><span class="linklike" data-mkt="root">Marketplace</span><svg class="c"><use href="#i-chevr"/></svg><span class="linklike" data-mkt="java">Java</span><svg class="c"><use href="#i-chevr"/></svg><span class="linklike" data-mkt="spring">Spring</span><svg class="c"><use href="#i-chevr"/></svg><span>Spring Boot 3.x</span></div>
+          <div class="pagehead">
+            <h1>Spring Boot 3.x</h1>
+            <div class="actions">
+              <button class="pill-btn">Recipe count : High → Low <svg><use href="#i-chevd"/></svg></button>
+              <button class="pill-btn"><svg><use href="#i-download"/></svg> Export CSV</button>
+              <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
+            </div>
+          </div>
+          <div class="mkt-sechead">Recipes <span class="om-count">86</span></div>
+          <div>
+            <div class="mkr-row" data-mkt="recipe"><div class="rt">Spring Boot 3.5 best practices</div><p class="rdsc">Applies best practices to Spring Boot 3.5+ applications.</p></div>
+            <div class="mkr-row"><div class="rt">Migrate to Spring Boot 3.5</div><p class="rdsc">Migrate applications to the latest Spring Boot 3.5 release. This recipe will modify an application's build files, make changes to deprecated/preferred APIs, and migrate configuration settings that have changes between versions. This recipe will also chain additional framework migrations (Spring Framework, Spring Data, etc) that are required as part of the migration to Spring Boot 3.5.</p></div>
+            <div class="mkr-row"><div class="rt">Migrate to Spring Boot 3.4</div><p class="rdsc">Migrate applications to the latest Spring Boot 3.4 release. This recipe will modify an application's build files, make changes to deprecated/preferred APIs, and migrate configuration settings that have changes between versions. This recipe will also chain additional framework migrations (Spring Framework, Spring Data, etc) that are required as part of the migration to Spring Boot 3.4.</p></div>
+            <div class="mkr-row"><div class="rt">Migrate to Spring Boot 3.5</div><p class="rdsc">Migrate applications to the latest Spring Boot 3.5 release. This recipe will modify an application's build files, make changes to deprecated/preferred APIs.</p></div>
+            <div class="mkr-row"><div class="rt">Migrate to Spring Boot 3.4</div><p class="rdsc">Migrate applications to the latest Spring Boot 3.4 release. This recipe will modify an application's build files, make changes to deprecated/preferred APIs.</p></div>
+            <div class="mkr-row"><div class="rt">Spring Boot 3.3 best practices</div><p class="rdsc">Applies best practices to Spring Boot 3 applications.</p></div>
+            <div class="mkr-row"><div class="rt">Migrate to Spring Boot 3.3</div><p class="rdsc">Migrate applications to the latest Spring Boot 3.3 release. This recipe will modify an application's build files, make changes to deprecated/preferred APIs, and migrate configuration settings that have changes between versions. This recipe will also chain additional framework migrations (Spring Framework, Spring Data, etc) that are required as part of the migration to Spring Boot 3.2.</p></div>
+            <div class="mkr-row"><div class="rt">Migrate to Spring Boot 3.2</div><p class="rdsc">Migrate applications to the latest Spring Boot 3.2 release. This recipe will modify an application's build files, make changes to deprecated/preferred APIs, and migrate configuration settings that have changes between versions. This recipe will also chain additional framework migrations (Spring Framework, Spring Data, etc) that are required as part of the migration to Spring Boot 3.2.</p></div>
+          </div>
+        </div>
+        <div class="mkt-view" data-view="recipe" hidden>
+          <div class="mkd-crumb"><span class="linklike" data-mkt="root">Marketplace</span><svg class="c"><use href="#i-chevr"/></svg><span class="linklike" data-mkt="java">Java</span><svg class="c"><use href="#i-chevr"/></svg><span class="linklike" data-mkt="spring">Spring</span><svg class="c"><use href="#i-chevr"/></svg><span class="linklike" data-mkt="boot3x">Spring Boot 3.x</span><svg class="c"><use href="#i-chevr"/></svg><span>Spring Boot 3.5 best practices</span></div>
+          <div class="cl-card rd-head">
+            <div class="rd-logo"><svg><use href="#i-logo-springboot"/></svg></div>
+            <div class="rd-main">
+              <h2 class="rd-title">Spring Boot 3.5 best practices</h2>
+              <p class="rd-desc">Applies best practices to Spring Boot 3.5+ applications.</p>
+              <div class="rd-coord"><code>io.moderne.java.spring.boot3.SpringBoot3BestPractices</code><svg><use href="#i-copy"/></svg></div>
+              <div class="rd-actions">
+                <button class="pill-btn pill-btn--primary"><svg><use href="#i-play"/></svg> Dry run</button>
+                <button class="pill-btn"><svg><use href="#i-blocks"/></svg> Add to Builder</button>
+                <button class="pill-btn">Recipe actions <svg><use href="#i-chevd"/></svg></button>
+                <button class="pill-btn"><svg><use href="#i-gear"/></svg> API examples <svg><use href="#i-chevd"/></svg></button>
+              </div>
+              <p class="rd-runline">Will run on <b>11</b> repositories from the <b>Default</b> organization</p>
+            </div>
+            <div class="rd-tags">
+              <div class="rd-taglbl">Tags</div>
+              <span class="rd-tag">boot</span><span class="rd-tag">spring</span>
+            </div>
+          </div>
+          <div class="cl-card rd-sect">
+            <div class="rd-secttitle">Preconditions</div>
+            <table class="rp-table">
+              <thead><tr><th>Precondition</th><th class="rd-tagcol">Tags</th></tr></thead>
+              <tbody><tr><td class="rd-name">Singleton</td><td></td></tr></tbody>
+            </table>
+          </div>
+          <div class="cl-card rd-sect">
+            <div class="rd-secttitle">Recipe list</div>
+            <table class="rp-table">
+              <thead><tr><th>Recipe</th><th class="rd-tagcol">Tags</th></tr></thead>
+              <tbody>
+                <tr><td class="rd-name">Spring Boot 3.3 best practices (only)</td><td></td></tr>
+                <tr><td class="rd-name">Migrate to Spring Boot 3.5</td><td><span class="rd-tag">boot</span><span class="rd-tag">spring</span></td></tr>
+                <tr><td class="rd-name">Convert field injection to constructor injection</td><td></td></tr>
+                <tr><td class="rd-name">Convert JAX-RS annotations to Spring Web</td><td></td></tr>
+                <tr><td class="rd-name">Replace @Controller with @RestController</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="mkt-view" data-view="java" hidden>
+          <div class="mkd-crumb"><span class="linklike" data-mkt="root">Marketplace</span><svg class="c"><use href="#i-chevr"/></svg><span>Java</span></div>
           <div class="pagehead">
             <h1>Java</h1>
             <div class="actions">
@@ -1535,8 +1687,8 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
             </div>
           </div>
           <div>
-            <div class="catrow catrow--d">
-              <div class="ico ico--spring"><svg><use href="#i-logo-spring"/></svg></div>
+            <div class="catrow catrow--d" data-mkt="spring">
+              <div class="ico"><svg><use href="#i-blocks"/></svg></div>
               <div class="body">
                 <div class="t"><b>Spring</b><span class="om-count">465</span></div>
                 <p class="d">Recipes for upgrading and patching <span class="linklike">Spring</span> applications.</p>
@@ -2858,10 +3010,14 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
     tb.insertAdjacentHTML('beforeend', actHtml);
   });
 
-  // ---- Marketplace category drill-in ----
-  function setMktDetail(on) {
-    document.querySelectorAll('.layer .page[data-page="marketplace"]').forEach(function (p) { p.classList.toggle('mkt-viewing', on); });
-    document.querySelectorAll('.layer .mkt-detail').forEach(function (c) { c.hidden = !on; });
+  // ---- Marketplace drill-in (root > java > spring > boot3x > recipe) ----
+  function setMktView(name) {
+    document.querySelectorAll('.layer .page[data-page="marketplace"]').forEach(function (p) {
+      p.classList.toggle('mkt-viewing', name !== 'root');
+    });
+    document.querySelectorAll('.layer .mkt-view').forEach(function (v) {
+      v.hidden = v.getAttribute('data-view') !== name;
+    });
   }
 
   // ---- Configure DevCenter sub-view ----
@@ -2939,9 +3095,10 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
     if (e.target.closest('.login-sso')) { location.hash = 'marketplace'; setScreen('marketplace'); return; }
     if (e.target.closest('.dc-customize')) { setDcConfig(true); return; }
     if (e.target.closest('.cfg-back') || e.target.closest('.cfg-save')) { setDcConfig(false); return; }
-    if (e.target.closest('.mkd-back')) { setMktDetail(false); return; }
+    var mk = e.target.closest('[data-mkt]');
+    if (mk) { setMktView(mk.getAttribute('data-mkt')); return; }
     var cr = e.target.closest('.catrow');
-    if (cr && !cr.closest('.mkt-detail')) { setMktDetail(true); return; }
+    if (cr && !cr.closest('.mkt-view')) { setMktView('java'); return; }
     var x = e.target.closest('.toast-x');
     if (x) {
       document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = 'none'; });
