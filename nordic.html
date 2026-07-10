@@ -1229,6 +1229,36 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .tm--faded { background: var(--surface2); color: var(--muted); opacity: .75; }
 .vz-runpill { position: absolute; left: 50%; top: 55%; transform: translateX(-50%); background: var(--card); color: var(--text); font-size: 12.5px; font-weight: 500; border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; box-shadow: 0 8px 26px rgba(10,10,25,.18); white-space: nowrap; }
 
+/* ---- Configure DevCenter (Customize sub-view) ---- */
+.dc-config[hidden] { display: none !important; }
+.page[data-page="devcenter"].configuring > :not(.dc-config) { display: none !important; }
+.cfg-back { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: var(--muted); background: none; border: none; padding: 2px 0 12px; }
+.cfg-back svg { width: 13px; height: 13px; transform: scaleX(-1); }
+.cfg-back:hover { color: var(--text); }
+.cfg-title { margin: 0; font-size: 18px; font-weight: 500; color: var(--text); letter-spacing: -.01em; }
+.cfg-lede { margin: 10px 0 4px; font-size: 13.5px; font-weight: 600; color: var(--text); }
+.cfg-sub { margin: 0 0 14px; font-size: 13px; color: var(--muted); }
+.cfg-banner { display: flex; align-items: center; gap: 10px; padding: 12px 14px; font-size: 13px; color: var(--text); background: var(--accent-tint); border: 1px solid var(--accent-brd); border-radius: 8px; }
+.cfg-banner svg { width: 15px; height: 15px; color: var(--accent); flex: none; }
+.cfg-grid { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 14px; margin-top: 14px; align-items: stretch; }
+.cfg-list { padding: 6px; max-height: 620px; overflow-y: auto; }
+.cfg-listhead { padding: 12px 12px 8px; font-size: 14px; font-weight: 600; color: var(--text); }
+.cfg-item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; font-size: 13.5px; color: var(--text); border-radius: 7px; cursor: pointer; }
+.cfg-item svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
+.cfg-item:hover { background: var(--row-hover); }
+.cfg-item.sel { background: var(--accent-tint); font-weight: 600; }
+.cfg-detail { border-color: var(--accent-brd); padding: 22px 24px; }
+.cfg-dethead { display: flex; align-items: center; gap: 12px; }
+.cfg-dethead svg { width: 20px; height: 20px; color: var(--muted); flex: none; }
+.cfg-dethead h3 { margin: 0; flex: 1; font-size: 17px; font-weight: 600; color: var(--text); }
+.cfg-desc { margin: 18px 0 22px; font-size: 13.5px; line-height: 1.65; color: var(--text); max-width: 780px; }
+.cfg-more { display: flex; align-items: center; padding: 12px 16px; border: 1px solid var(--line); border-radius: 8px; font-size: 13.5px; cursor: pointer; }
+.cfg-more:hover { background: var(--row-hover); }
+.cfg-more .pl { margin-left: auto; font-size: 18px; color: var(--muted); line-height: 1; }
+.cfg-foot { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+.cfg-foot .cfg-banner { flex: 1; }
+.cfg-foot .pill-btn { flex: none; }
+
 /* ---- Moddy active chat ---- */
 .page[data-page="moddy"].chatting { flex-direction: column; }
 .page[data-page="moddy"].chatting .moddy-hero,
@@ -1936,6 +1966,50 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 
       <!-- ============ DEV CENTER ============ -->
       <section class="page" data-page="devcenter">
+        <div class="dc-config" hidden>
+          <button class="cfg-back"><svg><use href="#i-chevr"/></svg> Back to Dev Center</button>
+          <h1 class="cfg-title">Configure DevCenter</h1>
+          <p class="cfg-lede">Select from available DevCenter recipes, only one DevCenter recipe can be configured.</p>
+          <p class="cfg-sub">For more information on how to customize your DevCenter configuration, see the <span class="linklike">DevCenter documentation</span>.</p>
+          <div class="cfg-banner"><svg><use href="#i-info"/></svg> This will replace your current DevCenter configuration with the selected configuration.</div>
+          <div class="cfg-grid">
+            <div class="cl-card cfg-list">
+              <div class="cfg-listhead">Select a configuration</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter Kotlin</div>
+              <div class="cfg-item sel"><svg><use href="#i-blocks"/></svg>DevCenter</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Apache</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Quarkus</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>OWASP top ten</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Apache Maven</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>Apache Maven best practices</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>Post quantum cryptography</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>Class cohesion DevCenter</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Gradle and Maven</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Angular</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for C#</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Go</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Node.js</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Python</div>
+              <div class="cfg-item"><svg><use href="#i-blocks"/></svg>DevCenter for Vulnerability Management</div>
+              <div class="cfg-item"><svg><use href="#i-package"/></svg>Move to a later Angular version</div>
+              <div class="cfg-item"><svg><use href="#i-package"/></svg>DevCenter card from a data table column</div>
+              <div class="cfg-item"><svg><use href="#i-package"/></svg>Build tool</div>
+            </div>
+            <div class="cl-card cfg-detail">
+              <div class="cfg-dethead">
+                <svg><use href="#i-blocks"/></svg>
+                <h3>DevCenter</h3>
+                <span class="pill pill--su">Currently configured</span>
+              </div>
+              <p class="cfg-desc">This is a default DevCenter configuration that can be used as a starting point for your own DevCenter configuration. It includes a combination of upgrades, migrations, and security fixes. You can customize this configuration to suit your needs. For more information on how to customize your DevCenter configuration, see the <span class="linklike">DevCenter documentation</span>.</p>
+              <div class="cfg-more"><span class="linklike">More details</span><span class="pl">+</span></div>
+            </div>
+          </div>
+          <div class="cfg-foot">
+            <div class="cfg-banner"><svg><use href="#i-info"/></svg> Recipe will be applied to the DevCenter for Default and all organizations configured under it.</div>
+            <button class="pill-btn pill-btn--primary cfg-save">Save and Run</button>
+          </div>
+        </div>
         <div class="pagehead">
           <div>
             <h1>Dev Center</h1>
@@ -1947,7 +2021,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
               <span class="dc-tb-div"></span>
               <span class="dc-toggle" data-tgl="timeline"><span class="dc-track"><span class="dc-knob"></span></span> Timeline view</span>
               <span class="dc-tb-div"></span>
-              <button class="pill-btn">Customize</button>
+              <button class="pill-btn dc-customize">Customize</button>
               <button class="pill-btn pill-btn--primary">Run DevCenter recipe</button>
               <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
             </div>
@@ -2580,6 +2654,12 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
     }
   }
 
+  // ---- Configure DevCenter sub-view ----
+  function setDcConfig(on) {
+    document.querySelectorAll('.layer .page[data-page="devcenter"]').forEach(function (p) { p.classList.toggle('configuring', on); });
+    document.querySelectorAll('.layer .dc-config').forEach(function (c) { c.hidden = !on; });
+  }
+
   // ---- Moddy active chat state ----
   function setModdyChat(on) {
     document.querySelectorAll('.layer .page[data-page="moddy"]').forEach(function (p) { p.classList.toggle('chatting', on); });
@@ -2647,6 +2727,8 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
     if (e.target.closest('.mc-new')) { setModdyChat(false); return; }
     if (e.target.closest('.moddy-input')) { setModdyChat(true); return; }
     if (e.target.closest('.login-sso')) { location.hash = 'marketplace'; setScreen('marketplace'); return; }
+    if (e.target.closest('.dc-customize')) { setDcConfig(true); return; }
+    if (e.target.closest('.cfg-back') || e.target.closest('.cfg-save')) { setDcConfig(false); return; }
     var x = e.target.closest('.toast-x');
     if (x) {
       document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = 'none'; });
