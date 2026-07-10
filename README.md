@@ -16,15 +16,10 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 
 ## Prototypes
 
-> Most prototypes are single self-contained `.html` files. The exception is
-> [`design-system-explorer/`](https://moderneinc.github.io/prototypes/design-system-explorer/), a built
-> multi-page app — **edit its source in [`design-system-explorer-src/`](design-system-explorer-src/) and
-> `npm run build`**, don't hand-edit the generated `design-system-explorer/` folder.
+> Most prototypes are single self-contained `.html` files.
 
 | File | What it explores |
 | --- | --- |
-| [`design-system-explorer/`](https://moderneinc.github.io/prototypes/design-system-explorer/) | **Dark-mode SaaS + Docs design system** — live theme builder, foundations, components, data-viz, and recreated Moderne screens. Multi-page app; source in [`design-system-explorer-src/`](design-system-explorer-src/) |
-| [`left-nav-design-vs-shipped.html`](https://moderneinc.github.io/prototypes/left-nav-design-vs-shipped.html) | Left-nav rail **design vs. shipped** — real renders of the `left-nav-compact` prototype next to the shipped `NeoSideNav` (`#8439`), expanded/collapsed, with a breakdown of what actually differs |
 | [`day-zero-revised.html`](https://moderneinc.github.io/prototypes/day-zero-revised.html) | Revised day-zero tour variant |
 | [`moddy-help.html`](https://moderneinc.github.io/prototypes/moddy-help.html) | Moddy first-contact "by role" states |
 | [`moddy-trigrep-revised.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-revised.html) | Revised Moddy refine-search results |
@@ -73,6 +68,10 @@ Older prototypes kept for reference; not linked from the main table above.
 | [`archive/trigrep.html`](https://moderneinc.github.io/prototypes/archive/trigrep.html) | Superseded by `trigrep-revised.html` |
 | [`archive/trigrep-activity.html`](https://moderneinc.github.io/prototypes/archive/trigrep-activity.html) | Trigrep + activity page combined view |
 | [`archive/trigrep-revised-rebrand.html`](https://moderneinc.github.io/prototypes/archive/trigrep-revised-rebrand.html) | Trigrep revised with warm-dark 2026 rebrand |
+| [`archive/design-system-explorer/`](https://moderneinc.github.io/prototypes/archive/design-system-explorer/) | **Dark-mode SaaS + Docs design system** — live theme builder, foundations, components, data-viz, and recreated Moderne screens. Built multi-page app; source in [`archive/design-system-explorer-src/`](archive/design-system-explorer-src/) (`npm run build`) |
+| [`archive/left-nav-design-vs-shipped.html`](https://moderneinc.github.io/prototypes/archive/left-nav-design-vs-shipped.html) | Left-nav rail **design vs. shipped** — real renders of the `left-nav-compact` prototype next to the shipped `NeoSideNav` (`#8439`), expanded/collapsed, with a breakdown of what actually differs |
+| [`archive/design-system/`](https://moderneinc.github.io/prototypes/archive/design-system/) | Early design-system reference page |
+| [`archive/recipe-detail-preview/`](https://moderneinc.github.io/prototypes/archive/recipe-detail-preview/) | Recipe-detail preview explorations (master template, single/multi-language, composite, look-alike variants) |
 
 ## Wireframe kit
 

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Internal design-system gallery: permanently noindex (dark-launched, see docs/WORKFLOW.md). -->
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="/prototypes/archive/design-system-explorer/brand/moderne-symbol.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Pre-paint: set light/dark BEFORE first paint (from a shared #mode=light hash
+       or the saved pref) so a light link doesn't flash dark first. Dark is the
+       default :root, so we only act on "light". -->
+  <script>try{var h=location.hash.match(/mode=(light|dark)/),m=h&&h[1];if(!m){var s=JSON.parse(localStorage.getItem("ds-colors")||"{}");m=s&&s.mode;}if(m==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
+  <title>Foundations — Moderne SaaS DS</title>
+  <script type="module" crossorigin src="/prototypes/archive/design-system-explorer/assets/ds-theme-BMnLo0P7.js"></script>
+  <script type="module" crossorigin src="/prototypes/archive/design-system-explorer/assets/ds-boot-W6St3YbO.js"></script>
+  <link rel="stylesheet" crossorigin href="/prototypes/archive/design-system-explorer/assets/ds-theme-CeXlvmss.css">
+</head>
+<body>
+  <div class="ds-shell">
+    <!-- Gallery chrome: brand block (top-left) + sticky topbar. This is the static
+         "Storybook" frame, NOT a product component. -->
+    <div class="ds-brand"><span class="dot"></span><b>Moderne</b><span>Design system</span></div>
+    <header class="ds-topbar">
+      <div class="ds-topbar-left">
+        <!-- mobile menu: opens the side nav as a drawer (≤880px); hidden on desktop -->
+        <button class="ds-navtoggle" data-nav-toggle aria-label="Open navigation" aria-expanded="false" aria-controls="ds-sidenav">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <h1>Theme explorer</h1>
+      </div>
+      <!-- Interactive theme builder: pick a primary + secondary from our palette;
+           it live-themes the whole showcase (this site is built with the system) and
+           persists across pages. Swatches are populated by src/lib/ds-theme.ts. -->
+      <div class="ds-topbar-right">
+        <div class="ds-customflag" data-customflag hidden>
+          <span class="ds-customflag-dot" aria-hidden="true"></span><span>Custom theme</span>
+          <button class="ds-btn ds-btn--subtle ds-btn--sm" data-theme-reset>Reset to default</button>
+        </div>
+        <div class="ds-theme-ctl">
+        <button class="ds-theme-trigger" aria-expanded="false" aria-controls="ds-theme-panel">
+          <span class="sw2"><i style="background:var(--ds-primary)"></i><i style="background:var(--ds-secondary)"></i></span>
+          Theme
+        </button>
+        <div class="ds-theme-panel" id="ds-theme-panel" hidden>
+          <div class="ds-theme-head"><b>Build a theme</b></div>
+          <div class="ds-theme-grp"><span class="lbl">Mode <span class="ds-sm ds-muted" style="text-transform:none;letter-spacing:0">(spike)</span></span>
+            <div class="ds-font-row" data-mode-row>
+              <button class="ds-fontpill" data-mode="dark" aria-pressed="true">Dark</button>
+              <button class="ds-fontpill" data-mode="light" aria-pressed="false">Light</button>
+            </div>
+          </div>
+          <div class="ds-theme-grp"><span class="lbl">Primary · brand &amp; action</span><div class="ds-sw-row" data-role="primary"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Secondary · accent</span><div class="ds-sw-row" data-role="secondary"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Primary font · UI</span><div class="ds-font-row" data-font="sans"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Secondary font · mono / data</span><div class="ds-font-row" data-font="mono"></div></div>
+          <div class="ds-theme-grp"><span class="lbl">Base tone · ground <span class="ds-sm ds-muted" style="text-transform:none;letter-spacing:0">(dark)</span></span>
+            <div class="ds-font-row" data-base-row>
+              <button class="ds-fontpill" data-base="cool" aria-pressed="true">Cool neutral</button>
+              <button class="ds-fontpill" data-base="warm" aria-pressed="false">Warm · moderne.ai</button>
+            </div>
+          </div>
+          <div class="ds-theme-actions">
+            <button class="ds-btn ds-btn--secondary ds-btn--sm" data-theme-copy>Copy CSS</button>
+            <span class="ds-sm ds-muted" data-theme-current></span>
+          </div>
+          <pre class="ds-theme-out"></pre>
+          <p class="ds-theme-credit">Based on the Moderne <b>design kit</b> — its spectral palette derives from the <b>M-FISH</b> chromosome-painting approach.</p>
+        </div>
+        </div>
+      </div>
+    </header>
+    <nav class="ds-sidenav"><!-- Shared gallery nav. The active link is marked at runtime by ds-chrome.ts
+     (matches location.pathname), so no per-page duplication is needed. -->
+<div class="group">Overview</div>
+<a href="/prototypes/archive/design-system-explorer/">Introduction</a>
+<a href="/prototypes/archive/design-system-explorer/foundations/">Foundations</a>
+<a href="/prototypes/archive/design-system-explorer/foundations/colors/" style="padding-left:26px">↳ Colors</a>
+<a href="/prototypes/archive/design-system-explorer/accessibility/">Accessibility</a>
+<div class="group">Platform</div>
+<a href="/prototypes/archive/design-system-explorer/forms/">Forms &amp; buttons</a>
+<a href="/prototypes/archive/design-system-explorer/navigation/">Navigation</a>
+<a href="/prototypes/archive/design-system-explorer/data-display/">Data display</a>
+<a href="/prototypes/archive/design-system-explorer/feedback/">Feedback &amp; overlay</a>
+<a href="/prototypes/archive/design-system-explorer/dataviz/">Data visualization</a>
+<a href="/prototypes/archive/design-system-explorer/examples/?s=devcenter" data-screen="devcenter">DevCenter</a>
+<a href="/prototypes/archive/design-system-explorer/examples/?s=activity" data-screen="activity">Activity</a>
+<a href="/prototypes/archive/design-system-explorer/examples/?s=changelog" data-screen="changelog">Changelog</a>
+<div class="group">Docs</div>
+<a href="/prototypes/archive/design-system-explorer/examples/?s=docs-home" data-screen="docs-home">Docs · Home</a>
+<a href="/prototypes/archive/design-system-explorer/examples/?s=docs-platform" data-screen="docs-platform">Docs · Platform</a>
+<a href="/prototypes/archive/design-system-explorer/examples/?s=docs-article" data-screen="docs-article">Docs · Article</a>
+</nav>
+    <main class="ds-main">
+      <div class="ds-main-inner">
+
+        <div class="ds-page-head">
+          <div class="ds-eyebrow">Foundations</div>
+          <h1 class="ds-display">Tokens, made visible.</h1>
+          <p>Every value below is a named token in <code class="ds-mono">ds-tokens.css</code>. Swatches read live <code class="ds-mono">var(--ds-*)</code> values, so they are always in sync. See <a href="/prototypes/archive/design-system-explorer/foundations/colors/">Foundations · Colors</a> for the full 10-ramp system, brand-exact stops, and the mapping from every semantic token to its ramp position.</p>
+        </div>
+
+        <div class="ds-note"><b>Color model.</b> The system uses <b>10 tonal ramps</b>: <b>neutral, warm-grey</b> (structure) · <b>red, gold</b> (error, warning) · <b>lime, green, teal, blue, violet, magenta</b> (the 6 M-FISH brand strands). Primary/action = <b>teal</b> by default — the theme builder swaps it for any brand strand. Every semantic role is aliased to a ramp stop and shifted off brand-exact stops so no semantic token equals a brand-bright or brand-deep hex.</div>
+
+        <!-- ── COLOR ─────────────────────────────────────────────────────── -->
+        <section class="ds-section" id="color">
+          <header><h2 class="ds-h2">Color</h2><span class="maps">ground · ink · primary · categorical spectrum · see <a href="/prototypes/archive/design-system-explorer/foundations/colors/">Foundations · Colors</a> for status semantics</span></header>
+
+          <div class="ds-demo-label">Ground &amp; ink</div>
+          <div class="ds-swatches">
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-bg)"></div><div class="meta"><b>Canvas</b><code>--ds-bg</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-bg-alt)"></div><div class="meta"><b>Sunken / alt</b><code>--ds-bg-alt</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-surface)"></div><div class="meta"><b>Surface</b><code>--ds-surface</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-panel)"></div><div class="meta"><b>Raised panel</b><code>--ds-panel</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-ink)"></div><div class="meta"><b>Ink</b><code>--ds-ink</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-ink-dim)"></div><div class="meta"><b>Ink dim / body</b><code>--ds-ink-dim</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-muted)"></div><div class="meta"><b>Muted</b><code>--ds-muted</code></div></div>
+          </div>
+
+          <div class="ds-demo-label">Primary — the action color (vivid; teal by default, set in the theme builder)</div>
+          <div class="ds-swatches">
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-primary)"></div><div class="meta"><b>Primary (fill)</b><code>--ds-primary</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-primary-hover)"></div><div class="meta"><b>Hover</b><code>--ds-primary-hover</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-primary-ink)"></div><div class="meta"><b>Ink (AA text/link)</b><code>--ds-primary-ink</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-primary-soft)"></div><div class="meta"><b>Soft / selected</b><code>--ds-primary-soft</code></div></div>
+          </div>
+
+          <div class="ds-demo-label">Hue comparison — the 6 M-FISH strands. Every hex below is a stop from the tonal ramp on the <a href="/prototypes/archive/design-system-explorer/foundations/colors/">Colors sub-page</a>. Use the Theme builder in the top bar to apply a primary + secondary live across the whole site.</div>
+          <div class="ds-row" style="gap:14px;align-items:stretch">
+            <div class="ds-card" style="flex:1;min-width:148px;--ds-primary:#5d6e15;--ds-primary-hover:#4F5A12;--ds-primary-ink:#5d6e15;--ds-primary-soft:#e2f6ab;--ds-primary-wash:color-mix(in srgb,#5d6e15 14%,transparent);--ds-on-primary:#fff"><div class="ds-card-body" style="display:flex;flex-direction:column;gap:9px;align-items:flex-start"><b class="ds-sm">Lime</b><button class="ds-btn ds-btn--primary ds-btn--sm">Run recipe</button><a href="#" style="font-size:13px;font-weight:600">View results</a><span class="ds-badge ds-badge--brand">Active</span><label class="ds-switch"><input type="checkbox" checked> On</label></div></div>
+            <div class="ds-card" style="flex:1;min-width:148px;--ds-primary:#197940;--ds-primary-hover:#1D5937;--ds-primary-ink:#197940;--ds-primary-soft:#d6f5dd;--ds-primary-wash:color-mix(in srgb,#197940 14%,transparent);--ds-on-primary:#fff"><div class="ds-card-body" style="display:flex;flex-direction:column;gap:9px;align-items:flex-start"><b class="ds-sm">Green</b><button class="ds-btn ds-btn--primary ds-btn--sm">Run recipe</button><a href="#" style="font-size:13px;font-weight:600">View results</a><span class="ds-badge ds-badge--brand">Active</span><label class="ds-switch"><input type="checkbox" checked> On</label></div></div>
+            <div class="ds-card" style="flex:1;min-width:148px;--ds-primary:#19756b;--ds-primary-hover:#1a5b54;--ds-primary-ink:#19756b;--ds-primary-soft:#cef5ee;--ds-primary-wash:color-mix(in srgb,#19756b 14%,transparent);--ds-on-primary:#fff"><div class="ds-card-body" style="display:flex;flex-direction:column;gap:9px;align-items:flex-start"><b class="ds-sm">Teal <span class="ds-muted">· default</span></b><button class="ds-btn ds-btn--primary ds-btn--sm">Run recipe</button><a href="#" style="font-size:13px;font-weight:600">View results</a><span class="ds-badge ds-badge--brand">Active</span><label class="ds-switch"><input type="checkbox" checked> On</label></div></div>
+            <div class="ds-card" style="flex:1;min-width:148px;--ds-primary:#1055e2;--ds-primary-hover:#1245ae;--ds-primary-ink:#1055e2;--ds-primary-soft:#e6ebf4;--ds-primary-wash:color-mix(in srgb,#1055e2 14%,transparent);--ds-on-primary:#fff"><div class="ds-card-body" style="display:flex;flex-direction:column;gap:9px;align-items:flex-start"><b class="ds-sm">Blue</b><button class="ds-btn ds-btn--primary ds-btn--sm">Run recipe</button><a href="#" style="font-size:13px;font-weight:600">View results</a><span class="ds-badge ds-badge--brand">Active</span><label class="ds-switch"><input type="checkbox" checked> On</label></div></div>
+            <div class="ds-card" style="flex:1;min-width:148px;--ds-primary:#8320d6;--ds-primary-hover:#6621a6;--ds-primary-ink:#8320d6;--ds-primary-soft:#ede9f4;--ds-primary-wash:color-mix(in srgb,#8320d6 14%,transparent);--ds-on-primary:#fff"><div class="ds-card-body" style="display:flex;flex-direction:column;gap:9px;align-items:flex-start"><b class="ds-sm">Violet</b><button class="ds-btn ds-btn--primary ds-btn--sm">Run recipe</button><a href="#" style="font-size:13px;font-weight:600">View results</a><span class="ds-badge ds-badge--brand">Active</span><label class="ds-switch"><input type="checkbox" checked> On</label></div></div>
+            <div class="ds-card" style="flex:1;min-width:148px;--ds-primary:#af1b73;--ds-primary-hover:#7A1E52;--ds-primary-ink:#af1b73;--ds-primary-soft:#f4e7ec;--ds-primary-wash:color-mix(in srgb,#af1b73 14%,transparent);--ds-on-primary:#fff"><div class="ds-card-body" style="display:flex;flex-direction:column;gap:9px;align-items:flex-start"><b class="ds-sm">Magenta</b><button class="ds-btn ds-btn--primary ds-btn--sm">Run recipe</button><a href="#" style="font-size:13px;font-weight:600">View results</a><span class="ds-badge ds-badge--brand">Active</span><label class="ds-switch"><input type="checkbox" checked> On</label></div></div>
+          </div>
+
+          <div class="ds-demo-label"><b style="color:var(--ds-ink)">Categorical · the 6 M-FISH strands</b> — the design kit's shared spectrum (Docs + SaaS), magenta → lime. Tags / charts / wayfinding — never status.</div>
+          <div class="ds-swatches" style="grid-template-columns:repeat(auto-fill,minmax(120px,1fr))">
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-cat-magenta)"></div><div class="meta"><b>Magenta</b><code>--ds-cat-magenta</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-cat-violet)"></div><div class="meta"><b>Violet</b><code>--ds-cat-violet</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-cat-blue)"></div><div class="meta"><b>Blue</b><code>--ds-cat-blue</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-cat-teal)"></div><div class="meta"><b>Teal</b><code>--ds-cat-teal</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-cat-green)"></div><div class="meta"><b>Green</b><code>--ds-cat-green</code></div></div>
+            <div class="ds-swatch"><div class="chip" style="background:var(--ds-cat-lime)"></div><div class="meta"><b>Lime</b><code>--ds-cat-lime</code></div></div>
+          </div>
+          <div class="ds-demo-label">Spectral accent (heading emphasis) — the full M-FISH strand spectrum, magenta → lime, AA-legible per theme</div>
+          <div class="ds-demo"><span class="ds-display ds-spectral">replicate · detect · excise · validate</span></div>
+        </section>
+
+        <!-- ── TYPE ──────────────────────────────────────────────────────── -->
+        <section class="ds-section" id="type">
+          <header><h2 class="ds-h2">Typography</h2><span class="maps">Poppins (UI) · JetBrains Mono (data/code)</span></header>
+          <div class="ds-demo col">
+            <div class="ds-scale-row"><span class="tag">display / 30</span><span class="ds-display">The quick brown fox</span></div>
+            <div class="ds-scale-row"><span class="tag">h1 / 24</span><span class="ds-h1">The quick brown fox</span></div>
+            <div class="ds-scale-row"><span class="tag">h2 / 19</span><span class="ds-h2">The quick brown fox</span></div>
+            <div class="ds-scale-row"><span class="tag">h3 / 16</span><span class="ds-h3">The quick brown fox</span></div>
+            <div class="ds-scale-row"><span class="tag">body / 14</span><span class="ds-body">The quick brown fox jumps over the lazy dog</span></div>
+            <div class="ds-scale-row"><span class="tag">small / 13</span><span class="ds-sm">The quick brown fox jumps over the lazy dog</span></div>
+            <div class="ds-scale-row"><span class="tag">label / mono 12</span><span class="ds-eyebrow">Eyebrow label</span></div>
+          </div>
+        </section>
+
+        <!-- ── SPACE / RADIUS / ELEVATION / MOTION ───────────────────────── -->
+        <section class="ds-section" id="scale">
+          <header><h2 class="ds-h2">Spacing, radius &amp; elevation</h2><span class="maps">4px base · 8px rhythm</span></header>
+
+          <div class="ds-demo-label">Spacing scale</div>
+          <div class="ds-demo col">
+            <div class="ds-row"><span class="tag ds-mono ds-sm" style="width:60px">1 · 4</span><span class="ds-space-bar" style="width:4px"></span></div>
+            <div class="ds-row"><span class="tag ds-mono ds-sm" style="width:60px">2 · 8</span><span class="ds-space-bar" style="width:8px"></span></div>
+            <div class="ds-row"><span class="tag ds-mono ds-sm" style="width:60px">3 · 12</span><span class="ds-space-bar" style="width:12px"></span></div>
+            <div class="ds-row"><span class="tag ds-mono ds-sm" style="width:60px">4 · 16</span><span class="ds-space-bar" style="width:16px"></span></div>
+            <div class="ds-row"><span class="tag ds-mono ds-sm" style="width:60px">6 · 24</span><span class="ds-space-bar" style="width:24px"></span></div>
+            <div class="ds-row"><span class="tag ds-mono ds-sm" style="width:60px">8 · 32</span><span class="ds-space-bar" style="width:32px"></span></div>
+            <div class="ds-row"><span class="tag ds-mono ds-sm" style="width:60px">12 · 48</span><span class="ds-space-bar" style="width:48px"></span></div>
+          </div>
+
+          <div class="ds-demo-label">Radius</div>
+          <div class="ds-demo">
+            <div style="text-align:center"><div class="ds-radius-demo" style="border-radius:var(--ds-radius-xs)"></div><code class="ds-mono ds-sm ds-muted">xs · 4</code></div>
+            <div style="text-align:center"><div class="ds-radius-demo" style="border-radius:var(--ds-radius-sm)"></div><code class="ds-mono ds-sm ds-muted">sm · 6</code></div>
+            <div style="text-align:center"><div class="ds-radius-demo" style="border-radius:var(--ds-radius-md)"></div><code class="ds-mono ds-sm ds-muted">md · 8</code></div>
+            <div style="text-align:center"><div class="ds-radius-demo" style="border-radius:var(--ds-radius-lg)"></div><code class="ds-mono ds-sm ds-muted">lg · 12</code></div>
+            <div style="text-align:center"><div class="ds-radius-demo" style="border-radius:var(--ds-radius-pill)"></div><code class="ds-mono ds-sm ds-muted">pill</code></div>
+          </div>
+
+          <div class="ds-demo-label">Elevation (light reads depth from shadow; dark from borders + sheen)</div>
+          <div class="ds-demo">
+            <div class="ds-elev-demo" style="box-shadow:var(--ds-shadow-1)">shadow-1</div>
+            <div class="ds-elev-demo" style="box-shadow:var(--ds-shadow-2)">shadow-2</div>
+            <div class="ds-elev-demo" style="box-shadow:var(--ds-shadow-3)">shadow-3</div>
+          </div>
+        </section>
+
+        <!-- ── BRAND MOTIFS (personality drawn from the genome / immune language) ── -->
+        <section class="ds-section" id="motifs">
+          <header><h2 class="ds-h2">Brand motifs</h2><span class="maps">the genome / immune-system language — used sparingly, never as decoration</span></header>
+          <p class="ds-body" style="margin:0 0 18px">What makes this ownable vs. a generic SaaS theme: a small set of motifs from the marketing site's
+            genome / immune-system identity — the banded chromosome (an LST), the green "watched locus", a sequencing loader, and the
+            mono "lab readout" numerals.</p>
+          <div class="ds-row" style="gap:28px;align-items:center">
+            <div style="text-align:center">
+              <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" style="color:var(--ds-ink)"><rect x="9" y="3" width="6" height="18" rx="3" fill="currentColor" opacity=".2"/><rect x="9" y="5.5" width="6" height="2" rx="1" fill="currentColor" opacity=".6"/><rect x="9" y="9.2" width="6" height="2.4" rx="1.2" fill="var(--ds-green)"/><rect x="9" y="13" width="6" height="2" rx="1" fill="currentColor" opacity=".5"/><rect x="9" y="16.4" width="6" height="1.7" rx=".85" fill="currentColor" opacity=".35"/></svg>
+              <div class="ds-demo-label" style="margin-top:8px">Chromosome / brand mark</div>
+            </div>
+            <div style="text-align:center">
+              <div class="ds-sequencing" aria-label="Sequencing"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="ds-demo-label" style="margin-top:8px">Sequencing loader</div>
+            </div>
+            <div style="text-align:center">
+              <div class="ds-num" style="font-size:26px;font-weight:700;color:var(--ds-ink)">44,827,161</div>
+              <div class="ds-demo-label" style="margin-top:4px">Mono tabular numerals</div>
+            </div>
+          </div>
+          <div class="ds-demo-label">Surveillance line (watched-locus divider)</div>
+          <hr class="ds-divider ds-divider--watch" style="max-width:420px;margin:0">
+        </section>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" class="ds-screen">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Internal design-system gallery: permanently noindex (dark-launched, see docs/WORKFLOW.md). -->
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="icon" href="/prototypes/archive/design-system-explorer/brand/moderne-symbol.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <!-- Pre-paint: set light/dark BEFORE first paint (from a shared #mode=light hash
+       or the saved pref) so a light link doesn't flash dark first. Dark is the
+       default :root, so we only act on "light". -->
+  <script>try{var h=location.hash.match(/mode=(light|dark)/),m=h&&h[1];if(!m){var s=JSON.parse(localStorage.getItem("ds-colors")||"{}");m=s&&s.mode;}if(m==="light")document.documentElement.setAttribute("data-theme","light");}catch(e){}</script>
+  <title>Changelog — Moderne (recreation)</title>
+  <script type="module" crossorigin src="/prototypes/archive/design-system-explorer/assets/ds-theme-BMnLo0P7.js"></script>
+  <script type="module" crossorigin src="/prototypes/archive/design-system-explorer/assets/ds-screen-boot-DGvpR6WC.js"></script>
+  <link rel="stylesheet" crossorigin href="/prototypes/archive/design-system-explorer/assets/ds-theme-CeXlvmss.css">
+  <link rel="stylesheet" crossorigin href="/prototypes/archive/design-system-explorer/assets/ds-screen-boot-iz2c0sdM.css">
+</head>
+<body>
+  <div class="ex-app">
+    <!-- Shared example-screen left nav rail (mirrors moderne-ui PR #8378), restyled
+         with our tokens. Each page marks its active item via aria-current (a 1-line
+         inline script), which the .ds-rail-item[aria-current="page"] rule styles. -->
+    <nav class="ds-rail" aria-label="Primary">
+      <div class="ds-rail-top">
+        <div class="ds-rail-logo" title="Moderne"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="18" rx="3" fill="currentColor" opacity=".16"/><rect x="9" y="5.5" width="6" height="2" rx="1" fill="currentColor" opacity=".5"/><rect x="9" y="9.2" width="6" height="2.4" rx="1.2" fill="var(--ds-green)"/><rect x="9" y="13" width="6" height="2" rx="1" fill="currentColor" opacity=".42"/><rect x="9" y="16.4" width="6" height="1.7" rx=".85" fill="currentColor" opacity=".3"/></svg></div>
+        <span class="ds-rail-badge">v2</span>
+      </div>
+      <div class="ds-rail-scroll">
+        <button class="ds-rail-item" data-nav="moddy"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9 13.8 10.8 12 15.5 10.2 10.8 5.5 9l4.7-1.3z"/></svg><span class="lbl">Moddy</span><span class="beta">Beta</span></button>
+        <button class="ds-rail-item" data-nav="devcenter"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/></svg><span class="lbl">DevCenter</span></button>
+        <button class="ds-rail-item" data-nav="marketplace"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg><span class="lbl">Marketplace</span></button>
+        <button class="ds-rail-item" data-nav="builder"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 005.4-5.4l-2.5 2.5-2-2 2.5-2.5z"/></svg><span class="lbl">Builder</span></button>
+        <button class="ds-rail-item" data-nav="activity"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg><span class="lbl">Activity</span></button>
+        <button class="ds-rail-item" data-nav="changelog"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="lbl">Changelog</span><span class="beta">Beta</span></button>
+        <button class="ds-rail-item" data-nav="repositories"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 8v8M18 10c0 4-6 2-6 6"/></svg><span class="lbl">Repositories</span></button>
+        <button class="ds-rail-item" data-nav="deploy"><svg class="ds-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5M8 9l4-4 4 4"/><path d="M5 19h14"/></svg><span class="lbl">Deploy</span></button>
+      </div>
+      <div class="ds-rail-tenant" aria-hidden="true"></div>
+    </nav>
+    <div class="ex-main">
+      <div class="ex-topbar"><!-- Shared example-screen app bar (mirrors GlobalNavigationBar), restyled with
+     our tokens. Static, no data. -->
+<div class="ds-appbar">
+  <button class="org">
+    <svg class="ds-ic" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2.5" width="8" height="13" rx="1"/><path d="M11 6h4v9.5H3M6 5.5h2M6 8h2M6 10.5h2"/></svg>
+    Moderne
+    <svg class="chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6l4 4 4-4"/></svg>
+  </button>
+  <span class="spacer"></span>
+  <span class="ds-input-wrap" style="max-width:280px">
+    <svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg>
+    <input class="ds-input ds-input--sm" placeholder="Search recipes, repos…" aria-label="Search" />
+  </span>
+  <button class="ds-btn ds-btn--icon ds-btn--subtle" aria-label="Navigation menu" title="Navigation menu">
+    <svg class="ds-ic" viewBox="0 0 16 16" fill="currentColor"><circle cx="3.5" cy="3.5" r="1.4"/><circle cx="8" cy="3.5" r="1.4"/><circle cx="12.5" cy="3.5" r="1.4"/><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/><circle cx="3.5" cy="12.5" r="1.4"/><circle cx="8" cy="12.5" r="1.4"/><circle cx="12.5" cy="12.5" r="1.4"/></svg>
+  </button>
+  <span class="ds-avatar ds-avatar--sm" title="User account">JJ</span>
+</div>
+</div>
+      <div class="ex-content"><div class="ex-inner">
+
+        <div class="ex-pagehead">
+          <h1 style="font-size:24px;font-weight:600;margin:0">Changelog</h1>
+        </div>
+
+        <!-- filter row: wraps on narrow viewports instead of overflowing -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+          <div class="ds-tabs" role="tablist" style="border:0">
+            <button class="ds-tab" role="tab" aria-selected="true">Type</button>
+            <button class="ds-tab" role="tab" aria-selected="false">Check results</button>
+            <button class="ds-tab" role="tab" aria-selected="false">Review state</button>
+            <button class="ds-tab" role="tab" aria-selected="false">Contributors</button>
+            <button class="ds-tab" role="tab" aria-selected="false">Repositories</button>
+          </div>
+          <span style="flex:1"></span>
+          <span class="ds-input-wrap" style="max-width:200px">
+            <svg class="ds-ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg>
+            <input class="ds-input ds-input--sm" placeholder="Search changes" aria-label="Search changes" />
+          </span>
+          <button class="ds-btn ds-btn--secondary ds-btn--sm">Sort: Newest</button>
+        </div>
+
+        <div class="ds-table-wrap">
+          <table class="ds-table" style="min-width:900px">
+            <thead>
+              <tr>
+                <th style="width:34px"><label class="ds-check"><input type="checkbox" aria-label="Select all"></label></th>
+                <th style="width:88px">Type</th>
+                <th>Title</th>
+                <th style="width:104px">Checks</th>
+                <th style="width:172px">Review</th>
+                <th style="width:104px;text-align:right">Diff</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--green">Open</span></td>
+                <td><div>Add lines added/removed metrics to recipe run report</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">openrewrite/rewrite · feat/run-metrics → main · #221</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td><span class="ds-badge ds-badge--green">Approved</span></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+148</span> <span class="diff-del">−12</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--green">Open</span></td>
+                <td><div>Fix Java parser for annotated varargs by adding marker</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">openrewrite/rewrite · fix/varargs-marker → main · #1893</div></td>
+                <td><span class="check-fail">✕ Failed</span></td>
+                <td><span class="ds-badge ds-badge--warn">Changes requested</span></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+64</span> <span class="diff-del">−203</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--accent">Merged</span></td>
+                <td><div>Emit component-based recipe MDX for Moderne docs (forModerneDocs path)</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">openrewrite/rewrite-recipe-markdown-generator · feat/moderne-docs-component-mdx → main · #344</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td><span class="ds-badge ds-badge--green">Approved</span></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+521</span> <span class="diff-del">−46</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--green">Open</span></td>
+                <td><div>Restructure recipe section</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">moderneinc/moderne-docs · recipes-section-restructure → main · #88</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+312</span> <span class="diff-del">−87</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--green">Open</span></td>
+                <td><div>feat(navigation): icon-only collapsible left nav (NeoSideNav)</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">moderneinc/moderne-ui · jaydjj/left-nav-compact → main · #8378</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td><span class="ds-badge ds-badge--warn">Changes requested</span></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+904</span> <span class="diff-del">−118</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--green">Open</span></td>
+                <td><div>Upgrade maven-ejb-plugin alongside jakarta.ejb-api</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">openrewrite/rewrite-migrate-java · deps/jakarta-ejb → main · #512</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+27</span> <span class="diff-del">−19</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge ds-badge--accent">Merged</span></td>
+                <td><div>feat(moddy): New data tables view + dual cards + schema inspector</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">moderneinc/moderne-ui · moddy/data-tables → main · #4637</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td><span class="ds-badge ds-badge--green">Approved</span></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+1,204</span> <span class="diff-del">−210</span></td>
+              </tr>
+              <tr>
+                <td><label class="ds-check"><input type="checkbox"></label></td>
+                <td><span class="ds-badge">Draft</span></td>
+                <td><div>Back the activity view with a DuckDB/Parquet index</div><div class="ds-mono ds-sm ds-muted" style="margin-top:3px">moderneinc/moderne-ui · perf/activity-index → main</div></td>
+                <td><span class="check-pass">✓ Passed</span></td>
+                <td></td>
+                <td style="text-align:right;white-space:nowrap"><span class="diff-add">+76</span> <span class="diff-del">−5</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ds-sm ds-muted" style="margin-top:16px;text-align:center">50 results · <a href="#">Load more</a></div>
+
+      </div></div>
+    </div>
+  </div>
+  <script>document.querySelector('.ds-rail-item[data-nav="changelog"]')?.setAttribute('aria-current','page');</script>
+</body>
+</html>
