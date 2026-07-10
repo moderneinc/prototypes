@@ -98,6 +98,21 @@ Values shown as *light / dark*. "Neo" = change in `@moderneinc/neo-design`; "App
 | `pendingStatusTokens` (app shim: `queued/active/canceled` purples) | Neo `status.{queued, active}` = periwinkle pair `#3E5BE8`/`#8CA0F5`; `status.neutral` = muted+sunken pill | **Replace + deprecate shim** | Closes the documented gap (moderne-ui#8435) with Morpheus hues instead of the temp purples |
 | `activity.recipeRun` (`#9A25BB`-family) | `violet` primitives unchanged | **Reuse** | Recipe-run violet indicator carries over |
 
+### Selection controls (checkbox / radio)
+
+| Current token | New token (or new value) | Action | Reason |
+|---|---|---|---|
+| MUI Checkbox defaults via `themes/component-defaults/mod-mui-checkbox.tsx` (`theme.palette.grey` + solid accent fill / white glyph when checked) | `control.border` → alias `border.strong`; `control.borderSelected` + `control.glyph` → alias `link.default` (`#1245AE` / `#7FA9F9`); fill stays `surfaces.card` in **all** states | **Create new (aliases) + re-point component default** | Morpheus checkboxes are **outline-style**: checked/indeterminate render an accent border + accent glyph on the card fill instead of a solid fill — glyphs measure 8.1:1 / 6.4:1, borders ride the AA tier |
+| — (gap: no indeterminate treatment) | indeterminate state = same `control.*` tokens with a minus glyph | **Create state** | Partially-selected tree roots (org rows) now show a true indeterminate mark; aligns with the in-flight results-tree work (`tree-component-update.html` prototype / `feat/update-results-view-tree`) which specifies checked / indeterminate / unchecked / no-checkbox rows |
+
+### Progress, loading & empty states
+
+| Current token | New token | Action | Reason |
+|---|---|---|---|
+| — (gap) | `progress.track` → alias `accent-tint`; `progress.fill` + `progress.label` → alias accent; percent text uses `semanticTypography.data.small` | **Create new (aliases)** | The Dev Center "Updating data — 0% Running" chip; generalizes to any inline progress |
+| `NeoLoadingSpinner` internals | spinner = `buttons.primary` pair (bg circle + fg arc); `motion.spin` = 800ms linear infinite | **Create new** | The running-state spinner button; loading indicators are the accepted exception to entrance-motion reduction (state conveyance), which the plan records explicitly |
+| Static empty-state illustrations (baked-color SVG assets, e.g. the DevCenter interstitial art) | `illustration.{panel: surfaces.card, stroke: border.strong, strokeMuted: icons.utility, inset: surfaces.sunken, accent: periwinkle[500/300], positive: status.success.default}` | **Create new (alias set) + replace assets** | Morpheus interstitials draw illustrations from semantic tokens (SVG `currentColor`/vars) so the art re-colors per mode — static assets with hard-coded fills can't follow a dual-mode theme |
+
 ### Data-viz (new category)
 
 | Current token | New token | Action | Reason |
@@ -139,8 +154,11 @@ Values shown as *light / dark*. "Neo" = change in `@moderneinc/neo-design`; "App
 - `link.{default, hover, visited?}`.
 - `dataviz.{categorical[], boundary[], severity[], na, grid}`.
 - `status.{queued, active}` re-homed from the app shim.
+- `control.{border, borderSelected, glyph}` — selection controls (checkbox/radio), all three as aliases of `border.strong` / `link.default`.
+- `progress.{track, fill, label}` — inline progress chips and bars (aliases of accent tint / accent).
+- `illustration.{panel, stroke, strokeMuted, inset, accent, positive}` — empty-state artwork palette (pure alias set; see §8).
 - `semanticTypography.data.{default, small}`.
-- `motion.{hover, enter}`.
+- `motion.{hover, enter, spin}` (`spin` = 800ms linear infinite; loading indicators are the recorded exception to reduced-motion entrance suppression).
 - *Why semantic:* each encodes intent that many components share; values differ per mode.
 
 **Component (stay app-side or in `neo-styled-components`):**
@@ -158,6 +176,8 @@ Values shown as *light / dark*. "Neo" = change in `@moderneinc/neo-design`; "App
 **Deprecate → remove:**
 - `moderneColors` legacy ramps (`newGreys`, `grey`, `red`, `green`, `blue`, `indigo`, `violet`, `roseate`, `black` bags) — already `@deprecated`; Phase 5 removes after usage burn-down (helpers `textColor()`/`backgroundColor()` re-pointed first).
 - `pendingStatusTokens` shim file.
+- Baked-color empty-state illustration assets (replaced by token-driven SVGs; see §3 "Progress, loading & empty states").
+- `mod-mui-checkbox.tsx` grey-palette defaults (re-pointed at `control.*`).
 - `CHRONO_MIGRATION_GRADIENT_COLORS`.
 - `MuiButton` `borderRadius: 100` override (function moves into the token).
 - `body1`/`body2` deprecated variants (existing plan, unchanged).
@@ -176,6 +196,9 @@ Values shown as *light / dark*. "Neo" = change in `@moderneinc/neo-design`; "App
 | `NeoDataGrid` / tables | **Medium** | Surface/hairline/typography value flips; sticky-header + viewport-fit pattern optional follow-on |
 | `NeoModal` / `NeoMenu` / `NeoToast` / `NeoAlert` | **Medium** | Shadow re-values, scrim lightening, warn/pending status recolors |
 | `NeoInputField` / `NeoSelect` / filters | **Medium** | Radius 8→10, `border.strong` at AA alpha, field surface token |
+| `NeoCheckbox` / `NeoRadio` / DataGrid selection column + `mod-mui-checkbox.tsx` | **Medium** | Outline style replaces solid accent fill (checked/indeterminate = accent border + accent glyph on card fill); MUI `indeterminate` prop wired on tree/grid roots; coordinate with the in-flight `feat/update-results-view-tree` work |
+| Empty states / interstitials (DevCenter no-runs, error pages, zero-result views) | **Medium** | Baked-color illustration assets replaced with token-driven SVGs (`illustration.*`); each empty state needs a per-mode render check |
+| `NeoLoadingSpinner` / inline progress | **Low** | Re-colors via `progress.*` + `buttons.primary` pair; `motion.spin` token |
 | Typography everywhere | **Medium** | Family swap is global but metric-similar (Geist ≈ Inter widths); spot-check truncation and dense tables |
 | Diff viewer | **Medium** | `diff*` token re-values on new su/er tints |
 | `NeoBadge` / `NeoTag` / status pills | **Low** | Stay pill; colors ride status token updates |
@@ -190,7 +213,7 @@ Values shown as *light / dark*. "Neo" = change in `@moderneinc/neo-design`; "App
 **Phase 0 — Baseline (no changes).** `npm install` and extract literal values from `neo-design/dist/*.css` to finalize this table against real current values (this plan flags every place that matters). Capture Storybook screenshot baselines for the components in §6.
 
 **Phase 1 — Additive tokens (no visual change).**
-Upstream in `neo-design@next`: add ink/cream/periwinkle primitives, new semantic slots (`surfaces.*`, `border.{subtle,strong}`, `link.*`, `dataviz.*`, `status.{queued,active}`, `semanticTypography.data.*`, `motion.*`) with **current-look-compatible values or aliases** (e.g. `border.strong` initially aliases `border.primary`). App upgrades the dependency. Existing components render pixel-identical. *Exit gate: zero visual diffs.*
+Upstream in `neo-design@next`: add ink/cream/periwinkle primitives, new semantic slots (`surfaces.*`, `border.{subtle,strong}`, `link.*`, `dataviz.*`, `status.{queued,active}`, `control.*`, `progress.*`, `illustration.*`, `semanticTypography.data.*`, `motion.*`) with **current-look-compatible values or aliases** (e.g. `border.strong` initially aliases `border.primary`). App upgrades the dependency. Existing components render pixel-identical. *Exit gate: zero visual diffs.*
 
 **Phase 2 — Light-mode value flip.**
 Re-value the semantic tokens to Morpheus light in `neo-design@next`; swap fonts to Geist in `_app.tsx`; flip `borderRadius.button` → 4 and delete the `MuiButton` pill override; re-point links to `link.*`. One release train, feature-flagged if possible (`cssVariables: true` makes a runtime flag cheap). *Exit gate: Storybook diffs reviewed; WCAG checklist (§9) green in light mode; biome passes.*
@@ -199,7 +222,7 @@ Re-value the semantic tokens to Morpheus light in `neo-design@next`; swap fonts 
 Fill `darkPalette` from Morpheus dark tokens (the mapping table's second values); add `appTheme: 'light' | 'dark' | 'system'` to `stores/user-preference.store.ts` (precedent: `builderTheme`); surface a toggle in the account menu; default `system`. *Exit gate: full-app dark QA; WCAG checklist green in dark; elevation ramp (rail `#141419` → canvas `#1B1B21` → card `#26262E`) verified on the five table pages + Dev Center.*
 
 **Phase 4 — Component & data-viz tokens.**
-Re-point `MODERNE_CHART_COLOR_SCALE` and `CHRONO_*` at `dataviz.*`; implement light-mode boundary rings per chart library; retire `pendingStatusTokens` into `status.{queued,active,canceled}`; re-value `diff*`; sync builder WebGL constants; add motion tokens to the entrance animations.
+Re-point `MODERNE_CHART_COLOR_SCALE` and `CHRONO_*` at `dataviz.*`; implement light-mode boundary rings per chart library; retire `pendingStatusTokens` into `status.{queued,active,canceled}`; re-value `diff*`; re-point `mod-mui-checkbox.tsx` at `control.*` and wire the indeterminate state where trees/grids partially select (coordinate with `feat/update-results-view-tree`); replace baked-color empty-state illustrations with token-driven SVGs on `illustration.*`; re-color `NeoLoadingSpinner`/progress chips via `progress.*`; sync builder WebGL constants; add motion tokens to the entrance animations.
 
 **Phase 5 — Cleanup.**
 Delete `moderneColors` legacy ramps + helpers after usage burn-down, remove the `ModerneCard` shadow and remaining deprecated variants, tighten biome plugins (ban `theme.palette.<legacy-ramp>` access), archive the `--ds-*` prototype sheet.
@@ -214,6 +237,8 @@ Delete `moderneColors` legacy ramps + helpers after usage burn-down, remove the 
 - **Chart rings are paired tokens.** `dataviz.categorical[n]` without its `boundary[n]` fails accessibility in light mode — publish them as pairs and lint for lone usage.
 - **One-off exceptions stay component-scoped.** Resist promoting DataGrid heights, WebGL colors, or the diff palette into semantics; single-consumer tokens at the semantic layer are how bags like `moderneColors` happen.
 - **Kill the `99`-alpha-suffix idiom** in chart constants (string-concatenated alpha is un-lintable and mode-blind); solid dataviz tokens replace it.
+- **`control.*`, `progress.*` and `illustration.*` are alias-only sets.** They own no values — every entry points at an existing semantic (`border.strong`, `link.default`, accent tints, `surfaces.*`, `status.success`). If one ever needs its own value, that's a signal the underlying semantic is wrong, not a license to fork. This keeps the new categories from becoming maintenance surface.
+- **Illustrations are code, not assets.** Empty-state art ships as inline SVG consuming tokens; exporting flattened SVGs/PNGs from design tools reintroduces baked colors that can't follow mode switches.
 
 ---
 
@@ -236,8 +261,10 @@ Delete `moderneColors` legacy ramps + helpers after usage burn-down, remove the 
 - [ ] Storybook visual diffs reviewed for §6 High/Medium components.
 - [ ] No `moderneColors.*` usage added (grep gate).
 - [ ] Status pills still pill-shaped; buttons 4px (explicit both-direction check).
-- [ ] `prefers-reduced-motion` honored on any animated entrance.
-- [ ] Reference render parity spot-check against `morpheus.html` (Dev Center, Repositories table, Moddy, login) in both modes.
+- [ ] `prefers-reduced-motion` honored on any animated entrance (loading spinners exempt as state indicators — recorded decision).
+- [ ] Selection controls: checked/indeterminate glyph and border ≥ 3:1 in both modes (outline style has no fill to lean on); indeterminate renders where selection is partial.
+- [ ] Empty-state illustrations render correctly in **both** modes (no baked colors; art follows the theme).
+- [ ] Reference render parity spot-check against `morpheus.html` (Dev Center incl. `?dcempty=1` interstitial, Repositories table, Moddy, login) in both modes.
 
 ---
 
