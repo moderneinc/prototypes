@@ -24,18 +24,10 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | File | What it explores |
 | --- | --- |
 | [`design-system-explorer/`](https://moderneinc.github.io/prototypes/design-system-explorer/) | **Dark-mode SaaS + Docs design system** — live theme builder, foundations, components, data-viz, and recreated Moderne screens. Multi-page app; source in [`design-system-explorer-src/`](design-system-explorer-src/) |
-| [`moderne-dashboard.html`](https://moderneinc.github.io/prototypes/moderne-dashboard.html) | Moderne dashboard layout |
 | [`left-nav-design-vs-shipped.html`](https://moderneinc.github.io/prototypes/left-nav-design-vs-shipped.html) | Left-nav rail **design vs. shipped** — real renders of the `left-nav-compact` prototype next to the shipped `NeoSideNav` (`#8439`), expanded/collapsed, with a breakdown of what actually differs |
-| [`day-zero.html`](https://moderneinc.github.io/prototypes/day-zero.html) | First-run / day-zero onboarding tour |
 | [`day-zero-revised.html`](https://moderneinc.github.io/prototypes/day-zero-revised.html) | Revised day-zero tour variant |
-| [`org-selector.html`](https://moderneinc.github.io/prototypes/org-selector.html) | Org selector with centered modal picker |
-| [`moddy.html`](https://moderneinc.github.io/prototypes/moddy.html) | Moddy prompt input |
 | [`moddy-help.html`](https://moderneinc.github.io/prototypes/moddy-help.html) | Moddy first-contact "by role" states |
-| [`moddy-trigrep.html`](https://moderneinc.github.io/prototypes/moddy-trigrep.html) | Moddy × Trigrep exploration |
-| [`moddy-trigrep-split.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-split.html) | Moddy × Trigrep split layout |
-| [`moddy-trigrep-combined.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-combined.html) | Moddy × Trigrep combined layout |
 | [`moddy-trigrep-revised.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-revised.html) | Revised Moddy refine-search results |
-| [`trigrep.html`](https://moderneinc.github.io/prototypes/trigrep.html) | Trigrep spec audit + parallel Moddy/Trigrep filter sync |
 | [`results.html`](https://moderneinc.github.io/prototypes/results.html) | Recipe run Results tab |
 | [`results-view-summary.html`](https://moderneinc.github.io/prototypes/results-view-summary.html) | Results Summary + options panel: show/hide + container-query responsiveness |
 | [`results-hierarchical-selection.html`](https://moderneinc.github.io/prototypes/results-hierarchical-selection.html) | Results hierarchy: drill repo → package → file → class → method (tree vs group-by) |
@@ -50,7 +42,6 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | [`visualizations-results-inline.html`](https://moderneinc.github.io/prototypes/visualizations-results-inline.html) | Inline-config visualizations demo |
 | [`visualizations-tab-results-view.html`](https://moderneinc.github.io/prototypes/visualizations-tab-results-view.html) | Visualizations tab: master-detail picker with Configure panel |
 | [`CLI-rewrites.html`](https://moderneinc.github.io/prototypes/CLI-rewrites.html) | CLI / terminal label rewrites |
-| [`status-audit.html`](https://moderneinc.github.io/prototypes/status-audit.html) | Status reference by artifact — every repository status with SaaS chip (label + where) and CLI trigger side by side |
 | [`proposed-statuses.html`](https://moderneinc.github.io/prototypes/proposed-statuses.html) | Proposed status palette stress test — six page mockups (Run results · Commits · Visualizations · Orgs · Activity · Auth strips) exercising every status under the new violet/warm-grey palette, plus a coverage gallery showing each status in all three display modes |
 | [`brand-guidelines.html`](https://moderneinc.github.io/prototypes/brand-guidelines.html) | Brand guidelines, including Product Symbols |
 | [`platform-light-dark.html`](https://moderneinc.github.io/prototypes/platform-light-dark.html) | **Re-theming the platform** — the full app (Moddy, Marketplace, Results, Activity) rebuilt from current Moderne UI source and rendered simultaneously in light + dark: draggable vertical divider plus a Dark / Compare / Light switch. Rail/rows are clickable; deep-links via `#moddy` / `#marketplace` / `#results` / `#activity` |
@@ -62,6 +53,26 @@ For example: `https://moderneinc.github.io/prototypes/results.html`
 | [`moderne-palette.html`](https://moderneinc.github.io/prototypes/moderne-palette.html) | Palette reference — strand-spectrum brand colors on a recreated hero, with a light/dark mode toggle (warm-black ↔ cool-grey neutrals); companion `moderne-palette-tokens.css` / `moderne-palette.json` |
 | [`chromosome-generator.html`](https://moderneinc.github.io/prototypes/chromosome-generator.html) | Chromosome SVG generator — same drawing routine as the moderne.ai karyotype hero (curved spine, centromere pinch, banded strokes). Marketing tool for producing on-brand chromosome SVGs: **pair or single** mode, **8 site hues** as swatches, deviant-band overrides (accent / red / green / none), background + height controls, **karyotype presets** (the 18 site pairs), and **sets** that bundle multiple chromosomes into one exportable SVG. State persists in the URL for shareable links. Full keyboard + screen-reader support (radiogroups with arrow-key nav, focus indicators, live regions) |
 | [`email-kit/`](https://moderneinc.github.io/prototypes/email-kit/) | Moderne email template kit — light + dark send-ready HTML emails, gallery with iframe previews, hosted image assets so emails render in Gmail/Outlook |
+
+## Archived
+
+Older prototypes kept for reference; not linked from the main table above.
+
+| File | Notes |
+| --- | --- |
+| [`archive/activity-page.html`](https://moderneinc.github.io/prototypes/archive/activity-page.html) | Activity page (earlier iteration) |
+| [`archive/day-zero.html`](https://moderneinc.github.io/prototypes/archive/day-zero.html) | Superseded by [`day-zero-revised.html`](https://moderneinc.github.io/prototypes/day-zero-revised.html) |
+| [`archive/moddy.html`](https://moderneinc.github.io/prototypes/archive/moddy.html) | Moddy prompt input |
+| [`archive/moddy-trigrep.html`](https://moderneinc.github.io/prototypes/archive/moddy-trigrep.html) | Superseded by [`moddy-trigrep-revised.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-revised.html) |
+| [`archive/moddy-trigrep-split.html`](https://moderneinc.github.io/prototypes/archive/moddy-trigrep-split.html) | Superseded by [`moddy-trigrep-revised.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-revised.html) |
+| [`archive/moddy-trigrep-combined.html`](https://moderneinc.github.io/prototypes/archive/moddy-trigrep-combined.html) | Superseded by [`moddy-trigrep-revised.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-revised.html) |
+| [`archive/moderne-dashboard.html`](https://moderneinc.github.io/prototypes/archive/moderne-dashboard.html) | Moderne dashboard layout |
+| [`archive/org-selector.html`](https://moderneinc.github.io/prototypes/archive/org-selector.html) | Org selector with centered modal picker |
+| [`archive/status-audit.html`](https://moderneinc.github.io/prototypes/archive/status-audit.html) | Status reference by artifact — every repository status with SaaS chip (label + where) and CLI trigger side by side |
+| [`archive/statuses-update.html`](https://moderneinc.github.io/prototypes/archive/statuses-update.html) | Status palette update |
+| [`archive/trigrep.html`](https://moderneinc.github.io/prototypes/archive/trigrep.html) | Superseded by `trigrep-revised.html` |
+| [`archive/trigrep-activity.html`](https://moderneinc.github.io/prototypes/archive/trigrep-activity.html) | Trigrep + activity page combined view |
+| [`archive/trigrep-revised-rebrand.html`](https://moderneinc.github.io/prototypes/archive/trigrep-revised-rebrand.html) | Trigrep revised with warm-dark 2026 rebrand |
 
 ## Wireframe kit
 
