@@ -483,8 +483,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
 .sumopt svg { width: 15px; height: 15px; color: var(--muted); }
 /* tree checkboxes */
 .tck { width: 16px; height: 16px; border: 1.5px solid var(--line-strong); border-radius: 4px; flex: none; display: inline-flex; align-items: center; justify-content: center; background: var(--card); color: transparent; }
-.tck.on { background: var(--accent); border-color: var(--accent); color: #fff; }
-.tck svg { width: 11px; height: 11px; }
+.tck.on, .tck.ind { background: var(--card); border-color: var(--accent); color: var(--accent); }
+.tck svg { width: 11px; height: 11px; stroke-width: 3; }
 
 /* summary card (key/value rows) */
 .summary { display: grid; grid-template-columns: 1fr 1fr; gap: 1px 24px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 9px 14px; margin-bottom: 12px; }
@@ -1273,6 +1273,24 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .rd-tagcol { width: 220px; }
 .rd-name { font-weight: 600; }
 
+/* ---- Dev Center interstitial: configured, no completed runs (?dcempty=1) ---- */
+.dc-empty-wrap { display: none; flex-direction: column; align-items: center; gap: 24px; padding: 52px 0 90px; }
+.dc-empty-art { width: 240px; height: 170px; }
+.dc-empty-msg { margin: 0; font-size: 15px; color: var(--text); text-align: center; }
+.dc-updating { display: none; align-items: center; gap: 10px; font-size: 12px; }
+.dc-updating .lbl { color: var(--accent); font-weight: 600; }
+.dc-updating .track { width: 92px; height: 6px; border-radius: 999px; background: var(--accent-tint); overflow: hidden; }
+.dc-updating .fill { display: block; width: 4%; height: 100%; border-radius: 999px; background: var(--accent); }
+.dc-updating .pct { font-family: var(--font-mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+.dc-spinbtn { display: none; width: 28px; height: 28px; border-radius: 999px; border: none; background: var(--primary-bg); align-items: center; justify-content: center; flex: none; }
+.dc-spinbtn .spin { width: 13px; height: 13px; border-radius: 999px; border: 2px solid color-mix(in srgb, var(--primary-fg) 35%, transparent); border-top-color: var(--primary-fg); animation: dc-spin .8s linear infinite; }
+@keyframes dc-spin { to { transform: rotate(360deg); } }
+body.dc-empty .page[data-page="devcenter"] > :not(.pagehead):not(.dc-config):not(.dc-empty-wrap) { display: none !important; }
+body.dc-empty .dc-empty-wrap { display: flex; }
+body.dc-empty .dc-hide-empty, body.dc-empty .dc-toolbar .dc-updated, body.dc-empty .dc-toolbar .dc-help { display: none !important; }
+body.dc-empty .dc-updating { display: inline-flex; }
+body.dc-empty .dc-spinbtn { display: inline-flex; }
+
 /* ---- Configure DevCenter (Customize sub-view) ---- */
 .dc-config[hidden] { display: none !important; }
 .page[data-page="devcenter"].configuring > :not(.dc-config) { display: none !important; }
@@ -1869,7 +1887,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
               <div class="tree-head"><span>Hierarchy</span><span class="th-results">Results</span></div>
               <div class="org-row">
                 <span class="chev-btn"><svg><use href="#i-chevr"/></svg></span>
-                <span class="tck on"><svg><use href="#i-check"/></svg></span>
+                <span class="tck ind"><svg><use href="#i-minus"/></svg></span>
                 <span class="org-name"><svg><use href="#i-user"/></svg> jetbrains</span>
                 <span class="org-results">8,064 results</span>
               </div>
@@ -2282,16 +2300,57 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
           </div>
           <div class="actions">
             <div class="dc-toolbar">
+              <span class="dc-updating"><span class="lbl">Updating data</span><span class="track"><span class="fill"></span></span><span class="pct">0% Running</span></span>
               <span class="dc-updated">Last updated 12 days ago</span>
               <svg class="dc-help"><use href="#i-help"/></svg>
-              <span class="dc-tb-div"></span>
-              <span class="dc-toggle" data-tgl="timeline"><span class="dc-track"><span class="dc-knob"></span></span> Timeline view</span>
+              <span class="dc-tb-div dc-hide-empty"></span>
+              <span class="dc-toggle dc-hide-empty" data-tgl="timeline"><span class="dc-track"><span class="dc-knob"></span></span> Timeline view</span>
               <span class="dc-tb-div"></span>
               <button class="pill-btn dc-customize">Customize</button>
-              <button class="pill-btn pill-btn--primary">Run DevCenter recipe</button>
+              <button class="pill-btn pill-btn--primary dc-hide-empty">Run DevCenter recipe</button>
+              <button class="dc-spinbtn" title="DevCenter recipe running"><span class="spin"></span></button>
               <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
             </div>
           </div>
+        </div>
+
+        <!-- interstitial: recipe configured, no completed runs (?dcempty=1) -->
+        <div class="dc-empty-wrap">
+          <svg class="dc-empty-art" viewBox="0 0 240 170" fill="none">
+            <rect x="34" y="6" width="160" height="112" rx="9" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.5"/>
+            <circle cx="46" cy="17" r="2.2" fill="var(--muted)"/><circle cx="55" cy="17" r="2.2" fill="var(--muted)"/><circle cx="64" cy="17" r="2.2" fill="var(--muted)"/>
+            <line x1="34" y1="27" x2="194" y2="27" stroke="var(--line)" stroke-width="1.2"/>
+            <g color="var(--muted)"><use href="#i-gear" x="52" y="36" width="34" height="34"/></g>
+            <g color="var(--line-strong)"><use href="#i-gear" x="84" y="30" width="24" height="24"/></g>
+            <g color="var(--ch-p1)"><use href="#i-gear" x="76" y="58" width="28" height="28"/></g>
+            <rect x="126" y="36" width="58" height="24" rx="5" fill="var(--surface)"/>
+            <circle cx="139" cy="48" r="7" stroke="var(--ch-p1)" stroke-width="2.6" fill="none" stroke-dasharray="26 18"/>
+            <line x1="151" y1="44" x2="176" y2="44" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="151" y1="52" x2="169" y2="52" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
+            <rect x="126" y="66" width="58" height="24" rx="5" fill="var(--surface)"/>
+            <circle cx="139" cy="78" r="7" stroke="var(--green-hi)" stroke-width="2.6" fill="none" stroke-dasharray="30 14"/>
+            <line x1="151" y1="74" x2="176" y2="74" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="151" y1="82" x2="169" y2="82" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
+            <rect x="22" y="112" width="30" height="36" rx="6" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.5"/>
+            <circle cx="30" cy="122" r="3.4" fill="var(--ch-p1)"/>
+            <line x1="27" y1="132" x2="47" y2="132" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="27" y1="139" x2="42" y2="139" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
+            <rect x="58" y="112" width="30" height="36" rx="6" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.5"/>
+            <circle cx="66" cy="122" r="3.4" fill="var(--surface2)"/>
+            <line x1="63" y1="132" x2="83" y2="132" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="63" y1="139" x2="78" y2="139" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
+            <rect x="94" y="112" width="30" height="36" rx="6" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.5"/>
+            <circle cx="102" cy="122" r="3.4" fill="var(--surface2)"/>
+            <line x1="99" y1="132" x2="119" y2="132" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="99" y1="139" x2="114" y2="139" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="146" y1="148" x2="216" y2="148" stroke="var(--line-strong)" stroke-width="1.5"/>
+            <rect x="152" y="128" width="7" height="20" rx="1.5" fill="var(--ch-p1)" opacity=".45"/>
+            <rect x="163" y="118" width="7" height="30" rx="1.5" fill="var(--ch-p1)"/>
+            <rect x="174" y="134" width="7" height="14" rx="1.5" fill="var(--ch-p1)" opacity=".45"/>
+            <rect x="185" y="122" width="7" height="26" rx="1.5" fill="var(--ch-p1)" opacity=".7"/>
+            <rect x="196" y="138" width="7" height="10" rx="1.5" fill="var(--ch-p1)" opacity=".45"/>
+          </svg>
+          <p class="dc-empty-msg">A DevCenter recipe is configured but there are no completed runs.</p>
         </div>
 
         <div class="dc-sec"><h2>Organizational ownership</h2></div>
@@ -3507,6 +3566,8 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
   // URL params that target the collapsed segment expand it so their state is visible
   var advQs = new URLSearchParams(location.search);
   if (advQs.get('cvd') || advQs.get('wcag') === '1') setAdv(true);
+  // ?dcempty=1 shows the Dev Center 'no completed runs' interstitial
+  if (advQs.get('dcempty') === '1') document.body.classList.add('dc-empty');
 
   // ---- primary color variant (blue / green) ----
   var PRIMARIES = ['violet', 'blue', 'teal', 'green', 'blue-aaa', 'magenta', 'lime'];
