@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Introduction to OpenRewrite — Moderne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   Intro to OpenRewrite — Nordic theme (retheme of Articulate course)
+   Palette + type mirror nordic.html (body.skin-nordic): warm cream
+   canvas / ink text in light, deep ink-navy in dark. Mint success,
+   Geist + Geist Mono. Content sourced from the Articulate Rise course.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+:root {
+  --font-sans: 'Geist','Inter',system-ui,-apple-system,sans-serif;
+  --font-mono: 'Geist Mono','JetBrains Mono',monospace;
+  --maxw: 760px;
+  --nav-w: 300px;
+}
+/* ---- Nordic tokens ---- */
+html[data-theme="light"] {
+  --bg:#F2F0EA; --field:#FBFAF6; --card:#FBFAF6; --card-head:#F2EFE7;
+  --surface:#EDEBE2; --surface2:#E4E1D6; --row-hover:#F4F2EB;
+  --line:rgba(35,35,66,.12); --line2:rgba(35,35,66,.08); --line-strong:rgba(35,35,66,.28);
+  --text:#232342; --muted:#62627A;
+  --ink:#232342; --ink-fg:#FBFAF6;
+  --accent:#3E5BE8; --accent-tint:rgba(62,91,232,.10);
+  --mint:#30F284; --mint-deep:#1D5937; --mint-tint:rgba(48,242,132,.16);
+  --coral:#FF6F61; --coral-deep:#A63325; --coral-tint:rgba(255,111,97,.12);
+  --violet:#9D5BE8;
+  --shadow:0 1px 2px rgba(35,35,66,.06), 0 8px 24px -12px rgba(35,35,66,.18);
+  --shadow-lg:0 12px 40px -12px rgba(35,35,66,.22);
+}
+html[data-theme="dark"] {
+  --bg:#141419; --field:#222229; --card:#26262E; --card-head:#2D2D36;
+  --surface:#2A2A32; --surface2:#33333D; --row-hover:#2E2E38;
+  --line:rgba(240,240,246,.12); --line2:rgba(240,240,246,.08); --line-strong:rgba(240,240,246,.24);
+  --text:#F1F0EA; --muted:#9C9CA8;
+  --ink:#F1F0EA; --ink-fg:#17171C;
+  --accent:#8CA0F5; --accent-tint:rgba(140,160,245,.14);
+  --mint:#30F284; --mint-deep:#30F284; --mint-tint:rgba(48,242,132,.13);
+  --coral:#FF8477; --coral-deep:#FF8477; --coral-tint:rgba(255,111,97,.14);
+  --violet:#B98BF0;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+  --shadow-lg:0 18px 50px -16px rgba(0,0,0,.7);
+}
+body {
+  font-family:var(--font-sans); font-optical-sizing:auto;
+  background:var(--bg); color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.6;
+}
+
+/* ---------- app shell ---------- */
+.app { display:flex; min-height:100vh; }
+
+/* sidebar */
+.sidebar {
+  width:var(--nav-w); flex:none; position:sticky; top:0; align-self:flex-start;
+  height:100vh; overflow-y:auto; border-right:1px solid var(--line);
+  background:var(--field); padding:22px 16px 40px;
+}
+.brand { display:flex; align-items:center; gap:10px; padding:4px 8px 18px; }
+.brand img { height:22px; width:auto; }
+/* course logo art is white-on-transparent; render it as ink in light mode */
+html[data-theme="light"] .brand img,
+html[data-theme="light"] .foot-card img { filter:brightness(0) saturate(0); }
+.brand .brand-div { width:1px; height:20px; background:var(--line-strong); }
+.brand .brand-tag { font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.side-title { font-size:13px; font-weight:600; color:var(--text); padding:0 8px 4px; line-height:1.4; }
+.side-sub { font-size:11.5px; color:var(--muted); padding:0 8px 16px; font-family:var(--font-mono); }
+.nav-part {
+  font-size:10.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--muted); padding:18px 8px 6px; margin-top:6px; border-top:1px solid var(--line2);
+}
+.nav-part:first-of-type { border-top:none; margin-top:0; }
+.nav-lesson {
+  display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--muted);
+  font-size:13px; line-height:1.35; padding:8px 10px; border-radius:9px;
+  transition:background .12s, color .12s;
+}
+.nav-lesson:hover { background:var(--surface); color:var(--text); }
+.nav-lesson.active { background:var(--surface); color:var(--text); font-weight:600; }
+.nav-dot { width:6px; height:6px; border-radius:999px; background:var(--line-strong); flex:none; transition:background .12s; }
+.nav-lesson:hover .nav-dot, .nav-lesson.active .nav-dot { background:var(--mint); }
+
+/* main column */
+.main { flex:1; min-width:0; }
+.topbar {
+  position:sticky; top:0; z-index:20; height:56px;
+  display:flex; align-items:center; gap:14px; padding:0 28px;
+  background:color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter:blur(12px); border-bottom:1px solid var(--line);
+}
+.topbar .crumb { font-size:13px; color:var(--muted); }
+.topbar .crumb b { color:var(--text); font-weight:600; }
+.topbar .spacer { flex:1; }
+.progress-wrap { display:flex; align-items:center; gap:9px; font-size:12px; color:var(--muted); }
+.progress-track { width:120px; height:6px; border-radius:999px; background:var(--surface2); overflow:hidden; }
+.progress-fill { height:100%; width:0; background:var(--mint); border-radius:999px; transition:width .15s; }
+.theme-btn {
+  display:inline-flex; align-items:center; gap:7px; font:inherit; font-size:12.5px; font-weight:600;
+  color:var(--text); background:var(--field); border:1px solid var(--line-strong);
+  border-radius:999px; padding:7px 13px; cursor:pointer;
+}
+.theme-btn:hover { background:var(--surface); }
+.theme-btn svg { width:15px; height:15px; }
+
+.reading { max-width:var(--maxw); margin:0 auto; padding:20px 28px 120px; }
+
+/* ---------- hero ---------- */
+.hero {
+  position:relative; border-radius:20px; overflow:hidden; margin:16px 0 40px;
+  border:1px solid var(--line); box-shadow:var(--shadow-lg); isolation:isolate;
+}
+.hero img { width:100%; height:300px; object-fit:cover; display:block; filter:saturate(1.02); }
+.hero::after {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(20,20,25,.15) 0%, rgba(20,20,25,.72) 62%, rgba(20,20,25,.92) 100%);
+}
+.hero-body { position:absolute; inset:auto 0 0 0; padding:30px 34px; z-index:2; color:#F1F0EA; }
+.hero-kicker {
+  display:inline-flex; align-items:center; gap:7px; font-size:11px; font-weight:700;
+  letter-spacing:.09em; text-transform:uppercase; color:#141419;
+  background:var(--mint); padding:5px 11px; border-radius:999px; margin-bottom:14px;
+}
+.hero-body h1 { margin:0; font-size:34px; line-height:1.12; letter-spacing:-.02em; font-weight:700; max-width:24ch; }
+.hero-desc { margin:26px 0 0; }
+.hero-desc .rich { font-size:15.5px; color:var(--muted); }
+
+/* ---------- part dividers ---------- */
+.part-divider { padding:64px 0 8px; text-align:left; scroll-margin-top:72px; }
+.part-kicker { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--mint-deep); }
+html[data-theme="dark"] .part-kicker { color:var(--mint); }
+.part-divider h2 {
+  margin:8px 0 0; font-size:26px; font-weight:700; letter-spacing:-.02em; line-height:1.2;
+  padding-bottom:20px; border-bottom:2px solid var(--line);
+}
+
+/* ---------- lesson ---------- */
+.lesson { padding:30px 0; scroll-margin-top:72px; }
+.lesson + .lesson { border-top:1px solid var(--line2); }
+.lesson-head { margin-bottom:26px; }
+.lesson-kicker { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.lesson-head h1 { margin:8px 0 0; font-size:29px; font-weight:700; letter-spacing:-.02em; line-height:1.18; }
+
+.blk { margin:22px 0; }
+.blk:first-child { margin-top:0; }
+
+/* rich text */
+.rich { font-size:15.5px; color:var(--text); }
+.rich p { margin:0 0 14px; }
+.rich p:last-child { margin-bottom:0; }
+.rich p.sp { margin:0; height:6px; }
+.rich strong { font-weight:650; color:var(--text); }
+.rich em { font-style:italic; }
+.rich ul, .rich ol { margin:0 0 14px; padding-left:22px; }
+.rich li { margin:0 0 6px; }
+.lnk { color:var(--accent); text-decoration:none; border-bottom:1px solid color-mix(in srgb, var(--accent) 40%, transparent); font-weight:500; }
+.lnk:hover { border-bottom-color:var(--accent); }
+.rich div { display:block; }
+
+.b-head { font-size:21px; font-weight:650; letter-spacing:-.01em; margin:0 0 12px; line-height:1.25; }
+.b-head p { margin:0; }
+.blk-text .b-head + .rich { margin-top:0; }
+
+/* impact / statement */
+.impact { border-radius:16px; padding:26px 28px; }
+.impact .rich { font-size:19px; line-height:1.4; font-weight:500; letter-spacing:-.01em; }
+.impact-quote {
+  background:var(--mint-tint); border:1px solid color-mix(in srgb, var(--mint) 35%, transparent);
+  position:relative;
+}
+.impact-quote::before {
+  content:"“"; position:absolute; top:-6px; left:16px; font-size:52px; line-height:1;
+  color:var(--mint-deep); opacity:.5; font-family:Georgia, serif;
+}
+html[data-theme="dark"] .impact-quote::before { color:var(--mint); }
+.impact-quote .rich { padding-left:26px; }
+.impact-note {
+  background:var(--card); border:1px solid var(--line); border-left:4px solid var(--accent);
+  box-shadow:var(--shadow);
+}
+.impact-note .rich { font-size:15.5px; font-weight:500; }
+
+/* numbered list */
+.numlist { list-style:none; margin:0; padding:0; counter-reset:n; }
+.numlist li { display:flex; gap:16px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line2); }
+.numlist li:last-child { border-bottom:none; }
+.numlist .num {
+  flex:none; width:30px; height:30px; border-radius:999px; display:grid; place-items:center;
+  background:var(--mint-tint); color:var(--mint-deep); font-family:var(--font-mono);
+  font-size:14px; font-weight:600; margin-top:1px;
+}
+html[data-theme="dark"] .numlist .num { color:var(--mint); }
+.numlist .rich { flex:1; padding-top:3px; }
+
+/* video embed (self-hosted <video>; iframe fallback for non-vimeo embeds) */
+.embed { width:100%; display:block; border-radius:16px; overflow:hidden; background:#000; border:1px solid var(--line); box-shadow:var(--shadow); }
+video.embed { height:auto; }
+div.embed { position:relative; aspect-ratio:16/9; }
+div.embed iframe { position:absolute; inset:0; width:100%!important; height:100%!important; border:0; }
+
+/* hero image */
+.hero-img { margin:0; }
+.hero-img img { width:100%; border-radius:16px; border:1px solid var(--line); display:block; box-shadow:var(--shadow); }
+.hero-img .cap { margin-top:10px; font-size:13px; color:var(--muted); text-align:center; }
+
+/* accordion */
+.acc-group { display:flex; flex-direction:column; gap:10px; }
+.acc { border:1px solid var(--line); border-radius:13px; background:var(--card); overflow:hidden; box-shadow:var(--shadow); }
+.acc summary {
+  list-style:none; cursor:pointer; padding:16px 18px; display:flex; align-items:center; gap:12px;
+  font-size:15px; font-weight:600; color:var(--text);
+}
+.acc summary::-webkit-details-marker { display:none; }
+.acc summary span { flex:1; }
+.acc .chev { width:18px; height:18px; flex:none; fill:none; stroke:var(--muted); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; transition:transform .2s; }
+.acc[open] .chev { transform:rotate(180deg); }
+.acc-body { padding:0 18px 18px; }
+.acc-body.rich { font-size:15px; }
+
+/* tabs */
+.tabs { border:1px solid var(--line); border-radius:16px; background:var(--card); overflow:hidden; box-shadow:var(--shadow); }
+.tab-bar { display:flex; gap:2px; padding:8px 8px 0; border-bottom:1px solid var(--line); background:var(--card-head); flex-wrap:wrap; }
+.tab-btn {
+  font:inherit; font-size:13px; font-weight:600; color:var(--muted); background:transparent;
+  border:none; padding:10px 15px; border-radius:9px 9px 0 0; cursor:pointer; position:relative; top:1px;
+  border-bottom:2px solid transparent;
+}
+.tab-btn:hover { color:var(--text); }
+.tab-btn.is-active { color:var(--text); background:var(--card); border-bottom-color:var(--mint); }
+.tab-panels { padding:22px 22px; }
+.tab-panel { display:none; }
+.tab-panel.is-active { display:block; }
+.tab-panel .rich { font-size:15px; }
+
+/* flashcards */
+.flashcards { display:grid; grid-template-columns:repeat(auto-fill, minmax(210px,1fr)); gap:14px; }
+.fc { border:none; background:none; padding:0; cursor:pointer; perspective:1200px; height:170px; font:inherit; text-align:left; }
+.fc-inner { position:relative; width:100%; height:100%; transition:transform .5s cubic-bezier(.4,.15,.15,1); transform-style:preserve-3d; }
+.fc.flip .fc-inner { transform:rotateY(180deg); }
+.fc-face {
+  position:absolute; inset:0; backface-visibility:hidden; border-radius:15px; padding:20px;
+  display:flex; flex-direction:column; justify-content:center; border:1px solid var(--line); box-shadow:var(--shadow);
+}
+.fc-front { background:var(--card); }
+.fc-front .rich { font-size:16px; font-weight:600; }
+.fc-back { background:var(--ink); color:var(--ink-fg); transform:rotateY(180deg); }
+.fc-back .rich { font-size:14px; color:var(--ink-fg); }
+.fc-hint { position:absolute; bottom:12px; right:14px; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+
+/* process */
+.process { border:1px solid var(--line); border-radius:18px; background:var(--card); padding:26px 26px 22px; box-shadow:var(--shadow); }
+.proc-tag { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--mint-deep); background:var(--mint-tint); padding:4px 10px; border-radius:999px; }
+html[data-theme="dark"] .proc-tag { color:var(--mint); }
+.proc-intro h3 { margin:12px 0 8px; font-size:19px; font-weight:650; letter-spacing:-.01em; }
+.proc-intro .rich { font-size:15px; color:var(--muted); }
+.proc-steps { list-style:none; margin:22px 0 0; padding:0; counter-reset:p; position:relative; }
+.proc-steps li { display:flex; gap:16px; padding:0 0 22px; position:relative; }
+.proc-steps li::before { content:""; position:absolute; left:15px; top:32px; bottom:0; width:2px; background:var(--line); }
+.proc-steps li:last-child { padding-bottom:0; }
+.proc-steps li:last-child::before { display:none; }
+.proc-num { flex:none; width:32px; height:32px; border-radius:999px; display:grid; place-items:center; background:var(--ink); color:var(--ink-fg); font-family:var(--font-mono); font-size:14px; font-weight:600; z-index:1; }
+.proc-step-body h4 { margin:4px 0 5px; font-size:16px; font-weight:650; }
+.proc-step-body .rich { font-size:14.5px; color:var(--muted); }
+.proc-summary { margin-top:14px; padding:18px 20px; border-radius:13px; background:var(--mint-tint); border:1px solid color-mix(in srgb, var(--mint) 32%, transparent); }
+.proc-summary h4 { margin:0 0 6px; font-size:15px; font-weight:700; color:var(--mint-deep); }
+html[data-theme="dark"] .proc-summary h4 { color:var(--mint); }
+.proc-summary .rich { font-size:14.5px; }
+
+/* timeline */
+.timeline { list-style:none; margin:0; padding:0 0 0 4px; }
+.timeline li { display:flex; gap:20px; padding:0 0 26px; position:relative; }
+.timeline li::before { content:""; position:absolute; left:6px; top:18px; bottom:0; width:2px; background:var(--line); }
+.timeline li:last-child { padding-bottom:0; }
+.timeline li:last-child::before { display:none; }
+.tl-dot { flex:none; width:14px; height:14px; border-radius:999px; background:var(--mint); border:3px solid var(--bg); box-shadow:0 0 0 1px var(--mint); margin-top:5px; z-index:1; }
+.tl-date { font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--accent); letter-spacing:.01em; }
+.tl-body h4 { margin:4px 0 6px; font-size:17px; font-weight:650; letter-spacing:-.01em; }
+.tl-body .rich { font-size:14.5px; color:var(--muted); }
+
+/* continue divider */
+.continue { display:flex; align-items:center; justify-content:center; margin:30px 0; }
+.continue span { width:38px; height:3px; border-radius:999px; background:var(--line-strong); opacity:.5; }
+
+/* quiz / knowledge check */
+.quizcard { border:1px solid var(--line); border-radius:18px; background:var(--card); padding:24px 26px; box-shadow:var(--shadow); }
+.quizcard + .quizcard { margin-top:16px; }
+.kc { background:var(--accent-tint); border-color:color-mix(in srgb, var(--accent) 30%, transparent); }
+.q-tag { display:inline-block; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.q-title { margin:0 0 18px; font-size:18px; font-weight:650; letter-spacing:-.01em; line-height:1.35; }
+.answers { display:flex; flex-direction:column; gap:10px; }
+.ans {
+  display:grid; grid-template-columns:22px 1fr; align-items:start; gap:12px; width:100%; text-align:left;
+  font:inherit; font-size:15px; color:var(--text); background:var(--field);
+  border:1px solid var(--line-strong); border-radius:12px; padding:14px 16px; cursor:pointer;
+  transition:border-color .12s, background .12s;
+}
+.ans:hover:not(.answered) { border-color:var(--text); background:var(--surface); }
+.ans-mark { width:20px; height:20px; border-radius:999px; border:2px solid var(--line-strong); margin-top:1px; position:relative; transition:all .15s; }
+.ans-text { padding-top:1px; }
+.ans-fb { grid-column:2; font-size:13.5px; color:var(--muted); margin-top:8px; display:none; line-height:1.5; }
+/* answered states */
+.answers.done .ans { cursor:default; }
+.ans.reveal-correct { border-color:var(--mint-deep); background:var(--mint-tint); }
+html[data-theme="dark"] .ans.reveal-correct { border-color:var(--mint); }
+.ans.reveal-correct .ans-mark { border-color:var(--mint-deep); background:var(--mint-deep); }
+html[data-theme="dark"] .ans.reveal-correct .ans-mark { border-color:var(--mint); background:var(--mint); }
+.ans.reveal-correct .ans-mark::after { content:""; position:absolute; left:5px; top:2px; width:6px; height:10px; border:solid var(--ink-fg); border-width:0 2px 2px 0; transform:rotate(45deg); }
+html[data-theme="dark"] .ans.reveal-correct .ans-mark::after { border-color:#141419; }
+.ans.reveal-wrong { border-color:var(--coral-deep); background:var(--coral-tint); }
+html[data-theme="dark"] .ans.reveal-wrong { border-color:var(--coral); }
+.ans.reveal-wrong .ans-mark { border-color:var(--coral-deep); }
+.ans.reveal-wrong .ans-mark::after { content:"×"; position:absolute; inset:0; display:grid; place-items:center; font-size:16px; font-weight:700; color:var(--coral-deep); line-height:1; }
+html[data-theme="dark"] .ans.reveal-wrong .ans-mark::after { color:var(--coral); }
+.ans.picked .ans-fb { display:block; }
+.ans.reveal-correct.picked .ans-fb, .answers.done .ans.reveal-correct .ans-fb { display:block; }
+
+/* footer */
+.foot { max-width:var(--maxw); margin:0 auto; padding:0 28px 80px; }
+.foot-card { border-top:1px solid var(--line); padding-top:28px; display:flex; align-items:center; gap:14px; font-size:13px; color:var(--muted); }
+.foot-card img { height:20px; opacity:.85; }
+
+@media (max-width:960px){
+  .sidebar { display:none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="assets/intro-to-openrewrite/img/pAPr4Wzu9Os_Rs5K.png" alt="Moderne" />
+    </div>
+    <div class="side-title">Introduction to OpenRewrite</div>
+    <div class="side-sub">Hands-on course</div>
+    <nav id="nav">
+      <a class="nav-lesson" href="#lesson-0"><span class="nav-dot"></span><span>Welcome to OpenRewrite</span></a>
+<a class="nav-lesson" href="#lesson-1"><span class="nav-dot"></span><span>OpenRewrite and Moderne: Origins & Concepts</span></a>
+<div class="nav-part">Part 1: OpenRewrite Overview and setting up the CLI</div>
+<a class="nav-lesson" href="#lesson-3"><span class="nav-dot"></span><span>An Overview of OpenRewrite</span></a>
+<a class="nav-lesson" href="#lesson-4"><span class="nav-dot"></span><span>Setting Up and Running Recipes with Moderne CLI</span></a>
+<div class="nav-part">Part II: Building Reciepes</div>
+<a class="nav-lesson" href="#lesson-6"><span class="nav-dot"></span><span>Composing and Customizing Declarative Recipes</span></a>
+<div class="nav-part">Part III: Search, Datatables, and Visualizations</div>
+<a class="nav-lesson" href="#lesson-8"><span class="nav-dot"></span><span>Analyzing Code with Search Markers, Data Tables, and Visualizations</span></a>
+<div class="nav-part">Part IV: DevCenter</div>
+<a class="nav-lesson" href="#lesson-10"><span class="nav-dot"></span><span>Tracking Progress and Managing Change with DevCenter</span></a>
+<div class="nav-part">Test Your Knowledge</div>
+<a class="nav-lesson" href="#lesson-12"><span class="nav-dot"></span><span>Quiz</span></a>
+<div class="nav-part">Next Steps</div>
+<a class="nav-lesson" href="#lesson-14"><span class="nav-dot"></span><span>Summary & Next Steps: Growing with OpenRewrite and Moderne</span></a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb">Moderne Learning · <b>Intro to OpenRewrite</b></div>
+      <div class="spacer"></div>
+      <div class="progress-wrap">
+        <span id="ppct">0%</span>
+        <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <span id="themeLbl">Light</span>
+      </button>
+    </div>
+
+    <div class="reading">
+      <div class="hero">
+        <img src="assets/intro-to-openrewrite/img/30_cities.jpg" alt="" />
+        <div class="hero-body">
+          <span class="hero-kicker">Moderne · Hands-on Learning</span>
+          <h1>Introduction to OpenRewrite</h1>
+        </div>
+      </div>
+      <div class="hero-desc"><div class="rich"><div><p><strong>Are you ready to make large-scale code changes safer, faster, and more reliable?</strong></p><p class="sp"></p><p>This course introduces you to OpenRewrite and Moderne, powerful tools that help enterprise software engineers automate code migrations, refactorings, and upgrades across multiple repositories.</p><p class="sp"></p><p><strong>OpenRewrite and Moderne are deterministic tooling, not AI products.</strong> Instead, they complement AI by giving agents compiler-accurate context and programs to execute so the AI you already use gets more reliable and more affordable as it scales.</p><p class="sp"></p><p>Through hands-on guidance, you'll learn how to set up and run recipes, customize code transformations, analyze your codebase with data tables and visualizations, and track organizational progress.</p><p class="sp"></p><p><strong>No prior experience with automated refactoring is required</strong>—just bring your curiosity and a desire to <strong>streamline your team's development workflow.</strong></p></div></div></div>
+
+      <section class="lesson" id="lesson-0">
+<div class="lesson-head"><span class="lesson-kicker">Lesson 1</span><h1>Welcome to OpenRewrite</h1></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Getting Started with OpenRewrite and Moderne</p></div></h2>
+<div class="rich"><div><p>Welcome to your journey into automated code refactoring at scale! In this course, <strong>you'll discover how OpenRewrite and Moderne can help you make large-scale code changes safer, faster, and more reliable.</strong> Whether you're new to automated refactoring or looking to deepen your expertise, you're in the right place to learn how to streamline your team's development workflow and unlock the power of modern code transformation.</p></div></div></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205501324.jpg" playsinline title="0_Intro to Course"><source src="assets/intro-to-openrewrite/video/1205501324.mp4" type="video/mp4"></video></div>
+<div class="blk blk-text"><div class="rich"><p>In this lesson, you'll get oriented to the course, meet your training team, and learn how to get the most out of your experience. Here are the key objectives we'll cover:</p></div></div>
+<div class="blk"><ol class="numlist"><li><span class="num">1</span><div class="rich"><p>Understand the course structure and main topics.</p></div></li>
+<li><span class="num">2</span><div class="rich"><p>Know where and how to get support during the course.</p></div></li>
+<li><span class="num">3</span><div class="rich"><p>Set your own learning expectations for the workshop.</p></div></li></ol></div>
+<div class="blk blk-text"><h2 class="b-head">Support Channels: How to Get Help</h2>
+<div class="rich"><p>Explore the different ways you can get support during this course. Expand each section to learn how to connect with the team and get your questions answered.</p></div></div>
+<div class="blk acc-group"><details class="acc"><summary><span>Slack: #training-intro-to-openrewrite</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Join the OpenRewrite Slack channel <a class="lnk" href="https://rewriteoss.slack.com/archives/C096YTL638Q" target="_blank" rel="noopener noreferrer">#training-intro-to-openrewrite</a> for ongoing support. You can post questions, share insights, and connect with other learners and instructors.</p><p class="sp"></p><p>Slack is available both during and after the workshop for continued discussion.</p></div></div></details>
+<details class="acc"><summary><span>Documentation Help</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>If you need step-by-step instructions or want to review concepts, refer to the lab guide and course documentation provided. These resources are designed to support your learning at your own pace.</p><p class="sp"></p><p>You can find the documentation hub here:&nbsp;<span><a class="lnk" href="https://docs.openrewrite.org/" target="_blank" rel="noopener noreferrer"><span><strong><u>OpenRewrite docs</u></strong></span></a><span><strong> | </strong></span><a class="lnk" href="https://docs.moderne.io/" target="_blank" rel="noopener noreferrer"><span><strong><u>Moderne docs</u></strong></span></a></span></p></div></div></details></div>
+<div class="blk blk-text"><div class="rich"><div><p>This course is organized into several key modules to guide your learning journey. We'll start with an overview and CLI setup, move into composing and customizing recipes, then explore data tables and visualizations, and finally, learn how to track progress and manage changes with DevCenter.</p><p>Each module builds on the last, giving you a clear path from foundational concepts to advanced applications. By the end, you'll have a comprehensive understanding of how to leverage OpenRewrite and Moderne for your team's needs.</p></div></div></div>
+<div class="blk blk-text"><h2 class="b-head">Workshop Goals and Outcomes</h2>
+<div class="rich"><div><p>Expand each goal to see what you'll accomplish in this course and how it will help you in your day-to-day work.</p></div></div></div>
+<div class="blk acc-group"><details class="acc"><summary><span>Set up the Moderne CLI</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>You'll learn how to install and configure the Moderne CLI, enabling you to run recipes and automate code changes across repositories.</p><p class="sp"></p><p>This foundational skill is essential for leveraging the full power of OpenRewrite and Moderne.</p><p class="sp"></p><p><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-1-running-recipes/" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-1-running-recipes/</a></p></div></div></details>
+<details class="acc"><summary><span>Learn, run, customize Declarative Recipes</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Discover how to use the recipe builder to compose and tailor declarative YAML recipes for your specific codebase needs.</p><p class="sp"></p><p>You'll gain hands-on experience in making code transformations repeatable and safe.</p><p class="sp"></p><p><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-2-recipe-builder/" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-2-recipe-builder/</a></p></div></div></details>
+<details class="acc"><summary><span>Analyze code with Data Tables</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Understand how to use search markers, data tables, and visualizations to extract insights and metadata from your code at scale.</p><p class="sp"></p><p>This helps you identify patterns, track migrations, and make informed decisions.</p><p class="sp"></p><p><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-3-data-tables-visualizations/" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-3-data-tables-visualizations/</a></p></div></div></details>
+<details class="acc"><summary><span>Track progress with DevCenter</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Learn how to use DevCenter to monitor migrations, upgrades, and organizational progress.</p><p class="sp"></p><p>DevCenter provides visibility and accountability for your team's code transformation efforts.</p><p class="sp"></p><p><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-4-devcenter/" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-4-devcenter/</a></p></div></div></details></div>
+<div class="blk"><div class="impact impact-quote"><div class="rich"><div><p>Automation at scale builds trust and <strong>accelerates your team's ability to deliver high-quality code changes—safely, quickly, and confidently.</strong></p></div></div></div></div>
+<div class="blk continue"><span></span></div>
+</section>
+<section class="lesson" id="lesson-1">
+<div class="lesson-head"><span class="lesson-kicker">Lesson 2</span><h1>OpenRewrite and Moderne: Origins & Concepts</h1></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>The origins and impact of automated code refactoring</p></div></h2>
+<div class="rich"><p>Modern software development teams face the daunting challenge of keeping codebases up-to-date, secure, and consistent across thousands of files and repositories. Manual refactoring is not only time-consuming, but also risky and error-prone—especially at scale. OpenRewrite and Moderne were created to solve these challenges, enabling organizations to automate code changes safely, efficiently, and at unprecedented scale. In this lesson, you'll discover how these tools originated, the core concepts that power them, and why they are transforming the way teams approach code modernization.</p></div></div>
+<div class="blk blk-text"><h2 class="b-head"><p>The history and evolution of OpenRewrite and Moderne</p></h2>
+<div class="rich"><p>Explore the major milestones that shaped OpenRewrite and Moderne. This timeline will help you understand how these tools evolved from a single-company solution to a powerful, industry-wide platform.</p></div></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205505086.jpg" playsinline title="1_History of ORW"><source src="assets/intro-to-openrewrite/video/1205505086.mp4" type="video/mp4"></video></div>
+<div class="blk"><ul class="timeline"><li><div class="tl-dot"></div><div class="tl-body"><span class="tl-date">Early Netflix Era</span><h4>The Logging Migration Challenge</h4><div class="rich"><p>Netflix faces the challenge of migrating its internal logging framework to SLF4J across hundreds of services, highlighting the need for precise, automated code changes at scale.</p></div></div></li>
+<li><div class="tl-dot"></div><div class="tl-body"><span class="tl-date">OpenRewrite Creation</span><h4>OpenRewrite is Born</h4><div class="rich"><div><p><span>To address the migration challenge, Netflix engineer <strong>J</strong><span><strong><em>onathan Schneider&nbsp;</em></strong><em>(OpenRewrite creator &amp; Moderne co-founder)</em></span>&nbsp;developed OpenRewrite, a tool that parses Java code into a Lossless Semantic Tree (LST) for safe, automated refactoring.</span></p></div></div></div></li>
+<li><div class="tl-dot"></div><div class="tl-body"><span class="tl-date">Community Expansion</span><h4>OpenRewrite Goes Open Source</h4><div class="rich"><p>OpenRewrite becomes an open-source project, gaining adoption and contributions from the broader software engineering community.</p></div></div></li>
+<li><div class="tl-dot"></div><div class="tl-body"><span class="tl-date">Moderne Launch</span><h4>Moderne Platform Emerges</h4><div class="rich"><p>Moderne is founded to scale OpenRewrite’s capabilities, enabling multi-repository code transformations and integrating unique IP for serialization and horizontal search.</p></div></div></li>
+<li><div class="tl-dot"></div><div class="tl-body"><span class="tl-date">Ecosystem Growth</span><h4>Integration with Developer Tools</h4><div class="rich"><div><p>OpenRewrite has been integrated into popular developer tools like Gradle, Maven, IntelliJ IDEA, GitHub Copilot, and more; making automated refactoring accessible to a wide audience.</p></div></div></div></li></ul></div>
+<div class="blk blk-text"><div class="rich"><p>As you can see above, <strong>the original motivation for OpenRewrite was a massive migration project at Netflix</strong>; updating an internal logging framework to SLF4J. With logging code scattered across hundreds of services, manual updates were simply not feasible.</p><p>The risk of missing edge cases or introducing errors was too high, and the scale of the task demanded a new approach.</p><p><strong>OpenRewrite was designed to automate these changes with accuracy, ensuring that every instance was updated while preserving the original style and intent of the code. </strong>This approach made it possible to tackle migrations that would otherwise be impossible or prohibitively expensive for large organizations.</p></div></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>What sets Moderne apart from OpenRewrite?</p></div></h2>
+<div class="rich"><div><p>Most modernization efforts go one repository at a time. While a handful of repos may be successfully migrated, the rest of the organization is still stuck on the old stack and continuing to accumulate technical debt, so they're stuck supporting multiple versions in the meantime.</p><p><strong>Moderne's approach runs horizontally instead.</strong> The same recipe runs across every repo at once, which is how organizations get 80% of the way there across their whole codebase instead of stalling at only a few apps.</p></div></div></div>
+<div class="blk"><figure class="hero-img"><img loading="lazy" src="assets/intro-to-openrewrite/img/PB6npp5T4W5-ZkqS.png" alt=""></figure></div>
+</section>
+<section class="part-divider" id="part-2"><span class="part-kicker">Section</span><h2>Part 1: OpenRewrite Overview and setting up the CLI</h2></section>
+<section class="lesson" id="lesson-3">
+<div class="lesson-head"><span class="lesson-kicker">Lesson 3</span><h1>An Overview of OpenRewrite</h1></div>
+<div class="blk"><div class="impact impact-quote"><div class="rich"><div><p>Let's get started!</p></div></div></div></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507468.jpg" playsinline title="2_OverviewOfORW"><source src="assets/intro-to-openrewrite/video/1205507468.mp4" type="video/mp4"></video></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Comparing code representation methods for automated refactoring</p></div></h2>
+<div class="rich"><div><p>Understanding how code can be represented is crucial for effective automated refactoring. Below, we compare three approaches, text-based search, Abstract Syntax Trees (ASTs), and Lossless Semantic Trees (LSTs); highlighting their strengths and limitations.</p></div></div></div>
+<div class="blk acc-group"><details class="acc"><summary><span>Text-based search and replace</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>Text-based search scans code for specific strings or patterns. While simple, it cannot distinguish between code and comments, or understand context. This often leads to missed cases or unintended changes.</p><p class="sp"></p><p>Because it lacks awareness of code structure, text-based search is risky for large-scale transformations and can easily break code if used for refactoring.</p></div></details>
+<details class="acc"><summary><span>Abstract Syntax Tree (AST)</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>An AST represents the syntactic structure of code as a tree, capturing elements like statements and expressions. It is more sophisticated than text search, allowing for some structural analysis.</p><p class="sp"></p><p>However, ASTs typically do not preserve formatting, comments, or all metadata, which can result in code changes that disrupt style or lose important context.</p></div></details>
+<details class="acc"><summary><span>Lossless Semantic Tree (LST)</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>The LST preserves not only the structure and types of code, but also formatting, comments, and other metadata. This enables highly accurate, style-preserving transformations.</p><p class="sp"></p><p>LSTs are essential for safe, automated refactoring at scale, ensuring that changes look like they were made by a team member and minimizing disruption to the codebase.</p></div></details></div>
+<div class="blk blk-text"><div class="rich"><div><p><strong>LSTs also cover more than your application code. </strong></p><p>Build files, configuration, and other non-code files get parsed too, so a single effort can span dependencies, build plugins, CI configuration, and code in one pass; and because an LST is a rich, queryable model of your codebase, it is as useful for analyzing what you have as it is for changing it.</p></div></div></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><div class="rich"><div><p>Recipes are at the heart of OpenRewrite's automation capabilities. A recipe is a deterministic program that defines what to find in your code and how to change it.</p><p><strong>Recipes leverage the LST to make targeted, context-aware modifications, ensuring that changes are both accurate and stylistically consistent.</strong></p><p>For example, <strong>a recipe can automatically update test annotations and restructure code to use new APIs, all while preserving the original formatting and intent.</strong></p><p>This approach enables organizations to perform complex migrations and upgrades with confidence and minimal manual effort.</p></div></div></div>
+<div class="blk process">
+<div class="proc-intro"><span class="proc-tag">Workflow</span><h3>Understanding the workflow</h3><div class="rich"><div><p>In this widget we will take a look at how we proceed through an OpernRewrite workflow. </p><p>Automated code transformation begins by preparing your codebase for analysis and change. This ensures that every step is accurate and repeatable.</p></div></div></div>
+<ol class="proc-steps">
+<li><span class="proc-num">1</span><div class="proc-step-body"><h4>Parse code into LST</h4><div class="rich"><p>Your source code is parsed into a Lossless Semantic Tree (LST), capturing all structure, formatting, comments, and type information. This forms the foundation for precise analysis and transformation.</p></div></div></li>
+<li><span class="proc-num">2</span><div class="proc-step-body"><h4>Apply recipes for transformation</h4><div class="rich"><p>Recipes are executed on the LST, identifying code patterns and making targeted changes. Each recipe is deterministic, ensuring consistent results across the codebase.</p></div></div></li>
+<li><span class="proc-num">3</span><div class="proc-step-body"><h4>Serialize changes back to source</h4><div class="rich"><p>The modified LST is written back to source code, preserving the original style and minimizing disruption. The result is a diff that looks like it was crafted by a team member.</p></div></div></li>
+<li><span class="proc-num">4</span><div class="proc-step-body"><h4>Review, commit, or customize</h4><div class="rich"><p>After transformation, changes can be reviewed, committed, or further customized as needed. This step ensures that teams maintain control and confidence in the automated process.</p></div></div></li>
+</ol>
+<div class="proc-summary"><h4>Summary of the workflow</h4><div class="rich"><p>This workflow enables safe, scalable, and efficient code modernization, reducing manual effort and risk while maintaining code quality and consistency.</p></div></div>
+</div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Scaling and integrating OpenRewrite and Moderne</p></div></h2>
+<div class="rich"><p>Explore how OpenRewrite and Moderne scale and integrate with the broader development ecosystem. Click each tab to learn more about their unique capabilities and integrations.</p></div></div>
+<div class="blk tabs" data-tabs><div class="tab-bar"><button class="tab-btn is-active" data-tab="tabs1-0">OpenRewrite OSS and Plugins</button><button class="tab-btn" data-tab="tabs1-1">Integration with Developer Tools</button><button class="tab-btn" data-tab="tabs1-2">Expand your OpenRewrite capabilities with Moderne</button><button class="tab-btn" data-tab="tabs1-3">Moderne's Multi-repository Abilities</button></div><div class="tab-panels"><div class="tab-panel is-active" id="tabs1-0"><div class="rich"><p>OpenRewrite is available as an open-source project, with plugins for popular build tools like Gradle and Maven. These plugins allow developers to run recipes against a single repository, making it easy to automate code changes within individual projects.</p><p class="sp"></p><p>The open-source ecosystem encourages community contributions and customization, enabling organizations to tailor recipes to their specific needs while benefiting from shared knowledge and improvements.</p></div></div><div class="tab-panel" id="tabs1-1"><div class="rich"><div><p><strong>OpenRewrite is integrated with a number leading developer tools, including JetBrains IntelliJ IDEA, GitHub Copilot upgrade assistant, and Broadcom App Advisor.</strong> These integrations bring automated refactoring directly into developers' daily workflows.</p><p class="sp"></p><p>By embedding automation into familiar environments, these tools lower the barrier to adoption and make it easier for teams to keep their codebases modern and secure.</p></div></div></div><div class="tab-panel" id="tabs1-2"><div class="rich"><p>The Moderne platform extends OpenRewrite by enabling code transformations across multiple repositories at once. It leverages proprietary technology to serialize LSTs to disk, allowing for horizontal search and modification at scale.</p><p class="sp"></p><p>This unique capability sets Moderne apart, making it possible to coordinate large-scale migrations and upgrades across an entire organization with unprecedented efficiency.</p></div></div><div class="tab-panel" id="tabs1-3"><div class="rich"><div><p>With multi-repository mode, <strong>Moderne can apply recipes to many codebases simultaneously</strong>. This is essential for organizations managing hundreds or thousands of repositories, ensuring consistency and reducing manual overhead.</p><p class="sp"></p><p>Multi-repository support is especially valuable for centrally-led migrations, such as security upgrades or framework transitions, where uniformity and speed are critical.</p></div></div></div></div></div>
+<div class="blk"><figure class="hero-img"><img loading="lazy" src="assets/intro-to-openrewrite/img/9Jtf8zSGCrQae4uF.png" alt=""></figure></div>
+<div class="blk"><figure class="hero-img"><img loading="lazy" src="assets/intro-to-openrewrite/img/Zesd7L82VQqSyuFz.jpg" alt=""></figure></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Types of recipe licenses in the OpenRewrite and Moderne ecosystems</p></div></h2>
+<div class="rich"><p>Explore the various types of recipes available within the OpenRewrite and Moderne ecosystem. Each type serves different needs and audiences, from open-source users to enterprise customers. Expand each section below to learn more about what is covered and who can use each type of recipe.</p></div></div>
+<div class="blk acc-group"><details class="acc"><summary><span>Apache 2.0 core recipes</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>These recipes are fully open source and cover the core framework, plugins, and community-contributed transformations. They are available for anyone to use and customize, making them ideal for organizations with unique requirements.</p><p class="sp"></p><p>Examples include general-purpose refactorings and upgrades that benefit the wider community.</p></div></details>
+<details class="acc"><summary><span>Moderne source available recipes</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Moderne Source Available recipes are developed by Moderne and are available for use and customization by customers and partners. </p><p class="sp"></p><p><strong>These recipes often address more specialized or advanced migration needs.</strong></p><p class="sp"></p><p>Access to these recipes may be limited by licensing, but they provide significant value for organizations with complex codebases.</p></div></div></details>
+<details class="acc"><summary><span>Moderne proprietary recipes</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p><strong>These recipes are exclusive to Moderne customers and partners. </strong></p><p class="sp"></p><p>They cover major migrations, security upgrades, and other high-impact transformations that require deep expertise and proprietary knowledge.</p><p class="sp"></p><p>Proprietary recipes are a key differentiator for Moderne, enabling organizations to tackle challenges that are not addressed by open-source solutions.</p></div></div></details></div>
+<div class="blk"><div class="impact impact-quote"><div class="rich">Accurate code changes that match the local code style across thousands of repositories—this is the power of OpenRewrite and Moderne.</div></div></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Key terms flashcards</p></div></h2>
+<div class="rich"><p>Test your understanding of the key terms from this lesson. Flip each card to review the definitions.</p></div></div>
+<div class="blk"><div class="flashcards"><button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Lossless Semantic Tree (LST)</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>A code representation that preserves structure, formatting, comments, and types for precise, automated changes.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Recipe</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>A deterministic program that defines what to find and how to change it in your codebase.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Proprietary Recipe</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>A recipe developed and licensed by Moderne, available only to customers and partners for specialized migrations.</span></div></div></div></button></div></div>
+<div class="blk continue"><span></span></div>
+<div class="blk quizcard kc">
+<span class="q-tag">Knowledge check</span>
+<h3 class="q-title">What is the main advantage of the Lossless Semantic Tree (LST) in OpenRewrite?</h3>
+<div class="answers" data-quiz><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">It makes code changes faster but less accurate</span><span class="ans-fb">Not quite. LSTs focus on both accuracy and preservation of code style.</span></button><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">It preserves formatting, comments, and types for safe transformations</span><span class="ans-fb">Correct! LSTs enable precise, style-preserving code changes.</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">It only works with text-based search</span><span class="ans-fb">Incorrect. LSTs go beyond text-based search by understanding code structure.</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">It ignores code structure</span><span class="ans-fb">Incorrect. LSTs are all about capturing code structure and metadata.</span></button></div>
+</div>
+<div class="blk continue"><span></span></div>
+</section>
+<section class="lesson" id="lesson-4">
+<div class="lesson-head"><span class="lesson-kicker">Lesson 4</span><h1>Setting Up and Running Recipes with Moderne CLI</h1></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Getting started with the Moderne CLI</p></div></h2>
+<div class="rich"><div><p>Automating code changes across multiple repositories can be a daunting, time-consuming task when done manually. The Moderne CLI empowers you to perform safe, repeatable, and large-scale code transformations efficiently, reducing risk and freeing up valuable developer time. In this lesson, you'll learn how to set up and use the Moderne CLI to streamline your code refactoring workflows and unlock the full potential of automation in your organization.</p></div></div></div>
+<div class="blk blk-text"><div class="rich"><div><p>In this lesson, you'll gain hands-on experience with the Moderne CLI and learn how to automate code changes at scale. By the end, you’ll be able to confidently set up the CLI, connect it to the Moderne Platform, and run recipes across your codebase.</p></div></div></div>
+<div class="blk"><ol class="numlist"><li><span class="num">1</span><div class="rich"><div><p>Install and configure the Moderne CLI</p></div></div></li>
+<li><span class="num">2</span><div class="rich"><div><p>Connect CLI to the Moderne Platform</p></div></div></li>
+<li><span class="num">3</span><div class="rich"><p>Run recipes across repositories</p></div></li>
+<li><span class="num">4</span><div class="rich"><p>Review and apply code changes</p></div></li></ol></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Key terms for Moderne CLI workflows</p></div></h2>
+<div class="rich"><p>Review each flashcard to reinforce your understanding of the essential terms and concepts introduced in this lesson. These definitions will help you navigate the CLI and its features with confidence.</p></div></div>
+<div class="blk"><div class="flashcards"><button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Moderne CLI</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><p>A command-line tool for running, managing, and automating code transformations across multiple repositories using Moderne recipes.</p></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Recipe</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><p>A deterministic program that defines what code to find and how to change it, enabling automated refactoring.</p></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>LST (Lossless Semantic Tree)</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><p>A structured, language-specific representation of code that preserves formatting, comments, and style for precise changes.</p></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Diff</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><div><p>Running a recipe produces a patch file in <strong>the diff format </strong>which can then be viewed or applied as modifications to the sources.</p></div></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Organization (Moderne context)</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><div><p><strong>A collection of repositories. </strong>We call it that because each team in an org chart is typically responsible for some grouping of repositories.</p><p><br class="break-when-trailing">As such, we refer to a grouping of repositories as an "organization" of repositories.</p><p class="sp"></p><p> Organizations are hierarchical and can contain other organizations.</p></div></div></div></div></button></div></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Moderne CLI setup: prerequisites and first steps</p></div></h2>
+<div class="rich"><p>Before you can start running recipes, it’s important to ensure your environment is ready and you have everything you need. Expand each section below to review the requirements and initial setup steps for the Moderne CLI.</p></div></div>
+<div class="blk acc-group"><details class="acc"><summary><span>Required tools and environment</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p><strong>To use the Moderne CLI effectively,</strong> you'll need to ensure that your repositories can build and run on your local machine.</p><p class="sp"></p><p>It is also important to have all the tools installed on your system to build your code repositories.</p><p class="sp"></p><p>Having the right environment and version ensures a smooth installation and operation of the CLI.</p></div></div></details>
+<details class="acc"><summary><span>Accessing the Moderne CLI</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>You can access the Moderne CLI directly from the<strong> </strong><a class="lnk" href="http://app.moderne.io/" target="_blank" rel="noopener noreferrer"><strong>Moderne Platform (http://app.moderne.io/)</strong>.</a></p><p class="sp"></p><p>Follow the instructions <a class="lnk" href="https://docs.moderne.io/user-documentation/moderne-cli/getting-started/cli-intro/#installation-and-configuration" target="_blank" rel="noopener noreferrer"><strong>here</strong></a> to get started.</p><p class="sp"></p><p>If you are already a Moderne customer, you should use your own tenant.</p></div></div></details>
+<details class="acc"><summary><span>Connecting to the Moderne Platform and syncing organizations</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>After installing the CLI, you’ll need to connect it to the Moderne Platform at <a class="lnk" href="https://app.moderne.io" target="_blank" rel="noopener noreferrer"><strong>https://app.moderne.io</strong></a> This step authenticates your CLI and allows it to sync with your default organization.</p><p class="sp"></p><p>If you are already a Moderne customer, you should use your tenant instead.</p></div></div></details></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p><strong>Lab 1.1 - Setting up the Moderne CLI&nbsp;</strong></p></div></h2></div>
+<div class="blk"><div class="impact impact-note"><div class="rich"><div><p><span><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-1-running-recipes/" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-1-running-recipes/</a></span></p></div></div></div></div>
+<div class="blk process">
+<div class="proc-intro"><span class="proc-tag">Workflow</span><h3>Introduction to setting up Moderne CLI</h3><div class="rich"><div><p>Setting up the Moderne CLI involves a series of straightforward steps that prepare you to automate code changes across your repositories. </p><p>Click the link above to launch the Lab, and follow each step carefully to ensure a successful setup and execution.</p></div></div></div>
+<ol class="proc-steps">
+<li><span class="proc-num">1</span><div class="proc-step-body"><h4>Install the Moderne CLI</h4><div class="rich"><p>Download the Moderne CLI from the official Moderne platform website. Extract or install the CLI as appropriate for your operating system. Make sure the CLI executable is accessible from your command line interface.</p></div></div></li>
+<li><span class="proc-num">2</span><div class="proc-step-body"><h4>Connect to the Moderne Platform</h4><div class="rich"><p>Launch the CLI and connect it to the Moderne platform by following the authentication prompts. You’ll typically be asked to log in using your Moderne account credentials and authorize the CLI to access your organization.</p></div></div></li>
+<li><span class="proc-num">3</span><div class="proc-step-body"><h4>Authenticate and log-in</h4><div class="rich"><p>Once connected, authenticate your session to ensure the CLI has the necessary permissions. This may involve entering a token or confirming your identity through the Moderne platform’s web interface.</p></div></div></li>
+<li><span class="proc-num">4</span><div class="proc-step-body"><h4>Install required recipes</h4><div class="rich"><div><p>With authentication complete, you can install the recipes you plan to use. The CLI lets you sync the full recipe catalog from your Moderne tenant or install individual recipes by name and version, so you're running exactly the recipes you intend to use.</p></div></div></div></li>
+<li><span class="proc-num">5</span><div class="proc-step-body"><h4>Download and build LSTs for repositories</h4><div class="rich"><div><p>Before running recipes, the CLI will parse your codebase and build Lossless Before running recipes, the CLI needs Lossless Semantic Trees (LSTs) for each repository you're working with. You'll choose which repositories to use, then use the CLI to either download pre-built LSTs from your Moderne tenant, or build them locally. </p><p>The LST preserves your code's structure and style, which is what makes precise and safe transformations possible.</p></div></div></div></li>
+</ol>
+<div class="proc-summary"><h4>Summary: the Moderne CLI is ready for use</h4><div class="rich"><p>After completing these steps, your CLI is ready to run recipes across your repositories. You can now automate code changes, review diffs, and apply updates with confidence.</p></div></div>
+</div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507549.jpg" playsinline title="4_Lab1.1"><source src="assets/intro-to-openrewrite/video/1205507549.mp4" type="video/mp4"></video></div>
+<div class="blk blk-text"><div class="rich"><div><p>When you run a recipe using the Moderne CLI, <strong>the tool analyzes your codebase and applies the specified transformations according to the recipe’s logic.</strong> The CLI generates a diff for each change, allowing you to review exactly what will be modified before committing. </p><p><strong>This approach ensures that all changes are safe, consistent, and match your existing code style. </strong>You can choose to apply the changes directly, review them in detail, or roll them back if needed, giving you full control over the transformation process.</p></div></div></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p><strong>Lab 1.2 - Running Recipes&nbsp;</strong></p></div></h2></div>
+<div class="blk"><div class="impact impact-note"><div class="rich"><div><p><span><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-1-running-recipes/#exercise-1-2-run-recipes-using-the-moderne-platform" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-1-running-recipes/#exercise-1-2-run-recipes-using-the-moderne-platform</a></span></p></div></div></div></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507581.jpg" playsinline title="5_Lab1.2"><source src="assets/intro-to-openrewrite/video/1205507581.mp4" type="video/mp4"></video></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Running recipes: scenarios and workflows</p></div></h2>
+<div class="rich"><div><p>Explore each tab to learn about different ways to run recipes with the Moderne CLI and Platform. Each scenario highlights a unique workflow, its benefits, and practical tips for success.</p></div></div></div>
+<div class="blk"><div class="impact impact-quote"><div class="rich"><div><p><strong>Running recipes across 11 repositories can save over 150 hours of manual work</strong>; automation at this scale <em>transforms how teams manage code changes.</em></p></div></div></div></div>
+<div class="blk tabs" data-tabs><div class="tab-bar"><button class="tab-btn is-active" data-tab="tabs2-0">Single-Repository Recipe Runs</button><button class="tab-btn" data-tab="tabs2-1">Multi-Repository Runs</button><button class="tab-btn" data-tab="tabs2-2">Reviewing Diffs and Applying Changes</button><button class="tab-btn" data-tab="tabs2-3">Using Moderne Platform vs. Moderne CLI</button></div><div class="tab-panels"><div class="tab-panel is-active" id="tabs2-0"><div class="rich"><p>Running a recipe on a single repository is ideal for targeted changes or testing new recipes. With the CLI, you specify the repository and the recipe you want to apply, and the tool processes only that codebase.</p><p class="sp"></p><p>This approach allows you to validate the recipe’s effects before scaling up to multiple repositories. It’s also useful for smaller teams or projects with isolated codebases.</p></div></div><div class="tab-panel" id="tabs2-1"><div class="rich"><div><p><strong>The Moderne CLI excels at running recipes across many repositories simultaneously</strong>. You can select multiple public or private repositories within your organization and apply the same recipe in one operation.</p><p class="sp"></p><p>This workflow is especially valuable for large-scale migrations or upgrades, saving significant time and ensuring consistency across your codebase.</p></div></div></div><div class="tab-panel" id="tabs2-2"><div class="rich"><p>After running a recipe, the CLI generates diffs for each repository, showing exactly what will change. You can review these diffs in detail, approve or reject changes, and commit updates as needed.</p><p class="sp"></p><p>This review process helps maintain code quality and allows you to catch any unintended modifications before they are merged.</p></div></div><div class="tab-panel" id="tabs2-3"><div class="rich"><div><p>While the CLI offers powerful automation and scripting capabilities, t<strong>he Moderne platform UI provides a visual interface for browsing recipes, tracking progress, and managing migrations.</strong></p><p class="sp"></p><p>Additonally, <strong>it's important to note that the Moderne Platform is far better at running recipes as scale than trying to run them locally. </strong></p><p class="sp"></p><p>Locally, you are limited by the processing power and storage space of your local system; whereas <strong>the Moderne Platform can scale up and handle many more repos and recipe runs.</strong></p><p class="sp"></p><p>Choosing between the CLI and UI depends on your workflow preferences and the scale of your code changes. Many teams use both for maximum flexibility and control.</p></div></div></div></div></div>
+<div class="blk continue"><span></span></div>
+</section>
+<section class="part-divider" id="part-5"><span class="part-kicker">Section</span><h2>Part II: Building Reciepes</h2></section>
+<section class="lesson" id="lesson-6">
+<div class="lesson-head"><span class="lesson-kicker">Lesson 5</span><h1>Composing and Customizing Declarative Recipes</h1></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507634.jpg" playsinline title="6_Custom Recipes"><source src="assets/intro-to-openrewrite/video/1205507634.mp4" type="video/mp4"></video></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Customizing code transformations with declarative recipes</p></div></h2>
+<div class="rich"><div><p>Modern codebases are constantly evolving, and organizations often need to migrate frameworks, update APIs, or enforce new coding standards across many projects. Being able to compose and customize code transformations is essential for meeting these real-world needs. </p><p>In this lesson, you'll learn how to use the Moderne recipe builder to create and tailor declarative recipes, giving your team the power and flexibility to automate migrations and refactorings at scale.</p></div></div></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Three types of recipes</p></div></h2></div>
+<div class="blk"><figure class="hero-img"><img loading="lazy" src="assets/intro-to-openrewrite/img/lRCXv1oiUwp7WnhF.png" alt=""><figcaption class="cap"><div><p>There are three types of recipes, but for the purposes of this course, we will focus on Declarative recipes&nbsp;</p></div></figcaption></figure></div>
+<div class="blk blk-text"><div class="rich"><p>To get the most out of this lesson, review the objectives below. These will guide your learning and help you focus on the key skills and concepts you'll develop as you work with declarative recipes.</p></div></div>
+<div class="blk"><ol class="numlist"><li><span class="num">1</span><div class="rich"><div><p>Understand YAML recipe structure</p></div></div></li>
+<li><span class="num">2</span><div class="rich"><div><p>Compose and edit with recipe builder</p></div></div></li>
+<li><span class="num">3</span><div class="rich"><div><p>Customize recipes for migrations</p></div></div></li>
+<li><span class="num">4</span><div class="rich"><div><p>Recognize declarative approach limits</p></div></div></li></ol></div>
+<div class="blk blk-text"><div class="rich"><div><p>Declarative recipes aggregate and configure other existing recipes, allowing you to fill in parameters and snap them together like building blocks. Their primary limitation is that they cannot describe anything new or novel. So, whenever you need to do something the existing recipe catalogue does not account for; they hit a wall. </p></div></div></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Key terms and concepts: declarative recipes</p></div></h2>
+<div class="rich"><p>Review each flashcard to get familiar with the key terms and concepts you'll encounter as you compose and customize declarative recipes.</p></div></div>
+<div class="blk"><div class="flashcards"><button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Declarative Recipe</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><div><p>A YAML-based list of recipes to run, their preconditions, and their parameters.</p></div></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>YAML</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>A human-readable data format used to define declarative recipes for code transformations.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Recipe Builder</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>A tool in Moderne that lets you visually compose, edit, and customize declarative recipes.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Recipe List</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>The section of a recipe that contains the ordered list of tasks or transformations to apply.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Preconditions</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><div><p>Filters applied per-file which narrow the scope of a recipe. </p><p class="sp"></p><p>In the declarative format recipes are used as preconditions for other recipes and in an imperative recipe visitors are used as preconditions.</p></div></div></div></div></button></div></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Anatomy of a declarative recipe</p></div></h2>
+<div class="rich"><p>Understanding the structure of a declarative recipe is key to effective customization. Each part plays a specific role in defining, composing, and controlling your code transformations.</p></div></div>
+<div class="blk acc-group"><details class="acc"><summary><span>Header and Naming Conventions</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Recipe names follow the conventions of the ecosystem they are authored in.</p><p class="sp"></p><p><strong>Java </strong>recipes follow the conventions of a fully qualified class name. <strong>Go</strong> and <strong>Python</strong> and <strong>Javascript </strong>recipes follow the naming conventions of those ecosystems.</p><p class="sp"></p><p>Regardless of ecosystem <strong>the most important thing about the recipe name is that it is unique.</strong></p><p class="sp"></p><p>In addition to simple naming, it is also important to have a useful, human-readable description field. This field will be used as a description of why the changes were made for anyone who runs the recipe, and is what coding agents running recipes will look at to determine their relevance.</p></div></div></details>
+<details class="acc"><summary><span>Recipe List and Composition</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>The core of a declarative recipe is the <span><strong><em>recipeList</em></strong></span>. This is an ordered list of tasks or transformations, such as changing type names, updating annotations, or modifying imports. Each entry in the list represents a specific action to be performed on your codebase.</p><p class="sp"></p><p>By composing multiple tasks in the <span><strong><em>recipeList</em></strong></span>, you can automate complex migrations or refactorings in a single, repeatable workflow.</p></div></div></details>
+<details class="acc"><summary><span>Adding, Removing, and Editing Segments</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>The recipe builder allows you to add, delete, or modify entire segments of a recipe. Segments correspond to individual tasks or groups of tasks within the <span><strong><em>recipeList</em></strong></span>. </p><p class="sp"></p><p>You can tailor the recipe to your needs by including only the relevant transformations for your migration scenario.</p><p class="sp"></p><p>This flexibility makes it easy to adapt existing recipes or create new ones that match your organization's requirements.</p></div></div></details>
+<details class="acc"><summary><span>Editing Preconditions</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>Preconditions are optional checks that determine whether a recipe or its steps should run. You can edit preconditions in the recipe builder to ensure that transformations are only applied when certain criteria are met, such as the presence of specific dependencies or code patterns.</p><p class="sp"></p><p>Careful use of preconditions helps prevent unintended changes and increases the safety of automated migrations.</p></div></details></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Lab 2.1 - Compose YAML recipe with the SaaS recipe builder</p></div></h2></div>
+<div class="blk"><div class="impact impact-note"><div class="rich"><div><p><span><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-2-recipe-builder" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-2-recipe-builder/</a></span></p></div></div></div></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507716.jpg" playsinline title="6.1_Lab 2.1"><source src="assets/intro-to-openrewrite/video/1205507716.mp4" type="video/mp4"></video></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Customization scenarios and use cases</p></div></h2>
+<div class="rich"><p>Each scenario highlights a different way to leverage declarative recipes for code modernization. Explore the tabs to see how you can adapt recipes for your organization's needs.</p></div></div>
+<div class="blk tabs" data-tabs><div class="tab-bar"><button class="tab-btn is-active" data-tab="tabs3-0">Migrating Library or Framework Usage</button><button class="tab-btn" data-tab="tabs3-1">Combining Multiple Recipes</button><button class="tab-btn" data-tab="tabs3-2">Editing for Organization-Specific Needs</button><button class="tab-btn" data-tab="tabs3-3">Limitations of Declarative Recipes</button></div><div class="tab-panels"><div class="tab-panel is-active" id="tabs3-0"><div class="rich"><div><p>When your organization needs to migrate from one library or framework to another, declarative recipes can automate the process. </p><p class="sp"></p><p>For example, migrating from JUnit 4 to JUnit 5 involves updating annotations, imports, and test structures. By composing a recipe with the necessary tasks, you can ensure consistent, repeatable changes across all affected projects.</p><p class="sp"></p><p>This approach reduces manual effort and minimizes the risk of missing important updates, especially in large codebases.</p></div></div></div><div class="tab-panel" id="tabs3-1"><div class="rich"><p>Sometimes, a single migration requires several related changes. The recipe builder allows you to combine multiple recipes into a composite, orchestrating a sequence of transformations in one workflow. For instance, you might combine type changes, annotation updates, and static import adjustments into a single composite recipe.</p><p class="sp"></p><p>This makes it easier to manage complex migrations and ensures that all necessary steps are performed together, improving reliability and efficiency.</p></div></div><div class="tab-panel" id="tabs3-2"><div class="rich"><p>Every organization has unique coding standards and migration requirements. With the recipe builder, you can edit existing recipes or create new ones tailored to your specific needs. This might involve adding custom preconditions, removing irrelevant steps, or adjusting transformations to match your internal guidelines.</p><p class="sp"></p><p>Customizing recipes in this way helps enforce consistency and supports your team's development practices across all projects.</p></div></div><div class="tab-panel" id="tabs3-3"><div class="rich"><p>Declarative recipes are ideal for straightforward, compiler-checked transformations, but they have limitations. They may not handle highly complex or context-dependent changes that require imperative logic or advanced pattern matching.</p><p class="sp"></p><p>For more advanced scenarios, consider exploring imperative or Refaster-style recipes, which offer greater flexibility at the cost of increased complexity. These topics are covered in advanced recipe authoring courses.</p></div></div></div></div>
+<div class="blk"><div class="impact impact-quote"><div class="rich">With the recipe builder, you can display, edit, and compose custom recipes easily—adding, deleting, or modifying whole segments as needed.</div></div></div>
+<div class="blk continue"><span></span></div>
+</section>
+<section class="part-divider" id="part-7"><span class="part-kicker">Section</span><h2>Part III: Search, Datatables, and Visualizations</h2></section>
+<section class="lesson" id="lesson-8">
+<div class="lesson-head"><span class="lesson-kicker">Lesson 6</span><h1>Analyzing Code with Search Markers, Data Tables, and Visualizations</h1></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Analyzing code at scale: search markers, data tables, and visualizations</p></div></h2>
+<div class="rich"><div><p>Understanding your codebase at scale is essential for making safe, informed decisions about migrations, upgrades, and modernization.</p><p>OpenRewrite and Moderne provide powerful analytical tools (search markers, data tables, and visualizations), that help teams not only find and annotate code patterns, but also extract structured insights and communicate findings effectively across the organization. <strong>In this lesson, you'll discover how these features work together to turn raw code into actionable intelligence.</strong></p></div></div></div>
+<div class="blk blk-text"><div class="rich"><p>In this lesson, you'll gain hands-on experience with the analytical features of OpenRewrite and Moderne. By the end, you'll be able to use these tools to extract, interpret, and communicate valuable insights from your codebase.</p></div></div>
+<div class="blk"><ol class="numlist"><li><span class="num">1</span><div class="rich"><div><p>Use search markers</p></div></div></li>
+<li><span class="num">2</span><div class="rich"><div><p>Generate and interpret data tables</p></div></div></li>
+<li><span class="num">3</span><div class="rich"><div><p>Create and analyze visualizations</p></div></div></li>
+<li><span class="num">4</span><div class="rich"><div><p>Apply tools to real-world scenarios</p></div></div></li></ol></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507739.jpg" playsinline title="7_Data Tables"><source src="assets/intro-to-openrewrite/video/1205507739.mp4" type="video/mp4"></video></div>
+<div class="blk blk-text"><div class="rich"><div><p>OpenRewrite and Moderne provide a comprehensive set of analytical tools designed to help you understand your codebase at scale. Search markers let you annotate code with structured, semantic information during recipe execution, all without changing the original source code. </p><p>Data tables then collect and organize these annotations and other metadata into structured, tabular formats, making it simple to analyze patterns, track metrics, and generate reports. </p><p>Visualizations convert this structured data into interactive charts and graphs, allowing you to clearly communicate findings and monitor progress over time. </p><p>By combining these tools, teams can move beyond manual code review and basic text search, enabling data-driven decision-making for migrations, upgrades, and modernization projects.</p></div></div></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Key terms for code analysis</p></div></h2>
+<div class="rich"><p>Review each flashcard to get familiar with the essential vocabulary for analyzing code with OpenRewrite and Moderne.</p></div></div>
+<div class="blk"><div class="flashcards"><button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Search Marker</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>An annotation added to code during recipe execution, highlighting specific locations with semantic metadata for further analysis.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Data Table</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>A structured, tabular format that collects metadata and results from recipes, enabling reporting and analytics across codebases.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Visualization</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>An interactive chart or graph generated from data tables, used to communicate findings and track progress visually.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Semantic Annotation</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>The process of tagging code elements with meaningful, structured information, making them easier to find and analyze.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Type-safe Search</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>A search method that leverages code structure and types, ensuring accurate results beyond simple text matching.</span></div></div></div></button></div></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Deep dive: analytical tools in Moderne</p></div></h2>
+<div class="rich"><p>Expand each section to explore how search markers, data tables, and visualizations work and why they matter.</p></div></div>
+<div class="blk acc-group"><details class="acc"><summary><span>What is a search marker?</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>Search markers are annotations inserted into your codebase during recipe execution, typically as language-specific comments. They flag specific code locations with structured, semantic metadata—without modifying the actual code logic. This allows you to visually highlight matches in code diffs, provide context for why something was marked, and enable other recipes to act on these marked elements.</p><p class="sp"></p><p>Search markers are especially useful for identifying patterns, tracking changes, and supporting further automated actions. They also generate a data table of all search results, making it easy to review and analyze findings at scale.</p></div></details>
+<details class="acc"><summary><span>How do data tables work?</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>Data tables are automatically generated when recipes run, capturing core metadata such as source paths, project information, and any custom columns you define. These tables organize extracted attributes and inferences into a structured, tabular format, which is ideal for reporting, analytics, and understanding code patterns.</p><p class="sp"></p><p>With data tables, you can generate reports on the current state of your codebase, track metrics for planning, and extract insights that inform modernization efforts. They are especially powerful when working across multiple repositories.</p></div></details>
+<details class="acc"><summary><span>What do visualizations provide?</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>Visualizations transform raw data from data tables into interactive, easy-to-understand charts and graphs. In Moderne, these are often presented as Jupyter Notebooks that aggregate and display data in a uniform way across recipe runs.</p><p class="sp"></p><p>Visualizations help you communicate findings to stakeholders, track progress visually, and make a compelling case for modernization initiatives. They turn complex data into actionable insights that are accessible to both technical and non-technical audiences.</p></div></details></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Lab 3.1 -&nbsp;Using search recipes and data tables with the Moderne CLI</p></div></h2></div>
+<div class="blk"><div class="impact impact-note"><div class="rich"><div><p><span><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-3-data-tables-visualizations/#exercise-3-1-run-search-recipes-and-export-data-tables-with-the-cli" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-3-data-tables-visualizations/#exercise-3-1-run-search-recipes-and-export-data-tables-with-the-cli</a></span></p></div></div></div></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507776.jpg" playsinline title="8_Lab 3.1"><source src="assets/intro-to-openrewrite/video/1205507776.mp4" type="video/mp4"></video></div>
+<div class="blk process">
+<div class="proc-intro"><span class="proc-tag">Workflow</span><h3>Step-by-step: analyzing code with Moderne</h3><div class="rich"><p>Follow these steps to leverage search markers, data tables, and visualizations for effective code analysis and reporting.</p></div></div>
+<ol class="proc-steps">
+<li><span class="proc-num">1</span><div class="proc-step-body"><h4>Start with a search recipe</h4><div class="rich"><p>Begin by running a search recipe using the Moderne CLI or platform. This recipe will scan your codebase for specific patterns or usages, annotating matches with search markers. These markers provide semantic context and flag important locations for further analysis.</p></div></div></li>
+<li><span class="proc-num">2</span><div class="proc-step-body"><h4>Export or view data tables</h4><div class="rich"><p>After the recipe runs, review the automatically generated data table. This table captures all search results and relevant metadata in a structured format, making it easy to analyze patterns, extract insights, and generate reports.</p></div></div></li>
+<li><span class="proc-num">3</span><div class="proc-step-body"><h4>Generate visualizations</h4><div class="rich"><p>Use the data table to create visualizations—such as charts or graphs—that aggregate and display your findings. In Moderne, visualizations are often provided as ready-to-use Jupyter Notebooks, helping you communicate results clearly and track progress over time.</p></div></div></li>
+<li><span class="proc-num">4</span><div class="proc-step-body"><h4>Inform migration and modernization</h4><div class="rich"><p>Leverage the insights from your search markers, data tables, and visualizations to guide migration or modernization efforts. These outputs help you understand the current state, prioritize actions, and communicate effectively with stakeholders.</p></div></div></li>
+</ol>
+<div class="proc-summary"><h4>Summary: from data to decisions</h4><div class="rich"><p>By combining search markers, data tables, and visualizations, you can move from raw code to actionable intelligence. This workflow supports safe, data-driven decisions and enables efficient, large-scale code transformations.</p></div></div>
+</div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Lab 3.2 -&nbsp;Using data tables and visualizations in the Moderne Platform</p></div></h2></div>
+<div class="blk"><div class="impact impact-note"><div class="rich"><div><p><span><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-3-data-tables-visualizations/#exercise-3-2-explore-data-tables-and-visualizations-in-the-platform" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-3-data-tables-visualizations/#exercise-3-2-explore-data-tables-and-visualizations-in-the-platform</a></span></p></div></div></div></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507805.jpg" playsinline title="9_Lab 3.2"><source src="assets/intro-to-openrewrite/video/1205507805.mp4" type="video/mp4"></video></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Real-world scenarios: analytical tools in action</p></div></h2>
+<div class="rich"><p>Explore each tab to see how search markers, data tables, and visualizations are used in practical situations.</p></div></div>
+<div class="blk tabs" data-tabs><div class="tab-bar"><button class="tab-btn is-active" data-tab="tabs4-0">Finding Vulnerable Dependencies</button><button class="tab-btn" data-tab="tabs4-1">Tracking API Adoption</button><button class="tab-btn" data-tab="tabs4-2">Visualizing Migration Progress</button><button class="tab-btn" data-tab="tabs4-3">Comparing Type-safe and Text Search</button></div><div class="tab-panels"><div class="tab-panel is-active" id="tabs4-0"><div class="rich"><p>Suppose you need to identify all usages of a vulnerable dependency across your codebase. By running a search recipe, you can annotate every instance with search markers, creating a comprehensive map of where the dependency is used.</p><p class="sp"></p><p>The resulting data table lists all occurrences, which can then be visualized to show the scope of the issue. This enables you to prioritize remediation and report progress to your team or leadership.</p></div></div><div class="tab-panel" id="tabs4-1"><div class="rich"><p>When rolling out a new API, it's important to track how widely it has been adopted. Search markers can flag every usage of the new API, and data tables aggregate this information across multiple repositories.</p><p class="sp"></p><p>Visualizations then display adoption trends over time, helping you measure success and identify areas where further migration is needed.</p></div></div><div class="tab-panel" id="tabs4-2"><div class="rich"><p>For executive reporting, visualizations are invaluable. After running recipes and collecting data tables, you can generate charts that show migration progress, such as the percentage of code updated or remaining work.</p><p class="sp"></p><p>These visual summaries make it easy to communicate complex technical progress to non-technical stakeholders, supporting buy-in and resource planning.</p></div></div><div class="tab-panel" id="tabs4-3"><div class="rich"><div><p>Type-safe search leverages the structure and semantics of your code, ensuring accurate results even when class or method names are similar. </p><p class="sp"></p><p>In contrast, text search may miss or misidentify patterns, especially in large or complex codebases.</p><p class="sp"></p><p>Using search markers and data tables with type-safe search provides confidence that all relevant instances are found, reducing risk and manual effort compared to traditional text or AI-based searches.</p></div></div></div></div></div>
+<div class="blk quizcard kc">
+<span class="q-tag">Knowledge check</span>
+<h3 class="q-title">What is the main purpose of a search marker in OpenRewrite?</h3>
+<div class="answers" data-quiz><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">To modify source code directly</span><span class="ans-fb">This is incorrect. Search markers do not modify source code; they annotate it.</span></button><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">To annotate code locations with semantic metadata</span><span class="ans-fb">This is correct. Search markers are used to annotate code with semantic metadata, making it easier to analyze and act on specific locations.</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">To generate visualizations automatically</span><span class="ans-fb">This is incorrect. Search markers do not generate visualizations; they provide metadata for analysis.</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">To replace dependencies in code</span><span class="ans-fb">This is incorrect. Search markers do not replace dependencies; they annotate code.</span></button></div>
+</div>
+<div class="blk continue"><span></span></div>
+</section>
+<section class="part-divider" id="part-9"><span class="part-kicker">Section</span><h2>Part IV: DevCenter</h2></section>
+<section class="lesson" id="lesson-10">
+<div class="lesson-head"><span class="lesson-kicker">Lesson 7</span><h1>Tracking Progress and Managing Change with DevCenter</h1></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507831.jpg" playsinline title="10_Dev Center"><source src="assets/intro-to-openrewrite/video/1205507831.mp4" type="video/mp4"></video></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Visibility and tracking: enter DevCenter</p></div></h2></div>
+<div class="blk blk-text"><div class="rich"><div><p>DevCenter is the mission-control dashboard of the Moderne Platform, designed to give organizations a unified, high-level view of their code migration and upgrade progress. It brings together key metrics from across all repositories, making it easy to see where you stand, what’s left to do, and where attention is needed.</p><p><strong>With DevCenter, teams can quickly surface actionable insights, communicate status to any audience, and make informed decisions about next steps.</strong></p></div></div></div>
+<div class="blk blk-text"><div class="rich"><div><p>Our most successful customers treat each of these pieces as one continuous loop rather than separate tools. They customize an off the shelf recipe for their organization, connect it to DevCenter so the dashboard reflects that customized recipe, and watch progress unfold over time as teams move through the migration. Then, as those teams work through it, they feed what they learn back into the recipe, so the next team hits fewer surprises than the last.</p><p>This is the horizontal approach playing out in practice because the same recipe runs across every repo, each team's fixes improve it for the team behind them, and the migration builds momentum as it goes.</p><p>Manual migrations tend to do the opposite, slowing down over time because every team starts from scratch.</p><p>In this lesson, you'll walk through DevCenter and learn how to read the dashboard, customize it for what your organization cares about, and connect it to recipes and migrations. Here is a look at the learning objectives for this section:</p></div></div></div>
+<div class="blk"><ol class="numlist"><li><span class="num">1</span><div class="rich"><div><p>Understand DevCenter’s role</p></div></div></li>
+<li><span class="num">2</span><div class="rich"><div><p>Explore dashboard components</p></div></div></li>
+<li><span class="num">3</span><div class="rich"><div><p>Generate and interpret dashboards</p></div></div></li>
+<li><span class="num">4</span><div class="rich"><div><p>Apply insights for planning</p></div></div></li></ol></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>DevCenter key terms flashcards</p></div></h2>
+<div class="rich"><p>Review each flashcard to get familiar with the essential terms you'll encounter in this lesson. Understanding these will help you navigate DevCenter and its dashboards with confidence.</p></div></div>
+<div class="blk"><div class="flashcards"><button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>DevCenter</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>The mission-control dashboard in Moderne for tracking migrations, upgrades, and security remediation across repositories.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Ownership Dashboard</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>A DevCenter panel showing repository counts, committers, and lines of code to reveal team and initiative impact.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Change Campaign</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>A dashboard view visualizing migration or upgrade progress, using color-coded dots to represent repository status.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Security Panel</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>A section of DevCenter displaying vulnerabilities and enabling security recipes to be run and tracked across repositories.</span></div></div></div></button></div></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Main components of DevCenter dashboards</p></div></h2>
+<div class="rich"><p>Explore the primary panels of DevCenter dashboards to understand how each one contributes to tracking progress, coordinating teams, and maintaining security throughout your organization’s development lifecycle.</p></div></div>
+<div class="blk acc-group"><details class="acc"><summary><span>Ownership: team and repo impact</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>The Ownership dashboard provides a snapshot of your organization’s repositories, showing the total repo count, number of committers, and lines of code. This helps you understand the scale of your initiatives and the teams involved, making it easier to assess impact and coordinate efforts.</p><p class="sp"></p><p>By surfacing these metrics, Ownership gives leaders and engineers a clear sense of who is affected by migrations or upgrades and where resources may be needed most.</p></div></details>
+<details class="acc"><summary><span>Change campaigns: migration progress</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>The Change Campaigns panel visualizes the progress of migrations and upgrades across all repositories. Using a parliament-style view, each dot represents a repository, and color-coding indicates its current status—such as major, minor, or patch level away from the goal.</p><p class="sp"></p><p>This visual approach makes it easy to spot bottlenecks, track completion rates, and communicate progress to stakeholders at a glance.</p></div></details>
+<details class="acc"><summary><span>Security: vulnerability tracking</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><p>The Security panel uses a radar-style visualization to highlight vulnerabilities across your organization. It allows you to run security recipes, track remediation, and monitor newly introduced issues in real time.</p><p class="sp"></p><p>This component ensures that security remains a visible and actionable part of your migration and upgrade strategy.</p></div></details></div>
+<div class="blk"><div class="impact impact-quote"><div class="rich"><p>It’s crucial to know where you are and be able to quickly communicate your progress—at any time, to anyone.</p></div></div></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Lab 4.1 -&nbsp;Exploring DevCenter dashboards in the Moderne Platform</p></div></h2></div>
+<div class="blk"><div class="impact impact-note"><div class="rich"><div><p><span><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-4-devcenter/#exercise-4-1-explore-a-devcenter-dashboard" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-4-devcenter/#exercise-4-1-explore-a-devcenter-dashboard</a></span></p></div></div></div></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507859.jpg" playsinline title="11_Lab 4.1"><source src="assets/intro-to-openrewrite/video/1205507859.mp4" type="video/mp4"></video></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>DevCenter in real-world scenarios</p></div></h2>
+<div class="rich"><p>Explore each tab to see how DevCenter supports real-world scenarios and organizational goals.</p></div></div>
+<div class="blk tabs" data-tabs><div class="tab-bar"><button class="tab-btn is-active" data-tab="tabs5-0">Tracking Java Version Adoption</button><button class="tab-btn" data-tab="tabs5-1">Visualizing Security Vulnerabilities</button><button class="tab-btn" data-tab="tabs5-2">Communicating Progress to Stakeholders</button><button class="tab-btn" data-tab="tabs5-3">Setting and Tracking Upgrade Goals</button></div><div class="tab-panels"><div class="tab-panel is-active" id="tabs5-0"><div class="rich"><p>DevCenter enables teams to monitor the adoption of Java or Spring Boot versions across multiple repositories. By visualizing which projects are up-to-date and which lag behind, teams can prioritize upgrades and allocate resources where they’re needed most.</p><p class="sp"></p><p>This visibility helps organizations standardize on supported versions, reduce technical debt, and ensure compatibility across their codebase.</p></div></div><div class="tab-panel" id="tabs5-1"><div class="rich"><p>The Security panel in DevCenter provides a radar view of vulnerabilities across all repositories. Teams can quickly identify which projects are exposed and track the impact of security recipes as issues are remediated.</p><p class="sp"></p><p>With this information, security teams can focus their efforts, demonstrate progress to leadership, and respond rapidly to new threats.</p></div></div><div class="tab-panel" id="tabs5-2"><div class="rich"><p>DevCenter dashboards make it easy to communicate migration and upgrade progress to executives or other stakeholders. The clear, visual summaries help non-technical audiences grasp the current state and understand the value of ongoing initiatives.</p><p class="sp"></p><p>This transparency builds trust and supports informed decision-making at every level of the organization.</p></div></div><div class="tab-panel" id="tabs5-3"><div class="rich"><p>Organizations can use DevCenter to set clear upgrade or migration goals and track progress over time. By defining targets and monitoring completion rates, teams stay motivated and accountable.</p><p class="sp"></p><p>DevCenter’s dashboards provide the feedback loop needed to celebrate wins, identify obstacles, and keep initiatives on track.</p></div></div></div></div>
+<div class="blk continue"><span></span></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p><strong>Lab 4.2 - Generating DevCenter dashboardswith the Moderne CLI</strong></p></div></h2></div>
+<div class="blk"><div class="impact impact-note"><div class="rich"><div><p><span><a class="lnk" href="https://docs.moderne.io/hands-on-learning/introduction/module-4-devcenter/#exercise-4-2-generate-a-devcenter-dashboard-with-the-cli" target="_blank" rel="noopener noreferrer">https://docs.moderne.io/hands-on-learning/introduction/module-4-devcenter/#exercise-4-2-generate-a-devcenter-dashboard-with-the-cli</a></span></p></div></div></div></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507883.jpg" playsinline title="12_Lab 4.2"><source src="assets/intro-to-openrewrite/video/1205507883.mp4" type="video/mp4"></video></div>
+<div class="blk continue"><span></span></div>
+<div class="blk quizcard kc">
+<span class="q-tag">Knowledge check</span>
+<h3 class="q-title">What is the primary purpose of DevCenter in the Moderne Platform?</h3>
+<div class="answers" data-quiz><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">Writing new recipes</span><span class="ans-fb">DevCenter is not primarily used for writing new recipes; its main function is to track and visualize migration, upgrade, and security remediation progress.</span></button><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">Tracking migration and upgrade progress</span><span class="ans-fb">Correct. DevCenter is designed to track and visualize migration, upgrade, and security remediation progress across repositories.</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">Editing code directly</span><span class="ans-fb">DevCenter does not provide direct code editing capabilities; it focuses on tracking progress and visualizing data.</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">Managing user permissions</span><span class="ans-fb">Managing user permissions is not the primary purpose of DevCenter.</span></button></div>
+</div>
+<div class="blk continue"><span></span></div>
+</section>
+<section class="part-divider" id="part-11"><span class="part-kicker">Section</span><h2>Test Your Knowledge</h2></section>
+<section class="lesson" id="lesson-12">
+<div class="lesson-head"><span class="lesson-kicker">Lesson 8</span><h1>Quiz</h1></div>
+<div class="blk quizcard">
+<span class="q-tag">Question 1 of 10</span>
+<h3 class="q-title">Which statement best describes the Lossless Semantic Tree (LST)?</h3>
+<div class="answers" data-quiz><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A text-only representation of source code optimized for fast regex searches</span></button><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">A tree representation that preserves formatting, comments, and whitespace while also capturing type information</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A compiled bytecode artifact that strips comments and whitespace for performance</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A diff format that records only the lines a recipe intends to change</span></button></div>
+</div>
+<div class="blk quizcard">
+<span class="q-tag">Question 2 of 10</span>
+<h3 class="q-title">Running the same recipe on the same codebase always produces the same result. What one word describes this property of OpenRewrite code changes?</h3>
+<div class="answers" data-quiz><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">Probablistic&nbsp;</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">Laconic</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">Sycophantic</span></button><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">Deterministic</span></button></div>
+</div>
+<div class="blk quizcard">
+<span class="q-tag">Question 3 of 10</span>
+<h3 class="q-title">You need to run a recipe across many repositories locally without modifying each repository to add a build plugin first. Which tool is the best fit?</h3>
+<div class="answers" data-quiz><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">The Maven or Gradle OpenRewrite plugin configured in each repo</span></button><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">The Moderne CLI</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A regex find-and-replace script</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">The OpenRewrite documentation site</span></button></div>
+</div>
+<div class="blk quizcard">
+<span class="q-tag">Question 4 of 10</span>
+<h3 class="q-title">After a recipe run completes, the CLI has not yet modified any source files. What has it produced for each repository that you must then apply to change the code?</h3>
+<div class="answers" data-quiz><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A committed branch</span></button><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">A patch</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">An open pull request</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A rebuilt LST</span></button></div>
+</div>
+<div class="blk quizcard">
+<span class="q-tag">Question 5 of 10</span>
+<h3 class="q-title">What is a declarative recipe?</h3>
+<div class="answers" data-quiz><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A recipe written in Java using the visitor pattern</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A recipe that can only search code and never modifies it</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A recipe that runs without an LST by matching raw text</span></button><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">A recipe defined in YAML that combines and configures existing recipes</span></button></div>
+</div>
+<div class="blk quizcard">
+<span class="q-tag">Question 6 of 10</span>
+<h3 class="q-title">Recipes in a recipeList are executed in what order:</h3>
+<div class="answers" data-quiz><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">In order, top to bottom</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">In parallel, all at once</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">In random order each run</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">Alphabetically by recipe name</span></button></div>
+</div>
+<div class="blk quizcard">
+<span class="q-tag">Question 7 of 10</span>
+<h3 class="q-title">What makes OpenRewrite searches "semantic" rather than simple text or regex matching?</h3>
+<div class="answers" data-quiz><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">They operate on the LST, so they can match on types, method signatures, and relationships even when that information is buried deep in the code</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">They run faster because they skip parsing the code</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">They only match exact strings that appear in comments</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">They require a separate machine learning model to interpret intent</span></button></div>
+</div>
+<div class="blk quizcard">
+<span class="q-tag">Question 8 of 10</span>
+<h3 class="q-title">Which two-word CLI command exports a recipe's data table (for example MethodCalls or SearchResults) after a recipe run?</h3>
+<div class="answers" data-quiz><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">mod study</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">mod report</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">mod table</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">export table</span></button></div>
+</div>
+<div class="blk quizcard">
+<span class="q-tag">Question 9 of 10</span>
+<h3 class="q-title">Which of the following is part of the organizational ownership section of a DevCenter dashboard?</h3>
+<div class="answers" data-quiz><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">The number of active developers, defined as contributors in the last 90 days</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A list of every open pull request across the organization</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">The recipe author's contact information</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A live terminal for running shell commands</span></button></div>
+</div>
+<div class="blk quizcard">
+<span class="q-tag">Question 10 of 10</span>
+<h3 class="q-title">On a DevCenter dashboard, what generates the cards (upgrades, security fixes, and similar) and their underlying data tables?</h3>
+<div class="answers" data-quiz><button class="ans is-correct" data-correct="true"><span class="ans-mark"></span><span class="ans-text">Recipes</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">Manual data entry by an administrator</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">Continuous integration build logs</span></button><button class="ans" data-correct="false"><span class="ans-mark"></span><span class="ans-text">A static configuration file committed to each repo</span></button></div>
+</div>
+</section>
+<section class="part-divider" id="part-13"><span class="part-kicker">Section</span><h2>Next Steps</h2></section>
+<section class="lesson" id="lesson-14">
+<div class="lesson-head"><span class="lesson-kicker">Lesson 9</span><h1>Summary & Next Steps: Growing with OpenRewrite and Moderne</h1></div>
+<div class="blk"><video class="embed" controls preload="none" poster="assets/intro-to-openrewrite/poster/1205507907.jpg" playsinline title="13_Wrap"><source src="assets/intro-to-openrewrite/video/1205507907.mp4" type="video/mp4"></video></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Celebrating your progress and looking ahead</p></div></h2>
+<div class="rich"><div><p>Congratulations on completing your journey through OpenRewrite and Moderne! </p><p>You've taken important steps toward mastering automated code refactoring at scale. As you wrap up this course, remember that your new skills are just the beginning; there are countless opportunities to apply what you've learned, drive change in your organization, and continue growing as a developer and team member.</p></div></div></div>
+<div class="blk blk-text"><div class="rich"><p>As you reflect on your learning, consider these key achievements from the course. Each represents a core skill or concept that will empower you to automate, analyze, and manage code changes more effectively.</p></div></div>
+<div class="blk"><ol class="numlist"><li><span class="num">1</span><div class="rich"><div><p>Running and managing recipes</p></div></div></li>
+<li><span class="num">2</span><div class="rich"><div><p>Composing declarative YAML recipes</p></div></div></li>
+<li><span class="num">3</span><div class="rich"><div><p>Analyzing code with data tables</p></div></div></li>
+<li><span class="num">4</span><div class="rich"><div><p>Tracking progress with DevCenter</p></div></div></li></ol></div>
+<div class="blk blk-text"><div class="rich"><p>Throughout this course, you’ve built a strong foundation in automated code transformation. You started by understanding the origins and value of OpenRewrite and Moderne, then learned how to set up and run recipes using the Moderne CLI. Next, you explored how to compose and customize declarative recipes for your unique needs. You gained hands-on experience analyzing codebases with search markers, data tables, and visualizations, and finally, you discovered how to track and communicate migration progress using DevCenter.</p><p>Each module built upon the last, equipping you with a holistic toolkit for safe, scalable, and insightful code modernization. These skills work together to help you and your team achieve more with less manual effort, while maintaining confidence and control over your codebase.</p></div></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Key takeaways: OpenRewrite &amp; Moderne</p></div></h2>
+<div class="rich"><p>Review each flashcard to reinforce the most important ideas and skills you’ve gained. These big takeaways will help guide your next steps as you apply OpenRewrite and Moderne in your work.</p></div></div>
+<div class="blk"><div class="flashcards"><button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Automating Code Refactoring</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>Use recipes and the Moderne platform to make safe, repeatable code changes across many repositories.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Declarative Recipe Composition</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>Build and customize YAML-based recipes to tailor migrations and refactorings for your specific needs.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Data-Driven Code Analysis</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>Leverage search markers, data tables, and visualizations to understand and communicate codebase insights.</span></div></div></div></button>
+<button class="fc" onclick="this.classList.toggle('flip')"><div class="fc-inner"><div class="fc-face fc-front"><div class="rich"><strong>Progress Tracking with DevCenter</strong></div><span class="fc-hint">Flip</span></div><div class="fc-face fc-back"><div class="rich"><span>Use dashboards to monitor, report, and steer migration and upgrade efforts at scale.</span></div></div></div></button></div></div>
+<div class="blk"><div class="impact impact-quote"><div class="rich">You are now equipped to bring automation, insight, and confidence to your codebase—start making an impact today!</div></div></div>
+<div class="blk process">
+<div class="proc-intro"><span class="proc-tag">Workflow</span><h3>Putting your knowledge into action</h3><div class="rich"><p>Here’s a practical roadmap to help you put your new knowledge into action. Follow these steps to keep learning and growing with OpenRewrite and Moderne.</p></div></div>
+<ol class="proc-steps">
+<li><span class="proc-num">1</span><div class="proc-step-body"><h4>Review course materials</h4><div class="rich"><p>Look back over your notes and course resources to reinforce key concepts and workflows. Revisit any modules where you want more practice.</p></div></div></li>
+<li><span class="proc-num">2</span><div class="proc-step-body"><h4>Share and connect</h4><div class="rich"><p>Join the Slack community or other forums to share your experiences, ask questions, and learn from others who are also using OpenRewrite and Moderne.</p></div></div></li>
+<li><span class="proc-num">3</span><div class="proc-step-body"><h4>Explore more features</h4><div class="rich"><p>Experiment with additional recipes, data tables, and visualizations. Challenge yourself to analyze new migration scenarios or reporting needs.</p></div></div></li>
+<li><span class="proc-num">4</span><div class="proc-step-body"><h4>Track your progress</h4><div class="rich"><p>Use DevCenter to monitor your own migration or upgrade journey. Set goals, review dashboards, and celebrate your milestones along the way.</p></div></div></li>
+</ol>
+<div class="proc-summary"><h4>Keep growing and sharing</h4><div class="rich"><p>Continuous learning and collaboration are key. Stay curious, keep experimenting, and share your successes with your team and the broader community.</p></div></div>
+</div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Explore further: resources and communities</p></div></h2>
+<div class="rich"><p>Explore these resources and communities to deepen your expertise and get support as you continue your journey.</p></div></div>
+<div class="blk acc-group"><details class="acc"><summary><span>Documentation and guides</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Access the official OpenRewrite and Moderne documentation for detailed guides, FAQs, and best practices. These are your go-to references for technical questions and advanced usage.</p><p class="sp"></p><p>Find them at the <a class="lnk" href="https://docs.openrewrite.org/" target="_blank" rel="noopener noreferrer"><strong>OpenRewrite docs</strong></a> and <a class="lnk" href="https://docs.moderne.io/" target="_blank" rel="noopener noreferrer"><strong>Moderne docs</strong></a><strong> </strong>websites.</p></div></div></details>
+<details class="acc"><summary><span>GitHub repositories</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Browse the OpenRewrite and Moderne GitHub repositories to explore source code, contribute, or follow updates. These repos are great for staying current and engaging with the developer community.</p><p class="sp"></p><p>Visit the <a class="lnk" href="https://github.com/openrewrite" target="_blank" rel="noopener noreferrer"><strong>OpenRewrite</strong></a> and <a class="lnk" href="https://github.com/moderneinc" target="_blank" rel="noopener noreferrer"><strong>Moderne GitHub</strong></a> pages for more.</p></div></div></details>
+<details class="acc"><summary><span>Blog, Livestream, and YouTube</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Stay up to date with the latest features, case studies, and tutorials through the <a class="lnk" href="https://www.moderne.ai/blog?utm_source=slides&amp;utm_medium=referral&amp;utm_campaign=2026_Intro_OR_Train_Slides&amp;utm_content=blog&amp;utm_term=" target="_blank" rel="noopener noreferrer"><strong>Moderne blog</strong></a>, <a class="lnk" href="https://www.youtube.com/playlist?list=PLIasdWXKABOmXSFwB5Kt7O8XtRVKE4-RS" target="_blank" rel="noopener noreferrer"><strong>Code Remix Weekly livestream</strong></a>, and the <a class="lnk" href="https://www.youtube.com/@Moderne-and-OpenRewrite" target="_blank" rel="noopener noreferrer"><strong>Moderne &amp; OpenRewrite YouTube channel</strong></a>.</p><p class="sp"></p><p>These channels offer insights, demos, and community stories to inspire your next project.</p></div></div></details>
+<details class="acc"><summary><span>O’Reilly eBook</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Deepen your understanding with the <strong>"</strong><a class="lnk" href="https://info.moderne.ai/automated-code-remediation-v2-ebook/" target="_blank" rel="noopener noreferrer"><strong>Automated Code Remediation at Scale" eBook, available from O’Reilly</strong></a>. This resource covers advanced strategies and real-world examples.</p><p class="sp"></p><p>Check the Moderne resources page for access details.</p></div></div></details>
+<details class="acc"><summary><span>Slack community and support</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Join the OpenRewrite and Moderne Slack channels to connect with peers, ask questions, and get help from experts. The <a class="lnk" href="https://rewriteoss.slack.com/archives/C096YTL638Q" target="_blank" rel="noopener noreferrer"><strong>#training-intro-to-openrewrite</strong></a> channel is a great place to start.</p><p class="sp"></p><p><a class="lnk" href="https://rewriteoss.slack.com/archives/C096YTL638Q" target="_blank" rel="noopener noreferrer"><strong>https://rewriteoss.slack.com/archives/C096YTL638Q</strong></a></p></div></div></details>
+<details class="acc"><summary><span>Webinars and Live Training</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p><a class="lnk" href="https://www.moderne.ai/moderne-openrewrite-training-hub?utm_source=slides&amp;utm_medium=referral&amp;utm_campaign=2026_Intro_OR_Train_Slides&amp;utm_content=training&amp;utm_term=" target="_blank" rel="noopener noreferrer"><strong>Sign up for Webinars</strong></a> to continue building your skills. These opportunities help you stay ahead and deepen your expertise.</p><p class="sp"></p><p><strong>Watch for announcements on the </strong><a class="lnk" href="http://moderne.ai" target="_blank" rel="noopener noreferrer"><strong>Moderne website</strong></a><strong> or in the Slack community.</strong></p></div></div></details>
+<details class="acc"><summary><span>Author your own recipes</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></summary><div class="acc-body rich"><div><p>Concepts, guides, and references for writing your own OpenRewrite recipes can be found here:&nbsp;</p><p class="sp"></p><p><a class="lnk" href="https://docs.moderne.io/user-documentation/recipes/authoring-recipes/" target="_blank" rel="noopener noreferrer"><strong>https://docs.moderne.io/user-documentation/recipes/authoring-recipes/</strong></a></p></div></div></details></div>
+<div class="blk blk-text"><h2 class="b-head"><div><p>Next steps and engagement opportunities</p></div></h2>
+<div class="rich"><p>Explore these next steps and engagement opportunities to keep your momentum going. Each tab offers a different way to stay connected and grow.</p></div></div>
+<div class="blk tabs" data-tabs><div class="tab-bar"><button class="tab-btn is-active" data-tab="tabs6-0">Requesting Demos or Talking to Sales</button><button class="tab-btn" data-tab="tabs6-1">Sharing Feedback and Success Stories</button></div><div class="tab-panels"><div class="tab-panel is-active" id="tabs6-0"><div class="rich"><div><p>If your team or organization wants to see Moderne in action or discuss enterprise adoption, <a class="lnk" href="https://www.moderne.ai/book-a-demo?utm_source=slides&amp;utm_medium=referral&amp;utm_campaign=2026_Intro_OR_Train_Slides&amp;utm_content=demo&amp;utm_term=" target="_blank" rel="noopener noreferrer"><strong>request a demo or connect with the sales team.</strong></a></p><p class="sp"></p><p>Find contact information and request forms on the Moderne website.</p></div></div></div><div class="tab-panel" id="tabs6-1"><div class="rich"><div><p>Help improve the course and inspire others by sharing your feedback or success stories. Your experiences can help shape future learning and community support.</p><p class="sp"></p><p>Reach out via Slack, course surveys, or the <a class="lnk" href="https://moderne.ai/blog" target="_blank" rel="noopener noreferrer"><strong>Moderne blog</strong></a> to contribute your story.</p></div></div></div></div></div>
+</section>
+    </div>
+
+    <div class="foot">
+      <div class="foot-card">
+        <img src="assets/intro-to-openrewrite/img/pAPr4Wzu9Os_Rs5K.png" alt="Moderne" />
+        <span>Rethemed in the Moderne Nordic visual language · content from the “Introduction to OpenRewrite” Articulate course.</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ---- theme toggle ----
+(function(){
+  var root = document.documentElement, btn = document.getElementById('themeBtn');
+  var lbl = document.getElementById('themeLbl'), icon = document.getElementById('themeIcon');
+  var SUN = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+  var MOON = '<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>';
+  function apply(t){
+    root.setAttribute('data-theme', t);
+    var dark = t === 'dark';
+    lbl.textContent = dark ? 'Light' : 'Dark';
+    icon.innerHTML = dark ? SUN : MOON;
+    try { localStorage.setItem('or-theme', t); } catch(e){}
+  }
+  try { var saved = localStorage.getItem('or-theme'); if (saved) apply(saved); else apply('dark'); } catch(e){ apply('dark'); }
+  btn.addEventListener('click', function(){
+    apply(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+})();
+
+// ---- tabs ----
+document.querySelectorAll('[data-tabs]').forEach(function(g){
+  var btns = g.querySelectorAll('.tab-btn'), panels = g.querySelectorAll('.tab-panel');
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      btns.forEach(function(x){ x.classList.remove('is-active'); });
+      panels.forEach(function(p){ p.classList.remove('is-active'); });
+      b.classList.add('is-active');
+      var t = document.getElementById(b.dataset.tab);
+      if (t) t.classList.add('is-active');
+    });
+  });
+});
+
+// ---- quiz / knowledge checks ----
+document.querySelectorAll('[data-quiz]').forEach(function(q){
+  var answers = q.querySelectorAll('.ans');
+  answers.forEach(function(a){
+    a.addEventListener('click', function(){
+      if (q.classList.contains('done')) return;
+      q.classList.add('done');
+      var correct = a.dataset.correct === 'true';
+      a.classList.add('picked');
+      answers.forEach(function(x){
+        x.classList.add('answered');
+        if (x.dataset.correct === 'true') x.classList.add('reveal-correct');
+      });
+      if (!correct) a.classList.add('reveal-wrong');
+    });
+  });
+});
+
+// ---- scrollspy + progress ----
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-lesson'));
+  var map = {};
+  links.forEach(function(l){ map[l.getAttribute('href').slice(1)] = l; });
+  var targets = Object.keys(map).map(function(id){ return document.getElementById(id); }).filter(Boolean);
+  var pfill = document.getElementById('pfill'), ppct = document.getElementById('ppct');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){
+        links.forEach(function(l){ l.classList.remove('active'); });
+        var l = map[e.target.id]; if (l) l.classList.add('active');
+      }
+    });
+  }, { rootMargin:'-20% 0px -70% 0px' });
+  targets.forEach(function(t){ io.observe(t); });
+
+  var main = document.querySelector('.main');
+  function upd(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var p = h > 0 ? Math.min(100, Math.round(window.scrollY / h * 100)) : 0;
+    pfill.style.width = p + '%'; ppct.textContent = p + '%';
+  }
+  window.addEventListener('scroll', upd, { passive:true }); upd();
+})();
+</script>
+</body>
+</html>
