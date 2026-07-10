@@ -128,8 +128,9 @@ button{font:inherit;cursor:pointer;}
 .run-progress-inline .pct{font-variant-numeric:tabular-nums;font-weight:600;color:var(--brand-grey-800);min-width:32px;}
 .savings-chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text-primary);white-space:nowrap;}
 .savings-chip svg{width:15px;height:15px;color:var(--text-secondary);}
-.savings-chip strong{font-weight:700;}
+.savings-chip strong{font-weight:700;font-variant-numeric:tabular-nums;}
 .savings-chip .lbl{font-weight:500;color:var(--text-secondary);}
+.run-meta #run-savings-running{font-variant-numeric:tabular-nums;}
 .run-status-row[data-state="running"] .only-done{display:none;}
 .run-status-row[data-state="done"] .only-running{display:none;}
 
@@ -537,9 +538,9 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
         <div class="run-status-row" id="run-status-row" data-state="done">
           <span class="run-chip done only-done"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed</span>
           <span class="run-progress-inline only-running"><span class="bar"><span class="fill" id="run-fill" style="width:34%"></span></span><span class="pct" id="run-pct">34%</span></span>
-          <span class="savings-chip only-done"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><strong>80 hours</strong> <span class="lbl">estimated time savings</span></span>
+          <span class="savings-chip only-done"><svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><strong id="run-savings">80 hours</strong> <span class="lbl">estimated time savings</span></span>
           <span class="run-meta only-done">241 repositories · finished in 6m 12s · 7 days ago</span>
-          <span class="run-meta only-running">241 repositories · Running <span class="live-time" id="run-elapsed">1m 34s</span> · Started <span id="run-started">10:42 AM</span></span>
+          <span class="run-meta only-running"><span id="run-savings-running">40 hours</span> estimated time savings · 241 repositories · Running <span class="live-time" id="run-elapsed">1m 34s</span> · Started <span id="run-started">10:42 AM</span></span>
         </div>
       </div>
       <div class="tabs">
@@ -577,6 +578,7 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
               <div class="summary">
                 <div class="summary-row"><span class="summary-key">Files changed</span><span class="summary-val link">5,392</span></div>
                 <div class="summary-row"><span class="summary-key">Repositories with results</span><span class="summary-val link">234</span></div>
+                <div class="summary-row"><span class="summary-key">Estimated time savings</span><span class="summary-val" id="summary-savings">80 hours</span></div>
                 <div class="summary-row"><span class="summary-key">Files searched</span><span class="summary-val">33,377</span></div>
                 <div class="summary-row"><span class="summary-key">Files examined</span><span class="summary-val">1,284,902</span></div>
               </div>
@@ -1693,16 +1695,25 @@ document.querySelectorAll('.demo-btn[data-root]').forEach(b=>b.addEventListener(
   const fillEl=document.getElementById('run-fill');
   const pctEl=document.getElementById('run-pct');
   const startedEl=document.getElementById('run-started');
+  const savingsEl=document.getElementById('run-savings');
+  const savingsRunningEl=document.getElementById('run-savings-running');
+  const summarySavingsEl=document.getElementById('summary-savings');
+  const SAVINGS_TARGET_HOURS=80;
   let baseSecs=94, tickId=null, pct=34;
 
   function fmt(s){
     const m=Math.floor(s/60), r=s%60;
     return m>0 ? `${m}m ${String(r).padStart(2,'0')}s` : `${r}s`;
   }
+  function fmtHours(h){ return `${h} hour${h===1?'':'s'}`; }
+  function updateSavings(p){
+    const hrs=Math.round(SAVINGS_TARGET_HOURS * (p/100));
+    if(savingsRunningEl) savingsRunningEl.textContent=fmtHours(hrs);
+  }
   function tick(){
     baseSecs+=1;
     elapsedEl.textContent=fmt(baseSecs);
-    if(pct<96){ pct=Math.min(96, pct + 0.35); fillEl.style.width=pct.toFixed(0)+'%'; pctEl.textContent=pct.toFixed(0)+'%'; }
+    if(pct<96){ pct=Math.min(96, pct + 0.35); fillEl.style.width=pct.toFixed(0)+'%'; pctEl.textContent=pct.toFixed(0)+'%'; updateSavings(pct); }
   }
   function assignRunStatuses(){
     // Interleave active / queued across the whole list so the mix is visible at the top of the visible page.
@@ -1720,11 +1731,15 @@ document.querySelectorAll('.demo-btn[data-root]').forEach(b=>b.addEventListener(
       const now=new Date(); now.setMinutes(now.getMinutes()-Math.floor(baseSecs/60)); now.setSeconds(now.getSeconds()-baseSecs%60);
       startedEl.textContent=now.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
       elapsedEl.textContent=fmt(baseSecs);
+      updateSavings(pct);
       if(!tickId) tickId=setInterval(tick, 1000);
       state.runState='running';
       assignRunStatuses();
     } else {
       if(tickId){ clearInterval(tickId); tickId=null; }
+      if(savingsEl) savingsEl.textContent=fmtHours(SAVINGS_TARGET_HOURS);
+      if(summarySavingsEl) summarySavingsEl.textContent=fmtHours(SAVINGS_TARGET_HOURS);
+      if(savingsRunningEl) savingsRunningEl.textContent=fmtHours(SAVINGS_TARGET_HOURS);
       state.runState='done';
       clearRunStatuses();
     }

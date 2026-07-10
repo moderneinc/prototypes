@@ -248,7 +248,20 @@ body.btn-rounded .filter-chip,body.btn-rounded .filter-add{border-radius:var(--r
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D1D5DB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3C/svg%3E");}
 .ckbox:hover{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238D99FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3C/svg%3E");}
 .ckbox:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232637E6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E");}
-.ckbox:indeterminate{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232637E6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E");}
+.ckbox:indeterminate,.ckbox.ind{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232637E6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E");}
+.ckbox:disabled{opacity:.4;cursor:default;pointer-events:none;}
+
+/* Checkbox-states reference card (right pane default) */
+.cbstates{padding:22px 24px;}
+.cbstates h3{font-size:14px;font-weight:600;color:var(--text-primary);margin:0 0 3px;}
+.cbstates .cbs-sub{font-size:12.5px;color:var(--text-tertiary);margin:0 0 18px;}
+.cbs-group-label{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-tertiary);margin:0 0 10px;}
+.cbs-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 16px;margin-bottom:20px;}
+.cbs-item{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--text-secondary);}
+.cbs-item .ckbox{pointer-events:none;}
+.cbs-note{margin-top:4px;padding:12px 14px;background:var(--brand-grey-100);border:1px solid var(--border-primary);border-radius:var(--radius-md);font-size:12.5px;line-height:1.5;color:var(--text-secondary);}
+.cbs-note b{color:var(--text-primary);}
+.repo-results.search{color:var(--text-tertiary);font-weight:500;}
 
 /* Right detail pane */
 .detail-empty{height:100%;min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;color:var(--text-tertiary);border:1.5px dashed var(--border-secondary);border-radius:var(--radius-xl);background:var(--surface-primary);}
@@ -447,6 +460,7 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
 /* selected row → digital-blue-50 (lightest tint); stays selected on hover */
 .hn-row.active,.hn-row.active:hover{background:var(--neo-digital-blue-50);}
 .hn-badge{font-family:var(--font-body);font-size:10px;font-weight:600;color:var(--brand-violet-500);background:color-mix(in srgb, var(--brand-violet-500) 12%, transparent);border-radius:var(--radius-full);padding:1px 7px;}
+.hn-badge.readonly{color:var(--text-tertiary);background:var(--brand-grey-200);}
 .hn-ic{width:14px;height:14px;color:var(--text-tertiary);flex-shrink:0;}
 .hn-name{font-size:12.5px;color:var(--text-primary);min-width:0;display:inline-flex;align-items:baseline;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .n-package .hn-name{font-family:var(--font-code);font-size:12px;color:var(--text-secondary);}
@@ -579,16 +593,9 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
         </div>
 
         <div class="results-head">
-          <div class="seg" role="tablist" aria-label="Filter">
-            <button class="seg-btn active" data-filter="all">All <span class="seg-count" data-c="all"></span></button>
-            <button class="seg-btn" data-filter="results">Has results <span class="seg-count" data-c="results"></span></button>
-            <button class="seg-btn" data-filter="error">Errors <span class="seg-count" data-c="error"></span></button>
-          </div>
           <div class="filter-bar" id="filter-bar">
-            <svg class="fb-ic" viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <div class="filter-chips" id="filter-chips"></div>
-            <input id="repo-search" type="search" placeholder="Filter…" autocomplete="off" spellcheck="false">
-            <button class="filter-add" id="filter-add" title="Add a filter"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Filter</button>
+            <svg class="fb-ic svg-stroke" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <input id="repo-search" type="search" placeholder="Search for repository or organization" autocomplete="off" spellcheck="false">
           </div>
         </div>
 
@@ -644,6 +651,8 @@ NAV_ITEMS.forEach(i=>{const el=document.createElement('div');el.className='nav-i
 
 /* ===== Repositories data ===== */
 const REPOS=[
+  {name:'kotlinx.benchmark', branch:'main', results:503, searchOnly:true},  // only search results (no changes) → checkbox hidden
+  {name:'intellij-platform', branch:'master', results:458, noCommit:true},  // has changes (in the set) but can't be committed — read-only
   {name:'kotlin', branch:'master', results:412},
   {name:'intellij-community', branch:'master', results:386},
   {name:'Exposed', branch:'main', results:168},
@@ -858,9 +867,9 @@ const state={
   filters:[],               // faceted filter chips: [{key,value}]
 };
 /* seed the commit selection so every checkbox state is visible at once:
-   first results-repo = partial (indeterminate), second = unchecked, the rest = fully checked;
-   no-results / error repos render no checkbox at all */
-REPOS.filter(r=>r.results>0).forEach((r,i)=>{
+   first committable repo = partial (indeterminate), second = unchecked, the rest = fully checked;
+   no-results / error repos and non-committable (read-only) repos render no checkbox at all */
+REPOS.filter(r=>r.results>0 && !r.noCommit && !r.searchOnly).forEach((r,i)=>{
   const keys=repoClassKeys(r.id);
   if(i===0){ keys.slice(0, Math.max(1, Math.floor(keys.length/2))).forEach(k=>state.selFiles.add(k)); } // partial → indeterminate
   else if(i===1){ /* leave unchecked */ }
@@ -960,19 +969,23 @@ function vcsNodeHTML(vcs,d){
 
 function repoNodeHTML(r,d=0){
   const st=statusOf(r);
-  const expandable=r.results>0;
-  const expanded=state.expanded.has(r.id);
-  const resTxt = r.error ? 'Error' : (r.results>0 ? `${r.results.toLocaleString()} result${r.results===1?'':'s'}` : 'No results');
-  const resCls = r.error ? 'error' : (r.results>0 ? '' : 'none');
+  // committable only if it produced changes, didn't error, isn't read-only, and isn't search-only
+  const committable = r.results>0 && !r.error && !r.noCommit && !r.searchOnly;
+  const resTxt = r.error ? 'Error'
+    : r.searchOnly ? `${r.results.toLocaleString()} search result${r.results===1?'':'s'}`
+    : (r.results>0 ? `${r.results.toLocaleString()} change${r.results===1?'':'s'}` : 'No results');
+  const resCls = r.error ? 'error' : r.searchOnly ? 'search' : (r.results>0 ? '' : 'none');
   const shared = (state.rootBy==='moderne' && repoShared(r.id)) ? `<span class="hn-badge shared" title="Belongs to ${(repoOrgs[r.id]||[]).length} sub-orgs">shared</span>` : '';
+  const readonly = r.noCommit ? `<span class="hn-badge readonly" title="No write access — results can't be committed from here">read-only</span>` : '';
   // repository is a leaf — the tree shows only repositories (no package/class/method drill-down)
+  // committable repos get a checkbox; non-committable rows keep a spacer so the alignment is preserved
   return `<div class="hn-row n-repo ${act('repo',r.id,{})?'active':''}" data-node="repo" data-rid="${r.id}" ${PAD(d)}>
     <span class="chev-spacer"></span>
-    ${expandable?cbHTML('repo', r.id, repoSel(r.id)):'<span class="cb-spacer"></span>'}
+    ${committable?cbHTML('repo', r.id, repoSel(r.id)):'<span class="cb-spacer"></span>'}
     <span class="repo-status-dot ${st}" title="${STATUS_LABEL[st]}"></span>
     <span class="repo-main">
       <span class="repo-name">${r.name}</span>
-      <span class="repo-branch">@ ${r.branch}</span>${shared}
+      <span class="repo-branch">@ ${r.branch}</span>${shared}${readonly}
     </span>
     <span class="repo-spacer"></span>
     <span class="repo-results ${resCls}">${resTxt}</span>
@@ -1079,10 +1092,6 @@ function render(){
       + (remaining>0 ? `<button class="load-more" id="load-more">Load ${Math.min(PAGE_INC,remaining)} more <span class="lm-rest">${remaining.toLocaleString()} remaining</span></button>` : '');
     document.getElementById('footer-summary').textContent=`Showing ${shown.toLocaleString()} of ${list.length.toLocaleString()} repositories`;
   }
-  // seg counts
-  document.querySelector('[data-c="all"]').textContent=REPOS.length;
-  document.querySelector('[data-c="results"]').textContent=REPOS.filter(r=>r.results>0).length;
-  document.querySelector('[data-c="error"]').textContent=REPOS.filter(r=>r.error).length;
   // commit count = selected files (classes)
   document.getElementById('commit-count').textContent=state.selFiles.size.toLocaleString();
   // apply indeterminate states (can't be set via attribute)
@@ -1513,16 +1522,13 @@ document.getElementById('repo-search').addEventListener('input',e=>{ state.query
 /* ===== Faceted filter chips ===== */
 function renderFilters(){
   const c=document.getElementById('filter-chips');
+  if(!c) return;   // faceted filter chips removed — search input handles filtering
   c.innerHTML = state.filters.map((f,i)=>`<span class="filter-chip"><span class="fc-key">${FACET_LABEL[f.key]}:</span>${f.value}<button class="fc-x" data-i="${i}" aria-label="Remove ${f.key} filter"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>`).join('');
 }
 function addFilter(key,value){
   if(!state.filters.some(f=>f.key===key && f.value===value)) state.filters.push({key,value});
   renderFilters(); state.shown=PAGE_INIT; render();
 }
-document.getElementById('filter-chips').addEventListener('click',e=>{
-  const x=e.target.closest('.fc-x'); if(!x)return;
-  state.filters.splice(+x.dataset.i,1); renderFilters(); state.shown=PAGE_INIT; render();
-});
 function openFacetMenu(anchor){
   document.getElementById('gh-menu').classList.remove('wide');
   const caret='<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
@@ -1541,7 +1547,6 @@ function openFacetValues(anchor, fk){
     return true;
   });
 }
-document.getElementById('filter-add').addEventListener('click',function(e){ e.stopPropagation(); openFacetMenu(this); });
 renderFilters();
 
 /* Load more on scroll near the bottom of the left panel */
@@ -1631,9 +1636,24 @@ document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(b=>b.addEventListe
 }));
 
 /* Demo: View mode (Unified tree vs Group-by pivot) */
-const EMPTY_DETAIL=`<div class="detail-empty">
-  <span class="ic"><svg viewBox="0 0 24 24" class="svg-stroke"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
-  <div class="et">Select any level — repository, package, class, or method — to view its results</div>
+const EMPTY_DETAIL=`<div class="cbstates">
+  <h3>Checkbox states</h3>
+  <p class="cbs-sub">Selecting repositories to commit — every state the row checkbox can take.</p>
+  <div class="cbs-group-label">Enabled</div>
+  <div class="cbs-grid">
+    <label class="cbs-item"><input class="ckbox" type="checkbox" checked>Checked</label>
+    <label class="cbs-item"><input class="ckbox" type="checkbox">Unchecked</label>
+    <label class="cbs-item"><input class="ckbox ind" type="checkbox">Indeterminate</label>
+  </div>
+  <div class="cbs-group-label">Disabled</div>
+  <div class="cbs-grid">
+    <label class="cbs-item"><input class="ckbox" type="checkbox" checked disabled>Disabled checked</label>
+    <label class="cbs-item"><input class="ckbox" type="checkbox" disabled>Disabled unchecked</label>
+    <label class="cbs-item"><input class="ckbox ind" type="checkbox" disabled>Disabled indeterminate</label>
+  </div>
+  <div class="cbs-note">
+    <b>Search results vs. changes.</b> When a repository has only <b>search results</b> (no changes to commit), the current lean is to <b>hide the checkbox entirely</b> — shown in the tree, where these rows keep their alignment but have no box. Repositories with committable <b>changes</b> get an enabled checkbox; ones you can’t commit for another reason (e.g. <b>read-only</b>) also hide it. The disabled variants above are the alternative if we’d rather keep the box present but non-interactive.
+  </div>
 </div>`;
 function resetScope(){ state.scope=null; state.activeRepo=null; document.getElementById('detail-slot').innerHTML=EMPTY_DETAIL; }
 document.querySelectorAll('.demo-btn[data-view]').forEach(b=>b.addEventListener('click',()=>{
@@ -1672,6 +1692,7 @@ document.querySelectorAll('.demo-btn[data-root]').forEach(b=>b.addEventListener(
 }));
 
 render();
+document.getElementById('detail-slot').innerHTML=EMPTY_DETAIL;   // show the checkbox-states reference by default
 
 // Show the title tooltip only when the h1 is actually truncated.
 (function(){

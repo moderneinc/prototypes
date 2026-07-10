@@ -1,0 +1,1345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Results — Repository status (prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ================================================
+   NEO DESIGN SYSTEM — BRAND TOKENS (Tier 1)
+   Ported verbatim from moddy-trigrep-combined.html.
+   ================================================ */
+:root {
+  --brand-white: #FFFFFF;
+  --brand-black: #000000;
+  --brand-digital-blue-100: #F2F3FF;
+  --brand-digital-blue-200: #DCE0FF;
+  --brand-digital-blue-300: #B6BFFF;
+  --brand-digital-blue-400: #8D99FF;
+  --brand-digital-blue-500: #2F42FF;
+  --brand-digital-blue-600: #2637E6;
+  --brand-digital-blue-700: #1E2EC2;
+  --brand-digital-blue-800: #131E7A;
+  --brand-digital-blue-900: #000855;
+  --brand-green-100: #F3FFF5;
+  --brand-green-200: #CFFFD7;
+  --brand-green-500: #72E184;
+  --brand-green-600: #5EC46F;
+  --brand-green-700: #4CA75A;
+  --brand-green-800: #3B8948;
+  --brand-red-100: #FEF2F2;
+  --brand-red-400: #FCA5A5;
+  --brand-red-500: #F87171;
+  --brand-red-600: #CB3446;
+  --brand-red-700: #A92232;
+  --brand-red-800: #871421;
+  --brand-orange-100: #FFF8E5;
+  --brand-orange-600: #FFB800;
+  --brand-orange-700: #D69B00;
+  --brand-orange-800: #856000;
+  --brand-grey-100: #F9FAFB;
+  --brand-grey-200: #F3F4F6;
+  --brand-grey-300: #E5E7EB;
+  --brand-grey-400: #D1D5DB;
+  --brand-grey-500: #9CA3AF;
+  --brand-grey-600: #6B7280;
+  --brand-grey-700: #4B5563;
+  --brand-grey-800: #374151;
+  --brand-grey-900: #1F2937;
+  --brand-grey-1000: #111827;
+  --brand-violet-500: #AD59C7;
+  --brand-violet-600: #992FB9;
+  --brand-teal-600: #3BCCA6;
+  --brand-font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --brand-font-family-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --brand-font-weight-regular: 400;
+  --brand-font-weight-medium: 500;
+  --brand-font-weight-semibold: 600;
+  --brand-font-weight-bold: 700;
+  --brand-font-size-100: 10px;
+  --brand-font-size-200: 12px;
+  --brand-font-size-300: 14px;
+  --brand-font-size-400: 16px;
+  --brand-font-size-500: 18px;
+  --brand-font-size-600: 20px;
+  --brand-font-size-700: 24px;
+  --brand-font-size-800: 28px;
+  --brand-spacing-100: 4px;
+  --brand-spacing-200: 8px;
+  --brand-spacing-300: 12px;
+  --brand-spacing-400: 16px;
+  --brand-spacing-500: 20px;
+  --brand-spacing-600: 24px;
+  --brand-spacing-800: 32px;
+  --brand-radius-100: 4px;
+  --brand-radius-200: 6px;
+  --brand-radius-300: 8px;
+  --brand-radius-400: 12px;
+  --brand-radius-500: 16px;
+  --brand-radius-full: 9999px;
+  --brand-shadow-100: 0 1px 3px rgba(31, 41, 55, 0.1);
+  --brand-shadow-200: 0 2px 4px rgba(31, 41, 55, 0.1);
+  --brand-shadow-300: 0 8px 15px rgba(31, 41, 55, 0.1);
+  --brand-transition-fast: 150ms ease;
+  --brand-transition-base: 200ms ease;
+}
+
+/* Tier 2 — alias tokens. */
+:root {
+  --alias-primary-100: var(--brand-digital-blue-100);
+  --alias-primary-200: var(--brand-digital-blue-200);
+  --alias-primary-500: var(--brand-digital-blue-500);
+  --alias-primary-600: var(--brand-digital-blue-600);
+  --alias-primary-700: var(--brand-digital-blue-700);
+  --alias-primary-800: var(--brand-digital-blue-800);
+  --alias-success-100: var(--brand-green-100);
+  --alias-success-600: var(--brand-green-600);
+  --alias-success-700: var(--brand-green-700);
+  --alias-error-100: var(--brand-red-100);
+  --alias-error-600: var(--brand-red-600);
+  --alias-error-700: var(--brand-red-700);
+  --alias-warning-100: var(--brand-orange-100);
+  --alias-neutral-light-100: var(--brand-grey-100);
+  --alias-neutral-light-200: var(--brand-grey-200);
+  --alias-neutral-light-300: var(--brand-grey-300);
+  --alias-neutral-light-400: var(--brand-grey-400);
+  --alias-neutral-dark-500: var(--brand-grey-500);
+  --alias-neutral-dark-600: var(--brand-grey-600);
+  --alias-neutral-dark-700: var(--brand-grey-700);
+  --alias-neutral-dark-800: var(--brand-grey-800);
+  --alias-neutral-dark-900: var(--brand-grey-900);
+  --alias-neutral-dark-1000: var(--brand-grey-1000);
+  --alias-foundation-white: var(--brand-white);
+  --alias-font-heading: var(--brand-font-family-sans);
+  --alias-font-body: var(--brand-font-family-sans);
+  --alias-font-code: var(--brand-font-family-mono);
+}
+
+/* Tier 3 — mapped tokens (components consume these). */
+:root {
+  --surface-primary: var(--alias-foundation-white);
+  --surface-page: #f4f4f4;
+  --surface-secondary: var(--alias-neutral-light-100);
+  --surface-tertiary: var(--alias-neutral-light-200);
+  --surface-error: var(--alias-error-100);
+  --surface-success: var(--alias-success-100);
+  --surface-information: var(--alias-primary-100);
+  --surface-warning: var(--alias-warning-100);
+  --text-primary: var(--alias-neutral-dark-1000);
+  --text-secondary: var(--alias-neutral-dark-600);
+  --text-tertiary: var(--alias-neutral-dark-500);
+  --text-error: var(--alias-error-600);
+  --text-success: var(--alias-success-700);
+  --text-information: var(--alias-primary-700);
+  --icon-primary: var(--alias-neutral-dark-1000);
+  --icon-secondary: var(--alias-neutral-dark-600);
+  --icon-tertiary: var(--alias-neutral-dark-500);
+  --border-primary: var(--alias-neutral-light-300);
+  --border-secondary: var(--alias-neutral-light-400);
+  --border-focus: var(--alias-primary-600);
+  --font-heading: var(--alias-font-heading);
+  --font-body: var(--alias-font-body);
+  --font-code: var(--alias-font-code);
+  --space-1: var(--brand-spacing-100);
+  --space-2: var(--brand-spacing-200);
+  --space-3: var(--brand-spacing-300);
+  --space-4: var(--brand-spacing-400);
+  --space-5: var(--brand-spacing-500);
+  --space-6: var(--brand-spacing-600);
+  --space-8: var(--brand-spacing-800);
+  --radius-sm: var(--brand-radius-100);
+  --radius-md: var(--brand-radius-200);
+  --radius-lg: var(--brand-radius-300);
+  --radius-xl: var(--brand-radius-400);
+  --radius-full: var(--brand-radius-full);
+  --shadow-xs: var(--brand-shadow-100);
+  --shadow-sm: var(--brand-shadow-200);
+  --shadow-md: var(--brand-shadow-300);
+  --transition-fast: var(--brand-transition-fast);
+  --transition-base: var(--brand-transition-base);
+}
+
+/* Neo Status tokens — used by the chip variants. */
+:root {
+  --status-success-light: #f3fff5;   --status-success-dark: #2c6c36;   --status-success-transparent: rgba(76, 167, 90, 0.5);
+  --status-error-light:   #ffedef;   --status-error-dark:   #a92232;   --status-error-transparent:   rgba(237, 74, 93, 0.5);
+  --status-warning-light: #fef9e8;   --status-warning-dark: #8e6e13;   --status-warning-transparent: rgba(189, 147, 25, 0.5);
+  --status-info-light:    #f2f3ff;   --status-info-dark:    #1e2ec2;   --status-info-transparent:    rgba(47, 66, 255, 0.5);
+  --status-neutral-light: #f3f4f6;   --status-neutral-dark: #374151;   --status-neutral-transparent: rgba(107, 114, 128, 0.5);
+  --status-queued-light:  #f6eefb;   --status-queued-dark:  #992fb9;   --status-queued-transparent:  rgba(153, 47, 185, 0.5);
+  --status-active-light:  #f6eefb;   --status-active-dark:  #7a2694;   --status-active-transparent:  rgba(153, 47, 185, 0.5);
+  --status-canceled-light:#faf8f3;   --status-canceled-dark:#564e41;   --status-canceled-transparent:rgba(156, 146, 126, 0.5);
+  --status-error-default: #ed4a5d;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+  line-height: 1.55;
+  overflow: hidden;
+}
+button { font: inherit; cursor: pointer; }
+
+/* ================================================
+   SHELL
+   ================================================ */
+.shell { height: 100vh; display: flex; flex-direction: column; }
+.grid {
+  display: grid;
+  grid-template-columns: 98px 1fr;
+  grid-template-areas: "nav content";
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+  background: var(--surface-page);
+}
+
+/* ================================================
+   LEFT NAVIGATION RAIL (98px) — ported verbatim from
+   moddy-trigrep-combined.html.
+   ================================================ */
+.left-nav {
+  grid-area: nav;
+  width: 98px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 2px 8px 24px;
+  gap: 0;
+  background: var(--surface-page);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  overflow: visible;
+}
+.left-nav-top {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: 4px;
+}
+.nav-item-home { padding: 0 4px; }
+.nav-item-home .nav-icon-container { padding: 4px; }
+.nav-item {
+  width: 100%;
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+}
+.nav-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  background: transparent;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+.nav-item:hover .nav-icon-container,
+.nav-item.active .nav-icon-container {
+  background: var(--brand-digital-blue-100);
+  border-color: var(--brand-digital-blue-200);
+}
+.nav-item-home:hover .nav-icon-container { background: transparent; border-color: transparent; }
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  color: var(--brand-grey-900);
+  flex-shrink: 0;
+}
+.nav-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--brand-font-weight-regular);
+  line-height: 1;
+  color: var(--brand-grey-900);
+  text-align: center;
+  white-space: normal;
+  width: 100%;
+  transition: color 150ms ease;
+}
+.nav-item:hover .nav-label { color: var(--brand-digital-blue-600); }
+.nav-item.active .nav-label {
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--brand-digital-blue-800);
+}
+.nav-badge {
+  font-size: 11px;
+  padding: 0 6px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--brand-grey-200);
+  color: var(--brand-grey-800);
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: 1;
+  text-align: center;
+  letter-spacing: 0;
+}
+.nav-home-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  padding: 4px 0;
+}
+.nav-version-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--brand-digital-blue-500) 0%, var(--brand-violet-500) 100%);
+  color: var(--brand-white);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--brand-font-weight-semibold);
+  line-height: 1;
+  letter-spacing: 0;
+}
+.nav-more-wrapper { position: relative; margin-top: auto; }
+.nav-more-popover {
+  position: absolute;
+  left: calc(100% + 4px);
+  bottom: 0;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 96px;
+  z-index: 100;
+}
+.nav-more-popover[hidden] { display: none; }
+.nav-more-popover .nav-item { padding: 8px 4px; }
+
+/* ================================================
+   MAIN CONTENT AREA
+   ================================================ */
+.main-area {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+}
+
+/* ================================================
+   GLOBAL NAVIGATION BAR (65px) — ported verbatim from
+   moddy-trigrep-combined.html.
+   ================================================ */
+.global-nav {
+  height: 65px;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+  width: 100%;
+}
+.global-nav::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  max-width: 90%;
+  height: 65px;
+  background: radial-gradient(ellipse at center, var(--brand-red-100) 0%, var(--brand-red-100) 40%, transparent 70%);
+  filter: blur(20px);
+  z-index: 0;
+  pointer-events: none;
+}
+.global-nav > * { position: relative; z-index: 1; }
+.org-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  background: var(--surface-primary);
+  border: 1px solid var(--border-secondary);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-transform: none;
+}
+.org-selector:hover { background: var(--brand-grey-200); border-color: var(--border-primary); }
+.org-selector.selected {
+  color: var(--text-primary);
+  font-weight: var(--brand-font-weight-regular);
+}
+.org-selector-wrapper {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50vw;
+}
+.nav-spacer { flex: 1; }
+.search-input {
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-secondary);
+  padding: 10px 16px;
+  font-size: var(--brand-font-size-300);
+  color: var(--text-tertiary);
+  background: var(--surface-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  flex-shrink: 0;
+  user-select: none;
+}
+.search-input:hover { background: var(--brand-grey-200); border-color: var(--border-primary); }
+.search-input > span:first-of-type { flex: 1; white-space: nowrap; }
+.search-input-keys { display: inline-flex; align-items: center; gap: 2px; }
+.search-input kbd {
+  font-size: var(--brand-font-size-100);
+  background: var(--surface-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--text-tertiary);
+  font-family: var(--font-body);
+  border: 1px solid var(--border-primary);
+  min-width: 18px;
+  text-align: center;
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 64px;
+}
+.nav-action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), transform 200ms ease-in;
+  border: none;
+  background: transparent;
+  color: var(--brand-grey-900);
+  flex-shrink: 0;
+}
+.nav-action-btn:hover { background: var(--brand-grey-200); }
+.nav-action-btn svg { width: 20px; height: 20px; }
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: #E45A4F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: var(--brand-font-weight-semibold);
+  color: var(--brand-white);
+  flex-shrink: 0;
+}
+
+/* ================================================
+   PAGE — inner content surface (rounded, over the grey layout)
+   ================================================ */
+.page {
+  flex: 1;
+  background: var(--surface-primary);
+  border-radius: 8px 0 0 0;
+  overflow: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================================================
+   PAGE HEADER
+   ================================================ */
+.page-header {
+  padding: var(--space-6) var(--space-6) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.recipe-name {
+  font-family: var(--font-heading);
+  font-size: var(--brand-font-size-500);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: 24px;
+  color: var(--text-primary);
+  margin: 0;
+}
+.recipe-name code {
+  font-family: var(--font-code);
+  background: var(--surface-secondary);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-1);
+  font-size: 0.9em;
+}
+.results-for {
+  font-size: var(--brand-font-size-300);
+  color: var(--text-secondary);
+  display: flex;
+  gap: var(--space-1);
+  align-items: baseline;
+}
+.results-for strong { color: var(--text-primary); font-weight: var(--brand-font-weight-medium); }
+.progress-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: var(--space-2);
+}
+.progress-meta {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: var(--brand-font-size-300);
+  flex-wrap: wrap;
+}
+.progress-meta strong { color: var(--text-primary); font-weight: var(--brand-font-weight-semibold); }
+.progress-meta__sep { width: 3px; height: 3px; border-radius: 50%; background: var(--brand-grey-400); }
+.progress-bar {
+  width: 470px;
+  max-width: 100%;
+  height: 8px;
+  background: var(--brand-grey-300);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+.progress-bar__fill {
+  height: 100%;
+  width: 62%;
+  background: var(--brand-digital-blue-500);
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+/* ================================================
+   TAB STRIP
+   ================================================ */
+.tab-strip-wrap {
+  padding: 0 var(--space-6);
+  margin-top: var(--space-4);
+  border-bottom: 1px solid var(--border-primary);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.tab-strip { display: flex; gap: var(--space-2); }
+.tab {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: 24px;
+  color: var(--text-secondary);
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  position: relative;
+}
+.tab:hover { color: var(--text-primary); }
+.tab[aria-selected="true"] {
+  color: var(--text-information);
+  border-bottom-color: var(--brand-digital-blue-500);
+  font-weight: var(--brand-font-weight-semibold);
+}
+.tab[disabled] { color: var(--brand-grey-500); cursor: not-allowed; }
+.tab-actions { display: flex; gap: var(--space-1); align-items: center; padding-bottom: 6px; }
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.icon-btn:hover { background: var(--brand-grey-200); color: var(--text-primary); }
+.icon-btn svg { width: 16px; height: 16px; }
+.icon-btn--nav {
+  border: 1px solid var(--brand-digital-blue-300);
+  background: var(--surface-primary);
+}
+
+/* ================================================
+   TOOLBAR
+   ================================================ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-6) var(--space-3);
+  flex-wrap: wrap;
+}
+.toolbar__left, .toolbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.search {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 var(--space-3);
+  gap: var(--space-1);
+  background: var(--surface-primary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-full);
+  min-width: 260px;
+  color: var(--text-primary);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+}
+.search svg { width: 16px; height: 16px; color: var(--icon-tertiary); }
+.search input {
+  border: 0; outline: 0; background: transparent;
+  font: inherit; color: inherit;
+  flex: 1; min-width: 0;
+}
+.search input::placeholder { color: var(--text-tertiary); }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 40px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-secondary);
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition-fast);
+}
+.btn:hover { background: var(--brand-grey-200); }
+.btn:active { background: var(--brand-digital-blue-200); }
+.btn[disabled] { background: var(--brand-grey-100); color: var(--text-tertiary); cursor: not-allowed; }
+.btn--sm { height: 32px; padding: 0 var(--space-3); }
+.btn svg { width: 16px; height: 16px; }
+
+/* ================================================
+   DATA GRID
+   ================================================ */
+.grid-wrap {
+  margin: 0 var(--space-6) var(--space-6);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--surface-primary);
+}
+table.data-grid { width: 100%; border-collapse: separate; border-spacing: 0; }
+.data-grid thead th {
+  height: 38px;
+  background: var(--brand-grey-100);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-semibold);
+  line-height: 24px;
+  text-align: left;
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--border-primary);
+  white-space: nowrap;
+  user-select: none;
+}
+.data-grid thead th.checkbox-col { width: 44px; padding-left: var(--space-3); }
+.data-grid thead th.sort-asc::after,
+.data-grid thead th.sort-desc::after {
+  content: '';
+  display: inline-block;
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  margin-left: 4px;
+}
+.data-grid thead th.sort-asc::after { border-bottom: 5px solid var(--icon-primary); }
+.data-grid thead th.sort-desc::after { border-top: 5px solid var(--icon-primary); }
+.data-grid tbody td {
+  height: 42px;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border-primary);
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-300);
+  font-weight: var(--brand-font-weight-regular);
+  line-height: 24px;
+  color: var(--text-primary);
+  vertical-align: middle;
+  background: var(--surface-primary);
+}
+.data-grid tbody tr:hover td { background: var(--brand-grey-100); }
+.data-grid tbody tr.selected td { background: var(--brand-digital-blue-100); }
+.data-grid tbody tr.selected:hover td { background: var(--brand-digital-blue-200); }
+.data-grid tbody tr:last-child td { border-bottom: 0; }
+.data-grid td.numeric { text-align: right; font-variant-numeric: tabular-nums; }
+.data-grid td.dim { color: var(--text-secondary); }
+.data-grid td .link {
+  color: var(--text-information);
+  text-decoration: none;
+  font-weight: var(--brand-font-weight-medium);
+  cursor: pointer;
+}
+.data-grid td .link:hover { text-decoration: underline; }
+.data-grid td .repo-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.repo-cell__icon { color: var(--icon-tertiary); flex-shrink: 0; }
+.repo-cell__path { overflow: hidden; text-overflow: ellipsis; }
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--border-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--surface-primary);
+  cursor: pointer;
+}
+.checkbox svg { display: none; width: 12px; height: 12px; color: white; }
+.checkbox.checked { background: var(--brand-digital-blue-500); border-color: var(--brand-digital-blue-500); }
+.checkbox.checked svg { display: block; }
+
+/* ================================================
+   STATUS CHIP
+   ================================================ */
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+}
+button.status-chip { appearance: none; margin: 0; }
+.status-chip svg { flex-shrink: 0; width: 14px; height: 14px; stroke-width: 1.5; }
+.status-chip--success  { background: var(--status-success-light);  border-color: var(--status-success-transparent);  color: var(--status-success-dark); }
+.status-chip--error    { background: var(--status-error-light);    border-color: var(--status-error-transparent);    color: var(--status-error-dark); }
+.status-chip--warning  { background: var(--status-warning-light);  border-color: var(--status-warning-transparent);  color: var(--status-warning-dark); }
+.status-chip--info     { background: var(--status-info-light);     border-color: var(--status-info-transparent);     color: var(--status-info-dark); }
+.status-chip--neutral  { background: var(--status-neutral-light);  border-color: var(--status-neutral-transparent);  color: var(--status-neutral-dark); }
+.status-chip--queued   { background: var(--status-queued-light);   border-color: var(--status-queued-transparent);   color: var(--status-queued-dark); }
+.status-chip--active   { background: var(--status-active-light);   border-color: var(--status-active-transparent);   color: var(--status-active-dark); }
+.status-chip--canceled { background: var(--status-canceled-light); border-color: var(--status-canceled-transparent); color: var(--status-canceled-dark); }
+.status-chip .spin { animation: neo-spin 4s linear infinite; transform-origin: 50% 50%; }
+@keyframes neo-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .status-chip .spin { animation: none; } }
+.status-chip.clickable {
+  cursor: pointer;
+  transition: filter 120ms ease, box-shadow 120ms ease;
+}
+.status-chip.clickable:hover { filter: brightness(0.97); }
+.status-chip.clickable:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 2px var(--surface-primary), 0 0 0 4px currentColor;
+}
+
+/* ================================================
+   ERROR POPOVER
+   ================================================ */
+.error-popover {
+  position: fixed;
+  z-index: 1200;
+  background: var(--surface-primary);
+  box-shadow: var(--shadow-md), var(--shadow-sm);
+  border-radius: var(--radius-sm);
+  min-width: 300px;
+  max-width: 70vw;
+  padding: var(--space-2) var(--space-4) var(--space-6) var(--space-2);
+  border-left: 4px solid var(--status-error-default);
+  font-size: var(--brand-font-size-200);
+  color: var(--text-primary);
+}
+.error-popover[hidden] { display: none; }
+.error-popover__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.error-popover__title-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.error-popover__title-row svg {
+  width: var(--brand-font-size-500);
+  height: var(--brand-font-size-500);
+  color: var(--status-error-default);
+  margin-right: var(--space-2);
+}
+.error-popover__title {
+  font-weight: var(--brand-font-weight-semibold);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-primary);
+}
+.error-popover__copy {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-primary);
+  font: inherit;
+  cursor: pointer;
+}
+.error-popover__copy:hover { color: var(--brand-digital-blue-700); }
+.error-popover__copy svg { width: 16px; height: 16px; }
+.error-popover__copy-flash {
+  margin-left: var(--space-1);
+  font-size: 11px;
+  font-weight: var(--brand-font-weight-medium);
+  color: var(--text-secondary);
+}
+.error-popover__label {
+  font-weight: var(--brand-font-weight-medium);
+  font-size: var(--brand-font-size-300);
+  margin-left: 30px;
+  margin-top: var(--space-2);
+}
+.error-popover__pre {
+  font-family: var(--font-code);
+  font-size: var(--brand-font-size-200);
+  font-weight: var(--brand-font-weight-regular);
+  line-height: 18px;
+  margin: 0;
+  margin-left: 30px;
+  margin-top: var(--space-1);
+  white-space: pre-wrap;
+  word-break: normal;
+  user-select: text;
+}
+
+/* ================================================
+   PAGINATION
+   ================================================ */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  border-top: 1px solid var(--border-primary);
+  background: var(--surface-primary);
+  font-size: var(--brand-font-size-300);
+  color: var(--text-secondary);
+}
+.pagination__range { color: var(--text-primary); }
+.pagination__nav { display: flex; gap: var(--space-1); }
+.page-btn {
+  width: 32px; height: 32px;
+  border: 0; background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--icon-primary);
+  cursor: pointer;
+  display: grid; place-items: center;
+}
+.page-btn:hover { background: var(--brand-grey-200); }
+.page-btn[disabled] { color: var(--brand-grey-400); cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="grid">
+
+    <!-- ================================================
+         LEFT NAV RAIL — ported verbatim from
+         moddy-trigrep-combined.html.
+         ================================================ -->
+    <nav class="left-nav" aria-label="Platform">
+      <div class="left-nav-top">
+        <div class="nav-home-stack">
+          <div class="nav-item nav-item-home" aria-label="Home">
+            <div class="nav-icon-container">
+              <svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092002C45.777 -0.0920021 45.2677 0.00862519 44.9272 0.350758L24.4951 20.8816C23.1532 9.14558 13.2189 0 1.18742 0C0.872678 0 0.572248 0.126503 0.349071 0.350758C0.125895 0.575013 0 0.876894 0 1.19315V23.5899V45.9895C0 46.0097 0.00858372 46.0269 0.00858372 46.047C0.00858372 46.1045 0.0228899 46.1592 0.0343349 46.2167C0.0457799 46.277 0.0572248 46.3374 0.0772535 46.3949C0.082976 46.4122 0.082976 46.4294 0.0886985 46.4467C0.103005 46.4812 0.128756 46.507 0.145923 46.5415C0.174536 46.5962 0.203148 46.6508 0.240344 46.6997C0.274679 46.7457 0.311875 46.7859 0.351933 46.8262C0.39199 46.8664 0.432047 46.9067 0.480688 46.9412C0.52933 46.9786 0.580832 47.0073 0.635195 47.0361C0.66953 47.0533 0.695282 47.0792 0.729616 47.0936C0.743923 47.0993 0.758229 47.0964 0.772535 47.1022C0.901291 47.1511 1.03863 47.1856 1.18455 47.1856H45.7627C46.4179 47.1856 46.9501 46.6508 46.9501 45.9924V1.19315C46.9501 0.710141 46.6611 0.276006 46.2176 0.092002H46.2205ZM44.5781 4.07109V22.3968H26.3406L44.5781 4.07109ZM44.5781 33.5951H24.661V24.7802H44.5781V33.5951ZM2.37483 43.1087V24.7831H20.6124L11.4936 33.9459L2.37483 43.1087ZM2.37483 2.41793C13.0673 3.01594 21.6625 11.6526 22.2576 22.3968H2.37483V2.41793ZM13.1703 35.6335L22.2891 26.4707V44.7964H4.05152L13.1703 35.6335ZM24.6639 44.7964V35.9814H44.581V44.7964H24.6639Z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <span class="nav-version-badge">v2</span>
+        </div>
+        <div id="left-nav-items" style="width:100%; display:flex; flex-direction:column; gap:4px;"></div>
+        <div class="nav-more-wrapper">
+          <div class="nav-item nav-item-more" id="nav-more-trigger" aria-label="More">
+            <div class="nav-icon-container">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </div>
+            <span class="nav-label">More</span>
+          </div>
+          <div class="nav-more-popover" id="nav-more-popover" hidden></div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ================================================
+         MAIN CONTENT AREA
+         ================================================ -->
+    <div class="main-area">
+
+      <!-- GLOBAL NAV ported from moddy-trigrep-combined.html -->
+      <div class="global-nav">
+        <div class="org-selector-wrapper">
+          <div class="org-selector selected">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Default</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div class="nav-spacer"></div>
+        <div class="search-input">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span>Search recipes</span>
+          <span class="search-input-keys"><kbd>⌘</kbd><kbd>K</kbd></span>
+        </div>
+        <div class="nav-actions">
+          <button class="nav-action-btn" aria-label="Admin menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+          <button class="nav-action-btn" aria-label="Help menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+          <button class="nav-action-btn" aria-label="Account"><div class="avatar">A</div></button>
+        </div>
+      </div>
+
+      <!-- PAGE — content surface -->
+      <div class="page">
+
+        <!-- Page header -->
+        <header class="page-header" data-tour="results-progress">
+          <h1 class="recipe-name">Migrate to Java 21 · <code>org.openrewrite.java.migrate.UpgradeToJava21</code></h1>
+          <div class="results-for">Results for&nbsp;<strong>Moderne / Everything</strong></div>
+          <div class="progress-row">
+            <div class="progress-bar" aria-label="Run progress">
+              <div class="progress-bar__fill"></div>
+            </div>
+            <div class="progress-meta">
+              <span><strong>124</strong> repositories</span>
+              <span class="progress-meta__sep"></span>
+              <span>Running <strong>4m 12s</strong></span>
+              <span class="progress-meta__sep"></span>
+              <span>Started <strong>4:32 PM</strong></span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Tab strip -->
+        <div class="tab-strip-wrap" data-tour="results-tabs">
+          <div class="tab-strip" role="tablist">
+            <button class="tab" role="tab" aria-selected="false">Results</button>
+            <button class="tab" role="tab" aria-selected="true">Repository status</button>
+            <button class="tab" role="tab" aria-selected="false" disabled>Visualizations</button>
+            <button class="tab" role="tab" aria-selected="false" disabled>Data tables</button>
+          </div>
+          <div class="tab-actions">
+            <button class="icon-btn icon-btn--nav" title="Replay this recipe">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15A9 9 0 1 0 6 5.3L1 10"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--nav" title="Share">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--nav" title="API examples">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="toolbar__left">
+            <label class="search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" placeholder="Search repositories" />
+            </label>
+            <button class="btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="4" x2="9" y2="20"/></svg>
+              Columns
+            </button>
+            <button class="btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              Filter
+            </button>
+          </div>
+          <div class="toolbar__right">
+            <button class="btn btn--sm" disabled title="Create a user organization from the selected rows.">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Create user organization
+            </button>
+          </div>
+        </div>
+
+        <!-- DataGrid -->
+        <div class="grid-wrap">
+          <table class="data-grid" aria-label="Repository results">
+            <thead>
+              <tr>
+                <th class="checkbox-col">
+                  <span class="checkbox" title="Select all"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                </th>
+                <th>LST sync</th>
+                <th class="sort-asc">Status</th>
+                <th>Results</th>
+                <th>Repository</th>
+                <th>Origin</th>
+                <th>Branch</th>
+                <th style="text-align:right">Files changed</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="grid-body"></tbody>
+          </table>
+          <div class="pagination">
+            <span class="pagination__range">1–12 of 124</span>
+            <div class="pagination__nav">
+              <button class="page-btn" disabled aria-label="Previous page">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="page-btn" aria-label="Next page">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.page -->
+    </div><!-- /.main-area -->
+  </div><!-- /.grid -->
+</div><!-- /.shell -->
+
+<!-- Chip-triggered stack-trace popover — anchored via JS. -->
+<div class="error-popover" id="enrich-popover" role="dialog" aria-labelledby="enrich-popover-title" hidden>
+  <div class="error-popover__head">
+    <div class="error-popover__title-row">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2.586 16.726A2 2 0 0 1 2 15.312V8.688a2 2 0 0 1 .586-1.414l4.688-4.688A2 2 0 0 1 8.688 2h6.624a2 2 0 0 1 1.414.586l4.688 4.688A2 2 0 0 1 22 8.688v6.624a2 2 0 0 1-.586 1.414l-4.688 4.688a2 2 0 0 1-1.414.586H8.688a2 2 0 0 1-1.414-.586z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      <span class="error-popover__title" id="enrich-popover-title">Enrich failed</span>
+    </div>
+    <div class="error-popover__title-row" style="gap:0">
+      <button class="error-popover__copy" id="enrich-popover-copy" title="Copy error message" aria-label="Copy error message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+      </button>
+      <span class="error-popover__copy-flash" id="enrich-popover-copy-label" aria-live="polite"></span>
+    </div>
+  </div>
+  <div class="error-popover__label">Message:</div>
+  <pre class="error-popover__pre" id="enrich-popover-message"></pre>
+</div>
+
+<!-- Lucide outline icons — 14px chip leading icons. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2.586 16.726A2 2 0 0 1 2 15.312V8.688a2 2 0 0 1 .586-1.414l4.688-4.688A2 2 0 0 1 8.688 2h6.624a2 2 0 0 1 1.414.586l4.688 4.688A2 2 0 0 1 22 8.688v6.624a2 2 0 0 1-.586 1.414l-4.688 4.688a2 2 0 0 1-1.414.586H8.688a2 2 0 0 1-1.414-.586z"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+    <symbol id="i-neutral" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></symbol>
+    <symbol id="i-canceled" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
+    <symbol id="i-queued" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-active" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" d="M12 .5C5.65.5.5 5.66.5 12.02c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56v-2.02c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11 11 0 015.77 0c2.2-1.5 3.17-1.18 3.17-1.18.63 1.58.23 2.75.12 3.04.74.81 1.19 1.83 1.19 3.09 0 4.43-2.7 5.4-5.27 5.68.41.36.77 1.06.77 2.14v3.17c0 .31.21.67.8.56A11.51 11.51 0 0023.5 12C23.5 5.66 18.34.5 12 .5z"/></symbol>
+    <symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21.42l4.4-13.55h-8.8L12 21.42zM3.6 7.87L2.05 12.63a1.05 1.05 0 00.38 1.17l9.57 6.95L3.6 7.87zm3.02 0h-3l1.55-4.76a.53.53 0 011 0l1.55 4.76H6.62zm14.78 0h-3l1.55-4.76a.53.53 0 011 0l1.55 4.76H21.4zm.55 4.76l-1.55-4.76-8.4 12.88 9.57-6.95a1.05 1.05 0 00.38-1.17z"/></symbol>
+  </defs>
+</svg>
+
+<script>
+/* ==================================================
+   Left-nav item data — ported from moddy-trigrep-combined.
+   Activity is active on this Results page.
+   ================================================== */
+const NAV_ITEMS = [
+  { id: 'moddy',       label: 'Moddy',       badge: 'Beta',
+    svg: '<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/>' },
+  { id: 'devcenter',   label: 'DevCenter',
+    svg: '<path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>' },
+  { id: 'trigrep',     label: 'Trigrep',
+    svg: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>' },
+  { id: 'artifacts',   label: 'Artifacts',
+    svg: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' },
+  { id: 'marketplace', label: 'Marketplace',
+    svg: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>' },
+  { id: 'builder',     label: 'Builder',
+    svg: '<rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>' },
+  { id: 'activity',    label: 'Activity',   active: true,
+    svg: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>' },
+  { id: 'changelog',   label: 'Changelog',   badge: 'Beta',
+    svg: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>' },
+];
+const MORE_ITEMS = [
+  { id: 'recipe-queue', label: 'Recipe queue',
+    svg: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>' },
+  { id: 'repos',  label: 'Repositories',
+    svg: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/>' },
+  { id: 'deploy', label: 'Deploy',
+    svg: '<path d="M16.5 9.4l-9-5.19"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>' },
+];
+function renderNavItem(item) {
+  const el = document.createElement('div');
+  el.className = 'nav-item' + (item.active ? ' active' : '');
+  el.innerHTML = `
+    <div class="nav-icon-container">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${item.svg}</svg>
+    </div>
+    <span class="nav-label">${item.label}</span>
+    ${item.badge ? `<span class="nav-badge">${item.badge}</span>` : ''}
+  `;
+  return el;
+}
+const navList = document.getElementById('left-nav-items');
+NAV_ITEMS.forEach(item => navList.appendChild(renderNavItem(item)));
+const morePopover = document.getElementById('nav-more-popover');
+MORE_ITEMS.forEach(item => morePopover.appendChild(renderNavItem(item)));
+const moreTrigger = document.getElementById('nav-more-trigger');
+moreTrigger.addEventListener('click', () => {
+  const isOpen = !morePopover.hasAttribute('hidden');
+  if (isOpen) {
+    morePopover.setAttribute('hidden', '');
+    moreTrigger.classList.remove('active');
+  } else {
+    morePopover.removeAttribute('hidden');
+    moreTrigger.classList.add('active');
+  }
+});
+document.addEventListener('click', (e) => {
+  if (!moreTrigger.contains(e.target) && !morePopover.contains(e.target)) {
+    morePopover.setAttribute('hidden', '');
+    moreTrigger.classList.remove('active');
+  }
+});
+
+/* ==================================================
+   Repository status rows — unchanged from prior prototype.
+   Valid Sync × State pairings per changeset-status.helpers.ts.
+   ================================================== */
+const rows = [
+  { sync: 'synced',   state: 'finished', results: 42, origin: 'github.com', repo: 'moderneinc/rewrite-migrate-java',       branch: 'main', changed: 42, details: '' },
+  { sync: 'synced',   state: 'running',  results: 0,  origin: 'github.com', repo: 'moderneinc/rewrite-testing-frameworks', branch: 'main', changed: 0,  details: '' },
+  { sync: 'synced',   state: 'queued',   results: 0,  origin: 'github.com', repo: 'moderneinc/rewrite-openapi',            branch: 'main', changed: 0,  details: '' },
+  { sync: 'synced',   state: 'error',    results: 3,  origin: 'github.com', repo: 'moderneinc/rewrite-analysis',           branch: 'main', changed: 3,  details: 'Compilation failed on module :bom', errorReason: 'Build failure', errorMessage:
+`RecipeException: Compilation failed on module :bom
+    at RewriteRecipe.visit(RewriteRecipe.java:184)
+Caused by: javac error — cannot find symbol JakartaEE10.class` },
+  { sync: 'pending',  state: 'running',  results: 0,  origin: 'github.com', repo: 'moderneinc/rewrite',                    branch: 'main', changed: 0,  details: '' },
+  { sync: 'pending',  state: 'queued',   results: 0,  origin: 'github.com', repo: 'moderneinc/rewrite-static-analysis',    branch: 'main', changed: 0,  details: '' },
+  { sync: 'pending',  state: 'syncing',  results: 0,  origin: 'gitlab.com', repo: 'openrewrite/rewrite-micronaut',         branch: 'main', changed: 0,  details: '' },
+  { sync: 'failed',   state: 'error',    results: 0,  origin: 'github.com', repo: 'moderneinc/rewrite-kotlin',             branch: 'main', changed: 0,  details: 'LST download failed after 3 retries', errorReason: 'Sync failed',
+    enrichFailedReason:
+`LstEnrichmentException: Failed to attach Maven metadata for :bom
+    at MavenEnricher.attachMetadata(MavenEnricher.java:214)
+Caused by: java.net.SocketTimeoutException: Read timed out` },
+  { sync: 'skipped',  state: 'no_lst',   results: 0,  origin: 'github.com', repo: 'moderneinc/rewrite-recommendations',    branch: 'main', changed: 0,  details: 'Repository has no indexed LST and was skipped' },
+  { sync: 'canceled', state: 'canceled', results: 0,  origin: 'github.com', repo: 'openrewrite/rewrite-quarkus',           branch: 'main', changed: 0,  details: '' },
+  { sync: 'synced',   state: 'finished', results: 18, origin: 'github.com', repo: 'openrewrite/rewrite-spring',            branch: 'main', changed: 18, details: '' },
+  { sync: 'synced',   state: 'finished', results: 0,  origin: 'github.com', repo: 'moderneinc/rewrite-java-security',      branch: 'main', changed: 0,  details: '' },
+];
+
+const chip = (variant, iconRef, label, opts = {}) => {
+  const iconClass = opts.spin ? ' class="spin"' : '';
+  const inner = `<svg${iconClass}><use href="#${iconRef}"/></svg>${label}`;
+  if (opts.errorPayload) {
+    return `<button type="button" class="status-chip status-chip--${variant} clickable"
+                    data-error-index="${opts.errorPayload.index}"
+                    data-error-field="${opts.errorPayload.field}"
+                    aria-haspopup="dialog">${inner}</button>`;
+  }
+  return `<span class="status-chip status-chip--${variant}">${inner}</span>`;
+};
+
+const SYNC = {
+  pending:  () => chip('queued',   'i-queued',   'Pending'),
+  synced:   () => chip('success',  'i-success',  'Synced'),
+  failed:   (r, i) => chip('error', 'i-error', 'Failed',
+    r?.enrichFailedReason ? { errorPayload: { index: i, field: 'enrichFailedReason' } } : undefined),
+  canceled: () => chip('canceled', 'i-canceled', 'Canceled'),
+  skipped:  () => chip('warning',  'i-warning',  'Skipped'),
+};
+const STATE = {
+  queued:   () => chip('queued',   'i-queued',   'Queued'),
+  running:  () => chip('active',   'i-active',   'Running',  { spin: true }),
+  syncing:  () => chip('active',   'i-active',   'Syncing',  { spin: true }),
+  finished: () => chip('success',  'i-success',  'Finished'),
+  error:    (r, i) => chip('error', 'i-error', r?.errorReason || 'Error',
+    r?.errorMessage ? { errorPayload: { index: i, field: 'errorMessage' } } : undefined),
+  canceled: () => chip('canceled', 'i-canceled', 'Canceled'),
+  no_lst:   () => chip('warning',  'i-warning',  'No LST'),
+};
+
+const NOT_YET_RUN = new Set(['queued', 'syncing']);
+const originIcon = (o) => o.includes('gitlab') ? 'i-gitlab' : 'i-github';
+
+const body = document.getElementById('grid-body');
+body.innerHTML = rows.map((r, i) => {
+  const selected = i === 0 ? 'selected' : '';
+  const check = i === 0 ? 'checked' : '';
+  const showResultsLink = (r.state === 'finished' || r.state === 'error') && r.results > 0;
+  return `
+    <tr class="${selected}">
+      <td class="checkbox-col">
+        <span class="checkbox ${check}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+      </td>
+      <td>${SYNC[r.sync](r, i)}</td>
+      <td>${STATE[r.state](r, i)}</td>
+      <td>${showResultsLink ? '<a class="link">Go to results</a>' : ''}</td>
+      <td>
+        <span class="repo-cell">
+          <svg class="repo-cell__icon" width="16" height="16"><use href="#${originIcon(r.origin)}"/></svg>
+          <span class="repo-cell__path">${r.repo}</span>
+        </span>
+      </td>
+      <td class="dim">${r.origin}</td>
+      <td class="dim">${r.branch}</td>
+      <td class="numeric">${NOT_YET_RUN.has(r.state) ? '-' : r.changed}</td>
+      <td class="dim">${r.details}</td>
+    </tr>
+  `;
+}).join('');
+
+body.addEventListener('click', (e) => {
+  const cb = e.target.closest('.checkbox');
+  if (!cb) return;
+  cb.classList.toggle('checked');
+  cb.closest('tr').classList.toggle('selected');
+});
+
+/* ==================================================
+   Chip-triggered stack-trace popover.
+   ================================================== */
+const errorPopover = document.getElementById('enrich-popover');
+const errorMessage = document.getElementById('enrich-popover-message');
+const errorTitle = document.getElementById('enrich-popover-title');
+const errorCopyBtn = document.getElementById('enrich-popover-copy');
+const errorCopyLabel = document.getElementById('enrich-popover-copy-label');
+let errorAnchor = null;
+const ERROR_MAX_CHARS = 200;
+const FIELD_TITLE = {
+  enrichFailedReason: 'Sync failed',
+  errorMessage: 'Error',
+};
+const positionErrorPopover = () => {
+  if (!errorAnchor) return;
+  const rect = errorAnchor.getBoundingClientRect();
+  const popoverRect = errorPopover.getBoundingClientRect();
+  const margin = 8;
+  let top = rect.bottom + margin;
+  if (top + popoverRect.height > window.innerHeight - margin) {
+    top = Math.max(margin, rect.top - popoverRect.height - margin);
+  }
+  let left = rect.left;
+  if (left + popoverRect.width > window.innerWidth - margin) {
+    left = Math.max(margin, window.innerWidth - popoverRect.width - margin);
+  }
+  errorPopover.style.top = `${top}px`;
+  errorPopover.style.left = `${left}px`;
+};
+const closeErrorPopover = () => {
+  errorPopover.hidden = true;
+  errorAnchor = null;
+  errorCopyLabel.textContent = '';
+};
+body.addEventListener('click', (e) => {
+  const trigger = e.target.closest('.status-chip.clickable');
+  if (!trigger) return;
+  e.stopPropagation();
+  const index = Number(trigger.dataset.errorIndex);
+  const field = trigger.dataset.errorField;
+  const row = rows[index];
+  const raw = row?.[field];
+  if (!raw) return;
+  errorAnchor = trigger;
+  errorTitle.textContent = FIELD_TITLE[field] ?? 'Error';
+  errorMessage.textContent = String(raw).slice(0, ERROR_MAX_CHARS);
+  errorPopover.hidden = false;
+  positionErrorPopover();
+});
+document.addEventListener('click', (e) => {
+  if (errorPopover.hidden) return;
+  if (e.target.closest('#enrich-popover')) return;
+  if (e.target.closest('.status-chip.clickable')) return;
+  closeErrorPopover();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !errorPopover.hidden) {
+    closeErrorPopover();
+    errorAnchor?.focus();
+  }
+});
+window.addEventListener('resize', () => { if (!errorPopover.hidden) positionErrorPopover(); });
+window.addEventListener('scroll', () => { if (!errorPopover.hidden) positionErrorPopover(); }, true);
+errorCopyBtn.addEventListener('click', async (e) => {
+  e.stopPropagation();
+  try {
+    await navigator.clipboard.writeText(errorMessage.textContent || '');
+    errorCopyLabel.textContent = 'Copied';
+    setTimeout(() => { errorCopyLabel.textContent = ''; }, 1500);
+  } catch {
+    errorCopyLabel.textContent = 'Copy failed';
+  }
+});
+</script>
+</body>
+</html>
