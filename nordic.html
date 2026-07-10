@@ -1229,6 +1229,13 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .tm--faded { background: var(--surface2); color: var(--muted); opacity: .75; }
 .vz-runpill { position: absolute; left: 50%; top: 55%; transform: translateX(-50%); background: var(--card); color: var(--text); font-size: 12.5px; font-weight: 500; border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; box-shadow: 0 8px 26px rgba(10,10,25,.18); white-space: nowrap; }
 
+/* ---- viewport-fit table pages: the card ends at the browser height
+        and rows scroll inside it, footer pinned ---- */
+.page--fill.is-active { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; min-height: 0; padding-bottom: 22px; }
+.page--fill .cl-card, .page--fill .act-card { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.tscroll { flex: 1; min-height: 0; overflow-y: auto; }
+.tscroll thead th { position: sticky; top: 0; z-index: 2; }
+
 /* ---- Marketplace category detail (drill-in) ---- */
 .mkt-detail[hidden] { display: none !important; }
 .page[data-page="marketplace"].mkt-viewing > :not(.mkt-detail) { display: none !important; }
@@ -2006,7 +2013,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
       </section>
 
       <!-- ========== ACTIVITY ========== -->
-      <section class="page" data-page="activity">
+      <section class="page page--fill" data-page="activity">
         <div class="pagehead">
           <div><h1>Activity</h1></div>
           <div class="actions"><button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button></div>
@@ -2232,7 +2239,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
       </section>
 
       <!-- ============ CHANGELOG ============ -->
-      <section class="page" data-page="changelog">
+      <section class="page page--fill" data-page="changelog">
         <div class="pagehead">
           <div><h1>Changelog <svg class="dc-help"><use href="#i-help"/></svg></h1></div>
           <div class="actions">
@@ -2352,7 +2359,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
       </section>
 
       <!-- ============ REPOSITORIES ============ -->
-      <section class="page" data-page="repositories">
+      <section class="page page--fill" data-page="repositories">
         <div class="pagehead">
           <h1>Repositories</h1>
           <span class="badge">Currently displaying 245 repositories</span>
@@ -2446,7 +2453,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
       </section>
 
       <!-- ============ DEPLOY ARTIFACTS ============ -->
-      <section class="page" data-page="deploy">
+      <section class="page page--fill" data-page="deploy">
         <div class="pagehead">
           <div><h1>Deploy artifacts</h1></div>
           <div class="actions">
@@ -2759,6 +2766,18 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
       document.querySelectorAll('.layer .toast').forEach(function (t) { t.style.display = ''; });
     }
   }
+
+  // ---- wrap the big feed tables in internal scroll regions so each
+  //      card ends at the viewport and rows scroll inside it ----
+  document.querySelectorAll(
+    '.layer .page[data-page="repositories"] .rp-table, .layer .page[data-page="deploy"] .rp-table, ' +
+    '.layer .page[data-page="activity"] .act-table, .layer .page[data-page="changelog"] .cl-table'
+  ).forEach(function (t) {
+    var w = document.createElement('div');
+    w.className = 'tscroll';
+    t.parentNode.insertBefore(w, t);
+    w.appendChild(t);
+  });
 
   // ---- extra demo rows so the big tables fill tall viewports ----
   var RP_ROWS = [
