@@ -482,8 +482,8 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
 .sumopt { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 12px; cursor: pointer; }
 .sumopt svg { width: 15px; height: 15px; color: var(--muted); }
 /* tree checkboxes */
-.tck { width: 16px; height: 16px; border: 1.5px solid var(--line-strong); border-radius: 4px; flex: none; display: inline-flex; align-items: center; justify-content: center; background: var(--card); color: transparent; }
-.tck.on, .tck.ind { background: var(--card); border-color: var(--accent); color: var(--accent); }
+.tck { width: 16px; height: 16px; border: 1.5px solid var(--control-border); border-radius: 4px; flex: none; display: inline-flex; align-items: center; justify-content: center; background: var(--card); color: transparent; }
+.tck.on, .tck.ind { background: var(--card); border-color: var(--control-border-selected); color: var(--control-glyph); }
 .tck svg { width: 11px; height: 11px; stroke-width: 3; }
 
 /* summary card (key/value rows) */
@@ -943,7 +943,7 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .cl-typecol { width: 84px; }
 .cl-stcol { width: 106px; }
 .cl-diffcol { width: 120px; text-align: right !important; }
-.cl-cb { width: 15px; height: 15px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--field); display: inline-block; vertical-align: middle; }
+.cl-cb { width: 15px; height: 15px; border: 1px solid var(--control-border); border-radius: 4px; background: var(--field); display: inline-block; vertical-align: middle; }
 .cl-type { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--muted); font-size: 11.5px; }
 .cl-type svg { width: 18px; height: 18px; }
 .cl-type--merged svg { color: var(--violet); }
@@ -1098,6 +1098,33 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 
 /* (WCAG 2.1 AA is the default: the former AA-variant tokens are baked
    into the theme blocks above; links default to the Blue AAA pairing) */
+
+/* ============================================================
+   SEMANTIC ALIAS TOKENS (mirror of morpheus-token-migration.md §4)
+   Alias-only sets: every entry points at an existing semantic.
+   If one needs its own value, the underlying semantic is wrong.
+   ============================================================ */
+[data-theme] {
+  /* selection controls (checkbox / radio) */
+  --control-border: var(--line-strong);
+  --control-border-selected: var(--accent);
+  --control-glyph: var(--accent);
+  /* inline progress */
+  --progress-track: var(--accent-tint);
+  --progress-fill: var(--accent);
+  --progress-label: var(--accent);
+  /* empty-state illustration palette */
+  --ill-panel: var(--card);
+  --ill-stroke: var(--line-strong);
+  --ill-stroke-muted: var(--muted);
+  --ill-inset: var(--surface);
+  --ill-accent: var(--ch-p1);
+  --ill-positive: var(--green-hi);
+  /* motion */
+  --motion-hover: 150ms;
+  --motion-enter: 400ms;
+  --motion-spin: 800ms;
+}
 /* ============================================================
    THEMED MODALS (org selector + recipe search)
    Rendered inside each layer so the compare seam shows both modes.
@@ -1278,12 +1305,12 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .dc-empty-art { width: 240px; height: 170px; }
 .dc-empty-msg { margin: 0; font-size: 15px; color: var(--text); text-align: center; }
 .dc-updating { display: none; align-items: center; gap: 10px; font-size: 12px; }
-.dc-updating .lbl { color: var(--accent); font-weight: 600; }
-.dc-updating .track { width: 92px; height: 6px; border-radius: 999px; background: var(--accent-tint); overflow: hidden; }
-.dc-updating .fill { display: block; width: 4%; height: 100%; border-radius: 999px; background: var(--accent); }
+.dc-updating .lbl { color: var(--progress-label); font-weight: 600; }
+.dc-updating .track { width: 92px; height: 6px; border-radius: 999px; background: var(--progress-track); overflow: hidden; }
+.dc-updating .fill { display: block; width: 4%; height: 100%; border-radius: 999px; background: var(--progress-fill); }
 .dc-updating .pct { font-family: var(--font-mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
 .dc-spinbtn { display: none; width: 28px; height: 28px; border-radius: 999px; border: none; background: var(--primary-bg); align-items: center; justify-content: center; flex: none; }
-.dc-spinbtn .spin { width: 13px; height: 13px; border-radius: 999px; border: 2px solid color-mix(in srgb, var(--primary-fg) 35%, transparent); border-top-color: var(--primary-fg); animation: dc-spin .8s linear infinite; }
+.dc-spinbtn .spin { width: 13px; height: 13px; border-radius: 999px; border: 2px solid color-mix(in srgb, var(--primary-fg) 35%, transparent); border-top-color: var(--primary-fg); animation: dc-spin var(--motion-spin, 800ms) linear infinite; }
 @keyframes dc-spin { to { transform: rotate(360deg); } }
 body.dc-empty .page[data-page="devcenter"] > :not(.pagehead):not(.dc-config):not(.dc-empty-wrap) { display: none !important; }
 body.dc-empty .dc-empty-wrap { display: flex; }
@@ -2317,38 +2344,38 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
         <!-- interstitial: recipe configured, no completed runs (?dcempty=1) -->
         <div class="dc-empty-wrap">
           <svg class="dc-empty-art" viewBox="0 0 240 170" fill="none">
-            <rect x="34" y="6" width="160" height="112" rx="9" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.5"/>
-            <circle cx="46" cy="17" r="2.2" fill="var(--muted)"/><circle cx="55" cy="17" r="2.2" fill="var(--muted)"/><circle cx="64" cy="17" r="2.2" fill="var(--muted)"/>
+            <rect x="34" y="6" width="160" height="112" rx="9" fill="var(--ill-panel)" stroke="var(--ill-stroke)" stroke-width="1.5"/>
+            <circle cx="46" cy="17" r="2.2" fill="var(--ill-stroke-muted)"/><circle cx="55" cy="17" r="2.2" fill="var(--ill-stroke-muted)"/><circle cx="64" cy="17" r="2.2" fill="var(--ill-stroke-muted)"/>
             <line x1="34" y1="27" x2="194" y2="27" stroke="var(--line)" stroke-width="1.2"/>
-            <g color="var(--muted)"><use href="#i-gear" x="52" y="36" width="34" height="34"/></g>
-            <g color="var(--line-strong)"><use href="#i-gear" x="84" y="30" width="24" height="24"/></g>
-            <g color="var(--ch-p1)"><use href="#i-gear" x="76" y="58" width="28" height="28"/></g>
-            <rect x="126" y="36" width="58" height="24" rx="5" fill="var(--surface)"/>
-            <circle cx="139" cy="48" r="7" stroke="var(--ch-p1)" stroke-width="2.6" fill="none" stroke-dasharray="26 18"/>
-            <line x1="151" y1="44" x2="176" y2="44" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="151" y1="52" x2="169" y2="52" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
-            <rect x="126" y="66" width="58" height="24" rx="5" fill="var(--surface)"/>
-            <circle cx="139" cy="78" r="7" stroke="var(--green-hi)" stroke-width="2.6" fill="none" stroke-dasharray="30 14"/>
-            <line x1="151" y1="74" x2="176" y2="74" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="151" y1="82" x2="169" y2="82" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
-            <rect x="22" y="112" width="30" height="36" rx="6" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.5"/>
-            <circle cx="30" cy="122" r="3.4" fill="var(--ch-p1)"/>
-            <line x1="27" y1="132" x2="47" y2="132" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="27" y1="139" x2="42" y2="139" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
-            <rect x="58" y="112" width="30" height="36" rx="6" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.5"/>
-            <circle cx="66" cy="122" r="3.4" fill="var(--surface2)"/>
-            <line x1="63" y1="132" x2="83" y2="132" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="63" y1="139" x2="78" y2="139" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
-            <rect x="94" y="112" width="30" height="36" rx="6" fill="var(--card)" stroke="var(--line-strong)" stroke-width="1.5"/>
-            <circle cx="102" cy="122" r="3.4" fill="var(--surface2)"/>
-            <line x1="99" y1="132" x2="119" y2="132" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="99" y1="139" x2="114" y2="139" stroke="var(--line-strong)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="146" y1="148" x2="216" y2="148" stroke="var(--line-strong)" stroke-width="1.5"/>
-            <rect x="152" y="128" width="7" height="20" rx="1.5" fill="var(--ch-p1)" opacity=".45"/>
-            <rect x="163" y="118" width="7" height="30" rx="1.5" fill="var(--ch-p1)"/>
-            <rect x="174" y="134" width="7" height="14" rx="1.5" fill="var(--ch-p1)" opacity=".45"/>
-            <rect x="185" y="122" width="7" height="26" rx="1.5" fill="var(--ch-p1)" opacity=".7"/>
-            <rect x="196" y="138" width="7" height="10" rx="1.5" fill="var(--ch-p1)" opacity=".45"/>
+            <g color="var(--ill-stroke-muted)"><use href="#i-gear" x="52" y="36" width="34" height="34"/></g>
+            <g color="var(--ill-stroke)"><use href="#i-gear" x="84" y="30" width="24" height="24"/></g>
+            <g color="var(--ill-accent)"><use href="#i-gear" x="76" y="58" width="28" height="28"/></g>
+            <rect x="126" y="36" width="58" height="24" rx="5" fill="var(--ill-inset)"/>
+            <circle cx="139" cy="48" r="7" stroke="var(--ill-accent)" stroke-width="2.6" fill="none" stroke-dasharray="26 18"/>
+            <line x1="151" y1="44" x2="176" y2="44" stroke="var(--ill-stroke-muted)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="151" y1="52" x2="169" y2="52" stroke="var(--ill-stroke)" stroke-width="2" stroke-linecap="round"/>
+            <rect x="126" y="66" width="58" height="24" rx="5" fill="var(--ill-inset)"/>
+            <circle cx="139" cy="78" r="7" stroke="var(--ill-positive)" stroke-width="2.6" fill="none" stroke-dasharray="30 14"/>
+            <line x1="151" y1="74" x2="176" y2="74" stroke="var(--ill-stroke-muted)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="151" y1="82" x2="169" y2="82" stroke="var(--ill-stroke)" stroke-width="2" stroke-linecap="round"/>
+            <rect x="22" y="112" width="30" height="36" rx="6" fill="var(--ill-panel)" stroke="var(--ill-stroke)" stroke-width="1.5"/>
+            <circle cx="30" cy="122" r="3.4" fill="var(--ill-accent)"/>
+            <line x1="27" y1="132" x2="47" y2="132" stroke="var(--ill-stroke)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="27" y1="139" x2="42" y2="139" stroke="var(--ill-stroke)" stroke-width="2" stroke-linecap="round"/>
+            <rect x="58" y="112" width="30" height="36" rx="6" fill="var(--ill-panel)" stroke="var(--ill-stroke)" stroke-width="1.5"/>
+            <circle cx="66" cy="122" r="3.4" fill="var(--ill-inset)"/>
+            <line x1="63" y1="132" x2="83" y2="132" stroke="var(--ill-stroke)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="63" y1="139" x2="78" y2="139" stroke="var(--ill-stroke)" stroke-width="2" stroke-linecap="round"/>
+            <rect x="94" y="112" width="30" height="36" rx="6" fill="var(--ill-panel)" stroke="var(--ill-stroke)" stroke-width="1.5"/>
+            <circle cx="102" cy="122" r="3.4" fill="var(--ill-inset)"/>
+            <line x1="99" y1="132" x2="119" y2="132" stroke="var(--ill-stroke)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="99" y1="139" x2="114" y2="139" stroke="var(--ill-stroke)" stroke-width="2" stroke-linecap="round"/>
+            <line x1="146" y1="148" x2="216" y2="148" stroke="var(--ill-stroke)" stroke-width="1.5"/>
+            <rect x="152" y="128" width="7" height="20" rx="1.5" fill="var(--ill-accent)" opacity=".45"/>
+            <rect x="163" y="118" width="7" height="30" rx="1.5" fill="var(--ill-accent)"/>
+            <rect x="174" y="134" width="7" height="14" rx="1.5" fill="var(--ill-accent)" opacity=".45"/>
+            <rect x="185" y="122" width="7" height="26" rx="1.5" fill="var(--ill-accent)" opacity=".7"/>
+            <rect x="196" y="138" width="7" height="10" rx="1.5" fill="var(--ill-accent)" opacity=".45"/>
           </svg>
           <p class="dc-empty-msg">A DevCenter recipe is configured but there are no completed runs.</p>
         </div>
