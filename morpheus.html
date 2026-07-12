@@ -943,7 +943,10 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .cl-typecol { width: 84px; }
 .cl-stcol { width: 106px; }
 .cl-diffcol { width: 120px; text-align: right !important; }
-.cl-cb { width: 15px; height: 15px; border: 1px solid var(--control-border); border-radius: 4px; background: var(--field); display: inline-block; vertical-align: middle; }
+.cl-cb { width: 15px; height: 15px; box-sizing: border-box; border: 1px solid var(--control-border); border-radius: 4px; background: var(--field); display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; color: transparent; }
+.cl-cb svg { width: 10px; height: 10px; stroke-width: 3; }
+.cl-cb.on { border-color: var(--control-border-selected); color: var(--control-glyph); }
+.tck.dis, .cl-cb.dis { opacity: .5; pointer-events: none; }
 .cl-type { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--muted); font-size: 11.5px; }
 .cl-type svg { width: 18px; height: 18px; }
 .cl-type--merged svg { color: var(--violet); }
@@ -1937,7 +1940,7 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
                 <span class="org-name"><svg><use href="#i-user"/></svg> jetbrains</span>
                 <span class="org-results">8,064 results</span>
               </div>
-              <div class="repo-row"><span class="tck"></span><span class="repo-status-dot none"></span><span class="repo-name">rider-fs</span><span class="repo-branch">@ main</span><span class="repo-spacer"></span><span class="repo-results none">No results</span></div>
+              <div class="repo-row"><span class="tck on"><svg><use href="#i-check"/></svg></span><span class="repo-status-dot none"></span><span class="repo-name">rider-fs</span><span class="repo-branch">@ main</span><span class="repo-spacer"></span><span class="repo-results none">No results</span></div>
               <div class="repo-row"><span class="tck"></span><span class="repo-status-dot none"></span><span class="repo-name">fleet-plugin-template</span><span class="repo-branch">@ main</span><span class="repo-spacer"></span><span class="repo-results none">No results</span></div>
               <div class="repo-row"><span class="tck"></span><span class="repo-status-dot none"></span><span class="repo-name">ktlint-sdk</span><span class="repo-branch">@ main</span><span class="repo-spacer"></span><span class="repo-results none">No results</span></div>
               <div class="repo-row"><span class="tck"></span><span class="repo-status-dot error"></span><span class="repo-name">space-sdk</span><span class="repo-branch">@ main</span><span class="repo-spacer"></span><span class="repo-results error">Error</span></div>
@@ -2651,7 +2654,7 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
             </thead>
             <tbody>
               <tr>
-                <td class="cl-c"><span class="cl-cb"></span></td>
+                <td class="cl-c"><span class="cl-cb on"><svg><use href="#i-check"/></svg></span></td>
                 <td>moderneinc</td><td><span class="linklike">demo-public</span></td><td class="rp-branch">main</td>
                 <td class="rp-mono">1a1cbe83</td><td><span class="pill pill--su">Available</span></td>
                 <td>bitbucket.org</td><td class="rp-when">about 13 hours ago</td><td></td>
