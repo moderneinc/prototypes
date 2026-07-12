@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Moderne — Visualizations (inline config demo)</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --brand-white:#FFF;
   --brand-digital-blue-100:#F2F3FF; --brand-digital-blue-200:#DCE0FF; --brand-digital-blue-300:#B6BFFF;
-  --brand-digital-blue-400:#8D99FF; --brand-digital-blue-500:#2F42FF; --brand-digital-blue-600:#2637E6;
+  --brand-digital-blue-400:#7FA9F9; --brand-digital-blue-500:#3E7BF6; --brand-digital-blue-600:#2637E6;
   --brand-digital-blue-700:#1E2EC2; --brand-digital-blue-800:#131E7A;
-  --brand-green-100:#F3FFF5; --brand-green-200:#CFFFD7; --brand-green-500:#72E184; --brand-green-600:#5EC46F; --brand-green-700:#4CA75A; --brand-green-800:#3B8948;
-  --brand-red-100:#FEF2F2; --brand-red-500:#F87171; --brand-red-600:#CB3446; --brand-red-700:#A92232;
-  --brand-orange-100:#FFF8E5; --brand-orange-600:#FFB800; --brand-orange-700:#D69B00; --brand-orange-800:#856000;
-  --brand-grey-100:#F9FAFB; --brand-grey-200:#F3F4F6; --brand-grey-300:#E5E7EB; --brand-grey-400:#D1D5DB;
-  --brand-grey-500:#9CA3AF; --brand-grey-600:#6B7280; --brand-grey-700:#4B5563; --brand-grey-800:#374151; --brand-grey-900:#1F2937; --brand-grey-1000:#111827;
-  --brand-violet-500:#AD59C7; --brand-violet-600:#992FB9; --brand-teal-600:#3BCCA6;
+  --brand-green-100:#F3FFF5; --brand-green-200:#CFFFD7; --brand-green-500:#30F284; --brand-green-600:#2CBF6E; --brand-green-700:#4CA75A; --brand-green-800:#3B8948;
+  --brand-red-100:#FEF2F2; --brand-red-500:#F87171; --brand-red-600:#C9291C; --brand-red-700:#A92232;
+  --brand-orange-100:#FFF8E5; --brand-orange-600:#E8BA4C; --brand-orange-700:#D69B00; --brand-orange-800:#856000;
+  --brand-grey-100:#F9FAFB; --brand-grey-200:#F3F4F6; --brand-grey-300:#E4E1D6; --brand-grey-400:#CFCCC0;
+  --brand-grey-500:#9CA3AF; --brand-grey-600:#62627A; --brand-grey-700:#4B5563; --brand-grey-800:#38384F; --brand-grey-900:#1F2937; --brand-grey-1000:#111827;
+  --brand-violet-500:#9D5BE8; --brand-violet-600:#992FB9; --brand-teal-600:#25D0C0;
   --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   --font-code:'JetBrains Mono','Fira Code','Consolas',monospace;
   --surface-primary:#FFF; --surface-page:#f4f4f4; --surface-tertiary:var(--brand-grey-200);
@@ -192,12 +192,12 @@ button{font:inherit;cursor:pointer;}
 .btn-sm{height:30px;padding:0 12px;font-size:12px;}
 .btn.is-disabled{opacity:.5;}
 .btn-primary.is-disabled:hover{background:var(--brand-digital-blue-500);border-color:var(--brand-digital-blue-500);}
-.run-hint{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-orange-800);background:var(--brand-orange-100);border:1px solid #F3E2B0;padding:5px 10px;border-radius:var(--radius-full);}
+.run-hint{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--brand-orange-800);background:var(--brand-orange-100);border:1px solid #E6D9A8;padding:5px 10px;border-radius:var(--radius-full);}
 .run-hint svg{width:13px;height:13px;}
 .run-note{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-tertiary);}
 .run-note svg{width:13px;height:13px;}
 .text-input.err,.input-suffix.err .text-input{border-color:var(--brand-red-500);box-shadow:0 0 0 3px var(--brand-red-100);}
-.cfg-error{display:none;align-items:center;gap:7px;font-size:12.5px;color:var(--brand-red-700);background:var(--brand-red-100);border:1px solid #F6C9C9;padding:8px 12px;border-radius:var(--radius-md);margin-bottom:14px;}
+.cfg-error{display:none;align-items:center;gap:7px;font-size:12.5px;color:var(--brand-red-700);background:var(--brand-red-100);border:1px solid #F0B4AC;padding:8px 12px;border-radius:var(--radius-md);margin-bottom:14px;}
 .cfg-error.show{display:flex;}
 .cfg-error svg{width:15px;height:15px;}
 .scope-control{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 12px;font-size:13px;font-weight:500;color:var(--text-secondary);background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-md);}
@@ -337,6 +337,59 @@ body.btn-rounded .btn{border-radius:var(--radius-md);}
 .toast-stack{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:8px;z-index:80;}
 .toast{display:flex;align-items:center;gap:10px;min-width:280px;padding:12px 16px;background:#fff;border:1px solid var(--border-primary);border-radius:8px;box-shadow:var(--shadow-lg);font-size:13px;color:var(--text-primary);}
 .toast svg{width:16px;height:16px;color:var(--brand-digital-blue-600);flex-shrink:0;}
+/* ============================================================
+   MORPHEUS SKIN — på() × kron: warm cream canvas, ink-navy text
+   and buttons, mint success, Blue AAA accents, squared 4px
+   controls, soft 10–16px containers. Token remap + overrides.
+   ============================================================ */
+:root{
+  --font-body:'Geist',system-ui,-apple-system,sans-serif;
+  --font-code:'Geist Mono','JetBrains Mono',monospace;
+  --surface-primary:#FBFAF6; --surface-page:#F2F0EA; --surface-tertiary:#E4E1D6;
+  --text-primary:#232342; --text-secondary:#62627A; --text-tertiary:#8A8A9E;
+  --text-information:#1055E2;
+  --border-primary:rgba(35,35,66,.12); --border-secondary:rgba(35,35,66,.50);
+  --brand-white:#FBFAF6;
+  --brand-digital-blue-100:rgba(62,123,246,.10); --brand-digital-blue-200:rgba(62,123,246,.30);
+  --brand-digital-blue-300:rgba(62,123,246,.40); --brand-digital-blue-400:#3E7BF6;
+  --brand-digital-blue-500:#1055E2; --brand-digital-blue-600:#1055E2;
+  --brand-digital-blue-700:#1055E2; --brand-digital-blue-800:#16306B;
+  --brand-green-100:#EAF6EC; --brand-green-200:#BFE2C8; --brand-green-500:#30F284; --brand-green-600:#2CBF6E; --brand-green-700:#1D5937; --brand-green-800:#1D5937;
+  --brand-red-100:#FBEFED; --brand-red-500:#D96A5C; --brand-red-600:#C9291C; --brand-red-700:#A72014;
+  --brand-orange-100:#FAF4E1; --brand-orange-600:#E8BA4C; --brand-orange-700:#B68B12; --brand-orange-800:#8F6C0C;
+  --brand-grey-100:#F4F2EB; --brand-grey-200:#EDEBE2; --brand-grey-300:#E4E1D6; --brand-grey-400:rgba(35,35,66,.35);
+  --brand-grey-500:#8A8A9E; --brand-grey-600:#62627A; --brand-grey-700:#4A4A66; --brand-grey-800:#38384F; --brand-grey-900:#232342; --brand-grey-1000:#17171C;
+  --brand-violet-500:#9D5BE8; --brand-violet-600:#8A45D6; --brand-teal-600:#16A89B;
+}
+/* flat chrome: no glow, hairline seams, 16px main radius */
+.global-nav::before{display:none;}
+.main-area{border-top-left-radius:16px;box-shadow:none;border-left:1px solid var(--border-primary);border-top:1px solid var(--border-primary);}
+/* squared 4px controls · 10px inputs (morpheus geometry) */
+.btn{border-radius:4px;}
+body.btn-rounded .btn{border-radius:4px;}
+.org-selector,.search-input{border-radius:10px;}
+.search-input kbd{border-radius:4px;}
+.nav-item,.nav-icon-container{border-radius:4px;}
+.nav-version-badge{border-radius:4px;background:#30F284;color:#1D5937;}
+.nav-badge{border-radius:4px;}
+/* ink primary + ink avatar (the på/kron signature) */
+.btn-primary{background:#232342;border-color:#232342;color:#FBFAF6;}
+.btn-primary:hover{background:#2C2C50;border-color:#2C2C50;}
+.btn-primary.is-disabled:hover{background:#232342;border-color:#232342;}
+.avatar{background:#232342;color:#FBFAF6;}
+/* success chip = morpheus status pill */
+.run-chip.done{background:rgba(48,242,132,.15);color:#1D5937;border-color:rgba(29,89,55,.65);}
+/* type: Geist everywhere, ink headers */
+.run-title h1,.run-subhead{font-family:var(--font-body);color:var(--text-primary);}
+/* outline checkbox (glyph in accent, not solid fill) */
+.checkbox input:checked{background:var(--surface-primary);border-color:#1055E2;}
+.checkbox input:checked::after{border-color:#1055E2;}
+/* chart canvases sit on card surface, cream overlays */
+.treemap,.sample-bars{background:var(--surface-primary);}
+.sample-overlay{background:linear-gradient(180deg,rgba(251,250,246,0) 30%,rgba(251,250,246,.78) 100%);}
+.sample-overlay .ov-text{background:rgba(251,250,246,.92);}
+.action-bar{background:rgba(251,250,246,.85);}
+.toast{background:var(--surface-primary);color:var(--text-primary);}
 </style>
 </head>
 <body>
@@ -345,7 +398,7 @@ body.btn-rounded .btn{border-radius:var(--radius-md);}
     <div class="left-nav-top">
       <div class="nav-home-stack">
         <div class="nav-item nav-item-home" title="Home"><div class="nav-icon-container">
-          <svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="#041834" stroke="#041834" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          <svg width="40" height="40" viewBox="0 0 47 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="#232342" stroke="#232342" stroke-width="1.4" stroke-linejoin="round"/></svg>
         </div></div>
         <span class="nav-version-badge">v2</span>
       </div>
@@ -725,7 +778,7 @@ function sampleHeatmap(){
   const cols=['spring-core','spring-web','jackson','guava','netty','slf4j'];
   const rows=['kotlin','intellij','exposed','datalore','rider-fs','youtrack'];
   // 0 = up to date … 5 = many versions behind
-  const colors=['#5EC46F','#9BD88A','#DCECA6','#FFD166','#F2A65A','#CB3446'];
+  const colors=['#2CBF6E','#7CDF9C','#D4EBB0','#EDCB74','#E88A4C','#C9291C'];
   const lag=(r,c)=>((r*2 + c*3 + r*c) % 6);
   const cw=86, ch=28, gap=6, labelW=84, headerH=24, padX=18, padY=14, legendH=22;
   const gridW=cols.length*(cw+gap)-gap;
@@ -745,16 +798,16 @@ function sampleHeatmap(){
   return `<svg class="sample-bars" viewBox="0 0 ${W} ${H}">${s}</svg>`;
 }
 function samplePie(){
-  const data=[{l:'Critical',v:142,c:'#CB3446'},{l:'High',v:684,c:'#FFB800'},{l:'Medium',v:1893,c:'#8D99FF'},{l:'Low',v:1499,c:'#D1D5DB'}];
+  const data=[{l:'Critical',v:142,c:'#C9291C'},{l:'High',v:684,c:'#E8BA4C'},{l:'Medium',v:1893,c:'#7FA9F9'},{l:'Low',v:1499,c:'#CFCCC0'}];
   const total=data.reduce((s,d)=>s+d.v,0);const C=2*Math.PI*60;let off=0;
   const segs=data.map(d=>{const len=d.v/total*C;const s=`<circle cx="80" cy="80" r="60" fill="none" stroke="${d.c}" stroke-width="22" stroke-dasharray="${len.toFixed(1)} ${(C-len).toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" transform="rotate(-90 80 80)"/>`;off+=len;return s;}).join('');
   const legend=data.map(d=>`<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);margin-bottom:6px"><span style="width:10px;height:10px;border-radius:3px;background:${d.c}"></span>${d.l} <strong style="color:var(--text-primary);margin-left:auto">${(d.v/total*100).toFixed(0)}%</strong></div>`).join('');
-  return `<div style="display:flex;align-items:center;gap:24px;padding:18px 24px;background:#fff"><svg viewBox="0 0 160 160" width="160" height="160" style="flex:0 0 160px"><circle cx="80" cy="80" r="60" fill="none" stroke="var(--brand-grey-100)" stroke-width="22"/>${segs}</svg><div style="flex:1;max-width:220px">${legend}</div></div>`;
+  return `<div style="display:flex;align-items:center;gap:24px;padding:18px 24px;background:var(--surface-primary)"><svg viewBox="0 0 160 160" width="160" height="160" style="flex:0 0 160px"><circle cx="80" cy="80" r="60" fill="none" stroke="var(--brand-grey-100)" stroke-width="22"/>${segs}</svg><div style="flex:1;max-width:220px">${legend}</div></div>`;
 }
 function sampleBars(){
   const data=[{l:'repo-a',v:92},{l:'repo-b',v:74},{l:'repo-c',v:63},{l:'repo-d',v:51},{l:'repo-e',v:38},{l:'repo-f',v:24}];
   const W=600,H=210,padB=26,padT=12;const max=100;const innerH=H-padB-padT;const slot=W/data.length;const bw=Math.min(56,slot*0.55);
-  const palette=['#2F42FF','#3BCCA6','#5EC46F','#FFB800','#8D99FF','#AD59C7'];
+  const palette=['#3E7BF6','#25D0C0','#2CBF6E','#E8BA4C','#7FA9F9','#9D5BE8'];
   const bars=data.map((d,i)=>{const h=d.v/max*innerH;const cx=i*slot+slot/2;const bx=cx-bw/2;const by=padT+innerH-h;return `<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="4" fill="${palette[i%palette.length]}"/><text x="${cx}" y="${H-8}" text-anchor="middle" font-size="10" fill="var(--text-tertiary)">${d.l}</text>`;}).join('');
   return `<svg class="sample-bars" viewBox="0 0 ${W} ${H}"><line x1="0" y1="${padT+innerH}" x2="${W}" y2="${padT+innerH}" stroke="var(--brand-grey-200)"/>${bars}</svg>`;
 }
@@ -762,22 +815,22 @@ function sampleBars(){
 function treemapSVG(){
   // static demo treemap (resembles language composition)
   const cells=[
-    {x:0,y:0,w:200,h:150,c:'#2F42FF',l:'TypeScript',v:'34%'},
-    {x:202,y:0,w:120,h:74,c:'#3BCCA6',l:'Java',v:'18%'},
-    {x:324,y:0,w:96,h:74,c:'#5EC46F',l:'Kotlin',v:'12%'},
-    {x:202,y:76,w:106,h:74,c:'#FFB800',l:'Go',v:'9%'},
-    {x:310,y:76,w:110,h:36,c:'#8D99FF',l:'CSS',v:'6%'},
-    {x:310,y:114,w:54,h:36,c:'#AD59C7',l:'SQL',v:'4%'},
-    {x:366,y:114,w:54,h:36,c:'#CB3446',l:'YAML',v:'3%'},
+    {x:0,y:0,w:200,h:150,c:'#3E7BF6',l:'TypeScript',v:'34%'},
+    {x:202,y:0,w:120,h:74,c:'#25D0C0',l:'Java',v:'18%'},
+    {x:324,y:0,w:96,h:74,c:'#2CBF6E',l:'Kotlin',v:'12%'},
+    {x:202,y:76,w:106,h:74,c:'#E8BA4C',l:'Go',v:'9%'},
+    {x:310,y:76,w:110,h:36,c:'#7FA9F9',l:'CSS',v:'6%'},
+    {x:310,y:114,w:54,h:36,c:'#9D5BE8',l:'SQL',v:'4%'},
+    {x:366,y:114,w:54,h:36,c:'#C9291C',l:'YAML',v:'3%'},
     {x:0,y:152,w:130,h:58,c:'#B6BFFF',l:'Shell',v:'5%'},
-    {x:132,y:152,w:120,h:58,c:'#72E184',l:'Python',v:'5%'},
-    {x:254,y:152,w:90,h:58,c:'#DCC8E6',l:'JSON',v:'3%'},
-    {x:346,y:152,w:74,h:58,c:'#E5E7EB',l:'Other',v:'1%'},
+    {x:132,y:152,w:120,h:58,c:'#30F284',l:'Python',v:'5%'},
+    {x:254,y:152,w:90,h:58,c:'#E2D2F5',l:'JSON',v:'3%'},
+    {x:346,y:152,w:74,h:58,c:'#E4E1D6',l:'Other',v:'1%'},
   ];
   return `<svg class="treemap" viewBox="0 0 420 210">${cells.map(c=>`
     <g class="tm-cell"><rect x="${c.x}" y="${c.y}" width="${c.w}" height="${c.h}" rx="3" fill="${c.c}"/>
-    ${c.w>52&&c.h>30?`<text x="${c.x+8}" y="${c.y+20}" font-size="11" font-weight="600" fill="${c.c==='#E5E7EB'||c.c==='#DCC8E6'?'#374151':'#fff'}">${c.l}</text>
-    <text x="${c.x+8}" y="${c.y+34}" font-size="10" fill="${c.c==='#E5E7EB'||c.c==='#DCC8E6'?'#6B7280':'rgba(255,255,255,.85)'}">${c.v}</text>`:''}</g>`).join('')}</svg>`;
+    ${c.w>52&&c.h>30?`<text x="${c.x+8}" y="${c.y+20}" font-size="11" font-weight="600" fill="${c.c==='#E4E1D6'||c.c==='#E2D2F5'?'#38384F':'#fff'}">${c.l}</text>
+    <text x="${c.x+8}" y="${c.y+34}" font-size="10" fill="${c.c==='#E4E1D6'||c.c==='#E2D2F5'?'#62627A':'rgba(255,255,255,.85)'}">${c.v}</text>`:''}</g>`).join('')}</svg>`;
 }
 
 /* ===== Wire detail interactions ===== */
