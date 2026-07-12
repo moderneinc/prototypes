@@ -41,6 +41,9 @@ a { color: inherit; }
   --ca: #6A7180; --ca-t: #F0F1F5; --ca-b: rgba(27,34,48,.22);
   --teal: #0E4A45; --magenta: #E6399B;
   --toast-fg: #C9291C; --toast-bg: #FBEFED; --toast-bd: #F0B4AC;
+  --toast-su-fg: #1D5937; --toast-su-bg: #EAF6EC; --toast-su-bd: #BFE2C8;
+  --toast-wa-fg: #8F6C0C; --toast-wa-bg: #FAF4E1; --toast-wa-bd: #E6D9A8;
+  --toast-in-fg: #1055E2; --toast-in-bg: #EEF3FC; --toast-in-bd: #C7D7F6;
   --ava-bg: #232342; --ava-fg: #FBFAF6;
   --tenant-bg: #232342; --tenant-fg: #FBFAF6;
   --control-border: var(--line-strong); --control-border-selected: var(--accent); --control-glyph: var(--accent);
@@ -64,6 +67,9 @@ a { color: inherit; }
   --ca: #9598AC; --ca-t: rgba(228,232,250,.06); --ca-b: rgba(228,232,250,.22);
   --teal: #25D0C0; --magenta: #E6399B;
   --toast-fg: #F76A62; --toast-bg: #2A1012; --toast-bd: #4A1D1E;
+  --toast-su-fg: #4ADE80; --toast-su-bg: #0F2015; --toast-su-bd: #1E3A28;
+  --toast-wa-fg: #E3B341; --toast-wa-bg: #211D0C; --toast-wa-bd: #3A3316;
+  --toast-in-fg: #7FA9F9; --toast-in-bg: #101A2E; --toast-in-bd: #1E3A6B;
   --ava-bg: #30F284; --ava-fg: #1D5937;
   --tenant-bg: #F1F0EA; --tenant-fg: #17171C;
   --control-border: var(--line-strong); --control-border-selected: var(--accent); --control-glyph: var(--accent);
@@ -228,8 +234,9 @@ svg.ic { width: 15px; height: 15px; flex: none; }
 .toast-link { font-size: 11.5px; font-weight: 600; color: var(--toast-fg); cursor: pointer; }
 .toast-x { width: 24px; height: 24px; border: none; background: transparent; color: var(--muted); border-radius: 6px; flex: none; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .toast-x svg { width: 13px; height: 13px; }
-.toast--su { --toast-fg: var(--green-hi); --toast-bg: var(--card); --toast-bd: var(--su-b); }
-.toast--in { --toast-fg: var(--accent); --toast-bg: var(--card); --toast-bd: var(--accent-brd); }
+.toast--su { --toast-fg: var(--toast-su-fg); --toast-bg: var(--toast-su-bg); --toast-bd: var(--toast-su-bd); }
+.toast--wa { --toast-fg: var(--toast-wa-fg); --toast-bg: var(--toast-wa-bg); --toast-bd: var(--toast-wa-bd); }
+.toast--in { --toast-fg: var(--toast-in-fg); --toast-bg: var(--toast-in-bg); --toast-bd: var(--toast-in-bd); }
 
 .bc { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .bc a { color: var(--muted); text-decoration: none; }
@@ -755,7 +762,7 @@ footer { background: var(--cover); color: rgba(251,250,246,.75); margin-top: 90p
 
 <!-- ============ TOASTS ============ -->
 <section id="toasts">
-  <div class="sec-head"><h2>Toasts</h2><span class="mono">.toast · error / success / information</span></div>
+  <div class="sec-head"><h2>Toasts</h2><span class="mono">.toast · washed tints · error / warning / success / information</span></div>
   <div class="duo">
     <div class="spec mo-scope" data-theme="light" data-label="LIGHT">
       <div class="toast">
@@ -773,6 +780,15 @@ footer { background: var(--cover); color: rgba(251,250,246,.75); margin-top: 90p
           <div class="toast-title">Success</div>
           <p class="toast-msg">Committed results to 11 repositories. Pull requests are open and awaiting review.</p>
           <div class="toast-actions"><span class="toast-link">View pull requests</span></div>
+        </div>
+        <button class="toast-x"><svg fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><use href="#i-x"/></svg></button>
+      </div></div>
+      <div class="row"><div class="toast toast--wa">
+        <span class="toast-dot"></span>
+        <div class="toast-body">
+          <div class="toast-title">High memory usage</div>
+          <p class="toast-msg">Worker <b>mod-worker-3</b> is at 92% of its memory limit — degrading, not dead.</p>
+          <div class="toast-actions"><span class="toast-link">View workers</span><span class="toast-link">Dismiss</span></div>
         </div>
         <button class="toast-x"><svg fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><use href="#i-x"/></svg></button>
       </div></div>
@@ -802,6 +818,15 @@ footer { background: var(--cover); color: rgba(251,250,246,.75); margin-top: 90p
           <div class="toast-title">Success</div>
           <p class="toast-msg">Committed results to 11 repositories. Pull requests are open and awaiting review.</p>
           <div class="toast-actions"><span class="toast-link">View pull requests</span></div>
+        </div>
+        <button class="toast-x"><svg fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><use href="#i-x"/></svg></button>
+      </div></div>
+      <div class="row"><div class="toast toast--wa">
+        <span class="toast-dot"></span>
+        <div class="toast-body">
+          <div class="toast-title">High memory usage</div>
+          <p class="toast-msg">Worker <b>mod-worker-3</b> is at 92% of its memory limit — degrading, not dead.</p>
+          <div class="toast-actions"><span class="toast-link">View workers</span><span class="toast-link">Dismiss</span></div>
         </div>
         <button class="toast-x"><svg fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><use href="#i-x"/></svg></button>
       </div></div>
