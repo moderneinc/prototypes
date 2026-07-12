@@ -1148,6 +1148,24 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .mo-foot .mo-hint { display: inline-flex; align-items: center; gap: 6px; }
 .mo-foot .mo-right { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; }
 .mo-foot .mo-right svg { width: 16px; height: 16px; color: var(--muted); }
+
+/* ---- New recipe modal (builder) ---- */
+.mo--form { width: 560px; }
+.nr-head { display: flex; align-items: center; padding: 20px 22px 6px; }
+.nr-head h2 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -.01em; color: var(--text); }
+.nr-body { padding: 8px 22px 4px; }
+.nr-label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin: 14px 0 7px; }
+.nr-label.dis { color: var(--muted); }
+.nr-input { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 14px; }
+.nr-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.nr-input[disabled] { color: var(--muted); background: var(--surface); border-color: var(--line); }
+textarea.nr-input { resize: none; height: 74px; }
+.nr-link { display: inline-flex; align-items: center; gap: 7px; margin-top: 12px; font-size: 13px; font-weight: 500; color: var(--accent); cursor: pointer; }
+.nr-link svg { width: 14px; height: 14px; }
+.nr-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.nr-foot { display: flex; align-items: center; justify-content: flex-end; gap: 18px; padding: 18px 22px 20px; }
+.nr-cancel { font: inherit; font-size: 13px; font-weight: 600; color: var(--text); background: none; border: none; padding: 8px 4px; }
+.nr-cancel:hover { color: var(--accent); }
 /* org tree */
 .om-row { display: flex; align-items: center; gap: 9px; padding: 11px 18px; font-size: 13.5px; color: var(--text); cursor: pointer; border-bottom: 1px solid var(--line2); }
 .om-row:last-child { border-bottom: none; }
@@ -1457,6 +1475,7 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
   <filter id="cvd-deutan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.625 0.375 0 0 0  0.7 0.3 0 0 0  0 0.3 0.7 0 0  0 0 0 1 0"/></filter>
   <filter id="cvd-protan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.567 0.433 0 0 0  0.558 0.442 0 0 0  0 0.242 0.758 0 0  0 0 0 1 0"/></filter>
   <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></symbol>
   <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
   <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M12 16V8M8.5 11.5L12 8l3.5 3.5"/></symbol>
@@ -2815,6 +2834,7 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
       <!-- ============ BUILDER ============ -->
       <section class="page" data-page="builder">
         <button class="bl-picker"><svg><use href="#i-blocks"/></svg> new name spring thing <svg class="chev"><use href="#i-chevd"/></svg></button>
+        <button class="pill-btn bl-new" style="margin-left:8px"><svg><use href="#i-plus"/></svg> New recipe</button>
         <div class="bl-wrap">
           <div class="bl-canvas">
             <div class="bl-graph"></div>
@@ -2914,6 +2934,26 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
         <span class="mo-hint"><span class="kbd">Enter</span> Select</span>
         <span class="mo-hint"><span class="kbd">Esc</span> Close</span>
         <span class="mo-right"><span class="linklike">Search syntax tips</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ NEW RECIPE MODAL (builder) ============ -->
+  <div class="mo-ov" data-modal="newrecipe">
+    <div class="mo mo--form" role="dialog" aria-label="New recipe">
+      <div class="nr-head"><h2>New recipe</h2><button class="mo-x" title="Close"><svg><use href="#i-x"/></svg></button></div>
+      <div class="nr-body">
+        <label class="nr-label" for="nr-name">Name</label>
+        <input class="nr-input" id="nr-name" type="text" value="Untitled">
+        <span class="nr-link"><svg><use href="#i-link"/></svg>Auto-generate ID from name</span>
+        <label class="nr-label dis" for="nr-id">ID</label>
+        <input class="nr-input" id="nr-id" type="text" value="io.moderne.lindsay.Untitled" disabled>
+        <label class="nr-label" for="nr-desc">Description</label>
+        <textarea class="nr-input" id="nr-desc"></textarea>
+      </div>
+      <div class="nr-foot">
+        <button class="nr-cancel">Cancel</button>
+        <button class="pill-btn pill-btn--primary">Save</button>
       </div>
     </div>
   </div>
@@ -3127,7 +3167,7 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
     });
   }
   window.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { setModal('org', false); setModal('search', false); }
+    if (e.key === 'Escape') { setModal('org', false); setModal('search', false); setModal('newrecipe', false); }
   });
 
   // ---- topbar menus (admin / help / account), synced across layers ----
@@ -3153,7 +3193,9 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
     if (mx) { mx.closest('.mo-ov').classList.remove('open'); setModal(mx.closest('.mo-ov').getAttribute('data-modal'), false); return; }
     var ov = e.target.classList && e.target.classList.contains('mo-ov') ? e.target : null;
     if (ov) { setModal(ov.getAttribute('data-modal'), false); return; }
+    if (e.target.closest('.nr-cancel')) { setModal('newrecipe', false); return; }
     if (e.target.closest('.mo')) return; // clicks inside a modal stay in the modal
+    if (e.target.closest('.bl-new')) { setModal('newrecipe', true); return; }
     if (e.target.closest('.org-selector')) { setModal('org', true); return; }
     if (e.target.closest('.search-input')) { setModal('search', true); return; }
     var rt = e.target.closest('.tab[data-rtab]');
