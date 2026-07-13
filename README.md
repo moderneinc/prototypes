@@ -23,6 +23,7 @@ For example: `https://moderneinc.github.io/prototypes/morpheus.html`
 | [`day-zero-revised.html`](https://moderneinc.github.io/prototypes/day-zero-revised.html) | Revised day-zero tour variant |
 | [`moddy-help.html`](https://moderneinc.github.io/prototypes/moddy-help.html) | Moddy first-contact "by role" states |
 | [`moddy-trigrep-revised.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-revised.html) | Revised Moddy refine-search results |
+| [`results.html`](https://moderneinc.github.io/prototypes/results.html) | Recipe run Results tab |
 | [`results-hierarchical-selection-v2.html`](https://moderneinc.github.io/prototypes/results-hierarchical-selection-v2.html) | Hierarchy v2: roll up above repo to VCS org / Moderne org (nested sub-orgs, shared repos) |
 | [`tree-component-update.html`](https://moderneinc.github.io/prototypes/tree-component-update.html) | Results tree component update — no static org header (tree stays expanded); checkbox states shown across the board: checked / **indeterminate** (partial) / unchecked, and **no checkbox** on rows with nothing to commit (no-results / error repos) |
 | [`results-focus-view.html`](https://moderneinc.github.io/prototypes/results-focus-view.html) | Focus modes + **similar results**: full-screen the results tree or the diff; group by similar results (IntelliJ Find-Usages style) — type-of-change clusters → repositories → exemplar usage; repos roll up under VCS orgs; per-repo "N similar" opens the diff with Show / Back-to-search-results navigation |
@@ -50,7 +51,6 @@ Older prototypes kept for reference; not linked from the main table above.
 | File | Notes |
 | --- | --- |
 | [`archive/activity-page.html`](https://moderneinc.github.io/prototypes/archive/activity-page.html) | Activity page (earlier iteration) |
-| [`archive/results.html`](https://moderneinc.github.io/prototypes/archive/results.html) | Recipe run Results tab |
 | [`archive/results-view-summary.html`](https://moderneinc.github.io/prototypes/archive/results-view-summary.html) | Results Summary + options panel: show/hide + container-query responsiveness |
 | [`archive/results-hierarchical-selection.html`](https://moderneinc.github.io/prototypes/archive/results-hierarchical-selection.html) | Results hierarchy: drill repo → package → file → class → method (tree vs group-by) |
 | [`archive/results-faceted-filter.html`](https://moderneinc.github.io/prototypes/archive/results-faceted-filter.html) | Faceted filter bar (org/vcs/branch/status chips + free text) applied across the hierarchy & roll-ups |
