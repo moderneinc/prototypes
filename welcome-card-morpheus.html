@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Welcome card — Morpheus theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --spectral: linear-gradient(92deg, #E6399B 0%, #9D5BE8 24%, #3E7BF6 48%, #25D0C0 70%, #30F284 88%, #B7E84C 100%); }
+[data-theme="light"] {
+  --bg: #E4E1D6; --card: #F2F0EA; --panel: #FBFAF6;
+  --text: #232342; --muted: #62627A; --line: rgba(35,35,66,.12);
+  --plate-bg: #30F284; --plate-fg: #1D5937; --plate-sub: #1D5937;
+}
+[data-theme="dark"] {
+  --bg: #0E0E12; --card: #141419; --panel: #26262E;
+  --text: #F1F0EA; --muted: #9C9CA8; --line: rgba(240,240,246,.12);
+  --plate-bg: #30F284; --plate-fg: #17321F; --plate-sub: #1D5937;
+}
+body { font-family: 'Geist', system-ui, sans-serif; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 40px 20px; transition: background .2s; }
+
+.card { width: 1200px; max-width: 100%; aspect-ratio: 1200 / 630; background: var(--card); color: var(--text); border-radius: 16px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; gap: 84px; padding: 60px 80px; box-shadow: 0 24px 64px rgba(10,10,25,.18); }
+.card::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 12px; background: var(--spectral); }
+
+.photo { width: 380px; aspect-ratio: 1; flex: none; padding: 4px; background: var(--spectral); border-radius: 12px; }
+.photo .ph { width: 100%; height: 100%; border-radius: 9px; background: var(--panel); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; border: 1px solid var(--line); }
+.photo .ph .init { width: 132px; height: 132px; border-radius: 999px; background: #232342; color: #FBFAF6; display: flex; align-items: center; justify-content: center; font-size: 52px; font-weight: 600; }
+[data-theme="dark"] .photo .ph .init { background: #30F284; color: #1D5937; }
+.photo .ph .hint { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); }
+.photo img { width: 100%; height: 100%; border-radius: 9px; object-fit: cover; display: block; }
+
+.copy { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 30px; max-width: 560px; }
+.logo { display: flex; align-items: center; gap: 13px; color: var(--text); }
+.logo svg { height: 36px; width: auto; }
+.logo .n { font-size: 30px; font-weight: 400; letter-spacing: -.01em; }
+h1 { font-size: 64px; font-weight: 700; letter-spacing: -.03em; line-height: 1.06; }
+.plate { background: var(--plate-bg); border-radius: 12px; padding: 24px 44px; min-width: 440px; }
+.plate .nm { font-size: 30px; font-weight: 600; color: var(--plate-fg); letter-spacing: -.01em; }
+.plate .rl { font-size: 17px; font-weight: 500; color: var(--plate-sub); margin-top: 6px; }
+
+.bar { display: inline-flex; align-items: center; gap: 10px; }
+.bar button { font: inherit; font-size: 12px; font-weight: 600; padding: 8px 14px; border-radius: 4px; border: 1px solid rgba(128,128,140,.4); background: transparent; color: var(--text); cursor: pointer; }
+.bar .note { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="card" id="card">
+  <div class="photo">
+    <div class="ph"><span class="init">CK</span><span class="hint">drop headshot here</span></div>
+  </div>
+  <div class="copy">
+    <div class="logo">
+      <svg viewBox="0 0 58 59" fill="currentColor"><path d="M56.1354 1.21633C55.5985 0.995452 54.9762 1.11601 54.5643 1.52924L29.7495 26.3715C28.1187 12.1737 16.0538 1.10589 1.44142 1.10497C1.05899 1.10497 0.693101 1.25774 0.421907 1.52832C0.151631 1.79889 -5.34058e-05 2.16518 -5.34058e-05 2.54895V29.6506V29.6524V56.7541C-5.34058e-05 56.7771 0.00822179 56.7992 0.0100604 56.8222C0.0128183 56.8921 0.0266052 56.9593 0.0403948 57.0283C0.0551037 57.101 0.0688955 57.1728 0.0937167 57.2418C0.101071 57.263 0.10107 57.2851 0.109343 57.3053C0.12681 57.3468 0.157148 57.3799 0.177373 57.4195C0.213226 57.4857 0.248159 57.5511 0.293205 57.6118C0.334573 57.667 0.382376 57.7149 0.430179 57.7637C0.479822 57.8134 0.528548 57.8612 0.584625 57.9036C0.64438 57.9477 0.70781 57.9818 0.773081 58.0168C0.81353 58.0379 0.846625 58.0692 0.888913 58.0867C0.906379 58.0941 0.924768 58.0904 0.942234 58.0968C1.10035 58.1566 1.26583 58.1971 1.44142 58.1971H28.5112H55.5829C56.379 58.1971 57.0253 57.5502 57.0253 56.7541V29.6506V2.54895C57.0253 1.96547 56.6741 1.43997 56.1354 1.21633ZM54.1423 6.03238V28.2075H31.9926L54.1423 6.03238ZM54.1423 41.7593H29.9536V31.0937H54.1423V41.7593ZM2.88289 53.2707V31.0955H25.0326L13.9577 42.1826L2.88289 53.2707ZM2.88289 4.03159C15.869 4.75589 26.3067 15.2061 27.0302 28.2075H2.88289V4.03159ZM15.9949 44.223L27.0698 33.1359V55.311H4.92006L15.9949 44.223ZM29.9527 44.6454H54.1414V55.311H29.9527V44.6454Z"/></svg>
+      <span class="n">Moderne</span>
+    </div>
+    <h1>Welcome to<br>the team! 🎉</h1>
+    <div class="plate">
+      <div class="nm">Crys Kelch</div>
+      <div class="rl">Head of GTM &amp; Partnerships (Americas)</div>
+    </div>
+  </div>
+</div>
+
+<div class="bar">
+  <button id="modeBtn">Toggle light / dark</button>
+  <span class="note">morpheus welcome card · 1200×630 · cream/ink + mint plate + spectral keyline</span>
+</div>
+
+<script>
+const root = document.documentElement;
+document.getElementById('modeBtn').addEventListener('click', () => {
+  root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+const q = new URLSearchParams(location.search).get('theme');
+if (q === 'light' || q === 'dark') root.setAttribute('data-theme', q);
+</script>
+</body>
+</html>
