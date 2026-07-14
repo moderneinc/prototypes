@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morpheus starter</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== Morpheus tokens (see morpheus-tokens.css for the annotated set) ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+  --spectral: linear-gradient(92deg, #E6399B, #9D5BE8, #3E7BF6, #25D0C0, #30F284, #B7E84C);
+}
+[data-theme="light"] {
+  --bg: #F2F0EA; --field: #FBFAF6; --card: #FBFAF6; --surface: #EDEBE2; --surface2: #E4E1D6;
+  --line: rgba(35,35,66,.12); --line2: rgba(35,35,66,.08); --line-strong: rgba(35,35,66,.50);
+  --text: #232342; --muted: #62627A;
+  --accent: #1055E2; --accent-tint: rgba(62,123,246,.10); --accent-brd: rgba(62,123,246,.30);
+  --primary-bg: #3E7BF6; --primary-fg: #FFF;
+  --btn-primary-bg: #232342; --btn-primary-fg: #FBFAF6;
+  --green-hi: #1D5937; --success-tint: rgba(48,242,132,.15); --success-brd: rgba(29,89,55,.65);
+  --error: #C9291C; --error-tint: #FBEFED; --error-brd: #F0B4AC;
+}
+[data-theme="dark"] {
+  --bg: #141419; --field: #222229; --card: #26262E; --surface: #2A2A32; --surface2: #33333D;
+  --line: rgba(240,240,246,.12); --line2: rgba(240,240,246,.08); --line-strong: rgba(240,240,246,.38);
+  --text: #F1F0EA; --muted: #9C9CA8;
+  --accent: #3E7BF6; --accent-tint: rgba(62,123,246,.16); --accent-brd: rgba(62,123,246,.40);
+  --primary-bg: #3E7BF6; --primary-fg: #FFF;
+  --btn-primary-bg: #F1F0EA; --btn-primary-fg: #17171C;
+  --green-hi: #30F284; --success-tint: rgba(48,242,132,.13); --success-brd: rgba(48,242,132,.55);
+  --error: #FA826F; --error-tint: rgba(252,71,50,.12); --error-brd: rgba(252,71,50,.42);
+}
+body { font-family: var(--font-sans); font-size: 14px; background: var(--bg); color: var(--text); padding: 40px; }
+main { max-width: 720px; margin: 0 auto; display: grid; gap: 20px; }
+.spectral-bar { height: 6px; border-radius: 3px; background: var(--spectral); }
+h1 { font-size: 18px; font-weight: 400; }
+.overline { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: grid; gap: 14px; }
+.card h2 { font-size: 15px; font-weight: 600; }
+.row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.btn { font: inherit; font-size: 13px; font-weight: 600; padding: 8px 15px; border-radius: 4px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); cursor: pointer; }
+.btn:hover { background: var(--surface); }
+.btn--primary { background: var(--btn-primary-bg); color: var(--btn-primary-fg); border-color: transparent; }
+.pill { display: inline-flex; align-items: center; height: 22px; padding: 0 12px; border-radius: 999px; font-size: 11px; font-weight: 500; border: 1px solid; }
+.pill--success { color: var(--green-hi); background: var(--success-tint); border-color: var(--success-brd); }
+.pill--error { color: var(--error); background: var(--error-tint); border-color: var(--error-brd); }
+.badge { font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-tint); border: 1px solid var(--accent-brd); padding: 3px 10px; border-radius: 4px; }
+.input { width: 100%; font: inherit; font-size: 14px; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 14px; }
+.input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.mono { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="row" style="justify-content:space-between;">
+    <div><div class="overline">Morpheus starter</div><h1>Hello, Morpheus</h1></div>
+    <button class="btn" onclick="const r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'">Toggle theme</button>
+  </div>
+  <div class="spectral-bar"></div>
+  <div class="card">
+    <h2>Card title</h2>
+    <p>Body copy at 14px on the card surface. <span class="mono">mono meta at 12px</span></p>
+    <div class="row">
+      <button class="btn btn--primary">Save</button>
+      <button class="btn">Cancel</button>
+      <span class="pill pill--success">Finished</span>
+      <span class="pill pill--error">Failed</span>
+      <span class="badge">12 recipes</span>
+    </div>
+    <input class="input" placeholder="Search recipes" style="max-width:320px;">
+  </div>
+</main>
+</body>
+</html>
