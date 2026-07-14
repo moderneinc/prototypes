@@ -20,7 +20,7 @@ The five changes users will actually notice, in descending order of blast radius
 
 Accessibility is a constraint, not a follow-up: the Morpheus values were tuned so **every text pair ≥ 4.5:1 and every control boundary / chart mark ≥ 3:1 in both modes** (links use the Blue AAA pairing at 8.1:1 light / 6.4:1 dark). The migration must not regress those numbers, so the WCAG table in §9 is the release gate.
 
-Because the primitives live in an external package, work splits into three tracks that can ship independently: **(a)** `neo-design` token additions/value changes (published under a `next` tag), **(b)** adapter mapping in `moderne-theme.ts`, **(c)** app-side cleanups (charts, deprecated ramps). Phases 1–2 are invisible-to-users; the visual flip happens in Phase 3.
+Because the primitives live in an external package, work splits into three tracks that can ship independently: **(a)** `neo-design` token additions/value changes (published under a `next` tag), **(b)** adapter mapping in `moderne-theme.ts`, **(c)** app-side cleanups (charts, deprecated ramps). Phase 1 is invisible-to-users; **dark mode debuts in Phase 2** (net-new surface — no light-mode regression risk, and it proves every new token before the higher-stakes light flip); the light-mode flip lands in Phase 3; data-viz/visualizations follow in Phase 4.
 
 ---
 
@@ -215,13 +215,13 @@ Values shown as *light / dark*. "Neo" = change in `@moderneinc/neo-design`; "App
 **Phase 1 — Additive tokens (no visual change).**
 Upstream in `neo-design@next`: add ink/cream/periwinkle primitives, new semantic slots (`surfaces.*`, `border.{subtle,strong}`, `link.*`, `dataviz.*`, `status.{queued,active}`, `control.*`, `progress.*`, `illustration.*`, `semanticTypography.data.*`, `motion.*`) with **current-look-compatible values or aliases** (e.g. `border.strong` initially aliases `border.primary`). App upgrades the dependency. Existing components render pixel-identical. *Exit gate: zero visual diffs.*
 
-**Phase 2 — Light-mode value flip.**
-Re-value the semantic tokens to Morpheus light in `neo-design@next`; swap fonts to Geist in `_app.tsx`; flip `borderRadius.button` → 4 and delete the `MuiButton` pill override; re-point links to `link.*`. One release train, feature-flagged if possible (`cssVariables: true` makes a runtime flag cheap). *Exit gate: Storybook diffs reviewed; WCAG checklist (§9) green in light mode; biome passes.*
+**Phase 2 — Dark mode activation.** *(Moved ahead of the light flip — and explicitly ahead of all visualization work — because dark is net-new: there is no dark baseline to regress, it ships visible value early, and it proves the Phase-1 token slots before the higher-stakes light re-value.)*
+Fill `darkPalette` from Morpheus dark tokens (the mapping table's second values); add `appTheme: 'light' | 'dark' | 'system'` to `stores/user-preference.store.ts` (precedent: `builderTheme`); surface a toggle in the account menu; default `light` at debut (move to `system` in Phase 3 so the legacy light look and Morpheus dark never mix as anyone's default). Dark debuts with current fonts/radii — those flip globally in the next phase. *Exit gate: full-app dark QA; WCAG checklist green in dark; elevation ramp (rail `#141419` → canvas `#1B1B21` → card `#26262E`) verified on the five table pages + Dev Center.*
 
-**Phase 3 — Dark mode activation.**
-Fill `darkPalette` from Morpheus dark tokens (the mapping table's second values); add `appTheme: 'light' | 'dark' | 'system'` to `stores/user-preference.store.ts` (precedent: `builderTheme`); surface a toggle in the account menu; default `system`. *Exit gate: full-app dark QA; WCAG checklist green in dark; elevation ramp (rail `#141419` → canvas `#1B1B21` → card `#26262E`) verified on the five table pages + Dev Center.*
+**Phase 3 — Light-mode value flip.**
+Re-value the semantic tokens to Morpheus light in `neo-design@next`; swap fonts to Geist in `_app.tsx`; flip `borderRadius.button` → 4 and delete the `MuiButton` pill override; re-point links to `link.*`; move the theme default to `system`. One release train, feature-flagged if possible (`cssVariables: true` makes a runtime flag cheap). *Exit gate: Storybook diffs reviewed; WCAG checklist (§9) green in both modes; biome passes.*
 
-**Phase 4 — Component & data-viz tokens.**
+**Phase 4 — Component & data-viz tokens** *(visualizations run after dark mode by design — chart palettes and boundary rings get validated against both modes at once).*
 Re-point `MODERNE_CHART_COLOR_SCALE` and `CHRONO_*` at `dataviz.*`; implement light-mode boundary rings per chart library; retire `pendingStatusTokens` into `status.{queued,active,canceled}`; re-value `diff*`; re-point `mod-mui-checkbox.tsx` at `control.*` and wire the indeterminate state where trees/grids partially select (coordinate with `feat/update-results-view-tree`); replace baked-color empty-state illustrations with token-driven SVGs on `illustration.*`; re-color `NeoLoadingSpinner`/progress chips via `progress.*`; sync builder WebGL constants; add motion tokens to the entrance animations.
 
 **Phase 5 — Cleanup.**
