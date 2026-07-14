@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Genome Project — Morpheus theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+}
+[data-theme="dark"] {
+  --bg: #141419; --field: #222229;
+  --card: #26262E; --surface: #2A2A32; --surface2: #33333D;
+  --line: rgba(240,240,246,.12); --line2: rgba(240,240,246,.08); --line-strong: rgba(240,240,246,.38);
+  --text: #F1F0EA; --muted: #9C9CA8;
+  --accent: #3E7BF6; --accent-soft: #7FA9F9;
+  --accent-tint: rgba(62,123,246,.16); --accent-brd: rgba(62,123,246,.40);
+  --btn-primary-bg: #F1F0EA; --btn-primary-fg: #17171C;
+  --footer-bg: #101014;
+}
+[data-theme="light"] {
+  --bg: #F2F0EA; --field: #FBFAF6;
+  --card: #FBFAF6; --surface: #EDEBE2; --surface2: #E4E1D6;
+  --line: rgba(35,35,66,.12); --line2: rgba(35,35,66,.08); --line-strong: rgba(35,35,66,.50);
+  --text: #232342; --muted: #62627A;
+  --accent: #1055E2; --accent-soft: #1055E2;
+  --accent-tint: rgba(62,123,246,.10); --accent-brd: rgba(62,123,246,.30);
+  --btn-primary-bg: #232342; --btn-primary-fg: #FBFAF6;
+  --footer-bg: #EDEBE2;
+}
+html, body { height: 100%; }
+body { font-family: var(--font-sans); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; min-height: 100vh; transition: background .2s, color .2s; }
+button { font: inherit; cursor: pointer; }
+main { flex: 1; }
+.mono { font-family: var(--font-mono); }
+
+/* ===== topbar ===== */
+.topbar { display: flex; align-items: center; gap: 28px; padding: 20px 40px; border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--text); }
+.brand svg { width: 34px; height: 34px; display: block; }
+.brand .wordmark { font-size: 26px; letter-spacing: -.02em; line-height: 1; }
+.brand .wordmark .w1 { font-weight: 400; }
+.brand .wordmark .w2 { font-weight: 700; }
+.brand .wordmark .w3 { font-weight: 300; color: var(--muted); }
+.top-spacer { flex: 1; }
+.top-link { position: relative; font-size: 14px; font-weight: 500; color: var(--muted); background: none; border: none; padding: 10px 2px; }
+.top-link:hover { color: var(--text); }
+.top-link.active { color: var(--text); font-weight: 600; }
+.top-link.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: 2px; height: 2px; background: var(--accent); border-radius: 4px 4px 0 0; }
+.btn-primary { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 4px; border: 1px solid transparent; background: var(--btn-primary-bg); color: var(--btn-primary-fg); }
+.mode-btn { width: 38px; height: 38px; border-radius: 4px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); display: inline-flex; align-items: center; justify-content: center; }
+.mode-btn:hover { background: var(--surface); }
+.mode-btn svg { width: 16px; height: 16px; }
+
+/* ===== hero ===== */
+.hero { flex: 1; display: flex; align-items: center; justify-content: center; gap: 72px; padding: 64px 40px 48px; flex-wrap: wrap; }
+.hero-mark { width: 250px; height: 250px; flex: none; }
+.hero-copy { max-width: 660px; }
+h1 { font-size: 56px; font-weight: 700; letter-spacing: -.03em; line-height: 1.08; }
+h1 .grad { background: linear-gradient(92deg, #E6399B 0%, #9D5BE8 24%, #3E7BF6 48%, #25D0C0 70%, #30F284 88%, #B7E84C 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { margin-top: 22px; font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 620px; }
+.lede b { color: var(--text); font-weight: 600; }
+
+/* search */
+.search-wrap { display: flex; justify-content: center; padding: 0 40px; }
+.cg-search { display: flex; align-items: center; gap: 14px; width: 100%; max-width: 820px; padding: 16px 20px; font-size: 15px; color: var(--muted); background: var(--field); border: 1px solid var(--line-strong); border-radius: 10px; cursor: text; }
+.cg-search:hover { background: var(--surface); }
+.cg-search svg { width: 17px; height: 17px; flex: none; }
+.cg-search .ph { flex: 1; }
+.cg-search kbd { font-family: var(--font-mono); font-size: 10px; background: var(--surface2); padding: 3px 7px; border-radius: 4px; color: var(--muted); border: 1px solid var(--line); }
+
+/* example columns */
+.examples { display: flex; justify-content: center; gap: 88px; padding: 44px 40px 84px; flex-wrap: wrap; }
+.ex-col { width: 380px; max-width: 100%; }
+.ex-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px; }
+.ex-head .t { font-size: 14px; font-weight: 600; color: var(--text); }
+.ex-head .s { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.ex-item { display: block; padding: 9px 12px; margin: 0 -12px; border-radius: 6px; cursor: pointer; }
+.ex-item:hover { background: var(--surface); }
+.ex-q { font-family: var(--font-mono); font-size: 14px; color: var(--text); word-break: break-all; }
+.ex-q .op { color: var(--accent-soft); }
+.ex-d { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+/* ===== footer ===== */
+footer { background: var(--footer-bg); border-top: 1px solid var(--line); padding: 40px; display: flex; align-items: flex-start; gap: 40px; flex-wrap: wrap; }
+.foot-brand { display: flex; align-items: center; gap: 12px; }
+.foot-brand svg { height: 26px; width: auto; color: var(--text); }
+.foot-brand .n { font-size: 22px; font-weight: 400; letter-spacing: -.01em; }
+.foot-blurb { font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 420px; margin-top: 12px; }
+.foot-left { flex: 1; min-width: 280px; }
+.foot-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.foot-links { display: flex; gap: 24px; }
+.foot-links a { font-size: 14px; font-weight: 500; color: var(--text); text-decoration: none; }
+.foot-links a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.foot-copy { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+
+@media (max-width: 980px) {
+  .hero { gap: 40px; }
+  h1 { font-size: 42px; }
+  .hero-mark { width: 180px; height: 180px; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="strandA" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#E6399B"/><stop offset=".45" stop-color="#9D5BE8"/><stop offset="1" stop-color="#3E7BF6"/>
+    </linearGradient>
+    <linearGradient id="strandB" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#25D0C0"/><stop offset=".55" stop-color="#30F284"/><stop offset="1" stop-color="#B7E84C"/>
+    </linearGradient>
+    <symbol id="helix" viewBox="0 0 120 120">
+      <g fill="none" stroke-linecap="round">
+        <path d="M30 112 V92 Q30 74 48 74 H56 Q74 74 74 56 V40 Q74 22 92 22 H104" stroke="url(#strandB)" stroke-width="17"/>
+        <path d="M16 98 H28 Q46 98 46 80 V64 Q46 46 64 46 H72 Q90 46 90 28 V8" stroke="url(#strandA)" stroke-width="17"/>
+        <path d="M30 112 V92 Q30 80 38 76" stroke="url(#strandB)" stroke-width="17"/>
+      </g>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></symbol>
+    <symbol id="moderne-mark" viewBox="0 0 58 59"><path d="M56.1354 1.21633C55.5985 0.995452 54.9762 1.11601 54.5643 1.52924L29.7495 26.3715C28.1187 12.1737 16.0538 1.10589 1.44142 1.10497C1.05899 1.10497 0.693101 1.25774 0.421907 1.52832C0.151631 1.79889 -5.34058e-05 2.16518 -5.34058e-05 2.54895V29.6506V29.6524V56.7541C-5.34058e-05 56.7771 0.00822179 56.7992 0.0100604 56.8222C0.0128183 56.8921 0.0266052 56.9593 0.0403948 57.0283C0.0551037 57.101 0.0688955 57.1728 0.0937167 57.2418C0.101071 57.263 0.10107 57.2851 0.109343 57.3053C0.12681 57.3468 0.157148 57.3799 0.177373 57.4195C0.213226 57.4857 0.248159 57.5511 0.293205 57.6118C0.334573 57.667 0.382376 57.7149 0.430179 57.7637C0.479822 57.8134 0.528548 57.8612 0.584625 57.9036C0.64438 57.9477 0.70781 57.9818 0.773081 58.0168C0.81353 58.0379 0.846625 58.0692 0.888913 58.0867C0.906379 58.0941 0.924768 58.0904 0.942234 58.0968C1.10035 58.1566 1.26583 58.1971 1.44142 58.1971H28.5112H55.5829C56.379 58.1971 57.0253 57.5502 57.0253 56.7541V29.6506V2.54895C57.0253 1.96547 56.6741 1.43997 56.1354 1.21633ZM54.1423 6.03238V28.2075H31.9926L54.1423 6.03238ZM54.1423 41.7593H29.9536V31.0937H54.1423V41.7593ZM2.88289 53.2707V31.0955H25.0326L13.9577 42.1826L2.88289 53.2707ZM2.88289 4.03159C15.869 4.75589 26.3067 15.2061 27.0302 28.2075H2.88289V4.03159ZM15.9949 44.223L27.0698 33.1359V55.311H4.92006L15.9949 44.223ZM29.9527 44.6454H54.1414V55.311H29.9527V44.6454Z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <a class="brand" href="#">
+    <svg><use href="#helix"/></svg>
+    <span class="wordmark"><span class="w1">code</span><span class="w2">genome</span><span class="w3">project</span></span>
+  </a>
+  <span class="top-spacer"></span>
+  <button class="top-link active">Search</button>
+  <button class="top-link">Recipes</button>
+  <button class="btn-primary">Log in</button>
+  <button class="mode-btn" id="modeBtn" aria-label="Toggle theme">
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="modeIcon"><use href="#i-sun"/></svg>
+  </button>
+</header>
+
+<main>
+  <section class="hero">
+    <svg class="hero-mark" aria-hidden="true"><use href="#helix"/></svg>
+    <div class="hero-copy">
+      <h1>The world's code<br><span class="grad">has a genome.</span></h1>
+      <p class="lede">Sequencing every public open source artifact into a <b>Lossless Semantic Tree</b> — a compiler-accurate model that delivers <b>certainty, not probability</b>.</p>
+    </div>
+  </section>
+
+  <div class="search-wrap">
+    <div class="cg-search" role="search">
+      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
+      <span class="ph">Search the corpus — try ref: or calls: for the type graph</span>
+      <kbd>⌘</kbd><kbd>K</kbd>
+    </div>
+  </div>
+
+  <section class="examples">
+    <div class="ex-col">
+      <div class="ex-head"><span class="t">Search by text</span><span class="s">trigram literal &amp; regex</span></div>
+      <div class="ex-item"><span class="ex-q">LoggerFactory.getLogger</span><div class="ex-d">a common call site</div></div>
+      <div class="ex-item"><span class="ex-q">@Deprecated</span><div class="ex-d">every deprecation</div></div>
+      <div class="ex-item"><span class="ex-q">synchronized</span><div class="ex-d">locking, everywhere</div></div>
+    </div>
+    <div class="ex-col">
+      <div class="ex-head"><span class="t">Search the type graph</span><span class="s">resolved from the LST</span></div>
+      <div class="ex-item"><span class="ex-q"><span class="op">ref:</span>org.apache.maven.plugin.AbstractMojo</span><div class="ex-d">the Mojo surface</div></div>
+      <div class="ex-item"><span class="ex-q"><span class="op">ref:</span>java.util.List</span><div class="ex-d">all List references</div></div>
+      <div class="ex-item"><span class="ex-q"><span class="op">calls:</span>org.slf4j.Logger.info</span><div class="ex-d">call sites of Logger.info</div></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-left">
+    <div class="foot-brand">
+      <svg viewBox="0 0 58 59"><use href="#moderne-mark"/></svg>
+      <span class="n">Moderne</span>
+    </div>
+    <p class="foot-blurb">The Code Genome Project is a Moderne public benefit project — open code search across the Maven corpus.</p>
+  </div>
+  <div class="foot-right">
+    <div class="foot-links"><a href="https://moderne.ai" target="_blank" rel="noopener">moderne.ai</a><a href="https://docs.openrewrite.org" target="_blank" rel="noopener">OpenRewrite</a></div>
+    <span class="foot-copy">© 2026 Moderne, Inc.</span>
+  </div>
+</footer>
+
+<script>
+const root = document.documentElement;
+const icon = document.getElementById('modeIcon').querySelector('use');
+const q = new URLSearchParams(location.search).get('theme');
+if (q === 'light' || q === 'dark') { root.setAttribute('data-theme', q); icon.setAttribute('href', q === 'dark' ? '#i-sun' : '#i-moon'); }
+document.getElementById('modeBtn').addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  icon.setAttribute('href', next === 'dark' ? '#i-sun' : '#i-moon');
+});
+</script>
+</body>
+</html>
