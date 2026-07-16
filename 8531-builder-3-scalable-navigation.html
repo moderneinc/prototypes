@@ -69,7 +69,8 @@ b { font-weight:600; }
 .mp-item svg { width:16px; height:16px; color:var(--muted); flex:none; }
 .mp-sep { height:1px; background:var(--line2); margin:6px 0; }
 
-.bl-wrap { display:grid; grid-template-columns:minmax(0,46fr) minmax(0,54fr); gap:14px; }
+/* Default layout: working tree on the left (under the title), graph on the right. */
+.bl-wrap { display:grid; grid-template-columns:minmax(0,54fr) minmax(0,46fr); gap:14px; }
 .bl-canvas { position:relative; background:var(--field); border:1px solid var(--line); border-radius:12px; min-height:640px; overflow:hidden; }
 .bl-graph, .bl-graph svg { position:absolute; inset:0; width:100%; height:100%; }
 .bl-rail { position:absolute; left:14px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:2px; padding:6px; background:var(--card); border:1px solid var(--line-strong); border-radius:10px; }
@@ -100,12 +101,16 @@ b { font-weight:600; }
 .th-save { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
 .th-save svg { width:16px; height:16px; color:var(--green-hi); }
 
-/* "you are here" breadcrumb */
-.tree-crumb { display:flex; align-items:center; gap:6px; padding:7px 14px; font-size:12px; color:var(--muted); border-bottom:1px solid var(--line2); background:var(--card-head); min-height:32px; overflow:hidden; white-space:nowrap; }
-.tree-crumb .seg { overflow:hidden; text-overflow:ellipsis; max-width:260px; }
-.tree-crumb .sep { color:var(--line-strong); flex:none; }
-.tree-crumb .here { color:var(--muted); font-weight:600; margin-right:2px; flex:none; }
-.tree-crumb.at-top { color:var(--muted); }
+/* "you are here" — sticky group header (VS Code-style sticky scroll).
+   Pins the group you're currently inside to the top of the list; the next
+   group pushes it up. Hidden at the top level, where headers are visible. */
+.tree-crumb { display:flex; align-items:center; gap:7px; width:100%; height:30px; padding:0 14px; font-size:13px; color:var(--text); background:var(--card); border:none; border-bottom:1px solid var(--line); box-shadow:0 3px 8px -4px rgba(0,0,0,.18); text-align:left; }
+.tree-crumb[hidden] { display:none; }
+.tree-crumb:hover { background:var(--row-hover); }
+.tree-crumb .tw { width:15px; height:15px; flex:none; color:var(--muted); display:inline-flex; align-items:center; }
+.tree-crumb .tw svg { width:15px; height:15px; }
+.tree-crumb .nm { font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.tree-crumb .bl-cnt { margin-left:auto; }
 
 /* windowed tree */
 .bl-tree { flex:1; overflow-y:auto; position:relative; font-size:13px; }
@@ -234,6 +239,22 @@ b { font-weight:600; }
   </div>
 
   <div class="bl-wrap">
+    <div class="bl-panel">
+      <div class="bl-search"><svg><use href="#i-search"/></svg> Search and filter recipe</div>
+      <div class="tree-header">
+        <button class="th-expand" id="expandAllBtn"><svg id="expandAllIcon"><use href="#i-list"/></svg> <span id="expandAllLabel">Expand all</span></button>
+        <span class="th-count">Recipe list<span class="bl-count" id="recipeCount">2000</span></span>
+        <span class="th-count">Preconditions<span class="bl-count bl-count--pre" id="preCount">1</span></span>
+        <span class="th-right">
+          <button class="th-undo" disabled title="Undo last change"><svg><use href="#i-undo"/></svg> Undo <span class="kbd" id="undoKbd">⌘Z</span></button>
+          <span class="th-save" title="Saved"><svg><use href="#i-check-c"/></svg> Saved</span>
+        </span>
+      </div>
+      <button class="tree-crumb" id="crumb" title="Collapse this group" hidden><svg class="tw"><use href="#i-chevd"/></svg><i class="bl-java">J</i><span class="nm" id="crumbName"></span><span class="bl-cnt" id="crumbCnt"></span></button>
+      <div class="bl-tree" id="tree"><div class="tree-viewport" id="viewport"></div></div>
+      <div class="bl-foot">Options<span class="bl-count bl-count--muted" id="optCount">0</span></div>
+    </div>
+
     <div class="bl-canvas">
       <div class="bl-graph" id="graph"></div>
       <div class="bl-rail">
@@ -248,26 +269,10 @@ b { font-weight:600; }
       </div>
       <div class="bl-nodelabel"><span class="lbl" id="nodeLabel">Enterprise baseline migration</span></div>
     </div>
-
-    <div class="bl-panel">
-      <div class="bl-search"><svg><use href="#i-search"/></svg> Search and filter recipe</div>
-      <div class="tree-header">
-        <button class="th-expand" id="expandAllBtn"><svg id="expandAllIcon"><use href="#i-list"/></svg> <span id="expandAllLabel">Expand all</span></button>
-        <span class="th-count">Recipe list<span class="bl-count" id="recipeCount">2000</span></span>
-        <span class="th-count">Preconditions<span class="bl-count bl-count--pre" id="preCount">1</span></span>
-        <span class="th-right">
-          <button class="th-undo" disabled title="Undo last change"><svg><use href="#i-undo"/></svg> Undo <span class="kbd" id="undoKbd">⌘Z</span></button>
-          <span class="th-save" title="Saved"><svg><use href="#i-check-c"/></svg> Saved</span>
-        </span>
-      </div>
-      <div class="tree-crumb at-top" id="crumb"><span class="here">In:</span><span class="seg" id="crumbText">Enterprise baseline migration</span></div>
-      <div class="bl-tree" id="tree"><div class="tree-viewport" id="viewport"></div></div>
-      <div class="bl-foot">Options<span class="bl-count bl-count--muted" id="optCount">0</span></div>
-    </div>
   </div>
 
   <div class="proto-note">
-    <span>Phase 3 — Scalable navigation · defaults to a ~2,000-step recipe · groups collapse by default with step counts · the list is <b>windowed</b> (only visible rows render) so it stays smooth · the “In:” bar tracks where you are as you scroll ·</span>
+    <span>Phase 3 — Scalable navigation · tree-first layout (working list left, graph right) · defaults to a ~2,000-step recipe · groups collapse by default with step counts · the list is <b>windowed</b> (only visible rows render) so it stays smooth · the group you’re inside <b>sticks to the top</b> as you scroll (click it to collapse) ·</span>
     <code>?recipe=small</code><span>loads the small sample.</span>
   </div>
 </div>
@@ -310,15 +315,16 @@ var expanded = new Set(['root']);            /* collapse-by-default: only the ro
 var selectedId = 'root';
 var visibleRows = [];
 
-/* ---- flatten (respecting expanded), carrying ancestor path ---- */
+/* ---- flatten (respecting expanded); each row carries its ancestor NODES ---- */
 function rebuild(){
   visibleRows = [];
   (function walk(node, depth, ancestors){
     var ch = node.children||[]; var has = ch.length>0; var exp = expanded.has(node.id);
     visibleRows.push({ node:node, depth:depth, has:has, exp:exp, ancestors:ancestors });
-    if(has && exp){ var next = ancestors.concat([plainLabel(node.label)]); ch.forEach(function(c){ walk(c, depth+1, next); }); }
+    if(has && exp){ var next = ancestors.concat([node]); ch.forEach(function(c){ walk(c, depth+1, next); }); }
   })(recipe.root, 0, []);
 }
+function rowIndexOf(id){ for(var i=0;i<visibleRows.length;i++){ if(visibleRows[i].node.id===id) return i; } return -1; }
 
 /* ---- windowed render ---- */
 var ROW_H = 30, BUFFER = 8;
@@ -352,16 +358,20 @@ function renderWindow(){
 function scheduleRender(){ if(!pending){ pending=true; requestAnimationFrame(renderWindow); } }
 
 /* ---- "you are here" breadcrumb ---- */
+/* Sticky "you are here": pin the group whose header has scrolled off the top.
+   That's the deepest ancestor group of the topmost visible row (root excluded,
+   since it's the recipe name shown in the toolbar). Hidden at the top level. */
+var crumbNode=null;
 function updateCrumb(top){
   var idx=Math.min(visibleRows.length-1, Math.floor(top/ROW_H));
-  var r=visibleRows[idx]; if(!r)return;
-  var crumb=document.getElementById('crumb'), txt=document.getElementById('crumbText');
-  var path = r.ancestors.slice();
-  /* include the group itself if you're scrolled into its children */
-  if(r.has && r.exp && r.node.kind!=='root'){ path.push(plainLabel(r.node.label)); }
-  if(path.length===0){ crumb.classList.add('at-top'); txt.textContent=recipe.name; return; }
-  crumb.classList.remove('at-top');
-  txt.innerHTML = path.map(function(s){return '<span class="seg">'+esc(s)+'</span>';}).join('<span class="sep"> › </span>');
+  var r=visibleRows[idx];
+  var crumb=document.getElementById('crumb');
+  var groups = r ? r.ancestors.filter(function(n){ return n.kind!=='root'; }) : [];
+  var g = groups.length ? groups[groups.length-1] : null;
+  if(!g){ crumb.hidden=true; crumbNode=null; return; }
+  crumbNode=g; crumb.hidden=false;
+  document.getElementById('crumbName').textContent=plainLabel(g.label);
+  document.getElementById('crumbCnt').textContent=stepCount(g).toLocaleString();
 }
 
 /* ---- graph ---- */
@@ -380,6 +390,13 @@ function copyYaml(){ var y=recipeToYaml(); if(navigator.clipboard&&navigator.cli
 /* ---- interactions ---- */
 treeEl.addEventListener('scroll', scheduleRender);
 window.addEventListener('resize', scheduleRender);
+/* click the sticky header → collapse that group and scroll to it */
+document.getElementById('crumb').addEventListener('click', function(){
+  if(!crumbNode) return;
+  var id=crumbNode.id; expanded.delete(id); rebuild();
+  var idx=rowIndexOf(id); if(idx>=0){ treeEl.scrollTop=idx*ROW_H; }
+  renderWindow();
+});
 viewportEl.addEventListener('click', function(e){
   var tg=e.target.closest('[data-toggle]');
   if(tg){ var id=tg.getAttribute('data-toggle'); if(expanded.has(id))expanded.delete(id); else expanded.add(id); rebuild(); renderWindow(); return; }
