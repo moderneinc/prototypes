@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Moderne — Builder · Common actions & discoverability (Morpheus)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   Builder · Phase 2 — Common actions & discoverability (Morpheus)
+   Standalone prototype for moderne-ui#8530. Replicates the header /
+   recipe-actions reshuffle from PR #8500 in the Morpheus visual
+   language, then applies a tiered action model so Add / Download /
+   Copy are first-class and unambiguous (not buried in the ⋮ menu).
+   Runs on sample data. Rationale: .context-8530-rationale.md.
+   ============================================================ */
+
+:root {
+  --font-sans: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
+}
+html[data-theme="light"] {
+  --bg: #F6F7FA; --field: #FFFFFF; --card: #FFFFFF; --card-head: #ECEEF3;
+  --surface: #ECEEF3; --surface2: #E3E7EF; --row-hover: #ECEEF3;
+  --text: #1B2230; --muted: #6A7180;
+  --line: rgba(27,34,48,.12); --line2: rgba(27,34,48,.08); --line-strong: rgba(27,34,48,.22);
+  --accent: #1055E2; --accent-deep: #16306B; --accent-tint: rgba(62,123,246,.10); --accent-brd: rgba(62,123,246,.30);
+  --primary-bg: #3E7BF6; --primary-fg: #FFFFFF; --ink-bg: #232342; --ink-fg: #FBFAF6;
+  --green-hi: #1D5937; --green: #30F284; --er: #C9291C; --wa: #B68B12;
+  --violet: #9D5BE8; --teal-mid: #16A89B;
+  --ch-orange: #FFA83D; --ch-p1: #3E5BE8; --scrim: rgba(35,35,66,.14);
+  --menu-shadow: 0 16px 44px rgba(10,10,25,.20); --modal-shadow: 0 24px 64px rgba(0,0,0,.22);
+}
+html[data-theme="dark"] {
+  --bg: #100C0A; --field: #100C0A; --card: #131319; --card-head: #1B1B26;
+  --surface: #171722; --surface2: #1E1E2C; --row-hover: #202030;
+  --text: #E9EAF2; --muted: #9598AC;
+  --line: rgba(228,232,250,.10); --line2: rgba(228,232,250,.06); --line-strong: rgba(228,232,250,.22);
+  --accent: #3E7BF6; --accent-deep: #3E7BF6; --accent-tint: rgba(62,123,246,.16); --accent-brd: rgba(62,123,246,.40);
+  --primary-bg: #3E7BF6; --primary-fg: #FFFFFF; --ink-bg: #F1F0EA; --ink-fg: #17171C;
+  --green-hi: #30F284; --green: #30F284; --er: #FA826F; --wa: #E8BA4C;
+  --violet: #9D5BE8; --teal-mid: #25D0C0;
+  --ch-orange: #FFA83D; --ch-p1: #8CA0F5; --scrim: rgba(15,15,20,.45);
+  --menu-shadow: 0 16px 44px rgba(0,0,0,.5); --modal-shadow: 0 24px 64px rgba(0,0,0,.5);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { font-family: var(--font-sans); font-optical-sizing: auto; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+button { font: inherit; cursor: pointer; }
+b { font-weight: 600; }
+.page { max-width: 1360px; margin: 0 auto; padding: 16px 24px 40px; }
+
+/* ---- top bar: Builder title + theme ---- */
+.topbar { display: flex; align-items: center; margin-bottom: 10px; }
+.title-btn { display: inline-flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 600; color: var(--text); background: transparent; border: none; border-radius: 8px; padding: 7px 10px; }
+.title-btn:hover { background: var(--row-hover); }
+.title-btn .blocks { width: 18px; height: 18px; }
+.title-btn .chev { width: 16px; height: 16px; color: var(--muted); }
+.topbar .spacer { margin-left: auto; }
+.icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 6px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); }
+.icon-btn:hover { background: var(--surface); }
+.icon-btn svg { width: 16px; height: 16px; }
+
+/* ---- recipe toolbar (recipe-level actions) ---- */
+.recipe-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 6px 2px 14px; }
+.rt-name { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: var(--text); background: transparent; border: 1px solid transparent; border-radius: 7px; padding: 6px 10px; max-width: 340px; }
+.rt-name:hover { background: var(--row-hover); }
+.rt-name .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rt-name .pencil { width: 14px; height: 14px; color: var(--muted); opacity: 0; transition: opacity .12s; }
+.rt-name:hover .pencil { opacity: 1; }
+.rt-more { position: relative; }
+.rt-more .icon-btn { width: 32px; height: 32px; border-color: transparent; background: transparent; }
+.rt-more .icon-btn:hover, .rt-more.open .icon-btn { background: var(--surface); }
+.rt-spacer { margin-left: auto; }
+
+/* Tier-2 action cluster: Add · Download · Copy — first-class, distinct */
+.action-cluster { display: inline-flex; align-items: center; gap: 6px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--field); }
+.act-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--text); background: transparent; border: none; border-radius: 7px; padding: 7px 11px; }
+.act-btn:hover { background: var(--surface); }
+.act-btn svg { width: 15px; height: 15px; color: var(--muted); }
+.act-btn.add svg { color: var(--accent); }
+.act-divider { width: 1px; align-self: stretch; background: var(--line); margin: 2px 0; }
+.rt-org { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.dry-run { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; background: var(--ink-bg); color: var(--ink-fg); border: 1px solid transparent; border-radius: 6px; padding: 8px 15px; height: 36px; }
+.dry-run:hover { filter: brightness(1.12); }
+.dry-run svg { width: 15px; height: 15px; }
+
+/* generic menu popover */
+.menu-pop { position: absolute; z-index: 50; min-width: 232px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--menu-shadow); padding: 6px; }
+.menu-pop[hidden] { display: none; }
+.mp-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; font-size: 14px; color: var(--text); border-radius: 7px; }
+.mp-item:hover { background: var(--row-hover); }
+.mp-item svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
+.mp-item.danger { color: var(--er); }
+.mp-item.danger svg { color: var(--er); }
+.mp-sep { height: 1px; background: var(--line2); margin: 6px 0; }
+
+/* ---- builder body ---- */
+.bl-wrap { display: grid; grid-template-columns: minmax(0, 46fr) minmax(0, 54fr); gap: 14px; }
+.bl-canvas { position: relative; background: var(--field); border: 1px solid var(--line); border-radius: 12px; min-height: 620px; overflow: hidden; }
+.bl-graph, .bl-graph svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bl-rail { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; padding: 6px; background: var(--card); border: 1px solid var(--line-strong); border-radius: 10px; }
+.bl-rail button { width: 30px; height: 30px; border: none; border-radius: 6px; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+.bl-rail button:hover { background: var(--surface); color: var(--text); }
+.bl-rail button.on { color: var(--accent); background: var(--accent-tint); }
+.bl-rail svg { width: 15px; height: 15px; }
+.bl-nodelabel { position: absolute; left: 46%; top: 54%; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+.bl-nodelabel .lbl { background: var(--primary-bg); color: var(--primary-fg); font-size: 12px; font-weight: 600; padding: 8px 15px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.18); max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
+.bl-nodelabel .menu { width: 34px; height: 34px; border-radius: 999px; border: none; background: var(--primary-bg); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.bl-nodelabel .menu svg { width: 15px; height: 15px; }
+
+.bl-panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; min-height: 620px; max-height: 76vh; overflow: hidden; }
+.bl-search { display: flex; align-items: center; gap: 9px; padding: 12px 14px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line2); }
+.bl-search svg { width: 15px; height: 15px; }
+
+/* tree header: expand/collapse · counts · undo · save */
+.tree-header { display: flex; align-items: center; gap: 14px; padding: 9px 14px; border-bottom: 1px solid var(--line2); font-size: 13px; }
+.th-expand { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--text); background: transparent; border: none; border-radius: 6px; padding: 4px 6px; }
+.th-expand:hover { background: var(--row-hover); }
+.th-expand svg { width: 18px; height: 18px; color: var(--muted); }
+.th-count { font-weight: 600; color: var(--text); display: inline-flex; align-items: center; }
+.bl-count { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--accent-deep); background: var(--accent-tint); border-radius: 999px; padding: 2px 8px; margin-left: 5px; }
+.bl-count--pre { color: var(--violet); background: color-mix(in srgb, var(--violet) 12%, transparent); }
+.bl-count--muted { color: var(--muted); background: var(--surface); }
+.th-right { margin-left: auto; display: inline-flex; align-items: center; gap: 12px; }
+.th-undo { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 6px; padding: 5px 9px; }
+.th-undo:hover { background: var(--surface); }
+.th-undo[disabled] { opacity: .5; }
+.th-undo svg { width: 14px; height: 14px; }
+.kbd { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); }
+.th-save { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.th-save svg { width: 16px; height: 16px; color: var(--green-hi); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.th-save.saving svg { color: var(--accent); animation: spin .8s linear infinite; }
+
+.bl-tree { flex: 1; overflow: auto; padding: 6px 0; font-size: 13px; }
+.bl-tree::-webkit-scrollbar { width: 10px; }
+.bl-tree::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 999px; }
+.bl-row { display: flex; align-items: center; gap: 7px; color: var(--text); }
+.bl-row:hover { background: var(--row-hover); }
+.bl-row.sel { background: var(--accent-tint); }
+.bl-row.pre { background: color-mix(in srgb, var(--violet) 7%, transparent); }
+.bl-twist { width: 15px; height: 15px; flex: none; margin-left: 14px; color: var(--muted); background: none; border: none; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.bl-twist.spacer { cursor: default; }
+.bl-twist svg { width: 15px; height: 15px; }
+.bl-rowselect { flex: 1; min-width: 0; display: flex; align-items: center; gap: 7px; padding: 6px 14px 6px 0; background: none; border: none; color: inherit; text-align: left; }
+.bl-chip { background: var(--primary-bg); color: var(--primary-fg); font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 5px; white-space: nowrap; }
+.bl-prechip { border: 1px solid color-mix(in srgb, var(--violet) 45%, transparent); color: var(--text); font-size: 12px; padding: 2.5px 9px; border-radius: 5px; }
+.bl-ok { color: var(--green-hi); width: 15px; height: 15px; flex: none; }
+.bl-rooti { width: 15px; height: 15px; color: var(--accent); flex: none; }
+.bl-java { width: 15px; height: 15px; border-radius: 4px; background: var(--ch-orange); color: #FBFAF6; font-family: var(--font-mono); font-size: 8px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-style: normal; flex: none; }
+.bl-row code { font-family: var(--font-mono); font-size: 11px; background: var(--surface); border-radius: 4px; padding: 1px 4px; }
+.bl-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bl-foot { display: flex; align-items: center; padding: 11px 14px; font-size: 13px; font-weight: 600; border-top: 1px solid var(--line); }
+
+/* ---- empty state ---- */
+.hero { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 560px; gap: 8px; }
+.hero .bi { width: 80px; height: 80px; color: var(--muted); opacity: .8; }
+.hero h2 { margin: 12px 0 0; font-size: 20px; font-weight: 600; }
+.hero p { margin: 0; max-width: 440px; color: var(--muted); font-size: 14px; }
+.hero .cta { margin-top: 14px; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; background: var(--ink-bg); color: var(--ink-fg); border: none; border-radius: 6px; padding: 10px 18px; }
+.hero .cta svg { width: 16px; height: 16px; }
+html[data-state="empty"] .builder-live { display: none; }
+html[data-state="empty"] .hero { display: flex; }
+
+/* ---- modal ---- */
+.mo-ov { position: fixed; inset: 0; z-index: 80; display: none; align-items: flex-start; justify-content: center; padding-top: 7vh; background: var(--scrim); }
+.mo-ov.open { display: flex; }
+.mo { width: 720px; max-width: 92%; max-height: 80vh; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line-strong); border-radius: 14px; box-shadow: var(--modal-shadow); overflow: hidden; }
+.mo-header { display: flex; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--line2); }
+.mo-header h2 { margin: 0; font-size: 17px; font-weight: 600; }
+.mo-x { margin-left: auto; width: 30px; height: 30px; border: none; border-radius: 6px; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+.mo-x:hover { background: var(--surface); color: var(--text); }
+.mo-x svg { width: 16px; height: 16px; }
+.mo-tabs { display: flex; gap: 4px; padding: 8px 12px 0; border-bottom: 1px solid var(--line2); }
+.mo-tab { font-size: 13px; font-weight: 600; color: var(--muted); background: transparent; border: none; border-bottom: 2px solid transparent; padding: 9px 12px; }
+.mo-tab:hover { color: var(--text); }
+.mo-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.mo-body { flex: 1; overflow-y: auto; padding: 16px 18px; }
+.mo-pane { display: none; }
+.mo-pane.active { display: block; }
+.mo-foot { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-top: 1px solid var(--line2); }
+.mo-foot .right { margin-left: auto; display: inline-flex; gap: 10px; }
+.btn { font-size: 13px; font-weight: 600; border-radius: 6px; padding: 8px 15px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); }
+.btn:hover { background: var(--surface); }
+.btn--primary { background: var(--ink-bg); color: var(--ink-fg); border-color: transparent; }
+.btn--tertiary { border-color: transparent; background: transparent; }
+.btn--tertiary:hover { background: var(--surface); }
+
+/* open-existing */
+.pills { display: flex; gap: 7px; margin-bottom: 12px; }
+.pill { font-size: 13px; font-weight: 600; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 999px; padding: 6px 13px; }
+.pill.active { background: var(--accent); color: #fff; border-color: transparent; }
+.search-field { display: flex; align-items: center; gap: 9px; border: 1px solid var(--line-strong); border-radius: 10px; padding: 9px 12px; margin-bottom: 12px; }
+.search-field svg { width: 18px; height: 18px; color: var(--muted); }
+.search-field input { flex: 1; border: none; outline: none; background: transparent; color: var(--text); font: inherit; font-size: 14px; }
+.oe-list { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.oe-row { display: flex; align-items: center; gap: 11px; padding: 11px 14px; border-bottom: 1px solid var(--line2); }
+.oe-row:last-child { border-bottom: none; }
+.oe-row:hover { background: var(--row-hover); }
+.oe-row .ico { width: 17px; height: 17px; color: var(--muted); flex: none; }
+.oe-row .nm { font-size: 14px; color: var(--text); }
+.oe-row .sub { margin-left: auto; font-size: 12px; color: var(--muted); }
+.oe-empty { padding: 20px; text-align: center; color: var(--muted); font-style: italic; font-size: 13px; }
+
+/* create-new form */
+.nr-label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 7px; }
+.nr-label .req { color: var(--er); margin-left: 2px; }
+.nr-label:first-child { margin-top: 0; }
+.nr-input { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 13px; }
+.nr-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+textarea.nr-input { resize: none; height: 92px; }
+.id-toggle { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 13px; color: var(--text); }
+.tgl { width: 38px; height: 22px; border-radius: 999px; background: var(--accent); position: relative; border: none; flex: none; }
+.tgl::after { content: ''; position: absolute; top: 2px; left: 18px; width: 18px; height: 18px; border-radius: 999px; background: #fff; transition: left .15s; }
+.tgl[aria-pressed="false"] { background: var(--line-strong); }
+.tgl[aria-pressed="false"]::after { left: 2px; }
+.id-help-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--accent); background: none; border: none; padding: 0; margin-left: 8px; }
+.id-help-btn svg { width: 13px; height: 13px; transition: transform .15s; }
+.id-help-btn.open svg { transform: rotate(180deg); }
+.id-help { display: none; font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: 4px 0 2px; }
+.id-help.show { display: block; }
+.id-line { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+/* import */
+.import-hint { font-size: 13px; color: var(--muted); margin: 0 0 10px; }
+.yaml-box { width: 100%; box-sizing: border-box; font-family: var(--font-mono); font-size: 12.5px; color: var(--text); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 10px; padding: 12px; height: 190px; resize: none; }
+
+/* manage */
+.mg-row { display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-bottom: 1px solid var(--line2); font-size: 14px; }
+.mg-row input { width: 16px; height: 16px; accent-color: var(--accent); }
+.mg-row .sub { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+
+/* toast */
+.toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(12px); z-index: 90; display: inline-flex; align-items: center; gap: 9px; background: var(--card); color: var(--text); border: 1px solid var(--line-strong); border-radius: 10px; box-shadow: var(--menu-shadow); padding: 11px 15px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast svg { width: 16px; height: 16px; color: var(--green-hi); }
+
+.proto-note { margin-top: 14px; font-size: 12px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; }
+.proto-note code { font-family: var(--font-mono); background: var(--surface); border-radius: 4px; padding: 1px 6px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5 10.1 7.6z"/><path d="M19 14l.7 1.8L21.5 16.5l-1.8.7L19 19l-.7-1.8L16.5 16.5l1.8-.7z"/></symbol>
+  <symbol id="i-pie" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 118.1 2.8"/><path d="M22 12A10 10 0 0012 2v10z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></symbol>
+  <symbol id="i-blocks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 106 5.3L3 8"/><path d="M12 7v5l4 2"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+  <symbol id="i-repo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4L7.5 4.2M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="i-chevr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></symbol>
+  <symbol id="i-chevd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-check-c" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.2l2.4 2.4 4.6-4.9"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-pr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v6M18 15V9a3 3 0 00-3-3h-3l2-2m0 4l-2-2"/></symbol>
+  <symbol id="i-git-commit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><line x1="3" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="21" y2="12"/></symbol>
+  <symbol id="i-git-merge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 009 9"/></symbol>
+  <symbol id="i-git-draft" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M18 6V5M18 11v-1"/><line x1="6" y1="9" x2="6" y2="21"/></symbol>
+  <symbol id="i-git-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 01-9 9"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
+  <symbol id="i-cols" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="i-upcircle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16V8M8 12l4-4 4 4"/></symbol>
+  <symbol id="i-downcircle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12l4 4 4-4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 19 12 6 20 6 4"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.83z"/><circle cx="7" cy="7" r="1.5"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4.2l-8.1 14A2 2 0 004 21.2h16.2a2 2 0 001.7-3l-8.1-14a2 2 0 00-3.5 0z"/><path d="M12 10v4M12 17.5h.01"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-logo-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
+  <symbol id="i-logo-bitbucket" viewBox="0 0 24 24" fill="currentColor"><path d="M.778 1.213a.768.768 0 00-.768.892l3.263 19.81c.084.5.515.868 1.022.873H19.95a.772.772 0 00.77-.646l3.27-20.03a.768.768 0 00-.768-.891zM14.52 15.53H9.522L8.17 8.466h7.561z"/></symbol>
+  <symbol id="i-logo-slack" viewBox="0 0 24 24" fill="currentColor"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/></symbol>
+  <symbol id="i-logo-npm" viewBox="0 0 24 24" fill="currentColor"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"/></symbol>
+  <symbol id="i-logo-go" viewBox="0 0 24 24" fill="currentColor"><path d="M1.811 10.231c-.047 0-.058-.023-.035-.059l.246-.315c.023-.035.081-.058.128-.058h4.172c.046 0 .058.035.035.07l-.199.303c-.023.036-.082.07-.117.07zM.047 11.306c-.047 0-.059-.023-.035-.058l.245-.316c.023-.035.082-.058.129-.058h5.328c.047 0 .07.035.058.07l-.093.28c-.012.047-.058.07-.105.07zm2.828 1.075c-.047 0-.059-.035-.035-.07l.163-.292c.023-.035.07-.07.117-.07h2.337c.047 0 .07.035.07.082l-.023.28c0 .047-.047.082-.082.082zm12.129-2.36c-.736.187-1.239.327-1.963.514-.176.046-.187.058-.34-.117-.174-.199-.303-.327-.548-.444-.737-.362-1.45-.257-2.115.175-.795.514-1.204 1.274-1.192 2.22.011.935.654 1.706 1.577 1.835.795.105 1.46-.175 1.987-.77.105-.13.198-.27.315-.434H10.47c-.245 0-.304-.152-.222-.35.152-.362.432-.97.596-1.274a.315.315 0 01.292-.187h4.253c-.023.316-.023.631-.07.947a4.983 4.983 0 01-.958 2.29c-.841 1.11-1.94 1.8-3.33 1.986-1.145.152-2.209-.07-3.143-.77-.865-.655-1.356-1.52-1.484-2.595-.152-1.274.222-2.419.993-3.424.83-1.086 1.928-1.776 3.272-2.02 1.098-.2 2.15-.07 3.096.571.62.41 1.063.97 1.356 1.648.07.105.023.164-.117.2m3.868 6.461c-1.064-.024-2.034-.328-2.852-1.029a3.665 3.665 0 01-1.262-2.255c-.21-1.32.152-2.489.947-3.529.853-1.122 1.881-1.706 3.272-1.95 1.192-.21 2.314-.095 3.33.595.923.63 1.496 1.484 1.648 2.605.198 1.578-.257 2.863-1.344 3.962-.771.783-1.718 1.273-2.805 1.495-.315.06-.63.07-.934.106zm2.78-4.72c-.011-.153-.011-.27-.034-.387-.21-1.157-1.274-1.81-2.384-1.554-1.087.245-1.788.935-2.045 2.033-.21.912.234 1.835 1.075 2.21.643.28 1.285.244 1.905-.07.923-.48 1.425-1.228 1.484-2.233z"/></symbol>
+  <symbol id="i-logo-maven" viewBox="0 0 24 24" fill="currentColor"><path d="M4.237.001c-.312-.013-.665.072-.828.457-.158.374-.283 1.188-.34 2.276l1.223.591c-.02-.737.007-1.43.076-2.066-.026.299-.056.96.006 2.039.019.342.049.725.088 1.15.002.024.002.047.007.069a45.485 45.485 0 0 0 .309 2.412c.057.368.126.752.195 1.16l-.01.01c.014.01.015.018.014.023l.03.16c.03.162.06.328.093.494l.108.553.056.289a61.72 61.72 0 0 0 .457 2.068c.09.382.186.78.287 1.186.098.386.199.783.309 1.193.096.362.199.735.303 1.117.003.018.012.036.015.055a145.826 145.826 0 0 0 .34 1.185l.049.174c.078.261.158.533.242.805a4.2 4.2 0 0 1-.293-.135l-.19-.654c-.02-.077-.042-.148-.062-.225l-.002-.004-.004-.002c-.087-.3-.17-.607-.257-.916-.023-.087-.044-.173-.069-.263l-.314-1.178c-.1-.381-.194-.765-.29-1.154-.094-.39-.185-.78-.277-1.172-.093-.401-.181-.8-.265-1.203-.085-.396-.161-.798-.24-1.193a50.315 50.315 0 0 1-.211-1.17c-.004-.013-.006-.03-.01-.041l.004-.002c-.057-.386-.116-.77-.174-1.15a60.905 60.905 0 0 1-.154-1.204 27.447 27.447 0 0 1-.172-2.41l-1.22-.59c-.004.074-.01.15-.013.23-.012.294-.02.605-.023.93a45.3 45.3 0 0 0 .006 1.157c.009.37.025.755.045 1.148.02.336.042.675.07 1.022l.002.039.006.004c.003.023.007.05.006.076.033.368.064.739.107 1.115a34.493 34.493 0 0 0 .303 2.125c.01.064.024.131.035.195a23.418 23.418 0 0 0 .547 2.32c.07.237.14.464.21.68.063.182.13.365.194.545.155.422.327.832.512 1.232l.006.004a.318.318 0 0 0 .02.05c.225.485.475.95.755 1.395.01.013.02.033.03.047-.455-.183-1.259-.098-1.253-.097.83.288 1.557.64 2.016 1.175-.183.2-.523.352-.953.477.594.064.924-.039 1.045-.092-.31.26-.483.732-.635 1.24.35-.57.696-.949 1.033-1.094.078.258.162.524.244.788A147.532 147.532 0 0 0 5.157 24a.56.56 0 0 0 .43-.312c.13-.282.83-1.775 1.908-3.875.413 1.303.88 2.679 1.386 4.109a.494.494 0 0 0 .076-.465 103.735 103.735 0 0 1-1.308-3.945c.154-.299.316-.612.484-.932.125.04.255.094.389.155.203.186.352.491.482.84a1.515 1.515 0 0 0-.334-1.098c1.335.258 2.547.09 3.287-.81a3.97 3.97 0 0 0 .192-.258c-.325.304-.682.404-1.313.273.996-.281 1.523-.617 2.035-1.22.12-.145.244-.303.371-.48-.943.722-1.927.822-2.9.493l-.045-.018c.914.02 2.203-.474 3.092-1.189.41-.33.796-.73 1.17-1.21.28-.359.55-.76.82-1.216.234-.393.468-.824.7-1.293a2.83 2.83 0 0 1-.74.137l-.144.008c-.048.002-.093 0-.146.002.885-.198 1.5-.74 1.994-1.447-.24.117-.628.262-1.07.297-.058.006-.12.006-.182.006-.013-.002-.028 0-.047-.002.306-.078.574-.178.81-.309a3.363 3.363 0 0 0 .358-.236c.044-.037.088-.07.13-.106.099-.086.193-.18.28-.287.028-.034.056-.063.08-.098.036-.05.073-.098.104-.146a8.388 8.388 0 0 0 .51-.828c.015-.031.032-.057.046-.088.04-.084.08-.16.11-.227.042-.099.074-.179.092-.238a.515.515 0 0 1-.108.051c-.273.112-.727.187-1.086.201-.004 0-.008 0-.013.004h-.067c.72-.214 1.067-.45 1.422-.818a13.883 13.883 0 0 0 1.154-1.428c.264-.37.505-.738.692-1.072a6.5 6.5 0 0 0 .298-.592c.066-.157.122-.305.172-.45-.466.01-.986.011-1.48 0 .495.01 1.015.007 1.484-.005.5-1.485.063-2.262.063-2.262s-.526-1.212-1.4-.851c-.426.175-1.172.73-2.083 1.56l.514 1.45a17.561 17.561 0 0 1 1.703-1.602c-.257.22-.807.726-1.615 1.644-.256.29-.537.624-.844.997-.017.02-.035.038-.047.06a51.435 51.435 0 0 0-1.666 2.187c-.248.34-.498.704-.765 1.088h-.016c.002.02-.004.028-.01.032l-.101.152c-.104.155-.213.31-.318.47l-.352.534c-.061.09-.124.181-.186.277-.184.282-.367.573-.558.873a97.351 97.351 0 0 0-1.428 2.338 96.866 96.866 0 0 0-1.341 2.343c-.012.017-.02.04-.034.057a197.256 197.256 0 0 0-.668 1.223l-.097.181c-.17.318-.346.642-.52.979 0 .004-.005.008-.006.013-.026.048-.05.093-.072.141-.117.222-.218.424-.45.87a1.352 1.352 0 0 0-.233-.182l.345-.65c.047-.089.096-.177.143-.27l.04-.077.546-1.001.13-.233v-.006l-.001-.006c.169-.31.345-.62.52-.94.051-.087.102-.173.153-.265.224-.395.454-.794.684-1.197a91.685 91.685 0 0 1 2.135-3.504c.247-.386.503-.77.754-1.152.092-.138.182-.272.279-.41a72.9 72.9 0 0 1 .48-.701c.007-.012.019-.024.026-.037h.006c.26-.356.517-.713.773-1.065.278-.373.554-.735.83-1.09a31.075 31.075 0 0 1 1.777-2.075l-.515-1.446c-.06.057-.126.116-.192.178a32.37 32.37 0 0 0-.758.729c-.295.294-.597.606-.912.935a46.032 46.032 0 0 0-1.632 1.838l-.03.033.002.008c-.017.02-.033.044-.054.064-.266.323-.538.649-.801.985a39.105 39.105 0 0 0-1.445 1.95c-.043.06-.085.126-.127.186a26.458 26.458 0 0 0-1.403 2.303c-.13.247-.256.485-.37.715-.096.195-.187.395-.278.591-.21.463-.398.93-.566 1.399l.002.006a.36.36 0 0 0-.026.058c-.108.303-.203.608-.29.914-.14.174-.302.325-.483.46a3.505 3.505 0 0 0-.131-.153 5.148 5.148 0 0 0 .824-2.211 6.4 6.4 0 0 0-.016-1.488c-.046-.4-.126-.82-.238-1.274-.097-.393-.217-.81-.363-1.248-.091.185-.22.367-.379.545l-.086.094c-.029.032-.06.06-.092.094.434-.674.486-1.397.358-2.148a2.722 2.722 0 0 1-.49.85c-.033.038-.072.077-.11.116-.01.007-.019.018-.033.028.144-.24.25-.467.318-.698a1.29 1.29 0 0 0 .04-.146 2.85 2.85 0 0 0 .038-.225l.018-.146a2.11 2.11 0 0 0-.002-.354c-.003-.04-.004-.076-.01-.113-.01-.055-.016-.105-.027-.154a7.416 7.416 0 0 0-.193-.84c-.01-.028-.015-.056-.026-.084-.027-.079-.048-.149-.072-.209a2.1 2.1 0 0 0-.09-.209.455.455 0 0 1-.035.1c-.102.24-.34.57-.557.8-.003.003-.007.005-.007.01l-.04.043c.318-.58.39-.946.385-1.398a12.274 12.274 0 0 0-.16-1.615 10.68 10.68 0 0 0-.232-1.104 5.853 5.853 0 0 0-.18-.558 6.337 6.337 0 0 0-.172-.391 26.18 26.18 0 0 0 .002-.004C5.576.341 4.82.124 4.82.124s-.27-.11-.582-.123zm3.38 15.783l.032.082v.002c-.06.033-.116.067-.178.097-.012.004-.024.012-.039.018a2.41 2.41 0 0 0 .186-.2zm-.603 1.626c.13.136.25.242.354.32l.07.227a1.866 1.866 0 0 0-.246.053l-.03-.098c-.024-.084-.048-.17-.076-.257l-.021-.073zm.26.875a2.34 2.34 0 0 1 .271.01l.07.229a.778.778 0 0 1 .247-.004l-.326.627a127.643 127.643 0 0 1-.262-.862z"/></symbol>
+  <symbol id="i-logo-spring" viewBox="0 0 24 24" fill="currentColor"><path d="M21.8537 1.4158a10.4504 10.4504 0 0 1-1.284 2.2471A11.9666 11.9666 0 1 0 3.8518 20.7757l.4445.3951a11.9543 11.9543 0 0 0 19.6316-8.2971c.3457-3.0126-.568-6.8649-2.0743-11.458zM5.5805 20.8745a1.0174 1.0174 0 1 1-.1482-1.4323 1.0396 1.0396 0 0 1 .1482 1.4323zm16.1991-3.5806c-2.9385 3.9263-9.2601 2.5928-13.2852 2.7904 0 0-.7161.0494-1.4323.1481 0 0 .2717-.1234.6174-.2469 2.8398-.9877 4.1732-1.1853 5.9018-2.0743 3.2349-1.6545 6.4698-5.2844 7.1118-9.0379-1.2347 3.6053-4.9881 6.7167-8.3959 7.9761-2.3459.8643-6.5685 1.7039-6.5685 1.7039l-.1729-.0988c-2.8645-1.4076-2.9632-7.6304 2.2718-9.6306 2.2966-.889 4.4696-.395 6.9637-.9877 2.6422-.6174 5.7043-2.5929 6.939-5.1857 1.3828 4.1732 3.062 10.643.0493 14.6434z"/></symbol>
+  <symbol id="i-logo-springboot" viewBox="0 0 24 24" fill="currentColor"><path d="m23.693 10.7058-4.73-8.1844c-.4094-.7106-1.4166-1.2942-2.2402-1.2942H7.2725c-.819 0-1.8308.5836-2.2402 1.2942L.307 10.7058c-.4095.7106-.4095 1.873 0 2.5837l4.7252 8.189c.4094.7107 1.4166 1.2943 2.2402 1.2943h9.455c.819 0 1.826-.5836 2.2402-1.2942l4.7252-8.189c.4095-.7107.4095-1.8732 0-2.5838zM10.9763 5.7547c0-.5365.4377-.9742.9742-.9742s.9742.4377.9742.9742v5.8217c0 .5366-.4377.9742-.9742.9742s-.9742-.4376-.9742-.9742zm.9742 12.4294c-3.6427 0-6.6077-2.965-6.6077-6.6077.0047-2.0896.993-4.0521 2.6685-5.304a.8657.8657 0 0 1 1.2142.1788.8657.8657 0 0 1-.1788 1.2143c-2.1602 1.6048-2.612 4.6592-1.0072 6.8194 1.6049 2.1603 4.6593 2.612 6.8195 1.0072 1.2378-.9177 1.9673-2.372 1.9673-3.9157a4.8972 4.8972 0 0 0-1.9861-3.925c-.386-.2824-.466-.8284-.1836-1.2143.2824-.386.8283-.466 1.2143-.1835 1.6895 1.2471 2.6826 3.2238 2.6873 5.3228 0 3.6474-2.965 6.6077-6.6077 6.6077z"/></symbol>
+  <symbol id="i-logo-springsec" viewBox="0 0 24 24" fill="currentColor"><path d="M20.59 2.066 11.993 0 3.41 2.066v6.612h4.557a3.804 3.804 0 0 0 0 .954H3.41v3.106C3.41 19.867 11.994 24 11.994 24s8.582-4.133 8.582-11.258V9.635h-4.545a3.616 3.616 0 0 0 0-.954h4.558zM12 12.262h-.006a3.109 3.109 0 1 1 .006 0zm-.006-4.579a.804.804 0 0 0-.37 1.52v.208l.238.237v.159l.159.159v.159l-.14.14.15.246v.159l-.16.189.223.222.246-.246V9.218a.804.804 0 0 0-.346-1.535zm0 .836a.299.299 0 1 1 .298-.299.299.299 0 0 1-.298.3z"/></symbol>
+  <symbol id="i-logo-kotlin" viewBox="0 0 24 24" fill="currentColor"><path d="M24 24H0V0h24L12 12Z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-gql" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"/><path d="M4.2 16.5L12 3l7.8 13.5z"/><circle cx="12" cy="3" r="1.4" fill="currentColor"/><circle cx="19.8" cy="7.5" r="1.4" fill="currentColor"/><circle cx="19.8" cy="16.5" r="1.4" fill="currentColor"/><circle cx="12" cy="21" r="1.4" fill="currentColor"/><circle cx="4.2" cy="16.5" r="1.4" fill="currentColor"/><circle cx="4.2" cy="7.5" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-org" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M9 13h.01M9 17h.01M15 9h.01M15 13h.01M15 17h.01"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></symbol>
+  <symbol id="i-collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 10l-2 2 2 2"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L4 7l4 4"/><path d="M4 7h16"/><path d="M16 21l4-4-4-4"/><path d="M20 17H4"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></symbol>
+  <filter id="cvd-deutan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.625 0.375 0 0 0  0.7 0.3 0 0 0  0 0.3 0.7 0 0  0 0 0 1 0"/></filter>
+  <filter id="cvd-protan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.567 0.433 0 0 0  0.558 0.442 0 0 0  0 0.242 0.758 0 0  0 0 0 1 0"/></filter>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M12 16V8M8.5 11.5L12 8l3.5 3.5"/></symbol>
+  <!-- Moderne flat mark (exact path from results-focus-view) -->
+  <symbol id="i-moderne-flat" viewBox="0 0 47 48" fill="none"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+</svg>
+
+<div class="page">
+  <div class="topbar">
+    <button class="title-btn" id="titleBtn" aria-label="Open or create a recipe">
+      <svg class="blocks"><use href="#i-blocks"/></svg> Builder <svg class="chev"><use href="#i-chevd"/></svg>
+    </button>
+    <span class="spacer"></span>
+    <button class="icon-btn" id="themeTop" title="Toggle light / dark"><svg><use href="#i-moon"/></svg></button>
+  </div>
+
+  <!-- empty state -->
+  <div class="hero">
+    <svg class="bi"><use href="#i-blocks"/></svg>
+    <h2>No recipe loaded</h2>
+    <p>Create one from scratch, open an existing recipe, add from the Marketplace, or import from YAML.</p>
+    <button class="cta" data-open-modal><svg><use href="#i-plus"/></svg> Add a recipe</button>
+  </div>
+
+  <div class="builder-live">
+    <!-- recipe-level toolbar -->
+    <div class="recipe-toolbar">
+      <button class="rt-name" id="renameBtn" title="Click to rename"><span class="txt" id="recipeName">new name spring thing</span><svg class="pencil"><use href="#i-pencil"/></svg></button>
+      <div class="rt-more" id="moreWrap">
+        <button class="icon-btn" id="moreBtn" title="Recipe actions" aria-haspopup="true"><svg><use href="#i-more"/></svg></button>
+        <div class="menu-pop" id="moreMenu" hidden style="top:38px;left:0">
+          <div class="mp-item" data-toast="Opened “Edit details”"><svg><use href="#i-gear"/></svg> Edit details</div>
+          <div class="mp-item" data-toast="Opened YAML editor"><svg><use href="#i-code"/></svg> Edit as YAML</div>
+          <div class="mp-sep"></div>
+          <div class="mp-item" data-toast="Duplicated recipe"><svg><use href="#i-copy"/></svg> Duplicate</div>
+          <div class="mp-item" data-toast="Opened full details"><svg><use href="#i-link"/></svg> View full details</div>
+          <div class="mp-sep"></div>
+          <div class="mp-item danger" data-toast="Removed recipe"><svg><use href="#i-x"/></svg> Remove</div>
+        </div>
+      </div>
+
+      <span class="rt-spacer"></span>
+
+      <!-- Tier 2: Add · Download · Copy — first-class & unambiguous -->
+      <div class="action-cluster">
+        <button class="act-btn add" data-open-modal title="Add a recipe"><svg><use href="#i-plus"/></svg> Add recipe</button>
+        <span class="act-divider"></span>
+        <button class="act-btn" id="downloadBtn" title="Download the recipe as a .yml file"><svg><use href="#i-download"/></svg> Download YAML</button>
+        <button class="act-btn" id="copyBtn" title="Copy the recipe YAML to your clipboard"><svg><use href="#i-copy"/></svg> Copy YAML</button>
+      </div>
+
+      <span class="rt-org" id="orgText">Netflix + Spring</span>
+      <button class="dry-run" id="dryRunBtn" title="Dry run on 271 repositories"><svg><use href="#i-play"/></svg> Dry run</button>
+    </div>
+
+    <!-- builder -->
+    <div class="bl-wrap">
+      <div class="bl-canvas">
+        <div class="bl-graph" id="graph"></div>
+        <div class="bl-rail">
+          <button title="Collapse panel"><svg><use href="#i-collapse"/></svg></button>
+          <button title="Run"><svg><use href="#i-play"/></svg></button>
+          <button title="Fit view"><svg><use href="#i-eye"/></svg></button>
+          <button title="Locate selected"><svg><use href="#i-target"/></svg></button>
+          <button class="on" title="Labels"><svg><use href="#i-tag"/></svg></button>
+          <button title="Help"><svg><use href="#i-help"/></svg></button>
+          <button id="themeRail" title="Toggle light / dark"><svg id="themeRailIcon"><use href="#i-moon"/></svg></button>
+          <button title="About"><svg><use href="#i-info"/></svg></button>
+        </div>
+        <div class="bl-nodelabel"><span class="lbl" id="nodeLabel">new name spring thing</span><span class="menu"><svg><use href="#i-more"/></svg></span></div>
+      </div>
+
+      <div class="bl-panel">
+        <div class="bl-search"><svg><use href="#i-search"/></svg> Search and filter recipe</div>
+        <div class="tree-header">
+          <button class="th-expand" id="expandAllBtn"><svg id="expandAllIcon"><use href="#i-collapse"/></svg> <span id="expandAllLabel">Collapse all</span></button>
+          <span class="th-count">Recipe list<span class="bl-count" id="recipeCount">56</span></span>
+          <span class="th-count">Preconditions<span class="bl-count bl-count--pre" id="preCount">1</span></span>
+          <span class="th-right">
+            <button class="th-undo" disabled title="Undo last change"><svg><use href="#i-undo"/></svg> Undo <span class="kbd" id="undoKbd">⌘Z</span></button>
+            <span class="th-save" id="saveInd" title="Saved"><svg><use href="#i-check-c"/></svg> Saved</span>
+          </span>
+        </div>
+        <div class="bl-tree" id="tree"></div>
+        <div class="bl-foot">Options<span class="bl-count bl-count--muted" id="optCount">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="proto-note">
+    <span>Phase 2 — Common actions &amp; discoverability · replicates #8500 in Morpheus, with Add / Download / Copy pulled out of the ⋮ into a clear, distinct cluster ·</span>
+    <code>?state=empty</code><span>shows the empty state ·</span>
+    <code>?recipe=large</code><span>loads a ~2,000-step recipe.</span>
+  </div>
+</div>
+
+<!-- Builder recipe actions modal -->
+<div class="mo-ov" id="modal">
+  <div class="mo" role="dialog" aria-label="Builder recipe actions">
+    <div class="mo-header"><h2>Builder recipe actions</h2><button class="mo-x" data-close-modal title="Close"><svg><use href="#i-x"/></svg></button></div>
+    <div class="mo-tabs" id="moTabs">
+      <button class="mo-tab active" data-tab="existing">Open existing</button>
+      <button class="mo-tab" data-tab="import">Import from Yaml</button>
+      <button class="mo-tab" data-tab="new">Create new</button>
+      <button class="mo-tab" data-tab="manage">Manage</button>
+      <button class="mo-tab" data-tab="v1">From V1</button>
+    </div>
+    <div class="mo-body">
+      <!-- Open existing -->
+      <div class="mo-pane active" data-pane="existing">
+        <div class="pills" id="pills">
+          <button class="pill" data-src="all">All</button>
+          <button class="pill active" data-src="recent">Recent</button>
+          <button class="pill" data-src="marketplace">Marketplace</button>
+          <button class="pill" data-src="mine">My recipes</button>
+        </div>
+        <div class="search-field"><svg><use href="#i-search"/></svg><input id="oeSearch" placeholder="Find a recipe" /></div>
+        <div class="oe-list" id="oeList"></div>
+      </div>
+      <!-- Import -->
+      <div class="mo-pane" data-pane="import">
+        <p class="import-hint">Insert a declarative YAML recipe to import into the builder:</p>
+        <textarea class="yaml-box" placeholder="type: specs.openrewrite.org/v1beta/recipe&#10;name: com.example.MyRecipe&#10;displayName: My recipe&#10;recipeList:&#10;  - org.openrewrite.java.format.AutoFormat"></textarea>
+      </div>
+      <!-- Create new -->
+      <div class="mo-pane" data-pane="new">
+        <label class="nr-label">Name<span class="req">*</span></label>
+        <input class="nr-input" placeholder="Name this recipe, e.g. Migrate to Spring Boot 3" />
+        <label class="nr-label">Recipe ID
+          <button class="id-help-btn" id="idHelpBtn">How is the ID used? <svg><use href="#i-chevd"/></svg></button>
+        </label>
+        <div class="id-help" id="idHelp">The ID uniquely identifies your recipe on the platform and in exported YAML. It can’t be changed after creation, so keep it stable (e.g. reverse-domain style).</div>
+        <div class="id-toggle"><button class="tgl" id="idToggle" aria-pressed="true" aria-label="Auto-generate ID"></button> Auto-generate from name (recommended)</div>
+        <div class="id-line" id="idLine">ID: io.moderne.MigrateToSpringBoot3</div>
+        <label class="nr-label">Description</label>
+        <textarea class="nr-input" placeholder="Summarize what this recipe does (optional)"></textarea>
+      </div>
+      <!-- Manage -->
+      <div class="mo-pane" data-pane="manage">
+        <div class="oe-list" id="mgList"></div>
+      </div>
+      <!-- From V1 -->
+      <div class="mo-pane" data-pane="v1">
+        <p class="import-hint">You have recipes from the previous Builder. Import them to keep working with them here. Recipes you already have are skipped.</p>
+      </div>
+    </div>
+    <div class="mo-foot">
+      <span id="moFootLeft"></span>
+      <span class="right">
+        <button class="btn btn--tertiary" data-close-modal>Cancel</button>
+        <button class="btn btn--primary" id="moPrimary">Create recipe</button>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><svg id="toastIcon"><use href="#i-check-c"/></svg><span id="toastMsg"></span></div>
+
+<script>
+/* ---- dataset (ported from components/builder-prototype/sample-data.ts) ---- */
+var sampleRecipe = {
+  id: 'new-name-spring-thing', name: 'new name spring thing',
+  runOnRepositoryCount: 271, recipeCount: 56, preconditionCount: 1,
+  root: { id: 'root', kind: 'root', label: ['new name spring thing'], children: [
+    { id: 'pre-spring', kind: 'precondition', label: ['Is likely a Spring Framework project'] },
+    { id: 'dn5-leaf', kind: 'recipe', language: 'java', label: ['Migrate to DataNucleus 5.0'], options: [ { name: 'excludeDependencies', value: 'false' }, { name: 'overrideManagedVersion', value: 'true' } ] },
+    { id: 'dn5', kind: 'composite', language: 'java', label: ['Migrate to DataNucleus 5.0'], children: [
+      { id: 'dn4', kind: 'composite', language: 'java', label: ['Migrate to DataNucleus 4.0'], children: [
+        { id: 'upgrade-deps', kind: 'recipe', language: 'java', label: ['Upgrade Gradle or Maven dependency versions'], options: [ { name: 'groupId', value: 'org.datanucleus' } ] },
+        { id: 'remove-dep', kind: 'recipe', language: 'java', label: ['Remove a Gradle or Maven dependency'] },
+        { id: 'dn4-package-moves', kind: 'composite', language: 'java', label: ['DataNucleus 4.0 package moves'], children: [
+          { id: 'rename-simple', kind: 'recipe', language: 'java', label: ['Rename package name ', { code: 'org.datanucleus.store.types.simple' }, ' to ', { code: 'org.datanucleus.store.types.wrappers' }] },
+          { id: 'rename-backed', kind: 'recipe', language: 'java', label: ['Rename package name ', { code: 'org.datanucleus.store.types.backed' }, ' to ', { code: 'org.datanucleus.store.types.wrappers' }] },
+          { id: 'rename-memory', kind: 'recipe', language: 'java', label: ['Rename package name ', { code: 'org.datanucleus.query.evaluator.memory' }, ' to ', { code: 'org.datanucleus.query.inmemory' }] }
+        ]}
+      ]}
+    ]}
+  ]}
+};
+var sampleGraph = { seed: 7, viewBox: '0 0 600 660', hubs: [ { x:150,y:340,leaves:16 }, { x:262,y:250,leaves:7 }, { x:335,y:205,leaves:5 }, { x:305,y:430,leaves:9 }, { x:398,y:285,leaves:4,selected:true } ], links: [[0,1],[1,2],[2,4],[3,4]] };
+function buildLargeRecipe(n){ n=n||2000; var per=12,gc=Math.ceil(n/per),made=0,groups=[]; for(var g=0;g<gc;g++){var lv=[];for(var l=0;l<per&&made<n;l++){made++;lv.push({id:'leaf-'+made,kind:'recipe',language:'java',label:['Migrate rule '+made+' to the current baseline']});}groups.push({id:'group-'+(g+1),kind:'composite',language:'java',label:['Migration group '+(g+1)],children:lv});} return {id:'large-migration',name:'Enterprise baseline migration',runOnRepositoryCount:271,recipeCount:n,preconditionCount:1,root:{id:'root',kind:'root',label:['Enterprise baseline migration'],children:[{id:'pre-java',kind:'precondition',label:['Is likely a Java project']}].concat(groups)}}; }
+
+/* recipe list for the modal (Open existing / Manage) */
+var recipeList = [
+  { name: 'new name spring thing', id: 'io.moderne.NewNameSpringThing', src: 'mine', when: 'recent' },
+  { name: 'Migrate to Spring Boot 3', id: 'org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_0', src: 'marketplace', when: 'recent' },
+  { name: 'Enterprise baseline migration', id: 'io.moderne.EnterpriseBaseline', src: 'mine', when: 'recent' },
+  { name: 'Static analysis fixes', id: 'org.openrewrite.staticanalysis.CommonStaticAnalysis', src: 'marketplace', when: '' },
+  { name: 'Migrate to Java 17', id: 'org.openrewrite.java.migrate.UpgradeToJava17', src: 'marketplace', when: '' },
+  { name: 'Payments team standards', id: 'io.moderne.PaymentsStandards', src: 'mine', when: '' },
+  { name: 'Find and fix vulnerable dependencies', id: 'org.openrewrite.java.dependencies.DependencyVulnerabilityCheck', src: 'marketplace', when: '' }
+];
+
+/* ---- helpers ---- */
+function plainLabel(p){ return p.map(function(x){return typeof x==='string'?x:x.code;}).join(''); }
+function labelHtml(p){ return p.map(function(x){return typeof x==='string'?esc(x):'<code>'+esc(x.code)+'</code>';}).join(''); }
+function esc(s){ return s.replace(/[&<>]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;'})[c];}); }
+function collectExpandable(n,set){ if(n.children&&n.children.length){set.add(n.id);n.children.forEach(function(c){collectExpandable(c,set);});} }
+function findNode(n,id){ if(n.id===id)return n; if(n.children)for(var i=0;i<n.children.length;i++){var r=findNode(n.children[i],id);if(r)return r;} return null; }
+function isMac(){ return /Mac|iPhone|iPad/.test(navigator.platform); }
+
+/* ---- state ---- */
+var params = new URLSearchParams(location.search);
+if (params.get('state') === 'empty') { document.documentElement.setAttribute('data-state','empty'); }
+var recipe = params.get('recipe') === 'large' ? buildLargeRecipe(2000) : sampleRecipe;
+var expanded = new Set(); collectExpandable(recipe.root, expanded);
+var selectedId = 'root';
+var allExpanded = true;
+
+/* ---- tree ---- */
+var IB=14, IS=22;
+function flatten(n,d,out){ var ch=n.children||[]; out.push({node:n,depth:d,has:ch.length>0,exp:expanded.has(n.id)}); if(ch.length&&expanded.has(n.id))ch.forEach(function(c){flatten(c,d+1,out);}); }
+function iconFor(n){ if(n.kind==='root')return '<svg class="bl-rooti"><use href="#i-code"/></svg>'; if(n.kind==='precondition')return '<svg class="bl-ok"><use href="#i-check-c"/></svg>'; if((n.kind==='recipe'||n.kind==='composite')&&n.language==='java')return '<i class="bl-java">J</i>'; return ''; }
+function chipFor(n){ if(n.kind==='root')return '<span class="bl-chip">'+labelHtml(n.label)+'</span>'; if(n.kind==='precondition')return '<span class="bl-prechip">'+labelHtml(n.label)+'</span>'; return '<span class="bl-txt">'+labelHtml(n.label)+'</span>'; }
+function renderTree(){ var rows=[]; flatten(recipe.root,0,rows); document.getElementById('tree').innerHTML = rows.map(function(r){ var pad=IB+r.depth*IS; var tw=r.has?'<button class="bl-twist" data-toggle="'+r.node.id+'" style="margin-left:'+pad+'px"><svg><use href="#'+(r.exp?'i-chevd':'i-chevr')+'"/></svg></button>':'<span class="bl-twist spacer" style="margin-left:'+pad+'px"></span>'; var cls='bl-row'+(r.node.id===selectedId?' sel':'')+(r.node.kind==='precondition'?' pre':''); return '<div class="'+cls+'">'+tw+'<button class="bl-rowselect" data-select="'+r.node.id+'">'+iconFor(r.node)+chipFor(r.node)+'</button></div>'; }).join(''); }
+
+/* ---- graph ---- */
+function renderGraph(){ var seed=sampleGraph.seed; function rnd(){seed=(seed*1103515245+12345)%2147483648;return seed/2147483648;} var e='',d='',s=''; sampleGraph.links.forEach(function(l){var a=sampleGraph.hubs[l[0]],b=sampleGraph.hubs[l[1]];e+='<line x1="'+a.x+'" y1="'+a.y+'" x2="'+b.x+'" y2="'+b.y+'" stroke="var(--line-strong)"/>';}); sampleGraph.hubs.forEach(function(h){for(var k=0;k<h.leaves;k++){var an=rnd()*Math.PI*2,r=34+rnd()*44,x=h.x+r*Math.cos(an),y=h.y+r*Math.sin(an);e+='<line x1="'+h.x+'" y1="'+h.y+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="var(--line-strong)"/>';d+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="4.2" fill="var(--accent)"/>';} if(h.selected){s+='<circle cx="'+h.x+'" cy="'+h.y+'" r="22" fill="var(--ch-p1)" opacity="0.25"/><circle cx="'+h.x+'" cy="'+h.y+'" r="11" fill="var(--ch-p1)"/>';}else{d+='<circle cx="'+h.x+'" cy="'+h.y+'" r="6" fill="var(--accent)"/>';}}); document.getElementById('graph').innerHTML='<svg viewBox="'+sampleGraph.viewBox+'" preserveAspectRatio="xMidYMid meet">'+e+s+d+'</svg>'; }
+
+/* ---- meta sync ---- */
+function syncMeta(){ document.getElementById('recipeName').textContent=recipe.name; document.getElementById('recipeCount').textContent=recipe.recipeCount; document.getElementById('preCount').textContent=recipe.preconditionCount; document.getElementById('dryRunBtn').title='Dry run on '+recipe.runOnRepositoryCount+' repositories'; var node=findNode(recipe.root,selectedId)||recipe.root; document.getElementById('nodeLabel').textContent=plainLabel(node.kind==='root'?recipe.root.label:node.label); document.getElementById('optCount').textContent=(node.options||[]).length; document.getElementById('undoKbd').textContent=isMac()?'⌘Z':'Ctrl+Z'; }
+
+/* ---- YAML (real download vs copy) ---- */
+function recipeToYaml(){ var lines=['type: specs.openrewrite.org/v1beta/recipe','name: '+recipe.id,'displayName: '+recipe.name,'recipeList:']; function walk(n){ (n.children||[]).forEach(function(c){ if(c.kind!=='precondition'){ lines.push('  - '+plainLabel(c.label)); } walk(c); }); } walk(recipe.root); return lines.join('\n')+'\n'; }
+
+/* ---- toast ---- */
+var toastTimer=null;
+function toast(msg,icon){ var t=document.getElementById('toast'); document.getElementById('toastMsg').textContent=msg; document.getElementById('toastIcon').innerHTML='<use href="#'+(icon||'i-check-c')+'"/>'; t.classList.add('show'); if(toastTimer)clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove('show');},2200); }
+
+/* ---- modal ---- */
+var modal=document.getElementById('modal');
+function openModal(tab){ modal.classList.add('open'); if(tab)selectTab(tab); }
+function closeModal(){ modal.classList.remove('open'); }
+function selectTab(name){ document.querySelectorAll('.mo-tab').forEach(function(t){t.classList.toggle('active',t.getAttribute('data-tab')===name);}); document.querySelectorAll('.mo-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-pane')===name);}); var prim=document.getElementById('moPrimary'); var map={existing:'',import:'Import',new:'Save',manage:'',v1:'Import from V1'}; prim.style.display=map[name]?'':'none'; prim.textContent=map[name]||''; }
+document.getElementById('titleBtn').addEventListener('click',function(){openModal('existing');});
+document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(){openModal('existing');});});
+document.querySelectorAll('[data-close-modal]').forEach(function(b){b.addEventListener('click',closeModal);});
+modal.addEventListener('click',function(e){if(e.target===modal)closeModal();});
+document.getElementById('moTabs').addEventListener('click',function(e){var t=e.target.closest('.mo-tab');if(t)selectTab(t.getAttribute('data-tab'));});
+
+/* open-existing list */
+var oeSrc='recent';
+function renderOe(){ var q=document.getElementById('oeSearch').value.toLowerCase(); var rows=recipeList.filter(function(r){ var okSrc=oeSrc==='all'?true:(oeSrc==='recent'?r.when==='recent':r.src===oeSrc); var okQ=!q||r.name.toLowerCase().indexOf(q)>=0||r.id.toLowerCase().indexOf(q)>=0; return okSrc&&okQ; }); var sub={mine:'Your recipe',marketplace:'Marketplace',recent:'Recent'}; var html=rows.map(function(r){ var s=oeSrc==='recent'?'Recent':(r.src==='mine'?'Your recipe':'Marketplace'); return '<div class="oe-row" data-toast="Opened “'+esc(r.name)+'”"><svg class="ico"><use href="#i-blocks"/></svg><span class="nm">'+esc(r.name)+'</span><span class="sub">'+s+'</span></div>'; }).join(''); document.getElementById('oeList').innerHTML=html||'<div class="oe-empty">No matching recipes</div>'; }
+document.getElementById('pills').addEventListener('click',function(e){var p=e.target.closest('.pill');if(!p)return;oeSrc=p.getAttribute('data-src');document.querySelectorAll('.pill').forEach(function(x){x.classList.toggle('active',x===p);});renderOe();});
+document.getElementById('oeSearch').addEventListener('input',renderOe);
+document.getElementById('oeList').addEventListener('click',function(e){var r=e.target.closest('[data-toast]');if(r){toast(r.getAttribute('data-toast'));closeModal();}});
+
+/* manage list */
+document.getElementById('mgList').innerHTML = recipeList.filter(function(r){return r.src==='mine';}).map(function(r){return '<div class="mg-row"><input type="checkbox"><span>'+esc(r.name)+'</span><span class="sub">'+esc(r.id)+'</span></div>';}).join('');
+
+/* create-new form bits */
+document.getElementById('idHelpBtn').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('idHelp').classList.toggle('show');});
+document.getElementById('idToggle').addEventListener('click',function(){var on=this.getAttribute('aria-pressed')==='true';this.setAttribute('aria-pressed',String(!on));document.getElementById('idLine').style.opacity=on?'0.4':'1';});
+
+/* ---- recipe actions ⋮ ---- */
+var moreWrap=document.getElementById('moreWrap'),moreMenu=document.getElementById('moreMenu'),moreBtn=document.getElementById('moreBtn');
+moreBtn.addEventListener('click',function(e){e.stopPropagation();var h=moreMenu.hidden;moreMenu.hidden=!h;moreWrap.classList.toggle('open',h);});
+moreMenu.addEventListener('click',function(e){var it=e.target.closest('[data-toast]');if(it){toast(it.getAttribute('data-toast'),it.classList.contains('danger')?'i-warn':'i-check-c');moreMenu.hidden=true;moreWrap.classList.remove('open');}});
+document.addEventListener('click',function(){moreMenu.hidden=true;moreWrap.classList.remove('open');});
+
+/* ---- Tier 2 actions: download vs copy (distinct outcomes) ---- */
+document.getElementById('downloadBtn').addEventListener('click',function(){ var blob=new Blob([recipeToYaml()],{type:'text/yaml'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=recipe.id.replace(/[^a-z0-9.-]/gi,'-')+'.yml'; document.body.appendChild(a); a.click(); a.remove(); toast('Downloaded '+a.download,'i-download'); });
+document.getElementById('copyBtn').addEventListener('click',function(){ var y=recipeToYaml(); if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(y).catch(function(){});} toast('Copied recipe YAML to clipboard','i-copy'); });
+document.getElementById('dryRunBtn').addEventListener('click',function(){ toast('Dry run started on '+recipe.runOnRepositoryCount+' repositories','i-play'); });
+document.getElementById('renameBtn').addEventListener('click',function(){ toast('Rename: type a new name (prototype)'); });
+
+/* ---- tree interactions ---- */
+document.getElementById('tree').addEventListener('click',function(e){ var tg=e.target.closest('[data-toggle]'); if(tg){var id=tg.getAttribute('data-toggle');if(expanded.has(id))expanded.delete(id);else expanded.add(id);renderTree();return;} var sel=e.target.closest('[data-select]'); if(sel){selectedId=sel.getAttribute('data-select');renderTree();syncMeta();} });
+
+/* expand all / collapse all */
+document.getElementById('expandAllBtn').addEventListener('click',function(){ allExpanded=!allExpanded; if(allExpanded){collectExpandable(recipe.root,expanded);}else{expanded.clear();expanded.add('root');} document.getElementById('expandAllLabel').textContent=allExpanded?'Collapse all':'Expand all'; document.getElementById('expandAllIcon').innerHTML='<use href="#'+(allExpanded?'i-collapse':'i-list')+'"/>'; renderTree(); });
+
+/* ---- theme ---- */
+function setTheme(m){ document.documentElement.setAttribute('data-theme',m); var next=m==='dark'?'i-sun':'i-moon'; document.getElementById('themeRailIcon').innerHTML='<use href="#'+next+'"/>'; document.querySelector('#themeTop use').setAttribute('href','#'+next); }
+function toggleTheme(){ setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'); }
+document.getElementById('themeRail').addEventListener('click',toggleTheme);
+document.getElementById('themeTop').addEventListener('click',toggleTheme);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+
+/* ---- init ---- */
+renderGraph(); renderTree(); syncMeta(); renderOe();
+</script>
+</body>
+</html>
