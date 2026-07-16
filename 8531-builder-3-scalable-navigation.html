@@ -101,16 +101,31 @@ b { font-weight:600; }
 .th-save { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
 .th-save svg { width:16px; height:16px; color:var(--green-hi); }
 
-/* "you are here" — sticky group header (VS Code-style sticky scroll).
-   Pins the group you're currently inside to the top of the list; the next
-   group pushes it up. Hidden at the top level, where headers are visible. */
-.tree-crumb { display:flex; align-items:center; gap:7px; width:100%; height:30px; padding:0 14px; font-size:13px; color:var(--text); background:var(--card); border:none; border-bottom:1px solid var(--line); box-shadow:0 3px 8px -4px rgba(0,0,0,.18); text-align:left; }
-.tree-crumb[hidden] { display:none; }
-.tree-crumb:hover { background:var(--row-hover); }
+/* "you are here" — an omnipresent location bar (no show/hide flicker).
+   Shows the recipe at the top and the deepest group as you scroll into it.
+   An ancestry icon appears only when there are intermediate levels above
+   (deep recipes, e.g. Spring migrations), opening a clickable path. */
+.tree-crumb { position:relative; display:flex; align-items:center; width:100%; height:30px; font-size:13px; color:var(--text); background:var(--card); border-bottom:1px solid var(--line); box-shadow:0 3px 8px -4px rgba(0,0,0,.18); }
+.crumb-main { flex:1; min-width:0; display:flex; align-items:center; gap:7px; height:100%; padding:0 6px 0 14px; background:transparent; border:none; color:inherit; text-align:left; }
+.crumb-main:not([disabled]):hover { background:var(--row-hover); }
+.crumb-main[disabled] { cursor:default; }
 .tree-crumb .tw { width:15px; height:15px; flex:none; color:var(--muted); display:inline-flex; align-items:center; }
+.tree-crumb .tw[hidden] { display:none; }
 .tree-crumb .tw svg { width:15px; height:15px; }
 .tree-crumb .nm { font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.tree-crumb .bl-cnt { margin-left:auto; }
+.crumb-main .bl-cnt { margin-left:auto; }
+.crumb-anc { flex:none; width:34px; height:100%; display:inline-flex; align-items:center; justify-content:center; background:transparent; border:none; border-left:1px solid var(--line2); color:var(--muted); }
+.crumb-anc[hidden] { display:none; }
+.crumb-anc:hover, .crumb-anc.open { background:var(--surface); color:var(--text); }
+.crumb-anc svg { width:16px; height:16px; }
+.crumb-pop { position:absolute; z-index:60; min-width:250px; max-width:440px; }
+.crumb-pop[hidden] { display:none; }
+.cp-head { padding:8px 12px 4px; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+.cp-item { display:flex; align-items:center; gap:8px; padding:8px 12px; font-size:13px; color:var(--text); border-radius:7px; }
+.cp-item:hover { background:var(--row-hover); }
+.cp-item .cp-nm { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cp-item .cp-cnt { margin-left:auto; font-family:var(--font-mono); font-size:11px; color:var(--muted); }
+.cp-item.cur { color:var(--accent); font-weight:600; }
 
 /* windowed tree */
 .bl-tree { flex:1; overflow-y:auto; position:relative; font-size:13px; }
@@ -211,7 +226,8 @@ b { font-weight:600; }
   <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M12 16V8M8.5 11.5L12 8l3.5 3.5"/></symbol>
   <!-- Moderne flat mark (exact path from results-focus-view) -->
   <symbol id="i-moderne-flat" viewBox="0 0 47 48" fill="none"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
-  <symbol id="i-more" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></symbol>
+    <symbol id="i-levels" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="14" y1="18" x2="20" y2="18"/></symbol>
+<symbol id="i-more" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></symbol>
 </svg>
 
 <div class="page">
@@ -250,7 +266,16 @@ b { font-weight:600; }
           <span class="th-save" title="Saved"><svg><use href="#i-check-c"/></svg> Saved</span>
         </span>
       </div>
-      <button class="tree-crumb" id="crumb" title="Collapse this group" hidden><svg class="tw"><use href="#i-chevd"/></svg><i class="bl-java">J</i><span class="nm" id="crumbName"></span><span class="bl-cnt" id="crumbCnt"></span></button>
+      <div class="tree-crumb" id="crumb">
+        <button class="crumb-main" id="crumbMain" title="Collapse this group">
+          <svg class="tw" id="crumbTwist"><use href="#i-chevd"/></svg>
+          <span id="crumbIcon"></span>
+          <span class="nm" id="crumbName"></span>
+          <span class="bl-cnt" id="crumbCnt"></span>
+        </button>
+        <button class="crumb-anc" id="crumbAnc" title="Show all parent levels" aria-haspopup="true" hidden><svg><use href="#i-levels"/></svg></button>
+        <div class="menu-pop crumb-pop" id="crumbPop" hidden style="top:34px; right:8px"></div>
+      </div>
       <div class="bl-tree" id="tree"><div class="tree-viewport" id="viewport"></div></div>
       <div class="bl-foot">Options<span class="bl-count bl-count--muted" id="optCount">0</span></div>
     </div>
@@ -272,7 +297,7 @@ b { font-weight:600; }
   </div>
 
   <div class="proto-note">
-    <span>Phase 3 — Scalable navigation · tree-first layout (working list left, graph right) · defaults to a ~2,000-step recipe · groups collapse by default with step counts · the list is <b>windowed</b> (only visible rows render) so it stays smooth · the group you’re inside <b>sticks to the top</b> as you scroll (click it to collapse) ·</span>
+    <span>Phase 3 — Scalable navigation · tree-first layout (working list left, graph right) · defaults to a ~2,000-step recipe · groups collapse by default with step counts · the list is <b>windowed</b> (only visible rows render) so it stays smooth · an omnipresent bar shows where you are (recipe at the top, deepest group as you scroll) · in deeply nested recipes a <b>levels</b> icon reveals the full parent path (click a level to jump) ·</span>
     <code>?recipe=small</code><span>loads the small sample.</span>
   </div>
 </div>
@@ -281,7 +306,28 @@ b { font-weight:600; }
 
 <script>
 /* ---- dataset ---- */
-function buildLargeRecipe(n){ n=n||2000; var per=12,gc=Math.ceil(n/per),made=0,groups=[]; for(var g=0;g<gc;g++){var lv=[];for(var l=0;l<per&&made<n;l++){made++;lv.push({id:'leaf-'+made,kind:'recipe',language:'java',label:['Migrate rule '+made+' to the current baseline']});}groups.push({id:'group-'+(g+1),kind:'composite',language:'java',label:['Migration group '+(g+1)],children:lv});} return {id:'large-migration',name:'Enterprise baseline migration',runOnRepositoryCount:271,recipeCount:n,preconditionCount:1,root:{id:'root',kind:'root',label:['Enterprise baseline migration'],children:[{id:'pre-java',kind:'precondition',label:['Is likely a Java project']}].concat(groups)}}; }
+/* A realistically DEEP + long recipe (like a Spring Boot migration): phases →
+   migration sets → rule groups → steps. ~2,000 steps, 4 levels of nesting,
+   so it exercises windowing (long) AND the ancestry path (deep). */
+function buildLargeRecipe(){
+  var PHASES=['Upgrade Spring Boot 2.7 → 3.0','Migrate to Spring Security 6','Jakarta EE 9 namespace migration','Spring Data 2023 upgrade'];
+  var M=5,G=5,S=20,made=0;
+  var phases=PHASES.map(function(pname,pi){
+    var modules=[];
+    for(var m=0;m<M;m++){
+      var groups=[];
+      for(var g=0;g<G;g++){
+        var steps=[];
+        for(var s=0;s<S;s++){ made++; steps.push({id:'leaf-'+made,kind:'recipe',language:'java',label:['Migrate rule '+made+' to the current baseline']}); }
+        groups.push({id:'p'+pi+'m'+m+'g'+g,kind:'composite',language:'java',label:['Rule group '+(g+1)],children:steps});
+      }
+      modules.push({id:'p'+pi+'m'+m,kind:'composite',language:'java',label:['Migration set '+(m+1)],children:groups});
+    }
+    return {id:'phase-'+pi,kind:'composite',language:'java',label:[pname],children:modules};
+  });
+  return {id:'org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_0',name:'Migrate to Spring Boot 3',runOnRepositoryCount:271,recipeCount:made,preconditionCount:1,
+    root:{id:'root',kind:'root',label:['Migrate to Spring Boot 3'],children:[{id:'pre-spring',kind:'precondition',label:['Is likely a Spring Framework project']}].concat(phases)}};
+}
 var sampleRecipe = { id:'new-name-spring-thing', name:'new name spring thing', runOnRepositoryCount:271, recipeCount:56, preconditionCount:1,
   root:{ id:'root', kind:'root', label:['new name spring thing'], children:[
     { id:'pre-spring', kind:'precondition', label:['Is likely a Spring Framework project'] },
@@ -357,21 +403,42 @@ function renderWindow(){
 }
 function scheduleRender(){ if(!pending){ pending=true; requestAnimationFrame(renderWindow); } }
 
-/* ---- "you are here" breadcrumb ---- */
-/* Sticky "you are here": pin the group whose header has scrolled off the top.
-   That's the deepest ancestor group of the topmost visible row (root excluded,
-   since it's the recipe name shown in the toolbar). Hidden at the top level. */
-var crumbNode=null;
+/* ---- "you are here" — omnipresent location bar ---- */
+/* Context = deepest group of the topmost visible row, or the recipe at the top.
+   The bar is always shown (no flicker). An ancestry icon appears only when
+   there are intermediate group levels above the current one. */
+var parentOf={};
+function buildParentMap(){ parentOf={}; (function walk(n){ (n.children||[]).forEach(function(c){ parentOf[c.id]=n; walk(c); }); })(recipe.root); }
+function ancestorChain(node){ var chain=[], p=node; while(p){ chain.unshift(p); p=parentOf[p.id]; } return chain; } /* [root, …, node] */
+var crumbNode=null, crumbChain=[];
+function iconFor(n){ return n.kind==='root' ? '<svg class="bl-rooti"><use href="#i-code"/></svg>' : '<i class="bl-java">J</i>'; }
 function updateCrumb(top){
-  var idx=Math.min(visibleRows.length-1, Math.floor(top/ROW_H));
+  var idx=Math.min(visibleRows.length-1, Math.max(0, Math.floor(top/ROW_H)));
   var r=visibleRows[idx];
-  var crumb=document.getElementById('crumb');
   var groups = r ? r.ancestors.filter(function(n){ return n.kind!=='root'; }) : [];
-  var g = groups.length ? groups[groups.length-1] : null;
-  if(!g){ crumb.hidden=true; crumbNode=null; return; }
-  crumbNode=g; crumb.hidden=false;
-  document.getElementById('crumbName').textContent=plainLabel(g.label);
-  document.getElementById('crumbCnt').textContent=stepCount(g).toLocaleString();
+  var ctx = groups.length ? groups[groups.length-1] : recipe.root;
+  crumbNode = ctx; crumbChain = ancestorChain(ctx);
+  var isRoot = ctx.kind==='root';
+  document.getElementById('crumbIcon').innerHTML = iconFor(ctx);
+  document.getElementById('crumbName').textContent = plainLabel(ctx.label);
+  var cnt=document.getElementById('crumbCnt'); cnt.style.display = isRoot?'none':''; if(!isRoot){ cnt.textContent=stepCount(ctx).toLocaleString(); }
+  document.getElementById('crumbTwist').hidden = isRoot;
+  document.getElementById('crumbMain').disabled = isRoot;
+  document.getElementById('crumbMain').title = isRoot ? '' : 'Collapse this group';
+  /* ancestry icon: only when there are group levels strictly between root and ctx */
+  var above = crumbChain.slice(1, crumbChain.length-1).filter(function(n){ return n.kind!=='root'; });
+  var anc=document.getElementById('crumbAnc');
+  anc.hidden = above.length===0;
+  if(anc.hidden){ document.getElementById('crumbPop').hidden=true; anc.classList.remove('open'); }
+}
+function openAncPop(){
+  var pop=document.getElementById('crumbPop');
+  pop.innerHTML='<div class="cp-head">Parent levels</div>' + crumbChain.map(function(n,i){
+    var isR=n.kind==='root', cur=(i===crumbChain.length-1);
+    var cnt=isR?'':'<span class="cp-cnt">'+stepCount(n).toLocaleString()+'</span>';
+    return '<div class="cp-item'+(cur?' cur':'')+'" data-jump="'+n.id+'" style="padding-left:'+(12+i*14)+'px">'+iconFor(n)+'<span class="cp-nm">'+esc(plainLabel(n.label))+'</span>'+cnt+'</div>';
+  }).join('');
+  pop.hidden=false; document.getElementById('crumbAnc').classList.add('open');
 }
 
 /* ---- graph ---- */
@@ -390,12 +457,21 @@ function copyYaml(){ var y=recipeToYaml(); if(navigator.clipboard&&navigator.cli
 /* ---- interactions ---- */
 treeEl.addEventListener('scroll', scheduleRender);
 window.addEventListener('resize', scheduleRender);
-/* click the sticky header → collapse that group and scroll to it */
-document.getElementById('crumb').addEventListener('click', function(){
-  if(!crumbNode) return;
-  var id=crumbNode.id; expanded.delete(id); rebuild();
-  var idx=rowIndexOf(id); if(idx>=0){ treeEl.scrollTop=idx*ROW_H; }
-  renderWindow();
+function jumpTo(id){ var idx=rowIndexOf(id); if(idx>=0){ treeEl.scrollTop=idx*ROW_H; renderWindow(); } }
+/* location bar: main = collapse current group + jump to it */
+document.getElementById('crumbMain').addEventListener('click', function(){
+  if(!crumbNode || crumbNode.kind==='root') return;
+  var id=crumbNode.id; expanded.delete(id); rebuild(); jumpTo(id);
+});
+/* ancestry icon: toggle the clickable path popover */
+document.getElementById('crumbAnc').addEventListener('click', function(e){
+  e.stopPropagation(); var pop=document.getElementById('crumbPop');
+  if(pop.hidden){ openAncPop(); } else { pop.hidden=true; this.classList.remove('open'); }
+});
+document.getElementById('crumbPop').addEventListener('click', function(e){
+  e.stopPropagation(); var it=e.target.closest('[data-jump]'); if(!it) return;
+  jumpTo(it.getAttribute('data-jump'));
+  this.hidden=true; document.getElementById('crumbAnc').classList.remove('open');
 });
 viewportEl.addEventListener('click', function(e){
   var tg=e.target.closest('[data-toggle]');
@@ -417,7 +493,7 @@ document.getElementById('expandAllBtn').addEventListener('click', function(){
 var moreWrap=document.getElementById('moreWrap'), moreMenu=document.getElementById('moreMenu'), moreBtn=document.getElementById('moreBtn');
 moreBtn.addEventListener('click', function(e){ e.stopPropagation(); var h=moreMenu.hidden; moreMenu.hidden=!h; moreWrap.classList.toggle('open',h); });
 moreMenu.addEventListener('click', function(e){ var it=e.target.closest('.mp-item'); if(!it)return; var act=it.getAttribute('data-action'); if(act==='download'){downloadYaml();} else if(act==='copy'){copyYaml();} else if(it.getAttribute('data-toast')){toast(it.getAttribute('data-toast'));} moreMenu.hidden=true; moreWrap.classList.remove('open'); });
-document.addEventListener('click', function(){ moreMenu.hidden=true; moreWrap.classList.remove('open'); });
+document.addEventListener('click', function(){ moreMenu.hidden=true; moreWrap.classList.remove('open'); var pop=document.getElementById('crumbPop'); if(!pop.hidden){ pop.hidden=true; document.getElementById('crumbAnc').classList.remove('open'); } });
 document.getElementById('dryRunBtn').addEventListener('click', function(){ toast('Dry run started on '+recipe.runOnRepositoryCount+' repositories','i-play'); });
 document.getElementById('titleBtn').addEventListener('click', function(){ toast('Builder recipe actions — see the Phase 2 prototype (#8530)'); });
 document.getElementById('renameBtn').addEventListener('click', function(){ toast('Rename: type a new name (prototype)'); });
@@ -429,7 +505,7 @@ document.getElementById('themeRail').addEventListener('click', toggleTheme);
 document.getElementById('themeTop').addEventListener('click', toggleTheme);
 
 /* ---- init ---- */
-renderGraph(); syncMeta(); rebuild(); renderWindow();
+buildParentMap(); renderGraph(); syncMeta(); rebuild(); renderWindow();
 </script>
 </body>
 </html>
