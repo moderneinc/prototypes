@@ -58,6 +58,18 @@
   .ref-label { font-size: 13px; font-weight: 600; color: #e2e8f0; margin: 20px 0 8px; }
   .ref-code { background: #020617; border: 1px solid #334155; border-radius: 8px; padding: 16px; font-size: 11px; line-height: 1.6; color: #94a3b8; white-space: pre-wrap; margin-bottom: 16px; }
   .footer { margin-top: 32px; text-align: center; font-size: 11px; color: #475569; }
+  .err-intro { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 20px; }
+  .err-intro strong { color: #e2e8f0; }
+  .err-banner { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: #7f1d1d; color: #fecaca; border: 1px solid #b91c1c; margin-bottom: 12px; }
+  .err-banner.suggest { background: #713f12; color: #fde68a; border-color: #b45309; }
+  .err-banner.promoted { background: #7f1d1d; color: #fecaca; border-color: #b91c1c; }
+  .change-panel { margin-top: 16px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 16px; }
+  .change-panel .change-title { font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
+  .change-panel p { font-size: 12px; color: #cbd5e1; line-height: 1.6; margin-bottom: 10px; }
+  .change-panel p:last-child { margin-bottom: 0; }
+  .change-chip { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-right: 8px; vertical-align: 1px; }
+  .chip-func { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+  .chip-arch { background: #1e1b4b; color: #a78bfa; border: 1px solid #5b21b6; }
 </style>
 </head>
 <body>
@@ -71,6 +83,7 @@
     <button class="section-tab active" onclick="showSection('commands')">-h Rewrites</button>
     <button class="section-tab" onclick="showSection('reference')">cli-reference.md Preamble</button>
     <button class="section-tab" onclick="showSection('docs')">Bundled Docs Concept</button>
+    <button class="section-tab" onclick="showSection('errors')">Error States</button>
   </div>
 
   <!-- Commands section -->
@@ -263,6 +276,37 @@ contacts:
     </div>
   </div>
 
+  <!-- Error states section -->
+  <div id="errors-section" style="display:none">
+    <div class="ref-section">
+      <h2>Error States</h2>
+      <p class="sub">Suggested changes to error and success output across five commands. Prepared by Jayd Jackson, UX.</p>
+
+      <p class="err-intro" style="margin-top:16px">Each card shows a command's current output next to a suggested rewrite. The panel below each card notes what the change touches: <span class="change-chip chip-func">Functional</span> means the CLI's behavior or output shape would change; <span class="change-chip chip-arch">Architectural</span> means the change reaches into how the command classifies causes or emits results.</p>
+
+      <div class="ref-label">Overview</div>
+      <table class="ref-table">
+        <tr><th>Dimension</th><th>Current</th><th>Suggested</th></tr>
+        <tr><td>Error template sections</td><td>Reuses existing <span class="mono">What went wrong</span> / <span class="mono">Try</span> sections. No new headers.</td><td>Adds a trailing <span class="mono">Once X succeeds</span> section on success, plus optional <span class="mono">Cause</span> and <span class="mono">Hint</span> blocks on failure.</td></tr>
+        <tr><td>Forward-chain on success</td><td>Only where the CLI already prints one (e.g. <span class="mono">mod run</span> prints a single "what to do next").</td><td>Every successful workflow command ends with 2&ndash;3 concrete next commands &mdash; view, commit, push, etc.</td></tr>
+        <tr><td>Cause classification</td><td>Generic, cause-agnostic messages (e.g. "Unable to sync MyOrg from Moderne"). No cause branches.</td><td>Distinct messages per cause &mdash; auth expired, network unreachable, no build tool detected, etc.</td></tr>
+        <tr><td>Exit-code semantics</td><td>Unchanged: <span class="mono">mod search</span> with 0-of-N all-skip exits partial success.</td><td>Re-examines edge cases &mdash; e.g. should all-skip search count as failure, not partial?</td></tr>
+        <tr><td>Runtime data</td><td>Uses only what the CLI already knows and prints.</td><td>May need new probes &mdash; detect build-tool type, verify org membership, check index freshness.</td></tr>
+        <tr><td>Architectural surface</td><td>Edits to strings and suggestion files. No new Java classes.</td><td>Would likely need new <span class="mono">CommandException</span> subclasses for cause labels, wider use of <span class="mono">suggestNextSteps()</span>, and per-command <span class="mono">Hint</span> builders.</td></tr>
+      </table>
+    </div>
+
+    <div style="height:24px"></div>
+
+    <div class="cmd-tabs" id="err-tabs"></div>
+    <div class="step-container" id="err-step-container"></div>
+    <div class="nav">
+      <button id="err-prev-btn" onclick="errNavigate(-1)">&larr; Previous</button>
+      <span class="nav-count" id="err-nav-count"></span>
+      <button id="err-next-btn" onclick="errNavigate(1)">Next &rarr;</button>
+    </div>
+  </div>
+
   <div class="footer">Prepared by Annie Rimbach, UX | April 2026 | Primer CLI Design Guidelines | No architecture changes required</div>
 </div>
 <script>
@@ -432,8 +476,9 @@ function showSection(section) {
   document.getElementById('commands-section').style.display = section === 'commands' ? '' : 'none';
   document.getElementById('reference-section').style.display = section === 'reference' ? '' : 'none';
   document.getElementById('docs-section').style.display = section === 'docs' ? '' : 'none';
+  document.getElementById('errors-section').style.display = section === 'errors' ? '' : 'none';
   document.querySelectorAll('.section-tab').forEach(function(t,i){
-    t.classList.toggle('active', (i===0 && section==='commands') || (i===1 && section==='reference') || (i===2 && section==='docs'));
+    t.classList.toggle('active', (i===0 && section==='commands') || (i===1 && section==='reference') || (i===2 && section==='docs') || (i===3 && section==='errors'));
   });
 }
 
@@ -457,6 +502,176 @@ function renderStep() {
 function goTo(i){currentStep=i;renderTabs();renderStep();}
 function navigate(dir){goTo(Math.max(0,Math.min(steps.length-1,currentStep+dir)));}
 renderTabs();renderStep();
+
+// ─── Error states stepper ────────────────────────────────────────────
+var errCases = [
+  {
+    command: "mod run",
+    tag: "EXTEND",
+    tagClass: "",
+    title: "mod run — extended chain on success",
+    subtitle: "Not just \"view results\" — to the full path forward: view, commit, push.",
+    current: "$ mod run . --last-recipe-run=data/tables/java.cleanup.UnnecessaryParentheses\n\n  Loading recipe\n  Running recipe on 47 repositories\n  ✓ 42 repositories modified\n  → 5 unchanged\n\n* What to do next:\n  MOD SUCCEEDED in (3m 34s)",
+    suggested: [
+      {t:"dim",v:"$ "},{t:"white",v:"mod run . --last-recipe-run=data/tables/java.cleanup.UnnecessaryParentheses\n\n"},
+      {t:"dim",v:"  Loading recipe\n"},
+      {t:"dim",v:"  Running recipe on 47 repositories\n"},
+      {t:"green",v:"  ✓ "},{t:"dim",v:"42 repositories modified\n\n"},
+      {t:"header",v:"WHAT TO DO NEXT\n"},
+      {t:"cyan",v:"  ▸ mod run . --last-recipe-run"},{t:"dim",v:"       —  View results by repo.\n"},
+      {t:"cyan",v:"  ▸ mod git commit . -m \"...\""},{t:"dim",v:"         —  Commit changes across repos.\n"},
+      {t:"cyan",v:"  ▸ mod git push . -u"},{t:"dim",v:"                  —  Push to remotes.\n\n"},
+      {t:"green",v:"MOD SUCCEEDED"},{t:"dim",v:" in (3m 34s)\n"}
+    ],
+    summary: "Current: single \"what to do next\" hint ships today. Suggested: replaces the one-liner with a structured block containing three forward-chain commands.",
+    functional: "The CLI would emit a persistent success block — not a one-liner — whenever a recipe run completes with modifications. Today that block only appears sometimes.",
+    architectural: "Relies on <span class=\"mono\">suggestNextSteps()</span> being wired into <span class=\"mono\">Run.convertSuccess()</span> (or equivalent), and on knowing which of {commit, push, study} are safe to suggest given current repo state."
+  },
+  {
+    command: "mod build",
+    tag: "SUGGEST",
+    tagClass: "suggest",
+    title: "mod build — cause hint + forward-chain",
+    subtitle: "Same Try list as the baseline, but adds a hint that names detected files, and a forward-chain after success.",
+    current: "$ mod build .\n\nFAILURE: mod failed with an exception\n* What went wrong:\n  No build tool found for /home/user/project\n\n* Try:\n  - Report to support@moderne.io\n\nMOD FAILED in (2s)",
+    suggested: [
+      {t:"dim",v:"$ "},{t:"white",v:"mod build .\n\n"},
+      {t:"red",v:"FAILURE: "},{t:"dim",v:"mod failed with an exception\n\n"},
+      {t:"header",v:"WHAT WENT WRONG\n"},
+      {t:"dim",v:"  No build tool detected in "},{t:"cyan",v:"/home/user/project\n\n"},
+      {t:"header",v:"HINT\n"},
+      {t:"dim",v:"  The CLI looks for "},{t:"cyan",v:"pom.xml"},{t:"dim",v:", "},{t:"cyan",v:"build.gradle"},{t:"dim",v:", "},{t:"cyan",v:"setup.py"},{t:"dim",v:",\n"},
+      {t:"dim",v:"  "},{t:"cyan",v:"package.json"},{t:"dim",v:", and others in the project root.\n\n"},
+      {t:"header",v:"TRY\n"},
+      {t:"cyan",v:"  ▸ mod build <path>"},{t:"dim",v:"           —  Point to a project root.\n\n"},
+      {t:"header",v:"ONCE BUILD SUCCEEDS\n"},
+      {t:"cyan",v:"  ▸ mod run <path> --recipe <name>"},{t:"dim",v:"  —  Run a recipe on your LSTs.\n\n"},
+      {t:"red",v:"MOD FAILED"},{t:"dim",v:" in (2s)\n"}
+    ],
+    summary: "Current: same Try list, no forward-chain. Suggested: adds a hint naming the build config files the CLI looks for, plus a success forward-chain pointing to mod run.",
+    functional: "The error path would need auto-detection metadata (which files the CLI checks) exposed to the formatter, and the success path would need a forward-chain block that isn't produced today.",
+    architectural: "The hint implies the detection list is exposed as a constant the error formatter can read. The <span class=\"mono\">Once build succeeds</span> section implies <span class=\"mono\">StandardCommand.convertSuccess()</span> has a <span class=\"mono\">suggestNextSteps()</span> hook for every workflow command, not just a handful."
+  },
+  {
+    command: "mod study",
+    tag: "SUGGEST",
+    tagClass: "suggest",
+    title: "mod study — split causes into distinct branches",
+    subtitle: "Three different causes create three distinct messages instead of one vague Try.",
+    current: "$ mod study . --last-recipe-run=run --data-table=RewriteSources\n\nFAILURE: mod failed with an exception\n* What went wrong:\n  No data tables available\n\n* Try:\n  - Double-check that the data table name was spelled correctly, or that\n    the recipe produced results.\n  - Report to support@moderne.io\n\nMOD FAILED in (1s)",
+    suggested: [
+      {t:"dim",v:"$ "},{t:"white",v:"mod study . --last-recipe-run=run --data-table=RewriteSources\n\n"},
+      {t:"red",v:"FAILURE: "},{t:"dim",v:"mod failed with an exception\n\n"},
+      {t:"header",v:"WHAT WENT WRONG\n"},
+      {t:"dim",v:"  Data table "},{t:"cyan",v:"RewriteSources"},{t:"dim",v:" was not produced in the last recipe run.\n\n"},
+      {t:"header",v:"CAUSE\n"},
+      {t:"dim",v:"  The recipe ran, but didn't produce a table with that name.\n"},
+      {t:"dim",v:"  Possible reasons: wrong name, wrong recipe, or no matches found.\n\n"},
+      {t:"header",v:"TRY\n"},
+      {t:"cyan",v:"  ▸ List tables this run produced:\n"},
+      {t:"cyan",v:"      mod study <path> --last-recipe-run --list\n"},
+      {t:"cyan",v:"  ▸ Re-run against a different recipe:\n"},
+      {t:"cyan",v:"      mod run <path> --recipe <name>\n"},
+      {t:"cyan",v:"  ▸ Export results as JSON:\n"},
+      {t:"cyan",v:"      mod study <path> --last-recipe-run --json\n\n"},
+      {t:"red",v:"MOD FAILED"},{t:"dim",v:" in (1s)\n"}
+    ],
+    summary: "Current: single unified Try with generic advice. Suggested: splits the causes into distinct Try bullets, each with a runnable command.",
+    functional: "The suggested <span class=\"mono\">--list</span> flag on <span class=\"mono\">mod study</span> doesn't exist today; it's a capability that would need to be built to make this Try real.",
+    architectural: "Would add a list-tables command path and likely a helper method that loads run metadata once for both the error message and the list output."
+  },
+  {
+    command: "mod git sync",
+    tag: "SUGGEST",
+    tagClass: "suggest",
+    title: "mod git sync — disambiguate auth vs network vs missing org",
+    subtitle: "Three distinct causes, three distinct messages and Try lists.",
+    current: "$ mod git sync . --organization=MyOrg\n\nFAILURE: mod failed with an exception\n* What went wrong:\n  Unable to sync MyOrg from Moderne\n\n* Try:\n  - Report to support@moderne.io\n\nMOD FAILED in (4s)",
+    suggested: [
+      {t:"dim",v:"$ "},{t:"white",v:"mod git sync . --organization=MyOrg\n\n"},
+      {t:"red",v:"FAILURE: "},{t:"dim",v:"mod failed with an exception\n\n"},
+      {t:"header",v:"WHAT WENT WRONG\n"},
+      {t:"dim",v:"  Authentication to "},{t:"cyan",v:"app.moderne.io"},{t:"dim",v:" has expired.\n\n"},
+      {t:"header",v:"CAUSE\n"},
+      {t:"dim",v:"  Your login token is no longer valid. The CLI reached\n"},
+      {t:"dim",v:"  Moderne but was refused — distinct from \"org not found\"\n"},
+      {t:"dim",v:"  and \"network unreachable\", which render their own branches.\n\n"},
+      {t:"header",v:"TRY\n"},
+      {t:"cyan",v:"  ▸ Log in again:  mod config moderne login\n"},
+      {t:"cyan",v:"  ▸ Verify tenant: mod config moderne show\n"},
+      {t:"cyan",v:"  ▸ Still stuck? Report to support@moderne.io\n\n"},
+      {t:"red",v:"MOD FAILED"},{t:"dim",v:" in (4s)\n"}
+    ],
+    summary: "Current: message stays cause-agnostic (\"Unable to sync MyOrg from Moderne\"). Suggested: picks the specific cause, names it, and shows only the Try steps relevant to that cause. Network and unknown-org failures would render their own distinct branches.",
+    functional: "Requires the sync code path to distinguish 401/403 from DNS failures from \"org X not in the user's account.\" Today those may collide into one generic exception.",
+    architectural: "Would benefit from typed exceptions (e.g. <span class=\"mono\">AuthExpiredException</span>, <span class=\"mono\">OrgNotFoundException</span>, <span class=\"mono\">NetworkUnreachableException</span>) so the error formatter can render the right frame per cause."
+  },
+  {
+    command: "mod search",
+    tag: "PROMOTED ERROR",
+    tagClass: "promoted",
+    title: "mod search — promote silent all-skip to real failure",
+    subtitle: "0 of 47 searches skipped becomes an outright failure with its own Try, instead of partial success with no result.",
+    current: "$ mod search . --usages-of FindMethods\n\n  Searching 47 repositories\n  - No search index on 47 repositories (skipped)\n\nMOD PARTIALLY SUCCEEDED in (2s)",
+    suggested: [
+      {t:"dim",v:"$ "},{t:"white",v:"mod search . --usages-of FindMethods\n\n"},
+      {t:"red",v:"FAILURE: "},{t:"dim",v:"mod failed with an exception\n\n"},
+      {t:"header",v:"WHAT WENT WRONG\n"},
+      {t:"dim",v:"  0 of 47 repositories have a search index. Nothing was\n"},
+      {t:"dim",v:"  searched.\n\n"},
+      {t:"header",v:"CAUSE\n"},
+      {t:"dim",v:"  Search requires a per-repo index. No repos in this path\n"},
+      {t:"dim",v:"  have been indexed.\n\n"},
+      {t:"yellow",v:"  ! Note: "},{t:"dim",v:"Indexes expire when a repo is rebuilt. You may need\n"},
+      {t:"dim",v:"  to re-index after "},{t:"cyan",v:"mod build"},{t:"dim",v:".\n\n"},
+      {t:"header",v:"TRY\n"},
+      {t:"cyan",v:"  ▸ Build indexes first:  mod build .\n"},
+      {t:"cyan",v:"  ▸ Re-check indexes:     mod config search index <path>\n"},
+      {t:"cyan",v:"                          --organization=<name>\n"},
+      {t:"cyan",v:"  ▸ Still stuck? Report to support@moderne.io\n\n"},
+      {t:"header",v:"ONCE YOU HAVE INDEXES\n"},
+      {t:"cyan",v:"  mod search . --query=<...>"},{t:"dim",v:"  —  Run your search.\n\n"},
+      {t:"red",v:"MOD FAILED"},{t:"dim",v:" in (2s)\n"}
+    ],
+    summary: "Current: continuation banner reads MOD PARTIALLY SUCCEEDED; the skip line is buried above. Suggested: reclassifies an all-skip run as outright failure. One banner instead of two, a real Cause section, and a forward-chain on recovery.",
+    functional: "Changes exit-code semantics: today all-skip exits partial-success (2); the suggested version would exit failure (3). Any downstream consumer that treats 2 as \"mostly fine\" would need to be updated.",
+    architectural: "Requires a rule inside the search command: <span class=\"mono\">if processed = 0 and searched = 0, throw CommandException instead of returning partial success</span>. That's a product decision about what \"partial\" means, not a pure UX change."
+  }
+];
+
+var errStep = 0;
+
+function renderErrTabs(){
+  document.getElementById('err-tabs').innerHTML = errCases.map(function(c,i){
+    var cls = i===errStep ? 'active-config' : '';
+    return '<button class="cmd-tab mono '+cls+'" onclick="errGoTo('+i+')">'+escHtml(c.command)+'</button>';
+  }).join('');
+}
+
+function renderErrStep(){
+  var c = errCases[errStep];
+  var cur = '<div class="terminal"><div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label mono">Current output</span></div><div class="terminal-body"><pre class="mono">'+escHtml(c.current)+'</pre></div></div>';
+  var sug = '<div class="terminal"><div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span class="terminal-label mono">Suggested</span></div><div class="terminal-body">'+renderTokens(c.suggested)+'</div></div>';
+  var panel = '<div class="change-panel">'
+    + '<div class="change-title">What this card changes</div>'
+    + '<p>'+escHtml(c.summary)+'</p>'
+    + '<p><span class="change-chip chip-func">Functional</span>'+c.functional+'</p>'
+    + '<p><span class="change-chip chip-arch">Architectural</span>'+c.architectural+'</p>'
+    + '</div>';
+  document.getElementById('err-step-container').innerHTML =
+    '<div><span class="err-banner '+c.tagClass+'">'+escHtml(c.tag)+'</span></div>'
+    + '<div class="step-title">'+escHtml(c.title)+'</div>'
+    + '<p class="step-subtitle">'+escHtml(c.subtitle)+'</p>'
+    + '<div class="grid">'+cur+sug+'</div>'
+    + panel;
+  document.getElementById('err-nav-count').textContent = (errStep+1)+' of '+errCases.length;
+  document.getElementById('err-prev-btn').disabled = errStep===0;
+  document.getElementById('err-next-btn').disabled = errStep===errCases.length-1;
+}
+
+function errGoTo(i){errStep=i;renderErrTabs();renderErrStep();}
+function errNavigate(dir){errGoTo(Math.max(0,Math.min(errCases.length-1,errStep+dir)));}
+renderErrTabs();renderErrStep();
 </script>
 </body>
 </html>
