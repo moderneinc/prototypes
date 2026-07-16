@@ -76,13 +76,6 @@ b { font-weight: 600; }
 .rt-more .icon-btn:hover, .rt-more.open .icon-btn { background: var(--surface); }
 .rt-spacer { margin-left: auto; }
 
-/* Tier-2 action cluster: Add · Download · Copy — first-class, distinct */
-.action-cluster { display: inline-flex; align-items: center; gap: 6px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--field); }
-.act-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--text); background: transparent; border: none; border-radius: 7px; padding: 7px 11px; }
-.act-btn:hover { background: var(--surface); }
-.act-btn svg { width: 15px; height: 15px; color: var(--muted); }
-.act-btn.add svg { color: var(--accent); }
-.act-divider { width: 1px; align-self: stretch; background: var(--line); margin: 2px 0; }
 .rt-org { font-size: 12px; color: var(--muted); white-space: nowrap; }
 .dry-run { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; background: var(--ink-bg); color: var(--ink-fg); border: 1px solid transparent; border-radius: 6px; padding: 8px 15px; height: 36px; }
 .dry-run:hover { filter: brightness(1.12); }
@@ -339,27 +332,19 @@ textarea.nr-input { resize: none; height: 92px; }
       <button class="rt-name" id="renameBtn" title="Click to rename"><span class="txt" id="recipeName">new name spring thing</span><svg class="pencil"><use href="#i-pencil"/></svg></button>
       <div class="rt-more" id="moreWrap">
         <button class="icon-btn" id="moreBtn" title="Recipe actions" aria-haspopup="true"><svg><use href="#i-more"/></svg></button>
+        <!-- Recipe-level actions live here (faithful to #8500): a conventional,
+             labelled overflow next to the recipe name. Download / Copy carry
+             distinct icons + outcome-named labels so they read unambiguously. -->
         <div class="menu-pop" id="moreMenu" hidden style="top:38px;left:0">
           <div class="mp-item" data-toast="Opened “Edit details”"><svg><use href="#i-gear"/></svg> Edit details</div>
           <div class="mp-item" data-toast="Opened YAML editor"><svg><use href="#i-code"/></svg> Edit as YAML</div>
           <div class="mp-sep"></div>
-          <div class="mp-item" data-toast="Duplicated recipe"><svg><use href="#i-copy"/></svg> Duplicate</div>
-          <div class="mp-item" data-toast="Opened full details"><svg><use href="#i-link"/></svg> View full details</div>
-          <div class="mp-sep"></div>
-          <div class="mp-item danger" data-toast="Removed recipe"><svg><use href="#i-x"/></svg> Remove</div>
+          <div class="mp-item" data-action="download"><svg><use href="#i-download"/></svg> Download YAML</div>
+          <div class="mp-item" data-action="copy"><svg><use href="#i-copy"/></svg> Copy as YAML to clipboard</div>
         </div>
       </div>
 
       <span class="rt-spacer"></span>
-
-      <!-- Tier 2: Add · Download · Copy — first-class & unambiguous -->
-      <div class="action-cluster">
-        <button class="act-btn add" data-open-modal title="Add a recipe"><svg><use href="#i-plus"/></svg> Add recipe</button>
-        <span class="act-divider"></span>
-        <button class="act-btn" id="downloadBtn" title="Download the recipe as a .yml file"><svg><use href="#i-download"/></svg> Download YAML</button>
-        <button class="act-btn" id="copyBtn" title="Copy the recipe YAML to your clipboard"><svg><use href="#i-copy"/></svg> Copy YAML</button>
-      </div>
-
       <span class="rt-org" id="orgText">Netflix + Spring</span>
       <button class="dry-run" id="dryRunBtn" title="Dry run on 271 repositories"><svg><use href="#i-play"/></svg> Dry run</button>
     </div>
@@ -399,7 +384,7 @@ textarea.nr-input { resize: none; height: 92px; }
   </div>
 
   <div class="proto-note">
-    <span>Phase 2 — Common actions &amp; discoverability · replicates #8500 in Morpheus, with Add / Download / Copy pulled out of the ⋮ into a clear, distinct cluster ·</span>
+    <span>Phase 2 — Common actions &amp; discoverability · faithful Morpheus recreation of #8500: recipe actions live in a conventional ⋮ menu (Edit · Edit as YAML · Download YAML · Copy as YAML); Add via the Builder title → recipe-actions modal ·</span>
     <code>?state=empty</code><span>shows the empty state ·</span>
     <code>?recipe=large</code><span>loads a ~2,000-step recipe.</span>
   </div>
@@ -566,12 +551,10 @@ document.getElementById('idToggle').addEventListener('click',function(){var on=t
 /* ---- recipe actions ⋮ ---- */
 var moreWrap=document.getElementById('moreWrap'),moreMenu=document.getElementById('moreMenu'),moreBtn=document.getElementById('moreBtn');
 moreBtn.addEventListener('click',function(e){e.stopPropagation();var h=moreMenu.hidden;moreMenu.hidden=!h;moreWrap.classList.toggle('open',h);});
-moreMenu.addEventListener('click',function(e){var it=e.target.closest('[data-toast]');if(it){toast(it.getAttribute('data-toast'),it.classList.contains('danger')?'i-warn':'i-check-c');moreMenu.hidden=true;moreWrap.classList.remove('open');}});
+function downloadYaml(){ var blob=new Blob([recipeToYaml()],{type:'text/yaml'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=recipe.id.replace(/[^a-z0-9.-]/gi,'-')+'.yml'; document.body.appendChild(a); a.click(); a.remove(); toast('Downloaded '+a.download,'i-download'); }
+function copyYaml(){ var y=recipeToYaml(); if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(y).catch(function(){});} toast('Copied recipe YAML to clipboard','i-copy'); }
+moreMenu.addEventListener('click',function(e){var it=e.target.closest('.mp-item');if(!it)return;var act=it.getAttribute('data-action');if(act==='download'){downloadYaml();}else if(act==='copy'){copyYaml();}else if(it.getAttribute('data-toast')){toast(it.getAttribute('data-toast'),it.classList.contains('danger')?'i-warn':'i-check-c');}moreMenu.hidden=true;moreWrap.classList.remove('open');});
 document.addEventListener('click',function(){moreMenu.hidden=true;moreWrap.classList.remove('open');});
-
-/* ---- Tier 2 actions: download vs copy (distinct outcomes) ---- */
-document.getElementById('downloadBtn').addEventListener('click',function(){ var blob=new Blob([recipeToYaml()],{type:'text/yaml'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=recipe.id.replace(/[^a-z0-9.-]/gi,'-')+'.yml'; document.body.appendChild(a); a.click(); a.remove(); toast('Downloaded '+a.download,'i-download'); });
-document.getElementById('copyBtn').addEventListener('click',function(){ var y=recipeToYaml(); if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(y).catch(function(){});} toast('Copied recipe YAML to clipboard','i-copy'); });
 document.getElementById('dryRunBtn').addEventListener('click',function(){ toast('Dry run started on '+recipe.runOnRepositoryCount+' repositories','i-play'); });
 document.getElementById('renameBtn').addEventListener('click',function(){ toast('Rename: type a new name (prototype)'); });
 
