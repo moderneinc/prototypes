@@ -131,16 +131,26 @@ b { font-weight: 600; }
 .bl-wrap { display: grid; grid-template-columns: minmax(0, 46fr) minmax(0, 54fr); gap: 14px; }
 
 .bl-canvas { position: relative; background: var(--field); border: 1px solid var(--line); border-radius: 12px; min-height: 640px; overflow: hidden; }
-.bl-graph, .bl-graph svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.bl-rail { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; padding: 6px; background: var(--card); border: 1px solid var(--line-strong); border-radius: 10px; }
+.bl-graph { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bl-graph canvas { display:block; width:100% !important; height:100% !important; }
+.bl-rail { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px -8px rgba(0,0,0,.28); z-index:3; }
 .bl-rail button { width: 30px; height: 30px; border: none; border-radius: 6px; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .bl-rail button:hover { background: var(--surface); color: var(--text); }
 .bl-rail button.on { color: var(--accent); background: var(--accent-tint); }
 .bl-rail svg { width: 15px; height: 15px; }
-.bl-nodelabel { position: absolute; left: 46%; top: 54%; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+.bl-nodelabel { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -165%); display: flex; align-items: center; gap: 8px; pointer-events: none; z-index:2; }
 .bl-nodelabel .lbl { background: var(--primary-bg); color: var(--primary-fg); font-size: 12px; font-weight: 600; padding: 8px 15px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.18); max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
 .bl-nodelabel .menu { width: 34px; height: 34px; border-radius: 999px; border: none; background: var(--primary-bg); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
 .bl-nodelabel .menu svg { width: 15px; height: 15px; }
+.viz-filter { position:absolute; top:14px; right:14px; z-index:3; display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--line-strong); border-radius:8px; padding:7px 11px; box-shadow:0 6px 18px -8px rgba(0,0,0,.25); }
+.viz-filter svg { width:15px; height:15px; color:var(--muted); }
+.viz-filter input { border:none; outline:none; background:transparent; font:inherit; font-size:13px; color:var(--text); width:130px; }
+.viz-legend { position:absolute; left:14px; bottom:14px; z-index:3; background:var(--card); border:1px solid var(--line); border-radius:10px; box-shadow:var(--menu-shadow, 0 16px 44px rgba(10,10,25,.2)); padding:11px 13px; font-size:11px; color:var(--text); }
+.viz-legend[hidden] { display:none; }
+.viz-legend .lg-head { font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+.viz-legend .lg-row { display:flex; align-items:center; gap:8px; margin:5px 0; }
+.viz-legend .dot { width:12px; height:12px; border-radius:999px; flex:none; }
+.viz-legend .hint { color:var(--muted); margin-top:8px; font-size:10.5px; }
 
 .bl-panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; min-height: 640px; max-height: 78vh; overflow: hidden; }
 .bl-top { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--line2); }
@@ -282,16 +292,22 @@ b { font-weight: 600; }
     <div class="bl-canvas">
       <div class="bl-graph" id="graph"></div>
       <div class="bl-rail">
-        <button title="Collapse panel"><svg><use href="#i-collapse"/></svg></button>
-        <button title="Run"><svg><use href="#i-play"/></svg></button>
-        <button title="Fit view"><svg><use href="#i-eye"/></svg></button>
-        <button title="Locate selected"><svg><use href="#i-target"/></svg></button>
-        <button class="on" title="Labels"><svg><use href="#i-tag"/></svg></button>
-        <button title="Help"><svg><use href="#i-help"/></svg></button>
-        <button id="themeRail" title="Toggle light / dark"><svg id="themeRailIcon"><use href="#i-moon"/></svg></button>
-        <button title="About"><svg><use href="#i-info"/></svg></button>
+        <button title="Move to side bar"><svg><use href="#i-collapse"/></svg></button>
+        <button id="railRotate" class="on" title="Pause rotation"><svg><use href="#i-play"/></svg></button>
+        <button id="railFit" title="Move to fit"><svg><use href="#i-eye"/></svg></button>
+        <button id="railLocate" title="Move to selected node"><svg><use href="#i-target"/></svg></button>
+        <button title="View documentation"><svg><use href="#i-help"/></svg></button>
+        <button id="railLegend" title="Show legend"><svg><use href="#i-info"/></svg></button>
       </div>
-      <div class="bl-nodelabel"><span class="lbl" id="nodeLabel">new name spring thing</span><span class="menu"><svg><use href="#i-menu"/></svg></span></div>
+      <div class="viz-filter"><svg><use href="#i-search"/></svg><input id="vizFilter" placeholder="Filter nodes" /></div>
+      <div class="viz-legend" id="vizLegend" hidden>
+        <div class="lg-head">Legend</div>
+        <div class="lg-row"><span class="dot" id="lgRecipe"></span> Recipe node</div>
+        <div class="lg-row"><span class="dot" id="lgPre"></span> Precondition node</div>
+        <div class="lg-row"><span class="dot" id="lgMatch"></span> Filter results</div>
+        <div class="hint">Drag to rotate · scroll to zoom · right-drag to pan</div>
+      </div>
+      <div class="bl-nodelabel" style="display:none"><span class="lbl" id="nodeLabel">new name spring thing</span><span class="menu"><svg><use href="#i-menu"/></svg></span></div>
     </div>
 
     <div class="bl-panel">
@@ -314,7 +330,7 @@ b { font-weight: 600; }
 
   <div class="proto-note">
     <span>Phase 1 — Morpheus UI uplift · sample data ·</span>
-    <span>tips: click a recipe to select · use the rail moon/sun to toggle theme ·</span>
+    <span>tips: click a node in the topology or a row to select · drag to rotate, scroll to zoom · top-bar moon/sun toggles theme ·</span>
     <code>?recipe=large</code>
     <span>previews a ~2,000-step recipe (later phases).</span>
   </div>
@@ -473,17 +489,18 @@ document.getElementById('tree').addEventListener('click', function (e) {
   var toggle = e.target.closest('[data-toggle]');
   if (toggle) { var id = toggle.getAttribute('data-toggle'); if (expanded.has(id)) { expanded.delete(id); } else { expanded.add(id); } renderTree(); return; }
   var select = e.target.closest('[data-select]');
-  if (select) { selectedId = select.getAttribute('data-select'); renderTree(); syncMeta(); }
+  if (select) { selectNode(select.getAttribute('data-select')); }
 });
+function selectNode(id){ selectedId=id; renderTree(); syncMeta(); if(window.viz){ window.viz.select(id); } }
+window.__graphSelect = selectNode;
+window.BUILDER_RECIPE = recipe;
 
 function setTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
   var next = mode === 'dark' ? 'i-sun' : 'i-moon';
-  document.getElementById('themeRailIcon').innerHTML = '<use href="#' + next + '"/>';
   document.querySelector('#themeTop use').setAttribute('href', '#' + next);
 }
-function toggleTheme() { setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
-document.getElementById('themeRail').addEventListener('click', toggleTheme);
+function toggleTheme() { setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); if(window.viz){ window.viz.setTheme(); } }
 document.getElementById('themeTop').addEventListener('click', toggleTheme);
 
 var mgmtBtn = document.getElementById('mgmtBtn'), mgmtMenu = document.getElementById('mgmtMenu');
@@ -491,8 +508,143 @@ mgmtBtn.addEventListener('click', function (e) { e.stopPropagation(); mgmtMenu.h
 document.addEventListener('click', function () { mgmtMenu.hidden = true; });
 mgmtMenu.addEventListener('click', function (e) { e.stopPropagation(); });
 
+/* ---- rail + filter wiring ---- */
+(function(){
+  var rot=document.getElementById('railRotate');
+  rot.addEventListener('click', function(){ if(!window.viz)return; var on=window.viz.toggleRotation(); rot.classList.toggle('on', on); rot.title = on?'Pause rotation':'Play rotation'; });
+  document.getElementById('railFit').addEventListener('click', function(){ if(window.viz) window.viz.fit(); });
+  document.getElementById('railLocate').addEventListener('click', function(){ if(window.viz) window.viz.locate(); });
+  var lg=document.getElementById('railLegend'), lgp=document.getElementById('vizLegend');
+  lg.addEventListener('click', function(e){ e.stopPropagation(); lgp.hidden=!lgp.hidden; lg.classList.toggle('on', !lgp.hidden); lg.title = lgp.hidden?'Show legend':'Hide legend'; });
+  document.getElementById('vizFilter').addEventListener('input', function(){ if(window.viz) window.viz.filter(this.value); });
+})();
+
 /* ---- init ---- */
-renderGraph(); renderTree(); syncMeta();
+renderTree(); syncMeta();
+</script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+var mount = document.getElementById('graph');
+var recipe = window.BUILDER_RECIPE;
+function pl(label){ return label.map(function(p){ return typeof p==='string'?p:p.code; }).join(''); }
+
+/* flatten recipe -> nodes + edges, then a deterministic branching sphere layout */
+var nodes=[], byId={}, edges=[];
+(function walk(node, parent, depth){
+  var n={ id:node.id, kind:node.kind, label:pl(node.label), depth:depth, matched:false };
+  nodes.push(n); byId[node.id]=n;
+  if(parent){ edges.push([parent,n]); }
+  (node.children||[]).forEach(function(c){ walk(c, n, depth+1); });
+})(recipe.root, null, 0);
+(function place(node, x,y,z, R){
+  var nn=byId[node.id]; nn.x=x; nn.y=y; nn.z=z;
+  var kids=node.children||[], k=kids.length;
+  kids.forEach(function(c,i){
+    var yy = k>1 ? 1-(i/(k-1))*2 : 0;
+    var rr = Math.sqrt(Math.max(0,1-yy*yy));
+    var th = i*2.399963;
+    place(c, x+Math.cos(th)*rr*R, y+yy*R, z+Math.sin(th)*rr*R, R*0.5);
+  });
+})(recipe.root, 0,0,0, 55);
+
+var root3 = document.querySelector('.mph-root') || document.documentElement;
+function cv(n,f){ var v=getComputedStyle(root3).getPropertyValue(n).trim(); return v||f; }
+function palette(){ return {
+  recipe:new THREE.Color(cv('--ch-p1','#3E5BE8')),
+  pre:new THREE.Color(cv('--violet','#9D5BE8')),
+  sel:new THREE.Color(cv('--accent','#1055E2')),
+  match:new THREE.Color(cv('--teal-mid','#16A89B')),
+  link:new THREE.Color(cv('--line-strong','#888'))
+}; }
+var P=palette();
+
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(50,1,0.1,6000);
+var renderer=new THREE.WebGLRenderer({ antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+mount.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0xffffff,0.75));
+var dir=new THREE.DirectionalLight(0xffffff,0.9); dir.position.set(1,1,1.5); scene.add(dir);
+var group=new THREE.Group(); scene.add(group);
+
+var geo=new THREE.SphereGeometry(1,18,18);
+var mat=new THREE.MeshStandardMaterial({ roughness:0.5, metalness:0.0 });
+var inst=new THREE.InstancedMesh(geo, mat, nodes.length);
+var dummy=new THREE.Object3D();
+var selId=null;
+function baseSize(n){ return n.kind==='root'?3.4 : n.depth<=1?2.3 : 1.5; }
+function nodeCol(n){ return n.id===selId ? P.sel : (n.matched ? P.match : (n.kind==='precondition'?P.pre:P.recipe)); }
+function writeMatrix(i,n){ dummy.position.set(n.x,n.y,n.z); dummy.scale.setScalar(baseSize(n)*(n.id===selId?1.8:1)); dummy.updateMatrix(); inst.setMatrixAt(i,dummy.matrix); }
+function writeColors(){ nodes.forEach(function(n,i){ inst.setColorAt(i, nodeCol(n)); }); inst.instanceColor.needsUpdate=true; }
+function writeMatrices(){ nodes.forEach(function(n,i){ writeMatrix(i,n); }); inst.instanceMatrix.needsUpdate=true; }
+nodes.forEach(function(n,i){ writeMatrix(i,n); inst.setColorAt(i, nodeCol(n)); });
+group.add(inst);
+
+var lgeo=new THREE.BufferGeometry();
+var lpos=new Float32Array(edges.length*6);
+edges.forEach(function(e,i){ var a=e[0],b=e[1]; lpos.set([a.x,a.y,a.z,b.x,b.y,b.z], i*6); });
+lgeo.setAttribute('position', new THREE.BufferAttribute(lpos,3));
+var lines=new THREE.LineSegments(lgeo, new THREE.LineBasicMaterial({ color:P.link, transparent:true, opacity:0.35 }));
+group.add(lines);
+
+var controls=new OrbitControls(camera, renderer.domElement);
+controls.enableDamping=true; controls.dampingFactor=0.08; controls.enablePan=true;
+function fit(){ var box=new THREE.Box3().setFromObject(group); var c=box.getCenter(new THREE.Vector3()); var s=box.getSize(new THREE.Vector3()); var maxd=Math.max(s.x,s.y,s.z,1); var dist=(maxd/(2*Math.tan(camera.fov*Math.PI/360)))*1.5; controls.target.copy(c); camera.position.set(c.x, c.y, c.z+dist); controls.update(); }
+
+function resize(){ var w=mount.clientWidth||600, hh=mount.clientHeight||600; renderer.setSize(w,hh,false); camera.aspect=w/hh; camera.updateProjectionMatrix(); }
+new ResizeObserver(resize).observe(mount); resize(); fit();
+
+/* raycast select */
+var ray=new THREE.Raycaster(), m=new THREE.Vector2();
+renderer.domElement.addEventListener('pointerdown', function(ev){
+  var r=renderer.domElement.getBoundingClientRect();
+  m.x=((ev.clientX-r.left)/r.width)*2-1; m.y=-((ev.clientY-r.top)/r.height)*2+1;
+  ray.setFromCamera(m,camera);
+  var hit=ray.intersectObject(inst);
+  if(hit.length && hit[0].instanceId!=null){ var n=nodes[hit[0].instanceId]; if(window.__graphSelect){ window.__graphSelect(n.id); } }
+});
+
+/* node label follows selected orb */
+var labelEl=document.querySelector('.bl-nodelabel');
+var v3=new THREE.Vector3();
+function updateLabel(){
+  if(!selId || !byId[selId]){ labelEl.style.display='none'; return; }
+  var n=byId[selId]; v3.set(n.x,n.y,n.z); v3.applyMatrix4(group.matrixWorld); v3.project(camera);
+  if(v3.z>1){ labelEl.style.display='none'; return; }
+  var w=mount.clientWidth, hh=mount.clientHeight;
+  labelEl.style.display='flex';
+  labelEl.style.left=((v3.x*0.5+0.5)*w)+'px';
+  labelEl.style.top=((-v3.y*0.5+0.5)*hh)+'px';
+}
+
+var rotating=true;
+function tick(){ requestAnimationFrame(tick); if(rotating){ group.rotation.y+=0.0016; } controls.update(); renderer.render(scene,camera); updateLabel(); }
+tick();
+
+function paintLegend(){
+  var map={lgRecipe:P.recipe,lgPre:P.pre,lgMatch:P.match};
+  Object.keys(map).forEach(function(id){ var el=document.getElementById(id); if(el) el.style.background='#'+map[id].getHexString(); });
+}
+paintLegend();
+
+window.viz = {
+  select:function(id){ selId=id; writeColors(); writeMatrices(); },
+  filter:function(q){ q=(q||'').toLowerCase(); nodes.forEach(function(n){ n.matched = !!q && n.label.toLowerCase().indexOf(q)>=0; }); writeColors(); },
+  fit:fit,
+  locate:function(){ if(!selId||!byId[selId])return; var n=byId[selId]; controls.target.set(n.x,n.y,n.z); controls.update(); },
+  toggleRotation:function(){ rotating=!rotating; return rotating; },
+  setTheme:function(){ P=palette(); lines.material.color.copy(P.link); writeColors(); paintLegend(); }
+};
+window.viz.select(recipe.root.id);
 </script>
 </body>
 </html>
