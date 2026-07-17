@@ -62,6 +62,9 @@ b { font-weight:600; }
 .dry-run { display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; background:var(--ink-bg); color:var(--ink-fg); border:1px solid transparent; border-radius:6px; padding:8px 15px; height:36px; }
 .dry-run:hover { filter:brightness(1.12); }
 .dry-run svg { width:15px; height:15px; }
+.rt-save { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); margin-left:4px; }
+.rt-save svg { width:16px; height:16px; color:var(--green-hi); }
+.rt-save.saving svg { color:var(--accent); }
 .menu-pop { position:absolute; z-index:50; min-width:232px; background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:var(--menu-shadow); padding:6px; }
 .menu-pop[hidden] { display:none; }
 .mp-item { display:flex; align-items:center; gap:10px; padding:9px 12px; font-size:14px; color:var(--text); border-radius:7px; }
@@ -85,21 +88,18 @@ b { font-weight:600; }
 .bl-search { display:flex; align-items:center; gap:9px; padding:12px 14px; font-size:13px; color:var(--muted); border-bottom:1px solid var(--line2); }
 .bl-search svg { width:15px; height:15px; }
 .tree-header { display:flex; align-items:center; gap:14px; padding:9px 14px; border-bottom:1px solid var(--line2); font-size:13px; }
-.th-expand { display:inline-flex; align-items:center; gap:6px; font-weight:600; color:var(--text); background:transparent; border:none; border-radius:6px; padding:4px 6px; }
-.th-expand:hover { background:var(--row-hover); }
-.th-expand svg { width:18px; height:18px; color:var(--muted); }
+.th-expand { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; color:var(--muted); background:transparent; border:1px solid var(--line-strong); border-radius:6px; padding:0; }
+.th-expand:hover { background:var(--row-hover); color:var(--text); }
+.th-expand svg { width:17px; height:17px; }
 .th-count { font-weight:600; color:var(--text); display:inline-flex; align-items:center; }
 .bl-count { font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--accent-deep); background:var(--accent-tint); border-radius:999px; padding:2px 8px; margin-left:5px; }
 .bl-count--pre { color:var(--violet); background:color-mix(in srgb,var(--violet) 12%,transparent); }
 .bl-count--muted { color:var(--muted); background:var(--surface); }
 .th-right { margin-left:auto; display:inline-flex; align-items:center; gap:12px; }
-.th-undo { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600; color:var(--text); background:var(--field); border:1px solid var(--line-strong); border-radius:6px; padding:5px 9px; }
-.th-undo:hover { background:var(--surface); }
-.th-undo[disabled] { opacity:.5; }
+.th-undo { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600; color:var(--text); background:var(--field); border:1px solid var(--line-strong); border-radius:6px; padding:5px 10px; }
+.th-undo:hover:not([disabled]) { background:var(--surface); }
+.th-undo[disabled] { opacity:.45; cursor:default; }
 .th-undo svg { width:14px; height:14px; }
-.kbd { font-family:var(--font-mono); font-size:10.5px; color:var(--muted); }
-.th-save { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
-.th-save svg { width:16px; height:16px; color:var(--green-hi); }
 
 /* "you are here" — an omnipresent location bar (no show/hide flicker).
    Shows the recipe at the top and the deepest group as you scroll into it.
@@ -139,7 +139,11 @@ b { font-weight:600; }
 .bl-twist { width:15px; height:15px; flex:none; color:var(--muted); background:none; border:none; display:inline-flex; align-items:center; justify-content:center; padding:0; }
 .bl-twist.spacer { cursor:default; }
 .bl-twist svg { width:15px; height:15px; }
-.bl-rowselect { flex:1; min-width:0; display:flex; align-items:center; gap:7px; padding:0 14px 0 0; background:none; border:none; color:inherit; text-align:left; height:100%; }
+.bl-rowselect { flex:1; min-width:0; display:flex; align-items:center; gap:7px; padding:0 6px 0 0; background:none; border:none; color:inherit; text-align:left; height:100%; }
+.bl-kebab { flex:none; width:26px; height:24px; margin-right:8px; display:inline-flex; align-items:center; justify-content:center; background:transparent; border:none; border-radius:5px; color:var(--muted); opacity:0; }
+.bl-row:hover .bl-kebab, .bl-row.sel .bl-kebab, .bl-kebab.open { opacity:1; }
+.bl-kebab:hover, .bl-kebab.open { background:var(--surface); color:var(--text); }
+.bl-kebab svg { width:16px; height:16px; }
 .bl-chip { background:var(--primary-bg); color:var(--primary-fg); font-size:12px; font-weight:600; padding:3px 10px; border-radius:5px; white-space:nowrap; }
 .bl-prechip { border:1px solid color-mix(in srgb,var(--violet) 45%,transparent); color:var(--text); font-size:12px; padding:2.5px 9px; border-radius:5px; }
 .bl-ok { color:var(--green-hi); width:15px; height:15px; flex:none; }
@@ -147,7 +151,7 @@ b { font-weight:600; }
 .bl-java { width:15px; height:15px; border-radius:4px; background:var(--ch-orange); color:#FBFAF6; font-family:var(--font-mono); font-size:8px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; font-style:normal; flex:none; }
 .bl-txt { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 /* step count on a collapsed/expandable group */
-.bl-cnt { font-family:var(--font-mono); font-size:11px; color:var(--muted); background:var(--surface); border-radius:999px; padding:1px 8px; flex:none; }
+.bl-cnt { font-family:var(--font-mono); font-size:11px; color:var(--muted); background:var(--surface); border-radius:999px; padding:1px 8px; flex:none; margin-left:auto; }
 .bl-foot { display:flex; align-items:center; padding:11px 14px; font-size:13px; font-weight:600; border-top:1px solid var(--line); }
 
 .toast { position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(12px); z-index:90; display:inline-flex; align-items:center; gap:9px; background:var(--card); color:var(--text); border:1px solid var(--line-strong); border-radius:10px; box-shadow:var(--menu-shadow); padding:11px 15px; font-size:13px; opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; }
@@ -227,6 +231,10 @@ b { font-weight:600; }
   <!-- Moderne flat mark (exact path from results-focus-view) -->
   <symbol id="i-moderne-flat" viewBox="0 0 47 48" fill="none"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
     <symbol id="i-levels" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="14" y1="18" x2="20" y2="18"/></symbol>
+  <symbol id="i-collapse-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 5 12 10 17 5"/><polyline points="7 19 12 14 17 19"/></symbol>
+  <symbol id="i-expand-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 10 12 5 17 10"/><polyline points="7 14 12 19 17 14"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></symbol>
 <symbol id="i-more" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></symbol>
 </svg>
 
@@ -249,6 +257,7 @@ b { font-weight:600; }
         <div class="mp-item" data-action="copy"><svg><use href="#i-copy"/></svg> Copy as YAML to clipboard</div>
       </div>
     </div>
+    <span class="rt-save" id="saveInd" title="All changes saved"><svg><use href="#i-check-c"/></svg> Saved</span>
     <span class="rt-spacer"></span>
     <span class="rt-org" id="orgText">Will run on <b>271</b> repositories</span>
     <button class="dry-run" id="dryRunBtn" title="Dry run on 271 repositories"><svg><use href="#i-play"/></svg> Dry run</button>
@@ -258,12 +267,11 @@ b { font-weight:600; }
     <div class="bl-panel">
       <div class="bl-search"><svg><use href="#i-search"/></svg> Search and filter recipe</div>
       <div class="tree-header">
-        <button class="th-expand" id="expandAllBtn"><svg id="expandAllIcon"><use href="#i-list"/></svg> <span id="expandAllLabel">Expand all</span></button>
+        <button class="th-expand" id="expandAllBtn" title="Expand all"><svg id="expandAllIcon"><use href="#i-expand-all"/></svg></button>
         <span class="th-count">Recipe list<span class="bl-count" id="recipeCount">2000</span></span>
         <span class="th-count">Preconditions<span class="bl-count bl-count--pre" id="preCount">1</span></span>
         <span class="th-right">
-          <button class="th-undo" disabled title="Undo last change"><svg><use href="#i-undo"/></svg> Undo <span class="kbd" id="undoKbd">⌘Z</span></button>
-          <span class="th-save" title="Saved"><svg><use href="#i-check-c"/></svg> Saved</span>
+          <button class="th-undo" id="undoBtn" disabled title="Undo last change"><svg><use href="#i-undo"/></svg> Undo</button>
         </span>
       </div>
       <div class="tree-crumb" id="crumb">
@@ -297,10 +305,13 @@ b { font-weight:600; }
   </div>
 
   <div class="proto-note">
-    <span>Phase 3 — Scalable navigation · tree-first layout (working list left, graph right) · defaults to a ~2,000-step recipe · groups collapse by default with step counts · the list is <b>windowed</b> (only visible rows render) so it stays smooth · an omnipresent bar shows where you are (recipe at the top, deepest group as you scroll) · in deeply nested recipes a <b>levels</b> icon reveals the full parent path (click a level to jump) ·</span>
+    <span>Phase 3 — Scalable navigation · tree-first layout (working list left, graph right) · defaults to a ~2,000-step recipe · groups collapse by default with step counts · the list is <b>windowed</b> (only visible rows render) so it stays smooth · an omnipresent bar shows where you are (recipe at the top, deepest group as you scroll) · in deeply nested recipes a <b>levels</b> icon reveals the full parent path (click a level to jump) · hover a row for its <b>line-item actions</b> (add / rename / edit options / duplicate / remove / run) — Undo (by the tree) reverts them ·</span>
     <code>?recipe=small</code><span>loads the small sample.</span>
   </div>
 </div>
+
+<!-- per-node (line-item) action menu, positioned on open -->
+<div class="menu-pop" id="nodeMenu" hidden style="position:fixed"></div>
 
 <div class="toast" id="toast"><svg id="toastIcon"><use href="#i-check-c"/></svg><span id="toastMsg"></span></div>
 
@@ -353,22 +364,24 @@ function findNode(n,id){ if(n.id===id)return n; if(n.children)for(var i=0;i<n.ch
 function isMac(){ return /Mac|iPhone|iPad/.test(navigator.platform); }
 var _cnt = {};
 function stepCount(n){ if(_cnt[n.id]!=null)return _cnt[n.id]; var c=0; (n.children||[]).forEach(function(ch){ if(ch.kind!=='precondition'){ c+=1+stepCount(ch); } }); _cnt[n.id]=c; return c; }
+function leafCount(n){ var c=0; (n.children||[]).forEach(function(ch){ if(ch.kind==='precondition')return; if(ch.children&&ch.children.length){ c+=leafCount(ch); } else if(ch.kind==='recipe'){ c++; } }); return c; }
 
 /* ---- state ---- */
 var params = new URLSearchParams(location.search);
 var recipe = params.get('recipe')==='small' ? sampleRecipe : buildLargeRecipe(2000);
-var expanded = new Set(['root']);            /* collapse-by-default: only the root is open */
+var expanded = new Set();                    /* collapse-by-default: top-level rows shown, groups folded */
 var selectedId = 'root';
 var visibleRows = [];
 
 /* ---- flatten (respecting expanded); each row carries its ancestor NODES ---- */
 function rebuild(){
   visibleRows = [];
-  (function walk(node, depth, ancestors){
+  function walk(node, depth, ancestors){
     var ch = node.children||[]; var has = ch.length>0; var exp = expanded.has(node.id);
     visibleRows.push({ node:node, depth:depth, has:has, exp:exp, ancestors:ancestors });
     if(has && exp){ var next = ancestors.concat([node]); ch.forEach(function(c){ walk(c, depth+1, next); }); }
-  })(recipe.root, 0, []);
+  }
+  (recipe.root.children||[]).forEach(function(c){ walk(c, 0, [recipe.root]); });
 }
 function rowIndexOf(id){ for(var i=0;i<visibleRows.length;i++){ if(visibleRows[i].node.id===id) return i; } return -1; }
 
@@ -388,7 +401,8 @@ function rowHtml(r, i){
     : '<span class="bl-txt">'+labelHtml(r.node.label)+'</span>';
   var cnt = (r.has && r.node.kind!=='root') ? '<span class="bl-cnt">'+stepCount(r.node).toLocaleString()+'</span>' : '';
   var cls = 'bl-row'+(r.node.id===selectedId?' sel':'')+(r.node.kind==='precondition'?' pre':'');
-  return '<div class="'+cls+'" style="top:'+(i*ROW_H)+'px">'+tw+'<button class="bl-rowselect" data-select="'+r.node.id+'">'+ic+body+cnt+'</button></div>';
+  var kebab = '<button class="bl-kebab" data-menu="'+r.node.id+'" title="Recipe actions"><svg><use href="#i-more"/></svg></button>';
+  return '<div class="'+cls+'" style="top:'+(i*ROW_H)+'px">'+tw+'<button class="bl-rowselect" data-select="'+r.node.id+'">'+ic+body+cnt+'</button>'+kebab+'</div>';
 }
 var pending=false;
 function renderWindow(){
@@ -445,7 +459,7 @@ function openAncPop(){
 function renderGraph(){ var seed=sampleGraph.seed; function rnd(){seed=(seed*1103515245+12345)%2147483648;return seed/2147483648;} var e='',d='',s=''; sampleGraph.links.forEach(function(l){var a=sampleGraph.hubs[l[0]],b=sampleGraph.hubs[l[1]];e+='<line x1="'+a.x+'" y1="'+a.y+'" x2="'+b.x+'" y2="'+b.y+'" stroke="var(--line-strong)"/>';}); sampleGraph.hubs.forEach(function(h){for(var k=0;k<h.leaves;k++){var an=rnd()*Math.PI*2,r=34+rnd()*44,x=h.x+r*Math.cos(an),y=h.y+r*Math.sin(an);e+='<line x1="'+h.x+'" y1="'+h.y+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="var(--line-strong)"/>';d+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="4.2" fill="var(--accent)"/>';} if(h.selected){s+='<circle cx="'+h.x+'" cy="'+h.y+'" r="22" fill="var(--ch-p1)" opacity="0.25"/><circle cx="'+h.x+'" cy="'+h.y+'" r="11" fill="var(--ch-p1)"/>';}else{d+='<circle cx="'+h.x+'" cy="'+h.y+'" r="6" fill="var(--accent)"/>';}}); document.getElementById('graph').innerHTML='<svg viewBox="'+sampleGraph.viewBox+'" preserveAspectRatio="xMidYMid meet">'+e+s+d+'</svg>'; }
 
 /* ---- meta ---- */
-function syncMeta(){ document.getElementById('recipeName').textContent=recipe.name; document.getElementById('recipeCount').textContent=recipe.recipeCount.toLocaleString(); document.getElementById('preCount').textContent=recipe.preconditionCount; document.getElementById('dryRunBtn').title='Dry run on '+recipe.runOnRepositoryCount+' repositories'; document.getElementById('orgText').innerHTML='Will run on <b>'+recipe.runOnRepositoryCount+'</b> repositories'; var node=findNode(recipe.root,selectedId)||recipe.root; document.getElementById('nodeLabel').textContent=plainLabel(node.kind==='root'?recipe.root.label:node.label); document.getElementById('optCount').textContent=(node.options||[]).length; document.getElementById('undoKbd').textContent=isMac()?'⌘Z':'Ctrl+Z'; }
+function syncMeta(){ document.getElementById('recipeName').textContent=recipe.name; document.getElementById('recipeCount').textContent=recipe.recipeCount.toLocaleString(); document.getElementById('preCount').textContent=recipe.preconditionCount; document.getElementById('dryRunBtn').title='Dry run on '+recipe.runOnRepositoryCount+' repositories'; document.getElementById('orgText').innerHTML='Will run on <b>'+recipe.runOnRepositoryCount+'</b> repositories'; var node=findNode(recipe.root,selectedId)||recipe.root; document.getElementById('nodeLabel').textContent=plainLabel(node.kind==='root'?recipe.root.label:node.label); document.getElementById('optCount').textContent=(node.options||[]).length; }
 
 /* ---- YAML actions ---- */
 function recipeToYaml(){ var out=['type: specs.openrewrite.org/v1beta/recipe','name: '+recipe.id,'displayName: '+recipe.name,'recipeList:']; (function walk(n){ (n.children||[]).forEach(function(c){ if(c.kind!=='precondition'){out.push('  - '+plainLabel(c.label));} walk(c); }); })(recipe.root); return out.join('\n')+'\n'; }
@@ -455,7 +469,7 @@ function downloadYaml(){ var blob=new Blob([recipeToYaml()],{type:'text/yaml'});
 function copyYaml(){ var y=recipeToYaml(); if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(y).catch(function(){});} toast('Copied recipe YAML to clipboard','i-copy'); }
 
 /* ---- interactions ---- */
-treeEl.addEventListener('scroll', scheduleRender);
+treeEl.addEventListener('scroll', function(){ if(!document.getElementById('nodeMenu').hidden){ closeNodeMenu(); } scheduleRender(); });
 window.addEventListener('resize', scheduleRender);
 function jumpTo(id){ var idx=rowIndexOf(id); if(idx>=0){ treeEl.scrollTop=idx*ROW_H; renderWindow(); } }
 /* location bar: main = collapse current group + jump to it */
@@ -474,6 +488,8 @@ document.getElementById('crumbPop').addEventListener('click', function(e){
   this.hidden=true; document.getElementById('crumbAnc').classList.remove('open');
 });
 viewportEl.addEventListener('click', function(e){
+  var kb=e.target.closest('[data-menu]');
+  if(kb){ e.stopPropagation(); openNodeMenu(kb.getAttribute('data-menu'), kb); return; }
   var tg=e.target.closest('[data-toggle]');
   if(tg){ var id=tg.getAttribute('data-toggle'); if(expanded.has(id))expanded.delete(id); else expanded.add(id); rebuild(); renderWindow(); return; }
   var sel=e.target.closest('[data-select]');
@@ -484,16 +500,69 @@ var allExpanded=false;
 document.getElementById('expandAllBtn').addEventListener('click', function(){
   allExpanded=!allExpanded;
   if(allExpanded){ expanded=new Set(); (function mark(n){ if(n.children&&n.children.length){expanded.add(n.id); n.children.forEach(mark);} })(recipe.root); }
-  else { expanded=new Set(['root']); }
-  document.getElementById('expandAllLabel').textContent = allExpanded?'Collapse all':'Expand all';
-  document.getElementById('expandAllIcon').innerHTML = '<use href="#'+(allExpanded?'i-collapse':'i-list')+'"/>';
+  else { expanded=new Set(); }
+  this.title = allExpanded?'Collapse all':'Expand all';
+  document.getElementById('expandAllIcon').innerHTML = '<use href="#'+(allExpanded?'i-collapse-all':'i-expand-all')+'"/>';
   treeEl.scrollTop=0; rebuild(); renderWindow();
 });
+
+/* ---- per-node (line-item) actions + undo ---- */
+var undoStack=[];
+function updateUndo(){ document.getElementById('undoBtn').disabled = undoStack.length===0; }
+function snapshot(){ undoStack.push(JSON.parse(JSON.stringify(recipe.root))); if(undoStack.length>50) undoStack.shift(); updateUndo(); }
+function afterMutate(){ _cnt={}; buildParentMap(); recipe.recipeCount=leafCount(recipe.root); rebuild(); syncMeta(); renderWindow(); flashSaving(); }
+function findParentArr(id){ var p=parentOf[id]; return p ? {arr:p.children, idx:p.children.findIndex(function(c){return c.id===id;}), parent:p} : null; }
+function nodeActions(n){
+  var isRoot=n.kind==='root', a=[];
+  a.push({k:'add',label:'Add recipe to node',icon:'i-plus'});
+  if(isRoot||n.kind==='composite'){ a.push({k:'rename',label:'Rename',icon:'i-pencil'}); }
+  if(!isRoot){ a.push({k:'remove',label:'Remove',icon:'i-trash',danger:true}); }
+  if(!isRoot){ a.push({k:'duplicate',label:'Duplicate',icon:'i-copy'}); }
+  if(n.options && n.options.length){ a.push({k:'editopts',label:'Edit options',icon:'i-pencil'}); }
+  a.push({k:'details',label:'View full details',icon:'i-link'});
+  if(!isRoot){ a.push({k:'run',label:'Run this recipe only',icon:'i-play'}); }
+  return a;
+}
+var nodeMenuId=null;
+function openNodeMenu(id, anchor){
+  var n=findNode(recipe.root,id); if(!n) return;
+  nodeMenuId=id;
+  var m=document.getElementById('nodeMenu');
+  m.innerHTML = nodeActions(n).map(function(a){ return '<div class="mp-item'+(a.danger?' danger':'')+'" data-act="'+a.k+'"><svg><use href="#'+a.icon+'"/></svg> '+a.label+'</div>'; }).join('');
+  m.hidden=false;
+  var r=anchor.getBoundingClientRect();
+  var mw=232, mh=m.offsetHeight;
+  var left=Math.min(r.right-mw, window.innerWidth-mw-8);
+  var top=(r.bottom+mh>window.innerHeight) ? r.top-mh-2 : r.bottom+2;
+  m.style.left=Math.max(8,left)+'px'; m.style.top=Math.max(8,top)+'px';
+  document.querySelectorAll('.bl-kebab').forEach(function(k){ k.classList.toggle('open', k.getAttribute('data-menu')===id); });
+}
+function closeNodeMenu(){ document.getElementById('nodeMenu').hidden=true; nodeMenuId=null; document.querySelectorAll('.bl-kebab.open').forEach(function(k){k.classList.remove('open');}); }
+document.getElementById('nodeMenu').addEventListener('click', function(e){
+  var it=e.target.closest('[data-act]'); if(!it) return;
+  var act=it.getAttribute('data-act'); var n=findNode(recipe.root, nodeMenuId); if(!n){ closeNodeMenu(); return; }
+  if(act==='add'){ snapshot(); if(!n.children)n.children=[]; var nid='new-'+Date.now(); n.children.push({id:nid,kind:'recipe',language:'java',label:['New recipe']}); expanded.add(n.id); afterMutate(); toast('Added a recipe to “'+plainLabel(n.label)+'”','i-plus'); }
+  else if(act==='duplicate'){ var loc=findParentArr(n.id); if(loc){ snapshot(); var clone=JSON.parse(JSON.stringify(n)); (function reid(x){ x.id=x.id+'-copy'; (x.children||[]).forEach(reid); })(clone); loc.arr.splice(loc.idx+1,0,clone); afterMutate(); toast('Duplicated “'+plainLabel(n.label)+'”','i-copy'); } }
+  else if(act==='remove'){ var loc2=findParentArr(n.id); if(loc2){ snapshot(); loc2.arr.splice(loc2.idx,1); if(selectedId===n.id)selectedId='root'; afterMutate(); toast('Removed “'+plainLabel(n.label)+'”','i-trash'); } }
+  else if(act==='rename'){ toast('Rename “'+plainLabel(n.label)+'” (prototype)'); }
+  else if(act==='editopts'){ toast('Edit options for “'+plainLabel(n.label)+'” (prototype)'); }
+  else if(act==='details'){ toast('Opened full details (prototype)','i-link'); }
+  else if(act==='run'){ toast('Running only “'+plainLabel(n.label)+'”','i-play'); }
+  closeNodeMenu();
+});
+document.getElementById('undoBtn').addEventListener('click', function(){
+  if(!undoStack.length) return;
+  recipe.root=undoStack.pop(); updateUndo();
+  _cnt={}; buildParentMap(); recipe.recipeCount=leafCount(recipe.root); rebuild(); syncMeta(); renderWindow(); flashSaving();
+  toast('Undid last change','i-undo');
+});
+var saveTimer=null;
+function flashSaving(){ var s=document.getElementById('saveInd'); s.classList.add('saving'); s.innerHTML='<svg><use href="#i-refresh"/></svg> Saving…'; if(saveTimer)clearTimeout(saveTimer); saveTimer=setTimeout(function(){ s.classList.remove('saving'); s.innerHTML='<svg><use href="#i-check-c"/></svg> Saved'; },700); }
 
 var moreWrap=document.getElementById('moreWrap'), moreMenu=document.getElementById('moreMenu'), moreBtn=document.getElementById('moreBtn');
 moreBtn.addEventListener('click', function(e){ e.stopPropagation(); var h=moreMenu.hidden; moreMenu.hidden=!h; moreWrap.classList.toggle('open',h); });
 moreMenu.addEventListener('click', function(e){ var it=e.target.closest('.mp-item'); if(!it)return; var act=it.getAttribute('data-action'); if(act==='download'){downloadYaml();} else if(act==='copy'){copyYaml();} else if(it.getAttribute('data-toast')){toast(it.getAttribute('data-toast'));} moreMenu.hidden=true; moreWrap.classList.remove('open'); });
-document.addEventListener('click', function(){ moreMenu.hidden=true; moreWrap.classList.remove('open'); var pop=document.getElementById('crumbPop'); if(!pop.hidden){ pop.hidden=true; document.getElementById('crumbAnc').classList.remove('open'); } });
+document.addEventListener('click', function(){ moreMenu.hidden=true; moreWrap.classList.remove('open'); var pop=document.getElementById('crumbPop'); if(!pop.hidden){ pop.hidden=true; document.getElementById('crumbAnc').classList.remove('open'); } if(!document.getElementById('nodeMenu').hidden){ closeNodeMenu(); } });
 document.getElementById('dryRunBtn').addEventListener('click', function(){ toast('Dry run started on '+recipe.runOnRepositoryCount+' repositories','i-play'); });
 document.getElementById('titleBtn').addEventListener('click', function(){ toast('Builder recipe actions — see the Phase 2 prototype (#8530)'); });
 document.getElementById('renameBtn').addEventListener('click', function(){ toast('Rename: type a new name (prototype)'); });
@@ -505,7 +574,7 @@ document.getElementById('themeRail').addEventListener('click', toggleTheme);
 document.getElementById('themeTop').addEventListener('click', toggleTheme);
 
 /* ---- init ---- */
-buildParentMap(); renderGraph(); syncMeta(); rebuild(); renderWindow();
+buildParentMap(); renderGraph(); syncMeta(); rebuild(); renderWindow(); updateUndo();
 </script>
 </body>
 </html>
