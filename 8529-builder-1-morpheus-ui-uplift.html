@@ -180,9 +180,14 @@ b { font-weight: 600; }
 .bl-java { width: 15px; height: 15px; border-radius: 4px; background: var(--ch-orange); color: #FBFAF6; font-family: var(--font-mono); font-size: 8px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-style: normal; flex: none; }
 .bl-row code { font-family: var(--font-mono); font-size: 11px; background: var(--surface); border-radius: 4px; padding: 1px 4px; }
 .bl-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bl-foot { display: flex; align-items: center; gap: 5px; width: 100%; padding: 11px 14px; font-size: 13px; font-weight: 600; color: var(--text); border: none; border-top: 1px solid var(--line); background: transparent; text-align: left; cursor: pointer; }
-.bl-foot:hover { background: var(--row-hover); }
-.opt-chev { margin-left: auto; width: 14px; height: 14px; color: var(--muted); transition: transform .15s; }
+.bl-foot { display: flex; align-items: center; gap: 6px; width: 100%; padding: 9px 12px; border-top: 1px solid var(--line); }
+.opt-toggle { display: inline-flex; align-items: center; gap: 5px; background: none; border: none; font: inherit; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; padding: 3px 5px; border-radius: 6px; }
+.opt-toggle:hover { background: var(--row-hover); }
+.opt-edit, .opt-chev-btn { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 24px; border: none; border-radius: 5px; background: transparent; color: var(--muted); cursor: pointer; }
+.opt-edit:hover, .opt-chev-btn:hover { background: var(--surface); color: var(--text); }
+.opt-edit svg { width: 15px; height: 15px; }
+.opt-chev-btn { margin-left: auto; }
+.opt-chev { width: 14px; height: 14px; transition: transform .15s; }
 .bl-foot.open .opt-chev { transform: rotate(180deg); }
 .opt-panel { border-top: 1px solid var(--line2); max-height: 200px; overflow: auto; padding: 4px 0; }
 .opt-panel[hidden] { display: none; }
@@ -190,6 +195,15 @@ b { font-weight: 600; }
 .opt-row .on { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .opt-row .ov { margin-left: auto; flex: none; font-family: var(--font-mono); font-size: 12px; color: var(--muted); background: var(--surface); border-radius: 4px; padding: 1px 7px; }
 .opt-empty { padding: 14px; text-align: center; color: var(--muted); font-style: italic; font-size: 13px; }
+.bl-kebab { flex: none; width: 26px; height: 24px; margin-right: 8px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 5px; color: var(--muted); opacity: 0; cursor: pointer; }
+.bl-row:hover .bl-kebab, .bl-row.sel .bl-kebab, .bl-kebab.open { opacity: 1; }
+.bl-kebab:hover, .bl-kebab.open { background: var(--surface); color: var(--text); }
+.bl-kebab svg { width: 16px; height: 16px; }
+.node-menu { position: fixed; z-index: 60; min-width: 244px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 16px 44px rgba(10,10,25,.2); padding: 6px; }
+.node-menu[hidden] { display: none; }
+.node-menu .mp-item.danger { color: var(--er); }
+.node-menu .mp-item.danger svg { color: var(--er); }
+.mp-kbd { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--muted); border: 1px solid var(--line-strong); border-radius: 4px; padding: 1px 7px; }
 
 /* scrollbar */
 .bl-tree::-webkit-scrollbar { width: 10px; }
@@ -198,6 +212,9 @@ b { font-weight: 600; }
 /* small note strip */
 .proto-note { margin-top: 14px; font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .proto-note code { font-family: var(--font-mono); background: var(--surface); border-radius: 4px; padding: 1px 6px; }
+.toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(12px); z-index: 90; display: inline-flex; align-items: center; gap: 9px; background: var(--card); color: var(--text); border: 1px solid var(--line-strong); border-radius: 10px; box-shadow: 0 16px 44px rgba(10,10,25,.2); padding: 11px 15px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast svg { width: 16px; height: 16px; color: var(--green-hi); }
 </style>
 </head>
 <body>
@@ -269,6 +286,10 @@ b { font-weight: 600; }
   <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M12 16V8M8.5 11.5L12 8l3.5 3.5"/></symbol>
   <!-- Moderne flat mark (exact path from results-focus-view) -->
   <symbol id="i-moderne-flat" viewBox="0 0 47 48" fill="none"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
 </svg>
 
@@ -334,7 +355,11 @@ b { font-weight: 600; }
       </div>
       <div class="bl-tree" id="tree"></div>
       <div class="opt-panel" id="optPanel" hidden></div>
-      <button class="bl-foot" id="optToggle" aria-expanded="false" title="Show options for the selected recipe">Options<span class="bl-count bl-count--muted" id="optCount">0</span><svg class="opt-chev"><use href="#i-chevd"/></svg></button>
+      <div class="bl-foot" id="optFoot">
+        <button class="opt-toggle" id="optToggle" aria-expanded="false" title="Show options for the selected recipe">Options<span class="bl-count bl-count--muted" id="optCount">0</span></button>
+        <button class="opt-edit" id="optEdit" title="Edit options"><svg><use href="#i-edit"/></svg></button>
+        <button class="opt-chev-btn" id="optChevBtn" title="Show options"><svg class="opt-chev"><use href="#i-chevd"/></svg></button>
+      </div>
     </div>
   </div>
 
@@ -345,6 +370,9 @@ b { font-weight: 600; }
     <span>previews a ~2,000-step recipe (later phases).</span>
   </div>
 </div>
+
+<div class="node-menu" id="nodeMenu" hidden></div>
+<div class="toast" id="toast"><svg id="toastIcon"><use href="#i-check-c"/></svg><span id="toastMsg"></span></div>
 
 <script>
 /* ============================================================
@@ -453,7 +481,8 @@ function renderTree() {
       : '<span class="bl-twist spacer" style="margin-left:' + pad + 'px"></span>';
     var cls = 'bl-row' + (r.node.id === selectedId ? ' sel' : '') + (r.node.kind === 'precondition' ? ' pre' : '');
     return '<div class="' + cls + '">' + twist +
-      '<button class="bl-rowselect" data-select="' + r.node.id + '">' + iconFor(r.node) + chipFor(r.node) + '</button></div>';
+      '<button class="bl-rowselect" data-select="' + r.node.id + '">' + iconFor(r.node) + chipFor(r.node) + '</button>' +
+      '<button class="bl-kebab" data-menu="' + r.node.id + '" title="Recipe actions"><svg><use href="#i-more"/></svg></button></div>';
   }).join('');
   document.getElementById('tree').innerHTML = html;
 }
@@ -499,16 +528,61 @@ function renderOptions(){
   var opts = node.options || [];
   document.getElementById('optCount').textContent = opts.length;
   document.getElementById('optPanel').innerHTML = opts.length
-    ? opts.map(function(o){ return '<div class="opt-row"><span class="on">' + escapeHtml(o.name) + '</span><span class="ov">' + escapeHtml(String(o.value)) + '</span></div>'; }).join('')
+    ? opts.map(function(o){ return '<div class="opt-row"><span class="on">' + escapeHtml(optLabel(o.name)) + '</span><span class="ov">' + escapeHtml(String(o.value)) + '</span></div>'; }).join('')
     : '<div class="opt-empty">This recipe has no options.</div>';
 }
-document.getElementById('optToggle').addEventListener('click', function(){
-  var panel = document.getElementById('optPanel'), open = panel.hidden;
-  panel.hidden = !open; this.classList.toggle('open', open); this.setAttribute('aria-expanded', String(open));
+function optLabel(name){ return name.replace(/([A-Z])/g,' $1').replace(/^./,function(c){return c.toUpperCase();}).replace(/\bId\b/g,'ID').trim(); }
+function toggleOptions(){ var panel=document.getElementById('optPanel'), open=panel.hidden; panel.hidden=!open; document.getElementById('optFoot').classList.toggle('open', open); document.getElementById('optToggle').setAttribute('aria-expanded', String(open)); }
+document.getElementById('optToggle').addEventListener('click', toggleOptions);
+document.getElementById('optChevBtn').addEventListener('click', toggleOptions);
+document.getElementById('optEdit').addEventListener('click', function(){ if(document.getElementById('optPanel').hidden){ toggleOptions(); } toast('Editing options (prototype)'); });
+
+/* ---- toast ---- */
+var toastTimer=null;
+function toast(msg,icon){ var t=document.getElementById('toast'); document.getElementById('toastMsg').textContent=msg; document.getElementById('toastIcon').innerHTML='<use href="#'+(icon||'i-check-c')+'"/>'; t.classList.add('show'); if(toastTimer)clearTimeout(toastTimer); toastTimer=setTimeout(function(){t.classList.remove('show');},2200); }
+
+/* ---- per-node (line-item) actions menu ---- */
+function nodeActions(n){
+  var isRoot=n.kind==='root', a=[];
+  a.push({k:'add',label:'Add recipe to node',icon:'i-plus',kbd:'shift + +'});
+  if(isRoot||n.kind==='composite'){ a.push({k:'rename',label:'Rename',icon:'i-pencil'}); }
+  if(!isRoot){ a.push({k:'remove',label:'Remove',icon:'i-trash',kbd:'\u232B',danger:true}); }
+  if(!isRoot){ a.push({k:'duplicate',label:'Duplicate',icon:'i-copy',kbd:'shift + D'}); }
+  if(n.options && n.options.length){ a.push({k:'editopts',label:'Edit options',icon:'i-pencil'}); }
+  a.push({k:'details',label:'View full details',icon:'i-link'});
+  if(!isRoot){ a.push({k:'run',label:'Run this recipe only',icon:'i-play'}); }
+  return a;
+}
+var nodeMenuId=null;
+function openNodeMenu(id, anchorEl){
+  var n=findNode(recipe.root,id); if(!n) return; nodeMenuId=id;
+  var m=document.getElementById('nodeMenu');
+  m.innerHTML=nodeActions(n).map(function(a){ return '<div class="mp-item'+(a.danger?' danger':'')+'" data-act="'+a.k+'"><svg><use href="#'+a.icon+'"/></svg> '+a.label+(a.kbd?'<span class="mp-kbd">'+a.kbd+'</span>':'')+'</div>'; }).join('');
+  m.hidden=false;
+  var r=anchorEl.getBoundingClientRect(), mw=244, mh=m.offsetHeight;
+  var left=Math.min(r.right-mw, window.innerWidth-mw-8);
+  var top=(r.bottom+mh>window.innerHeight)?r.top-mh-2:r.bottom+2;
+  m.style.left=Math.max(8,left)+'px'; m.style.top=Math.max(8,top)+'px';
+  document.querySelectorAll('.bl-kebab').forEach(function(k){ k.classList.toggle('open', k.getAttribute('data-menu')===id); });
+}
+function closeNodeMenu(){ document.getElementById('nodeMenu').hidden=true; nodeMenuId=null; document.querySelectorAll('.bl-kebab.open').forEach(function(k){k.classList.remove('open');}); }
+document.getElementById('nodeMenu').addEventListener('click', function(e){
+  var it=e.target.closest('[data-act]'); if(!it) return;
+  var act=it.getAttribute('data-act'), n=findNode(recipe.root,nodeMenuId); if(!n){ closeNodeMenu(); return; }
+  if(act==='editopts'){ selectNode(n.id); if(document.getElementById('optPanel').hidden){ toggleOptions(); } toast('Editing options for \u201C'+plainLabel(n.label)+'\u201D'); }
+  else if(act==='add'){ toast('Add recipe to \u201C'+plainLabel(n.label)+'\u201D (prototype)'); }
+  else if(act==='remove'){ toast('Remove \u201C'+plainLabel(n.label)+'\u201D (prototype)','i-trash'); }
+  else if(act==='duplicate'){ toast('Duplicate \u201C'+plainLabel(n.label)+'\u201D (prototype)','i-copy'); }
+  else if(act==='rename'){ toast('Rename \u201C'+plainLabel(n.label)+'\u201D (prototype)'); }
+  else if(act==='details'){ toast('Opened full details (prototype)','i-link'); }
+  else if(act==='run'){ toast('Running only \u201C'+plainLabel(n.label)+'\u201D','i-play'); }
+  closeNodeMenu();
 });
 
 /* ---- interactions ---- */
 document.getElementById('tree').addEventListener('click', function (e) {
+  var kb = e.target.closest('[data-menu]');
+  if (kb) { e.stopPropagation(); openNodeMenu(kb.getAttribute('data-menu'), kb); return; }
   var toggle = e.target.closest('[data-toggle]');
   if (toggle) { var id = toggle.getAttribute('data-toggle'); if (expanded.has(id)) { expanded.delete(id); } else { expanded.add(id); } renderTree(); return; }
   var select = e.target.closest('[data-select]');
@@ -528,7 +602,7 @@ document.getElementById('themeTop').addEventListener('click', toggleTheme);
 
 var mgmtBtn = document.getElementById('mgmtBtn'), mgmtMenu = document.getElementById('mgmtMenu');
 mgmtBtn.addEventListener('click', function (e) { e.stopPropagation(); mgmtMenu.hidden = !mgmtMenu.hidden; });
-document.addEventListener('click', function () { mgmtMenu.hidden = true; });
+document.addEventListener('click', function () { mgmtMenu.hidden = true; if(!document.getElementById('nodeMenu').hidden){ closeNodeMenu(); } });
 mgmtMenu.addEventListener('click', function (e) { e.stopPropagation(); });
 
 /* ---- rail + filter wiring ---- */
