@@ -180,7 +180,16 @@ b { font-weight: 600; }
 .bl-java { width: 15px; height: 15px; border-radius: 4px; background: var(--ch-orange); color: #FBFAF6; font-family: var(--font-mono); font-size: 8px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-style: normal; flex: none; }
 .bl-row code { font-family: var(--font-mono); font-size: 11px; background: var(--surface); border-radius: 4px; padding: 1px 4px; }
 .bl-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.bl-foot { display: flex; align-items: center; padding: 11px 14px; font-size: 13px; font-weight: 600; border-top: 1px solid var(--line); }
+.bl-foot { display: flex; align-items: center; gap: 5px; width: 100%; padding: 11px 14px; font-size: 13px; font-weight: 600; color: var(--text); border: none; border-top: 1px solid var(--line); background: transparent; text-align: left; cursor: pointer; }
+.bl-foot:hover { background: var(--row-hover); }
+.opt-chev { margin-left: auto; width: 14px; height: 14px; color: var(--muted); transition: transform .15s; }
+.bl-foot.open .opt-chev { transform: rotate(180deg); }
+.opt-panel { border-top: 1px solid var(--line2); max-height: 200px; overflow: auto; padding: 4px 0; }
+.opt-panel[hidden] { display: none; }
+.opt-row { display: flex; align-items: center; gap: 10px; padding: 7px 14px; font-size: 13px; }
+.opt-row .on { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.opt-row .ov { margin-left: auto; flex: none; font-family: var(--font-mono); font-size: 12px; color: var(--muted); background: var(--surface); border-radius: 4px; padding: 1px 7px; }
+.opt-empty { padding: 14px; text-align: center; color: var(--muted); font-style: italic; font-size: 13px; }
 
 /* scrollbar */
 .bl-tree::-webkit-scrollbar { width: 10px; }
@@ -324,7 +333,8 @@ b { font-weight: 600; }
         <svg class="chev"><use href="#i-chevd"/></svg>
       </div>
       <div class="bl-tree" id="tree"></div>
-      <div class="bl-foot">Options<span class="bl-count bl-count--muted" id="optCount">0</span></div>
+      <div class="opt-panel" id="optPanel" hidden></div>
+      <button class="bl-foot" id="optToggle" aria-expanded="false" title="Show options for the selected recipe">Options<span class="bl-count bl-count--muted" id="optCount">0</span><svg class="opt-chev"><use href="#i-chevd"/></svg></button>
     </div>
   </div>
 
@@ -481,8 +491,21 @@ function syncMeta() {
   document.getElementById('preCount').textContent = recipe.preconditionCount;
   var node = findNode(recipe.root, selectedId) || recipe.root;
   document.getElementById('nodeLabel').textContent = plainLabel(node.kind === 'root' ? recipe.root.label : node.label);
-  document.getElementById('optCount').textContent = (node.options || []).length;
+  renderOptions();
 }
+
+function renderOptions(){
+  var node = findNode(recipe.root, selectedId) || recipe.root;
+  var opts = node.options || [];
+  document.getElementById('optCount').textContent = opts.length;
+  document.getElementById('optPanel').innerHTML = opts.length
+    ? opts.map(function(o){ return '<div class="opt-row"><span class="on">' + escapeHtml(o.name) + '</span><span class="ov">' + escapeHtml(String(o.value)) + '</span></div>'; }).join('')
+    : '<div class="opt-empty">This recipe has no options.</div>';
+}
+document.getElementById('optToggle').addEventListener('click', function(){
+  var panel = document.getElementById('optPanel'), open = panel.hidden;
+  panel.hidden = !open; this.classList.toggle('open', open); this.setAttribute('aria-expanded', String(open));
+});
 
 /* ---- interactions ---- */
 document.getElementById('tree').addEventListener('click', function (e) {
