@@ -100,7 +100,7 @@ b { font-weight: 600; }
 .bl-rail { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; padding: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px -8px rgba(0,0,0,.28); z-index:3; }
 .bl-rail button { width: 30px; height: 30px; border: none; border-radius: 6px; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; }
 .bl-rail button:hover { background: var(--surface); color: var(--text); }
-.bl-rail button.on { color: var(--accent); }
+.bl-rail button.on { color: var(--accent); background: var(--accent-tint); }
 .bl-rail svg { width: 15px; height: 15px; }
 .bl-nodelabel { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -165%); display: flex; align-items: center; gap: 8px; pointer-events: none; z-index:2; }
 .bl-nodelabel .lbl { background: var(--primary-bg); color: var(--primary-fg); font-size: 12px; font-weight: 600; padding: 8px 15px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.18); max-width: 300px; overflow: hidden; text-overflow: ellipsis; }
@@ -328,10 +328,6 @@ textarea.nr-input { resize: none; height: 92px; }
   <symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></symbol>
   <symbol id="i-collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 10l-2 2 2 2"/></symbol>
   <symbol id="i-panel-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/><path d="M9 10l2 2-2 2"/></symbol>
-  <symbol id="i-play-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></symbol>
-  <symbol id="i-pause-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="10" y1="15" x2="10" y2="9"/><line x1="14" y1="15" x2="14" y2="9"/></symbol>
-  <symbol id="i-fullscreen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="8" width="10" height="8" rx="1"/></symbol>
-  <symbol id="i-locate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><circle cx="12" cy="12" r="7"/></symbol>
   <symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L4 7l4 4"/><path d="M4 7h16"/><path d="M16 21l4-4-4-4"/><path d="M20 17H4"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></symbol>
@@ -396,12 +392,11 @@ textarea.nr-input { resize: none; height: 92px; }
         <div class="bl-graph" id="graph"></div>
         <div class="bl-rail">
           <button id="viewSwitch" title="Move to main content"><svg id="viewSwitchIcon"><use href="#i-collapse"/></svg></button>
-          <button id="railRotate" class="on" title="Pause rotation"><svg><use href="#i-pause-circle"/></svg></button>
-          <button id="railFit" title="Move to fit"><svg><use href="#i-fullscreen"/></svg></button>
-          <button id="railLocate" title="Move to selected node"><svg><use href="#i-locate"/></svg></button>
+          <button id="railRotate" class="on" title="Pause rotation"><svg><use href="#i-play"/></svg></button>
+          <button id="railFit" title="Move to fit"><svg><use href="#i-eye"/></svg></button>
+          <button id="railLocate" title="Move to selected node"><svg><use href="#i-target"/></svg></button>
           <button id="railPane" class="on" title="Hide selected node floating pane"><svg><use href="#i-tag"/></svg></button>
           <button id="railHelp" title="View builder documentation"><svg><use href="#i-help"/></svg></button>
-          <button id="railTheme" class="on" title="Switch to dark theme"><svg><use href="#i-sun"/></svg></button>
           <button id="railLegend" title="Show legend"><svg><use href="#i-info"/></svg></button>
         </div>
         <div class="viz-filter"><svg><use href="#i-search"/></svg><input id="vizFilter" placeholder="Filter nodes" /></div>
@@ -629,8 +624,6 @@ document.getElementById('themeTop').addEventListener('click',toggleTheme);
   var pane=document.getElementById('railPane'), lbl=document.querySelector('.bl-nodelabel');
   if(pane){ pane.addEventListener('click', function(){ var on=!pane.classList.contains('on'); pane.classList.toggle('on', on); pane.title = on?'Hide selected node floating pane':'Show selected node floating pane'; if(lbl){ lbl.style.visibility = on?'':'hidden'; } }); }
   var help=document.getElementById('railHelp'); if(help){ help.addEventListener('click', function(){ window.open('https://docs.moderne.io/user-documentation/moderne-platform/how-to-guides/new-recipe-builder','_blank','noopener'); }); }
-  var rt=document.getElementById('railTheme');
-  if(rt){ var syncRT=function(){ var dark=document.documentElement.getAttribute('data-theme')==='dark'; rt.querySelector('use').setAttribute('href', dark?'#i-moon':'#i-sun'); rt.title = dark?'Switch to light theme':'Switch to dark theme'; }; rt.addEventListener('click', function(){ toggleTheme(); syncRT(); }); syncRT(); }
 })();
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 
@@ -647,7 +640,7 @@ var nodeMenuId=null;
 function openNodeMenu(id, anchorEl){ var n=findNode(recipe.root,id); if(!n)return; nodeMenuId=id; var m=document.getElementById('nodeMenu'); m.innerHTML=nodeActions(n).map(function(a){ return '<div class="mp-item'+(a.danger?' danger':'')+'" data-act="'+a.k+'"><svg><use href="#'+a.icon+'"/></svg> '+a.label+(a.kbd?'<span class="mp-kbd">'+a.kbd+'</span>':'')+'</div>'; }).join(''); m.hidden=false; var r=anchorEl.getBoundingClientRect(), mw=244, mh=m.offsetHeight; var left=Math.min(r.right-mw, window.innerWidth-mw-8); var top=(r.bottom+mh>window.innerHeight)?r.top-mh-2:r.bottom+2; m.style.left=Math.max(8,left)+'px'; m.style.top=Math.max(8,top)+'px'; document.querySelectorAll('.bl-kebab').forEach(function(k){ k.classList.toggle('open', k.getAttribute('data-menu')===id); }); }
 function closeNodeMenu(){ document.getElementById('nodeMenu').hidden=true; nodeMenuId=null; document.querySelectorAll('.bl-kebab.open').forEach(function(k){k.classList.remove('open');}); }
 document.getElementById('nodeMenu').addEventListener('click', function(e){ var it=e.target.closest('[data-act]'); if(!it)return; var act=it.getAttribute('data-act'), n=findNode(recipe.root,nodeMenuId); if(!n){closeNodeMenu();return;} if(act==='editopts'){ selectNode(n.id); if(document.getElementById('optPanel').hidden){ toggleOptions(); } toast('Editing options for \u201C'+plainLabel(n.label)+'\u201D'); } else if(act==='remove'){ toast('Remove \u201C'+plainLabel(n.label)+'\u201D (prototype)','i-trash'); } else if(act==='duplicate'){ toast('Duplicate \u201C'+plainLabel(n.label)+'\u201D (prototype)','i-copy'); } else if(act==='add'){ toast('Add recipe to \u201C'+plainLabel(n.label)+'\u201D (prototype)'); } else if(act==='rename'){ toast('Rename \u201C'+plainLabel(n.label)+'\u201D (prototype)'); } else if(act==='details'){ toast('Opened full details (prototype)','i-link'); } else if(act==='run'){ toast('Running only \u201C'+plainLabel(n.label)+'\u201D','i-play'); } closeNodeMenu(); });
-(function(){ var rot=document.getElementById('railRotate'); rot.addEventListener('click', function(){ if(!window.viz)return; var on=window.viz.toggleRotation(); rot.classList.toggle('on', on); rot.title=on?'Pause rotation':'Play rotation'; rot.querySelector('use').setAttribute('href', on?'#i-pause-circle':'#i-play-circle'); }); document.getElementById('railFit').addEventListener('click', function(){ if(window.viz) window.viz.fit(); }); document.getElementById('railLocate').addEventListener('click', function(){ if(window.viz) window.viz.locate(); }); var lg=document.getElementById('railLegend'), lgp=document.getElementById('vizLegend'); lg.addEventListener('click', function(e){ e.stopPropagation(); lgp.hidden=!lgp.hidden; lg.classList.toggle('on', !lgp.hidden); lg.title=lgp.hidden?'Show legend':'Hide legend'; }); document.getElementById('vizFilter').addEventListener('input', function(){ if(window.viz) window.viz.filter(this.value); });
+(function(){ var rot=document.getElementById('railRotate'); rot.addEventListener('click', function(){ if(!window.viz)return; var on=window.viz.toggleRotation(); rot.classList.toggle('on', on); rot.title=on?'Pause rotation':'Play rotation'; }); document.getElementById('railFit').addEventListener('click', function(){ if(window.viz) window.viz.fit(); }); document.getElementById('railLocate').addEventListener('click', function(){ if(window.viz) window.viz.locate(); }); var lg=document.getElementById('railLegend'), lgp=document.getElementById('vizLegend'); lg.addEventListener('click', function(e){ e.stopPropagation(); lgp.hidden=!lgp.hidden; lg.classList.toggle('on', !lgp.hidden); lg.title=lgp.hidden?'Show legend':'Hide legend'; }); document.getElementById('vizFilter').addEventListener('input', function(){ if(window.viz) window.viz.filter(this.value); });
   var vsw=document.getElementById('viewSwitch'), topoMain=false;
   vsw.addEventListener('click', function(){
     topoMain=!topoMain;
