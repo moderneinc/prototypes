@@ -77,12 +77,12 @@ main { flex: 1; width: 100%; }
 .theme-toggle svg { width: 18px; height: 18px; }
 
 /* ===== search / landing ===== */
-.stage { display: flex; flex-direction: column; align-items: center; padding: 44px 32px 64px; }
-.hero-lockup { display: flex; align-items: center; gap: 52px; max-width: 980px; margin-bottom: 52px; flex-wrap: wrap; justify-content: center; }
-.hero-icon { width: 148px; height: auto; flex: none; filter: drop-shadow(0 8px 40px rgba(157,91,232,.28)); }
+.stage { display: flex; flex-direction: column; align-items: center; padding: 34px 32px 28px; }
+.hero-lockup { display: flex; align-items: center; gap: 46px; max-width: 980px; margin-bottom: 34px; flex-wrap: wrap; justify-content: center; }
+.hero-icon { width: 132px; height: auto; flex: none; filter: drop-shadow(0 8px 40px rgba(157,91,232,.28)); }
 .hero-text { max-width: 620px; }
 .hero-title { font-size: 42px; font-weight: 600; letter-spacing: -.025em; line-height: 1.08; }
-.hero-sub { margin-top: 20px; font-size: 18px; line-height: 1.55; color: var(--muted); }
+.hero-sub { margin-top: 16px; font-size: 17px; line-height: 1.5; color: var(--muted); }
 .hero-sub b { color: var(--text); font-weight: 600; }
 .search { width: 100%; max-width: 760px; }
 .searchbar { display: flex; align-items: center; gap: 13px; width: 100%; padding: 15px 18px; background: var(--field); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: var(--shadow-xs); }
@@ -98,9 +98,16 @@ main { flex: 1; width: 100%; }
 .searchbar[data-has-query="true"] .searchbar__hint { display: none; }
 .searchbar__clear:hover { background: var(--surface); color: var(--text); }
 
-.examples { display: flex; gap: 80px; margin-top: 52px; flex-wrap: wrap; justify-content: center; }
+.examples { display: flex; gap: 80px; margin-top: 34px; flex-wrap: wrap; justify-content: center; }
 .example-col { width: 360px; max-width: 100%; }
 .example-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--line2); }
+
+/* scroll-for-more cue */
+.scroll-cue { display: inline-flex; flex-direction: column; align-items: center; gap: 7px; margin-top: 38px; padding: 8px 16px; border: none; background: none; color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.scroll-cue:hover { color: var(--text); }
+.scroll-cue svg { width: 20px; height: 20px; animation: cue-bounce 1.7s ease-in-out infinite; }
+@keyframes cue-bounce { 0%, 100% { transform: translateY(0); opacity: .75; } 50% { transform: translateY(5px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .scroll-cue svg { animation: none; } }
 .example-label { font-size: 13px; font-weight: 600; }
 .example-hint { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
 .ex-row { display: block; width: 100%; text-align: left; padding: 9px 12px; margin: 0 -12px; border: none; background: none; border-radius: 8px; }
@@ -137,9 +144,9 @@ main { flex: 1; width: 100%; }
 
 /* ===== landing narrative (what is / sequencing / searching / splicing / surfacing) ===== */
 .cg-story-wrap { border-top: 1px solid var(--line); background: var(--bg); }
-.cg-story { max-width: 920px; margin: 0 auto; padding: 72px 32px 80px; }
+.cg-story { max-width: 920px; margin: 0 auto; padding: 48px 32px 72px; }
 .cg-kicker { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
-.cg-intro { max-width: 720px; margin-bottom: 64px; }
+.cg-intro { max-width: 720px; margin-bottom: 48px; }
 .cg-intro h2 { font-size: 30px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; margin-bottom: 20px; }
 .cg-intro p { font-size: 16px; line-height: 1.65; color: var(--muted); }
 .cg-intro p + p { margin-top: 16px; }
@@ -381,10 +388,15 @@ main { flex: 1; width: 100%; }
       </div>
 
       <div class="examples" id="examples"></div>
+
+      <button class="scroll-cue" type="button" data-scroll-story aria-label="What is the Code Genome Project — scroll down">
+        What is the Code Genome Project
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
     </div>
   </div>
 
-  <div class="cg-story-wrap">
+  <div class="cg-story-wrap" id="story">
     <div class="cg-story">
       <section class="cg-intro">
         <div class="cg-kicker">What is the Code Genome Project</div>
@@ -921,6 +933,7 @@ document.getElementById('landingInput').addEventListener('input', e => { documen
 
 document.addEventListener('click', e => {
   const fs = e.target.closest('[data-focus-search]'); if (fs) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => document.getElementById('landingInput').focus(), 400); return; }
+  const sc = e.target.closest('[data-scroll-story]'); if (sc) { document.getElementById('story').scrollIntoView({ behavior: 'smooth' }); return; }
   const ex = e.target.closest('[data-q]'); if (ex) { runSearch(ex.getAttribute('data-q')); return; }
   const clr = e.target.closest('[data-clear]'); if (clr) { const inp = clr.closest('form').querySelector('input'); inp.value = ''; clr.closest('form').setAttribute('data-has-query', 'false'); inp.focus(); return; }
   const scope = e.target.closest('[data-scope]'); if (scope) { runSearch('gav:' + scope.getAttribute('data-scope') + ' ' + document.getElementById('resultsInput').value.replace(/gav:\S+/g, '').trim()); return; }
