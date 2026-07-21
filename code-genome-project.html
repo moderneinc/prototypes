@@ -172,10 +172,10 @@ main { flex: 1; width: 100%; }
 .cg-intro b { color: var(--text); font-weight: 600; }
 .cg-verbs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--line); }
 .cg-verb { background: var(--card); padding: 30px 28px; display: flex; flex-direction: column; }
-.cg-verb__kicker { display: inline-flex; align-items: center; gap: 9px; font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.cg-section { margin-top: 48px; }
+.cg-section-title { font-size: 22px; font-weight: 600; letter-spacing: -.015em; margin-bottom: 18px; }
 .cg-verb__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dot, var(--accent)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--dot, var(--accent)) 18%, transparent); flex: none; }
-.cg-verb h3 { font-size: 20px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 10px; }
-.cg-verb h3 .sub { color: var(--muted); font-weight: 400; }
+.cg-verb h3 { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 11px; }
 .cg-verb p { font-size: 14px; line-height: 1.6; color: var(--muted); }
 .cg-verb b { color: var(--text); font-weight: 600; }
 .cg-verb sup { color: var(--dot, var(--accent)); font-weight: 700; }
@@ -468,37 +468,40 @@ main { flex: 1; width: 100%; }
       <section class="cg-intro">
         <div class="cg-kicker">What is the Code Genome Project</div>
         <h2>The world's code has a genome, and this is where it's <span class="spectral">sequenced, stored, and navigable.</span></h2>
-        <p>Enterprise software consists of up to <b>90% third-party and open source components</b>, stitched together in different ways for business functionality. This software is the basis of the Code Genome Project.</p>
-        <p>The goal: understand codebases broadly, across open source and enterprise, and share deterministic recipes that advance them. It's all open to developers and their agents alike through code search and a remote MCP server.</p>
+        <p>Enterprise software consists of up to <b>90% third-party and open source components</b>, stitched together in different ways for business functionality. This software is the basis of the Code Genome Project. The goal: understand codebases broadly, across open source and enterprise, and share deterministic recipes that advance them. It's all open to developers and their agents alike through code search and a remote MCP server.</p>
       </section>
 
-      <div class="cg-verbs">
-        <article class="cg-verb cg-verb--seq">
-          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Sequencing</span>
-          <h3>Sequencing <span class="sub">the code genome</span></h3>
-          <p>Each repository is compiled into a <b>Lossless Semantic Tree</b>: the types, methods, and relationships that define how code behaves. Compiler-accurate, lossless, polyglot<sup>*</sup>. Each tree holds every signal the compiler sees in a single repository; the project lines them up side by side, so the entire open source ecosystem reads as one corpus. It's the substrate everything else is built on.</p>
-        </article>
+      <div class="cg-section">
+        <h3 class="cg-section-title">Put the OSS Code Genome to work</h3>
+        <div class="cg-verbs">
+          <article class="cg-verb cg-verb--search">
+            <h3><span class="cg-verb__dot"></span>Searching</h3>
+            <p>Explore the sequenced code of thousands of open source repositories. Search by <b>type, symbol, and call site</b>, not just strings, and surface any API or pattern in milliseconds. Powered by Moderne's Trigrep search.</p>
+            <a class="cg-verb__link" href="#search" data-focus-search>Search the corpus →</a>
+          </article>
 
-        <article class="cg-verb cg-verb--search">
-          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Searching</span>
-          <h3>Searching <span class="sub">the code genome</span></h3>
-          <p>Explore the sequenced code of thousands of open source repositories. Search the way a compiler sees code — by <b>type, symbol, and call site</b>, not just strings. Find how any API, annotation, or pattern appears across thousands of repositories in milliseconds. Powered by Moderne's Trigrep search, the code genome is open to explore.</p>
-          <a class="cg-verb__link" href="#search" data-focus-search>Search the corpus →</a>
-        </article>
+          <article class="cg-verb cg-verb--surface">
+            <h3><span class="cg-verb__dot"></span>Surfacing to AI</h3>
+            <p>A remote MCP server opens the full Code Genome to coding agents. They can find any method or type, see how it's really used, and compare versions, all resolved through the <b>type system, not text</b>. Connect in one click to power up your agents.</p>
+            <a class="cg-verb__link" href="#mcp">Connect your agent →</a>
+          </article>
+        </div>
+      </div>
 
-        <article class="cg-verb cg-verb--splice">
-          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Splicing</span>
-          <h3>Splicing <span class="sub">the code genome</span></h3>
-          <p>OpenRewrite recipes rewrite the genome: <b>10,000+ deterministic programs</b> that transform code precisely and repeatably — whether you're migrating a framework, patching a CVE, or enforcing a standard, the same way every time. Recipes are stored in the project and built to extend, so developers and their agents can adapt a recipe or write a new one.</p>
-          <a class="cg-verb__link" href="#recipes">Browse recipes →</a>
-        </article>
+      <div class="cg-section">
+        <h3 class="cg-section-title">Foundation of the Code Genome Project</h3>
+        <div class="cg-verbs">
+          <article class="cg-verb cg-verb--seq">
+            <h3><span class="cg-verb__dot"></span>Sequencing</h3>
+            <p>Each open source repository is compiled into a <b>Lossless Semantic Tree</b>. Compiler-accurate, lossless, polyglot<sup>*</sup>. One tree per repository, lined up side by side, so the entire open source ecosystem reads as a single corpus. It's the substrate everything else is built on.</p>
+          </article>
 
-        <article class="cg-verb cg-verb--surface">
-          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Surfacing to AI</span>
-          <h3>Surfacing <span class="sub">the code genome to AI</span></h3>
-          <p>A remote MCP server opens the Code Genome to coding agents. They can find any method or type, see how it's really used, and compare versions — all resolved through the <b>type system, not text</b>. Connect in one click.</p>
-          <a class="cg-verb__link" href="#mcp">Connect your agent →</a>
-        </article>
+          <article class="cg-verb cg-verb--splice">
+            <h3><span class="cg-verb__dot"></span>Splicing</h3>
+            <p>OpenRewrite recipes rewrite the genome: <b>10,000+ deterministic programs</b>. Migrate a framework, fix a CVE, or enforce a standard, the same way every time. Recipes live in the project, ready for developers and their agents to use, adapt, and extend.</p>
+            <a class="cg-verb__link" href="#recipes">Browse recipes →</a>
+          </article>
+        </div>
       </div>
 
       <p class="cg-disclaimer"><sup>*</sup> Today the Code Genome Project sequences the Java ecosystem; it's expanding to the full breadth of languages the LST supports, including Python, C#, JavaScript/TypeScript, Scala, and more.</p>
