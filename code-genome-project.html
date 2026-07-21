@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Genome Project — Morpheus base</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -21 267 267'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='36' y1='130' x2='16.64' y2='225.03' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23E03CA1' stop-opacity='.9'/%3E%3Cstop offset='.69' stop-color='%238557BD' stop-opacity='.7'/%3E%3Cstop offset='1' stop-color='%232971D9'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='220' y1='103' x2='266.87' y2='-12.05' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23E23B9F'/%3E%3Cstop offset='.5' stop-color='%23C947BA'/%3E%3Cstop offset='1' stop-color='%23B052D4'/%3E%3C/linearGradient%3E%3ClinearGradient id='c' x1='109.36' y1='96.13' x2='81.38' y2='242.11' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23676DF0'/%3E%3Cstop offset='.25' stop-color='%2393EB5E' stop-opacity='.85'/%3E%3Cstop offset='.5' stop-color='%23A3EA59' stop-opacity='.7'/%3E%3Cstop offset='1' stop-color='%23C1E84D'/%3E%3C/linearGradient%3E%3ClinearGradient id='d' x1='168.49' y1='58.18' x2='116.36' y2='84.38' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%232BBBCD'/%3E%3Cstop offset='1' stop-color='%23676DF0'/%3E%3C/linearGradient%3E%3ClinearGradient id='e' x1='157.64' y1='128.87' x2='185.62' y2='-17.11' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%2330AFD6'/%3E%3Cstop offset='.255' stop-color='%235ECE9C'/%3E%3Cstop offset='.51' stop-color='%238BEC62' stop-opacity='.6'/%3E%3Cstop offset='.92' stop-color='%23C3E84C'/%3E%3C/linearGradient%3E%3ClinearGradient id='f' x1='98.52' y1='166.82' x2='150.64' y2='140.62' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%2300BF43'/%3E%3Cstop offset='.5' stop-color='%2300B660'/%3E%3Cstop offset='1' stop-color='%2330AFD6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M116.772 129.202V170.795H58.3105C53.7824 170.795 49.6742 172.61 46.6699 175.548C43.5806 178.568 41.6572 182.774 41.6572 187.424V225H0V187.424C0 171.309 6.59408 156.702 17.2275 146.148C27.776 135.68 42.2997 129.202 58.3105 129.202H116.772Z' fill='url(%23a)'/%3E%3Cpath d='M220.33 49.4518C217.326 52.3897 213.218 54.2047 208.689 54.2047H150.227V95.7984H208.689C224.7 95.7984 239.224 89.3198 249.773 78.8515L220.33 49.4518Z' fill='%23E23B9F'/%3E%3Cpath d='M267 37.5764V0H225.343V37.5764C225.343 42.2262 223.42 46.4314 220.33 49.4518L249.773 78.8515C260.406 68.2984 267 53.6937 267 37.5764Z' fill='url(%23b)'/%3E%3Cpath d='M92.2124 71.2753C81.6547 81.8169 75.1135 96.3736 75.1135 112.424V225H116.771V112.424C116.771 107.841 118.639 103.684 121.655 100.673L92.2124 71.2753Z' fill='url(%23c)'/%3E%3Cpath d='M133.424 95.7961H150.229V54.2024H133.424C117.349 54.2024 102.77 60.7313 92.2125 71.2753L121.655 100.673C124.671 97.6615 128.834 95.7961 133.424 95.7961Z' fill='url(%23d)'/%3E%3Cpath d='M174.788 153.725C185.345 143.183 191.886 128.626 191.886 112.576V0H150.229V112.576C150.229 117.159 148.361 121.316 145.345 124.327L174.788 153.725Z' fill='url(%23e)'/%3E%3Cpath d='M133.576 129.204H116.771V170.798H133.576C149.651 170.798 164.23 164.269 174.788 153.725L145.345 124.327C142.329 127.339 138.166 129.204 133.576 129.204Z' fill='url(%23f)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --font-sans: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
+}
+/* ===== Moderne design-system tokens (moderne-design-kit-preview.html) =====
+   Backgrounds & greys/blacks + Font colors panels are the source of truth:
+   warm-black canvas + cool navy-cast surfaces/lines; warm off-white text. */
+[data-theme="dark"] {
+  --bg: #100C0A; --field: #100C0A;
+  --surface: #171722; --surface2: #1E1E2C;
+  --line: rgba(228,232,250,.10); --line2: rgba(228,232,250,.06); --line-strong: rgba(228,232,250,.22);
+  --text: #F2EDE4; --body-solid: #AAA59E; --muted: #AAA59E; --muted-solid: #736F6A;
+  --accent: #3E7BF6; --accent-deep: #3E7BF6; --accent-tint: rgba(62,123,246,.16); --accent-brd: rgba(62,123,246,.40);
+  --primary-bg: #3E7BF6; --primary-fg: #FFFFFF;
+  --violet: #9D5BE8; --green: #30F284; --green-hi: #30F284; --teal: #25D0C0; --magenta: #E6399B;
+  --su-t: rgba(48,242,132,.10); --su-b: rgba(48,242,132,.40);
+  --wa: #E8BA4C; --wa-t: rgba(232,186,76,.12); --wa-b: rgba(232,186,76,.42);
+  --card: #131319; --card-head: #1B1B26; --row-hover: #202030;
+  --btn-bg: #F2EDE4; --btn-fg: #100C0A;
+  --footer-bg: #100C0A;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.5);
+}
+[data-theme="light"] {
+  --bg: #F6F7FA; --field: #FFFFFF;
+  --surface: #ECEEF3; --surface2: #E3E7EF;
+  --line: rgba(27,34,48,.12); --line2: rgba(27,34,48,.08); --line-strong: rgba(27,34,48,.22);
+  --text: #1B2230; --body-solid: #5D626D; --muted: #5D626D; --muted-solid: #8D9199;
+  --accent: #1055E2; --accent-deep: #16306B; --accent-tint: rgba(62,123,246,.10); --accent-brd: rgba(62,123,246,.30);
+  --primary-bg: #3E7BF6; --primary-fg: #FFFFFF;
+  --violet: #9D5BE8; --green: #30F284; --green-hi: #1D5937; --teal: #0E4A45; --magenta: #E6399B;
+  --su-t: rgba(48,242,132,.14); --su-b: rgba(29,89,55,.32);
+  --wa: #B68B12; --wa-t: rgba(182,139,18,.10); --wa-b: rgba(182,139,18,.34);
+  --card: #FFFFFF; --card-head: #ECEEF3; --row-hover: #ECEEF3;
+  --btn-bg: #1B2230; --btn-fg: #FFFFFF;
+  --footer-bg: #F6F7FA;
+  --shadow-xs: 0 1px 2px rgba(16,24,40,.08);
+}
+html, body { height: 100%; }
+body { font-family: var(--font-sans); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; min-height: 100vh; transition: background .2s, color .2s; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+main { flex: 1; width: 100%; }
+.mono, code { font-family: var(--font-mono); }
+.wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+.spectral { background: linear-gradient(92deg, #E6399B 0%, #9D5BE8 22%, #3E7BF6 46%, #25D0C0 68%, #30F284 86%, #B7E84C 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+[hidden] { display: none !important; }
+
+/* ===== app bar ===== */
+.appbar { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: 0; z-index: 40; }
+.appbar__inner { display: flex; align-items: center; gap: 28px; height: 66px; }
+.appbar__brand { display: inline-flex; text-decoration: none; }
+.appbar-lock { display: inline-flex; align-items: center; gap: 12px; }
+.appbar__logo { height: 22px; width: 145px; flex: none; color: var(--text); display: block; }
+.appbar__right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.appbar__nav { display: flex; align-items: center; gap: 4px; margin-right: 8px; }
+.navlink { position: relative; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; padding: 9px 12px; border-radius: 7px; }
+.navlink:hover { color: var(--text); background: var(--surface); }
+.navlink.is-active { color: var(--text); font-weight: 600; }
+.navlink.is-active::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; background: var(--accent); border-radius: 4px 4px 0 0; }
+.appbar__cta { font-size: 13px; font-weight: 600; padding: 8px 15px; border-radius: 7px; border: 1px solid var(--line-strong); text-decoration: none; color: var(--text); }
+.appbar__cta:hover { background: var(--surface); }
+.theme-toggle { width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); display: inline-flex; align-items: center; justify-content: center; }
+.theme-toggle:hover { background: var(--surface); }
+.theme-toggle svg { width: 18px; height: 18px; }
+
+/* ===== search / landing ===== */
+.stage { display: flex; flex-direction: column; align-items: center; padding: 44px 32px 64px; }
+.hero-lockup { display: flex; align-items: center; gap: 52px; max-width: 980px; margin-bottom: 52px; flex-wrap: wrap; justify-content: center; }
+.hero-icon { width: 148px; height: auto; flex: none; filter: drop-shadow(0 8px 40px rgba(157,91,232,.28)); }
+.hero-text { max-width: 620px; }
+.hero-title { font-size: 42px; font-weight: 600; letter-spacing: -.025em; line-height: 1.08; }
+.hero-sub { margin-top: 20px; font-size: 18px; line-height: 1.55; color: var(--muted); }
+.hero-sub b { color: var(--text); font-weight: 600; }
+.search { width: 100%; max-width: 760px; }
+.searchbar { display: flex; align-items: center; gap: 13px; width: 100%; padding: 15px 18px; background: var(--field); border: 1px solid var(--line-strong); border-radius: 12px; box-shadow: var(--shadow-xs); }
+.searchbar:focus-within { border-color: var(--accent-brd); box-shadow: 0 0 0 3px var(--accent-tint); }
+.searchbar__icon { width: 18px; height: 18px; color: var(--muted); flex: none; }
+.searchbar input { flex: 1; border: none; background: none; outline: none; font-size: 15px; }
+.searchbar input::placeholder { color: var(--muted); }
+.searchbar .cq-tgl { width: 30px; height: 26px; border-radius: 6px; border: 1px solid var(--line); background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; }
+.searchbar .cq-tgl.on { color: var(--accent-deep); border-color: var(--accent-brd); background: var(--accent-tint); }
+.searchbar kbd { font-family: var(--font-mono); font-size: 10px; background: var(--surface2); padding: 3px 7px; border-radius: 5px; color: var(--muted); border: 1px solid var(--line); }
+.searchbar .searchbar__clear { display: none; width: 26px; height: 26px; border: none; background: none; color: var(--muted); border-radius: 6px; align-items: center; justify-content: center; }
+.searchbar[data-has-query="true"] .searchbar__clear { display: inline-flex; }
+.searchbar[data-has-query="true"] .searchbar__hint { display: none; }
+.searchbar__clear:hover { background: var(--surface); color: var(--text); }
+
+.examples { display: flex; gap: 80px; margin-top: 52px; flex-wrap: wrap; justify-content: center; }
+.example-col { width: 360px; max-width: 100%; }
+.example-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--line2); }
+.example-label { font-size: 13px; font-weight: 600; }
+.example-hint { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.ex-row { display: block; width: 100%; text-align: left; padding: 9px 12px; margin: 0 -12px; border: none; background: none; border-radius: 8px; }
+.ex-row:hover { background: var(--surface); }
+.ex-query { font-family: var(--font-mono); font-size: 13.5px; color: var(--text); word-break: break-all; }
+.ex-query .kw { color: var(--violet); }
+.ex-note { display: block; font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+
+/* ===== search results ===== */
+.results-header { border-bottom: 1px solid var(--line); padding: 16px 0; position: sticky; top: 66px; background: var(--bg); z-index: 30; }
+.results-main { padding: 20px 0 80px; }
+.results-time { display: flex; align-items: baseline; gap: 7px; font-size: 12.5px; color: var(--muted); padding: 4px 0 16px; }
+.results-time__value { font-family: var(--font-mono); font-weight: 600; color: var(--green-hi); font-size: 14px; }
+.file-group { border: 1px solid var(--line); border-radius: 10px; margin-bottom: 14px; overflow: hidden; background: var(--card); }
+.file-header { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--card-head); border-bottom: 1px solid var(--line); font-size: 12.5px; flex-wrap: wrap; }
+.file-gav { font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; color: var(--accent); border: none; background: none; padding: 0; }
+.file-gav:hover { text-decoration: underline; text-underline-offset: 3px; }
+.file-path { font-family: var(--font-mono); color: var(--text); }
+.file-lang { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; }
+.file-count { margin-left: auto; color: var(--muted); }
+.match-list { font-family: var(--font-mono); font-size: 12.5px; padding: 6px 0; }
+.match-row { display: flex; gap: 16px; padding: 1px 14px; white-space: pre; overflow-x: auto; }
+.match-row.is-context { color: var(--muted); }
+.match-row:hover { background: var(--row-hover); }
+.line-number { color: var(--muted); text-align: right; min-width: 40px; user-select: none; flex: none; }
+.line-code { color: var(--text); }
+.match-row.is-context .line-code { color: var(--muted); }
+.line-code mark { background: var(--wa-t); color: var(--text); border-radius: 3px; padding: 0 1px; box-shadow: inset 0 -1px 0 var(--wa-b); }
+.expand-row { display: flex; gap: 16px; padding: 2px 14px; color: var(--muted); background: color-mix(in srgb, var(--surface) 40%, transparent); }
+.expand-gutter { min-width: 40px; text-align: right; }
+.expand-label { border: none; background: none; color: var(--accent); font-family: var(--font-mono); font-size: 11.5px; }
+.expand-label:hover { text-decoration: underline; }
+.more-note { padding: 8px 14px 6px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line2); font-family: var(--font-sans); }
+
+/* ===== landing narrative (what is / sequencing / searching / splicing / surfacing) ===== */
+.cg-story-wrap { border-top: 1px solid var(--line); background: var(--bg); }
+.cg-story { max-width: 920px; margin: 0 auto; padding: 72px 32px 80px; }
+.cg-kicker { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.cg-intro { max-width: 720px; margin-bottom: 64px; }
+.cg-intro h2 { font-size: 30px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; margin-bottom: 20px; }
+.cg-intro p { font-size: 16px; line-height: 1.65; color: var(--muted); }
+.cg-intro p + p { margin-top: 16px; }
+.cg-intro b { color: var(--text); font-weight: 600; }
+.cg-verbs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--line); }
+.cg-verb { background: var(--card); padding: 30px 28px; display: flex; flex-direction: column; }
+.cg-verb__kicker { display: inline-flex; align-items: center; gap: 9px; font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.cg-verb__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dot, var(--accent)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--dot, var(--accent)) 18%, transparent); flex: none; }
+.cg-verb h3 { font-size: 20px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 10px; }
+.cg-verb h3 .sub { color: var(--muted); font-weight: 400; }
+.cg-verb p { font-size: 14px; line-height: 1.6; color: var(--muted); }
+.cg-verb b { color: var(--text); font-weight: 600; }
+.cg-verb sup { color: var(--dot, var(--accent)); font-weight: 700; }
+.cg-verb__link { margin-top: auto; padding-top: 16px; font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.cg-verb__link:hover { gap: 9px; }
+.cg-verb--seq { --dot: var(--magenta); }
+.cg-verb--search { --dot: var(--accent); }
+.cg-verb--splice { --dot: var(--teal); }
+.cg-verb--surface { --dot: var(--green-hi); }
+.cg-disclaimer { margin-top: 34px; font-size: 12.5px; line-height: 1.6; color: var(--muted); max-width: 720px; padding-left: 2px; }
+@media (max-width: 720px) { .cg-verbs { grid-template-columns: 1fr; } .cg-intro h2 { font-size: 25px; } }
+
+.state { text-align: center; padding: 80px 20px; color: var(--muted); }
+.state h2 { font-size: 20px; color: var(--text); font-weight: 600; margin-bottom: 8px; }
+.state code { background: var(--surface); border-radius: 5px; padding: 1px 6px; }
+
+/* ===== recipes catalog ===== */
+.recipes { padding: 40px 0 80px; }
+.recipes__head { max-width: 780px; margin-bottom: 26px; }
+.recipes__title { font-size: 34px; font-weight: 600; letter-spacing: -.02em; }
+.recipes__lede { margin-top: 12px; font-size: 15px; line-height: 1.6; color: var(--muted); }
+.recipes__lede a { color: var(--accent); }
+.recipes__controls { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+.recipes__search { flex: 1; min-width: 260px; padding: 11px 15px; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--field); font-size: 14px; outline: none; }
+.recipes__search:focus { border-color: var(--accent-brd); box-shadow: 0 0 0 3px var(--accent-tint); }
+.recipes__filters { display: flex; gap: 10px; flex-wrap: wrap; }
+.segmented { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 9px; overflow: hidden; }
+.segmented__btn { font-size: 12.5px; font-weight: 500; padding: 9px 13px; border: none; background: var(--field); color: var(--muted); border-right: 1px solid var(--line); }
+.segmented__btn:last-child { border-right: none; }
+.segmented__btn:hover { color: var(--text); background: var(--surface); }
+.segmented__btn.is-on { color: var(--text); background: var(--accent-tint); font-weight: 600; }
+.segmented__n { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); margin-left: 4px; }
+.recipes__module { padding: 9px 12px; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--field); font-size: 12.5px; max-width: 260px; }
+.recipes__count { font-size: 12.5px; color: var(--muted); margin-bottom: 12px; }
+.recipe-list { list-style: none; }
+.recipe-row { border-top: 1px solid var(--line2); }
+.recipe-row:last-child { border-bottom: 1px solid var(--line2); }
+.recipe-row__link { display: flex; gap: 18px; align-items: flex-start; padding: 15px 12px; margin: 0 -12px; border-radius: 9px; text-decoration: none; }
+.recipe-row__link:hover { background: var(--surface); }
+.recipe-row__main { flex: 1; min-width: 0; }
+.recipe-row__name { display: block; font-size: 14.5px; font-weight: 600; color: var(--text); }
+.recipe-row__desc { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; max-width: 720px; }
+.recipe-row__fq { display: block; font-size: 11.5px; color: var(--muted); margin-top: 6px; word-break: break-all; }
+.recipe-row__meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex: none; }
+.recipe-row__artifact { font-size: 11px; color: var(--muted); text-align: right; }
+.lic { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.lic__lock { width: 12px; height: 12px; }
+.lic--apache { color: var(--green-hi); background: var(--su-t); border: 1px solid var(--su-b); }
+.lic--msal, .lic--proprietary, .lic--other { color: var(--wa); background: var(--wa-t); border: 1px solid var(--wa-b); }
+.recipes__empty { padding: 60px 0; text-align: center; color: var(--muted); }
+
+/* ===== recipe detail ===== */
+.recipe { max-width: 800px; padding: 36px 0 80px; }
+.recipe__back { display: inline-block; font-size: 13px; color: var(--accent); text-decoration: none; margin-bottom: 20px; }
+.recipe__back:hover { text-decoration: underline; }
+.recipe__access { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; margin-bottom: 12px; }
+.recipe__access--oss { color: var(--green-hi); background: var(--su-t); border: 1px solid var(--su-b); }
+.recipe__access--gated { color: var(--wa); background: var(--wa-t); border: 1px solid var(--wa-b); }
+.recipe__title { font-size: 30px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; }
+.recipe__chips { display: flex; gap: 12px; flex-wrap: wrap; margin: 18px 0; }
+.codechip { display: inline-flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; }
+.codechip__label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.codechip__value { font-size: 12.5px; color: var(--text); }
+.recipe__desc { font-size: 15px; line-height: 1.65; color: var(--text); margin-bottom: 16px; }
+.recipe__tags { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.chip { font-size: 11.5px; color: var(--muted); border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px 10px; }
+.recipe__section { margin-top: 34px; }
+.recipe__section-title { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+.recipe__section-note { font-size: 13.5px; color: var(--muted); line-height: 1.55; margin-bottom: 14px; }
+.recipe__section-note a { color: var(--accent); }
+.recipe__usage-note { font-size: 13px; color: var(--muted); margin: 14px 0 8px; }
+.codeblock { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 9px; padding: 14px 72px 14px 16px; overflow-x: auto; }
+.codeblock pre { font-family: var(--font-mono); font-size: 12.5px; color: var(--text); }
+.codeblock__copy, .copybtn { position: absolute; top: 9px; right: 9px; font-size: 11px; font-weight: 600; padding: 4px 9px; border-radius: 6px; border: 1px solid var(--line-strong); background: var(--field); color: var(--muted); }
+.copybtn:hover { color: var(--text); background: var(--surface); }
+.opt-table, .dt-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.opt-table th { text-align: left; font-size: 11.5px; font-weight: 500; color: var(--muted); background: var(--card-head); padding: 8px 12px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.opt-table td { padding: 11px 12px; border-bottom: 1px solid var(--line2); vertical-align: top; }
+.opt-table code { font-size: 12px; }
+.opt-type { color: var(--teal); }
+.opt-req { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--wa); margin-left: 8px; }
+.opt-example { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 9px; }
+.recipe__sublist { list-style: none; }
+.recipe__sublist li { padding: 10px 4px; border-top: 1px solid var(--line2); }
+.recipe__sublist li:first-child { border-top: none; }
+.recipe__sublist a { color: var(--accent); text-decoration: none; font-size: 14px; }
+.recipe__sublist a:hover { text-decoration: underline; }
+.recipe__sublist span { font-size: 14px; }
+.recipe__sublist-fq { display: block; font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+
+/* ===== MCP ===== */
+.mcp { padding: 48px 0 80px; }
+.mcp-hero { max-width: 720px; margin-bottom: 40px; }
+.mcp-hero__title { font-size: 42px; font-weight: 600; letter-spacing: -.025em; line-height: 1.08; }
+.mcp-hero__sub { margin-top: 18px; font-size: 16px; line-height: 1.6; color: var(--muted); }
+.mcp-section { margin-top: 44px; }
+.mcp-h2 { font-size: 22px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 16px; }
+.mcp-lede { font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 720px; margin-bottom: 20px; }
+.mcp-lede code, .mcp-note code { font-size: 12.5px; background: var(--surface); border-radius: 5px; padding: 1px 6px; }
+.mcp-connect { max-width: 720px; }
+.mcp-tabs { display: inline-flex; gap: 4px; margin-bottom: 10px; }
+.mcp-tab { font-size: 12.5px; font-weight: 500; padding: 7px 13px; border-radius: 8px; border: 1px solid transparent; background: none; color: var(--muted); }
+.mcp-tab:hover { color: var(--text); }
+.mcp-tab.is-on { color: var(--text); background: var(--surface); border-color: var(--line); font-weight: 600; }
+.mcp-installs { display: flex; align-items: center; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.mcp-installs__label { font-size: 13px; color: var(--muted); }
+.mcp-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); text-decoration: none; }
+.mcp-btn:hover { background: var(--surface); }
+.mcp-btn--primary { background: var(--btn-bg); color: var(--btn-fg); border-color: transparent; }
+.mcp-btn--primary:disabled { opacity: .5; cursor: not-allowed; }
+.mcp-note { margin-top: 16px; font-size: 13px; line-height: 1.6; color: var(--muted); max-width: 720px; }
+.mcp-tools { display: flex; flex-direction: column; gap: 16px; }
+.mcp-tool { border: 1px solid var(--line); border-radius: 12px; padding: 20px; background: var(--card); }
+.mcp-tool__sig { display: block; font-family: var(--font-mono); font-size: 13.5px; color: var(--text); margin-bottom: 8px; }
+.mcp-tool__sig b { color: var(--violet); font-weight: 600; }
+.mcp-tool__desc { font-size: 13.5px; line-height: 1.6; color: var(--muted); max-width: 760px; }
+.mcp-ic { font-family: var(--font-mono); font-size: 12px; background: var(--surface); border-radius: 4px; padding: 1px 5px; color: var(--text); }
+.mcp-tool__form { margin-top: 16px; }
+.mcp-fields { display: flex; flex-wrap: wrap; gap: 12px; }
+.mcp-field { display: flex; flex-direction: column; gap: 5px; flex: 1 1 100%; }
+.mcp-field--half { flex: 1 1 calc(50% - 6px); }
+.mcp-field__label { font-size: 11.5px; color: var(--muted); font-family: var(--font-mono); }
+.mcp-field__input { padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line-strong); background: var(--field); font-family: var(--font-mono); font-size: 13px; outline: none; }
+.mcp-field__input:focus { border-color: var(--accent-brd); box-shadow: 0 0 0 3px var(--accent-tint); }
+.mcp-tool__actions { margin-top: 14px; }
+.mcp-call { display: flex; align-items: center; gap: 10px; margin-top: 16px; padding: 9px 12px; background: var(--surface); border-radius: 8px; overflow-x: auto; }
+.mcp-call__label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); flex: none; }
+.mcp-call__code { font-family: var(--font-mono); font-size: 12.5px; color: var(--text); white-space: nowrap; }
+.mcp-payload { margin-top: 14px; }
+.mcp-payload__label { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.mcp-payload__tag { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--wa); background: var(--wa-t); border: 1px solid var(--wa-b); border-radius: 999px; padding: 1px 8px; font-size: 10px; }
+.json { background: var(--card); border: 1px solid var(--line); border-radius: 9px; padding: 14px 72px 14px 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.55; color: var(--text); position: relative; white-space: pre; }
+.json .k { color: var(--accent); }
+.json .s { color: var(--green-hi); }
+.json .n { color: var(--teal); }
+
+/* ===== footer ===== */
+.site-footer { background: var(--footer-bg); border-top: 1px solid var(--line); margin-top: auto; }
+.site-footer__inner { display: flex; align-items: center; justify-content: space-between; padding: 28px 32px; gap: 24px; flex-wrap: wrap; }
+.site-footer__brand { display: inline-flex; align-items: center; gap: 15px; text-decoration: none; color: var(--text); }
+.site-footer__logo { height: 20px; width: 132px; flex: none; color: var(--text); display: block; }
+.brand-pill { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--text); border: 1px solid var(--line-strong); border-radius: 8px; padding: 5px 11px; white-space: nowrap; line-height: 1; }
+.site-footer__meta { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.site-footer__links { display: flex; gap: 20px; }
+.site-footer__links a { font-size: 13.5px; font-weight: 500; text-decoration: none; color: var(--text); }
+.site-footer__links a:hover { color: var(--accent); }
+.site-footer__copy { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+
+@media (max-width: 860px) {
+  .hero-title { font-size: 34px; }
+  .mcp-hero__title { font-size: 32px; }
+  .hero-icon { width: 108px; }
+  .results-header { position: static; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Code Genome Project mark — the designer's spectral double helix (from CgpLogo.tsx) -->
+    <linearGradient id="cgpG0" x1="36" y1="130" x2="16.64" y2="225.03" gradientUnits="userSpaceOnUse"><stop stop-color="#E03CA1" stop-opacity=".9"/><stop offset=".69" stop-color="#8557BD" stop-opacity=".7"/><stop offset="1" stop-color="#2971D9"/></linearGradient>
+    <linearGradient id="cgpG1" x1="220" y1="103" x2="266.87" y2="-12.05" gradientUnits="userSpaceOnUse"><stop stop-color="#E23B9F"/><stop offset=".5" stop-color="#C947BA"/><stop offset="1" stop-color="#B052D4"/></linearGradient>
+    <linearGradient id="cgpG2" x1="109.36" y1="96.13" x2="81.38" y2="242.11" gradientUnits="userSpaceOnUse"><stop stop-color="#676DF0"/><stop offset=".25" stop-color="#93EB5E" stop-opacity=".85"/><stop offset=".5" stop-color="#A3EA59" stop-opacity=".7"/><stop offset="1" stop-color="#C1E84D"/></linearGradient>
+    <linearGradient id="cgpG3" x1="168.49" y1="58.18" x2="116.36" y2="84.38" gradientUnits="userSpaceOnUse"><stop stop-color="#2BBBCD"/><stop offset="1" stop-color="#676DF0"/></linearGradient>
+    <linearGradient id="cgpG4" x1="157.64" y1="128.87" x2="185.62" y2="-17.11" gradientUnits="userSpaceOnUse"><stop stop-color="#30AFD6"/><stop offset=".255" stop-color="#5ECE9C"/><stop offset=".51" stop-color="#8BEC62" stop-opacity=".6"/><stop offset=".92" stop-color="#C3E84C"/></linearGradient>
+    <linearGradient id="cgpG5" x1="98.52" y1="166.82" x2="150.64" y2="140.62" gradientUnits="userSpaceOnUse"><stop stop-color="#00BF43"/><stop offset=".5" stop-color="#00B660"/><stop offset="1" stop-color="#30AFD6"/></linearGradient>
+    <symbol id="cgp-mark" viewBox="0 0 267 225">
+      <path d="M116.772 129.202V170.795H58.3105C53.7824 170.795 49.6742 172.61 46.6699 175.548C43.5806 178.568 41.6572 182.774 41.6572 187.424V225H0V187.424C0 171.309 6.59408 156.702 17.2275 146.148C27.776 135.68 42.2997 129.202 58.3105 129.202H116.772Z" fill="url(#cgpG0)"/>
+      <path d="M220.33 49.4518C217.326 52.3897 213.218 54.2047 208.689 54.2047H150.227V95.7984H208.689C224.7 95.7984 239.224 89.3198 249.773 78.8515L220.33 49.4518Z" fill="#E23B9F"/>
+      <path d="M267 37.5764V0H225.343V37.5764C225.343 42.2262 223.42 46.4314 220.33 49.4518L249.773 78.8515C260.406 68.2984 267 53.6937 267 37.5764Z" fill="url(#cgpG1)"/>
+      <path d="M92.2124 71.2753C81.6547 81.8169 75.1135 96.3736 75.1135 112.424V225H116.771V112.424C116.771 107.841 118.639 103.684 121.655 100.673L92.2124 71.2753Z" fill="url(#cgpG2)"/>
+      <path d="M133.424 95.7961H150.229V54.2024H133.424C117.349 54.2024 102.77 60.7313 92.2125 71.2753L121.655 100.673C124.671 97.6615 128.834 95.7961 133.424 95.7961Z" fill="url(#cgpG3)"/>
+      <path d="M174.788 153.725C185.345 143.183 191.886 128.626 191.886 112.576V0H150.229V112.576C150.229 117.159 148.361 121.316 145.345 124.327L174.788 153.725Z" fill="url(#cgpG4)"/>
+      <path d="M133.576 129.204H116.771V170.798H133.576C149.651 170.798 164.23 164.269 174.788 153.725L145.345 124.327C142.329 127.339 138.166 129.204 133.576 129.204Z" fill="url(#cgpG5)"/>
+    </symbol>
+    <symbol id="moderne-wm" viewBox="0 0 152 23" fill="currentColor"><path d="M43.573 19.053 35.828.619h-3.749v21.687h1.611V2.045l8.49 20.261h1.672L52.28 2.168v20.138h2.57V.619h-3.53ZM71.551 8.628a7.3 7.3 0 0 0-2.447-1.627 8 8 0 0 0-3.067-.588A8 8 0 0 0 62.97 7a7.3 7.3 0 0 0-2.447 1.627q-1.024 1.037-1.612 2.525t-.589 3.284q0 1.86.59 3.377.587 1.518 1.626 2.587a7.1 7.1 0 0 0 2.447 1.641q1.41.574 3.052.574a7.9 7.9 0 0 0 3.036-.589 7.2 7.2 0 0 0 2.448-1.642q1.021-1.054 1.626-2.571.604-1.518.604-3.377 0-1.797-.588-3.284-.59-1.487-1.612-2.525m-.82 8.582q-.296 1.285-.914 2.23a4.44 4.44 0 0 1-1.565 1.472q-.945.526-2.215.526t-2.215-.526a4.4 4.4 0 0 1-1.565-1.472q-.62-.945-.913-2.23a12.4 12.4 0 0 1-.295-2.773q-.001-1.456.295-2.71.293-1.255.913-2.17a4.5 4.5 0 0 1 1.565-1.44q.945-.527 2.215-.527t2.215.527 1.565 1.44q.618.915.913 2.17t.295 2.71q0 1.487-.295 2.773m17.481-7.605q-.682-1.3-2.013-2.23-1.333-.93-3.347-.93-1.456 0-2.742.527a6.1 6.1 0 0 0-2.214 1.549q-.93 1.022-1.456 2.51-.528 1.485-.527 3.407 0 1.952.526 3.485.528 1.534 1.457 2.572a6.1 6.1 0 0 0 2.215 1.58 7.1 7.1 0 0 0 2.773.542q2.013 0 3.377-1.007t2.013-2.401v3.098h2.355V0h-2.417zm-1.316 9.79q-1.41 1.92-3.547 1.92-2.294 0-3.517-1.874-1.224-1.874-1.224-5.003t1.209-4.91q1.207-1.782 3.532-1.782 2.044 0 3.5 1.859 1.456 1.86 1.456 4.833 0 3.036-1.41 4.957m19.047-11.06a6.7 6.7 0 0 0-2.293-1.41 7.8 7.8 0 0 0-2.726-.48q-1.332 0-2.618.527a6.9 6.9 0 0 0-2.292 1.533q-1.008 1.008-1.611 2.51-.605 1.503-.605 3.423t.574 3.439q.573 1.519 1.595 2.571a6.9 6.9 0 0 0 2.416 1.611q1.394.558 3.006.558 2.633 0 4.415-1.348 1.78-1.347 2.215-3.64h-1.456a4.47 4.47 0 0 1-1.658 2.68q-1.317 1.038-3.268 1.038-2.511 0-3.81-1.936-1.303-1.936-1.303-4.973v-.062h11.556v-.496q0-1.827-.573-3.221t-1.564-2.324m-9.388 4.802q.155-2.788 1.317-4.151t3.052-1.363q2.137 0 3.206 1.41 1.07 1.41 1.131 4.104zm21.338-6.414q-1.084 0-1.952.418a4.4 4.4 0 0 0-1.518 1.224q-.279.34-.48.728a4.7 4.7 0 0 0-.325.79V6.784h-2.355v15.521h2.416v-8.984q0-1.364.31-2.262t.821-1.41q.511-.51 1.131-.712a4.1 4.1 0 0 1 1.27-.201q.434 0 .821.046c.387.046.49.057.697.078V6.784a5 5 0 0 0-.402-.047 6 6 0 0 0-.434-.015m14.47 1.1q-1.626-1.379-3.95-1.379-1.859 0-3.191 1.007a5.7 5.7 0 0 0-1.92 2.525V6.784h-2.355v15.521h2.416v-7.219q0-3.593 1.348-5.468 1.347-1.874 3.268-1.874 1.58 0 2.587 1.084t1.007 3.687v9.79h2.416V12.7q0-3.5-1.626-4.88m18.83 6.555v-.496q0-1.827-.573-3.222-.574-1.395-1.565-2.323a6.7 6.7 0 0 0-2.292-1.41 7.8 7.8 0 0 0-2.727-.48q-1.333 0-2.617.527a6.9 6.9 0 0 0-2.293 1.533q-1.006 1.007-1.611 2.51t-.605 3.423.574 3.439q.572 1.519 1.595 2.571a6.9 6.9 0 0 0 2.416 1.611q1.395.558 3.006.558 2.633 0 4.415-1.348 1.78-1.347 2.215-3.64h-1.456a4.47 4.47 0 0 1-1.658 2.68q-1.317 1.038-3.268 1.038-2.51 0-3.81-1.937-1.303-1.935-1.302-4.972v-.062zm-10.208-5.39q1.162-1.364 3.051-1.364 2.138 0 3.207 1.41 1.07 1.41 1.13 4.105h-8.705q.154-2.79 1.317-4.152M21.542.466a.56.56 0 0 0-.603.12l-9.522 9.522C10.79 4.666 6.16.424.554.423A.554.554 0 0 0 0 .977v20.778l.004.026.012.079q.007.042.02.082l.007.024q.012.023.026.044.019.038.044.074a.7.7 0 0 0 .112.111q.035.024.072.044c.016.008.028.02.045.027l.02.003a.5.5 0 0 0 .192.039H21.33a.554.554 0 0 0 .553-.553V.977a.55.55 0 0 0-.341-.511m-.765 1.846v8.5h-8.5zm0 13.695h-9.282v-4.088h9.282zM1.106 20.42v-8.5h8.5l-4.25 4.25zm0-18.874c4.983.277 8.989 4.283 9.266 9.267H1.106Zm5.032 15.406 4.25-4.25v8.5h-8.5zm5.356.161h9.282v4.089h-9.282z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="appbar">
+  <div class="appbar__inner wrap">
+    <a class="appbar__brand" href="#search" aria-label="Moderne — Code Genome Project">
+      <span class="appbar-lock">
+        <svg class="appbar__logo" aria-hidden="true"><use href="#moderne-wm"/></svg>
+        <span class="brand-pill">Code Genome Project</span>
+      </span>
+    </a>
+    <div class="appbar__right">
+      <nav class="appbar__nav" aria-label="Code Genome Project">
+        <a class="navlink is-active" href="#search" data-nav="search">Search</a>
+        <a class="navlink" href="#recipes" data-nav="recipes">Recipes</a>
+        <a class="navlink" href="#mcp" data-nav="mcp">MCP</a>
+      </nav>
+      <a class="appbar__cta" href="#">Log in</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><svg id="themeIcon"><use href="#i-sun"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ SEARCH (landing) ============ -->
+<div class="view" id="view-search">
+  <div class="wrap">
+    <div class="stage">
+      <div class="hero-lockup">
+        <svg class="hero-icon" viewBox="0 0 267 225" aria-hidden="true"><use href="#cgp-mark"/></svg>
+        <div class="hero-text">
+          <h1 class="hero-title">The world's code <span class="spectral">has a genome.</span></h1>
+          <p class="hero-sub">Sequencing every public open source repo into a compiler-accurate <b>Lossless Semantic Tree</b> — so the code the world runs on can be understood and improved, <b>at scale</b>.</p>
+        </div>
+      </div>
+
+      <div class="search">
+        <form class="searchbar" id="landingSearch" role="search" data-has-query="false">
+          <svg class="searchbar__icon"><use href="#i-search"/></svg>
+          <input id="landingInput" type="text" placeholder="Search the corpus with Moderne Trigrep" autocomplete="off" spellcheck="false" aria-label="Search">
+          <button type="button" class="cq-tgl on" title="Case sensitivity">Aa</button>
+          <button type="button" class="cq-tgl" title="Regex mode">.*</button>
+          <kbd class="searchbar__hint">/</kbd>
+          <button type="button" class="searchbar__clear" aria-label="Clear" data-clear><svg style="width:16px;height:16px"><use href="#i-x"/></svg></button>
+        </form>
+      </div>
+
+      <div class="examples" id="examples"></div>
+    </div>
+  </div>
+
+  <div class="cg-story-wrap">
+    <div class="cg-story">
+      <section class="cg-intro">
+        <div class="cg-kicker">What is the Code Genome Project</div>
+        <h2>The world's code has a genome, and this is where it's <span class="spectral">sequenced, stored, and navigable.</span></h2>
+        <p>Enterprise software consists of up to <b>90% third-party and open source components</b>, stitched together in different ways for business functionality. This software is the basis of the Code Genome Project.</p>
+        <p>The goal: understand codebases broadly, across open source and enterprise, and share deterministic recipes that advance them. It's all open to developers and their agents alike through code search and a remote MCP server.</p>
+      </section>
+
+      <div class="cg-verbs">
+        <article class="cg-verb cg-verb--seq">
+          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Sequencing</span>
+          <h3>Sequencing <span class="sub">the code genome</span></h3>
+          <p>Each repository is compiled into a <b>Lossless Semantic Tree</b>: the types, methods, and relationships that define how code behaves. Compiler-accurate, lossless, polyglot<sup>*</sup>. Each tree holds every signal the compiler sees in a single repository; the project lines them up side by side, so the entire open source ecosystem reads as one corpus. It's the substrate everything else is built on.</p>
+        </article>
+
+        <article class="cg-verb cg-verb--search">
+          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Searching</span>
+          <h3>Searching <span class="sub">the code genome</span></h3>
+          <p>Explore the sequenced code of thousands of open source repositories. Search the way a compiler sees code — by <b>type, symbol, and call site</b>, not just strings. Find how any API, annotation, or pattern appears across thousands of repositories in milliseconds. Powered by Moderne's Trigrep search, the code genome is open to explore.</p>
+          <a class="cg-verb__link" href="#search" data-focus-search>Search the corpus →</a>
+        </article>
+
+        <article class="cg-verb cg-verb--splice">
+          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Splicing</span>
+          <h3>Splicing <span class="sub">the code genome</span></h3>
+          <p>OpenRewrite recipes rewrite the genome: <b>10,000+ deterministic programs</b> that transform code precisely and repeatably — whether you're migrating a framework, patching a CVE, or enforcing a standard, the same way every time. Recipes are stored in the project and built to extend, so developers and their agents can adapt a recipe or write a new one.</p>
+          <a class="cg-verb__link" href="#recipes">Browse recipes →</a>
+        </article>
+
+        <article class="cg-verb cg-verb--surface">
+          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Surfacing to AI</span>
+          <h3>Surfacing <span class="sub">the code genome to AI</span></h3>
+          <p>A remote MCP server opens the Code Genome to coding agents. They can find any method or type, see how it's really used, and compare versions — all resolved through the <b>type system, not text</b>. Connect in one click.</p>
+          <a class="cg-verb__link" href="#mcp">Connect your agent →</a>
+        </article>
+      </div>
+
+      <p class="cg-disclaimer"><sup>*</sup> Today the Code Genome Project sequences the Java ecosystem; it's expanding to the full breadth of languages the LST supports, including Python, C#, JavaScript/TypeScript, Scala, and more.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SEARCH RESULTS ============ -->
+<div class="view" id="view-results" hidden>
+  <div class="results-header">
+    <div class="wrap">
+      <form class="searchbar" id="resultsSearch" role="search" data-has-query="true">
+        <svg class="searchbar__icon"><use href="#i-search"/></svg>
+        <input id="resultsInput" type="text" autocomplete="off" spellcheck="false" aria-label="Search">
+        <button type="button" class="cq-tgl on" title="Case sensitivity">Aa</button>
+        <button type="button" class="cq-tgl" title="Regex mode">.*</button>
+        <button type="button" class="searchbar__clear" aria-label="Clear" data-clear><svg style="width:16px;height:16px"><use href="#i-x"/></svg></button>
+      </form>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="results-main">
+      <div class="results-time"><span>First result in</span> <span class="results-time__value" id="resultsMs">21</span> <span>ms</span></div>
+      <div id="resultsList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RECIPES ============ -->
+<div class="view" id="view-recipes" hidden>
+  <div class="wrap">
+    <!-- catalog -->
+    <section class="recipes" id="recipesCatalog">
+      <header class="recipes__head">
+        <h1 class="recipes__title">Recipe catalog</h1>
+        <p class="recipes__lede">Every OpenRewrite and Moderne recipe, with the artifact you add to get it and its license. Add the artifact to your build to run it — the <a href="#">Maven repository</a> serves them, free for open source.</p>
+      </header>
+      <div class="recipes__controls">
+        <input class="recipes__search" id="recipeSearch" type="search" placeholder="Search recipes by name, id, description, or tag…" aria-label="Search recipes">
+        <div class="recipes__filters">
+          <div class="segmented" id="licenseSeg" role="group" aria-label="Filter by license"></div>
+          <select class="recipes__module" id="artifactSelect" aria-label="Filter by artifact"></select>
+        </div>
+      </div>
+      <p class="recipes__count" id="recipeCount"></p>
+      <ul class="recipe-list" id="recipeList"></ul>
+      <p class="recipes__empty" id="recipeEmpty" hidden>No recipes match those filters.</p>
+    </section>
+    <!-- detail -->
+    <article class="recipe" id="recipeDetail" hidden></article>
+  </div>
+</div>
+
+<!-- ============ MCP ============ -->
+<div class="view" id="view-mcp" hidden>
+  <div class="wrap">
+    <div class="mcp">
+      <header class="mcp-hero">
+        <h1 class="mcp-hero__title">All of open source at your <span class="spectral">agent's fingertips.</span></h1>
+        <p class="mcp-hero__sub">A remote MCP server over the entire Code Genome corpus, growing to encompass all the world's provably used open source. Your agent navigates and reads all of open source as if it were fully resolved in an IDE it could click around. Try any tool below, then connect it in one line.</p>
+      </header>
+
+      <section class="mcp-section" id="connect">
+        <h2 class="mcp-h2">Connect your agent</h2>
+        <div class="mcp-connect">
+          <div class="mcp-tabs" id="mcpTabs" role="tablist" aria-label="Setup snippet">
+            <button type="button" role="tab" class="mcp-tab is-on" data-tab="claude" aria-selected="true">Claude Code</button>
+            <button type="button" role="tab" class="mcp-tab" data-tab="json" aria-selected="false">.mcp.json</button>
+          </div>
+          <div class="codeblock"><pre id="mcpSnippet">claude mcp add --transport http codegenome https://api.codegenomeproject.org/mcp</pre><button type="button" class="codeblock__copy" data-copy="#mcpSnippet">Copy</button></div>
+        </div>
+        <div class="mcp-installs">
+          <span class="mcp-installs__label">Or one click:</span>
+          <a class="mcp-btn" href="#">Add to Cursor</a>
+          <a class="mcp-btn" href="#">Add to VS Code</a>
+        </div>
+        <p class="mcp-note">Remote MCP over Streamable HTTP at <code>https://api.codegenomeproject.org/mcp</code>. Windsurf, Cline, and Zed take the same URL; stdio-only clients bridge with <code>npx mcp-remote https://api.codegenomeproject.org/mcp</code>.</p>
+      </section>
+
+      <section class="mcp-section" id="tools">
+        <div class="mcp-section__intro">
+          <h2 class="mcp-h2">The MCP tools</h2>
+          <p class="mcp-lede">The exact tools your agent gets, with the exact descriptions it reads — run any of them against the public corpus and read the JSON that comes back. The <code>find_*</code> and <code>usage_examples</code> tools resolve through the corpus's type tables, so they catch what a grep or a docs pipe can't.</p>
+        </div>
+        <div class="mcp-tools" id="mcpTools"></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <a href="https://moderne.ai" class="site-footer__brand" aria-label="Moderne — Code Genome Project">
+      <svg class="site-footer__logo"><use href="#moderne-wm"/></svg>
+      <span class="brand-pill">Code Genome Project</span>
+    </a>
+    <div class="site-footer__meta">
+      <nav class="site-footer__links" aria-label="Moderne">
+        <a href="https://moderne.ai">moderne.ai</a>
+        <a href="https://www.openrewrite.org">OpenRewrite</a>
+      </nav>
+      <span class="site-footer__copy">© 2026 Moderne, Inc.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============ theme ============ */
+const root = document.documentElement;
+const themeIcon = document.getElementById('themeIcon').querySelector('use');
+function applyTheme(t) { root.setAttribute('data-theme', t); themeIcon.setAttribute('href', t === 'dark' ? '#i-sun' : '#i-moon'); }
+(function () {
+  const stored = localStorage.getItem('cgp-theme');
+  const q = new URLSearchParams(location.search).get('theme');
+  applyTheme(q === 'light' || q === 'dark' ? q : (stored || 'dark'));
+})();
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  applyTheme(next); localStorage.setItem('cgp-theme', next);
+});
+
+/* ============ example queries (ExampleQueries.tsx) ============ */
+const EXAMPLES = [
+  { label: 'Search by text', hint: 'trigram literal & regex', queries: [
+    { q: 'LoggerFactory.getLogger', note: 'a common call site' },
+    { q: '@Deprecated', note: 'every deprecation' },
+    { q: 'synchronized', note: 'locking, everywhere' },
+  ]},
+  { label: 'Search the type graph', hint: 'resolved from the LST', queries: [
+    { q: 'ref.owner:org.apache.maven.plugin.AbstractMojo', note: 'the Mojo surface' },
+    { q: 'ref:java.util.List', note: 'List used as a type' },
+    { q: 'calls:org.slf4j.Logger.info', note: 'call sites of Logger.info' },
+  ]},
+];
+function opPrefix(q) { const m = /^(ref(?:\.[a-z]+)?:|calls?:)/.exec(q); return m ? `<span class="kw">${m[1]}</span>${escapeHtml(q.slice(m[1].length))}` : escapeHtml(q); }
+(function renderExamples() {
+  document.getElementById('examples').innerHTML = EXAMPLES.map(cat => `
+    <div class="example-col">
+      <div class="example-head"><span class="example-label">${cat.label}</span><span class="example-hint">${cat.hint}</span></div>
+      ${cat.queries.map(ex => `<button type="button" class="ex-row" data-q="${escapeAttr(ex.q)}"><span class="ex-query">${opPrefix(ex.q)}</span><span class="ex-note">${ex.note}</span></button>`).join('')}
+    </div>`).join('');
+})();
+
+/* ============ search results (static sample dataset — SearchResults.tsx structure) ============ */
+const SAMPLE_FILES = [
+  { gav: 'org.slf4j:slf4j-api:2.0.17', path: 'src/main/java/org/slf4j/LoggerFactory.java', lang: 'Java', matches: 6, first: 328, lines: [
+    { n: 328, c: '    public static Logger getLogger(String name) {', ctx: false },
+    { n: 329, c: '        ILoggerFactory iLoggerFactory = getILoggerFactory();', ctx: true },
+    { n: 330, c: '        return iLoggerFactory.getLogger(name);', ctx: false },
+    { n: 331, c: '    }', ctx: true },
+    { gap: true, from: 332, to: 348 },
+    { n: 349, c: '    public static Logger getLogger(Class<?> clazz) {', ctx: false },
+    { n: 350, c: '        Logger logger = getLogger(clazz.getName());', ctx: false },
+  ], more: 3 },
+  { gav: 'com.google.guava:guava:33.0.0-jre', path: 'src/main/java/com/google/common/base/Preconditions.java', lang: 'Java', matches: 2, first: 41, lines: [
+    { top: true, to: 40 },
+    { n: 41, c: 'import org.slf4j.Logger;', ctx: false },
+    { n: 42, c: 'import org.slf4j.LoggerFactory;', ctx: false },
+    { n: 43, c: '', ctx: true },
+    { n: 44, c: 'public final class Preconditions {', ctx: true },
+  ], more: 0 },
+  { gav: 'org.apache.commons:commons-lang3:3.14.0', path: 'src/main/java/org/apache/commons/lang3/time/StopWatch.java', lang: 'Java', matches: 1, first: 88, lines: [
+    { top: true, to: 87 },
+    { n: 88, c: '    private static final Logger LOGGER = LoggerFactory.getLogger(StopWatch.class);', ctx: false },
+    { n: 89, c: '', ctx: true },
+    { n: 90, c: '    public void start() {', ctx: true },
+  ], more: 0 },
+];
+function highlight(code, term) {
+  if (!term) return escapeHtml(code);
+  const esc = escapeHtml(code);
+  const t = escapeHtml(term).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  try { return esc.replace(new RegExp(t, 'gi'), m => `<mark>${m}</mark>`); } catch { return esc; }
+}
+function termFor(query) {
+  const m = /^(?:ref(?:\.[a-z]+)?:|calls?:)?(.*)$/.exec(query.trim());
+  const raw = (m ? m[1] : query).trim();
+  const last = raw.split(/[.#(]/).filter(Boolean).pop() || raw;
+  return last.replace(/[<>@"]/g, '');
+}
+function renderResults(query) {
+  const term = termFor(query);
+  document.getElementById('resultsMs').textContent = 14 + (query.length % 30);
+  document.getElementById('resultsList').innerHTML = SAMPLE_FILES.map(f => {
+    const rows = f.lines.map(l => {
+      if (l.top) return `<div class="expand-row"><span class="expand-gutter">↑</span><button class="expand-label">${l.to} hidden lines</button></div>`;
+      if (l.gap) return `<div class="expand-row"><span class="expand-gutter">⋯</span><button class="expand-label">${l.to - l.from + 1} hidden lines</button></div>`;
+      return `<div class="match-row${l.ctx ? ' is-context' : ''}"><span class="line-number">${l.n}</span><code class="line-code">${l.ctx ? escapeHtml(l.c) : highlight(l.c, term)}</code></div>`;
+    }).join('');
+    return `<section class="file-group">
+      <header class="file-header">
+        <button class="file-gav" data-scope="${escapeAttr(f.gav)}" title="Search only ${escapeAttr(f.gav)}">${f.gav}</button>
+        <span class="file-path">${f.path}</span>
+        <span class="file-lang">${f.lang}</span>
+        <span class="file-count">${f.matches} ${f.matches === 1 ? 'match' : 'matches'}</span>
+      </header>
+      <div class="match-list">${rows}${f.more ? `<div class="more-note">+ ${f.more} more ${f.more === 1 ? 'line' : 'lines'} in this file</div>` : ''}</div>
+    </section>`;
+  }).join('');
+}
+
+/* ============ recipe catalog (RecipesApp.tsx / RecipeDetail.tsx) ============ */
+const LICENSE_META = { apache: { label: 'Apache 2.0', free: true }, msal: { label: 'MSAL', free: false }, proprietary: { label: 'Proprietary', free: false }, other: { label: 'Other', free: false } };
+const RECIPES = [
+  { name: 'org.openrewrite.java.migrate.UpgradeToJava21', displayName: 'Migrate to Java 21', description: 'This recipe will apply changes commonly needed when migrating to Java 21. It will also replace deprecated API with equivalents when there is a clear migration strategy, and update build files to target Java 21.', type: 'composite', tags: ['java21'], artifact: 'org.openrewrite.recipe:rewrite-migrate-java', version: '3.40.0', license: 'MSAL', licenseCategory: 'msal', options: [], recipeList: [
+    { name: 'org.openrewrite.java.migrate.UpgradeToJava17', displayName: 'Migrate to Java 17' },
+    { name: 'org.openrewrite.java.migrate.UpgradeBuildToJava21', displayName: 'Upgrade build to Java 21' },
+    { name: 'org.openrewrite.staticanalysis.RemoveExtraSemicolons', displayName: 'Remove extra semicolons' },
+    { name: 'org.openrewrite.java.migrate.util.SequencedCollection', displayName: 'Adopt `SequencedCollection`' },
+  ]},
+  { name: 'org.openrewrite.staticanalysis.CommonStaticAnalysis', displayName: 'Common static analysis issues', description: 'Resolve common static analysis issues (also known as SAST issues).', type: 'composite', tags: [], artifact: 'org.openrewrite.recipe:rewrite-static-analysis', version: '2.39.0', license: 'MSAL', licenseCategory: 'msal', options: [], recipeList: [
+    { name: 'org.openrewrite.staticanalysis.AbstractClassPublicConstructor', displayName: 'Constructors of an `abstract` class should not be declared `public`' },
+    { name: 'org.openrewrite.staticanalysis.BigDecimalDoubleConstructorRecipe', displayName: '`new BigDecimal(double)` should not be used' },
+    { name: 'org.openrewrite.staticanalysis.BooleanChecksNotInverted', displayName: 'Boolean checks should not be inverted' },
+  ]},
+  { name: 'org.openrewrite.java.logging.slf4j.Log4jToSlf4j', displayName: 'Migrate Log4j to SLF4J', description: 'Migrates usage of Apache Log4j to using SLF4J directly. Use of the traditional Log4j to SLF4J bridge can result in loss of performance, as the Log4j messages must be formatted before they can be passed to SLF4J.', type: 'composite', tags: ['slf4j', 'logging', 'log4j'], artifact: 'org.openrewrite.recipe:rewrite-logging-frameworks', version: '3.30.0', license: 'MSAL', licenseCategory: 'msal', options: [], recipeList: [
+    { name: 'org.openrewrite.java.logging.slf4j.Log4j1ToSlf4j1', displayName: 'Migrate Log4j 1.x to SLF4J 1.x' },
+    { name: 'org.openrewrite.java.logging.slf4j.LoggersNamedForEnclosingClass', displayName: 'Loggers should be named for their enclosing classes' },
+    { name: 'org.openrewrite.java.dependencies.AddDependency', displayName: 'Add Gradle or Maven dependency' },
+  ]},
+  { name: 'org.openrewrite.java.dependencies.UpgradeDependencyVersion', displayName: 'Upgrade Gradle or Maven dependency versions', description: 'Upgrade the version of a dependency in a build.gradle or pom.xml file. Supports globs for group and artifact, and node-style semver selectors for the version.', type: 'single', tags: [], artifact: 'org.openrewrite.recipe:rewrite-java-dependencies', version: '1.58.0', license: 'Apache 2.0', licenseCategory: 'apache', options: [
+    { name: 'groupId', type: 'String', required: true, description: 'The first part of a dependency coordinate `com.google.guava:guava:VERSION`. This can be a glob expression.', example: 'com.fasterxml.jackson*' },
+    { name: 'artifactId', type: 'String', required: true, description: 'The second part of a dependency coordinate `com.google.guava:guava:VERSION`. This can be a glob expression.', example: 'jackson-module*' },
+    { name: 'newVersion', type: 'String', required: true, description: 'An exact version number or node-style semver selector used to select the version number.', example: '29.X' },
+    { name: 'versionPattern', type: 'String', required: false, description: 'Allows version selection to be extended beyond the original Node Semver semantics.', example: '-jre' },
+    { name: 'overrideManagedVersion', type: 'Boolean', required: false, description: 'For Maven projects only. This flag can be set to explicitly override a managed dependency’s version. The default is `false`.', example: null },
+  ], recipeList: [] },
+  { name: 'org.openrewrite.java.search.FindEmptyMethods', displayName: 'Find methods with empty bodies', description: 'Find methods with empty bodies and single-statement constructors that only invoke the super constructor.', type: 'single', tags: ['RSPEC-S1186'], artifact: 'org.openrewrite:rewrite-java', version: '8.87.2', license: 'Apache 2.0', licenseCategory: 'apache', options: [
+    { name: 'matchOverrides', type: 'Boolean', required: false, description: 'When enabled, find methods that are overrides of the method pattern.', example: null },
+  ], recipeList: [] },
+  { name: 'org.openrewrite.java.search.ResultOfMethodCallIgnored', displayName: 'Result of method call ignored', description: 'Find locations where the result of a method call is ignored, which may indicate a bug.', type: 'single', tags: [], artifact: 'org.openrewrite:rewrite-java', version: '8.87.2', license: 'Apache 2.0', licenseCategory: 'apache', options: [
+    { name: 'methodPattern', type: 'String', required: true, description: 'A method pattern that is used to find matching method invocations.', example: 'java.io.File mkdir()' },
+  ], recipeList: [] },
+  { name: 'org.openrewrite.apache.commons.codec.ApacheBase64ToJavaBase64', displayName: 'Prefer `java.util.Base64`', description: 'Prefer the Java standard library’s `java.util.Base64` over the third-party Apache Commons Codec `Base64`.', type: 'single', tags: [], artifact: 'org.openrewrite.recipe:rewrite-apache', version: '1.8.0', license: 'MSAL', licenseCategory: 'msal', options: [], recipeList: [] },
+  { name: 'org.openrewrite.java.jackson.RemoveRedundantFeatureFlags', displayName: 'Remove redundant Jackson 3 feature flag configurations', description: 'Remove Jackson feature flag configuration calls that set a feature to its default value in Jackson 3.', type: 'single', tags: ['jackson'], artifact: 'org.openrewrite.recipe:rewrite-jackson', version: '0.7.0', license: 'Apache 2.0', licenseCategory: 'apache', options: [], recipeList: [] },
+  { name: 'io.moderne.java.spring.boot3.SpringBoot3BestPractices', displayName: 'Spring Boot 3.x best practices', description: 'Applies best practices to Spring Boot 3 applications, including constructor injection, modern configuration, and preferred API usage.', type: 'composite', tags: ['spring', 'boot'], artifact: 'io.moderne.recipe:rewrite-spring', version: '1.9.0', license: 'Proprietary', licenseCategory: 'proprietary', options: [], recipeList: [
+    { name: 'org.openrewrite.java.spring.boot3.MigrateToSpringBoot3_5', displayName: 'Migrate to Spring Boot 3.5' },
+    { name: 'org.openrewrite.java.spring.NoRequestMappingAnnotation', displayName: 'Replace `@RequestMapping` with variant annotations' },
+    { name: 'org.openrewrite.java.spring.boot2.ConvertFieldInjectionToConstructorInjection', displayName: 'Convert field injection to constructor injection' },
+  ]},
+  { name: 'io.moderne.elastic.elastic9.ChangeApiNumericFieldTypes', displayName: 'Change numeric field types for Elasticsearch 9', description: 'Change numeric field types in the Elasticsearch Java client for the Elasticsearch 9 upgrade.', type: 'single', tags: ['elasticsearch'], artifact: 'io.moderne.recipe:rewrite-elastic', version: '0.6.0', license: 'Proprietary', licenseCategory: 'proprietary', options: [], recipeList: [] },
+  { name: 'ai.timefold.solver.migration.FromOptaPlannerToTimefoldSolver', displayName: 'Migrate from OptaPlanner to Timefold Solver', description: 'Replaces your method/field calls, GAVs, etc. To replace deprecated methods too, use the recipe ToLatest.', type: 'composite', tags: [], artifact: 'org.openrewrite.recipe:rewrite-third-party', version: '0.43.0', license: 'Apache 2.0', licenseCategory: 'apache', options: [], recipeList: [
+    { name: 'org.openrewrite.java.ChangeType', displayName: 'Change type' },
+    { name: 'org.openrewrite.java.ChangePackage', displayName: 'Rename package name' },
+  ]},
+  { name: 'io.moderne.devcenter.MigrationRecommendations', displayName: 'DevCenter migration recommendations', description: 'Generate the Dev Center report of recommended migrations and upgrades across the repositories in an organization.', type: 'composite', tags: ['devcenter'], artifact: 'io.moderne.recipe:rewrite-devcenter', version: '0.20.0', license: 'MSAL', licenseCategory: 'msal', options: [], recipeList: [
+    { name: 'io.moderne.devcenter.JavaVersionUpgrade', displayName: 'Java version upgrade' },
+    { name: 'io.moderne.devcenter.SpringBootUpgrade', displayName: 'Spring Boot upgrade' },
+  ]},
+];
+const CLI_DOCS = 'https://docs.moderne.io/user-documentation/moderne-cli/getting-started/cli-intro';
+let licenseFilter = 'all', artifactFilter = 'all', recipeQuery = '';
+
+function licenseCounts() { const c = { apache: 0, msal: 0, proprietary: 0, other: 0 }; RECIPES.forEach(r => c[r.licenseCategory]++); return c; }
+function renderSegmented() {
+  const c = licenseCounts();
+  const chips = [['all', 'All', null], ['apache', 'Apache', c.apache], ['msal', 'MSAL', c.msal], ['proprietary', 'Proprietary', c.proprietary]];
+  document.getElementById('licenseSeg').innerHTML = chips.map(([k, label, n]) =>
+    `<button type="button" class="segmented__btn${licenseFilter === k ? ' is-on' : ''}" data-license="${k}">${label}${n != null ? ` <span class="segmented__n">${n}</span>` : ''}</button>`).join('');
+}
+function renderArtifactSelect() {
+  const arts = [...new Set(RECIPES.map(r => r.artifact))].sort();
+  document.getElementById('artifactSelect').innerHTML = `<option value="all">All artifacts</option>` + arts.map(a => `<option value="${escapeAttr(a)}">${a}</option>`).join('');
+}
+function filteredRecipes() {
+  const q = recipeQuery.trim().toLowerCase();
+  return RECIPES.filter(r => {
+    if (licenseFilter !== 'all' && r.licenseCategory !== licenseFilter) return false;
+    if (artifactFilter !== 'all' && r.artifact !== artifactFilter) return false;
+    if (!q) return true;
+    return r.displayName.toLowerCase().includes(q) || r.name.toLowerCase().includes(q) ||
+      (r.description && r.description.toLowerCase().includes(q)) || r.tags.some(t => t.toLowerCase().includes(q));
+  });
+}
+function licBadge(r) {
+  const meta = LICENSE_META[r.licenseCategory];
+  const lock = meta.free ? '' : `<svg class="lic__lock" viewBox="0 0 24 24" fill="none"><rect x="5" y="10.5" width="14" height="9" rx="1.6" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" stroke="currentColor" stroke-width="1.7"/></svg>`;
+  return `<span class="lic lic--${r.licenseCategory}">${lock}${r.license}</span>`;
+}
+function renderCatalog() {
+  const list = filteredRecipes();
+  const cnt = document.getElementById('recipeCount');
+  cnt.textContent = `${list.length.toLocaleString()} ${list.length === 1 ? 'recipe' : 'recipes'}` + (list.length !== RECIPES.length ? ` of ${RECIPES.length.toLocaleString()}` : '');
+  document.getElementById('recipeEmpty').hidden = list.length !== 0;
+  document.getElementById('recipeList').innerHTML = list.map(r => `
+    <li class="recipe-row"><a class="recipe-row__link" href="#recipes/${encodeURIComponent(r.name)}" data-recipe="${escapeAttr(r.name)}">
+      <div class="recipe-row__main">
+        <span class="recipe-row__name">${md(r.displayName)}</span>
+        ${r.description ? `<span class="recipe-row__desc">${escapeHtml(stripMd(r.description))}</span>` : ''}
+        <code class="recipe-row__fq">${r.name}</code>
+      </div>
+      <div class="recipe-row__meta"><code class="recipe-row__artifact">${r.artifact}</code>${licBadge(r)}</div>
+    </a></li>`).join('');
+}
+function renderRecipeDetail(name) {
+  const r = RECIPES.find(x => x.name === name);
+  const el = document.getElementById('recipeDetail');
+  if (!r) { el.innerHTML = `<div class="state"><h2>Recipe not found</h2><p>No recipe named <code>${escapeHtml(name)}</code> is in the catalog. <a href="#recipes">Back to the catalog</a>.</p></div>`; return; }
+  const free = LICENSE_META[r.licenseCategory].free;
+  const required = r.options.filter(o => o.required);
+  const cliOpts = required.map(o => ` --recipe-option "${o.name}=${o.example ?? '<' + o.name + '>'}"`).join('');
+  const runCmd = `mod run . --recipe ${r.name}${cliOpts}`;
+  const installCmd = `mod config recipes jar install ${r.artifact}:${r.version}`;
+  el.innerHTML = `
+    <a class="recipe__back" href="#recipes">← All recipes</a>
+    <header class="recipe__header">
+      <span class="recipe__access recipe__access--${free ? 'oss' : 'gated'}">${free ? 'Open source' : 'Moderne licensed'}</span>
+      <h1 class="recipe__title">${md(r.displayName)}</h1>
+      <div class="recipe__chips">
+        ${codechip('Recipe ID', r.name)}
+        ${codechip('Artifact', r.artifact)}
+      </div>
+      ${r.description ? `<p class="recipe__desc">${md(r.description)}</p>` : ''}
+      <div class="recipe__tags">
+        <span class="chip">${r.type === 'composite' ? 'Composite recipe' : 'Single recipe'}</span>
+        ${r.tags.map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('')}
+        ${licBadge(r)}
+      </div>
+    </header>
+
+    <section class="recipe__section">
+      <h2 class="recipe__section-title">Usage</h2>
+      <p class="recipe__section-note">${required.length === 0 ? 'This recipe has no required configuration options. ' : ''}You'll need the <a href="${CLI_DOCS}" target="_blank" rel="noopener noreferrer">Moderne CLI</a> configured before running the command below.</p>
+      ${codeblock(runCmd)}
+      <p class="recipe__usage-note">If the recipe isn't available locally, install it with:</p>
+      ${codeblock(installCmd)}
+    </section>
+
+    ${r.options.length ? `<section class="recipe__section">
+      <h2 class="recipe__section-title">Options</h2>
+      <div class="table-scroll"><table class="opt-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>${r.options.map(o => `<tr>
+          <td><code>${o.name}</code>${o.required ? '<span class="opt-req">required</span>' : ''}</td>
+          <td><code class="opt-type">${o.type}</code></td>
+          <td>${md(o.description || '')}${o.example ? `<div class="opt-example">e.g. <code>${escapeHtml(o.example)}</code></div>` : ''}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>
+    </section>` : ''}
+
+    ${r.recipeList.length ? `<section class="recipe__section">
+      <h2 class="recipe__section-title">Definition</h2>
+      <p class="recipe__section-note">This recipe runs the following recipes in order.</p>
+      <ul class="recipe__sublist">${r.recipeList.map(c => {
+        const known = RECIPES.some(x => x.name === c.name);
+        return `<li>${known ? `<a href="#recipes/${encodeURIComponent(c.name)}" data-recipe="${escapeAttr(c.name)}">${md(c.displayName)}</a>` : `<span>${md(c.displayName)}</span>`}<code class="recipe__sublist-fq">${c.name}</code></li>`;
+      }).join('')}</ul>
+    </section>` : ''}`;
+}
+function codechip(label, value) { return `<div class="codechip"><span class="codechip__label">${label}</span><code class="codechip__value">${escapeHtml(value)}</code><button type="button" class="copybtn" style="position:static" data-copy-text="${escapeAttr(value)}">Copy</button></div>`; }
+function codeblock(code) { return `<div class="codeblock"><pre>${escapeHtml(code)}</pre><button type="button" class="codeblock__copy" data-copy-text="${escapeAttr(code)}">Copy</button></div>`; }
+
+/* ============ MCP tools (mcpTools.ts — verbatim signatures + descriptions) ============ */
+const TOOLS = [
+  { name: 'search', signature: '(query, gav?, max?, offset?, context?, output_mode?)', description: 'Trigram code search over the Code Genome corpus of indexed artifacts. `query`: plain text, /regex/, or type-reference filters `ref:` / `ref.<kind>:`. Scope to one artifact with `gav` (groupId:artifactId:version) or omit for the whole corpus; then fetch_file to read a match in context.', fields: [ { name: 'query', label: 'query', value: 'ref:org.slf4j.Logger' } ], call: `search(query="ref:org.slf4j.Logger")`, result: `{
+  "durationMs": 21,
+  "files": [
+    {
+      "gav": "org.slf4j:slf4j-api:2.0.17",
+      "path": "src/main/java/org/slf4j/LoggerFactory.java",
+      "matches": 6
+    },
+    {
+      "gav": "com.google.guava:guava:33.0.0-jre",
+      "path": "src/main/java/com/google/common/base/Preconditions.java",
+      "matches": 2
+    }
+  ],
+  "hasMore": true
+}` },
+  { name: 'find_types', signature: '(type, gav?, max?, offset?)', description: 'Find references to a type across the corpus through the type system (imports, fields, params, returns, casts, instanceof, generics, `new`, javadoc) — not text, so no false matches in comments or unrelated names. `type`: fully-qualified name. Scope with `gav` or omit for the whole corpus.', fields: [ { name: 'type', label: 'type', value: 'java.util.List' }, { name: 'gav', label: 'gav (optional)', value: '' } ], call: `find_types(type="java.util.List")`, result: `{
+  "type": "java.util.List",
+  "referenceCount": 184203,
+  "artifacts": 9421,
+  "sample": [
+    { "gav": "com.google.guava:guava:33.0.0-jre", "kind": "return", "count": 612 },
+    { "gav": "org.apache.commons:commons-lang3:3.14.0", "kind": "param", "count": 288 }
+  ]
+}` },
+  { name: 'find_methods', signature: '(method, gav?, max?, offset?)', description: 'Find call sites of a method across the corpus through the type system, overload- and receiver-resolved — not text. `method`: type#method (e.g. java.util.List#add) or a bare name. Scope with `gav` or omit for the whole corpus.', fields: [ { name: 'method', label: 'method', value: 'java.util.List#add' }, { name: 'gav', label: 'gav (optional)', value: '' } ], call: `find_methods(method="java.util.List#add")`, result: `{
+  "method": "java.util.List#add(E)",
+  "callSites": 402118,
+  "artifacts": 8830,
+  "sample": [
+    { "gav": "org.apache.kafka:kafka-clients:3.7.0", "path": "src/main/java/org/apache/kafka/clients/Metadata.java", "line": 214 }
+  ]
+}` },
+  { name: 'find_implementations', signature: '(type, gav?, max?, offset?)', description: 'Find types that implement an interface or extend a base class across the corpus, through the type hierarchy — not text. `type`: fully-qualified interface or base class. Scope with `gav` or omit for the whole corpus.', fields: [ { name: 'type', label: 'type', value: 'java.lang.AutoCloseable' }, { name: 'gav', label: 'gav (optional)', value: '' } ], call: `find_implementations(type="java.lang.AutoCloseable")`, result: `{
+  "type": "java.lang.AutoCloseable",
+  "implementations": 27544,
+  "artifacts": 6112,
+  "sample": [
+    { "gav": "org.apache.httpcomponents:httpclient:4.5.14", "type": "org.apache.http.impl.client.CloseableHttpClient" }
+  ]
+}` },
+  { name: 'usage_examples', signature: '(symbol, gav?, max?)', description: 'Show how a symbol is actually used across the corpus as type-abstracted idioms (e.g. `<recv>.add(<var>)`), each ranked by how many distinct artifacts use it and with a real representative line — type-resolved (not text), so variable-name noise is collapsed. `symbol`: a method (type#method) for its call sites, or a type for its constructor sites. Scope with `gav` or omit for the whole corpus.', fields: [ { name: 'symbol', label: 'symbol', value: 'java.util.List#add' }, { name: 'gav', label: 'gav (optional)', value: '' } ], call: `usage_examples(symbol="java.util.List#add")`, result: `{
+  "symbol": "java.util.List#add(E)",
+  "idioms": [
+    { "idiom": "<list>.add(<var>)", "artifacts": 8102, "example": "results.add(entry);" },
+    { "idiom": "<list>.add(<method>())", "artifacts": 5544, "example": "names.add(field.getName());" }
+  ]
+}` },
+  { name: 'fetch_file', signature: '(gav, path, from?, to?)', description: 'Read source lines of a file from a `search` result, by `gav` (groupId:artifactId:version) and `path`; optional `from`/`to` for a 1-based line range (default: whole file).', fields: [ { name: 'gav', label: 'gav', value: 'org.slf4j:slf4j-api:2.0.17' }, { name: 'path', label: 'path', value: 'src/main/java/org/slf4j/Logger.java' }, { name: 'from', label: 'from (optional)', value: '', half: true }, { name: 'to', label: 'to (optional)', value: '', half: true } ], call: `fetch_file(gav="org.slf4j:slf4j-api:2.0.17", path="src/main/java/org/slf4j/Logger.java")`, result: `{
+  "gav": "org.slf4j:slf4j-api:2.0.17",
+  "path": "src/main/java/org/slf4j/Logger.java",
+  "totalLines": 611,
+  "lines": [
+    { "line": 40, "content": "public interface Logger {" },
+    { "line": 41, "content": "    String ROOT_LOGGER_NAME = \\"ROOT\\";" }
+  ]
+}` },
+  { name: 'compare_versions', signature: '(group_artifact, from, to, filter?, output_mode?)', description: 'Semantic diff between two versions of an artifact, computed from their type-resolved LSTs. `group_artifact` is groupId:artifactId; `from`/`to` are each a version or an ISO date. Reports API changes (added/removed/signature-changed) tagged source-/binary-compatible, body changes graded by structural similarity, refactors reconciled as renames, and a MAJOR|MINOR|PATCH semver verdict.', fields: [ { name: 'group_artifact', label: 'group_artifact', value: 'commons-codec:commons-codec' }, { name: 'from', label: 'from', value: '1.15', half: true }, { name: 'to', label: 'to', value: '1.16.0', half: true }, { name: 'filter', label: 'filter (optional)', value: '' }, { name: 'output_mode', label: 'output_mode (optional)', value: '' } ], call: `compare_versions(group_artifact="commons-codec:commons-codec", from="1.15", to="1.16.0")`, result: `{
+  "groupArtifact": "commons-codec:commons-codec",
+  "from": "1.15",
+  "to": "1.16.0",
+  "verdict": "MINOR",
+  "apiChanges": { "added": 12, "removed": 0, "signatureChanged": 1 },
+  "binaryCompatible": true,
+  "sourceCompatible": true
+}` },
+];
+function renderMcpTools() {
+  document.getElementById('mcpTools').innerHTML = TOOLS.map(t => `
+    <section class="mcp-tool" id="${t.name}">
+      <code class="mcp-tool__sig"><b>${t.name}</b>${escapeHtml(t.signature)}</code>
+      <p class="mcp-tool__desc">${describe(t.description)}</p>
+      <form class="mcp-tool__form" data-tool="${t.name}">
+        <div class="mcp-fields">${t.fields.map(f => `
+          <label class="mcp-field${f.half ? ' mcp-field--half' : ''}">
+            <span class="mcp-field__label">${f.label}</span>
+            <input class="mcp-field__input" type="text" value="${escapeAttr(f.value)}" spellcheck="false" autocomplete="off">
+          </label>`).join('')}</div>
+        <div class="mcp-tool__actions"><button type="submit" class="mcp-btn mcp-btn--primary">Run</button></div>
+      </form>
+      <div class="mcp-out" hidden>
+        <div class="mcp-call"><span class="mcp-call__label">call</span><code class="mcp-call__code">${escapeHtml(t.call)}</code></div>
+        <div class="mcp-payload"><div class="mcp-payload__label">result</div><div class="json">${jsonHighlight(t.result)}<button type="button" class="codeblock__copy" data-copy-text="${escapeAttr(t.result)}">Copy</button></div></div>
+      </div>
+    </section>`).join('');
+}
+
+/* ============ helpers ============ */
+function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function escapeAttr(s) { return escapeHtml(s).replace(/"/g, '&quot;'); }
+function stripMd(s) { return String(s).replace(/`([^`]+)`/g, '$1'); }
+function md(s) { return escapeHtml(String(s)).replace(/`([^`]+)`/g, '<code>$1</code>'); }
+function describe(s) { return escapeHtml(s).replace(/`([^`]+)`/g, '<code class="mcp-ic">$1</code>'); }
+function jsonHighlight(s) {
+  // Single pass: strings are matched as whole tokens first, so numbers embedded in a
+  // string value (e.g. a version "…:2.0.17") are never re-colored as numbers.
+  return escapeHtml(s).replace(
+    /("(?:[^"\\]|\\.)*")(\s*:)?|\b(true|false|null)\b|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g,
+    (m, str, colon, bool, num) => {
+      if (str !== undefined) return colon ? `<span class="k">${str}</span>${colon}` : `<span class="s">${str}</span>`;
+      if (bool !== undefined) return `<span class="n">${bool}</span>`;
+      if (num !== undefined) return `<span class="n">${num}</span>`;
+      return m;
+    });
+}
+
+/* ============ routing ============ */
+const views = { search: 'view-search', results: 'view-results', recipes: 'view-recipes', mcp: 'view-mcp' };
+function setNav(active) {
+  document.querySelectorAll('.navlink').forEach(a => a.classList.toggle('is-active', a.getAttribute('data-nav') === active));
+}
+function showView(id) { Object.values(views).forEach(v => document.getElementById(v).hidden = v !== id); }
+function route() {
+  const h = (location.hash || '#search').slice(1);
+  if (h === '' || h === 'search') { showView('view-search'); setNav('search'); return; }
+  if (h.startsWith('results')) {
+    const q = decodeURIComponent((h.split('?q=')[1]) || '');
+    document.getElementById('resultsInput').value = q;
+    renderResults(q); showView('view-results'); setNav('search'); window.scrollTo(0, 0); return;
+  }
+  if (h.startsWith('recipes')) {
+    const parts = h.split('/');
+    if (parts.length > 1 && parts[1]) {
+      renderRecipeDetail(decodeURIComponent(parts.slice(1).join('/')));
+      document.getElementById('recipesCatalog').hidden = true;
+      document.getElementById('recipeDetail').hidden = false;
+    } else {
+      document.getElementById('recipesCatalog').hidden = false;
+      document.getElementById('recipeDetail').hidden = true;
+    }
+    showView('view-recipes'); setNav('recipes'); window.scrollTo(0, 0); return;
+  }
+  if (h === 'mcp') { showView('view-mcp'); setNav('mcp'); window.scrollTo(0, 0); return; }
+  showView('view-search'); setNav('search');
+}
+window.addEventListener('hashchange', route);
+
+/* ============ events ============ */
+function runSearch(q) { const t = q.trim(); if (!t) { location.hash = 'search'; return; } location.hash = 'results?q=' + encodeURIComponent(t); }
+document.getElementById('landingSearch').addEventListener('submit', e => { e.preventDefault(); runSearch(document.getElementById('landingInput').value); });
+document.getElementById('resultsSearch').addEventListener('submit', e => { e.preventDefault(); runSearch(document.getElementById('resultsInput').value); });
+document.getElementById('landingInput').addEventListener('input', e => { document.getElementById('landingSearch').setAttribute('data-has-query', e.target.value.length > 0); });
+
+document.addEventListener('click', e => {
+  const fs = e.target.closest('[data-focus-search]'); if (fs) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); setTimeout(() => document.getElementById('landingInput').focus(), 400); return; }
+  const ex = e.target.closest('[data-q]'); if (ex) { runSearch(ex.getAttribute('data-q')); return; }
+  const clr = e.target.closest('[data-clear]'); if (clr) { const inp = clr.closest('form').querySelector('input'); inp.value = ''; clr.closest('form').setAttribute('data-has-query', 'false'); inp.focus(); return; }
+  const scope = e.target.closest('[data-scope]'); if (scope) { runSearch('gav:' + scope.getAttribute('data-scope') + ' ' + document.getElementById('resultsInput').value.replace(/gav:\S+/g, '').trim()); return; }
+  const lic = e.target.closest('[data-license]'); if (lic) { licenseFilter = lic.getAttribute('data-license'); renderSegmented(); renderCatalog(); return; }
+  // recipe links handled by hash navigation, but keep scroll reset
+  const tab = e.target.closest('[data-tab]'); if (tab) { setMcpTab(tab.getAttribute('data-tab')); return; }
+  const copy = e.target.closest('[data-copy], [data-copy-text]');
+  if (copy) {
+    const text = copy.hasAttribute('data-copy-text') ? copy.getAttribute('data-copy-text') : document.querySelector(copy.getAttribute('data-copy')).textContent;
+    navigator.clipboard?.writeText(text); const old = copy.textContent; copy.textContent = 'Copied'; setTimeout(() => copy.textContent = old, 1200); return;
+  }
+});
+document.getElementById('recipeSearch').addEventListener('input', e => { recipeQuery = e.target.value; renderCatalog(); });
+document.getElementById('artifactSelect').addEventListener('change', e => { artifactFilter = e.target.value; renderCatalog(); });
+
+/* MCP tab snippets */
+const SNIPPETS = { claude: 'claude mcp add --transport http codegenome https://api.codegenomeproject.org/mcp', json: JSON.stringify({ mcpServers: { codegenome: { type: 'http', url: 'https://api.codegenomeproject.org/mcp' } } }, null, 2) };
+function setMcpTab(id) {
+  document.querySelectorAll('#mcpTabs .mcp-tab').forEach(b => { const on = b.getAttribute('data-tab') === id; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on); });
+  document.getElementById('mcpSnippet').textContent = SNIPPETS[id];
+}
+document.getElementById('mcpTools').addEventListener('submit', e => {
+  e.preventDefault(); const form = e.target.closest('[data-tool]'); if (!form) return;
+  form.closest('.mcp-tool').querySelector('.mcp-out').hidden = false;
+});
+
+/* ============ init ============ */
+renderSegmented(); renderArtifactSelect(); renderCatalog(); renderMcpTools();
+route();
+</script>
+</body>
+</html>
