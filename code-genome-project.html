@@ -62,8 +62,10 @@ main { flex: 1; width: 100%; }
 .appbar { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: 0; z-index: 40; }
 .appbar__inner { display: flex; align-items: center; gap: 28px; height: 66px; }
 .appbar__brand { display: inline-flex; text-decoration: none; }
-.appbar-lock { display: inline-flex; align-items: center; gap: 12px; }
-.appbar__logo { height: 22px; width: 145px; flex: none; color: var(--text); display: block; }
+.cgp-lock { display: inline-flex; align-items: center; gap: 11px; }
+.cgp-lock__mark { height: 30px; width: 35px; flex: none; display: block; }
+.cgp-lock__wm { font-size: 21px; font-weight: 300; letter-spacing: -.01em; line-height: 1; color: var(--text); white-space: nowrap; }
+.cgp-lock__genome { font-weight: 600; }
 .appbar__right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .appbar__nav { display: flex; align-items: center; gap: 4px; margin-right: 8px; }
 .navlink { position: relative; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; padding: 9px 12px; border-radius: 7px; }
@@ -76,6 +78,10 @@ main { flex: 1; width: 100%; }
 .theme-toggle:hover { background: var(--surface); }
 .theme-toggle svg { width: 18px; height: 18px; }
 .theme-toggle__label { display: none; }
+.user-btn { display: inline-flex; align-items: center; gap: 11px; background: none; border: none; padding: 0; color: var(--text); }
+.user-avatar { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-strong); background: linear-gradient(135deg, #9D5BE8, #3E7BF6); color: #fff; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.user-btn:hover .user-avatar { filter: brightness(1.08); }
+.user-btn__label { display: none; }
 .appbar__burger { display: none; width: 40px; height: 40px; margin-left: auto; border: 1px solid var(--line-strong); border-radius: 8px; background: transparent; color: var(--text); align-items: center; justify-content: center; }
 .appbar__burger:hover { background: var(--surface); }
 .appbar__burger svg { width: 20px; height: 20px; }
@@ -215,6 +221,19 @@ main { flex: 1; width: 100%; }
 .lic--msal, .lic--proprietary, .lic--other { color: var(--wa); background: var(--wa-t); border: 1px solid var(--wa-b); }
 .recipes__empty { padding: 60px 0; text-align: center; color: var(--muted); }
 
+/* ===== artifacts (Maven repository) ===== */
+.art-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 6px; }
+.art-block { border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 22px; }
+.art-block__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.art-block__head h2 { font-size: 17px; font-weight: 600; }
+.art-endpoint { font-size: 12px; color: var(--accent); background: var(--accent-tint); border: 1px solid var(--accent-brd); border-radius: 6px; padding: 3px 8px; }
+.art-note { font-size: 13px; line-height: 1.55; color: var(--muted); margin: 8px 0 12px; }
+.art-tabs { display: inline-flex; gap: 4px; margin-bottom: 10px; }
+.art-tab { font-size: 12.5px; font-weight: 500; padding: 6px 12px; border-radius: 8px; border: 1px solid transparent; background: none; color: var(--muted); }
+.art-tab:hover { color: var(--text); }
+.art-tab.is-on { color: var(--text); background: var(--surface); border-color: var(--line); font-weight: 600; }
+@media (max-width: 720px) { .art-grid { grid-template-columns: 1fr; } }
+
 /* ===== recipe detail ===== */
 .recipe { max-width: 800px; padding: 36px 0 80px; }
 .recipe__back { display: inline-block; font-size: 13px; color: var(--accent); text-decoration: none; margin-bottom: 20px; }
@@ -335,14 +354,16 @@ main { flex: 1; width: 100%; }
   .navlink { padding: 12px 12px; border-radius: 8px; font-size: 15px; }
   .navlink.is-active::after { display: none; }
   .navlink.is-active { background: var(--surface); }
-  .appbar__cta { margin-top: 6px; padding: 12px 16px; text-align: center; }
+  .user-btn { width: 100%; margin-top: 6px; padding: 10px 12px; border-radius: 8px; }
+  .user-btn:hover { background: var(--surface); }
+  .user-btn__label { display: inline; font-size: 15px; font-weight: 500; }
   .theme-toggle { width: 100%; height: auto; justify-content: flex-start; gap: 11px; padding: 12px; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; }
   .theme-toggle__label { display: inline; }
 }
 @media (max-width: 440px) {
-  .brand-pill { font-size: 10px; letter-spacing: .04em; padding: 4px 8px; }
-  .appbar__logo { height: 18px; width: 118px; }
-  .appbar-lock { gap: 9px; }
+  .cgp-lock__wm { font-size: 18px; }
+  .cgp-lock__mark { height: 26px; width: 31px; }
+  .cgp-lock { gap: 9px; }
   .hero-title { font-size: 27px; }
   .hero-sub { font-size: 14px; margin-top: 12px; }
 }
@@ -378,10 +399,10 @@ main { flex: 1; width: 100%; }
 
 <header class="appbar">
   <div class="appbar__inner wrap">
-    <a class="appbar__brand" href="#search" aria-label="Moderne — Code Genome Project">
-      <span class="appbar-lock">
-        <svg class="appbar__logo" aria-hidden="true"><use href="#moderne-wm"/></svg>
-        <span class="brand-pill">Code Genome Project</span>
+    <a class="appbar__brand" href="#search" aria-label="Code Genome Project — home">
+      <span class="cgp-lock">
+        <svg class="cgp-lock__mark" aria-hidden="true"><use href="#cgp-mark"/></svg>
+        <span class="cgp-lock__wm">code<span class="cgp-lock__genome">genome</span>project</span>
       </span>
     </a>
     <button class="appbar__burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="appbarMenu">
@@ -392,9 +413,13 @@ main { flex: 1; width: 100%; }
       <nav class="appbar__nav" aria-label="Code Genome Project">
         <a class="navlink is-active" href="#search" data-nav="search">Search</a>
         <a class="navlink" href="#recipes" data-nav="recipes">Recipes</a>
+        <a class="navlink" href="#artifacts" data-nav="artifacts">Artifacts</a>
         <a class="navlink" href="#mcp" data-nav="mcp">MCP</a>
       </nav>
-      <a class="appbar__cta" href="#">Log in</a>
+      <button class="user-btn" id="userAvatar" type="button" aria-label="Account">
+        <span class="user-avatar" aria-hidden="true">L</span>
+        <span class="user-btn__label">Account</span>
+      </button>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><svg id="themeIcon"><use href="#i-sun"/></svg><span class="theme-toggle__label">Theme</span></button>
     </div>
   </div>
@@ -557,6 +582,43 @@ main { flex: 1; width: 100%; }
         <div class="mcp-tools" id="mcpTools"></div>
       </section>
     </div>
+  </div>
+</div>
+
+<!-- ============ ARTIFACTS (Maven repository) ============ -->
+<div class="view" id="view-artifacts" hidden>
+  <div class="wrap">
+    <section class="recipes">
+      <header class="recipes__head">
+        <h1 class="recipes__title">Artifacts</h1>
+        <p class="recipes__lede">A read-only, Maven-compatible repository serving the OpenRewrite OSS recipes, Moderne's licensed recipe modules, and the Moderne CLI — free for open source. Point your build at it and resolve any recipe artifact straight from the <a href="#recipes">catalog</a>.</p>
+      </header>
+
+      <div class="art-grid">
+        <div class="art-block">
+          <div class="art-block__head">
+            <h2>Add the repository</h2>
+            <span class="art-endpoint mono">repo.codegenomeproject.org/maven</span>
+          </div>
+          <p class="art-note">Declare the Code Genome repository, then add any recipe module as a dependency — versions come from the catalog.</p>
+          <div class="art-tabs" id="artTabs" role="tablist" aria-label="Build tool">
+            <button type="button" role="tab" class="art-tab is-on" data-arttab="maven" aria-selected="true">Maven</button>
+            <button type="button" role="tab" class="art-tab" data-arttab="gradle" aria-selected="false">Gradle</button>
+          </div>
+          <div class="codeblock"><pre id="artSnippet">&lt;repository&gt;
+  &lt;id&gt;codegenome&lt;/id&gt;
+  &lt;url&gt;https://repo.codegenomeproject.org/maven&lt;/url&gt;
+&lt;/repository&gt;</pre><button type="button" class="codeblock__copy" data-copy="#artSnippet">Copy</button></div>
+        </div>
+
+        <div class="art-block">
+          <div class="art-block__head"><h2>Install the CLI</h2></div>
+          <p class="art-note">The Moderne CLI runs recipes locally and installs any recipe artifact on demand.</p>
+          <div class="codeblock"><pre id="artCli">mod config recipes jar install org.openrewrite.recipe:rewrite-migrate-java:LATEST</pre><button type="button" class="codeblock__copy" data-copy="#artCli">Copy</button></div>
+          <p class="art-note">Free for open source. Apache-licensed recipes run anywhere; MSAL and proprietary modules require a Moderne license.</p>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -951,7 +1013,7 @@ function jsonHighlight(s) {
 }
 
 /* ============ routing ============ */
-const views = { search: 'view-search', results: 'view-results', recipes: 'view-recipes', mcp: 'view-mcp' };
+const views = { search: 'view-search', results: 'view-results', recipes: 'view-recipes', artifacts: 'view-artifacts', mcp: 'view-mcp' };
 function setNav(active) {
   document.querySelectorAll('.navlink').forEach(a => a.classList.toggle('is-active', a.getAttribute('data-nav') === active));
 }
@@ -976,6 +1038,7 @@ function route() {
     }
     showView('view-recipes'); setNav('recipes'); window.scrollTo(0, 0); return;
   }
+  if (h === 'artifacts') { showView('view-artifacts'); setNav('artifacts'); window.scrollTo(0, 0); return; }
   if (h === 'mcp') { showView('view-mcp'); setNav('mcp'); window.scrollTo(0, 0); return; }
   showView('view-search'); setNav('search');
 }
@@ -996,6 +1059,7 @@ document.addEventListener('click', e => {
   const lic = e.target.closest('[data-license]'); if (lic) { licenseFilter = lic.getAttribute('data-license'); renderSegmented(); renderCatalog(); return; }
   // recipe links handled by hash navigation, but keep scroll reset
   const tab = e.target.closest('[data-tab]'); if (tab) { setMcpTab(tab.getAttribute('data-tab')); return; }
+  const at = e.target.closest('[data-arttab]'); if (at) { setArtTab(at.getAttribute('data-arttab')); return; }
   const copy = e.target.closest('[data-copy], [data-copy-text]');
   if (copy) {
     const text = copy.hasAttribute('data-copy-text') ? copy.getAttribute('data-copy-text') : document.querySelector(copy.getAttribute('data-copy')).textContent;
@@ -1015,6 +1079,16 @@ document.getElementById('mcpTools').addEventListener('submit', e => {
   e.preventDefault(); const form = e.target.closest('[data-tool]'); if (!form) return;
   form.closest('.mcp-tool').querySelector('.mcp-out').hidden = false;
 });
+
+/* Artifacts: Maven / Gradle snippet swap */
+const ART_SNIPPETS = {
+  maven: '<repository>\n  <id>codegenome</id>\n  <url>https://repo.codegenomeproject.org/maven</url>\n</repository>',
+  gradle: 'repositories {\n  maven { url "https://repo.codegenomeproject.org/maven" }\n}',
+};
+function setArtTab(id) {
+  document.querySelectorAll('#artTabs .art-tab').forEach(b => { const on = b.getAttribute('data-arttab') === id; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on); });
+  document.getElementById('artSnippet').textContent = ART_SNIPPETS[id];
+}
 
 /* ============ init ============ */
 renderSegmented(); renderArtifactSelect(); renderCatalog(); renderMcpTools();
