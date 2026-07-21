@@ -186,6 +186,104 @@ b { font-weight:600; }
 .toast svg { width:16px; height:16px; color:var(--green-hi); }
 .proto-note { margin-top:14px; font-size:12px; color:var(--muted); display:flex; gap:8px; flex-wrap:wrap; }
 .proto-note code { font-family:var(--font-mono); background:var(--surface); border-radius:4px; padding:1px 6px; }
+/* ---- modal ---- */
+.mo-ov { position: fixed; inset: 0; z-index: 80; display: none; align-items: flex-start; justify-content: center; padding-top: 7vh; background: var(--scrim); }
+.mo-ov.open { display: flex; }
+.mo { width: 720px; max-width: 92%; max-height: 80vh; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line-strong); border-radius: 14px; box-shadow: var(--modal-shadow); overflow: hidden; }
+.mo-header { display: flex; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--line2); }
+.mo-header h2 { margin: 0; font-size: 17px; font-weight: 600; }
+.mo-x { margin-left: auto; width: 30px; height: 30px; border: none; border-radius: 6px; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+.mo-x:hover { background: var(--surface); color: var(--text); }
+.mo-x svg { width: 16px; height: 16px; }
+.mo-tabs { display: flex; gap: 4px; padding: 8px 12px 0; border-bottom: 1px solid var(--line2); }
+.mo-tab { font-size: 13px; font-weight: 600; color: var(--muted); background: transparent; border: none; border-bottom: 2px solid transparent; padding: 9px 12px; }
+.mo-tab:hover { color: var(--text); }
+.mo-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.mo-body { flex: 1; overflow-y: auto; padding: 16px 18px; }
+.mo-pane { display: none; }
+.mo-pane.active { display: block; }
+.mo-foot { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-top: 1px solid var(--line2); }
+.mo-foot .right { margin-left: auto; display: inline-flex; gap: 10px; }
+.btn { font-size: 13px; font-weight: 600; border-radius: 6px; padding: 8px 15px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); }
+.btn:hover { background: var(--surface); }
+.btn--primary { background: var(--ink-bg); color: var(--ink-fg); border-color: transparent; }
+.btn--tertiary { border-color: transparent; background: transparent; }
+.btn--tertiary:hover { background: var(--surface); }
+
+/* open-existing */
+.pills { display: flex; gap: 7px; margin-bottom: 12px; }
+.pill { font-size: 13px; font-weight: 600; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 999px; padding: 6px 13px; }
+.pill.active { background: var(--accent); color: #fff; border-color: transparent; }
+.search-field { display: flex; align-items: center; gap: 9px; border: 1px solid var(--line-strong); border-radius: 10px; padding: 9px 12px; margin-bottom: 12px; }
+.search-field svg { width: 18px; height: 18px; color: var(--muted); }
+.search-field input { flex: 1; border: none; outline: none; background: transparent; color: var(--text); font: inherit; font-size: 14px; }
+.oe-list { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.oe-row { display: flex; align-items: center; gap: 11px; padding: 11px 14px; border-bottom: 1px solid var(--line2); }
+.oe-row:last-child { border-bottom: none; }
+.oe-row:hover { background: var(--row-hover); }
+.oe-row .ico { width: 17px; height: 17px; color: var(--muted); flex: none; }
+.oe-row .nm { font-size: 14px; color: var(--text); }
+.oe-row .sub { margin-left: auto; font-size: 12px; color: var(--muted); }
+.oe-empty { padding: 20px; text-align: center; color: var(--muted); font-style: italic; font-size: 13px; }
+
+/* create-new form */
+.nr-label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 7px; }
+.nr-label .req { color: var(--er); margin-left: 2px; }
+.nr-label:first-child { margin-top: 0; }
+.nr-input { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 13px; }
+.nr-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+textarea.nr-input { resize: none; height: 92px; }
+.id-toggle { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 13px; color: var(--text); }
+.tgl { width: 38px; height: 22px; border-radius: 999px; background: var(--accent); position: relative; border: none; flex: none; }
+.tgl::after { content: ''; position: absolute; top: 2px; left: 18px; width: 18px; height: 18px; border-radius: 999px; background: #fff; transition: left .15s; }
+.tgl[aria-pressed="false"] { background: var(--line-strong); }
+.tgl[aria-pressed="false"]::after { left: 2px; }
+.id-help-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--accent); background: none; border: none; padding: 0; margin-left: 8px; }
+.id-help-btn svg { width: 13px; height: 13px; transition: transform .15s; }
+.id-help-btn.open svg { transform: rotate(180deg); }
+.id-help { display: none; font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: 4px 0 2px; }
+.id-help.show { display: block; }
+.id-line { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+/* import */
+.import-hint { font-size: 13px; color: var(--muted); margin: 0 0 10px; }
+.yaml-box { width: 100%; box-sizing: border-box; font-family: var(--font-mono); font-size: 12.5px; color: var(--text); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 10px; padding: 12px; height: 190px; resize: none; }
+
+/* manage */
+.mg-row { display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-bottom: 1px solid var(--line2); font-size: 14px; }
+.mg-row input { width: 16px; height: 16px; accent-color: var(--accent); }
+.mg-row .sub { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+
+/* toast */
+.toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(12px); z-index: 90; display: inline-flex; align-items: center; gap: 9px; background: var(--card); color: var(--text); border: 1px solid var(--line-strong); border-radius: 10px; box-shadow: var(--menu-shadow); padding: 11px 15px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast svg { width: 16px; height: 16px; color: var(--green-hi); }
+
+.proto-note { margin-top: 14px; font-size: 12px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; }
+.proto-note code { font-family: var(--font-mono); background: var(--surface); border-radius: 4px; padding: 1px 6px; }
+.mo-list { max-height: 44vh; overflow-y: auto; margin: 0 -6px; }
+
+/* ---- harmonized recipe finder rows (shared pattern with the Add-a-recipe picker) ---- */
+.fx-search { display:flex; align-items:center; gap:9px; border:1px solid var(--line-strong); border-radius:10px; padding:10px 12px; margin-bottom:12px; }
+.fx-search svg { width:17px; height:17px; color:var(--muted); }
+.fx-search input { flex:1; border:none; outline:none; background:transparent; color:var(--text); font:inherit; font-size:14px; }
+.fx-chips { display:flex; gap:7px; margin-bottom:10px; }
+.fx-chip { font-size:12.5px; font-weight:600; color:var(--text); background:var(--field); border:1px solid var(--line-strong); border-radius:999px; padding:5px 13px; }
+.fx-chip:hover { background:var(--surface); }
+.fx-chip.active { background:var(--accent); color:#fff; border-color:transparent; }
+.fx-list { max-height:44vh; overflow-y:auto; margin:0 -6px; }
+.fx-row { display:flex; align-items:flex-start; gap:12px; width:100%; text-align:left; padding:11px 12px; border:1px solid transparent; border-radius:10px; background:transparent; color:inherit; }
+.fx-row:hover { background:var(--row-hover); }
+.fx-row.sel { background:var(--accent-tint); border-color:var(--accent-brd); }
+.fx-ico { flex:none; margin-top:1px; }
+.fx-main { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+.fx-nm { font-size:14px; font-weight:500; color:var(--text); display:flex; align-items:center; gap:8px; }
+.fx-badge { font-size:10px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--green-hi); background:color-mix(in srgb,var(--green) 16%,transparent); border-radius:4px; padding:1px 6px; flex:none; }
+.fx-id { font-family:var(--font-mono); font-size:11.5px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.fx-desc { font-size:12.5px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.fx-src { flex:none; font-size:11px; font-weight:600; color:var(--muted); background:var(--surface); border-radius:999px; padding:3px 9px; margin-top:1px; }
+.fx-empty { padding:26px; text-align:center; color:var(--muted); font-style:italic; font-size:13px; }
+.fx-mark { background:color-mix(in srgb,var(--accent) 22%,transparent); border-radius:3px; padding:0 1px; }
 </style>
 </head>
 <body>
@@ -352,6 +450,66 @@ b { font-weight:600; }
 </div>
 
 <!-- per-node (line-item) action menu, positioned on open -->
+<!-- Builder recipe actions modal -->
+<div class="mo-ov" id="modal">
+  <div class="mo" role="dialog" aria-label="Builder recipe actions">
+    <div class="mo-header"><h2>Builder recipe actions</h2><button class="mo-x" data-close-modal title="Close"><svg><use href="#i-x"/></svg></button></div>
+    <div class="mo-tabs" id="moTabs">
+      <button class="mo-tab active" data-tab="existing">Open existing</button>
+      <button class="mo-tab" data-tab="import">Import from Yaml</button>
+      <button class="mo-tab" data-tab="new">Create new</button>
+      <button class="mo-tab" data-tab="manage">Manage</button>
+      <button class="mo-tab" data-tab="v1">From V1</button>
+    </div>
+    <div class="mo-body">
+      <!-- Open existing -->
+      <div class="mo-pane active" data-pane="existing">
+        <div class="fx-search"><svg><use href="#i-search"/></svg><input id="fxSearch" placeholder="Search recipes by name or ID" autocomplete="off" /></div>
+        <div class="fx-chips" id="fxChips">
+          <button class="fx-chip active" data-src="all">All</button>
+          <button class="fx-chip" data-src="mine">Mine</button>
+          <button class="fx-chip" data-src="team">Team</button>
+          <button class="fx-chip" data-src="marketplace">Marketplace</button>
+        </div>
+        <div class="fx-list mo-list" id="fxList"></div>
+      </div>
+      <!-- Import -->
+      <div class="mo-pane" data-pane="import">
+        <p class="import-hint">Insert a declarative YAML recipe to import into the builder:</p>
+        <textarea class="yaml-box" placeholder="type: specs.openrewrite.org/v1beta/recipe&#10;name: com.example.MyRecipe&#10;displayName: My recipe&#10;recipeList:&#10;  - org.openrewrite.java.format.AutoFormat"></textarea>
+      </div>
+      <!-- Create new -->
+      <div class="mo-pane" data-pane="new">
+        <label class="nr-label">Name<span class="req">*</span></label>
+        <input class="nr-input" placeholder="Name this recipe, e.g. Migrate to Spring Boot 3" />
+        <label class="nr-label">Recipe ID
+          <button class="id-help-btn" id="idHelpBtn">How is the ID used? <svg><use href="#i-chevd"/></svg></button>
+        </label>
+        <div class="id-help" id="idHelp">The ID uniquely identifies your recipe on the platform and in exported YAML. It can’t be changed after creation, so keep it stable (e.g. reverse-domain style).</div>
+        <div class="id-toggle"><button class="tgl" id="idToggle" aria-pressed="true" aria-label="Auto-generate ID"></button> Auto-generate from name (recommended)</div>
+        <div class="id-line" id="idLine">ID: io.moderne.MigrateToSpringBoot3</div>
+        <label class="nr-label">Description</label>
+        <textarea class="nr-input" placeholder="Summarize what this recipe does (optional)"></textarea>
+      </div>
+      <!-- Manage -->
+      <div class="mo-pane" data-pane="manage">
+        <div class="oe-list" id="mgList"></div>
+      </div>
+      <!-- From V1 -->
+      <div class="mo-pane" data-pane="v1">
+        <p class="import-hint">You have recipes from the previous Builder. Import them to keep working with them here. Recipes you already have are skipped.</p>
+      </div>
+    </div>
+    <div class="mo-foot">
+      <span id="moFootLeft"></span>
+      <span class="right">
+        <button class="btn btn--tertiary" data-close-modal>Cancel</button>
+        <button class="btn btn--primary" id="moPrimary">Create recipe</button>
+      </span>
+    </div>
+  </div>
+</div>
+
 <div class="menu-pop" id="nodeMenu" hidden style="position:fixed"></div>
 
 <div class="toast" id="toast"><svg id="toastIcon"><use href="#i-check-c"/></svg><span id="toastMsg"></span></div>
@@ -396,6 +554,24 @@ var sampleRecipe = { id:'new-name-spring-thing', name:'new name spring thing', r
   ]}
 };
 var sampleGraph = { seed:7, viewBox:'0 0 600 660', hubs:[{x:150,y:340,leaves:16},{x:262,y:250,leaves:7},{x:335,y:205,leaves:5},{x:305,y:430,leaves:9},{x:398,y:285,leaves:4,selected:true}], links:[[0,1],[1,2],[2,4],[3,4]] };
+
+var catalog = [
+  { name:'Migrate to Spring Boot 3', id:'org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_0', src:'marketplace', when:'recent', desc:'Upgrade to Spring Boot 3.0 from any 2.x version, including dependency and configuration changes.' },
+  { name:'Migrate to Spring Security 6', id:'org.openrewrite.java.spring.security6.UpgradeSpringSecurity_6_0', src:'marketplace', desc:'Migrate applications to Spring Security 6.0 and the Jakarta EE 9 baseline.' },
+  { name:'Migrate to Java 17', id:'org.openrewrite.java.migrate.UpgradeToJava17', src:'marketplace', desc:'Adopt Java 17 language features and remove usages removed since Java 8.' },
+  { name:'Common static analysis fixes', id:'org.openrewrite.staticanalysis.CommonStaticAnalysis', src:'marketplace', desc:'Apply a broad set of static analysis and code cleanup recipes.' },
+  { name:'Find and fix vulnerable dependencies', id:'org.openrewrite.java.dependencies.DependencyVulnerabilityCheck', src:'marketplace', desc:'Identify and upgrade dependencies with known CVEs.' },
+  { name:'Jakarta EE 9 namespace migration', id:'org.openrewrite.java.migrate.jakarta.JavaxToJakarta', src:'marketplace', desc:'Move javax.* imports and references to the jakarta.* namespace.' },
+  { name:'Upgrade Gradle or Maven dependency versions', id:'org.openrewrite.java.dependencies.UpgradeDependencyVersion', src:'marketplace', desc:'Bump a group/artifact to a target version across build files.' },
+  { name:'Migrate to JUnit 5', id:'org.openrewrite.java.testing.junit5.JUnit4to5Migration', src:'marketplace', desc:'Convert JUnit 4 tests and annotations to JUnit 5 (Jupiter).' },
+  { name:'Enterprise baseline migration', id:'io.moderne.EnterpriseBaseline', src:'mine', when:'recent', desc:'Your standard upgrade bundle: Spring Boot 3, Java 17, and internal conventions.' },
+  { name:'My Spring cleanup', id:'io.moderne.MySpringCleanup', src:'mine', desc:'Personal recipe: tidy Spring configuration and remove unused beans.' },
+  { name:'Payments team standards', id:'io.acme.payments.TeamStandards', src:'team', desc:'Coding standards and required libraries for the Payments organization.' },
+  { name:'Platform logging conventions', id:'io.acme.platform.LoggingConventions', src:'team', when:'recent', desc:'Enforce structured logging and the shared logging facade across services.' },
+  { name:'Remove deprecated internal APIs', id:'io.acme.platform.RemoveDeprecatedApis', src:'team', desc:'Replace calls to internal APIs deprecated in the 2024 platform release.' },
+  { name:'Order team imports', id:'io.acme.platform.OrderImports', src:'team', desc:'Apply the shared import ordering and formatting rules.' }
+];
+var FSRC_LABEL = { mine:'Mine', team:'Team', marketplace:'Marketplace' };
 
 /* ---- helpers ---- */
 function plainLabel(p){ return p.map(function(x){return typeof x==='string'?x:x.code;}).join(''); }
@@ -613,7 +789,7 @@ moreBtn.addEventListener('click', function(e){ e.stopPropagation(); var h=moreMe
 moreMenu.addEventListener('click', function(e){ var it=e.target.closest('.mp-item'); if(!it)return; var act=it.getAttribute('data-action'); if(act==='download'){downloadYaml();} else if(act==='copy'){copyYaml();} else if(it.getAttribute('data-toast')){toast(it.getAttribute('data-toast'));} moreMenu.hidden=true; moreWrap.classList.remove('open'); });
 document.addEventListener('click', function(){ moreMenu.hidden=true; moreWrap.classList.remove('open'); var pop=document.getElementById('crumbPop'); if(!pop.hidden){ pop.hidden=true; document.getElementById('crumbAnc').classList.remove('open'); } if(!document.getElementById('nodeMenu').hidden){ closeNodeMenu(); } });
 document.getElementById('dryRunBtn').addEventListener('click', function(){ toast('Dry run started on '+recipe.runOnRepositoryCount+' repositories','i-play'); });
-document.getElementById('titleBtn').addEventListener('click', function(){ toast('Builder recipe actions — see the Phase 2 prototype (#8530)'); });
+
 document.getElementById('renameBtn').addEventListener('click', function(){ toast('Rename: type a new name (prototype)'); });
 
 /* theme */
@@ -644,6 +820,86 @@ document.getElementById('themeTop').addEventListener('click', toggleTheme);
     setTimeout(function(){ if(window.viz) window.viz.fit(); }, 90);
   });
 })();
+
+/* ---- modal ---- */
+var modal=document.getElementById('modal');
+function openModal(tab){ modal.classList.add('open'); if(tab)selectTab(tab); }
+function closeModal(){ modal.classList.remove('open'); }
+function selectTab(name){ document.querySelectorAll('.mo-tab').forEach(function(t){t.classList.toggle('active',t.getAttribute('data-tab')===name);}); document.querySelectorAll('.mo-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-pane')===name);}); var prim=document.getElementById('moPrimary'); var map={existing:'Open recipe',import:'Import',new:'Save',manage:'',v1:'Import from V1'}; prim.style.display=map[name]?'':'none'; prim.textContent=map[name]||''; prim.disabled=false; if(name==='existing'){ resetFinder(); } }
+document.getElementById('titleBtn').addEventListener('click',function(){openModal('existing');});
+document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(){openModal('existing');});});
+document.querySelectorAll('[data-close-modal]').forEach(function(b){b.addEventListener('click',closeModal);});
+modal.addEventListener('click',function(e){if(e.target===modal)closeModal();});
+document.getElementById('moTabs').addEventListener('click',function(e){var t=e.target.closest('.mo-tab');if(t)selectTab(t.getAttribute('data-tab'));});
+
+/* open-existing list — harmonized recipe finder (ranked, source chips, rich rows) */
+var fxSrc='all', fxPick=null;
+function rankCatalog(q, src){
+  var base = catalog.filter(function(r){ return src==='all' || r.src===src; });
+  if(!q){ return base.slice().sort(function(a,b){ var ra=a.when==='recent'?0:1, rb=b.when==='recent'?0:1; return ra-rb || a.name.localeCompare(b.name); }); }
+  var ql=q.toLowerCase().trim(), scored=[];
+  base.forEach(function(r){ var n=r.name.toLowerCase(), id=r.id.toLowerCase(), s=null;
+    if(n===ql) s=0; else if(id===ql) s=1; else if(n.indexOf(ql)===0) s=2; else if(id.indexOf(ql)===0) s=3; else if(n.indexOf(ql)>=0) s=4; else if(id.indexOf(ql)>=0) s=5;
+    if(s!==null) scored.push({r:r,s:s}); });
+  scored.sort(function(a,b){ return a.s-b.s || a.r.name.localeCompare(b.r.name); });
+  return scored.map(function(x){ return x.r; });
+}
+function fxIsExact(r,q){ if(!q) return false; var ql=q.toLowerCase().trim(); return r.name.toLowerCase()===ql || r.id.toLowerCase()===ql; }
+function fxMark(text,q){ if(!q) return esc(text); var ql=q.toLowerCase().trim(); var i=text.toLowerCase().indexOf(ql); if(i<0) return esc(text); return esc(text.slice(0,i))+'<mark class="fx-mark">'+esc(text.slice(i,i+ql.length))+'</mark>'+esc(text.slice(i+ql.length)); }
+function renderFinder(){
+  var q=document.getElementById('fxSearch').value;
+  var rows=rankCatalog(q, fxSrc);
+  if(fxPick && !rows.some(function(r){return r.id===fxPick;})) fxPick=null;
+  if(!fxPick && rows.length) fxPick=rows[0].id;
+  var topExactId = (rows.length && fxIsExact(rows[0],q)) ? rows[0].id : null;
+  document.getElementById('fxList').innerHTML = rows.length ? rows.map(function(r){
+    var exact = r.id===topExactId;
+    return '<button class="fx-row'+(r.id===fxPick?' sel':'')+'" data-pick="'+esc(r.id)+'">'
+      +'<span class="fx-ico"><i class="bl-java">J</i></span>'
+      +'<span class="fx-main">'
+        +'<span class="fx-nm">'+fxMark(r.name,q)+(exact?'<span class="fx-badge">Exact match</span>':'')+'</span>'
+        +'<span class="fx-id">'+fxMark(r.id,q)+'</span>'
+        +'<span class="fx-desc">'+esc(r.desc)+'</span>'
+      +'</span>'
+      +'<span class="fx-src">'+FSRC_LABEL[r.src]+'</span>'
+    +'</button>';
+  }).join('') : '<div class="fx-empty">No recipes match your search.</div>';
+  var ex=document.querySelector('.mo-pane[data-pane="existing"]');
+  if(ex && ex.classList.contains('active')){ document.getElementById('moPrimary').disabled = !fxPick; }
+}
+function resetFinder(){ fxSrc='all'; fxPick=null; var s=document.getElementById('fxSearch'); if(s) s.value=''; document.querySelectorAll('#fxChips .fx-chip').forEach(function(c){ c.classList.toggle('active', c.getAttribute('data-src')==='all'); }); renderFinder(); }
+function openSelectedRecipe(){
+  if(!fxPick) return;
+  var rec=catalog.find(function(r){return r.id===fxPick;}); if(!rec) return;
+  recipe.name=rec.name; recipe.id=rec.id; syncMeta();
+  closeModal();
+  toast('Opened “'+rec.name+'”','i-blocks');
+}
+document.getElementById('fxSearch').addEventListener('input', renderFinder);
+document.getElementById('fxChips').addEventListener('click', function(e){ var c=e.target.closest('.fx-chip'); if(!c)return; fxSrc=c.getAttribute('data-src'); document.querySelectorAll('#fxChips .fx-chip').forEach(function(x){x.classList.toggle('active',x===c);}); fxPick=null; renderFinder(); });
+document.getElementById('fxList').addEventListener('click', function(e){ var row=e.target.closest('[data-pick]'); if(!row)return; fxPick=row.getAttribute('data-pick'); renderFinder(); if(e.detail>=2){ openSelectedRecipe(); } });
+document.getElementById('fxSearch').addEventListener('keydown', function(e){
+  var rows=Array.prototype.slice.call(document.querySelectorAll('#fxList .fx-row'));
+  var idx=rows.map(function(r){return r.getAttribute('data-pick');}).indexOf(fxPick);
+  if(e.key==='ArrowDown'){ e.preventDefault(); if(rows.length){ idx=Math.min(rows.length-1, idx+1); fxPick=rows[idx].getAttribute('data-pick'); renderFinder(); var rr=document.querySelectorAll('#fxList .fx-row'); if(rr[idx])rr[idx].scrollIntoView({block:'nearest'}); } }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); if(rows.length){ idx=Math.max(0, idx-1); fxPick=rows[idx].getAttribute('data-pick'); renderFinder(); var r2=document.querySelectorAll('#fxList .fx-row'); if(r2[idx])r2[idx].scrollIntoView({block:'nearest'}); } }
+  else if(e.key==='Enter'){ e.preventDefault(); openSelectedRecipe(); }
+  else if(e.key==='Escape'){ closeModal(); }
+});
+document.getElementById('moPrimary').addEventListener('click', function(){
+  var active=document.querySelector('.mo-tab.active').getAttribute('data-tab');
+  if(active==='existing'){ openSelectedRecipe(); }
+  else if(active==='import'){ closeModal(); toast('Imported recipe from YAML','i-download'); }
+  else if(active==='new'){ closeModal(); toast('Created new recipe'); }
+  else if(active==='v1'){ closeModal(); toast('Imported recipes from V1','i-download'); }
+});
+
+/* manage list */
+document.getElementById('mgList').innerHTML = catalog.filter(function(r){return r.src==='mine';}).map(function(r){return '<div class="mg-row"><input type="checkbox"><span>'+esc(r.name)+'</span><span class="sub">'+esc(r.id)+'</span></div>';}).join('');
+
+/* create-new form bits */
+document.getElementById('idHelpBtn').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('idHelp').classList.toggle('show');});
+document.getElementById('idToggle').addEventListener('click',function(){var on=this.getAttribute('aria-pressed')==='true';this.setAttribute('aria-pressed',String(!on));document.getElementById('idLine').style.opacity=on?'0.4':'1';});
 
 /* ---- init ---- */
 buildParentMap(); syncMeta(); rebuild(); renderWindow(); updateUndo();
