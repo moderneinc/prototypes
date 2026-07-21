@@ -184,6 +184,21 @@ body.opts-none .opt-empty{display:block;}
 .seg-btn.active{background:var(--surface-primary);color:var(--brand-digital-blue-700);box-shadow:var(--shadow-xs);}
 .seg-btn .seg-count{font-size:11px;color:var(--text-tertiary);}
 .seg-btn.active .seg-count{color:var(--brand-digital-blue-600);}
+/* Red error count badge (only when there are errors) */
+.seg-btn .seg-count.err-count.has-err,
+.seg-btn.active .seg-count.err-count.has-err{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 5px;border-radius:var(--radius-full);background:var(--brand-red-600);color:#fff;font-size:10px;font-weight:700;}
+/* Signpost popover anchored to the Errors tab */
+.seg-btn-wrap{position:relative;display:inline-flex;}
+.signpost{position:absolute;top:100%;left:0;z-index:80;padding-top:9px;width:262px;visibility:hidden;opacity:0;transform:translateY(-4px);transition:opacity .12s ease,transform .12s ease;pointer-events:none;}
+.seg-btn-wrap.has-signpost:hover .signpost,.signpost:hover,.seg-btn-wrap.has-signpost:focus-within .signpost{visibility:visible;opacity:1;transform:translateY(0);pointer-events:auto;}
+.signpost-card{position:relative;background:var(--brand-red-100);border:1px solid color-mix(in srgb,var(--brand-red-600) 40%,transparent);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:12px 13px;}
+.signpost-card::before{content:'';position:absolute;top:-6px;left:24px;width:11px;height:11px;background:var(--brand-red-100);border-left:1px solid color-mix(in srgb,var(--brand-red-600) 40%,transparent);border-top:1px solid color-mix(in srgb,var(--brand-red-600) 40%,transparent);transform:rotate(45deg);}
+.signpost-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:5px;}
+.signpost-title svg{width:15px;height:15px;color:var(--brand-red-600);flex-shrink:0;}
+.signpost-body{font-size:12px;line-height:1.5;color:var(--text-secondary);margin-bottom:10px;}
+.signpost-link{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:500;color:var(--text-information);cursor:pointer;}
+.signpost-link:hover{text-decoration:underline;}
+.signpost-link svg{width:14px;height:14px;}
 
 .tbl-search{position:relative;display:flex;align-items:center;flex:1 1 170px;min-width:150px;}
 .tbl-search svg{position:absolute;left:10px;width:14px;height:14px;color:var(--text-tertiary);}
@@ -273,8 +288,9 @@ body.opts-none .opt-empty{display:block;}
 /* run-chip error states */
 .run-chip.errored{background:var(--brand-red-100);color:var(--brand-red-700);border:1px solid color-mix(in srgb,var(--brand-red-600) 30%,transparent);}
 /* ===== Org-level error banner (FIX: demote run error, keep results committable) ===== */
-/* Run-error message — flush full-width strip, bottom border only */
-.run-banner{display:flex;align-items:center;gap:11px;padding:7px 26px;background:var(--brand-red-100);border-bottom:1px solid color-mix(in srgb,var(--brand-red-600) 30%,transparent);flex-shrink:0;}
+/* Run-error message — flush strip at the top of the left results column, bottom border only.
+   Negative margins cancel .results-left padding (18px top / 24px right / 32px left) so it spans edge-to-edge. */
+.run-banner{display:flex;align-items:center;gap:11px;margin:-18px -24px 14px -32px;padding:8px 24px 8px 32px;background:var(--brand-red-100);border-bottom:1px solid color-mix(in srgb,var(--brand-red-600) 30%,transparent);flex-shrink:0;}
 .run-banner[hidden]{display:none;}
 .run-banner .rb-ic{width:17px;height:17px;color:var(--brand-red-600);flex-shrink:0;}
 .run-banner .rb-title{font-size:13px;font-weight:600;color:var(--text-primary);}
@@ -595,14 +611,14 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
       </div>
     </div>
 
-    <!-- FIX: org-level run error is demoted to a dismissible banner; results stay committable -->
-    <div class="run-banner" id="run-banner" hidden></div>
     <!-- FIX: full-screen panel only on total failure (zero repositories completed) -->
     <div id="total-fail" hidden></div>
 
     <div class="results-layout">
       <!-- LEFT: options + summary + repo list -->
       <div class="results-left">
+        <!-- FIX: org-level run error demoted to a dismissible banner atop the results list -->
+        <div class="run-banner" id="run-banner" hidden></div>
         <div class="rd rd-hidden" id="rd">
           <div class="rd-headrow">
             <button class="section-toggle" data-target="opt-body">Summary + Options</button>
@@ -632,7 +648,16 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
           <div class="seg" role="tablist" aria-label="Filter">
             <button class="seg-btn active" data-filter="all">All <span class="seg-count" data-c="all"></span></button>
             <button class="seg-btn" data-filter="results">Has results <span class="seg-count" data-c="results"></span></button>
-            <button class="seg-btn" data-filter="error">Errors <span class="seg-count" data-c="error"></span></button>
+            <div class="seg-btn-wrap" id="err-seg-wrap">
+              <button class="seg-btn" data-filter="error">Errors <span class="seg-count err-count" data-c="error"></span></button>
+              <div class="signpost" role="tooltip" id="err-signpost">
+                <div class="signpost-card">
+                  <div class="signpost-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Repository errors</div>
+                  <div class="signpost-body"><b id="err-signpost-count">4</b> repositories ended in error during this run and produced no results.</div>
+                  <span class="signpost-link" data-act="view-err">Go to log<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="tbl-search">
             <svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -684,8 +709,8 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
       <button class="demo-close" id="demo-close" aria-label="Hide demo controls"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="demo-row"><span class="demo-row-label">Run state</span><div class="demo-row-btns">
-      <button class="demo-btn" data-runstate="ok" title="Run completed normally.">Completed</button>
-      <button class="demo-btn active" data-runstate="partial" title="Run errored but many repositories completed first — results stay committable.">Errored · partial</button>
+      <button class="demo-btn active" data-runstate="ok" title="Run completed normally.">Completed</button>
+      <button class="demo-btn" data-runstate="partial" title="Run errored but many repositories completed first — results stay committable.">Errored · partial</button>
       <button class="demo-btn" data-runstate="total" title="Total failure — zero repositories completed, nothing to commit.">Errored · total</button>
     </div></div>
     <div class="demo-row"><span class="demo-row-label">View</span><div class="demo-row-btns">
@@ -751,15 +776,16 @@ const REPOS=[
   {name:'rider-fs', branch:'main', results:4},
   {name:'fleet-plugin-template', branch:'main', results:7},
 ];
-/* Build the run: every repo returns results — no errored or No-LST states.
-   (the seed list above contributes 15 with results.) */
+/* Build the run: 222 repos with results plus a handful that errored,
+   so the Errors tab has a non-zero count. (seed list above = 15 with results.) */
 const PRE=['kotlin','intellij','ktor','space','fleet','rider','clion','webstorm','datalore','qodana','teamcity','youtrack','hub','toolbox','mps','resharper','dataspell','aqua','rustrover','writerside','grazie','kover','dokka','arrow','koin','ktlint','detekt','okio','skija','compose','spek','mockk','klock','kodein','ktorm','jackson','guava','netty','okhttp','retrofit'];
 const SUF=['core','api','gradle-plugin','cli','client','sdk','common','runtime','compiler','tools','ui','server','db','utils','testkit','samples','docs','playground','bench','ide','plugin','android','jvm','native','web','dsl'];
 const BR=['main','master','develop','trunk'];
 (function(){
   let k=0;
   const nm=()=>{ const n=PRE[k%PRE.length]+'-'+SUF[Math.floor(k/PRE.length)%SUF.length]; k++; return n; };
-  for(let j=0;j<222;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:1+((j*17+5)%59)}); } // → all with results
+  for(let j=0;j<222;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:1+((j*17+5)%59)}); } // → with results
+  for(let j=0;j<4;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:0, error:true}); }        // → 4 errored
 })();
 /* Surface attention states first: No LST at the top, then errored,
    then successes by result count. */
@@ -943,7 +969,7 @@ const state={
   selFiles:new Set(),       // commit selection — set of class (file) keys
   orgShown:ORG_INIT,        // how many repos shown in the org-summary list
   noteDismissed:false,      // shared-repos info banner dismissed?
-  runState:'partial',       // 'ok' | 'partial' | 'total' — org-level run outcome
+  runState:'ok',            // 'ok' | 'partial' | 'total' — org-level run outcome
   bannerDismissed:false,    // org error banner dismissed?
 };
 REPOS.filter(r=>r.results>0).forEach(r=>repoClassKeys(r.id).forEach(k=>state.selFiles.add(k)));
@@ -1145,7 +1171,14 @@ function render(){
   // seg counts
   document.querySelector('[data-c="all"]').textContent=REPOS.length;
   document.querySelector('[data-c="results"]').textContent=REPOS.filter(r=>r.results>0).length;
-  document.querySelector('[data-c="error"]').textContent=REPOS.filter(r=>r.error).length;
+  const errCount=REPOS.filter(r=>r.error).length;
+  const errCountEl=document.querySelector('[data-c="error"]');
+  errCountEl.textContent=errCount;
+  errCountEl.classList.toggle('has-err', errCount>0);
+  const errWrap=document.getElementById('err-seg-wrap');
+  if(errWrap) errWrap.classList.toggle('has-signpost', errCount>0);
+  const spCount=document.getElementById('err-signpost-count');
+  if(spCount) spCount.textContent=errCount;
   // commit count = selected files (classes)
   document.getElementById('commit-count').textContent=state.selFiles.size.toLocaleString();
   // apply indeterminate states (can't be set via attribute)
