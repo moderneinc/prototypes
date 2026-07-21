@@ -228,6 +228,82 @@ b { font-weight:600; }
 .fx-btn--primary:hover { filter:brightness(1.12); }
 .fx-btn--primary[disabled] { opacity:.45; cursor:default; filter:none; }
 .fx-mark { background:color-mix(in srgb,var(--accent) 22%,transparent); border-radius:3px; padding:0 1px; }
+/* ---- modal ---- */
+.mo-ov { position: fixed; inset: 0; z-index: 80; display: none; align-items: flex-start; justify-content: center; padding-top: 7vh; background: var(--scrim); }
+.mo-ov.open { display: flex; }
+.mo { width: 720px; max-width: 92%; max-height: 80vh; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line-strong); border-radius: 14px; box-shadow: var(--modal-shadow); overflow: hidden; }
+.mo-header { display: flex; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--line2); }
+.mo-header h2 { margin: 0; font-size: 17px; font-weight: 600; }
+.mo-x { margin-left: auto; width: 30px; height: 30px; border: none; border-radius: 6px; background: transparent; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+.mo-x:hover { background: var(--surface); color: var(--text); }
+.mo-x svg { width: 16px; height: 16px; }
+.mo-tabs { display: flex; gap: 4px; padding: 8px 12px 0; border-bottom: 1px solid var(--line2); }
+.mo-tab { font-size: 13px; font-weight: 600; color: var(--muted); background: transparent; border: none; border-bottom: 2px solid transparent; padding: 9px 12px; }
+.mo-tab:hover { color: var(--text); }
+.mo-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.mo-body { flex: 1; overflow-y: auto; padding: 16px 18px; }
+.mo-pane { display: none; }
+.mo-pane.active { display: block; }
+.mo-foot { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-top: 1px solid var(--line2); }
+.mo-foot .right { margin-left: auto; display: inline-flex; gap: 10px; }
+.btn { font-size: 13px; font-weight: 600; border-radius: 6px; padding: 8px 15px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); }
+.btn:hover { background: var(--surface); }
+.btn--primary { background: var(--ink-bg); color: var(--ink-fg); border-color: transparent; }
+.btn--tertiary { border-color: transparent; background: transparent; }
+.btn--tertiary:hover { background: var(--surface); }
+
+/* open-existing */
+.pills { display: flex; gap: 7px; margin-bottom: 12px; }
+.pill { font-size: 13px; font-weight: 600; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 999px; padding: 6px 13px; }
+.pill.active { background: var(--accent); color: #fff; border-color: transparent; }
+.search-field { display: flex; align-items: center; gap: 9px; border: 1px solid var(--line-strong); border-radius: 10px; padding: 9px 12px; margin-bottom: 12px; }
+.search-field svg { width: 18px; height: 18px; color: var(--muted); }
+.search-field input { flex: 1; border: none; outline: none; background: transparent; color: var(--text); font: inherit; font-size: 14px; }
+.oe-list { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.oe-row { display: flex; align-items: center; gap: 11px; padding: 11px 14px; border-bottom: 1px solid var(--line2); }
+.oe-row:last-child { border-bottom: none; }
+.oe-row:hover { background: var(--row-hover); }
+.oe-row .ico { width: 17px; height: 17px; color: var(--muted); flex: none; }
+.oe-row .nm { font-size: 14px; color: var(--text); }
+.oe-row .sub { margin-left: auto; font-size: 12px; color: var(--muted); }
+.oe-empty { padding: 20px; text-align: center; color: var(--muted); font-style: italic; font-size: 13px; }
+
+/* create-new form */
+.nr-label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 7px; }
+.nr-label .req { color: var(--er); margin-left: 2px; }
+.nr-label:first-child { margin-top: 0; }
+.nr-input { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px; color: var(--text); background: var(--field); border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 13px; }
+.nr-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+textarea.nr-input { resize: none; height: 92px; }
+.id-toggle { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 13px; color: var(--text); }
+.tgl { width: 38px; height: 22px; border-radius: 999px; background: var(--accent); position: relative; border: none; flex: none; }
+.tgl::after { content: ''; position: absolute; top: 2px; left: 18px; width: 18px; height: 18px; border-radius: 999px; background: #fff; transition: left .15s; }
+.tgl[aria-pressed="false"] { background: var(--line-strong); }
+.tgl[aria-pressed="false"]::after { left: 2px; }
+.id-help-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--accent); background: none; border: none; padding: 0; margin-left: 8px; }
+.id-help-btn svg { width: 13px; height: 13px; transition: transform .15s; }
+.id-help-btn.open svg { transform: rotate(180deg); }
+.id-help { display: none; font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: 4px 0 2px; }
+.id-help.show { display: block; }
+.id-line { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+/* import */
+.import-hint { font-size: 13px; color: var(--muted); margin: 0 0 10px; }
+.yaml-box { width: 100%; box-sizing: border-box; font-family: var(--font-mono); font-size: 12.5px; color: var(--text); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 10px; padding: 12px; height: 190px; resize: none; }
+
+/* manage */
+.mg-row { display: flex; align-items: center; gap: 11px; padding: 11px 12px; border-bottom: 1px solid var(--line2); font-size: 14px; }
+.mg-row input { width: 16px; height: 16px; accent-color: var(--accent); }
+.mg-row .sub { margin-left: auto; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+
+/* toast */
+.toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(12px); z-index: 90; display: inline-flex; align-items: center; gap: 9px; background: var(--card); color: var(--text); border: 1px solid var(--line-strong); border-radius: 10px; box-shadow: var(--menu-shadow); padding: 11px 15px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast svg { width: 16px; height: 16px; color: var(--green-hi); }
+
+.proto-note { margin-top: 14px; font-size: 12px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; }
+.proto-note code { font-family: var(--font-mono); background: var(--surface); border-radius: 4px; padding: 1px 6px; }
+.mo-list { max-height: 44vh; overflow-y: auto; margin: 0 -6px; }
 </style>
 </head>
 <body>
@@ -408,6 +484,66 @@ b { font-weight:600; }
     </div>
     <div class="fx-list" id="fxList"></div>
     <div class="fx-foot"><span class="fx-count" id="fxCount"></span><span class="fx-right"><button class="fx-btn" data-close-finder>Cancel</button><button class="fx-btn fx-btn--primary" id="fxAdd" disabled>Add recipe</button></span></div>
+  </div>
+</div>
+
+<!-- Builder recipe actions modal -->
+<div class="mo-ov" id="modal">
+  <div class="mo" role="dialog" aria-label="Builder recipe actions">
+    <div class="mo-header"><h2>Builder recipe actions</h2><button class="mo-x" data-close-modal title="Close"><svg><use href="#i-x"/></svg></button></div>
+    <div class="mo-tabs" id="moTabs">
+      <button class="mo-tab active" data-tab="existing">Open existing</button>
+      <button class="mo-tab" data-tab="import">Import from Yaml</button>
+      <button class="mo-tab" data-tab="new">Create new</button>
+      <button class="mo-tab" data-tab="manage">Manage</button>
+      <button class="mo-tab" data-tab="v1">From V1</button>
+    </div>
+    <div class="mo-body">
+      <!-- Open existing -->
+      <div class="mo-pane active" data-pane="existing">
+        <div class="fx-search"><svg><use href="#i-search"/></svg><input id="moSearch" placeholder="Search recipes by name or ID" autocomplete="off" /></div>
+        <div class="fx-chips" id="moChips">
+          <button class="fx-chip active" data-src="all">All</button>
+          <button class="fx-chip" data-src="mine">Mine</button>
+          <button class="fx-chip" data-src="team">Team</button>
+          <button class="fx-chip" data-src="marketplace">Marketplace</button>
+        </div>
+        <div class="fx-list mo-list" id="moList"></div>
+      </div>
+      <!-- Import -->
+      <div class="mo-pane" data-pane="import">
+        <p class="import-hint">Insert a declarative YAML recipe to import into the builder:</p>
+        <textarea class="yaml-box" placeholder="type: specs.openrewrite.org/v1beta/recipe&#10;name: com.example.MyRecipe&#10;displayName: My recipe&#10;recipeList:&#10;  - org.openrewrite.java.format.AutoFormat"></textarea>
+      </div>
+      <!-- Create new -->
+      <div class="mo-pane" data-pane="new">
+        <label class="nr-label">Name<span class="req">*</span></label>
+        <input class="nr-input" placeholder="Name this recipe, e.g. Migrate to Spring Boot 3" />
+        <label class="nr-label">Recipe ID
+          <button class="id-help-btn" id="idHelpBtn">How is the ID used? <svg><use href="#i-chevd"/></svg></button>
+        </label>
+        <div class="id-help" id="idHelp">The ID uniquely identifies your recipe on the platform and in exported YAML. It can’t be changed after creation, so keep it stable (e.g. reverse-domain style).</div>
+        <div class="id-toggle"><button class="tgl" id="idToggle" aria-pressed="true" aria-label="Auto-generate ID"></button> Auto-generate from name (recommended)</div>
+        <div class="id-line" id="idLine">ID: io.moderne.MigrateToSpringBoot3</div>
+        <label class="nr-label">Description</label>
+        <textarea class="nr-input" placeholder="Summarize what this recipe does (optional)"></textarea>
+      </div>
+      <!-- Manage -->
+      <div class="mo-pane" data-pane="manage">
+        <div class="oe-list" id="mgList"></div>
+      </div>
+      <!-- From V1 -->
+      <div class="mo-pane" data-pane="v1">
+        <p class="import-hint">You have recipes from the previous Builder. Import them to keep working with them here. Recipes you already have are skipped.</p>
+      </div>
+    </div>
+    <div class="mo-foot">
+      <span id="moFootLeft"></span>
+      <span class="right">
+        <button class="btn btn--tertiary" data-close-modal>Cancel</button>
+        <button class="btn btn--primary" id="moPrimary">Create recipe</button>
+      </span>
+    </div>
   </div>
 </div>
 
@@ -691,7 +827,7 @@ moreBtn.addEventListener('click', function(e){ e.stopPropagation(); var h=moreMe
 moreMenu.addEventListener('click', function(e){ var it=e.target.closest('.mp-item'); if(!it)return; var act=it.getAttribute('data-action'); if(act==='download'){downloadYaml();} else if(act==='copy'){copyYaml();} else if(it.getAttribute('data-toast')){toast(it.getAttribute('data-toast'));} moreMenu.hidden=true; moreWrap.classList.remove('open'); });
 document.addEventListener('click', function(){ moreMenu.hidden=true; moreWrap.classList.remove('open'); var pop=document.getElementById('crumbPop'); if(!pop.hidden){ pop.hidden=true; document.getElementById('crumbAnc').classList.remove('open'); } if(!document.getElementById('nodeMenu').hidden){ closeNodeMenu(); } });
 document.getElementById('dryRunBtn').addEventListener('click', function(){ toast('Dry run started on '+recipe.runOnRepositoryCount+' repositories','i-play'); });
-document.getElementById('titleBtn').addEventListener('click', function(){ toast('Builder recipe actions — see the Phase 2 prototype (#8530)'); });
+
 document.getElementById('renameBtn').addEventListener('click', function(){ toast('Rename: type a new name (prototype)'); });
 
 /* theme */
@@ -796,6 +932,74 @@ document.getElementById('fxSearch').addEventListener('keydown', function(e){
   else if(e.key==='Enter'){ e.preventDefault(); finderAdd(); }
   else if(e.key==='Escape'){ closeFinder(); }
 });
+
+/* ---- modal ---- */
+var modal=document.getElementById('modal');
+function openModal(tab){ modal.classList.add('open'); if(tab)selectTab(tab); }
+function closeModal(){ modal.classList.remove('open'); }
+function selectTab(name){ document.querySelectorAll('.mo-tab').forEach(function(t){t.classList.toggle('active',t.getAttribute('data-tab')===name);}); document.querySelectorAll('.mo-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-pane')===name);}); var prim=document.getElementById('moPrimary'); var map={existing:'Open recipe',import:'Import',new:'Save',manage:'',v1:'Import from V1'}; prim.style.display=map[name]?'':'none'; prim.textContent=map[name]||''; prim.disabled=false; if(name==='existing'){ resetModalFinder(); } }
+document.getElementById('titleBtn').addEventListener('click',function(){openModal('existing');});
+document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(){openModal('existing');});});
+document.querySelectorAll('[data-close-modal]').forEach(function(b){b.addEventListener('click',closeModal);});
+modal.addEventListener('click',function(e){if(e.target===modal)closeModal();});
+document.getElementById('moTabs').addEventListener('click',function(e){var t=e.target.closest('.mo-tab');if(t)selectTab(t.getAttribute('data-tab'));});
+
+/* open-existing list — harmonized recipe finder (ranked, source chips, rich rows) */
+var moSrc='all', moPick=null;
+function renderModalFinder(){
+  var q=document.getElementById('moSearch').value;
+  var rows=rankCatalog(q, moSrc);
+  if(moPick && !rows.some(function(r){return r.id===moPick;})) moPick=null;
+  if(!moPick && rows.length) moPick=rows[0].id;
+  var topExactId = (rows.length && fxIsExact(rows[0],q)) ? rows[0].id : null;
+  document.getElementById('moList').innerHTML = rows.length ? rows.map(function(r){
+    var exact = r.id===topExactId;
+    return '<button class="fx-row'+(r.id===moPick?' sel':'')+'" data-pick="'+esc(r.id)+'">'
+      +'<span class="fx-ico"><i class="bl-java">J</i></span>'
+      +'<span class="fx-main">'
+        +'<span class="fx-nm">'+fxMark(r.name,q)+(exact?'<span class="fx-badge">Exact match</span>':'')+'</span>'
+        +'<span class="fx-id">'+fxMark(r.id,q)+'</span>'
+        +'<span class="fx-desc">'+esc(r.desc)+'</span>'
+      +'</span>'
+      +'<span class="fx-src">'+FSRC_LABEL[r.src]+'</span>'
+    +'</button>';
+  }).join('') : '<div class="fx-empty">No recipes match your search.</div>';
+  var ex=document.querySelector('.mo-pane[data-pane="existing"]');
+  if(ex && ex.classList.contains('active')){ document.getElementById('moPrimary').disabled = !moPick; }
+}
+function resetModalFinder(){ moSrc='all'; moPick=null; var s=document.getElementById('moSearch'); if(s) s.value=''; document.querySelectorAll('#moChips .fx-chip').forEach(function(c){ c.classList.toggle('active', c.getAttribute('data-src')==='all'); }); renderModalFinder(); }
+function openSelectedRecipe(){
+  if(!moPick) return;
+  var rec=catalog.find(function(r){return r.id===moPick;}); if(!rec) return;
+  recipe.name=rec.name; recipe.id=rec.id; syncMeta();
+  closeModal();
+  toast('Opened “'+rec.name+'”','i-blocks');
+}
+document.getElementById('moSearch').addEventListener('input', renderModalFinder);
+document.getElementById('moChips').addEventListener('click', function(e){ var c=e.target.closest('.fx-chip'); if(!c)return; moSrc=c.getAttribute('data-src'); document.querySelectorAll('#moChips .fx-chip').forEach(function(x){x.classList.toggle('active',x===c);}); moPick=null; renderModalFinder(); });
+document.getElementById('moList').addEventListener('click', function(e){ var row=e.target.closest('[data-pick]'); if(!row)return; moPick=row.getAttribute('data-pick'); renderModalFinder(); if(e.detail>=2){ openSelectedRecipe(); } });
+document.getElementById('moSearch').addEventListener('keydown', function(e){
+  var rows=Array.prototype.slice.call(document.querySelectorAll('#moList .fx-row'));
+  var idx=rows.map(function(r){return r.getAttribute('data-pick');}).indexOf(moPick);
+  if(e.key==='ArrowDown'){ e.preventDefault(); if(rows.length){ idx=Math.min(rows.length-1, idx+1); moPick=rows[idx].getAttribute('data-pick'); renderModalFinder(); var rr=document.querySelectorAll('#moList .fx-row'); if(rr[idx])rr[idx].scrollIntoView({block:'nearest'}); } }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); if(rows.length){ idx=Math.max(0, idx-1); moPick=rows[idx].getAttribute('data-pick'); renderModalFinder(); var r2=document.querySelectorAll('#moList .fx-row'); if(r2[idx])r2[idx].scrollIntoView({block:'nearest'}); } }
+  else if(e.key==='Enter'){ e.preventDefault(); openSelectedRecipe(); }
+  else if(e.key==='Escape'){ closeModal(); }
+});
+document.getElementById('moPrimary').addEventListener('click', function(){
+  var active=document.querySelector('.mo-tab.active').getAttribute('data-tab');
+  if(active==='existing'){ openSelectedRecipe(); }
+  else if(active==='import'){ closeModal(); toast('Imported recipe from YAML','i-download'); }
+  else if(active==='new'){ closeModal(); toast('Created new recipe'); }
+  else if(active==='v1'){ closeModal(); toast('Imported recipes from V1','i-download'); }
+});
+
+/* manage list */
+document.getElementById('mgList').innerHTML = catalog.filter(function(r){return r.src==='mine';}).map(function(r){return '<div class="mg-row"><input type="checkbox"><span>'+esc(r.name)+'</span><span class="sub">'+esc(r.id)+'</span></div>';}).join('');
+
+/* create-new form bits */
+document.getElementById('idHelpBtn').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('idHelp').classList.toggle('show');});
+document.getElementById('idToggle').addEventListener('click',function(){var on=this.getAttribute('aria-pressed')==='true';this.setAttribute('aria-pressed',String(!on));document.getElementById('idLine').style.opacity=on?'0.4':'1';});
 
 /* ---- init ---- */
 buildParentMap(); syncMeta(); rebuild(); renderWindow(); updateUndo();
