@@ -709,8 +709,9 @@ button { font: inherit; cursor: pointer; }
   line-height: 1.4;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  white-space: normal;
-  max-width: 280px;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  max-width: 320px;
   width: max-content;
   pointer-events: none;
 }
@@ -2287,7 +2288,7 @@ const tbody     = document.getElementById('tbl-body');
 
 function aggBadge(t) {
   if (!t.group) return '';
-  const tip = `Aggregated table — combines rows from ${t.recipes} recipes into a shared pool.\nGroup id: ${t.group}`;
+  const tip = `Pools rows from many recipes that all emit the same schema, grouped under one shared "group id".\nGroup id: ${t.group} (${t.recipes} recipes)`;
   return `<span class="agg-badge" tabindex="0" data-tip="${tip.replace(/"/g, '&quot;')}">
     <svg viewBox="0 0 24 24" class="svg-stroke"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>
     Aggregated

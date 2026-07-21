@@ -184,6 +184,21 @@ body.opts-none .opt-empty{display:block;}
 .seg-btn.active{background:var(--surface-primary);color:var(--brand-digital-blue-700);box-shadow:var(--shadow-xs);}
 .seg-btn .seg-count{font-size:11px;color:var(--text-tertiary);}
 .seg-btn.active .seg-count{color:var(--brand-digital-blue-600);}
+/* Red error count badge (only when there are errors) */
+.seg-btn .seg-count.err-count.has-err,
+.seg-btn.active .seg-count.err-count.has-err{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 5px;border-radius:var(--radius-full);background:var(--brand-red-600);color:#fff;font-size:10px;font-weight:700;}
+/* Signpost popover anchored to the Errors tab */
+.seg-btn-wrap{position:relative;display:inline-flex;}
+.signpost{position:absolute;top:100%;left:0;z-index:80;padding-top:9px;width:262px;visibility:hidden;opacity:0;transform:translateY(-4px);transition:opacity .12s ease,transform .12s ease;pointer-events:none;}
+.seg-btn-wrap.has-signpost:hover .signpost,.signpost:hover,.seg-btn-wrap.has-signpost:focus-within .signpost{visibility:visible;opacity:1;transform:translateY(0);pointer-events:auto;}
+.signpost-card{position:relative;background:var(--brand-red-100);border:1px solid color-mix(in srgb,var(--brand-red-600) 40%,transparent);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:12px 13px;}
+.signpost-card::before{content:'';position:absolute;top:-6px;left:24px;width:11px;height:11px;background:var(--brand-red-100);border-left:1px solid color-mix(in srgb,var(--brand-red-600) 40%,transparent);border-top:1px solid color-mix(in srgb,var(--brand-red-600) 40%,transparent);transform:rotate(45deg);}
+.signpost-title{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:5px;}
+.signpost-title svg{width:15px;height:15px;color:var(--brand-red-600);flex-shrink:0;}
+.signpost-body{font-size:12px;line-height:1.5;color:var(--text-secondary);margin-bottom:10px;}
+.signpost-link{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:500;color:var(--text-information);cursor:pointer;}
+.signpost-link:hover{text-decoration:underline;}
+.signpost-link svg{width:14px;height:14px;}
 
 .tbl-search{position:relative;display:flex;align-items:center;flex:1 1 170px;min-width:150px;}
 .tbl-search svg{position:absolute;left:10px;width:14px;height:14px;color:var(--text-tertiary);}
@@ -262,38 +277,44 @@ body.opts-none .opt-empty{display:block;}
 .err-head .err-actions button{width:28px;height:28px;border-radius:var(--radius-md);display:inline-flex;align-items:center;justify-content:center;color:var(--text-tertiary);background:transparent;border:1px solid transparent;}
 .err-head .err-actions button:hover{background:var(--brand-grey-100);color:var(--text-primary);border-color:var(--border-primary);}
 .err-head .err-actions svg{width:15px;height:15px;}
+.err-msg{font-size:12.5px;font-weight:600;color:var(--text-primary);padding:11px 14px 5px;font-family:var(--font-body);}
 .err-log{max-height:460px;overflow:auto;background:var(--brand-grey-100);font-family:var(--font-code);font-size:11.5px;line-height:1.7;padding:8px 0;}
 .err-log .ln{display:flex;}
-.err-log .ln .n{flex:0 0 auto;width:44px;text-align:right;padding:0 12px 0 8px;color:var(--brand-grey-400);user-select:none;}
-.err-log .ln .c{white-space:pre;color:var(--brand-red-700);padding-right:16px;}
+.err-log .ln .n{flex:0 0 auto;min-width:88px;text-align:left;padding:0 14px 0 12px;color:var(--brand-grey-500);user-select:none;white-space:pre;}
+.err-log .ln .c{white-space:pre;color:var(--text-primary);padding-right:16px;}
 .err-log .ln.dim .c{color:var(--text-tertiary);}
+.err-log .ln.create{margin-top:5px;}
+.err-log .ln.create .c{font-weight:600;}
 /* run-chip error states */
 .run-chip.errored{background:var(--brand-red-100);color:var(--brand-red-700);border:1px solid color-mix(in srgb,var(--brand-red-600) 30%,transparent);}
-.run-chip.errored svg circle{fill:var(--brand-red-600);}
 /* ===== Org-level error banner (FIX: demote run error, keep results committable) ===== */
-.run-banner{display:flex;align-items:center;gap:13px;padding:12px 26px;background:var(--brand-red-100);border-bottom:1px solid color-mix(in srgb,var(--brand-red-600) 20%,transparent);flex-shrink:0;}
+/* Run-error message — flush strip at the top of the left results column, bottom border only.
+   Negative margins cancel .results-left padding (18px top / 24px right / 32px left) so it spans edge-to-edge. */
+.run-banner{display:flex;align-items:center;gap:11px;margin:-18px -24px 14px -32px;padding:8px 24px 8px 32px;background:var(--brand-red-100);border-bottom:1px solid color-mix(in srgb,var(--brand-red-600) 30%,transparent);flex-shrink:0;}
 .run-banner[hidden]{display:none;}
-.run-banner .rb-ic{width:22px;height:22px;color:var(--brand-red-600);flex-shrink:0;}
-.run-banner .rb-title{font-size:14px;font-weight:600;color:var(--text-primary);}
-.run-banner .rb-sub{font-size:13px;color:var(--text-secondary);margin-top:1px;}
+.run-banner .rb-ic{width:17px;height:17px;color:var(--brand-red-600);flex-shrink:0;}
+.run-banner .rb-title{font-size:13px;font-weight:600;color:var(--text-primary);}
+.run-banner .rb-sub{font-size:11.5px;color:var(--text-secondary);}
 .run-banner .rb-spacer{flex:1;}
-.run-banner .rb-error{display:inline-flex;align-items:center;gap:6px;color:var(--brand-red-600);font-size:13px;font-weight:500;background:transparent;border:none;flex-shrink:0;}
+.run-banner .rb-error{display:inline-flex;align-items:center;color:var(--text-information);font-size:13px;font-weight:500;background:transparent;border:none;padding:0;flex-shrink:0;cursor:pointer;}
 .run-banner .rb-error:hover{text-decoration:underline;}
-.run-banner .rb-error svg{width:15px;height:15px;}
-.run-banner .rb-dismiss{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:var(--radius-md);color:var(--brand-red-600);flex-shrink:0;margin-left:4px;}
+.run-banner .rb-dismiss{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border:none;background:transparent;border-radius:var(--radius-md);color:var(--brand-red-600);flex-shrink:0;margin-left:2px;cursor:pointer;}
 .run-banner .rb-dismiss:hover{background:color-mix(in srgb,var(--brand-red-600) 14%,transparent);}
-.run-banner .rb-dismiss svg{width:15px;height:15px;}
+.run-banner .rb-dismiss svg{width:14px;height:14px;}
+.run-banner .rb-error:focus-visible{outline:none;text-decoration:underline;}
+.run-banner .rb-dismiss:focus-visible{outline:none;box-shadow:0 0 0 2px color-mix(in srgb,var(--brand-red-600) 40%,transparent);}
 /* error side panel (full message + copy, reachable on demand) */
-.err-scrim{position:fixed;inset:0;z-index:89;background:rgba(17,24,39,.30);opacity:0;pointer-events:none;transition:opacity var(--transition-fast);}
+.err-scrim{position:fixed;inset:0;z-index:89;background:rgba(17,24,39,.45);opacity:0;pointer-events:none;transition:opacity var(--transition-fast);}
 .err-scrim.open{opacity:1;pointer-events:auto;}
-.err-pop{position:fixed;top:0;right:0;bottom:0;width:580px;max-width:94vw;z-index:90;background:var(--surface-primary);border-left:1px solid var(--border-primary);box-shadow:-8px 0 28px -8px rgba(17,24,39,.20);display:flex;flex-direction:column;transform:translateX(100%);transition:transform var(--transition-fast);}
-.err-pop.open{transform:translateX(0);}
+.err-pop{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.97);width:min(1500px,95vw);height:min(940px,92vh);z-index:90;background:var(--surface-primary);border:1px solid var(--border-primary);border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;overflow:hidden;opacity:0;pointer-events:none;transition:opacity var(--transition-fast),transform var(--transition-fast);}
+.err-pop.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);}
 .err-drawer-head{display:flex;align-items:center;gap:9px;padding:14px 16px;border-bottom:1px solid var(--border-primary);flex-shrink:0;}
 .err-drawer-head .ec-ic{width:18px;height:18px;color:var(--brand-red-600);flex-shrink:0;}
 .err-drawer-head h3{font-size:15px;font-weight:600;flex:1;color:var(--text-primary);}
 .err-drawer-head .ec-act{width:30px;height:30px;border-radius:var(--radius-md);display:inline-flex;align-items:center;justify-content:center;color:var(--text-tertiary);border:1px solid transparent;}
 .err-drawer-head .ec-act:hover{background:var(--brand-grey-100);color:var(--text-primary);border-color:var(--border-primary);}
 .err-drawer-head .ec-act svg{width:16px;height:16px;}
+.err-pop .err-msg{flex-shrink:0;}
 .err-pop .err-log{max-height:none;flex:1;}
 /* total-failure full-screen panel (only when zero repositories completed) */
 #total-fail{flex:1;min-height:0;overflow:auto;padding:26px 32px;}
@@ -590,14 +611,14 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
       </div>
     </div>
 
-    <!-- FIX: org-level run error is demoted to a dismissible banner; results stay committable -->
-    <div class="run-banner" id="run-banner" hidden></div>
     <!-- FIX: full-screen panel only on total failure (zero repositories completed) -->
     <div id="total-fail" hidden></div>
 
     <div class="results-layout">
       <!-- LEFT: options + summary + repo list -->
       <div class="results-left">
+        <!-- FIX: org-level run error demoted to a dismissible banner atop the results list -->
+        <div class="run-banner" id="run-banner" hidden></div>
         <div class="rd rd-hidden" id="rd">
           <div class="rd-headrow">
             <button class="section-toggle" data-target="opt-body">Summary + Options</button>
@@ -627,7 +648,16 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
           <div class="seg" role="tablist" aria-label="Filter">
             <button class="seg-btn active" data-filter="all">All <span class="seg-count" data-c="all"></span></button>
             <button class="seg-btn" data-filter="results">Has results <span class="seg-count" data-c="results"></span></button>
-            <button class="seg-btn" data-filter="error">Errors <span class="seg-count" data-c="error"></span></button>
+            <div class="seg-btn-wrap" id="err-seg-wrap">
+              <button class="seg-btn" data-filter="error">Errors <span class="seg-count err-count" data-c="error"></span></button>
+              <div class="signpost" role="tooltip" id="err-signpost">
+                <div class="signpost-card">
+                  <div class="signpost-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Repository errors</div>
+                  <div class="signpost-body"><b id="err-signpost-count">4</b> repositories ended in error during this run and produced no results.</div>
+                  <span class="signpost-link" data-act="view-err">Go to log<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="tbl-search">
             <svg viewBox="0 0 24 24" class="svg-stroke"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -679,8 +709,8 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
       <button class="demo-close" id="demo-close" aria-label="Hide demo controls"><svg viewBox="0 0 24 24" class="svg-stroke"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="demo-row"><span class="demo-row-label">Run state</span><div class="demo-row-btns">
-      <button class="demo-btn" data-runstate="ok" title="Run completed normally.">Completed</button>
-      <button class="demo-btn active" data-runstate="partial" title="Run errored but many repositories completed first — results stay committable.">Errored · partial</button>
+      <button class="demo-btn active" data-runstate="ok" title="Run completed normally.">Completed</button>
+      <button class="demo-btn" data-runstate="partial" title="Run errored but many repositories completed first — results stay committable.">Errored · partial</button>
       <button class="demo-btn" data-runstate="total" title="Total failure — zero repositories completed, nothing to commit.">Errored · total</button>
     </div></div>
     <div class="demo-row"><span class="demo-row-label">View</span><div class="demo-row-btns">
@@ -742,21 +772,20 @@ const REPOS=[
   {name:'datalore-sdk', branch:'master', results:12},
   {name:'teamcity-rest-client', branch:'main', results:3},
   {name:'youtrack-client', branch:'main', results:1},
-  {name:'space-sdk', branch:'main', results:0, error:true},
-  {name:'rider-fs', branch:'main', results:0},
-  {name:'fleet-plugin-template', branch:'main', results:0},
+  {name:'space-sdk', branch:'main', results:2},
+  {name:'rider-fs', branch:'main', results:4},
+  {name:'fleet-plugin-template', branch:'main', results:7},
 ];
-/* Build the run: 234 repos with results, 4 errored, 3 No LST (the seed
-   list above already contributes 12 results / 1 error / 2 No LST). */
+/* Build the run: 222 repos with results plus a handful that errored,
+   so the Errors tab has a non-zero count. (seed list above = 15 with results.) */
 const PRE=['kotlin','intellij','ktor','space','fleet','rider','clion','webstorm','datalore','qodana','teamcity','youtrack','hub','toolbox','mps','resharper','dataspell','aqua','rustrover','writerside','grazie','kover','dokka','arrow','koin','ktlint','detekt','okio','skija','compose','spek','mockk','klock','kodein','ktorm','jackson','guava','netty','okhttp','retrofit'];
 const SUF=['core','api','gradle-plugin','cli','client','sdk','common','runtime','compiler','tools','ui','server','db','utils','testkit','samples','docs','playground','bench','ide','plugin','android','jvm','native','web','dsl'];
 const BR=['main','master','develop','trunk'];
 (function(){
   let k=0;
   const nm=()=>{ const n=PRE[k%PRE.length]+'-'+SUF[Math.floor(k/PRE.length)%SUF.length]; k++; return n; };
-  for(let j=0;j<222;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:1+((j*17+5)%59)}); } // → 234 with results
-  for(let j=0;j<3;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:0, error:true}); }      // → 4 errored
-  REPOS.push({name:nm(),branch:BR[0],results:0});                                            // → 3 No LST
+  for(let j=0;j<222;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:1+((j*17+5)%59)}); } // → with results
+  for(let j=0;j<4;j++){ REPOS.push({name:nm(),branch:BR[j%4],results:0, error:true}); }        // → 4 errored
 })();
 /* Surface attention states first: No LST at the top, then errored,
    then successes by result count. */
@@ -940,7 +969,7 @@ const state={
   selFiles:new Set(),       // commit selection — set of class (file) keys
   orgShown:ORG_INIT,        // how many repos shown in the org-summary list
   noteDismissed:false,      // shared-repos info banner dismissed?
-  runState:'partial',       // 'ok' | 'partial' | 'total' — org-level run outcome
+  runState:'ok',            // 'ok' | 'partial' | 'total' — org-level run outcome
   bannerDismissed:false,    // org error banner dismissed?
 };
 REPOS.filter(r=>r.results>0).forEach(r=>repoClassKeys(r.id).forEach(k=>state.selFiles.add(k)));
@@ -1142,7 +1171,14 @@ function render(){
   // seg counts
   document.querySelector('[data-c="all"]').textContent=REPOS.length;
   document.querySelector('[data-c="results"]').textContent=REPOS.filter(r=>r.results>0).length;
-  document.querySelector('[data-c="error"]').textContent=REPOS.filter(r=>r.error).length;
+  const errCount=REPOS.filter(r=>r.error).length;
+  const errCountEl=document.querySelector('[data-c="error"]');
+  errCountEl.textContent=errCount;
+  errCountEl.classList.toggle('has-err', errCount>0);
+  const errWrap=document.getElementById('err-seg-wrap');
+  if(errWrap) errWrap.classList.toggle('has-signpost', errCount>0);
+  const spCount=document.getElementById('err-signpost-count');
+  if(spCount) spCount.textContent=errCount;
   // commit count = selected files (classes)
   document.getElementById('commit-count').textContent=state.selFiles.size.toLocaleString();
   // apply indeterminate states (can't be set via attribute)
@@ -1363,22 +1399,46 @@ function wireErr(slot, text){
 
 /* ===== Org-level run error (the customer-requests#2611 fix) ===== */
 const COMPLETED=234, TOTAL_REPOS=241;   // partial: many finished before the worker was lost
+const LOG_TS='4s (43s 56s)';
 function buildOrgErrorLog(){
-  const lines=[]; const push=(t,d)=>lines.push([t,!!d]);
-  push('Exception in thread "worker-7" java.lang.OutOfMemoryError: Java heap space');
-  [ 'org.openrewrite.scheduling.WorkerThread.run(WorkerThread.java:118)',
-    'org.openrewrite.RecipeScheduler.scheduleVisit(RecipeScheduler.java:164)',
-    'org.openrewrite.internal.RecipeRunCycle.runCycle(RecipeRunCycle.java:96)',
-    'org.openrewrite.java.JavaParser.parseInputs(JavaParser.java:142)',
-    'org.openrewrite.java.internal.JavaTypeCache.computeIfAbsent(JavaTypeCache.java:71)',
-    'java.base/java.util.HashMap.resize(HashMap.java:702)',
-    'java.base/java.util.HashMap.putVal(HashMap.java:631)',
-  ].forEach(f=>push('  at '+f));
-  push('');
-  push('worker-7 terminated unexpectedly — exit code 137 (SIGKILL, container out of memory).', true);
-  push('Recipe run org/8f3c9d… ended in ERROR state after 6m 12s.', true);
-  push(COMPLETED+' of '+TOTAL_REPOS+' repositories completed and were written to disk before the worker was lost.', true);
-  push('Resolve CLI 4.2.0-20240801.182233-3', true);
+  const lines=[]; const push=(c,d)=>lines.push([c,!!d]);
+  const csv=[
+    'Source path,Class,Line count,Method count,Field count,WMC,LCOM4,TCC,CBO,Maintainability index',
+    'src/test/java/org/springframework/boot/autoconfigure/r2dbc/observation/R2dbcObservationAutoConfigurationIntegrationTest.java,org.springframework.experimental.boot.autoconfigure.r2dbc.observation.R2dbcObservationAutoConfigurationIntegrationTest,109,2,1,2,1,1,0,15,43.771949189944485',
+    'src/test/java/org/springframework/boot/autoconfigure/r2dbc/observation/R2dbcObservationAutoConfigurationTest.java,org.springframework.experimental.boot.autoconfigure.r2dbc.observation.R2dbcObservationAutoConfigurationTest,19,1,0,2,1,1,0,33,56.24889801172401',
+    '+',
+    'src/test/java/org/springframework/boot/autoconfigure/r2dbc/observation/R2dbcObservationConnectionFactoryBeanPostProcessorTest.java,org.springframework.experimental.boot.autoconfigure.r2dbc.observation.R2dbcObservationConnectionFactoryBeanPostProcessorTest,44,2,0,1,2,1,0,17,43.46299905522161',
+    '+',
+    'src/test/java/org/springframework/boot/autoconfigure/r2dbc/observation/R2dbcObservationConnectionFactoryBeanPostProcessor.java,org.springframework.experimental.boot.autoconfigure.r2dbc.observation.R2dbcObservationConnectionFactoryBeanPostProcessor,50,3,3,5,1,2,0,7,58.97457314209582',
+    'src/test/java/org/springframework/boot/autoconfigure/r2dbc/observation/R2dbcObservationProperties.java,org.springframework.experimental.boot.autoconfigure.r2dbc.observation.R2dbcObservationProperties,46,4,2,4,2,0,3,58,72.84142582847515',
+  ];
+  push('● Create(.moderne/context/class-quality-metrics.csv)');
+  csv.forEach((l,i)=>push(String(i+1).padStart(2,' ')+' │ '+l));
+  const md=[
+    '# Class Quality Metrics',
+    '',
+    '## Per-class cohesion, coupling, and complexity measurements',
+    '',
+    'Per-class code quality metrics including Weighted Methods per Class (WMC), Lack of Cohesion (LCOM4), Tight Class Cohesion (TCC), Coupling Between Objects (CBO), and Maintainability Index. Use this to identify classes that should be split or refactored.',
+    '',
+    '### Data Tables',
+    '',
+    '### Class quality metrics',
+    '',
+    '**[class-quality-metrics.csv](class-quality-metrics.csv)**',
+    '',
+    'Per-class code quality metrics including WMC, LCOM4, TCC, CBO, and maintainability index.',
+    '',
+    '| Column | Description |',
+    '|--------|-------------|',
+    '| Source path | The path to the source file containing the class. |',
+    '| Class name | The fully qualified name of the class. |',
+    '| Line count | Number of lines in the class. |',
+    '| Method count | Number of methods defined in the class. |',
+    '| Field count | Number of fields defined in the class. |',
+  ];
+  push('● Create(.moderne/context/class-quality-metrics.md)');
+  md.forEach((l,i)=>push(String(i+1).padStart(2,' ')+' │ '+l));
   return lines;
 }
 function errPanel(log, title){
@@ -1387,10 +1447,11 @@ function errPanel(log, title){
   return `<div class="err-panel">
     <div class="err-head">
       <svg class="err-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <h4>${title||'Recipe run failed'}</h4>
+      <h4>${title||'Error'}</h4>
       <div class="err-actions"><button data-err="copy" title="Copy log">${copy}</button><button data-err="open" title="Open full log">${ext}</button></div>
     </div>
-    <div class="err-log">${log.map((l,i)=>`<div class="ln ${l[1]?'dim':''}"><span class="n">${i+1}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>
+    <div class="err-msg">Message:</div>
+    <div class="err-log">${log.map(l=>`<div class="ln ${l[1]?'dim':''} ${l[0].startsWith('● ')?'create':''}"><span class="n">${LOG_TS}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>
   </div>`;
 }
 
@@ -1403,7 +1464,7 @@ function renderRunState(){
   const ss=state.runState;
   // run chip
   if(ss==='ok'){ chip.className='run-chip done'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed`; }
-  else { chip.className='run-chip errored'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11"/><line x1="12" y1="8" x2="12" y2="13" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.2" fill="#fff"/></svg>${ss==='total'?'Run failed':'Completed with errors'}`; }
+  else { chip.className='run-chip errored'; chip.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" style="fill:none"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${ss==='total'?'Run failed':'Completed with errors'}`; }
 
   if(ss==='total'){
     layout.style.display='none'; banner.hidden=true;
@@ -1426,12 +1487,10 @@ function renderRunState(){
     banner.hidden=false;
     banner.innerHTML=`
       <svg class="rb-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <div>
-        <div class="rb-title">This recipe run ended with an error</div>
-        <div class="rb-sub">Some repositories did not finish, but the results below completed and can be committed.</div>
-      </div>
+      <span class="rb-title">This recipe run ended with an error.</span>
+      <span class="rb-sub">Some repositories did not finish, but the results below completed and can be committed.</span>
       <span class="rb-spacer"></span>
-      <button class="rb-error" data-act="view-err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Error</button>
+      <button class="rb-error" data-act="view-err">Go to log</button>
       <button class="rb-dismiss" data-act="dismiss-banner" title="Dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>`;
   } else { banner.hidden=true; }
   closeErrPop();
@@ -1445,11 +1504,12 @@ function openErrPop(){
   pop.innerHTML=`
     <div class="err-drawer-head">
       <svg class="ec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <h3>Recipe run failed</h3>
+      <h3>Error</h3>
       <button class="ec-act" data-err="copy" title="Copy log">${copy}</button>
       <button class="ec-act" data-act="close-err" title="Close">${x}</button>
     </div>
-    <div class="err-log">${log.map((l,i)=>`<div class="ln ${l[1]?'dim':''}"><span class="n">${i+1}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>`;
+    <div class="err-msg">Message:</div>
+    <div class="err-log">${log.map(l=>`<div class="ln ${l[1]?'dim':''} ${l[0].startsWith('● ')?'create':''}"><span class="n">${LOG_TS}</span><span class="c">${esc(l[0])}</span></div>`).join('')}</div>`;
   wireErr(pop, log.map(l=>l[0]).join('\n'));
   requestAnimationFrame(()=>{ pop.classList.add('open'); scrim.classList.add('open'); });
 }
