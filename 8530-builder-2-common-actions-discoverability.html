@@ -268,6 +268,27 @@ textarea.nr-input { resize: none; height: 92px; }
 
 .proto-note { margin-top: 14px; font-size: 12px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; }
 .proto-note code { font-family: var(--font-mono); background: var(--surface); border-radius: 4px; padding: 1px 6px; }
+/* ---- harmonized recipe finder rows (shared pattern with the Add-a-recipe picker) ---- */
+.fx-search { display:flex; align-items:center; gap:9px; border:1px solid var(--line-strong); border-radius:10px; padding:10px 12px; margin-bottom:12px; }
+.fx-search svg { width:17px; height:17px; color:var(--muted); }
+.fx-search input { flex:1; border:none; outline:none; background:transparent; color:var(--text); font:inherit; font-size:14px; }
+.fx-chips { display:flex; gap:7px; margin-bottom:10px; }
+.fx-chip { font-size:12.5px; font-weight:600; color:var(--text); background:var(--field); border:1px solid var(--line-strong); border-radius:999px; padding:5px 13px; }
+.fx-chip:hover { background:var(--surface); }
+.fx-chip.active { background:var(--accent); color:#fff; border-color:transparent; }
+.fx-list { max-height:44vh; overflow-y:auto; margin:0 -6px; }
+.fx-row { display:flex; align-items:flex-start; gap:12px; width:100%; text-align:left; padding:11px 12px; border:1px solid transparent; border-radius:10px; background:transparent; color:inherit; }
+.fx-row:hover { background:var(--row-hover); }
+.fx-row.sel { background:var(--accent-tint); border-color:var(--accent-brd); }
+.fx-ico { flex:none; margin-top:1px; }
+.fx-main { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+.fx-nm { font-size:14px; font-weight:500; color:var(--text); display:flex; align-items:center; gap:8px; }
+.fx-badge { font-size:10px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--green-hi); background:color-mix(in srgb,var(--green) 16%,transparent); border-radius:4px; padding:1px 6px; flex:none; }
+.fx-id { font-family:var(--font-mono); font-size:11.5px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.fx-desc { font-size:12.5px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.fx-src { flex:none; font-size:11px; font-weight:600; color:var(--muted); background:var(--surface); border-radius:999px; padding:3px 9px; margin-top:1px; }
+.fx-empty { padding:26px; text-align:center; color:var(--muted); font-style:italic; font-size:13px; }
+.fx-mark { background:color-mix(in srgb,var(--accent) 22%,transparent); border-radius:3px; padding:0 1px; }
 </style>
 </head>
 <body>
@@ -453,14 +474,14 @@ textarea.nr-input { resize: none; height: 92px; }
     <div class="mo-body">
       <!-- Open existing -->
       <div class="mo-pane active" data-pane="existing">
-        <div class="pills" id="pills">
-          <button class="pill" data-src="all">All</button>
-          <button class="pill active" data-src="recent">Recent</button>
-          <button class="pill" data-src="marketplace">Marketplace</button>
-          <button class="pill" data-src="mine">My recipes</button>
+        <div class="fx-search"><svg><use href="#i-search"/></svg><input id="fxSearch" placeholder="Search recipes by name or ID" autocomplete="off" /></div>
+        <div class="fx-chips" id="fxChips">
+          <button class="fx-chip active" data-src="all">All</button>
+          <button class="fx-chip" data-src="mine">Mine</button>
+          <button class="fx-chip" data-src="team">Team</button>
+          <button class="fx-chip" data-src="marketplace">Marketplace</button>
         </div>
-        <div class="search-field"><svg><use href="#i-search"/></svg><input id="oeSearch" placeholder="Find a recipe" /></div>
-        <div class="oe-list" id="oeList"></div>
+        <div class="fx-list" id="fxList"></div>
       </div>
       <!-- Import -->
       <div class="mo-pane" data-pane="import">
@@ -537,6 +558,24 @@ var recipeList = [
   { name: 'Find and fix vulnerable dependencies', id: 'org.openrewrite.java.dependencies.DependencyVulnerabilityCheck', src: 'marketplace', when: '' }
 ];
 
+var catalog = [
+  { name:'Migrate to Spring Boot 3', id:'org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_0', src:'marketplace', when:'recent', desc:'Upgrade to Spring Boot 3.0 from any 2.x version, including dependency and configuration changes.' },
+  { name:'Migrate to Spring Security 6', id:'org.openrewrite.java.spring.security6.UpgradeSpringSecurity_6_0', src:'marketplace', desc:'Migrate applications to Spring Security 6.0 and the Jakarta EE 9 baseline.' },
+  { name:'Migrate to Java 17', id:'org.openrewrite.java.migrate.UpgradeToJava17', src:'marketplace', desc:'Adopt Java 17 language features and remove usages removed since Java 8.' },
+  { name:'Common static analysis fixes', id:'org.openrewrite.staticanalysis.CommonStaticAnalysis', src:'marketplace', desc:'Apply a broad set of static analysis and code cleanup recipes.' },
+  { name:'Find and fix vulnerable dependencies', id:'org.openrewrite.java.dependencies.DependencyVulnerabilityCheck', src:'marketplace', desc:'Identify and upgrade dependencies with known CVEs.' },
+  { name:'Jakarta EE 9 namespace migration', id:'org.openrewrite.java.migrate.jakarta.JavaxToJakarta', src:'marketplace', desc:'Move javax.* imports and references to the jakarta.* namespace.' },
+  { name:'Upgrade Gradle or Maven dependency versions', id:'org.openrewrite.java.dependencies.UpgradeDependencyVersion', src:'marketplace', desc:'Bump a group/artifact to a target version across build files.' },
+  { name:'Migrate to JUnit 5', id:'org.openrewrite.java.testing.junit5.JUnit4to5Migration', src:'marketplace', desc:'Convert JUnit 4 tests and annotations to JUnit 5 (Jupiter).' },
+  { name:'Enterprise baseline migration', id:'io.moderne.EnterpriseBaseline', src:'mine', when:'recent', desc:'Your standard upgrade bundle: Spring Boot 3, Java 17, and internal conventions.' },
+  { name:'My Spring cleanup', id:'io.moderne.MySpringCleanup', src:'mine', desc:'Personal recipe: tidy Spring configuration and remove unused beans.' },
+  { name:'Payments team standards', id:'io.acme.payments.TeamStandards', src:'team', desc:'Coding standards and required libraries for the Payments organization.' },
+  { name:'Platform logging conventions', id:'io.acme.platform.LoggingConventions', src:'team', when:'recent', desc:'Enforce structured logging and the shared logging facade across services.' },
+  { name:'Remove deprecated internal APIs', id:'io.acme.platform.RemoveDeprecatedApis', src:'team', desc:'Replace calls to internal APIs deprecated in the 2024 platform release.' },
+  { name:'Order team imports', id:'io.acme.platform.OrderImports', src:'team', desc:'Apply the shared import ordering and formatting rules.' }
+];
+var FSRC_LABEL = { mine:'Mine', team:'Team', marketplace:'Marketplace' };
+
 /* ---- helpers ---- */
 function plainLabel(p){ return p.map(function(x){return typeof x==='string'?x:x.code;}).join(''); }
 function labelHtml(p){ return p.map(function(x){return typeof x==='string'?esc(x):'<code>'+esc(x.code)+'</code>';}).join(''); }
@@ -577,19 +616,74 @@ function toast(msg,icon){ var t=document.getElementById('toast'); document.getEl
 var modal=document.getElementById('modal');
 function openModal(tab){ modal.classList.add('open'); if(tab)selectTab(tab); }
 function closeModal(){ modal.classList.remove('open'); }
-function selectTab(name){ document.querySelectorAll('.mo-tab').forEach(function(t){t.classList.toggle('active',t.getAttribute('data-tab')===name);}); document.querySelectorAll('.mo-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-pane')===name);}); var prim=document.getElementById('moPrimary'); var map={existing:'',import:'Import',new:'Save',manage:'',v1:'Import from V1'}; prim.style.display=map[name]?'':'none'; prim.textContent=map[name]||''; }
+function selectTab(name){ document.querySelectorAll('.mo-tab').forEach(function(t){t.classList.toggle('active',t.getAttribute('data-tab')===name);}); document.querySelectorAll('.mo-pane').forEach(function(p){p.classList.toggle('active',p.getAttribute('data-pane')===name);}); var prim=document.getElementById('moPrimary'); var map={existing:'Open recipe',import:'Import',new:'Save',manage:'',v1:'Import from V1'}; prim.style.display=map[name]?'':'none'; prim.textContent=map[name]||''; prim.disabled=false; if(name==='existing'){ resetFinder(); } }
 document.getElementById('titleBtn').addEventListener('click',function(){openModal('existing');});
 document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(){openModal('existing');});});
 document.querySelectorAll('[data-close-modal]').forEach(function(b){b.addEventListener('click',closeModal);});
 modal.addEventListener('click',function(e){if(e.target===modal)closeModal();});
 document.getElementById('moTabs').addEventListener('click',function(e){var t=e.target.closest('.mo-tab');if(t)selectTab(t.getAttribute('data-tab'));});
 
-/* open-existing list */
-var oeSrc='recent';
-function renderOe(){ var q=document.getElementById('oeSearch').value.toLowerCase(); var rows=recipeList.filter(function(r){ var okSrc=oeSrc==='all'?true:(oeSrc==='recent'?r.when==='recent':r.src===oeSrc); var okQ=!q||r.name.toLowerCase().indexOf(q)>=0||r.id.toLowerCase().indexOf(q)>=0; return okSrc&&okQ; }); var sub={mine:'Your recipe',marketplace:'Marketplace',recent:'Recent'}; var html=rows.map(function(r){ var s=oeSrc==='recent'?'Recent':(r.src==='mine'?'Your recipe':'Marketplace'); return '<div class="oe-row" data-toast="Opened “'+esc(r.name)+'”"><svg class="ico"><use href="#i-blocks"/></svg><span class="nm">'+esc(r.name)+'</span><span class="sub">'+s+'</span></div>'; }).join(''); document.getElementById('oeList').innerHTML=html||'<div class="oe-empty">No matching recipes</div>'; }
-document.getElementById('pills').addEventListener('click',function(e){var p=e.target.closest('.pill');if(!p)return;oeSrc=p.getAttribute('data-src');document.querySelectorAll('.pill').forEach(function(x){x.classList.toggle('active',x===p);});renderOe();});
-document.getElementById('oeSearch').addEventListener('input',renderOe);
-document.getElementById('oeList').addEventListener('click',function(e){var r=e.target.closest('[data-toast]');if(r){toast(r.getAttribute('data-toast'));closeModal();}});
+/* open-existing list — harmonized recipe finder (ranked, source chips, rich rows) */
+var fxSrc='all', fxPick=null;
+function rankCatalog(q, src){
+  var base = catalog.filter(function(r){ return src==='all' || r.src===src; });
+  if(!q){ return base.slice().sort(function(a,b){ var ra=a.when==='recent'?0:1, rb=b.when==='recent'?0:1; return ra-rb || a.name.localeCompare(b.name); }); }
+  var ql=q.toLowerCase().trim(), scored=[];
+  base.forEach(function(r){ var n=r.name.toLowerCase(), id=r.id.toLowerCase(), s=null;
+    if(n===ql) s=0; else if(id===ql) s=1; else if(n.indexOf(ql)===0) s=2; else if(id.indexOf(ql)===0) s=3; else if(n.indexOf(ql)>=0) s=4; else if(id.indexOf(ql)>=0) s=5;
+    if(s!==null) scored.push({r:r,s:s}); });
+  scored.sort(function(a,b){ return a.s-b.s || a.r.name.localeCompare(b.r.name); });
+  return scored.map(function(x){ return x.r; });
+}
+function fxIsExact(r,q){ if(!q) return false; var ql=q.toLowerCase().trim(); return r.name.toLowerCase()===ql || r.id.toLowerCase()===ql; }
+function fxMark(text,q){ if(!q) return esc(text); var ql=q.toLowerCase().trim(); var i=text.toLowerCase().indexOf(ql); if(i<0) return esc(text); return esc(text.slice(0,i))+'<mark class="fx-mark">'+esc(text.slice(i,i+ql.length))+'</mark>'+esc(text.slice(i+ql.length)); }
+function renderFinder(){
+  var q=document.getElementById('fxSearch').value;
+  var rows=rankCatalog(q, fxSrc);
+  if(fxPick && !rows.some(function(r){return r.id===fxPick;})) fxPick=null;
+  if(!fxPick && rows.length) fxPick=rows[0].id;
+  var topExactId = (rows.length && fxIsExact(rows[0],q)) ? rows[0].id : null;
+  document.getElementById('fxList').innerHTML = rows.length ? rows.map(function(r){
+    var exact = r.id===topExactId;
+    return '<button class="fx-row'+(r.id===fxPick?' sel':'')+'" data-pick="'+esc(r.id)+'">'
+      +'<span class="fx-ico"><i class="bl-java">J</i></span>'
+      +'<span class="fx-main">'
+        +'<span class="fx-nm">'+fxMark(r.name,q)+(exact?'<span class="fx-badge">Exact match</span>':'')+'</span>'
+        +'<span class="fx-id">'+fxMark(r.id,q)+'</span>'
+        +'<span class="fx-desc">'+esc(r.desc)+'</span>'
+      +'</span>'
+      +'<span class="fx-src">'+FSRC_LABEL[r.src]+'</span>'
+    +'</button>';
+  }).join('') : '<div class="fx-empty">No recipes match your search.</div>';
+  var ex=document.querySelector('.mo-pane[data-pane="existing"]');
+  if(ex && ex.classList.contains('active')){ document.getElementById('moPrimary').disabled = !fxPick; }
+}
+function resetFinder(){ fxSrc='all'; fxPick=null; var s=document.getElementById('fxSearch'); if(s) s.value=''; document.querySelectorAll('#fxChips .fx-chip').forEach(function(c){ c.classList.toggle('active', c.getAttribute('data-src')==='all'); }); renderFinder(); }
+function openSelectedRecipe(){
+  if(!fxPick) return;
+  var rec=catalog.find(function(r){return r.id===fxPick;}); if(!rec) return;
+  recipe.name=rec.name; recipe.id=rec.id; syncMeta();
+  closeModal();
+  toast('Opened “'+rec.name+'”','i-blocks');
+}
+document.getElementById('fxSearch').addEventListener('input', renderFinder);
+document.getElementById('fxChips').addEventListener('click', function(e){ var c=e.target.closest('.fx-chip'); if(!c)return; fxSrc=c.getAttribute('data-src'); document.querySelectorAll('#fxChips .fx-chip').forEach(function(x){x.classList.toggle('active',x===c);}); fxPick=null; renderFinder(); });
+document.getElementById('fxList').addEventListener('click', function(e){ var row=e.target.closest('[data-pick]'); if(!row)return; fxPick=row.getAttribute('data-pick'); renderFinder(); if(e.detail>=2){ openSelectedRecipe(); } });
+document.getElementById('fxSearch').addEventListener('keydown', function(e){
+  var rows=Array.prototype.slice.call(document.querySelectorAll('#fxList .fx-row'));
+  var idx=rows.map(function(r){return r.getAttribute('data-pick');}).indexOf(fxPick);
+  if(e.key==='ArrowDown'){ e.preventDefault(); if(rows.length){ idx=Math.min(rows.length-1, idx+1); fxPick=rows[idx].getAttribute('data-pick'); renderFinder(); var rr=document.querySelectorAll('#fxList .fx-row'); if(rr[idx])rr[idx].scrollIntoView({block:'nearest'}); } }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); if(rows.length){ idx=Math.max(0, idx-1); fxPick=rows[idx].getAttribute('data-pick'); renderFinder(); var r2=document.querySelectorAll('#fxList .fx-row'); if(r2[idx])r2[idx].scrollIntoView({block:'nearest'}); } }
+  else if(e.key==='Enter'){ e.preventDefault(); openSelectedRecipe(); }
+  else if(e.key==='Escape'){ closeModal(); }
+});
+document.getElementById('moPrimary').addEventListener('click', function(){
+  var active=document.querySelector('.mo-tab.active').getAttribute('data-tab');
+  if(active==='existing'){ openSelectedRecipe(); }
+  else if(active==='import'){ closeModal(); toast('Imported recipe from YAML','i-download'); }
+  else if(active==='new'){ closeModal(); toast('Created new recipe'); }
+  else if(active==='v1'){ closeModal(); toast('Imported recipes from V1','i-download'); }
+});
 
 /* manage list */
 document.getElementById('mgList').innerHTML = recipeList.filter(function(r){return r.src==='mine';}).map(function(r){return '<div class="mg-row"><input type="checkbox"><span>'+esc(r.name)+'</span><span class="sub">'+esc(r.id)+'</span></div>';}).join('');
@@ -651,7 +745,7 @@ document.getElementById('nodeMenu').addEventListener('click', function(e){ var i
   }); })();
 
 document.addEventListener('click', function(){ if(!document.getElementById('nodeMenu').hidden){ closeNodeMenu(); } });
-renderTree(); syncMeta(); renderOe();
+renderTree(); syncMeta(); renderFinder();
 </script>
 
 <script type="importmap">
