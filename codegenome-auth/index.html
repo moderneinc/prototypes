@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auth reskin · previews by flow</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 15px/1.55 system-ui, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 20px;
+         background: Canvas; color: CanvasText; }
+  h1 { font-size: 1.55rem; margin-bottom: 4px; }
+  h2 { font-size: 1.15rem; margin: 34px 0 4px; }
+  p.note { opacity: .72; margin-top: 4px; }
+  .sub { opacity: .72; font-size: .9rem; margin: 2px 0 14px; }
+  .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; margin: 14px 0 6px; }
+  .step { flex: 1 1 200px; border: 1px solid color-mix(in srgb, CanvasText 20%, transparent);
+          border-radius: 12px; padding: 12px 14px; background: color-mix(in srgb, CanvasText 4%, transparent); }
+  .step .k { font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .6; }
+  .step a { display: block; font-weight: 700; margin: 3px 0; color: LinkText; font-size: 1rem; }
+  .step .d { font-size: .85rem; opacity: .8; }
+  .step .cta { display: inline-block; font-size: .74rem; font-weight: 600; margin-top: 7px;
+               border: 1px solid color-mix(in srgb, CanvasText 25%, transparent); border-radius: 999px; padding: 2px 9px; }
+  .arrow { align-self: center; opacity: .4; font-size: 1.3rem; }
+  .alt { margin: 8px 0 0; font-size: .86rem; }
+  .alt a { color: LinkText; font-weight: 600; }
+  .tag { font-size: .72rem; font-weight: 700; border-radius: 999px; padding: 1px 8px;
+         background: color-mix(in srgb, CanvasText 12%, transparent); }
+  .callout { border-left: 3px solid color-mix(in srgb, CanvasText 40%, transparent);
+             padding: 8px 0 8px 14px; margin: 22px 0; font-size: .92rem; opacity: .9; }
+</style>
+</head>
+<body>
+  <h1>Code Genome · sign-in &amp; token reskin</h1>
+  <p class="note">Two sign-in paths lead to a download token. Follow a path left → right.
+     Each page has a light/dark <b>toggle</b> in the top-right (it follows your OS by default).
+     Prefer them side by side? See the <a href="compare.html">light + dark comparison</a>.
+     On the token pages, click <b>Reveal</b> / <b>Copy</b>.</p>
+
+  <h2>Path A · Social login <span class="tag">#32 → #14</span></h2>
+  <p class="sub">GitHub or Google, the default experience for most users.</p>
+  <div class="flow">
+    <div class="step">
+      <div class="k">Step 1 · Sign in</div>
+      <a href="01-login.html">Sign in</a>
+      <div class="d">Continue with GitHub / Google.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="k">Step 2 · Consent</div>
+      <a href="05-consent-optin.html">Consent (opt-in)</a>
+      <div class="d">One-time screen after sign-in.</div>
+      <span class="cta">button: “Get my token”</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="k">Step 3 · Token</div>
+      <a href="07-token-page.html">Your download token</a>
+      <div class="d">Shown once, masked. Setup snippets below it.</div>
+    </div>
+  </div>
+  <p class="alt">Variants of steps 1 and 2:
+     <a href="02-login-oauth-error.html">OAuth error</a> ·
+     <a href="04-no-verified-email.html">no verified email (recoverable)</a> ·
+     <a href="06-consent-notice.html">consent · notice (opt-out regions)</a>
+  </p>
+
+  <h2>Path B · Customer account <span class="tag">#32 → #14</span></h2>
+  <p class="sub">Username + password, for customers provisioned by Moderne who don't use social login.</p>
+  <div class="flow">
+    <div class="step">
+      <div class="k">Step 1 · Sign in</div>
+      <a href="01-login.html">Sign in</a>
+      <div class="d">Username / password form on the same screen.</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="k">Step 2 · Manage tokens</div>
+      <a href="08-customer-manage.html">Manage tokens</a>
+      <div class="d">List of your tokens, with revoke.</div>
+      <span class="cta">button: “Generate a download token”</span>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <div class="k">Step 3 · After minting</div>
+      <a href="09-customer-fresh-token.html">Fresh token</a>
+      <div class="d">New masked token + snippets, above the list.</div>
+    </div>
+  </div>
+  <p class="alt">Variant of step 1: <a href="03-login-bad-password.html">invalid credentials</a></p>
+
+  <div class="callout">
+    <b>Why two different buttons?</b> “<b>Get my token</b>” (Path A) is part of a one-time consent step and
+    has no management page yet, so revisiting mints another token. “<b>Generate a download token</b>” (Path B)
+    lives on a real management page with a list and revoke. Unifying these (giving social-login users the
+    same manage/list/revoke model) is the parked backend work noted on ticket #14.
+  </div>
+</body>
+</html>
