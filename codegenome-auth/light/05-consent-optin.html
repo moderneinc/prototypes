@@ -34,17 +34,6 @@
   --focus-ring:color-mix(in srgb,var(--accent) 40%,transparent);
   color-scheme:light;
 }}
-:root[data-theme="light"]{
-  --bg:#F2F0EA;--bg2:#EDEBE2;--panel:#FBFAF6;--panel-hi:#EDEBE2;--code-bg:#F2EFE7;
-  --text:#232342;--text-dim:#494960;--muted:#62627A;
-  --link:#1055E2;--accent:#1055E2;
-  --btn-primary-bg:#232342;--btn-primary-fg:#FBFAF6;
-  --success:#1D5937;--error:#C9291C;
-  --line:rgba(35,35,66,.12);--border:rgba(35,35,66,.16);
-  --field-border:rgba(35,35,66,.22);--field-border-hover:rgba(35,35,66,.34);
-  --focus-ring:color-mix(in srgb,var(--accent) 40%,transparent);
-  color-scheme:light;
-}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{min-height:100vh;display:grid;place-items:center;padding:24px;
@@ -98,13 +87,6 @@ code{font:inherit}
 .foot{margin-top:26px}
 .foot a{color:var(--muted);font-size:.85rem;text-decoration:none;margin:0 9px}
 .foot a:hover{text-decoration:underline;color:var(--text-dim)}
-.theme-toggle{position:absolute;top:12px;right:12px;z-index:2;display:inline-flex;
-  align-items:center;justify-content:center;width:34px;height:34px;border-radius:var(--radius-pill);
-  border:1px solid var(--border);background:var(--panel-hi);color:var(--text-dim);cursor:pointer;
-  transition:color .14s,background-color .14s,border-color .14s}
-.theme-toggle:hover{color:var(--text);border-color:var(--field-border-hover)}
-.theme-toggle:focus-visible{outline:none;box-shadow:0 0 0 3px var(--focus-ring)}
-.theme-toggle svg{width:17px;height:17px}
 .consent input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (max-width:480px){
   body{padding:16px}
@@ -113,17 +95,9 @@ code{font:inherit}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
-<script>
-/* Apply an explicitly-chosen theme before first paint to avoid a flash; shares the
-   localStorage key with the SPA's ThemeToggle so the preference carries across the site. */
-(function(){try{var t=localStorage.getItem('theme');
-  if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;}catch(e){}})();
-</script>
 </head>
 <body>
-  <main class="card">
-  <button type="button" class="theme-toggle" id="themeToggle" hidden aria-label="Toggle color theme"></button>
-  <div class="card__inner">
+  <main class="card"><div class="card__inner">
   <a class="brand" href="/" aria-label="Code Genome Project home"><svg class="helix" viewBox="0 0 267 225" fill="none" aria-hidden="true">
   <path d="M116.772 129.202V170.795H58.3105C53.7824 170.795 49.6742 172.61 46.6699 175.548C43.5806 178.568 41.6572 182.774 41.6572 187.424V225H0V187.424C0 171.309 6.59408 156.702 17.2275 146.148C27.776 135.68 42.2997 129.202 58.3105 129.202H116.772Z" fill="url(#g0)"/>
   <path d="M220.33 49.4518C217.326 52.3897 213.218 54.2047 208.689 54.2047H150.227V95.7984H208.689C224.7 95.7984 239.224 89.3198 249.773 78.8515L220.33 49.4518Z" fill="#E23B9F"/>
@@ -156,22 +130,5 @@ code{font:inherit}
 </form>
   <div class="foot"><a href="/">codegenomeproject.org</a><a href="https://moderne.ai/privacy-policy">Privacy</a></div>
   </div></main>
-<script>
-(function(){
-  var root=document.documentElement, btn=document.getElementById('themeToggle');
-  if(!btn)return;
-  btn.hidden=false;   // reveal only when JS can drive it; no-JS falls back to the OS theme
-  var SUN='<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
-  var MOON='<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
-  var mq=window.matchMedia('(prefers-color-scheme: light)');
-  function effective(){var t=root.getAttribute('data-theme');return (t==='light'||t==='dark')?t:(mq.matches?'light':'dark');}
-  function paint(){var light=effective()==='light';btn.innerHTML=light?MOON:SUN;
-    btn.setAttribute('aria-label',light?'Switch to dark theme':'Switch to light theme');}
-  paint();
-  btn.addEventListener('click',function(){var next=effective()==='light'?'dark':'light';
-    root.setAttribute('data-theme',next);try{localStorage.setItem('theme',next);}catch(e){}paint();});
-  mq.addEventListener('change',function(){if(!root.getAttribute('data-theme'))paint();});
-})();
-</script>
 </body>
 </html>
