@@ -55,6 +55,17 @@ button { font: inherit; cursor: pointer; }
 .nav-links a:hover { color: var(--text); background: var(--row-hover); text-decoration: none; }
 .nav-links a.active { color: var(--link); font-weight: 600; }
 .nav-links a.active::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; background: var(--link); border-radius: 4px 4px 0 0; }
+.nav-dd { position: relative; }
+.nav-dd > a .cv { width: 12px; height: 12px; margin-left: 4px; vertical-align: -1px; transition: transform .15s ease; }
+.nav-dd.open > a { color: var(--link); font-weight: 600; }
+.nav-dd.open > a .cv { transform: rotate(180deg); }
+.dd-panel { display: none; position: absolute; top: calc(100% + 1px); left: 0; min-width: 238px; max-width: 280px; background: var(--field); border: 1px solid var(--line); border-radius: 10px; padding: 6px; box-shadow: 0 12px 28px rgba(35, 35, 66, .14); z-index: 30; }
+[data-theme="dark"] .dd-panel { box-shadow: 0 12px 28px rgba(0, 0, 0, .5); }
+.nav-dd.open .dd-panel { display: grid; gap: 2px; }
+.dd-panel a { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; line-height: 1.45; color: var(--text); padding: 9px 12px; border-radius: 6px; }
+.dd-panel a:hover { background: var(--row-hover); color: var(--text); text-decoration: none; }
+.dd-panel a span { flex: 1; }
+.dd-panel a .ext-i { width: 13px; height: 13px; color: var(--muted); flex: none; }
 .search { display: flex; align-items: center; gap: 10px; width: 340px; justify-self: center; padding: 9px 14px; font-size: 13px; color: var(--muted); background: var(--field); border: 1px solid var(--line-strong); border-radius: 10px; cursor: text; }
 .search svg { width: 14px; height: 14px; flex: none; }
 .search .ph { flex: 1; }
@@ -198,6 +209,8 @@ footer { border-top: 1px solid var(--line); }
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><path d="M8 9h8M8 12.5h5"/></symbol>
   <symbol id="i-blocks" viewBox="0 0 24 24"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/></symbol>
   <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></symbol>
 </defs></svg>
 
 <header class="topbar">
@@ -221,7 +234,15 @@ footer { border-top: 1px solid var(--line); }
   </div>
   <div class="tabs-row">
     <nav class="nav-links">
-      <a href="#platform" id="navPlatform">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><a href="#">Training</a><a href="#releases" id="navReleases">Releases</a>
+      <a href="#platform" id="navPlatform">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><span class="nav-dd" id="ddTraining"><a href="#" id="navTraining">Training<svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></a>
+        <div class="dd-panel">
+          <a href="#"><span>Hands on Learning</span></a>
+          <a href="#"><span>OpenRewrite Advanced Program Analysis</span></a>
+          <a href="#"><span>Code Remix</span></a>
+          <a href="#"><span>Automated Software Refactoring with OpenRewrite and Generative AI</span><svg class="ext-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ext"/></svg></a>
+          <a href="#"><span>Upcoming live OpenRewrite training</span><svg class="ext-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ext"/></svg></a>
+        </div>
+      </span><a href="#releases" id="navReleases">Releases</a>
     </nav>
   </div>
 </header>
@@ -573,6 +594,13 @@ function fromHash() {
   document.getElementById('navReleases').classList.toggle('active', target === 'view-releases');
   window.scrollTo(0, 0);
 }
+// Training dropdown
+const dd = document.getElementById('ddTraining');
+document.getElementById('navTraining').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); dd.classList.toggle('open'); });
+document.addEventListener('click', (e) => { if (!dd.contains(e.target)) { dd.classList.remove('open'); } });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { dd.classList.remove('open'); } });
+if (new URLSearchParams(location.search).get('dd') === 'training') { dd.classList.add('open'); }
+
 window.addEventListener('hashchange', fromHash);
 document.querySelector('.brand').addEventListener('click', (e) => { e.preventDefault(); location.hash = ''; fromHash(); });
 fromHash();
