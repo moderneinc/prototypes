@@ -68,8 +68,33 @@ h1 .grad { background: var(--spectral); -webkit-background-clip: text; backgroun
 .btn { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 10px 17px; border-radius: 4px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); text-decoration: none; }
 .btn:hover { background: var(--surface); text-decoration: none; }
 .btn--primary { background: var(--btn-primary-bg); color: var(--btn-primary-fg); border-color: transparent; }
-.hero-mark { width: 220px; flex: none; }
-.hero-mark img { width: 100%; height: auto; display: block; }
+/* ===== section page (platform) ===== */
+.view[hidden] { display: none !important; }
+.section-layout { display: grid; grid-template-columns: 232px 1fr; gap: 40px; padding: 28px 0 60px; align-items: start; }
+.side { position: sticky; top: 76px; }
+.seg { display: inline-flex; padding: 3px; gap: 2px; background: var(--surface2); border-radius: 10px; margin-bottom: 20px; }
+.seg button { font-size: 13px; font-weight: 500; color: var(--text); background: transparent; border: none; border-radius: 8px; padding: 5px 14px; }
+.seg button.active { background: var(--card); color: var(--link); font-weight: 600; }
+.side-overline { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; color: var(--muted); padding: 0 10px 8px; }
+.side-item { display: flex; align-items: center; width: 100%; text-align: left; font-size: 13px; font-weight: 500; color: var(--text); background: none; border: none; border-radius: 6px; padding: 8px 10px; }
+.side-item:hover { background: var(--row-hover); }
+.side-item.active { background: var(--surface); font-weight: 600; }
+.side-item .chev { margin-left: auto; color: var(--muted); width: 13px; height: 13px; }
+.crumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+.crumb a { color: var(--link); font-weight: 500; }
+.crumb .c { opacity: .6; }
+.crumb .cur { color: var(--text); font-weight: 600; }
+.section-hero { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 28px 30px; overflow: hidden; position: relative; }
+.section-hero::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--spectral); }
+.section-hero h1 { font-size: 28px; font-weight: 600; letter-spacing: -.02em; }
+.section-hero p { font-size: 14px; color: var(--muted); margin-top: 8px; max-width: 620px; }
+.cat-list { display: grid; gap: 12px; margin-top: 20px; }
+.cat { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; color: var(--text); }
+.cat:hover { background: var(--row-hover); text-decoration: none; }
+.cat h3 { font-size: 15px; font-weight: 600; flex: 1; }
+.cat .count { font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--surface2); border-radius: 4px; padding: 2px 8px; }
+.cat .chev { width: 15px; height: 15px; color: var(--muted); }
+.next-link { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; margin-top: 22px; }
 
 /* ===== browse cards ===== */
 .sec-head { display: flex; align-items: baseline; gap: 14px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin: 40px 0 22px; }
@@ -126,7 +151,7 @@ footer { border-top: 1px solid var(--line); }
     <span class="n">Moderne</span><span class="docs">docs</span>
   </a>
   <nav class="nav-links">
-    <a href="#">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><a href="#">Training</a><a href="#">Releases</a>
+    <a href="#platform" id="navPlatform">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><a href="#">Training</a><a href="#">Releases</a>
   </nav>
   <span class="top-spacer"></span>
   <div class="search">
@@ -141,6 +166,7 @@ footer { border-top: 1px solid var(--line); }
 </header>
 
 <main>
+<div class="view" id="view-home">
   <section class="hero">
     <div class="hero-copy">
       <h1>Explore documentation<br>and tutorials to <span class="grad">go further</span></h1>
@@ -149,9 +175,6 @@ footer { border-top: 1px solid var(--line); }
         <a class="btn btn--primary" href="#">Get started</a>
         <a class="btn" href="#">What is Moderne?</a>
       </div>
-    </div>
-    <div class="hero-mark">
-      <img src="assets/moderne-dna/moderne-dna.svg" alt="">
     </div>
   </section>
 
@@ -207,6 +230,41 @@ footer { border-top: 1px solid var(--line); }
       </ul>
     </div>
   </div>
+</div>
+
+<div class="view" id="view-platform" hidden>
+  <div class="section-layout">
+    <aside class="side">
+      <div class="seg"><button class="active">User</button><button>Admin</button></div>
+      <div class="side-overline">PLATFORM</div>
+      <button class="side-item active">Getting started<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button class="side-item">How to guides<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button class="side-item">References<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+    </aside>
+    <section>
+      <div class="crumb"><a href="#">Docs</a><span class="c">›</span><span class="cur">Platform</span></div>
+      <div class="section-hero">
+        <h1>Moderne Platform</h1>
+        <p>A secure platform and toolchain for fast, enterprise-wide code modernization.</p>
+      </div>
+      <div class="cat-list">
+        <a class="cat" href="#">
+          <h3>Getting started</h3><span class="count">11 items</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cat" href="#">
+          <h3>How to guides</h3><span class="count">15 items</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+        <a class="cat" href="#">
+          <h3>References</h3><span class="count">3 items</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+      <a class="next-link" href="#">Getting started →</a>
+    </section>
+  </div>
+</div>
 </main>
 
 <footer>
@@ -230,6 +288,17 @@ document.getElementById('modeBtn').addEventListener('click', () => {
 });
 const q = new URLSearchParams(location.search).get('theme');
 if (q === 'light' || q === 'dark') { root.setAttribute('data-theme', q); icon.setAttribute('href', q === 'dark' ? '#i-sun' : '#i-moon'); }
+
+// view switching: #platform shows the section page
+function fromHash() {
+  const isPlatform = location.hash === '#platform';
+  document.getElementById('view-home').hidden = isPlatform;
+  document.getElementById('view-platform').hidden = !isPlatform;
+  document.getElementById('navPlatform').style.color = isPlatform ? 'var(--text)' : '';
+}
+window.addEventListener('hashchange', fromHash);
+document.querySelector('.brand').addEventListener('click', (e) => { e.preventDefault(); location.hash = ''; fromHash(); });
+fromHash();
 </script>
 </body>
 </html>
