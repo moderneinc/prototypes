@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moderne Docs — Morpheus theme</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+  --spectral: linear-gradient(92deg, #E6399B, #9D5BE8, #3E7BF6, #25D0C0, #30F284, #B7E84C);
+}
+[data-theme="light"] {
+  --bg: #F2F0EA; --field: #FBFAF6; --card: #FBFAF6;
+  --surface: #EDEBE2; --surface2: #E4E1D6; --row-hover: #F4F2EB;
+  --line: rgba(35,35,66,.12); --line2: rgba(35,35,66,.08); --line-strong: rgba(35,35,66,.50);
+  --text: #232342; --muted: #62627A;
+  --link: #1245AE; --link-deep: #16306B;
+  --btn-primary-bg: #232342; --btn-primary-fg: #FBFAF6;
+  --ill-panel: #FBFAF6; --ill-stroke: rgba(35,35,66,.50); --ill-accent: #3E5BE8;
+}
+[data-theme="dark"] {
+  --bg: #141419; --field: #222229; --card: #26262E;
+  --surface: #2A2A32; --surface2: #33333D; --row-hover: #2E2E38;
+  --line: rgba(240,240,246,.12); --line2: rgba(240,240,246,.08); --line-strong: rgba(240,240,246,.38);
+  --text: #F1F0EA; --muted: #9C9CA8;
+  --link: #7FA9F9; --link-deep: #7FA9F9;
+  --btn-primary-bg: #F1F0EA; --btn-primary-fg: #17171C;
+  --ill-panel: #26262E; --ill-stroke: rgba(240,240,246,.38); --ill-accent: #8CA0F5;
+}
+body { font-family: var(--font-sans); font-size: 14px; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; transition: background .2s, color .2s; }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+button { font: inherit; cursor: pointer; }
+
+/* ===== topbar ===== */
+.topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 22px; padding: 14px 36px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 11px; color: var(--text); }
+.brand svg { height: 26px; width: auto; }
+.brand .n { font-size: 20px; font-weight: 400; letter-spacing: -.01em; }
+.brand .docs { font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--surface2); border-radius: 4px; padding: 2px 7px; margin-left: 2px; }
+.nav-links { display: flex; align-items: center; gap: 2px; margin-left: 10px; }
+.nav-links a { font-size: 13px; font-weight: 500; color: var(--muted); padding: 7px 10px; border-radius: 4px; }
+.nav-links a:hover { color: var(--text); background: var(--row-hover); text-decoration: none; }
+.top-spacer { flex: 1; }
+.search { display: flex; align-items: center; gap: 10px; width: 240px; padding: 8px 12px; font-size: 13px; color: var(--muted); background: var(--field); border: 1px solid var(--line-strong); border-radius: 10px; cursor: text; }
+.search svg { width: 14px; height: 14px; flex: none; }
+.search .ph { flex: 1; }
+.search kbd { font-family: var(--font-mono); font-size: 10px; background: var(--surface2); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line); }
+.ext { font-size: 13px; font-weight: 500; color: var(--muted); }
+.ext:hover { color: var(--text); text-decoration: none; }
+.mode-btn { width: 34px; height: 34px; border-radius: 4px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); display: inline-flex; align-items: center; justify-content: center; }
+.mode-btn svg { width: 15px; height: 15px; }
+
+main { max-width: 1120px; margin: 0 auto; padding: 0 36px 90px; }
+
+/* ===== hero ===== */
+.hero { display: flex; align-items: center; gap: 64px; padding: 72px 0 56px; }
+.hero-copy { flex: 1; min-width: 0; }
+h1 { font-size: 44px; font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }
+h1 .grad { background: var(--spectral); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lede { margin-top: 18px; font-size: 16px; line-height: 1.6; color: var(--muted); max-width: 560px; }
+.hero-actions { display: flex; align-items: center; gap: 12px; margin-top: 28px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 10px 17px; border-radius: 4px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); text-decoration: none; }
+.btn:hover { background: var(--surface); text-decoration: none; }
+.btn--primary { background: var(--btn-primary-bg); color: var(--btn-primary-fg); border-color: transparent; }
+.hero-mark { width: 220px; flex: none; }
+.hero-mark img { width: 100%; height: auto; display: block; }
+
+/* ===== browse cards ===== */
+.sec-head { display: flex; align-items: baseline; gap: 14px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin: 40px 0 22px; }
+h2 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+.sec-head .m { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-left: auto; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.area { display: flex; gap: 15px; align-items: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; color: var(--text); }
+.area:hover { background: var(--row-hover); text-decoration: none; }
+.tile { width: 44px; height: 44px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--ill-panel); border: 1px solid var(--ill-stroke); border-radius: 10px; }
+.tile svg { width: 22px; height: 22px; color: var(--ill-accent); }
+.area h3 { font-size: 15px; font-weight: 600; }
+.area p { font-size: 13px; line-height: 1.5; color: var(--muted); margin-top: 4px; }
+.area .go { font-size: 12px; font-weight: 600; color: var(--link); margin-top: 8px; display: inline-block; }
+
+/* ===== prose ===== */
+.prose-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+.prose-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
+.prose-card h2 { margin-bottom: 12px; }
+.prose-card p { font-size: 14px; line-height: 1.65; color: var(--muted); margin-bottom: 12px; }
+.prose-card p:last-child { margin-bottom: 0; }
+.prose-card b { color: var(--text); font-weight: 600; }
+.spectral-bar { height: 4px; border-radius: 2px; background: var(--spectral); margin: 0 0 18px; width: 64px; }
+ul.tools { list-style: none; display: grid; gap: 10px; }
+ul.tools li { font-size: 14px; line-height: 1.55; color: var(--muted); padding-left: 18px; position: relative; }
+ul.tools li::before { content: ''; position: absolute; left: 0; top: 7px; width: 7px; height: 7px; border-radius: 2px; background: var(--ill-accent); }
+
+footer { border-top: 1px solid var(--line); }
+.foot-in { max-width: 1120px; margin: 0 auto; padding: 26px 36px; display: flex; gap: 24px; align-items: center; font-size: 12.5px; color: var(--muted); }
+.foot-in .sp { flex: 1; }
+.foot-in a { color: var(--muted); font-weight: 500; }
+.foot-in a:hover { color: var(--text); }
+@media (max-width: 900px) { .hero-mark { display: none; } .prose-wrap { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="mark" viewBox="0 0 58 59"><path d="M56.1354 1.21633C55.5985 0.995452 54.9762 1.11601 54.5643 1.52924L29.7495 26.3715C28.1187 12.1737 16.0538 1.10589 1.44142 1.10497C1.05899 1.10497 0.693101 1.25774 0.421907 1.52832C0.151631 1.79889 -5.34058e-05 2.16518 -5.34058e-05 2.54895V29.6506V29.6524V56.7541C-5.34058e-05 56.7771 0.00822179 56.7992 0.0100604 56.8222C0.0128183 56.8921 0.0266052 56.9593 0.0403948 57.0283C0.0551037 57.101 0.0688955 57.1728 0.0937167 57.2418C0.101071 57.263 0.10107 57.2851 0.109343 57.3053C0.12681 57.3468 0.157148 57.3799 0.177373 57.4195C0.213226 57.4857 0.248159 57.5511 0.293205 57.6118C0.334573 57.667 0.382376 57.7149 0.430179 57.7637C0.479822 57.8134 0.528548 57.8612 0.584625 57.9036C0.64438 57.9477 0.70781 57.9818 0.773081 58.0168C0.81353 58.0379 0.846625 58.0692 0.888913 58.0867C0.906379 58.0941 0.924768 58.0904 0.942234 58.0968C1.10035 58.1566 1.26583 58.1971 1.44142 58.1971H28.5112H55.5829C56.379 58.1971 57.0253 57.5502 57.0253 56.7541V29.6506V2.54895C57.0253 1.96547 56.6741 1.43997 56.1354 1.21633ZM54.1423 6.03238V28.2075H31.9926L54.1423 6.03238ZM54.1423 41.7593H29.9536V31.0937H54.1423V41.7593ZM2.88289 53.2707V31.0955H25.0326L13.9577 42.1826L2.88289 53.2707ZM2.88289 4.03159C15.869 4.75589 26.3067 15.2061 27.0302 28.2075H2.88289V4.03159ZM15.9949 44.223L27.0698 33.1359V55.311H4.92006L15.9949 44.223ZM29.9527 44.6454H54.1414V55.311H29.9527V44.6454Z" fill="currentColor"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5 10.1 7.6z"/><path d="M19 14l.7 1.8L21.5 16.5l-1.8.7L19 19l-.7-1.8L16.5 16.5l1.8-.7z"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="M16.5 9.4L7.5 4.2M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><path d="M8 9h8M8 12.5h5"/></symbol>
+  <symbol id="i-blocks" viewBox="0 0 24 24"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/></symbol>
+</defs></svg>
+
+<header class="topbar">
+  <a class="brand" href="#" style="text-decoration:none;">
+    <svg viewBox="0 0 58 59"><use href="#mark"/></svg>
+    <span class="n">Moderne</span><span class="docs">docs</span>
+  </a>
+  <nav class="nav-links">
+    <a href="#">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><a href="#">Training</a><a href="#">Releases</a>
+  </nav>
+  <span class="top-spacer"></span>
+  <div class="search">
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
+    <span class="ph">Search docs</span><kbd>⌘K</kbd>
+  </div>
+  <a class="ext" href="https://docs.openrewrite.org">OpenRewrite ↗</a>
+  <a class="ext" href="https://app.moderne.io">App ↗</a>
+  <button class="mode-btn" id="modeBtn" aria-label="Toggle theme">
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="modeIcon"><use href="#i-moon"/></svg>
+  </button>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>Explore documentation<br>and tutorials to <span class="grad">go further</span></h1>
+      <p class="lede">Discover how to fix vulnerabilities, standardize code quality, perform type-aware code search, and automate refactoring across your entire codebase.</p>
+      <div class="hero-actions">
+        <a class="btn btn--primary" href="#">Get started</a>
+        <a class="btn" href="#">What is Moderne?</a>
+      </div>
+    </div>
+    <div class="hero-mark">
+      <img src="assets/moderne-dna/moderne-dna.svg" alt="">
+    </div>
+  </section>
+
+  <div class="sec-head"><h2>Browse by area</h2><span class="m">7 areas · platform to plugins</span></div>
+  <div class="grid">
+    <a class="area" href="#">
+      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-globe"/></svg></span>
+      <span><h3>Platform</h3><p>A secure platform and toolchain for fast, enterprise-wide code modernization.</p><span class="go">Explore →</span></span>
+    </a>
+    <a class="area" href="#">
+      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-terminal"/></svg></span>
+      <span><h3>CLI</h3><p>A local, Git-like CLI for multi-repo code analysis and automated refactoring at scale.</p><span class="go">Explore →</span></span>
+    </a>
+    <a class="area" href="#">
+      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-sparkles"/></svg></span>
+      <span><h3>Agent tools</h3><p>Tools and context that make AI coding agents faster, more accurate, and more effective across large codebases.</p><span class="go">Explore →</span></span>
+    </a>
+    <a class="area" href="#">
+      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-package"/></svg></span>
+      <span><h3>Recipes</h3><p>Structured, automatable code transformations that let you search, modernize and secure code.</p><span class="go">Explore →</span></span>
+    </a>
+    <a class="area" href="#">
+      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-shield"/></svg></span>
+      <span><h3>DX</h3><p>Air-gapped, on-prem unified refactoring CLI/IDE solution with recipes &amp; reporting.</p><span class="go">Explore →</span></span>
+    </a>
+    <a class="area" href="#">
+      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg></span>
+      <span><h3>Moddy</h3><p>An AI agent that modernizes multi-repository codebases by combining LLMs with structured LSTs.</p><span class="go">Explore →</span></span>
+    </a>
+    <a class="area" href="#">
+      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-blocks"/></svg></span>
+      <span><h3>IDE plugins</h3><p>An IntelliJ IDE plugin for multi-repository code search and recipe development.</p><span class="go">Explore →</span></span>
+    </a>
+  </div>
+
+  <div class="prose-wrap" style="margin-top:44px;">
+    <div class="prose-card">
+      <div class="spectral-bar"></div>
+      <h2>What is Moderne?</h2>
+      <p>Moderne builds the knowledge, discovery, and execution tools coding agents rely on to operate safely at scale. It's powered by <a href="https://docs.openrewrite.org">OpenRewrite</a> and the <b>Lossless Semantic Tree (LST)</b> — the industry's most comprehensive context model for understanding and transforming your code.</p>
+      <p>With Moderne, organizations automate framework migrations, remediate security vulnerabilities, and standardize code quality across thousands of repositories at once.</p>
+    </div>
+    <div class="prose-card">
+      <div class="spectral-bar"></div>
+      <h2>More about Moderne</h2>
+      <ul class="tools">
+        <li><b>Moderne Platform</b> — enterprise-ready private SaaS for running recipes across your organization.</li>
+        <li><b>Moderne CLI</b> — build LST artifacts and run recipes from your terminal.</li>
+        <li><b>Moderne DX</b> — large-scale insights and remediation for air-gapped environments.</li>
+        <li><b>Moddy</b> — a multi-repo AI agent pairing natural language with LST accuracy.</li>
+        <li><b>Prethink</b> — recipes that generate structured context for coding agents.</li>
+        <li><b>IntelliJ plugin</b> — create and debug recipes; search across all your repos.</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="foot-in">
+    <span>© 2026 Moderne, Inc.</span>
+    <span class="sp"></span>
+    <a href="https://moderne.ai">moderne.ai</a>
+    <a href="https://docs.openrewrite.org">OpenRewrite</a>
+    <a href="#">Releases</a>
+    <a href="#">Training</a>
+  </div>
+</footer>
+
+<script>
+const root = document.documentElement;
+const icon = document.getElementById('modeIcon').querySelector('use');
+document.getElementById('modeBtn').addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  icon.setAttribute('href', next === 'dark' ? '#i-sun' : '#i-moon');
+});
+const q = new URLSearchParams(location.search).get('theme');
+if (q === 'light' || q === 'dark') { root.setAttribute('data-theme', q); icon.setAttribute('href', q === 'dark' ? '#i-sun' : '#i-moon'); }
+</script>
+</body>
+</html>
