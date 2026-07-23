@@ -172,10 +172,10 @@ main { flex: 1; width: 100%; }
 .cg-intro b { color: var(--text); font-weight: 600; }
 .cg-verbs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--line); }
 .cg-verb { background: var(--card); padding: 30px 28px; display: flex; flex-direction: column; }
-.cg-verb__kicker { display: inline-flex; align-items: center; gap: 9px; font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.cg-section { margin-top: 48px; }
+.cg-section-title { font-size: 22px; font-weight: 600; letter-spacing: -.015em; margin-bottom: 18px; }
 .cg-verb__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dot, var(--accent)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--dot, var(--accent)) 18%, transparent); flex: none; }
-.cg-verb h3 { font-size: 20px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 10px; }
-.cg-verb h3 .sub { color: var(--muted); font-weight: 400; }
+.cg-verb h3 { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 11px; }
 .cg-verb p { font-size: 14px; line-height: 1.6; color: var(--muted); }
 .cg-verb b { color: var(--text); font-weight: 600; }
 .cg-verb sup { color: var(--dot, var(--accent)); font-weight: 700; }
@@ -239,6 +239,36 @@ main { flex: 1; width: 100%; }
 .art-tab:hover { color: var(--text); }
 .art-tab.is-on { color: var(--text); background: var(--surface); border-color: var(--line); font-weight: 600; }
 @media (max-width: 720px) { .art-grid { grid-template-columns: 1fr; } }
+
+/* ===== callout (info / status) — token-only ===== */
+.callout { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: 13.5px; line-height: 1.55; color: var(--text); }
+.callout__icon { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+.callout b { font-weight: 600; }
+.callout code { font-family: var(--font-mono); font-size: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+.callout a { color: var(--accent); font-weight: 500; }
+.callout--ok { background: var(--su-t); border-color: var(--su-b); }
+.callout--ok .callout__icon { color: var(--green-hi); }
+.callout--info .callout__icon { color: var(--accent); }
+
+/* ===== CLI (Install the CLI) ===== */
+.cli { max-width: 760px; margin: 0 auto; padding: 48px 0 80px; }
+.cli-title { font-size: 40px; font-weight: 600; letter-spacing: -.025em; line-height: 1.08; }
+.cli-lede { margin-top: 16px; font-size: 16px; line-height: 1.6; color: var(--muted); }
+.cli-lede code, .cli-note code { font-family: var(--font-mono); font-size: 12.5px; background: var(--surface); border-radius: 5px; padding: 1px 6px; color: var(--text); }
+.cli .codeblock { margin-top: 10px; }
+.cli-primary { margin-top: 24px; }
+.cli-primary pre { font-size: 14.5px; }
+.cli-hero .callout { margin-top: 16px; }
+.cli-note { font-size: 14px; line-height: 1.6; color: var(--muted); margin: 6px 0 0; }
+.cli-note b { color: var(--text); font-weight: 600; }
+.cli-note a { color: var(--accent); }
+.cli-detail { margin-top: 24px; }
+.cli-detail__h { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.cli .mcp-section .callout { margin-top: 12px; }
+.cli-dl a { color: var(--accent); text-decoration: none; }
+.cli-dl a:hover { text-decoration: underline; }
+.cli-dl a.mono { font-size: 12px; }
+.cli-dl__meta { color: var(--muted); font-size: 11px; }
 
 /* ===== recipe detail ===== */
 .recipe { max-width: 800px; padding: 36px 0 80px; }
@@ -418,6 +448,7 @@ main { flex: 1; width: 100%; }
         <a class="navlink is-active" href="#search" data-nav="search">Search</a>
         <a class="navlink" href="#recipes" data-nav="recipes">Recipes</a>
         <a class="navlink" href="#artifacts" data-nav="artifacts">Artifacts</a>
+        <a class="navlink" href="#cli" data-nav="cli">CLI</a>
         <a class="navlink" href="#mcp" data-nav="mcp">MCP</a>
       </nav>
       <button class="user-btn" id="userAvatar" type="button" aria-label="Account">
@@ -468,37 +499,40 @@ main { flex: 1; width: 100%; }
       <section class="cg-intro">
         <div class="cg-kicker">What is the Code Genome Project</div>
         <h2>The world's code has a genome, and this is where it's <span class="spectral">sequenced, stored, and navigable.</span></h2>
-        <p>Enterprise software consists of up to <b>90% third-party and open source components</b>, stitched together in different ways for business functionality. This software is the basis of the Code Genome Project.</p>
-        <p>The goal: understand codebases broadly, across open source and enterprise, and share deterministic recipes that advance them. It's all open to developers and their agents alike through code search and a remote MCP server.</p>
+        <p>Enterprise software consists of up to <b>90% third-party and open source components</b>, stitched together in different ways for business functionality. This software is the basis of the Code Genome Project. The goal: understand codebases broadly, across open source and enterprise, and share deterministic recipes that advance them. It's all open to developers and their agents alike through code search and a remote MCP server.</p>
       </section>
 
-      <div class="cg-verbs">
-        <article class="cg-verb cg-verb--seq">
-          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Sequencing</span>
-          <h3>Sequencing <span class="sub">the code genome</span></h3>
-          <p>Each repository is compiled into a <b>Lossless Semantic Tree</b>: the types, methods, and relationships that define how code behaves. Compiler-accurate, lossless, polyglot<sup>*</sup>. Each tree holds every signal the compiler sees in a single repository; the project lines them up side by side, so the entire open source ecosystem reads as one corpus. It's the substrate everything else is built on.</p>
-        </article>
+      <div class="cg-section">
+        <h3 class="cg-section-title">Put the OSS Code Genome to work</h3>
+        <div class="cg-verbs">
+          <article class="cg-verb cg-verb--search">
+            <h3><span class="cg-verb__dot"></span>Searching</h3>
+            <p>Explore the sequenced code of thousands of open source repositories. Search by <b>type, symbol, and call site</b>, not just strings, and surface any API or pattern in milliseconds. Powered by Moderne's Trigrep search.</p>
+            <a class="cg-verb__link" href="#search" data-focus-search>Search the corpus →</a>
+          </article>
 
-        <article class="cg-verb cg-verb--search">
-          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Searching</span>
-          <h3>Searching <span class="sub">the code genome</span></h3>
-          <p>Explore the sequenced code of thousands of open source repositories. Search the way a compiler sees code — by <b>type, symbol, and call site</b>, not just strings. Find how any API, annotation, or pattern appears across thousands of repositories in milliseconds. Powered by Moderne's Trigrep search, the code genome is open to explore.</p>
-          <a class="cg-verb__link" href="#search" data-focus-search>Search the corpus →</a>
-        </article>
+          <article class="cg-verb cg-verb--surface">
+            <h3><span class="cg-verb__dot"></span>Surfacing to AI</h3>
+            <p>A remote MCP server opens the full Code Genome to coding agents. They can find any method or type, see how it's really used, and compare versions, all resolved through the <b>type system, not text</b>. Connect in one click to power up your agents.</p>
+            <a class="cg-verb__link" href="#mcp">Connect your agent →</a>
+          </article>
+        </div>
+      </div>
 
-        <article class="cg-verb cg-verb--splice">
-          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Splicing</span>
-          <h3>Splicing <span class="sub">the code genome</span></h3>
-          <p>OpenRewrite recipes rewrite the genome: <b>10,000+ deterministic programs</b> that transform code precisely and repeatably — whether you're migrating a framework, patching a CVE, or enforcing a standard, the same way every time. Recipes are stored in the project and built to extend, so developers and their agents can adapt a recipe or write a new one.</p>
-          <a class="cg-verb__link" href="#recipes">Browse recipes →</a>
-        </article>
+      <div class="cg-section">
+        <h3 class="cg-section-title">Foundation of the Code Genome Project</h3>
+        <div class="cg-verbs">
+          <article class="cg-verb cg-verb--seq">
+            <h3><span class="cg-verb__dot"></span>Sequencing</h3>
+            <p>Each open source repository is compiled into a <b>Lossless Semantic Tree</b>. Compiler-accurate, lossless, polyglot<sup>*</sup>. One tree per repository, lined up side by side, so the entire open source ecosystem reads as a single corpus. It's the substrate everything else is built on.</p>
+          </article>
 
-        <article class="cg-verb cg-verb--surface">
-          <span class="cg-verb__kicker"><span class="cg-verb__dot"></span>Surfacing to AI</span>
-          <h3>Surfacing <span class="sub">the code genome to AI</span></h3>
-          <p>A remote MCP server opens the Code Genome to coding agents. They can find any method or type, see how it's really used, and compare versions — all resolved through the <b>type system, not text</b>. Connect in one click.</p>
-          <a class="cg-verb__link" href="#mcp">Connect your agent →</a>
-        </article>
+          <article class="cg-verb cg-verb--splice">
+            <h3><span class="cg-verb__dot"></span>Splicing</h3>
+            <p>OpenRewrite recipes rewrite the genome: <b>10,000+ deterministic programs</b>. Migrate a framework, fix a CVE, or enforce a standard, the same way every time. Recipes live in the project, ready for developers and their agents to use, adapt, and extend.</p>
+            <a class="cg-verb__link" href="#recipes">Browse recipes →</a>
+          </article>
+        </div>
       </div>
 
       <p class="cg-disclaimer"><sup>*</sup> Today the Code Genome Project sequences the Java ecosystem; it's expanding to the full breadth of languages the LST supports, including Python, C#, JavaScript/TypeScript, Scala, and more.</p>
@@ -602,7 +636,7 @@ main { flex: 1; width: 100%; }
         <div class="art-block">
           <div class="art-block__head">
             <h2>Add the repository</h2>
-            <span class="art-endpoint mono">repo.codegenomeproject.org/maven</span>
+            <span class="art-endpoint mono">artifacts.codegenomeproject.org/maven</span>
           </div>
           <p class="art-note">Declare the Code Genome repository, then add any recipe module as a dependency — versions come from the catalog.</p>
           <div class="art-tabs" id="artTabs" role="tablist" aria-label="Build tool">
@@ -611,7 +645,7 @@ main { flex: 1; width: 100%; }
           </div>
           <div class="codeblock"><pre id="artSnippet">&lt;repository&gt;
   &lt;id&gt;codegenome&lt;/id&gt;
-  &lt;url&gt;https://repo.codegenomeproject.org/maven&lt;/url&gt;
+  &lt;url&gt;https://artifacts.codegenomeproject.org/maven&lt;/url&gt;
 &lt;/repository&gt;</pre><button type="button" class="codeblock__copy" data-copy="#artSnippet">Copy</button></div>
         </div>
 
@@ -622,6 +656,88 @@ main { flex: 1; width: 100%; }
           <p class="art-note">Free for open source. Apache-licensed recipes run anywhere; MSAL and proprietary modules require a Moderne license.</p>
         </div>
       </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============ CLI (Install the CLI) ============ -->
+<div class="view" id="view-cli" hidden>
+  <div class="wrap">
+    <section class="cli">
+      <header class="cli-hero">
+        <h1 class="cli-title">Install the CLI</h1>
+        <p class="cli-lede">The Moderne CLI (<code>mod</code>) runs OpenRewrite recipes and compiler-accurate code search on your machine or in CI — against your own repositories or the public Code Genome corpus. One command to install; nothing to sign in for.</p>
+
+        <div class="codeblock cli-primary"><pre id="cliInstall">curl -fsSL https://get.codegenomeproject.org/getmod.sh | sh</pre><button type="button" class="codeblock__copy" data-copy="#cliInstall">Copy</button></div>
+
+        <div class="callout callout--ok">
+          <svg class="callout__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+          <div><b>No token or sign-in required.</b> Downloading and installing the CLI is completely unauthenticated. Repository tokens are only for pulling licensed artifacts from the <a href="#artifacts">artifact repository</a> — a separate flow you don't need to get started.</div>
+        </div>
+      </header>
+
+      <section class="mcp-section">
+        <h2 class="mcp-h2">Inspect the script first</h2>
+        <p class="cli-note">Piping a script straight into your shell? Read it first. The installer lives at a stable URL you can open in a browser or <code>curl</code> on its own before running it:</p>
+        <div class="codeblock"><pre id="cliUrl">https://get.codegenomeproject.org/getmod.sh</pre><button type="button" class="codeblock__copy" data-copy="#cliUrl">Copy</button></div>
+        <div class="callout callout--info">
+          <svg class="callout__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <div>Open <a href="https://get.codegenomeproject.org/getmod.sh" target="_blank" rel="noopener">get.codegenomeproject.org/getmod.sh</a> to review exactly what runs. The script detects your OS and architecture, downloads the matching <code>mod</code> binary, and puts it on your <code>PATH</code> — no privileges beyond your own shell.</div>
+        </div>
+      </section>
+
+      <section class="mcp-section">
+        <h2 class="mcp-h2">Direct downloads</h2>
+        <p class="cli-note">Prefer to grab a specific build — for a CI image, an air-gapped install, or pinning a version? Every platform binary is published, unauthenticated, to the public artifact repository. Browse them at <a href="https://artifacts.codegenomeproject.org/maven/io/moderne/" target="_blank" rel="noopener">artifacts.codegenomeproject.org/maven/io/moderne/</a>.</p>
+        <div class="table-scroll">
+          <table class="opt-table cli-dl">
+            <thead><tr><th>Platform</th><th>Architecture</th><th>Artifact</th></tr></thead>
+            <tbody>
+              <tr><td>macOS</td><td>Apple Silicon &amp; Intel</td><td><a class="mono" href="https://artifacts.codegenomeproject.org/maven/io/moderne/moderne-cli-osx/" target="_blank" rel="noopener">moderne-cli-osx</a></td></tr>
+              <tr><td>Linux</td><td>x86-64</td><td><a class="mono" href="https://artifacts.codegenomeproject.org/maven/io/moderne/moderne-cli-linux-x64/" target="_blank" rel="noopener">moderne-cli-linux-x64</a></td></tr>
+              <tr><td>Linux</td><td>ARM64 · aarch64</td><td><a class="mono" href="https://artifacts.codegenomeproject.org/maven/io/moderne/moderne-cli-linux-aarch64/" target="_blank" rel="noopener">moderne-cli-linux-aarch64</a></td></tr>
+              <tr><td>Windows</td><td>x86-64</td><td><a class="mono" href="https://artifacts.codegenomeproject.org/maven/io/moderne/moderne-cli-windows/" target="_blank" rel="noopener">moderne-cli-windows</a></td></tr>
+              <tr><td>Any <span class="cli-dl__meta">(JVM)</span></td><td>Requires Java 17+</td><td><a class="mono" href="https://artifacts.codegenomeproject.org/maven/io/moderne/moderne-cli/" target="_blank" rel="noopener">moderne-cli</a> <span class="cli-dl__meta">.jar</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cli-note">The one-line installer above resolves the right one automatically — this table is for when you want to pick it yourself.</p>
+      </section>
+
+      <section class="mcp-section">
+        <h2 class="mcp-h2">Where it's published &amp; what it uses</h2>
+
+        <div class="cli-detail">
+          <h3 class="cli-detail__h">Published to Maven Central and Cogenom</h3>
+          <p class="cli-note">The CLI and the Moderne connector are published to both <b>Maven Central</b> (<code>io.moderne:moderne-cli</code>) and the <b>Cogenom</b> artifact repository (<code>artifacts.codegenomeproject.org/maven</code>) — so builds and CI can resolve them from wherever they already pull dependencies, with no new registry to wire up.</p>
+        </div>
+
+        <div class="cli-detail">
+          <h3 class="cli-detail__h">Default recipe source</h3>
+          <p class="cli-note">Out of the box, the CLI resolves recipes from <b>Maven Central</b> — the open source catalog runs with zero configuration.</p>
+        </div>
+
+        <div class="cli-detail">
+          <h3 class="cli-detail__h">Add the licensed recipe repository</h3>
+          <p class="cli-note">Licensed (MSAL &amp; proprietary) recipes live in the token-gated artifact repository. Point <code>mod</code> at it with your <b>repository token</b> — this is the only step that needs credentials:</p>
+          <div class="codeblock"><pre id="cliRepo">mod config recipes artifacts maven add https://artifacts.codegenomeproject.org/maven --user=&lt;email&gt; --password=&lt;token&gt;</pre><button type="button" class="codeblock__copy" data-copy="#cliRepo">Copy</button></div>
+          <div class="callout callout--info">
+            <svg class="callout__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            <div>Don't hand-fill this. <a href="#">Sign in to the setup page</a> to copy the command with your email and token already in place, alongside the matching Maven, Gradle, and MCP configs.</div>
+          </div>
+        </div>
+
+        <div class="cli-detail">
+          <h3 class="cli-detail__h">Per-tenant install script</h3>
+          <p class="cli-note"><code>getmod.sh</code> can be customized per tenant — enterprise customers get a tenant-specific installer that pre-configures the connector and the repository their CLI should use, so <code>curl … | sh</code> lands fully set up.</p>
+        </div>
+      </section>
+
+      <section class="mcp-section">
+        <h2 class="mcp-h2">Verify the install</h2>
+        <p class="cli-note">Confirm the CLI is on your <code>PATH</code> and print its version:</p>
+        <div class="codeblock"><pre id="cliVerify">mod --version</pre><button type="button" class="codeblock__copy" data-copy="#cliVerify">Copy</button></div>
+      </section>
     </section>
   </div>
 </div>
@@ -1017,7 +1133,7 @@ function jsonHighlight(s) {
 }
 
 /* ============ routing ============ */
-const views = { search: 'view-search', results: 'view-results', recipes: 'view-recipes', artifacts: 'view-artifacts', mcp: 'view-mcp' };
+const views = { search: 'view-search', results: 'view-results', recipes: 'view-recipes', artifacts: 'view-artifacts', cli: 'view-cli', mcp: 'view-mcp' };
 function setNav(active) {
   document.querySelectorAll('.navlink').forEach(a => a.classList.toggle('is-active', a.getAttribute('data-nav') === active));
 }
@@ -1043,6 +1159,7 @@ function route() {
     showView('view-recipes'); setNav('recipes'); window.scrollTo(0, 0); return;
   }
   if (h === 'artifacts') { showView('view-artifacts'); setNav('artifacts'); window.scrollTo(0, 0); return; }
+  if (h === 'cli') { showView('view-cli'); setNav('cli'); window.scrollTo(0, 0); return; }
   if (h === 'mcp') { showView('view-mcp'); setNav('mcp'); window.scrollTo(0, 0); return; }
   showView('view-search'); setNav('search');
 }
@@ -1086,8 +1203,8 @@ document.getElementById('mcpTools').addEventListener('submit', e => {
 
 /* Artifacts: Maven / Gradle snippet swap */
 const ART_SNIPPETS = {
-  maven: '<repository>\n  <id>codegenome</id>\n  <url>https://repo.codegenomeproject.org/maven</url>\n</repository>',
-  gradle: 'repositories {\n  maven { url "https://repo.codegenomeproject.org/maven" }\n}',
+  maven: '<repository>\n  <id>codegenome</id>\n  <url>https://artifacts.codegenomeproject.org/maven</url>\n</repository>',
+  gradle: 'repositories {\n  maven { url "https://artifacts.codegenomeproject.org/maven" }\n}',
 };
 function setArtTab(id) {
   document.querySelectorAll('#artTabs .art-tab').forEach(b => { const on = b.getAttribute('data-arttab') === id; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on); });
