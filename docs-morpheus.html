@@ -42,10 +42,12 @@ button { font: inherit; cursor: pointer; }
 /* ===== topbar: lockup + centered search, tabs on their own row ===== */
 .topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); }
 .top-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 22px; padding: 16px 36px 12px; }
-.brand { display: flex; align-items: center; gap: 13px; color: var(--text); }
-.brand svg { height: 32px; width: auto; }
-.brand .n { font-size: 26px; font-weight: 500; letter-spacing: -.02em; }
-.brand .docs { font-size: 26px; font-weight: 400; letter-spacing: -.02em; color: var(--muted); margin-left: -3px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--text); }
+.brand img { height: 30px; width: auto; display: block; }
+.brand .logo-dark { display: none; }
+[data-theme="dark"] .brand .logo-light { display: none; }
+[data-theme="dark"] .brand .logo-dark { display: block; }
+.brand .docs { font-size: 26px; font-weight: 400; letter-spacing: -.02em; color: var(--muted); }
 .top-right { display: flex; align-items: center; gap: 18px; justify-self: end; }
 .tabs-row { display: flex; align-items: center; gap: 2px; padding: 0 30px 6px; border-bottom: 1px solid var(--line); }
 .nav-links { display: flex; align-items: center; gap: 2px; }
@@ -89,7 +91,7 @@ h1 .grad { background: var(--spectral); -webkit-background-clip: text; backgroun
 .crumb .c { opacity: .6; }
 .crumb .cur { color: var(--text); font-weight: 600; }
 .section-hero { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 28px 30px; overflow: hidden; position: relative; }
-.section-hero::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--spectral); }
+.section-hero::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: url('assets/spectral-bar/moderne-spectral-bar-600x12.png'); background-size: 100% 100%; }
 .section-hero h1 { font-size: 28px; font-weight: 600; letter-spacing: -.02em; }
 .section-hero p { font-size: 14px; color: var(--muted); margin-top: 8px; max-width: 620px; }
 .cat-list { display: grid; gap: 12px; margin-top: 20px; }
@@ -152,8 +154,9 @@ footer { border-top: 1px solid var(--line); }
 <header class="topbar">
   <div class="top-row">
     <a class="brand" href="#" style="text-decoration:none;">
-      <svg viewBox="0 0 58 59"><use href="#mark"/></svg>
-      <span class="n">Moderne</span><span class="docs">Docs</span>
+      <img class="logo-light" src="assets/moderne-logo/ModerneLogo_Midnight_R.png" alt="Moderne">
+      <img class="logo-dark" src="assets/moderne-logo/ModerneLogo_White_R.png" alt="Moderne">
+      <span class="docs">Docs</span>
     </a>
     <div class="search">
       <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
