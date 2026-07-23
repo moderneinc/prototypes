@@ -103,6 +103,33 @@ h1 .grad { background: var(--spectral); -webkit-background-clip: text; backgroun
 .cat .count { font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--surface2); border-radius: 4px; padding: 2px 8px; }
 .cat .chev { width: 15px; height: 15px; color: var(--muted); }
 .next-link { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; margin-top: 22px; }
+.side-sub { display: grid; }
+.side-sub button { text-align: left; font-size: 13px; color: var(--muted); background: none; border: none; border-left: 1px solid var(--line); padding: 6px 10px 6px 14px; margin-left: 14px; cursor: pointer; }
+.side-sub button:hover { color: var(--text); }
+.side-sub button.active { color: var(--link); font-weight: 600; border-left: 2px solid var(--link); padding-left: 13px; }
+/* article page */
+.article-layout { display: grid; grid-template-columns: 232px minmax(0,1fr) 190px; gap: 40px; padding: 28px 0 60px; align-items: start; }
+.article h1 { font-size: 28px; font-weight: 600; letter-spacing: -.02em; margin: 18px 0 14px; }
+.article h2 { font-size: 18px; font-weight: 600; letter-spacing: -.01em; margin: 30px 0 10px; padding-top: 18px; border-top: 1px solid var(--line2); }
+.article p { font-size: 14px; line-height: 1.7; margin-bottom: 12px; }
+.article p .mono, .article code { font-family: var(--font-mono); font-size: 12px; background: var(--surface2); border-radius: 4px; padding: 1px 5px; }
+.crumb .pill { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; color: var(--text); font-weight: 600; }
+.crumb .copy { margin-left: auto; }
+.banner-info { display: flex; align-items: center; gap: 10px; font-size: 13px; padding: 11px 16px; border-radius: 10px; margin: 14px 0 6px; }
+[data-theme="light"] .banner-info { color: #1055E2; background: #EEF3FC; border: 1px solid #C7D7F6; }
+[data-theme="dark"] .banner-info { color: #7FA9F9; background: #101A2E; border: 1px solid #1E3A6B; }
+.banner-info .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+.banner-info span { color: var(--text); }
+.banner-info b { color: inherit; }
+.toc { position: sticky; top: 120px; }
+.toc .ov { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; color: var(--muted); margin-bottom: 10px; }
+.toc a { display: block; font-size: 12px; line-height: 1.5; color: var(--muted); padding: 4px 0; }
+.toc a:hover { color: var(--link); text-decoration: none; }
+.signin-mock { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 34px 28px; margin: 16px 0 6px; max-width: 400px; display: grid; justify-items: center; gap: 10px; }
+.signin-mock h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.signin-mock .sso { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; font-size: 13px; font-weight: 600; padding: 10px 0; border-radius: 4px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); }
+.signin-mock .links { display: flex; gap: 18px; margin-top: 8px; font-size: 12px; }
+.signin-mock svg.m { height: 22px; width: auto; color: var(--muted); margin-top: 10px; }
 
 /* ===== browse cards ===== */
 .sec-head { display: flex; align-items: baseline; gap: 14px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin: 40px 0 22px; }
@@ -262,7 +289,7 @@ footer { border-top: 1px solid var(--line); }
         <p>A secure platform and toolchain for fast, enterprise-wide code modernization.</p>
       </div>
       <div class="cat-list">
-        <a class="cat" href="#">
+        <a class="cat" href="#getting-started">
           <h3>Getting started</h3><span class="count">11 items</span>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </a>
@@ -275,8 +302,114 @@ footer { border-top: 1px solid var(--line); }
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </a>
       </div>
-      <a class="next-link" href="#">Getting started →</a>
+      <a class="next-link" href="#getting-started">Getting started →</a>
     </section>
+  </div>
+</div>
+
+<div class="view" id="view-getting-started" hidden>
+  <div class="section-layout">
+    <aside class="side">
+      <div class="seg"><button class="active">User</button><button>Admin</button></div>
+      <div class="side-overline">PLATFORM</div>
+      <button class="side-item active">Getting started<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
+      <div class="side-sub">
+        <button onclick="location.hash='quickstart'">Quickstart: Using the Moderne Platform</button>
+        <button>Proof of value prerequisites</button>
+        <button>Proof of value process</button>
+        <button>Enhancing code quality</button>
+        <button>Utilizing data tables</button>
+        <button>Generating visualizations</button>
+        <button>Understanding the DevCenter</button>
+        <button>Using the activity view</button>
+      </div>
+      <button class="side-item">How to guides<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button class="side-item">References<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+    </aside>
+    <section>
+      <div class="crumb"><a href="#">Docs</a><span class="c">›</span><a href="#platform">Platform</a><span class="c">›</span><span class="cur">Getting started</span></div>
+      <div class="section-hero">
+        <h1>Getting started</h1>
+        <p>Learn how to get started with the Moderne Platform.</p>
+      </div>
+      <div class="cat-list">
+        <a class="cat" href="#quickstart"><span style="flex:1;"><h3>Quickstart: Using the Moderne Platform</h3><p style="font-size:13px;color:var(--muted);margin-top:3px;">A brief introduction to the Moderne platform and what it can do for you.</p></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a class="cat" href="#"><span style="flex:1;"><h3>Proof of value prerequisites</h3><p style="font-size:13px;color:var(--muted);margin-top:3px;">What your team needs to prepare before starting the Moderne SaaS proof of value process.</p></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a class="cat" href="#"><span style="flex:1;"><h3>Proof of value process</h3><p style="font-size:13px;color:var(--muted);margin-top:3px;">Describes what a typical proof of value process looks like.</p></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a class="cat" href="#"><span style="flex:1;"><h3>Enhancing code quality</h3><p style="font-size:13px;color:var(--muted);margin-top:3px;">How to find and fix static analysis and stylistic issues in your code.</p></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a class="cat" href="#"><span style="flex:1;"><h3>Utilizing data tables</h3><p style="font-size:13px;color:var(--muted);margin-top:3px;">A guide on the different types of data tables and how to create and use them.</p></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a class="cat" href="#"><span style="flex:1;"><h3>Generating visualizations</h3><p style="font-size:13px;color:var(--muted);margin-top:3px;">A guide on the different types of visualizations.</p></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a class="cat" href="#"><span style="flex:1;"><h3>Understanding the Moderne DevCenter</h3><p style="font-size:13px;color:var(--muted);margin-top:3px;">Reading and configuring your organization's DevCenter dashboards.</p></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a class="cat" href="#"><span style="flex:1;"><h3>Using the activity view</h3><p style="font-size:13px;color:var(--muted);margin-top:3px;">See recent recipe runs and activity across your organization.</p></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="view" id="view-quickstart" hidden>
+  <div class="article-layout">
+    <aside class="side">
+      <div class="seg"><button class="active">User</button><button>Admin</button></div>
+      <div class="side-overline">PLATFORM</div>
+      <button class="side-item active" onclick="location.hash='getting-started'">Getting started<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></button>
+      <div class="side-sub">
+        <button class="active">Quickstart: Using the Moderne Platform</button>
+        <button>Proof of value prerequisites</button>
+        <button>Proof of value process</button>
+        <button>Enhancing code quality</button>
+        <button>Utilizing data tables</button>
+        <button>Generating visualizations</button>
+        <button>Understanding the DevCenter</button>
+        <button>Using the activity view</button>
+      </div>
+      <button class="side-item">How to guides<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <button class="side-item">References<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+    </aside>
+    <article class="article">
+      <div class="crumb">
+        <a href="#">Docs</a><span class="c">›</span><a href="#platform">Platform</a><span class="c">›</span><a href="#getting-started">Getting started</a><span class="c">›</span><span class="pill">Quickstart</span>
+        <span class="copy"><a class="btn" style="padding:6px 12px;font-size:12px;" href="#">Copy page</a></span>
+      </div>
+      <div class="banner-info"><span class="dot"></span><span><b>SaaS v2 documentation.</b> Looking for the legacy version? See the <a href="#">SaaS v1 docs</a>.</span></div>
+      <h1>Quickstart: Using the Moderne Platform</h1>
+      <p>To help you understand the power of Moderne, let's walk through applying one of our core recipes (<a href="#">common static analysis</a>) to some open-source projects that we have imported into Moderne. This recipe will fix a significant amount of static analysis issues while also ensuring that your code continues to function as expected.</p>
+      <p>By the end of this quickstart guide, you'll understand how to run recipes against any repository in Moderne.</p>
+      <h2 id="s1">Step 1: Sign in to the Moderne Platform</h2>
+      <p>Go to <a href="https://app.moderne.io">app.moderne.io</a> and sign in. We recommend signing in with GitHub as most of the open-source repositories in the Moderne Platform are in GitHub.</p>
+      <div class="signin-mock">
+        <h3>Sign in to Moderne</h3>
+        <button class="sso">Sign in with GitHub</button>
+        <button class="sso">Sign in with Bitbucket Cloud</button>
+        <button class="sso">Sign in with GitLab</button>
+        <span class="links"><a href="#">Learn about Moderne</a><a href="#">Contact support</a></span>
+        <svg class="m" viewBox="0 0 58 59" fill="currentColor"><use href="#mark"/></svg>
+      </div>
+      <h2 id="s2">Step 2: Configure your source code manager permissions</h2>
+      <p>Grant Moderne read access to the repositories you want to work with. Permissions can be scoped to an organization and adjusted at any time from your account settings.</p>
+      <h2 id="s3">Step 3: (Optional) Select what repositories to run the recipe against</h2>
+      <p>Use the organization selector to narrow the working set — or run against everything that's been ingested.</p>
+      <h2 id="s4">Step 4: Select the recipe to run</h2>
+      <p>Find <span class="mono">common static analysis</span> in the Marketplace, or search for it with <span class="mono">⌘K</span>.</p>
+      <h2 id="s5">Step 5: Run the recipe</h2>
+      <p>Press <b>Dry run</b> to preview the changes without committing anything.</p>
+      <h2 id="s6">Step 6: View the results</h2>
+      <p>Browse diffs per repository, filter by result type, and inspect data tables produced by the run.</p>
+      <h2 id="s7">Step 7: Commit your changes</h2>
+      <p>Open pull requests across every affected repository in one action.</p>
+      <h2 id="next">Next steps</h2>
+      <p>Continue with <a href="#getting-started">Proof of value prerequisites</a>, or explore <a href="#">data tables</a> and <a href="#">visualizations</a>.</p>
+    </article>
+    <aside class="toc">
+      <div class="ov">ON THIS PAGE</div>
+      <a href="#s1">Step 1: Sign in to the Moderne Platform</a>
+      <a href="#s2">Step 2: Configure your source code manager permissions</a>
+      <a href="#s3">Step 3: (Optional) Select repositories</a>
+      <a href="#s4">Step 4: Select the recipe to run</a>
+      <a href="#s5">Step 5: Run the recipe</a>
+      <a href="#s6">Step 6: View the results</a>
+      <a href="#s7">Step 7: Commit your changes</a>
+      <a href="#next">Next steps</a>
+    </aside>
   </div>
 </div>
 </main>
@@ -303,12 +436,15 @@ document.getElementById('modeBtn').addEventListener('click', () => {
 const q = new URLSearchParams(location.search).get('theme');
 if (q === 'light' || q === 'dark') { root.setAttribute('data-theme', q); icon.setAttribute('href', q === 'dark' ? '#i-sun' : '#i-moon'); }
 
-// view switching: #platform shows the section page
+// view switching: #platform / #getting-started / #quickstart
+const VIEWS = { '#platform': 'view-platform', '#getting-started': 'view-getting-started', '#quickstart': 'view-quickstart' };
 function fromHash() {
-  const isPlatform = location.hash === '#platform';
-  document.getElementById('view-home').hidden = isPlatform;
-  document.getElementById('view-platform').hidden = !isPlatform;
-  document.getElementById('navPlatform').classList.toggle('active', isPlatform);
+  const target = VIEWS[location.hash] || 'view-home';
+  for (const id of ['view-home', ...Object.values(VIEWS)]) {
+    document.getElementById(id).hidden = id !== target;
+  }
+  document.getElementById('navPlatform').classList.toggle('active', target !== 'view-home');
+  window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', fromHash);
 document.querySelector('.brand').addEventListener('click', (e) => { e.preventDefault(); location.hash = ''; fromHash(); });
