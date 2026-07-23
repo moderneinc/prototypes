@@ -156,6 +156,25 @@ ul.tools { list-style: none; display: grid; gap: 10px; }
 ul.tools li { font-size: 14px; line-height: 1.55; color: var(--muted); padding-left: 18px; position: relative; }
 ul.tools li::before { content: ''; position: absolute; left: 0; top: 7px; width: 7px; height: 7px; border-radius: 2px; background: var(--ill-accent); }
 
+/* ===== releases ===== */
+.rel-table { display: inline-grid; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 4px 0 16px; }
+.rel-table table { border-collapse: collapse; }
+.rel-table th { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-align: left; background: var(--surface); padding: 8px 18px; border-bottom: 1px solid var(--line); }
+.rel-table td { font-size: 13px; padding: 10px 18px; }
+.rel-table td.mono { font-family: var(--font-mono); font-size: 12px; }
+.rel-table th + th, .rel-table td + td { border-left: 1px solid var(--line); }
+.dl { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; }
+.dl svg { width: 13px; height: 13px; }
+.article .month { font-size: 20px; font-weight: 700; letter-spacing: -.02em; margin: 30px 0 2px; padding-bottom: 12px; border-bottom: 1px solid var(--line2); }
+.article h3.ver { font-size: 16px; font-weight: 600; letter-spacing: -.01em; margin: 26px 0 10px; }
+.article h3.ver .vd { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 8px; }
+ul.changes { list-style: none; display: grid; gap: 7px; margin: 12px 0 2px; }
+ul.changes li { font-size: 14px; line-height: 1.6; color: var(--muted); padding-left: 16px; position: relative; }
+ul.changes li::before { content: ''; position: absolute; left: 2px; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: var(--line-strong); }
+ul.changes .pr { font-family: var(--font-mono); font-size: 12px; }
+.toc a.mo { color: var(--text); font-weight: 600; margin-top: 6px; }
+.toc a.verl { font-family: var(--font-mono); font-size: 11px; padding-left: 12px; }
+
 footer { border-top: 1px solid var(--line); }
 .foot-in { max-width: 1120px; margin: 0 auto; padding: 26px 36px; display: flex; gap: 24px; align-items: center; font-size: 12.5px; color: var(--muted); }
 .foot-in .sp { flex: 1; }
@@ -178,6 +197,7 @@ footer { border-top: 1px solid var(--line); }
   <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><path d="M8 9h8M8 12.5h5"/></symbol>
   <symbol id="i-blocks" viewBox="0 0 24 24"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></symbol>
 </defs></svg>
 
 <header class="topbar">
@@ -201,7 +221,7 @@ footer { border-top: 1px solid var(--line); }
   </div>
   <div class="tabs-row">
     <nav class="nav-links">
-      <a href="#platform" id="navPlatform">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><a href="#">Training</a><a href="#">Releases</a>
+      <a href="#platform" id="navPlatform">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><a href="#">Training</a><a href="#releases" id="navReleases">Releases</a>
     </nav>
   </div>
 </header>
@@ -412,6 +432,109 @@ footer { border-top: 1px solid var(--line); }
     </aside>
   </div>
 </div>
+
+<div class="view" id="view-releases" hidden>
+  <div class="article-layout">
+    <aside class="side">
+      <div class="side-overline">RELEASES</div>
+      <button class="side-item active">Connector releases</button>
+      <button class="side-item">Agent releases</button>
+      <button class="side-item">CLI releases</button>
+      <button class="side-item">Platform changelog</button>
+      <button class="side-item">Proprietary recipe changelog</button>
+      <button class="side-item">What's changed in SaaS v2</button>
+      <button class="side-item">Migrating to SaaS v2</button>
+      <button class="side-item">SaaS v2 property mapping</button>
+    </aside>
+    <article class="article">
+      <div class="crumb">
+        <a href="#">Docs</a><span class="c">›</span><a href="#releases">Releases</a><span class="c">›</span><span class="pill">Connector releases</span>
+        <span class="copy"><a class="btn" style="padding:6px 12px;font-size:12px;" href="#">Copy page</a></span>
+      </div>
+      <h1>Connector releases</h1>
+      <div class="rel-table">
+        <table>
+          <tr><th>Component</th><th>Current version</th></tr>
+          <tr><td>Connector</td><td class="mono">0.150.163</td></tr>
+        </table>
+      </div>
+      <p><a class="dl" href="#">Download latest <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-down"/></svg></a></p>
+      <h2 id="changelog">Changelog</h2>
+
+      <div class="month" id="m-jul">July 2026</div>
+      <h3 class="ver" id="v163">v0.150.163 <span class="vd">– 2026-07-15</span></h3>
+      <a class="dl" href="#">Download <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-down"/></svg></a>
+      <ul class="changes">
+        <li>Withhold unreachable customer publishUri from the in-SaaS CLI <span class="pr">(#1591)</span></li>
+      </ul>
+      <h3 class="ver" id="v155">v0.150.155 <span class="vd">– 2026-07-14</span></h3>
+      <a class="dl" href="#">Download <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-down"/></svg></a>
+      <ul class="changes">
+        <li>Bound connector metric source tag to Atlas tag-value limit <span class="pr">(#1567)</span></li>
+        <li>Perf(connector): abort non-JAR LST downloads early <span class="pr">(#1576)</span></li>
+      </ul>
+      <h3 class="ver" id="v142">v0.150.142 <span class="vd">– 2026-07-08</span></h3>
+      <a class="dl" href="#">Download <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-down"/></svg></a>
+      <ul class="changes">
+        <li>Fix(connector): name the failing tool on connectivity-check failure <span class="pr">(#1549)</span></li>
+      </ul>
+      <h3 class="ver" id="v141">v0.150.141 <span class="vd">– 2026-07-08</span></h3>
+      <a class="dl" href="#">Download <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-down"/></svg></a>
+      <ul class="changes">
+        <li>Fix(connector): reject non-JAR payloads on LST download <span class="pr">(#1548)</span></li>
+        <li>Make connector Artifactory connectivity failures self-diagnosing <span class="pr">(#1497)</span></li>
+        <li>Remove legacy remoting servers and switch to rewrite releases <span class="pr">(#1449)</span></li>
+        <li>Fix(connector): stop a null-response WS handshake from wedging gateway reconnect</li>
+      </ul>
+
+      <div class="month" id="m-jun">June 2026</div>
+      <h3 class="ver" id="v82">v0.150.82 <span class="vd">– 2026-06-23</span></h3>
+      <a class="dl" href="#">Download <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-down"/></svg></a>
+      <ul class="changes">
+        <li>Fix(connector): stop reactor scheduler-metric cardinality explosion <span class="pr">(#1348)</span></li>
+        <li>Disable the expired azure devops pypi integration <span class="pr">(#1332)</span></li>
+        <li>Fix(connector): re-validate redirect targets in ProxyController to close SSRF <span class="pr">(#1210) (#1232)</span></li>
+        <li>Connector: route org-source fetches and all S3 access through the configured HTTP proxy <span class="pr">(#1267)</span></li>
+        <li>Fix(connector): skip client-side DNS resolution on proxied tool clients <span class="pr">(#1266)</span></li>
+      </ul>
+      <h3 class="ver" id="v48">v0.150.48 <span class="vd">– 2026-06-12</span></h3>
+      <a class="dl" href="#">Download <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-down"/></svg></a>
+      <ul class="changes">
+        <li>Build(connector): add spring-boot-starter-restclient dependency <span class="pr">(#1263)</span></li>
+        <li>Redact secrets from connector GET /configuration <span class="pr">(#1215)</span></li>
+        <li>Fix(connector): restore TLS on the connector→gateway link <span class="pr">(#1167)</span></li>
+        <li>Enforce config validation on remaining tool-bearing trees <span class="pr">(#1156)</span></li>
+        <li>Fix(connector): reuse one SslContext to stop connection-pool cardinality explosion <span class="pr">(#1152)</span></li>
+        <li>Fix(connector): convey LST changeset to the gateway on enrich rows <span class="pr">(#1145)</span></li>
+        <li>Move url validation into connector module <span class="pr">(#1164)</span></li>
+      </ul>
+      <h3 class="ver" id="v21">v0.150.21 <span class="vd">– 2026-06-05</span></h3>
+      <a class="dl" href="#">Download <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-down"/></svg></a>
+      <ul class="changes">
+        <li>Pin guava to 32.0.1-jre to clear CVE-2023-2976 and CVE-2020-8908 <span class="pr">(#1120)</span></li>
+        <li>Fail fast on unresolved <span class="mono">${...}</span> placeholders in config <span class="pr">(#1115)</span></li>
+      </ul>
+      <h3 class="ver" id="v17">v0.150.17 <span class="vd">– 2026-06-04</span></h3>
+      <a class="dl" href="#">Download <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-down"/></svg></a>
+      <ul class="changes">
+        <li>Add <span class="mono">software.amazon.awssdk:sts</span> so IRSA can assume the configured role <span class="pr">(#1107)</span></li>
+      </ul>
+    </article>
+    <aside class="toc">
+      <div class="ov">CHANGELOG</div>
+      <a class="mo" href="#m-jul">July 2026</a>
+      <a class="verl" href="#v163">v0.150.163 – 2026-07-15</a>
+      <a class="verl" href="#v155">v0.150.155 – 2026-07-14</a>
+      <a class="verl" href="#v142">v0.150.142 – 2026-07-08</a>
+      <a class="verl" href="#v141">v0.150.141 – 2026-07-08</a>
+      <a class="mo" href="#m-jun">June 2026</a>
+      <a class="verl" href="#v82">v0.150.82 – 2026-06-23</a>
+      <a class="verl" href="#v48">v0.150.48 – 2026-06-12</a>
+      <a class="verl" href="#v21">v0.150.21 – 2026-06-05</a>
+      <a class="verl" href="#v17">v0.150.17 – 2026-06-04</a>
+    </aside>
+  </div>
+</div>
 </main>
 
 <footer>
@@ -420,7 +543,7 @@ footer { border-top: 1px solid var(--line); }
     <span class="sp"></span>
     <a href="https://moderne.ai">moderne.ai</a>
     <a href="https://docs.openrewrite.org">OpenRewrite</a>
-    <a href="#">Releases</a>
+    <a href="#releases">Releases</a>
     <a href="#">Training</a>
   </div>
 </footer>
@@ -436,14 +559,18 @@ document.getElementById('modeBtn').addEventListener('click', () => {
 const q = new URLSearchParams(location.search).get('theme');
 if (q === 'light' || q === 'dark') { root.setAttribute('data-theme', q); icon.setAttribute('href', q === 'dark' ? '#i-sun' : '#i-moon'); }
 
-// view switching: #platform / #getting-started / #quickstart
-const VIEWS = { '#platform': 'view-platform', '#getting-started': 'view-getting-started', '#quickstart': 'view-quickstart' };
+// view switching: #platform / #getting-started / #quickstart / #releases
+const VIEWS = { '#platform': 'view-platform', '#getting-started': 'view-getting-started', '#quickstart': 'view-quickstart', '#releases': 'view-releases' };
+const PLATFORM_VIEWS = ['view-platform', 'view-getting-started', 'view-quickstart'];
 function fromHash() {
+  // In-page anchors (#s1, #v163, ...) scroll within the current view — don't switch
+  if (location.hash && !(location.hash in VIEWS)) { return; }
   const target = VIEWS[location.hash] || 'view-home';
   for (const id of ['view-home', ...Object.values(VIEWS)]) {
     document.getElementById(id).hidden = id !== target;
   }
-  document.getElementById('navPlatform').classList.toggle('active', target !== 'view-home');
+  document.getElementById('navPlatform').classList.toggle('active', PLATFORM_VIEWS.includes(target));
+  document.getElementById('navReleases').classList.toggle('active', target === 'view-releases');
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', fromHash);
