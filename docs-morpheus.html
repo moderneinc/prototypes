@@ -166,6 +166,19 @@ h2 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
 .prose-card p:last-child { margin-bottom: 0; }
 .prose-card b { color: var(--text); font-weight: 600; }
 .spectral-bar { height: 4px; border-radius: 2px; background: var(--spectral); margin: 0 0 18px; width: 64px; }
+/* generic video thumbnails — one token-drawn tile for every video */
+.vid-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+.vid { display: block; color: var(--text); }
+.vid:hover { text-decoration: none; }
+.vid-thumb { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 16 / 9; background: #232342; border-radius: 10px; overflow: hidden; }
+[data-theme="dark"] .vid-thumb { background: #2A2A32; border: 1px solid var(--line); }
+.vid-thumb::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--spectral); }
+.vid-thumb .vmark { position: absolute; top: 11px; left: 13px; width: 17px; height: 17px; color: rgba(251,250,246,.75); }
+.vid-play { width: 44px; height: 44px; border-radius: 999px; background: #FBFAF6; color: #232342; display: inline-flex; align-items: center; justify-content: center; transition: transform .12s ease; }
+.vid-play svg { width: 17px; height: 17px; margin-left: 2px; }
+.vid:hover .vid-play { transform: scale(1.08); }
+.vid-t { display: block; font-size: 13px; font-weight: 600; line-height: 1.4; margin-top: 10px; }
+.vid-m { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
 ul.tools { list-style: none; display: grid; gap: 10px; }
 ul.tools li { font-size: 14px; line-height: 1.55; color: var(--muted); padding-left: 18px; position: relative; }
 ul.tools li::before { content: ''; position: absolute; left: 0; top: 7px; width: 7px; height: 7px; border-radius: 2px; background: var(--ill-accent); }
@@ -350,25 +363,41 @@ footer { border-top: 1px solid var(--line); }
     </a>
   </div>
 
-  <div class="prose-wrap" style="margin-top:44px;">
-    <div class="prose-card">
-      <div class="spectral-bar"></div>
-      <h2 id="what-is-moderne">What is Moderne?</h2>
-      <p>Moderne builds the knowledge, discovery, and execution tools coding agents rely on to operate safely at scale. It's powered by <a href="https://docs.openrewrite.org">OpenRewrite</a> and the <b>Lossless Semantic Tree (LST)</b> — the industry's most comprehensive context model for understanding and transforming your code.</p>
-      <p>With Moderne, organizations automate framework migrations, remediate security vulnerabilities, and standardize code quality across thousands of repositories at once.</p>
+  <div class="prose-card" style="margin-top:44px;">
+    <div class="spectral-bar"></div>
+    <h2 id="what-is-moderne">What is Moderne?</h2>
+    <p>Moderne builds the knowledge, discovery, and execution tools coding agents rely on to operate safely at scale. It's powered by <a href="https://docs.openrewrite.org">OpenRewrite</a> and the <b>Lossless Semantic Tree (LST)</b> — the industry's most comprehensive context model for understanding and transforming your code.</p>
+    <p>With Moderne, organizations automate framework migrations, remediate security vulnerabilities, and standardize code quality across thousands of repositories at once.</p>
+    <div class="vid-row">
+      <a class="vid" href="https://www.youtube.com/watch?v=SxABeHxvc4s" target="_blank" rel="noopener">
+        <span class="vid-thumb"><svg class="vmark" viewBox="0 0 58 59" fill="currentColor"><use href="#mark"/></svg><span class="vid-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="vid-t">Migrate to Spring Boot 4 on the Moderne Platform</span>
+        <span class="vid-m">Moderne and OpenRewrite</span>
+      </a>
+      <a class="vid" href="https://www.youtube.com/watch?v=Q-ej2lCJHRs" target="_blank" rel="noopener">
+        <span class="vid-thumb"><svg class="vmark" viewBox="0 0 58 59" fill="currentColor"><use href="#mark"/></svg><span class="vid-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="vid-t">OpenRewrite vs. Moderne</span>
+        <span class="vid-m">Moderne and OpenRewrite</span>
+      </a>
+      <a class="vid" href="https://www.youtube.com/watch?v=KRXDMGt7DRE" target="_blank" rel="noopener">
+        <span class="vid-thumb"><svg class="vmark" viewBox="0 0 58 59" fill="currentColor"><use href="#mark"/></svg><span class="vid-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="vid-t">Moderne DevCenter</span>
+        <span class="vid-m">Moderne and OpenRewrite</span>
+      </a>
     </div>
-    <div class="prose-card">
-      <div class="spectral-bar"></div>
-      <h2>More about Moderne</h2>
-      <ul class="tools">
-        <li><b>Moderne Platform</b> — enterprise-ready private SaaS for running recipes across your organization.</li>
-        <li><b>Moderne CLI</b> — build LST artifacts and run recipes from your terminal.</li>
-        <li><b>Moderne DX</b> — large-scale insights and remediation for air-gapped environments.</li>
-        <li><b>Moddy</b> — a multi-repo AI agent pairing natural language with LST accuracy.</li>
-        <li><b>Prethink</b> — recipes that generate structured context for coding agents.</li>
-        <li><b>IntelliJ plugin</b> — create and debug recipes; search across all your repos.</li>
-      </ul>
-    </div>
+  </div>
+
+  <div class="prose-card" style="margin-top:16px;">
+    <div class="spectral-bar"></div>
+    <h2>More about Moderne</h2>
+    <p>Moderne delivers a coordinated set of tools that coding agents and developers use to understand software systems, discover relevant code, and safely execute large-scale engineering changes. Your organization can run <a href="#">existing recipes</a> from our extensive catalog or create your own. Moderne offers several tools to help you do this:</p>
+    <p>The <a href="#"><b>Moderne Platform</b></a> is an enterprise-ready, private SaaS solution that enables anyone in your organization to run recipes, create pull requests, and generate detailed reports across all of your repositories — all without writing a line of code.</p>
+    <p>The <a href="#"><b>Moderne CLI</b></a> is a command line tool that complements the Platform, enabling you to build LST artifacts across many repositories and run recipes against all of them from your local machine. It also provides substantial benefits for creating and testing your own recipes.</p>
+    <p><a href="#"><b>Moderne DX</b></a> brings the power of large-scale code insights and remediations into air-gapped or highly secure environments. It gives you the tools to build as much or as little as you need while ensuring all of your code and data remains under your own security controls.</p>
+    <p><a href="#"><b>Moddy</b></a> is a multi-repo AI agent that combines natural language with the accuracy and scalability of Moderne and OpenRewrite. You can ask it questions like "Help me upgrade to Spring Boot 3.5" and it will find and execute the appropriate recipes for you.</p>
+    <p><a href="#"><b>Moderne Prethink</b></a> recipes generate structured context that gives coding agents a clear, accurate understanding of your entire codebase. Instead of forcing agents to infer your architecture from raw code, Prethink provides pre-resolved knowledge about service endpoints, dependencies, test coverage, and more.</p>
+    <p>Moderne also offers an <a href="#"><b>IntelliJ IDEA plugin</b></a> that helps you create and debug recipes while allowing you to search for code across all of your repositories at once.</p>
+    <p>Moderne is SOC 2 Type 2 compliant, so you can be confident that your code is secure. Furthermore, a private SaaS can be created for your team in any major cloud provider or region of your choice. Moderne currently supports numerous languages, data formats, build tools, and frameworks — with more being routinely added over time. Moderne also supports <a href="#">most Git-based source code management tools</a>.</p>
   </div>
 </div>
 
