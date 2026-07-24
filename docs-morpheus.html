@@ -55,6 +55,18 @@ button { font: inherit; cursor: pointer; }
 .nav-links a:hover { color: var(--text); background: var(--row-hover); text-decoration: none; }
 .nav-links a.active { color: var(--link); font-weight: 600; }
 .nav-links a.active::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; background: var(--link); border-radius: 4px 4px 0 0; }
+.nav-dd { position: relative; }
+.nav-dd > a { display: inline-flex; align-items: center; gap: 5px; }
+.nav-dd > a .cv { width: 12px; height: 12px; margin-top: 1px; flex: none; transition: transform .15s ease; }
+.nav-dd.open > a { color: var(--link); font-weight: 600; }
+.nav-dd.open > a .cv { transform: rotate(180deg); }
+.dd-panel { display: none; position: absolute; top: calc(100% + 1px); left: 0; min-width: 238px; max-width: 280px; background: var(--field); border: 1px solid var(--line); border-radius: 10px; padding: 6px; box-shadow: 0 12px 28px rgba(35, 35, 66, .14); z-index: 30; }
+[data-theme="dark"] .dd-panel { box-shadow: 0 12px 28px rgba(0, 0, 0, .5); }
+.nav-dd.open .dd-panel { display: grid; gap: 2px; }
+.dd-panel a { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; line-height: 1.45; color: var(--text); padding: 9px 12px; border-radius: 6px; }
+.dd-panel a:hover { background: var(--row-hover); color: var(--text); text-decoration: none; }
+.dd-panel a span { flex: 1; }
+.dd-panel a .ext-i { width: 13px; height: 13px; color: var(--muted); flex: none; }
 .search { display: flex; align-items: center; gap: 10px; width: 340px; justify-self: center; padding: 9px 14px; font-size: 13px; color: var(--muted); background: var(--field); border: 1px solid var(--line-strong); border-radius: 10px; cursor: text; }
 .search svg { width: 14px; height: 14px; flex: none; }
 .search .ph { flex: 1; }
@@ -156,6 +168,43 @@ ul.tools { list-style: none; display: grid; gap: 10px; }
 ul.tools li { font-size: 14px; line-height: 1.55; color: var(--muted); padding-left: 18px; position: relative; }
 ul.tools li::before { content: ''; position: absolute; left: 0; top: 7px; width: 7px; height: 7px; border-radius: 2px; background: var(--ill-accent); }
 
+/* ===== search modal ===== */
+.modal-scrim { position: fixed; inset: 0; z-index: 50; background: rgba(35, 35, 66, .32); backdrop-filter: blur(2px); display: flex; align-items: flex-start; justify-content: center; padding: 56px 24px 24px; }
+[data-theme="dark"] .modal-scrim { background: rgba(0, 0, 0, .55); }
+.modal-scrim[hidden] { display: none; }
+.search-modal { width: 800px; max-width: 100%; max-height: calc(100vh - 112px); display: flex; flex-direction: column; background: var(--field); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 24px 64px rgba(35, 35, 66, .25); overflow: hidden; }
+[data-theme="dark"] .search-modal { box-shadow: 0 24px 64px rgba(0, 0, 0, .6); }
+.sm-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.sm-head .si { width: 16px; height: 16px; color: var(--muted); flex: none; }
+.sm-head input { flex: 1; font: inherit; font-size: 15px; color: var(--text); background: none; border: none; outline: none; }
+.sm-head input::placeholder { color: var(--muted); }
+.sm-x { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; background: none; border: none; border-radius: 6px; color: var(--muted); }
+.sm-x:hover { background: var(--row-hover); color: var(--text); }
+.sm-x svg { width: 14px; height: 14px; }
+.sm-facets { display: flex; gap: 8px; padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--line); }
+.facet { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 999px; background: var(--field); border: 1px solid var(--line-strong); color: var(--text); }
+.facet:hover { background: var(--surface); }
+.facet.active { background: var(--link); border-color: var(--link); color: #FBFAF6; }
+[data-theme="dark"] .facet.active { color: #17171C; }
+.sm-body { padding: 12px 16px 16px; display: grid; gap: 8px; overflow: auto; }
+.sm-label { font-size: 13px; font-weight: 700; margin: 4px 0 2px; }
+.sm-row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; background: var(--field); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; color: var(--text); }
+.sm-row:hover { background: var(--row-hover); }
+.sm-row.sel { background: #EEF3FC; border-color: #C7D7F6; }
+[data-theme="dark"] .sm-row.sel { background: #101A2E; border-color: #1E3A6B; }
+.sm-row .ri { width: 16px; height: 16px; color: var(--muted); flex: none; }
+.sm-row .rtw { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.sm-row .rt { font-size: 14px; font-weight: 500; }
+.sm-row .rs { font-size: 12px; color: var(--link); }
+.sm-row .ract { display: inline-flex; gap: 12px; color: var(--muted); flex: none; }
+.sm-row .ract svg { width: 15px; height: 15px; }
+.sm-row .ract svg:hover { color: var(--text); }
+.sm-foot { display: flex; align-items: center; gap: 16px; padding: 10px 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+.sm-foot .k { display: inline-flex; align-items: center; gap: 6px; }
+.sm-foot kbd { font-family: var(--font-mono); font-size: 10px; color: var(--text); background: var(--surface2); border: 1px solid var(--line); border-radius: 4px; padding: 2px 5px; }
+.sm-foot .sp { flex: 1; }
+.sm-foot .pw b { color: var(--text); font-weight: 600; }
+
 /* ===== releases ===== */
 .rel-table { display: inline-grid; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 4px 0 16px; }
 .rel-table table { border-collapse: collapse; }
@@ -198,6 +247,11 @@ footer { border-top: 1px solid var(--line); }
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><path d="M8 9h8M8 12.5h5"/></symbol>
   <symbol id="i-blocks" viewBox="0 0 24 24"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/></symbol>
   <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></symbol>
+  <symbol id="i-hist" viewBox="0 0 24 24"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 106 5.3L3 8"/><path d="M12 7v5l4 2"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
 </defs></svg>
 
 <header class="topbar">
@@ -221,7 +275,15 @@ footer { border-top: 1px solid var(--line); }
   </div>
   <div class="tabs-row">
     <nav class="nav-links">
-      <a href="#platform" id="navPlatform">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><a href="#">Training</a><a href="#releases" id="navReleases">Releases</a>
+      <a href="#platform" id="navPlatform">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><span class="nav-dd" id="ddTraining"><a href="#" id="navTraining">Training<svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></a>
+        <div class="dd-panel">
+          <a href="#"><span>Hands on Learning</span></a>
+          <a href="#"><span>OpenRewrite Advanced Program Analysis</span></a>
+          <a href="#"><span>Code Remix</span></a>
+          <a href="#"><span>Automated Software Refactoring with OpenRewrite and Generative AI</span><svg class="ext-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ext"/></svg></a>
+          <a href="#"><span>Upcoming live OpenRewrite training</span><svg class="ext-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ext"/></svg></a>
+        </div>
+      </span><a href="#releases" id="navReleases">Releases</a>
     </nav>
   </div>
 </header>
@@ -548,6 +610,66 @@ footer { border-top: 1px solid var(--line); }
   </div>
 </footer>
 
+<div class="modal-scrim" id="searchModal" hidden>
+  <div class="search-modal">
+    <div class="sm-head">
+      <svg class="si" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
+      <input type="text" placeholder="Search docs" id="smInput">
+      <button class="sm-x" id="smClose" aria-label="Close search"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="sm-facets">
+      <button class="facet">All</button>
+      <button class="facet active">Documentation</button>
+      <button class="facet">Recipes</button>
+    </div>
+    <div class="sm-body">
+      <div class="sm-label">Recent</div>
+      <button class="sm-row sel">
+        <svg class="ri" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hist"/></svg>
+        <span class="rtw"><span class="rt">Create custom recipes with the recipe builder</span></span>
+        <span class="ract"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg></span>
+      </button>
+      <button class="sm-row">
+        <svg class="ri" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hist"/></svg>
+        <span class="rtw"><span class="rt">Key concepts</span><span class="rs">Module 2: Recipe builder and declarative recipes</span></span>
+        <span class="ract"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg></span>
+      </button>
+      <button class="sm-row">
+        <svg class="ri" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hist"/></svg>
+        <span class="rtw"><span class="rt">Moderne architecture</span></span>
+        <span class="ract"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg></span>
+      </button>
+      <button class="sm-row">
+        <svg class="ri" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hist"/></svg>
+        <span class="rtw"><span class="rt">Parse errors while building</span><span class="rs">FAQ</span></span>
+        <span class="ract"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg></span>
+      </button>
+      <button class="sm-row">
+        <svg class="ri" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hist"/></svg>
+        <span class="rtw"><span class="rt">How to track migration status with Moderne</span></span>
+        <span class="ract"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg></span>
+      </button>
+      <button class="sm-row">
+        <svg class="ri" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hist"/></svg>
+        <span class="rtw"><span class="rt">Step 3: Deploying your recipe to the Moderne Platform</span><span class="rs">Writing and installing recipes</span></span>
+        <span class="ract"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg></span>
+      </button>
+      <button class="sm-row">
+        <svg class="ri" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-hist"/></svg>
+        <span class="rtw"><span class="rt">Moderne Prethink</span></span>
+        <span class="ract"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-star"/></svg><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg></span>
+      </button>
+    </div>
+    <div class="sm-foot">
+      <span class="k"><kbd>↓</kbd><kbd>↑</kbd> Navigate</span>
+      <span class="k"><kbd>↵</kbd> Select</span>
+      <span class="k"><kbd>ESC</kbd> Close</span>
+      <span class="sp"></span>
+      <span class="pw">Powered by <b>Algolia</b></span>
+    </div>
+  </div>
+</div>
+
 <script>
 const root = document.documentElement;
 const icon = document.getElementById('modeIcon').querySelector('use');
@@ -573,6 +695,30 @@ function fromHash() {
   document.getElementById('navReleases').classList.toggle('active', target === 'view-releases');
   window.scrollTo(0, 0);
 }
+// Training dropdown
+const dd = document.getElementById('ddTraining');
+document.getElementById('navTraining').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); dd.classList.toggle('open'); });
+document.addEventListener('click', (e) => { if (!dd.contains(e.target)) { dd.classList.remove('open'); } });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { dd.classList.remove('open'); } });
+if (new URLSearchParams(location.search).get('dd') === 'training') { dd.classList.add('open'); }
+
+// Search modal
+const sm = document.getElementById('searchModal');
+function openSearch() { sm.hidden = false; document.getElementById('smInput').focus(); }
+function closeSearch() { sm.hidden = true; }
+document.querySelector('.search').addEventListener('click', openSearch);
+document.getElementById('smClose').addEventListener('click', closeSearch);
+sm.addEventListener('click', (e) => { if (e.target === sm) { closeSearch(); } });
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); if (sm.hidden) { openSearch(); } else { closeSearch(); } }
+  if (e.key === 'Escape') { closeSearch(); }
+});
+document.querySelectorAll('.facet').forEach((f) => f.addEventListener('click', () => {
+  document.querySelector('.facet.active').classList.remove('active');
+  f.classList.add('active');
+}));
+if (new URLSearchParams(location.search).get('modal') === 'search') { openSearch(); }
+
 window.addEventListener('hashchange', fromHash);
 document.querySelector('.brand').addEventListener('click', (e) => { e.preventDefault(); location.hash = ''; fromHash(); });
 fromHash();

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moderne — Brand Guidelines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font-sans:"Poppins", system-ui, sans-serif;
+    --font-mono:"IBM Plex Mono", ui-monospace, monospace;
+    --midnight:#041834;
+  }
+  html[data-theme="light"]{
+    /* Morpheus light — warm cream canvas, ink-navy text */
+    --bg:#F2F0EA; --surface:#FBFAF6; --surface2:#EDEBE2;
+    --line:rgba(35,35,66,0.12); --line2:rgba(35,35,66,0.08); --line-strong:rgba(35,35,66,0.50);
+    --text:#232342; --body:rgba(35,35,66,0.70); --muted:rgba(35,35,66,0.48);
+    --field:#FBFAF6; --logo-filter:none;
+  }
+  html[data-theme="dark"]{
+    /* Morpheus dark — warm black canvas, ink-navy surfaces */
+    --bg:#100C0A; --surface:#171722; --surface2:#1E1E2C;
+    --line:rgba(228,232,250,0.10); --line2:rgba(228,232,250,0.06); --line-strong:rgba(228,232,250,0.22);
+    --text:#E9EAF2; --body:rgba(233,234,242,0.68); --muted:rgba(233,234,242,0.44);
+    --field:#100C0A; --logo-filter:brightness(0) invert(1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font-sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;transition:background .2s,color .2s;}
+  .mono{font-family:var(--font-mono);}
+  main{max-width:1000px;margin:0 auto;padding:0 36px 100px;}
+
+  header{max-width:1000px;margin:0 auto;padding:34px 36px 0;}
+  .head-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:14px;border-bottom:1px solid var(--line);}
+  .head-row img.lockup{height:26px;width:auto;display:block;filter:var(--logo-filter);}
+  .head-actions{display:flex;align-items:center;gap:10px;}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:9px 15px;font-family:inherit;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;cursor:pointer;}
+
+  h1{font-size:52px;font-weight:400;line-height:1.05;letter-spacing:-1.2px;margin:64px 0 18px;}
+  .lede{font-size:16px;line-height:1.65;color:var(--body);max-width:620px;}
+
+  section{margin-top:72px;}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:26px;}
+  h2{font-size:28px;font-weight:400;letter-spacing:-0.6px;}
+  .sec-head .m{font-family:var(--font-mono);font-size:11px;color:var(--muted);}
+  h3{font-size:16px;font-weight:600;margin-bottom:6px;}
+  p.note{font-size:14px;line-height:1.65;color:var(--body);max-width:640px;}
+  blockquote{font-size:14px;line-height:1.65;color:var(--body);border-left:2px solid var(--line-strong);padding-left:16px;margin:12px 0 0;max-width:620px;}
+
+  .panel{background:var(--surface);border:1px solid var(--line2);border-radius:12px;padding:22px;}
+  .show{display:flex;align-items:center;justify-content:center;border-radius:10px;padding:44px 24px;}
+  .show--light{background:#FBFAF6;border:1px solid rgba(35,35,66,0.12);}
+  .show--midnight{background:var(--midnight);}
+  .variant-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+  .variant-grid .panel{display:flex;flex-direction:column;gap:14px;}
+  .variant-grid .show{flex:none;}
+  .variant-grid p{font-size:13px;line-height:1.55;color:var(--body);}
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+  table.spec{border-collapse:collapse;border:1px solid var(--line);border-radius:10px;overflow:hidden;display:inline-block;}
+  table.spec th{font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;background:var(--surface2);padding:9px 20px;border-bottom:1px solid var(--line);}
+  table.spec td{font-size:14px;padding:11px 20px;background:var(--surface);}
+  table.spec tr + tr td{border-top:1px solid var(--line2);}
+  table.spec th + th, table.spec td + td{border-left:1px solid var(--line2);}
+  table.spec td.mono{font-family:var(--font-mono);font-size:12px;}
+
+  .size-row{display:flex;flex-direction:column;gap:26px;}
+  .size-row .lbl{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-bottom:9px;}
+  .size-row img{width:auto;display:block;filter:var(--logo-filter);}
+
+  .mock-header{display:flex;align-items:center;gap:22px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:13px 22px;}
+  .mock-header img{height:20px;width:auto;filter:var(--logo-filter);}
+  .mock-header span{font-size:13px;color:var(--muted);}
+  .fav-row{display:flex;align-items:center;gap:16px;margin-top:16px;}
+  .fav-row img{display:block;filter:var(--logo-filter);}
+  .fav-row span{font-size:12px;font-family:var(--font-mono);color:var(--muted);margin-right:14px;}
+
+  .dl-list{display:grid;gap:10px;max-width:560px;}
+  .dl{display:flex;align-items:center;gap:12px;background:var(--field);color:var(--text);border:1px solid var(--line-strong);border-radius:8px;padding:13px 18px;font-size:14px;font-weight:600;text-decoration:none;}
+  .dl:hover{background:var(--surface2);}
+  .dl svg{width:15px;height:15px;flex:none;color:var(--muted);}
+  .dl .ext{font-family:var(--font-mono);font-size:11px;font-weight:400;color:var(--muted);margin-left:auto;}
+
+  ul.donts{list-style:none;display:grid;gap:9px;margin-top:20px;max-width:640px;}
+  ul.donts li{font-size:14px;line-height:1.6;color:var(--body);padding-left:24px;position:relative;}
+  ul.donts li::before{content:'✕';position:absolute;left:0;top:1px;font-size:12px;font-weight:700;color:#C64533;}
+
+  .diagram{background:#FBFAF6;border:1px solid rgba(35,35,66,0.12);border-radius:10px;padding:26px;display:flex;align-items:center;justify-content:center;}
+  .diagram img{max-width:100%;height:auto;display:block;}
+
+  footer{max-width:1000px;margin:0 auto;padding:60px 36px 40px;border-top:1px solid var(--line);margin-top:80px;font-size:12.5px;color:var(--muted);display:flex;gap:22px;}
+  footer a{color:var(--muted);}
+  @media (max-width:900px){ .variant-grid{grid-template-columns:1fr;} .duo{grid-template-columns:1fr;} h1{font-size:38px;} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-row">
+    <img class="lockup" src="assets/brand-guidelines/moderne-logo-dark.svg" alt="Moderne">
+    <div class="head-actions">
+      <a class="chip" href="moderne-design-kit-preview.html">Design kit ↗</a>
+      <button class="chip" id="themeToggle" aria-label="Toggle theme"></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1>Brand guidelines</h1>
+  <p class="lede">The Moderne logo is the primary visual identifier of our brand. These guidelines ensure it's used consistently across all touchpoints — variants, clear space, sizing, and the assets to download.</p>
+
+  <!-- ===== variants ===== -->
+  <section>
+    <div class="sec-head"><h2>Logo variants</h2><span class="m">full · symbol · wordmark</span></div>
+    <p class="note" style="margin-bottom:22px;">Moderne has three logo variants. Use the right one for the context.</p>
+    <div class="variant-grid">
+      <div class="panel">
+        <div class="show show--light"><img src="assets/brand-guidelines/moderne-logo-dark.svg" alt="Moderne full logo" style="height:34px;width:auto;"></div>
+        <div>
+          <h3>Full logo</h3>
+          <p>The primary logo — icon mark + wordmark. Use this as the default wherever space allows. The lockup sets the wordmark in Beausite, a modern humanist sans serif that keeps the logotype approachable.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="show show--light"><img src="assets/brand-guidelines/moderne-mark.svg" alt="Moderne symbol" style="height:52px;width:auto;"></div>
+        <div>
+          <h3>Symbol</h3>
+          <p>The shorthand signifier of the brand — shapes coming together as the building blocks of code. Use when space is constrained (favicons, app icons, small UI) or the brand is already established in context.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="show show--light"><img src="assets/brand-guidelines/moderne-wordmark-dark.svg" alt="Moderne wordmark" style="height:26px;width:auto;"></div>
+        <div>
+          <h3>Wordmark only</h3>
+          <p>Use when the icon mark would be redundant — for example alongside the icon in a header — or for editorial contexts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== color variations ===== -->
+  <section>
+    <div class="sec-head"><h2>Color variations</h2><span class="m">default · inverted</span></div>
+    <div class="duo">
+      <div class="panel">
+        <div class="show show--light"><img src="assets/brand-guidelines/moderne-logo-dark.svg" alt="Moderne logo, default" style="height:38px;width:auto;"></div>
+        <div style="margin-top:14px;"><h3>Default (dark)</h3><p class="note" style="font-size:13px;">For use on light backgrounds.</p></div>
+      </div>
+      <div class="panel">
+        <div class="show show--midnight"><img src="assets/brand-guidelines/moderne-logo-white.svg" alt="Moderne logo, inverted" style="height:38px;width:auto;"></div>
+        <div style="margin-top:14px;"><h3>White (inverted)</h3><p class="note" style="font-size:13px;">For use on dark or colored backgrounds.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== clear space ===== -->
+  <section>
+    <div class="sec-head"><h2>Clear space</h2><span class="m">minimum = X (icon height)</span></div>
+    <p class="note" style="margin-bottom:22px;">The clear space around the logo ensures it's never crowded by other elements. The minimum clear space is defined by the height of the icon mark, referred to as <b>"X"</b>.</p>
+    <div class="duo">
+      <div class="diagram"><img src="assets/brand-guidelines/logo-clearspace-full.png" alt="Clear space diagram for full logo"></div>
+      <div class="diagram"><img src="assets/brand-guidelines/logo-clearspace-symbol.png" alt="Clear space diagram for symbol" style="max-height:300px;"></div>
+    </div>
+  </section>
+
+  <!-- ===== minimum size ===== -->
+  <section>
+    <div class="sec-head"><h2>Minimum size</h2><span class="m">digital · print</span></div>
+    <p class="note" style="margin-bottom:22px;">To maintain legibility, the logo should never appear smaller than:</p>
+    <table class="spec">
+      <tr><th>Variant</th><th>Digital</th><th>Print</th></tr>
+      <tr><td>Full logo</td><td class="mono">120px wide</td><td class="mono">40mm wide</td></tr>
+      <tr><td>Icon only</td><td class="mono">24px</td><td class="mono">8mm</td></tr>
+      <tr><td>Wordmark</td><td class="mono">80px wide</td><td class="mono">28mm wide</td></tr>
+    </table>
+  </section>
+
+  <!-- ===== sizing ===== -->
+  <section>
+    <div class="sec-head"><h2>Sizing</h2><span class="m">24 / 32 / 48</span></div>
+    <div class="panel size-row">
+      <div><div class="lbl">SMALL · 24PX</div><img src="assets/brand-guidelines/moderne-logo-dark.svg" alt="Moderne logo at 24px" style="height:24px;"></div>
+      <div><div class="lbl">MEDIUM · 32PX — DEFAULT</div><img src="assets/brand-guidelines/moderne-logo-dark.svg" alt="Moderne logo at 32px" style="height:32px;"></div>
+      <div><div class="lbl">LARGE · 48PX</div><img src="assets/brand-guidelines/moderne-logo-dark.svg" alt="Moderne logo at 48px" style="height:48px;"></div>
+    </div>
+  </section>
+
+  <!-- ===== placement ===== -->
+  <section>
+    <div class="sec-head"><h2>Placement in UI</h2><span class="m">header · favicon</span></div>
+    <div class="mock-header">
+      <img src="assets/brand-guidelines/moderne-logo-dark.svg" alt="Moderne logo in app header">
+      <span>← Logo sits left-aligned in the header</span>
+    </div>
+    <div class="fav-row">
+      <img src="assets/brand-guidelines/moderne-mark.svg" alt="Moderne favicon at 16px" style="height:16px;width:16px;"><span>16px — favicon</span>
+      <img src="assets/brand-guidelines/moderne-mark.svg" alt="Moderne app icon at 32px" style="height:32px;width:32px;"><span>32px — app icon</span>
+    </div>
+  </section>
+
+  <!-- ===== downloads ===== -->
+  <section>
+    <div class="sec-head"><h2>Downloads</h2><span class="m">logo · icon · motion · fonts</span></div>
+    <div class="dl-list">
+      <a class="dl" href="https://moderneinc.github.io/design-system/Moderne-Registered-Logo.zip" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Moderne Registered Logo<span class="ext">.zip</span></a>
+      <a class="dl" href="https://moderneinc.github.io/design-system/Moderne-M-Icon.zip" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Moderne "M" Icon<span class="ext">.zip</span></a>
+      <a class="dl" href="https://moderneinc.github.io/design-system/animating-m-dark.gif" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Animating M — Dark<span class="ext">.gif</span></a>
+      <a class="dl" href="https://moderneinc.github.io/design-system/animating-m-light.gif" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Animating M — Light<span class="ext">.gif</span></a>
+      <a class="dl" href="https://moderneinc.github.io/design-system/Moderne-Brand-Guidelines-2024.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Brand Guidelines 2024<span class="ext">.pdf</span></a>
+      <a class="dl" href="https://moderneinc.github.io/design-system/Beausite-Fit.zip" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>Beausite Fit<span class="ext">.zip</span></a>
+    </div>
+  </section>
+
+  <!-- ===== incorrect uses ===== -->
+  <section>
+    <div class="sec-head"><h2>Incorrect uses</h2><span class="m">don'ts</span></div>
+    <p class="note">Avoid the following incorrect usages of the logo in order to maintain consistency and clarity across the brand.</p>
+    <div class="diagram" style="margin-top:22px;max-width:760px;"><img src="assets/brand-guidelines/logo-incorrect-uses.png" alt="Examples of incorrect logo usage"></div>
+    <ul class="donts">
+      <li>Do not stretch, rotate, or distort the logo</li>
+      <li>Do not change the logo colors beyond the provided variants</li>
+      <li>Do not add effects (shadows, gradients, outlines)</li>
+      <li>Do not place the logo on busy backgrounds without sufficient contrast</li>
+      <li>Do not rearrange the icon mark and wordmark</li>
+      <li>Do not recreate the logo — always use the provided files</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <span>© 2026 Moderne, Inc.</span>
+  <a href="moderne-design-kit-preview.html">Design kit</a>
+  <a href="https://moderneinc.github.io/design-system/?path=/docs/get-started-brand-logo-guidelines--documentation">Full guidelines in the design system ↗</a>
+</footer>
+
+<script>
+  let mode = "light";
+  const themeParam = new URLSearchParams(location.search).get("theme");
+  if (themeParam === "light" || themeParam === "dark") { mode = themeParam; }
+  function applyTheme() {
+    document.documentElement.setAttribute("data-theme", mode);
+    const btn = document.getElementById("themeToggle");
+    btn.innerHTML = mode === "dark"
+      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg><span>Dark</span>'
+      : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></svg><span>Light</span>';
+  }
+  document.getElementById("themeToggle").addEventListener("click", () => { mode = mode === "light" ? "dark" : "light"; applyTheme(); });
+  applyTheme();
+</script>
+</body>
+</html>
