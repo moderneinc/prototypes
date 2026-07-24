@@ -22,7 +22,7 @@
   --line: rgba(35,35,66,.12); --line2: rgba(35,35,66,.08); --line-strong: rgba(35,35,66,.50);
   --text: #232342; --muted: #62627A;
   --link: #1245AE; --link-deep: #16306B;
-  --btn-primary-bg: #232342; --btn-primary-fg: #FBFAF6;
+  --btn-primary-bg: #232342; --btn-primary-fg: #FBFAF6; --btn-primary-hover: #2C2C50;
   --ill-panel: #FBFAF6; --ill-stroke: rgba(35,35,66,.50); --ill-accent: #3E5BE8;
 }
 [data-theme="dark"] {
@@ -31,7 +31,7 @@
   --line: rgba(240,240,246,.12); --line2: rgba(240,240,246,.08); --line-strong: rgba(240,240,246,.38);
   --text: #F1F0EA; --muted: #9C9CA8;
   --link: #7FA9F9; --link-deep: #7FA9F9;
-  --btn-primary-bg: #F1F0EA; --btn-primary-fg: #17171C;
+  --btn-primary-bg: #F1F0EA; --btn-primary-fg: #17171C; --btn-primary-hover: #FFFFFF;
   --ill-panel: #26262E; --ill-stroke: rgba(240,240,246,.38); --ill-accent: #8CA0F5;
 }
 body { font-family: var(--font-sans); font-size: 14px; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; transition: background .2s, color .2s; }
@@ -42,12 +42,12 @@ button { font: inherit; cursor: pointer; }
 /* ===== topbar: lockup + centered search, tabs on their own row ===== */
 .topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); }
 .top-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 22px; padding: 16px 36px 12px; }
-.brand { display: flex; align-items: center; gap: 10px; color: var(--text); }
+.brand { display: flex; align-items: flex-end; gap: 12px; color: var(--text); }
 .brand img { height: 30px; width: auto; display: block; }
 .brand .logo-dark { display: none; }
 [data-theme="dark"] .brand .logo-light { display: none; }
 [data-theme="dark"] .brand .logo-dark { display: block; }
-.brand .docs { font-size: 26px; font-weight: 400; letter-spacing: -.02em; color: var(--muted); }
+.brand .docs { font-size: 30px; font-weight: 400; line-height: 1; letter-spacing: -.02em; color: var(--muted); margin-bottom: -4px; }
 .top-right { display: flex; align-items: center; gap: 18px; justify-self: end; }
 .tabs-row { display: flex; align-items: center; gap: 2px; padding: 0 30px; border-bottom: 1px solid var(--line); }
 .nav-links { display: flex; align-items: center; gap: 2px; }
@@ -88,6 +88,7 @@ h1 .grad { background: var(--spectral); -webkit-background-clip: text; backgroun
 .btn { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding: 10px 17px; border-radius: 4px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); text-decoration: none; }
 .btn:hover { background: var(--surface); text-decoration: none; }
 .btn--primary { background: var(--btn-primary-bg); color: var(--btn-primary-fg); border-color: transparent; }
+.btn--primary:hover { background: var(--btn-primary-hover); color: var(--btn-primary-fg); }
 /* ===== section page (platform) ===== */
 .view[hidden] { display: none !important; }
 .section-layout { display: grid; grid-template-columns: 232px 1fr; gap: 40px; padding: 28px 0 60px; align-items: start; }
@@ -137,7 +138,7 @@ h1 .grad { background: var(--spectral); -webkit-background-clip: text; backgroun
 .toc .ov { font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; color: var(--muted); margin-bottom: 10px; }
 .toc a { display: block; font-size: 12px; line-height: 1.5; color: var(--muted); padding: 4px 0; }
 .toc a:hover { color: var(--link); text-decoration: none; }
-.signin-mock { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 34px 28px; margin: 16px 0 6px; max-width: 400px; display: grid; justify-items: center; gap: 10px; }
+.signin-mock { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 34px 28px; margin: 16px auto 6px; max-width: 400px; display: grid; justify-items: center; gap: 10px; }
 .signin-mock h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
 .signin-mock .sso { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; font-size: 13px; font-weight: 600; padding: 10px 0; border-radius: 4px; border: 1px solid var(--line-strong); background: var(--field); color: var(--text); }
 .signin-mock .links { display: flex; gap: 18px; margin-top: 8px; font-size: 12px; }
@@ -159,7 +160,7 @@ h2 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
 /* ===== prose ===== */
 .prose-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
 .prose-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
-.prose-card h2 { margin-bottom: 12px; }
+.prose-card h2 { margin-bottom: 12px; scroll-margin-top: 130px; }
 .prose-card p { font-size: 14px; line-height: 1.65; color: var(--muted); margin-bottom: 12px; }
 .prose-card p:last-child { margin-bottom: 0; }
 .prose-card b { color: var(--text); font-weight: 600; }
@@ -248,6 +249,7 @@ footer { border-top: 1px solid var(--line); }
   <symbol id="i-blocks" viewBox="0 0 24 24"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/></symbol>
   <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-dna" viewBox="0 0 24 24"><path d="M8 2c0 7 8 9 8 20M16 2c0 7-8 9-8 20"/><path d="M9 6.5h6M8.2 12h7.6M9 17.5h6"/></symbol>
   <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14L21 3"/><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/></symbol>
   <symbol id="i-hist" viewBox="0 0 24 24"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 106 5.3L3 8"/><path d="M12 7v5l4 2"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></symbol>
@@ -275,7 +277,7 @@ footer { border-top: 1px solid var(--line); }
   </div>
   <div class="tabs-row">
     <nav class="nav-links">
-      <a href="#platform" id="navPlatform">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><span class="nav-dd" id="ddTraining"><a href="#" id="navTraining">Training<svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></a>
+      <a href="#platform" id="navPlatform">Platform</a><a href="#">CLI</a><a href="#">Recipes</a><a href="#">Moddy</a><a href="#">Code Genome</a><span class="nav-dd" id="ddTraining"><a href="#" id="navTraining">Training<svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></a>
         <div class="dd-panel">
           <a href="#"><span>Hands on Learning</span></a>
           <a href="#"><span>OpenRewrite Advanced Program Analysis</span></a>
@@ -283,7 +285,18 @@ footer { border-top: 1px solid var(--line); }
           <a href="#"><span>Automated Software Refactoring with OpenRewrite and Generative AI</span><svg class="ext-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ext"/></svg></a>
           <a href="#"><span>Upcoming live OpenRewrite training</span><svg class="ext-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ext"/></svg></a>
         </div>
-      </span><a href="#releases" id="navReleases">Releases</a>
+      </span><span class="nav-dd" id="ddReleases"><a href="#" id="navReleases">Releases<svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></a>
+        <div class="dd-panel">
+          <a href="#releases"><span>Connector releases</span></a>
+          <a href="#"><span>Agent releases</span></a>
+          <a href="#"><span>CLI releases</span></a>
+          <a href="#"><span>Platform changelog</span></a>
+          <a href="#"><span>Proprietary recipe changelog</span></a>
+          <a href="#"><span>What's changed in SaaS v2</span></a>
+          <a href="#"><span>Migrating to SaaS v2</span></a>
+          <a href="#"><span>SaaS v2 property mapping</span></a>
+        </div>
+      </span>
     </nav>
   </div>
 </header>
@@ -296,12 +309,12 @@ footer { border-top: 1px solid var(--line); }
       <p class="lede">Discover how to fix vulnerabilities, standardize code quality, perform type-aware code search, and automate refactoring across your entire codebase.</p>
       <div class="hero-actions">
         <a class="btn btn--primary" href="#">Get started</a>
-        <a class="btn" href="#">What is Moderne?</a>
+        <a class="btn" href="#what-is-moderne">What is Moderne?</a>
       </div>
     </div>
   </section>
 
-  <div class="sec-head"><h2>Browse by area</h2><span class="m">7 areas · platform to plugins</span></div>
+  <div class="sec-head"><h2>Browse by area</h2><span class="m">8 areas</span></div>
   <div class="grid">
     <a class="area" href="#">
       <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-globe"/></svg></span>
@@ -331,12 +344,16 @@ footer { border-top: 1px solid var(--line); }
       <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-blocks"/></svg></span>
       <span><h3>IDE plugins</h3><p>An IntelliJ IDE plugin for multi-repository code search and recipe development.</p><span class="go">Explore →</span></span>
     </a>
+    <a class="area" href="#">
+      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-dna"/></svg></span>
+      <span><h3>Code Genome</h3><p>Sequence every repo into a structural genome — search and transform your codebase like data.</p><span class="go">Explore →</span></span>
+    </a>
   </div>
 
   <div class="prose-wrap" style="margin-top:44px;">
     <div class="prose-card">
       <div class="spectral-bar"></div>
-      <h2>What is Moderne?</h2>
+      <h2 id="what-is-moderne">What is Moderne?</h2>
       <p>Moderne builds the knowledge, discovery, and execution tools coding agents rely on to operate safely at scale. It's powered by <a href="https://docs.openrewrite.org">OpenRewrite</a> and the <b>Lossless Semantic Tree (LST)</b> — the industry's most comprehensive context model for understanding and transforming your code.</p>
       <p>With Moderne, organizations automate framework migrations, remediate security vulnerabilities, and standardize code quality across thousands of repositories at once.</p>
     </div>
@@ -603,10 +620,10 @@ footer { border-top: 1px solid var(--line); }
   <div class="foot-in">
     <span>© 2026 Moderne, Inc.</span>
     <span class="sp"></span>
-    <a href="https://moderne.ai">moderne.ai</a>
-    <a href="https://docs.openrewrite.org">OpenRewrite</a>
-    <a href="#releases">Releases</a>
-    <a href="#">Training</a>
+    <a href="#">Licensing</a>
+    <a href="#">Contact us</a>
+    <a href="#">Terms of service</a>
+    <a href="#">Privacy policy</a>
   </div>
 </footer>
 
@@ -695,12 +712,22 @@ function fromHash() {
   document.getElementById('navReleases').classList.toggle('active', target === 'view-releases');
   window.scrollTo(0, 0);
 }
-// Training dropdown
-const dd = document.getElementById('ddTraining');
-document.getElementById('navTraining').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); dd.classList.toggle('open'); });
-document.addEventListener('click', (e) => { if (!dd.contains(e.target)) { dd.classList.remove('open'); } });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { dd.classList.remove('open'); } });
-if (new URLSearchParams(location.search).get('dd') === 'training') { dd.classList.add('open'); }
+// nav dropdowns (Training, Releases)
+const dds = { training: document.getElementById('ddTraining'), releases: document.getElementById('ddReleases') };
+function closeDds(except) { Object.values(dds).forEach((d) => { if (d !== except) { d.classList.remove('open'); } }); }
+Object.values(dds).forEach((d) => {
+  d.querySelector('a').addEventListener('click', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const wasOpen = d.classList.contains('open');
+    closeDds();
+    d.classList.toggle('open', !wasOpen);
+  });
+  d.querySelectorAll('.dd-panel a').forEach((a) => a.addEventListener('click', () => closeDds()));
+});
+document.addEventListener('click', (e) => { if (!Object.values(dds).some((d) => d.contains(e.target))) { closeDds(); } });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeDds(); } });
+const ddParam = new URLSearchParams(location.search).get('dd');
+if (ddParam && dds[ddParam]) { dds[ddParam].classList.add('open'); }
 
 // Search modal
 const sm = document.getElementById('searchModal');
