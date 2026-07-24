@@ -505,31 +505,41 @@
     function cell(canvas, val, inset, kind){
       return `<div>${tile(canvas, val, inset, kind)}<div class="mono" style="font-size:10px;color:var(--muted);margin-top:6px;word-break:break-all;line-height:1.35;">${val}</div></div>`;
     }
+    // One column only: the swatches follow the page theme (toggle to compare)
     function renderTokenGroup(id, rows, kind){
       const c = document.getElementById(id); if(!c) return;
+      const dark = mode === "dark";
+      const canvas = dark ? DARK_CANVAS : LIGHT_CANVAS;
+      const inset = dark ? "rgba(255,255,255,0.20)" : "rgba(0,0,0,0.12)";
       const head = lbl => `<div class="mono" style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);align-self:end;padding-bottom:4px;">${lbl}</div>`;
-      let html = "<div></div>" + head("Dark") + head("Light");
+      c.style.gridTemplateColumns = "1.3fr 1fr";
+      let html = "<div></div>" + head(dark ? "Dark" : "Light");
       rows.forEach(r => {
         html += `<div style="padding-top:2px;">
             <div style="font-size:14px;font-weight:500;color:var(--text);">${r.name}</div>
             <div class="mono" style="font-size:12px;color:var(--muted);margin-top:2px;">${r.token}</div>
           </div>`
-          + cell(DARK_CANVAS, r.dark, "rgba(255,255,255,0.20)", kind)
-          + cell(LIGHT_CANVAS, r.light, "rgba(0,0,0,0.12)", kind);
+          + cell(canvas, dark ? r.dark : r.light, inset, kind);
       });
       c.innerHTML = html;
     }
-    renderTokenGroup("bgTokens", bgTokens, "bg");
-    renderTokenGroup("fontTokens", fontTokens, "font");
+    function renderTokens(){
+      renderTokenGroup("bgTokens", bgTokens, "bg");
+      renderTokenGroup("fontTokens", fontTokens, "font");
+    }
+    renderTokens();
+    rerenderTokens = renderTokens;
   }
 
   // ---- Theme-dependent rendering (tokens live in CSS [data-theme]) ----
   let mode = "dark";
+  let rerenderTokens = null;
   const themeParam = new URLSearchParams(location.search).get("theme");
   if (themeParam === "light" || themeParam === "dark") { mode = themeParam; }
 
   function applyTheme() {
     document.documentElement.setAttribute("data-theme", mode);
+    if (typeof rerenderTokens === "function") { rerenderTokens(); }
 
     // toggle button
     const btn = document.getElementById("themeToggle");
