@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login &amp; token — flow storyboards</title>
+<style>
+  :root { color-scheme: light dark; --line: color-mix(in srgb, CanvasText 22%, transparent); }
+  * { box-sizing: border-box; }
+  body { font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, sans-serif;
+         max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px;
+         background: Canvas; color: CanvasText; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .sub { opacity: .7; margin: 0 0 8px; max-width: 70ch; }
+  .legend { opacity:.7; font-size:.85rem; margin: 0 0 28px; }
+
+  .flow { border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px 24px; margin: 0 0 26px;
+          background: color-mix(in srgb, CanvasText 3%, Canvas); }
+  .flow > h2 { font-size: 1.15rem; margin: 0 0 2px; }
+  .flow > .desc { opacity: .72; margin: 0 0 20px; font-size: .92rem; max-width: 68ch; }
+
+  /* Two screens per row. Columns are fractions of the flow width so they never spill past its edge;
+     the flow is wide enough that each column stays >480px and renders the real desktop card. */
+  .steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 30px; }
+  .step { min-width: 0; }
+  .cap { display:flex; align-items:center; gap:8px; font-weight:600; font-size:.95rem; margin: 0 0 8px; }
+  .cap .n { display:inline-grid; place-items:center; min-width:24px; height:24px; padding:0 6px;
+            border-radius:999px; background: CanvasText; color: Canvas; font-size:.78rem; font-weight:700; }
+  .cap .tag { margin-left:auto; font-weight:500; font-size:.72rem; opacity:.6; }
+  .screen { width: 100%; height: 620px; border: 1px solid var(--line); border-radius: 12px;
+            overflow: hidden; background: #0f0f14; }
+  .screen iframe { width: 100%; height: 620px; border: 0; }
+  .home { display:grid; place-content:center; text-align:center; height:620px; gap:12px;
+          background: color-mix(in srgb, CanvasText 5%, Canvas); }
+  .home img { width: min(480px, 92%); height:auto; border-radius:8px; border:1px solid var(--line); }
+  .home b { font-size: 1.02rem; }
+  .home span { opacity:.65; font-size:.85rem; }
+  .do { font-size: .85rem; opacity: .82; margin: 10px 2px 0; }
+  .do .to { display:inline-block; font-weight:600; opacity:.9; }
+
+  .note { margin: 20px 0 0; font-size: .85rem; opacity:.82;
+          border-left: 3px solid var(--line); padding: 2px 0 2px 12px; max-width: 70ch; }
+  .pill { display:inline-block; font-size:.72rem; font-weight:600; padding:2px 8px; border-radius:999px;
+          border:1px solid var(--line); opacity:.85; vertical-align: middle; }
+
+  /* Narrower than two comfortable desktop cards → one per row. */
+  @media (max-width: 1080px) {
+    .steps { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <h1>Login &amp; token — flow storyboards</h1>
+  <p class="sub">The same screens arranged as the actual paths a user takes. Screens repeat between
+     flows on purpose — that's the point, to see each journey end to end. Every panel is the real
+     server-rendered page; scroll a panel to see the rest of it.</p>
+  <p class="legend">Theme follows your OS light/dark setting.
+     Part of the <a href="../">codegenome-auth prototype</a>.</p>
+
+  <!-- FLOW A -->
+  <section class="flow">
+    <h2>A · First-time user — GitHub / Google <span class="pill">social login</span></h2>
+    <p class="desc">A person's first social sign-in. They land on the token gate, then either grab a
+       token (3a) or skip straight to the home page (3b). This is the only flow where the gate appears.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="cap"><span class="n">1</span> Sign in</div>
+        <div class="screen"><iframe src="01-login.html" title="Sign in"></iframe></div>
+        <div class="do">Click <b>Continue with GitHub</b> (or Google) → authorize.
+           <span class="to">→ next: the gate.</span></div>
+      </div>
+      <div class="step">
+        <div class="cap"><span class="n">2</span> First-time gate <span class="tag">opt-in variant</span></div>
+        <div class="screen"><iframe src="05-get-token-optin.html" title="First-time gate"></iframe></div>
+        <div class="do">Choose an outcome: <b>Get my token</b> (3a) or <b>Skip for now</b> (3b).</div>
+      </div>
+      <div class="step">
+        <div class="cap"><span class="n">3a</span> Token page <span class="tag">Get my token</span></div>
+        <div class="screen"><iframe src="07-token-page.html" title="Token page"></iframe></div>
+        <div class="do">Reveal &amp; copy the token (shown once). Close ✕ → home.</div>
+      </div>
+      <div class="step">
+        <div class="cap"><span class="n">3b</span> Home <span class="tag">Skip for now</span></div>
+        <div class="screen"><div class="home"><img src="img/home-dark.png" alt="Home page"><span>Home page (no token)</span></div></div>
+        <div class="do">Skipping lands here — a token can be grabbed later from the profile menu.</div>
+      </div>
+    </div>
+    <p class="note">Gate has two variants by region (auto-detected): <b>opt-in</b> (checkbox — EU &amp;
+       unknown) vs <b>notice</b> (no checkbox — US). Same token either way. <b>Skip for now</b> also sets a
+       marker so the <em>next</em> sign-in skips the gate (Flow B).</p>
+  </section>
+
+  <!-- FLOW B -->
+  <section class="flow">
+    <h2>B · Returning user — GitHub / Google <span class="pill">social login</span></h2>
+    <p class="desc">Any social sign-in after the first. The gate is skipped entirely — a plain login
+       that lands on the home page.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="cap"><span class="n">1</span> Sign in</div>
+        <div class="screen"><iframe src="01-login.html" title="Sign in"></iframe></div>
+        <div class="do">Click <b>Continue with GitHub</b> → authorize.
+           <span class="to">→ next: straight home (gate skipped).</span></div>
+      </div>
+      <div class="step">
+        <div class="cap"><span class="n">2</span> Home <span class="tag">profile menu open</span></div>
+        <div class="screen"><div class="home"><img src="img/home-menu-open.png" alt="Home page with the profile menu open, showing a “Get a download token” item"><span>Home page — profile menu open</span></div></div>
+        <div class="do">No token prompt. A token is still one click away: the profile menu's
+           <b>Get a download token</b> opens the token flow.</div>
+      </div>
+    </div>
+    <p class="note"><b>Getting a token as a returning user:</b> they aren't sent to the gate on sign-in,
+       but the existing <b>Get a download token</b> link in the profile dropdown (shown above) still
+       takes them to the token flow whenever they want one.</p>
+    <p class="note">"Returning" = a browser that already saw the gate once (a persistent
+       <span class="pill">cgp_returning</span> cookie). Clearing it, or a new browser, shows Flow A again.</p>
+  </section>
+
+  <!-- FLOW C -->
+  <section class="flow">
+    <h2>C · Licensed customer — username / password <span class="pill">Moderne-provided account</span></h2>
+    <p class="desc">Customers given a Moderne username &amp; password sign in with those instead of
+       GitHub/Google, and land on the token management page (generate / list / revoke). No gate.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="cap"><span class="n">1</span> Sign in</div>
+        <div class="screen"><iframe src="01-login.html" title="Sign in"></iframe></div>
+        <div class="do">Enter the <b>username + password</b> Moderne provided → <b>Sign in</b>.
+           <span class="to">→ next: token management.</span></div>
+      </div>
+      <div class="step">
+        <div class="cap"><span class="n">2</span> Token management</div>
+        <div class="screen"><iframe src="08-customer-manage.html" title="Customer token management"></iframe></div>
+        <div class="do"><b>Generate</b> a token, or <b>revoke</b> existing ones. Close ✕ → home.</div>
+      </div>
+    </div>
+    <p class="note">Generating reloads this same page with the new token revealed once + Maven/Gradle/CLI
+       snippets above the list. This is the closest thing today to your reference screenshot — <b>Phase 2</b>
+       generalizes it to social-login users and adds token names + expiry.</p>
+  </section>
+</body>
+</html>
