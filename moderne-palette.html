@@ -21,9 +21,10 @@
     --mono:"JetBrains Mono",ui-monospace,monospace;
   }
   body[data-theme="light"]{
-    --bg:#F6F7FA; --surface:#ECEEF3; --line:#DCE0E8;
-    --text:#1B2230; --muted:#6A7180;
-    --btn-bg:#E6399B; --btn-fg:#FFFFFF; --link:#E6399B;
+    /* Morpheus light — warm cream canvas, ink-navy text */
+    --bg:#F2F0EA; --surface:#FBFAF6; --line:rgba(35,35,66,0.12);
+    --text:#232342; --muted:#62627A;
+    --btn-bg:#232342; --btn-fg:#FBFAF6; --link:#1245AE;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;padding:28px 20px 60px;transition:background .25s,color .25s}
@@ -303,11 +304,15 @@
 
   /* theme toggle */
   const body = document.body, tlabel = document.getElementById('tlabel');
-  document.getElementById('toggle').addEventListener('click',()=>{
-    const next = body.dataset.theme === 'dark' ? 'light' : 'dark';
+  function setTheme(next){
     body.dataset.theme = next;
     tlabel.textContent = next.charAt(0).toUpperCase()+next.slice(1);
+  }
+  document.getElementById('toggle').addEventListener('click',()=>{
+    setTheme(body.dataset.theme === 'dark' ? 'light' : 'dark');
   });
+  const themeParam = new URLSearchParams(location.search).get('theme');
+  if (themeParam === 'light' || themeParam === 'dark') { setTheme(themeParam); }
 
   /* ---- Claude spark icon ---- */
   (function(){
