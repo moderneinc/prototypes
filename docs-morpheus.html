@@ -42,20 +42,21 @@ button { font: inherit; cursor: pointer; }
 /* ===== topbar: lockup + centered search, tabs on their own row ===== */
 .topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); }
 .top-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 22px; padding: 16px 36px 12px; }
-.brand { display: flex; align-items: flex-end; gap: 12px; color: var(--text); }
-.brand img { height: 30px; width: auto; display: block; }
+.brand { display: flex; align-items: center; color: var(--text); }
+.brand img { height: 24px; width: auto; display: block; }
 .brand .logo-dark { display: none; }
 [data-theme="dark"] .brand .logo-light { display: none; }
 [data-theme="dark"] .brand .logo-dark { display: block; }
-.brand .docs { font-size: 30px; font-weight: 400; line-height: 1; letter-spacing: -.02em; color: var(--muted); margin-bottom: -4px; }
 .top-right { display: flex; align-items: center; gap: 18px; justify-self: end; }
 .tabs-row { display: flex; align-items: center; gap: 2px; padding: 0 30px; border-bottom: 1px solid var(--line); }
-.nav-links { display: flex; align-items: center; gap: 2px; }
+.nav-links { display: flex; align-items: center; gap: 2px; flex: 1; }
 .nav-links a { position: relative; font-size: 13px; font-weight: 500; color: var(--muted); padding: 7px 10px 12px; border-radius: 4px 4px 0 0; }
 .nav-links a:hover { color: var(--text); background: var(--row-hover); text-decoration: none; }
 .nav-links a.active { color: var(--link); font-weight: 600; }
 .nav-links a.active::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; background: var(--link); border-radius: 4px 4px 0 0; }
 .nav-dd { position: relative; }
+.nav-dd--right { margin-left: auto; }
+.nav-dd--right .dd-panel { left: auto; right: 0; }
 .nav-dd > a { display: inline-flex; align-items: center; gap: 5px; }
 .nav-dd > a .cv { width: 12px; height: 12px; margin-top: 1px; flex: none; transition: transform .15s ease; }
 .nav-dd.open > a { color: var(--link); font-weight: 600; }
@@ -259,9 +260,8 @@ footer { border-top: 1px solid var(--line); }
 <header class="topbar">
   <div class="top-row">
     <a class="brand" href="#" style="text-decoration:none;">
-      <img class="logo-light" src="assets/moderne-logo/ModerneLogo_Midnight_R.png" alt="Moderne">
-      <img class="logo-dark" src="assets/moderne-logo/ModerneLogo_White_R.png" alt="Moderne">
-      <span class="docs">Docs</span>
+      <img class="logo-light" src="assets/brand-guidelines/lockup-documentation-midnight.svg" alt="Moderne Documentation">
+      <img class="logo-dark" src="assets/brand-guidelines/lockup-documentation-white.svg" alt="Moderne Documentation">
     </a>
     <div class="search">
       <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-search"/></svg>
@@ -285,7 +285,7 @@ footer { border-top: 1px solid var(--line); }
           <a href="#"><span>Automated Software Refactoring with OpenRewrite and Generative AI</span><svg class="ext-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ext"/></svg></a>
           <a href="#"><span>Upcoming live OpenRewrite training</span><svg class="ext-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-ext"/></svg></a>
         </div>
-      </span><span class="nav-dd" id="ddReleases"><a href="#" id="navReleases">Releases<svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></a>
+      </span><span class="nav-dd nav-dd--right" id="ddReleases"><a href="#" id="navReleases">Releases<svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chev"/></svg></a>
         <div class="dd-panel">
           <a href="#releases"><span>Connector releases</span></a>
           <a href="#"><span>Agent releases</span></a>
