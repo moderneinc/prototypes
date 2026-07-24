@@ -24,6 +24,7 @@
   --link: #1245AE; --link-deep: #16306B;
   --btn-primary-bg: #232342; --btn-primary-fg: #FBFAF6; --btn-primary-hover: #2C2C50;
   --ill-panel: #FBFAF6; --ill-stroke: rgba(35,35,66,.50); --ill-accent: #3E5BE8;
+  --green: #30F284;
 }
 [data-theme="dark"] {
   --bg: #141419; --field: #222229; --card: #26262E;
@@ -33,6 +34,7 @@
   --link: #7FA9F9; --link-deep: #7FA9F9;
   --btn-primary-bg: #F1F0EA; --btn-primary-fg: #17171C; --btn-primary-hover: #FFFFFF;
   --ill-panel: #26262E; --ill-stroke: rgba(240,240,246,.38); --ill-accent: #8CA0F5;
+  --green: #30F284;
 }
 body { font-family: var(--font-sans); font-size: 14px; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; transition: background .2s, color .2s; }
 a { color: var(--link); text-decoration: none; }
@@ -150,13 +152,11 @@ h1 .grad { background: var(--spectral); -webkit-background-clip: text; backgroun
 h2 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
 .sec-head .m { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-left: auto; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-.area { display: flex; gap: 15px; align-items: flex-start; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; color: var(--text); }
-.area:hover { background: var(--row-hover); text-decoration: none; }
-.tile { width: 44px; height: 44px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--ill-panel); border: 1px solid var(--ill-stroke); border-radius: 10px; }
-.tile svg { width: 22px; height: 22px; color: var(--ill-accent); }
+.area { display: flex; flex-direction: column; background: var(--surface); border: none; border-radius: 2px; padding: 20px; color: var(--text); transition: background .15s ease; }
+.area:hover { background: var(--surface2); text-decoration: none; }
 .area h3 { font-size: 15px; font-weight: 600; }
-.area p { font-size: 13px; line-height: 1.5; color: var(--muted); margin-top: 4px; }
-.area .go { font-size: 12px; font-weight: 600; color: var(--link); margin-top: 8px; display: inline-block; }
+.area p { font-size: 13px; line-height: 1.5; color: var(--muted); margin-top: 6px; }
+.area .go { font-size: 12px; font-weight: 600; color: var(--link); margin-top: 12px; display: inline-block; }
 
 /* ===== prose ===== */
 .prose-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
@@ -165,14 +165,14 @@ h2 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
 .prose-card p { font-size: 14px; line-height: 1.65; color: var(--muted); margin-bottom: 12px; }
 .prose-card p:last-child { margin-bottom: 0; }
 .prose-card b { color: var(--text); font-weight: 600; }
-.spectral-bar { height: 4px; border-radius: 2px; background: var(--spectral); margin: 0 0 18px; width: 64px; }
+.spectral-bar { height: 4px; border-radius: 2px; background: var(--green); margin: 0 0 18px; width: 64px; }
 /* generic video thumbnails — one token-drawn tile for every video */
 .vid-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
 .vid { display: block; color: var(--text); }
 .vid:hover { text-decoration: none; }
 .vid-thumb { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 16 / 9; background: #232342; border-radius: 10px; overflow: hidden; }
 [data-theme="dark"] .vid-thumb { background: #2A2A32; border: 1px solid var(--line); }
-.vid-thumb::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--spectral); }
+.vid-thumb::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--green); }
 .vid-thumb .vmark { position: absolute; top: 11px; left: 13px; width: 17px; height: 17px; color: rgba(251,250,246,.75); }
 .vid-play { width: 44px; height: 44px; border-radius: 999px; background: #FBFAF6; color: #232342; display: inline-flex; align-items: center; justify-content: center; transition: transform .12s ease; }
 .vid-play svg { width: 17px; height: 17px; margin-left: 2px; }
@@ -330,36 +330,28 @@ footer { border-top: 1px solid var(--line); }
   <div class="sec-head"><h2>Browse by area</h2><span class="m">8 areas</span></div>
   <div class="grid">
     <a class="area" href="#">
-      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-globe"/></svg></span>
-      <span><h3>Platform</h3><p>A secure platform and toolchain for fast, enterprise-wide code modernization.</p><span class="go">Explore →</span></span>
+      <h3>Platform</h3><p>A secure platform and toolchain for fast, enterprise-wide code modernization.</p><span class="go">Explore →</span>
     </a>
     <a class="area" href="#">
-      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-terminal"/></svg></span>
-      <span><h3>CLI</h3><p>A local, Git-like CLI for multi-repo code analysis and automated refactoring at scale.</p><span class="go">Explore →</span></span>
+      <h3>CLI</h3><p>A local, Git-like CLI for multi-repo code analysis and automated refactoring at scale.</p><span class="go">Explore →</span>
     </a>
     <a class="area" href="#">
-      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-sparkles"/></svg></span>
-      <span><h3>Agent tools</h3><p>Tools and context that make AI coding agents faster, more accurate, and more effective across large codebases.</p><span class="go">Explore →</span></span>
+      <h3>Agent tools</h3><p>Tools and context that make AI coding agents faster, more accurate, and more effective across large codebases.</p><span class="go">Explore →</span>
     </a>
     <a class="area" href="#">
-      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-package"/></svg></span>
-      <span><h3>Recipes</h3><p>Structured, automatable code transformations that let you search, modernize and secure code.</p><span class="go">Explore →</span></span>
+      <h3>Recipes</h3><p>Structured, automatable code transformations that let you search, modernize and secure code.</p><span class="go">Explore →</span>
     </a>
     <a class="area" href="#">
-      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-shield"/></svg></span>
-      <span><h3>DX</h3><p>Air-gapped, on-prem unified refactoring CLI/IDE solution with recipes &amp; reporting.</p><span class="go">Explore →</span></span>
+      <h3>DX</h3><p>Air-gapped, on-prem unified refactoring CLI/IDE solution with recipes &amp; reporting.</p><span class="go">Explore →</span>
     </a>
     <a class="area" href="#">
-      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chat"/></svg></span>
-      <span><h3>Moddy</h3><p>An AI agent that modernizes multi-repository codebases by combining LLMs with structured LSTs.</p><span class="go">Explore →</span></span>
+      <h3>Moddy</h3><p>An AI agent that modernizes multi-repository codebases by combining LLMs with structured LSTs.</p><span class="go">Explore →</span>
     </a>
     <a class="area" href="#">
-      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-blocks"/></svg></span>
-      <span><h3>IDE plugins</h3><p>An IntelliJ IDE plugin for multi-repository code search and recipe development.</p><span class="go">Explore →</span></span>
+      <h3>IDE plugins</h3><p>An IntelliJ IDE plugin for multi-repository code search and recipe development.</p><span class="go">Explore →</span>
     </a>
     <a class="area" href="#">
-      <span class="tile"><svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-dna"/></svg></span>
-      <span><h3>Code Genome</h3><p>Sequence every repo into a structural genome — search and transform your codebase like data.</p><span class="go">Explore →</span></span>
+      <h3>Code Genome</h3><p>Sequence every repo into a structural genome — search and transform your codebase like data.</p><span class="go">Explore →</span>
     </a>
   </div>
 
