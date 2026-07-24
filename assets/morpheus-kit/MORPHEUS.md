@@ -20,7 +20,7 @@ Reference implementations: `morpheus.html` (full app prototype) and `morpheus-de
 | surface / surface2 | `#EDEBE2` / `#E4E1D6` | fills, insets |
 | line / line-strong | `rgba(35,35,66,.12)` / `.50` | hairlines, borders |
 | text / muted | `#232342` (ink navy) / `#62627A` | |
-| accent | `#1055E2` (links) · deep `#16306B` (active nav) | tint `rgba(62,123,246,.10)`, border `.30` |
+| accent | `#1245AE` (links) · deep `#16306B` (active nav) | tint `rgba(62,123,246,.10)`, border `.30` |
 | button primary | ink `#232342` bg, `#FBFAF6` text | the på()×kron signature |
 | success | text `#1D5937`, mint `#30F284` accents | |
 | error | `#C9291C` on `#FBEFED`, border `#F0B4AC` | |
