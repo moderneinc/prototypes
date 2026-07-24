@@ -69,3 +69,27 @@ Strand spectrum (identity gradient, use sparingly):
 3. Primary actions are ink (not blue); blue is for links, focus, and checked controls.
 4. Mint green is a *moment* (version badge, success, avatar-dark) — not a surface color.
 5. Data-viz uses the strand spectrum: blue `#3E7BF6`, teal `#25D0C0`, mint `#30F284`/`#2CBF6E`, amber `#E8BA4C`, violet `#9D5BE8`, soft blue `#7FA9F9`; warm grey `#CFCCC0` for empty/low.
+
+## Brand assets — pull from the design kit, never redraw
+
+When a design needs the Moderne logo, DNA strand, or spectral bar, pick the official files up from the design kit site. Do not redraw, trace, recolor, or approximate any brand mark.
+
+Base URL: `https://moderneinc.github.io/prototypes/`
+
+| Asset | Path |
+|---|---|
+| Logo — full lockup, Midnight (for light backgrounds) | `assets/brand-guidelines/moderne-logo-dark.svg` |
+| Logo — full lockup, white (for dark backgrounds) | `assets/brand-guidelines/moderne-logo-white.svg` |
+| Logo — symbol only | `assets/brand-guidelines/moderne-mark.svg` |
+| Logo — wordmark only | `assets/brand-guidelines/moderne-wordmark-dark.svg` / `moderne-wordmark-white.svg` |
+| DNA strand (no-fade) | `assets/moderne-dna/no-fade/moderne-dna.svg` (also `.png` 1x/2x/3x, `.jpg`, `.pdf`) |
+| Spectral bar | `assets/spectral-bar/moderne-spectral-bar-600x12.png` |
+
+Rules:
+
+1. Use these files as-is — no redrawing, recoloring, stretching, effects, or rearranging the mark and wordmark.
+2. Logo color is binary: Midnight `#041834` on light surfaces, white on dark. Nothing else.
+3. Clear space around the logo = the icon-mark height ("X"). Minimum sizes: full logo 120px wide, icon 24px, wordmark 80px wide.
+4. Product lockups: the full logo + product name in Poppins Light at the mark's cap height, in the same color as the logo, with a clear gap.
+5. The DNA strand and spectral bar are decorative brand devices — place them as provided; never rebuild them from CSS gradients.
+6. Full usage rules: `https://moderneinc.github.io/prototypes/moderne-brand-guidelines.html`
