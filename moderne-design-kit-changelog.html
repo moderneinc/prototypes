@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moderne — Design Kit Changelog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --font-sans:"Poppins", system-ui, sans-serif;
+    --font-mono:"IBM Plex Mono", ui-monospace, monospace;
+  }
+  html[data-theme="light"]{
+    --bg:#F2F0EA; --surface:#FBFAF6; --surface2:#EDEBE2;
+    --line:rgba(35,35,66,0.12); --line2:rgba(35,35,66,0.08); --line-strong:rgba(35,35,66,0.50);
+    --text:#232342; --body:rgba(35,35,66,0.70); --muted:rgba(35,35,66,0.48);
+    --logo-filter:none; --badge-bg:#30F284; --badge-fg:#1D5937;
+  }
+  html[data-theme="dark"]{
+    --bg:#100C0A; --surface:#171722; --surface2:#1E1E2C;
+    --line:rgba(228,232,250,0.10); --line2:rgba(228,232,250,0.06); --line-strong:rgba(228,232,250,0.22);
+    --text:#E9EAF2; --body:rgba(233,234,242,0.68); --muted:rgba(233,234,242,0.44);
+    --logo-filter:brightness(0) invert(1); --badge-bg:#30F284; --badge-fg:#1D5937;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font-sans);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;transition:background .2s,color .2s;}
+  .mono{font-family:var(--font-mono);}
+  main{max-width:860px;margin:0 auto;padding:0 36px 100px;}
+
+  header{max-width:860px;margin:0 auto;padding:34px 36px 0;}
+  .head-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:14px;border-bottom:1px solid var(--line);}
+  .head-row img.lockup{height:26px;width:auto;display:block;filter:var(--logo-filter);}
+  .head-actions{display:flex;align-items:center;gap:10px;}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:9px 15px;font-family:inherit;font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap;cursor:pointer;}
+
+  h1{font-size:44px;font-weight:400;line-height:1.05;letter-spacing:-1px;margin:56px 0 14px;}
+  .lede{font-size:15px;line-height:1.65;color:var(--body);max-width:600px;}
+
+  .date{font-size:22px;font-weight:600;letter-spacing:-0.4px;margin:56px 0 4px;padding-bottom:12px;border-bottom:1px solid var(--line2);}
+  .entry{background:var(--surface);border:1px solid var(--line2);border-radius:12px;padding:18px 22px;margin-top:14px;}
+  .entry h3{font-size:15px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .entry p{font-size:13.5px;line-height:1.6;color:var(--body);}
+  .entry .mono{font-size:12px;}
+  .tag{display:inline-block;font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface2);border-radius:4px;padding:2px 7px;}
+  .tag--new{background:var(--badge-bg);color:var(--badge-fg);border-radius:999px;font-family:var(--font-sans);text-transform:none;letter-spacing:0;font-size:11px;font-weight:600;padding:3px 10px;}
+
+  footer{max-width:860px;margin:80px auto 0;padding:26px 36px 40px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;gap:22px;}
+  footer a{color:var(--muted);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-row">
+    <img class="lockup" src="assets/brand-guidelines/moderne-logo-dark.svg" alt="Moderne">
+    <div class="head-actions">
+      <a class="chip" href="moderne-design-kit-preview.html">Design kit ↗</a>
+      <button class="chip" id="themeToggle" aria-label="Toggle theme"></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1>Design kit changelog</h1>
+  <p class="lede">Every update to the design kit, brand guidelines, palette reference, and downloadable assets — newest first. The mint badges on the kit page point here.</p>
+
+  <div class="date">July 24, 2026</div>
+
+  <div class="entry">
+    <h3>Link accent is now true AAA blue <span class="tag--new tag">New</span></h3>
+    <p>The Morpheus light-mode link accent moves from <span class="mono">#1055E2</span> (5.4:1 on the cream canvas — AA only, despite its label) to <span class="mono">#1245AE</span> (7.4:1 canvas / 8.1:1 card — AAA). Applied across morpheus.html, the design-kit library, Code Genome, and the tokens &amp; starter downloads. Deep accent stays <span class="mono">#16306B</span>; info-toast blues are unchanged.</p>
+  </div>
+  <div class="entry">
+    <h3>Design Kit skill bundle regenerated <span class="tag--new tag">New</span></h3>
+    <p>The <span class="mono">.skill</span> bundle's light tokens still carried the old cool greys (<span class="mono">#F6F7FA / #ECEEF3 / #1B2230</span>). Rebuilt with the Morpheus cream palette so agents given the bundle produce the current light mode.</p>
+  </div>
+  <div class="entry">
+    <h3>Changelog page added</h3>
+    <p>This page. The "New update here" badges on the kit page now link here.</p>
+  </div>
+  <div class="entry">
+    <h3>Palette reference retoned to Morpheus cream</h3>
+    <p>Light neutrals move to the cream family with the ink primary CTA and AAA links; <span class="mono">?theme=light|dark</span> deep links added.</p>
+  </div>
+  <div class="entry">
+    <h3>DNA strand assets refreshed</h3>
+    <p>New renders across the full set — svg, pdf, 1x/2x/3x png — plus new @2x and jpg files.</p>
+  </div>
+  <div class="entry">
+    <h3>Brand guidelines: product lockups</h3>
+    <p>New section documenting the Moderne + product-name lockup (per the Platform Status reference): Poppins Light at the mark's cap height, same color as the logo. White-on-Midnight and Midnight-on-light examples from the real logo assets.</p>
+  </div>
+  <div class="entry">
+    <h3>Brand guidelines page added; logo corrected to Midnight</h3>
+    <p>Logo-section guidelines (variants, color variations, clear space, sizing, placement, downloads, incorrect uses) in Morpheus cream/ink. The vendored logo SVGs were filled with a generic gray — corrected to brand Midnight <span class="mono">#041834</span>, with an upstream PR opened against the design system.</p>
+  </div>
+  <div class="entry">
+    <h3>Kit page: cream light mode, outline buttons, cleanup</h3>
+    <p>Light mode aligned to the Morpheus cream palette (matching morpheus.html); hardcoded black download buttons converted to the outline treatment; green ambient glow removed; hero copy replaces the lorem ipsum placeholder.</p>
+  </div>
+
+  <div class="date">July 14, 2026</div>
+
+  <div class="entry">
+    <h3>Morpheus dark palette</h3>
+    <p>Dark mode rethemed to the Morpheus dark family — warm black canvas with ink-navy surfaces.</p>
+  </div>
+  <div class="entry">
+    <h3>DNA strand hero + downloads</h3>
+    <p>The brand helix becomes the hero image, with a download row (PNG / SVG / PDF) and the complete 1x/2x/3x asset set.</p>
+  </div>
+  <div class="entry">
+    <h3>Morpheus tokens &amp; starter downloads</h3>
+    <p>CSS tokens, lightweight starter HTML, and a markdown brief for coding agents, under the MORPHEUS wordmark.</p>
+  </div>
+
+  <div class="date">July 13, 2026</div>
+
+  <div class="entry">
+    <h3>Whole-number type scale</h3>
+    <p>Fractional font sizes consolidated to the whole-number scale across the kit and the skill bundle.</p>
+  </div>
+
+  <div class="date">July 11, 2026</div>
+
+  <div class="entry">
+    <h3>Morpheus Design Kit library</h3>
+    <p>The Morpheus component library page joins the kit, with its banner row on the preview page.</p>
+  </div>
+
+  <div class="date">July 6, 2026</div>
+
+  <div class="entry">
+    <h3>Backgrounds &amp; greys refresh</h3>
+    <p>Token swatches updated to the values shipping in the app.</p>
+  </div>
+</main>
+
+<footer>
+  <span>© 2026 Moderne, Inc.</span>
+  <a href="moderne-design-kit-preview.html">Design kit</a>
+  <a href="moderne-brand-guidelines.html">Brand guidelines</a>
+  <a href="moderne-palette.html">Palette reference</a>
+</footer>
+
+<script>
+  let mode = "light";
+  const themeParam = new URLSearchParams(location.search).get("theme");
+  if (themeParam === "light" || themeParam === "dark") { mode = themeParam; }
+  function applyTheme() {
+    document.documentElement.setAttribute("data-theme", mode);
+    const btn = document.getElementById("themeToggle");
+    btn.innerHTML = mode === "dark"
+      ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg><span>Dark</span>'
+      : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"></path></svg><span>Light</span>';
+  }
+  document.getElementById("themeToggle").addEventListener("click", () => { mode = mode === "light" ? "dark" : "light"; applyTheme(); });
+  applyTheme();
+</script>
+</body>
+</html>
