@@ -29,14 +29,15 @@
     --glow:rgba(48,242,132,0.14); --logo-filter:brightness(0) invert(1); --grid-line-color:#FFFFFF;
   }
   html[data-theme="light"]{
-    --void:#F6F7FA; --surface:#ECEEF3; --surface2:#E3E7EF;
-    --line:rgba(27,34,48,0.12); --line2:rgba(27,34,48,0.08);
-    --paper:#1B2230; --body:rgba(27,34,48,0.70); --muted:rgba(27,34,48,0.48);
-    --body-solid:#5D626D; --muted-solid:#8D9199; /* flat (opaque) equivalents over the canvas */
+    /* Morpheus light — warm cream canvas, ink-navy text (morpheus.html skin-morpheus values) */
+    --void:#F2F0EA; --surface:#FBFAF6; --surface2:#EDEBE2;
+    --line:rgba(35,35,66,0.12); --line2:rgba(35,35,66,0.08);
+    --paper:#232342; --body:rgba(35,35,66,0.70); --muted:rgba(35,35,66,0.48);
+    --body-solid:#62627A; --muted-solid:#8F8F99; /* flat (opaque) equivalents over the canvas */
     --green:#30F284; --green-ink:#04220F; --green-text:#1D5937; --flag:#FF5470; --midnight:#041834;
-    --bg:var(--void); --field:#FFFFFF; --text:var(--paper); --line-strong:rgba(27,34,48,0.22);
-    --swatch-inset:rgba(27,34,48,0.08); --accent:var(--green); --accent-ink:var(--green-ink);
-    --glow:rgba(48,242,132,0.20); --logo-filter:none; --grid-line-color:#1B2230;
+    --bg:var(--void); --field:#FBFAF6; --text:var(--paper); --line-strong:rgba(35,35,66,0.50);
+    --swatch-inset:rgba(35,35,66,0.08); --accent:var(--green); --accent-ink:var(--green-ink);
+    --glow:rgba(48,242,132,0.20); --logo-filter:none; --grid-line-color:#232342;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:var(--font-sans);-webkit-font-smoothing:antialiased;}
@@ -443,29 +444,29 @@
     });
 
     // ---- dual-mode token swatches: backgrounds/greys & font colors ----
-    // Values as currently shipped in platform-light-dark.html:
-    // warm-black canvas, cool (navy-cast) surfaces and lines in dark mode.
+    // Values mirror morpheus.html (skin-morpheus): warm-black canvas with
+    // ink-navy surfaces in dark mode, warm cream canvas with ink text in light.
     const bgTokens = [
-      { name:"Page background", token:"--bg", dark:"#100C0A", light:"#F6F7FA" },
-      { name:"Input field", token:"--field", dark:"#100C0A", light:"#FFFFFF" },
-      { name:"Card surface", token:"--surface", dark:"#171722", light:"#ECEEF3" },
-      { name:"Inset surface", token:"--surface2", dark:"#1E1E2C", light:"#E3E7EF" },
-      { name:"Raised card", token:"--card", dark:"#131319", light:"#FFFFFF" },
-      { name:"Table header band", token:"--card-head", dark:"#1B1B26", light:"#ECEEF3" },
-      { name:"Row hover", token:"--row-hover", dark:"#202030", light:"#ECEEF3" },
-      { name:"Hairline", token:"--line", dark:"rgba(228,232,250,0.10)", light:"rgba(27,34,48,0.12)" },
-      { name:"Faint divider", token:"--line2", dark:"rgba(228,232,250,0.06)", light:"rgba(27,34,48,0.08)" },
-      { name:"Strong border", token:"--line-strong", dark:"rgba(228,232,250,0.22)", light:"rgba(27,34,48,0.22)" },
+      { name:"Page background", token:"--bg", dark:"#100C0A", light:"#F2F0EA" },
+      { name:"Input field", token:"--field", dark:"#100C0A", light:"#FBFAF6" },
+      { name:"Card surface", token:"--surface", dark:"#171722", light:"#FBFAF6" },
+      { name:"Inset surface", token:"--surface2", dark:"#1E1E2C", light:"#EDEBE2" },
+      { name:"Raised card", token:"--card", dark:"#131319", light:"#FBFAF6" },
+      { name:"Table header band", token:"--card-head", dark:"#1B1B26", light:"#F2EFE7" },
+      { name:"Row hover", token:"--row-hover", dark:"#202030", light:"#F4F2EB" },
+      { name:"Hairline", token:"--line", dark:"rgba(228,232,250,0.10)", light:"rgba(35,35,66,0.12)" },
+      { name:"Faint divider", token:"--line2", dark:"rgba(228,232,250,0.06)", light:"rgba(35,35,66,0.08)" },
+      { name:"Strong border", token:"--line-strong", dark:"rgba(228,232,250,0.22)", light:"rgba(35,35,66,0.50)" },
     ];
     const fontTokens = [
-      { name:"Headline / primary", token:"--text", dark:"#F2EDE4", light:"#1B2230" },
-      { name:"Body", token:"--body", dark:"rgba(242,237,228,0.68)", light:"rgba(27,34,48,0.70)" },
-      { name:"Body flat", token:"--body-solid", dark:"#AAA59E", light:"#5D626D" },
-      { name:"Muted / meta", token:"--muted", dark:"rgba(242,237,228,0.44)", light:"rgba(27,34,48,0.48)" },
-      { name:"Muted flat", token:"--muted-solid", dark:"#736F6A", light:"#8D9199" },
+      { name:"Headline / primary", token:"--text", dark:"#E9EAF2", light:"#232342" },
+      { name:"Body", token:"--body", dark:"rgba(233,234,242,0.68)", light:"rgba(35,35,66,0.70)" },
+      { name:"Body flat", token:"--body-solid", dark:"#9598AC", light:"#62627A" },
+      { name:"Muted / meta", token:"--muted", dark:"rgba(233,234,242,0.44)", light:"rgba(35,35,66,0.48)" },
+      { name:"Muted flat", token:"--muted-solid", dark:"#6E6F7E", light:"#8F8F99" },
       { name:"Green text", token:"--green-text", dark:"#30F284", light:"#1D5937" },
     ];
-    const DARK_CANVAS = "#100C0A", LIGHT_CANVAS = "#F6F7FA";
+    const DARK_CANVAS = "#100C0A", LIGHT_CANVAS = "#F2F0EA";
     function tile(canvas, val, inset, kind){
       return kind === "font"
         ? `<div style="height:42px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:${canvas};box-shadow:inset 0 0 0 1px ${inset};"><span style="font-size:19px;font-weight:600;letter-spacing:-0.3px;color:${val};">Ag</span></div>`
@@ -494,6 +495,8 @@
 
   // ---- Theme-dependent rendering (tokens live in CSS [data-theme]) ----
   let mode = "dark";
+  const themeParam = new URLSearchParams(location.search).get("theme");
+  if (themeParam === "light" || themeParam === "dark") { mode = themeParam; }
 
   function applyTheme() {
     document.documentElement.setAttribute("data-theme", mode);
