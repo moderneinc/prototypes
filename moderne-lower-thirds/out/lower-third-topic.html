@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moderne · Animated Title Graphics &amp; Lower Thirds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MODERNE DESIGN TOKENS
+   ============================================================ */
+:root{
+  --green:#30F284; --accent:#30F284;
+  --green-ink:#04220F; --accent-ink:#04220F;
+  --flag:#FF5470;
+  --midnight:#041834;
+  --spectral:linear-gradient(95deg,#E6399B 0%,#9D5BE8 22%,#3E7BF6 44%,#25D0C0 62%,#30F284 80%,#C7E84B 100%);
+  /* Geist everywhere: Beausite still leads if it's installed, Geist is the
+     live fallback for headings and body; Geist Mono for anything systematic.
+     Sizes, all-caps transforms and tracking live in the classes, untouched. */
+  --font-sans:'Beausite','Geist',system-ui,-apple-system,sans-serif;
+  --font-geist:'Geist',system-ui,-apple-system,sans-serif;
+  --font-mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+/* Theme tokens are scoped to #stage ONLY. The control panel has its own
+   fixed palette below, so switching the graphic to Light never bleaches
+   the UI around it. */
+#stage[data-theme="dark"]{
+  --void:#100C0A; --bg:#100C0A; --field:#100C0A;
+  --surface:#1C1714; --surface2:#241D18;
+  --paper:#F2EDE4; --text:#F2EDE4;
+  --body:rgba(242,237,228,.68);
+  --muted:rgba(242,237,228,.44);
+  --line:rgba(242,237,228,.10);
+  --line2:rgba(242,237,228,.06);
+  --line-strong:rgba(242,237,228,.22);
+  --glow:rgba(48,242,132,.14);
+  --lt-halo:rgba(0,0,0,.62);
+}
+/* On light, the accent switches to its deep counterpart from the strand
+   spectrum. Bright Digital Green on a paper card is unreadable; the deep
+   pair (#1D5937 for Green) is the same strand at legible weight. */
+/* Warm paper light mode, matched to the docs prototype: off-white with a
+   touch of cream rather than cool grey, midnight-violet ink. */
+#stage[data-theme="light"]{
+  --accent:var(--accent-deep);
+  --void:#F0EFEA; --bg:#F0EFEA; --field:#FFFFFF;
+  --surface:#FBFAF6; --surface2:#F3F1EA;
+  --paper:#262240; --text:#262240;
+  --body:rgba(38,34,64,.72);
+  --muted:rgba(38,34,64,.50);
+  --line:rgba(38,34,64,.13);
+  --line2:rgba(38,34,64,.08);
+  --line-strong:rgba(38,34,64,.24);
+  --glow:rgba(48,242,132,.20);
+  --lt-halo:rgba(243,241,234,.82);
+}
+
+/* ============================================================
+   APP CHROME  (never captured)
+   ============================================================ */
+/* Fixed UI palette — never themed. */
+:root{
+  --ui-bg:#0A0807; --ui-panel:#151110; --ui-text:#F2EDE4;
+  --ui-body:#BDB7AE; --ui-dim:#8E8880; --ui-line:rgba(242,237,228,.13);
+  --ui-line2:rgba(242,237,228,.07); --ui-field:#221C19;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--ui-bg); color:var(--ui-text);
+  font-family:var(--font-sans);
+  display:grid; grid-template-columns:minmax(0,1fr) minmax(0,356px); overflow:hidden;
+}
+#viewport{
+  position:relative; display:grid; place-items:center;
+  padding:32px; overflow:hidden; min-width:0;
+  background:
+    radial-gradient(1200px 600px at 50% 0%,rgba(48,242,132,.05),transparent 70%),
+    var(--ui-bg);
+}
+
+/* Narrow / sidebar layout: stack the canvas above the controls and let
+   the page scroll, instead of squeezing the stage out of view. */
+@media (max-width:980px){
+  body{grid-template-columns:1fr; grid-template-rows:auto 1fr; overflow-y:auto}
+  #viewport{height:min(44vh,340px); padding:14px}
+  #panel{border-left:0; border-top:1px solid var(--ui-line); overflow:visible}
+}
+
+/* ---- the 1920x1080 canvas ---- */
+/* Absolutely centred rather than grid-centred: a grid item wider than its
+   track aligns to start, which parks the canvas off-screen in a narrow panel. */
+#stage{
+  position:absolute; left:50%; top:50%;
+  width:1920px; height:1080px;
+  transform-origin:center center;
+  overflow:hidden;
+  background:transparent;
+}
+/* checkerboard = "this is transparent". Tone follows the theme so the
+   graphic stays legible against it. */
+#stage[data-bg="checker"]{
+  background-color:var(--chk-a);
+  background-image:
+    linear-gradient(45deg,var(--chk-b) 25%,transparent 25%,transparent 75%,var(--chk-b) 75%),
+    linear-gradient(45deg,var(--chk-b) 25%,transparent 25%,transparent 75%,var(--chk-b) 75%);
+  background-size:64px 64px;
+  background-position:0 0,32px 32px;
+}
+#stage[data-theme="dark"]{--chk-a:#262626; --chk-b:#343434}
+#stage[data-theme="light"]{--chk-a:#E7E5DE; --chk-b:#F5F3EC}
+#stage[data-bg="chroma"]{background:var(--chroma,#FF00FF)}
+/* Preview footage follows the theme: Dark theme is for dark/busy footage,
+   Light theme is for bright footage. Previewing dark ink on a dark plate
+   just hides the graphic. */
+#stage[data-theme="dark"][data-bg="backdrop"]{
+  background:
+    radial-gradient(900px 700px at 22% 28%,rgba(48,242,132,.10),transparent 60%),
+    radial-gradient(1100px 800px at 78% 72%,rgba(62,123,246,.12),transparent 62%),
+    linear-gradient(160deg,#141b25 0%,#0d1016 55%,#1a1512 100%);
+}
+#stage[data-theme="light"][data-bg="backdrop"]{
+  background:
+    radial-gradient(900px 700px at 22% 26%,rgba(255,255,255,.92),transparent 62%),
+    radial-gradient(1100px 800px at 80% 76%,rgba(48,242,132,.16),transparent 62%),
+    linear-gradient(160deg,#F4F2EB 0%,#E9E6DC 55%,#D8D4C6 100%);
+}
+#stage[data-bg="transparent"]{background:transparent}
+
+/* safe-area guides */
+#guides{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .18s}
+#guides.on{opacity:1}
+#guides i{position:absolute;border:1px dashed rgba(48,242,132,.5)}
+#guides .action{inset:5% 5%}
+#guides .title{inset:10% 10%;border-color:rgba(255,84,112,.45)}
+#guides b{position:absolute;left:10%;bottom:calc(10% + 6px);font:500 13px var(--font-mono);color:rgba(48,242,132,.75);letter-spacing:2px}
+
+/* ============================================================
+   THE GRAPHIC
+   ============================================================
+   Every internal dimension is expressed in `em`, so the single
+   `font-size` below scales the entire graphic proportionally.
+   That's the --gs (graphic scale) control.
+   ============================================================ */
+.lt{
+  position:absolute;
+  font-size:calc(16px * var(--gs,1));
+  display:flex; align-items:stretch;
+  will-change:transform,opacity;
+}
+/* Offsets are fixed px, NOT em — scaling the graphic changes its size,
+   not its distance from the frame edge. All three anchors sit inside
+   the 10% title-safe area. */
+.lt[data-pos="bl"]{left:150px; bottom:112px}
+.lt[data-pos="br"]{right:150px; bottom:112px; flex-direction:row-reverse; text-align:right}
+.lt[data-pos="tl"]{left:150px; top:112px}
+
+/* the accent rule */
+.lt-rule{
+  width:.4em; flex:none; border-radius:.2em;
+  background:var(--accent);
+  transform-origin:bottom center;
+  box-shadow:0 0 2.2em -0.4em var(--accent);
+}
+.lt[data-pos="tl"] .lt-rule{transform-origin:top center}
+
+/* the panel */
+.lt-panel{
+  position:relative;
+  padding:1.5em 3em 1.6em 2em;
+  min-width:0;
+  border-radius:0 .8em .8em 0;
+  overflow:hidden;
+}
+.lt[data-pos="br"] .lt-panel{
+  padding:1.5em 2em 1.6em 3em;
+  border-radius:.8em 0 0 .8em;
+}
+.lt[data-style="panel"] .lt-panel{
+  background:color-mix(in srgb, var(--surface) 92%, transparent);
+  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+  border:1px solid var(--line);
+  border-left:0;
+}
+.lt[data-style="panel"][data-pos="br"] .lt-panel{border-left:1px solid var(--line);border-right:0}
+/* no rule to cap the panel — close the open edge and round all four corners */
+.lt[data-rule="off"][data-style="panel"] .lt-panel{border:1px solid var(--line)}
+.lt[data-rule="off"] .lt-panel{border-radius:.8em; padding:1.5em 3em 1.6em 3em}
+/* Bare has no plate, so legibility comes from a halo behind the type.
+   It flips with the ink: dark halo under paper-white, light halo under
+   midnight. A fixed black shadow would vanish on light footage. */
+.lt[data-style="bare"] .lt-panel{
+  background:transparent; border:0;
+  filter:
+    drop-shadow(0 .12em .45em var(--lt-halo))
+    drop-shadow(0 0 1em var(--lt-halo));
+}
+
+/* text masks */
+.mask{display:block; overflow:hidden; padding-bottom:.14em; margin-bottom:-.14em}
+.ink{display:block; white-space:nowrap; will-change:transform}
+
+/* --- NAME / TITLE variant --- */
+.lt-name{
+  font-family:var(--font-sans); font-weight:500;
+  font-size:3.5em; line-height:1.06; letter-spacing:-.03em;
+  color:var(--paper);
+}
+.lt-role{
+  margin-top:.6em;
+  font-family:var(--font-geist); font-weight:500;
+  font-size:1.25em; line-height:1.3; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--body);
+}
+.lt-role .sep{display:inline-block;margin:0 .75em;color:var(--accent)}
+.lt-role .org{color:var(--accent)}
+
+/* --- TOPIC / CALLOUT variant --- */
+.lt-eyebrow{
+  display:flex; align-items:center; gap:.85em;
+  font-family:var(--font-mono); font-weight:600;
+  font-size:1.15em; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--accent);
+}
+.lt[data-pos="br"] .lt-eyebrow{flex-direction:row-reverse}
+.lt-chip{display:block;width:.72em;height:.72em;background:var(--accent);border-radius:.12em}
+.lt-eyebrow .mask{display:flex;align-items:center}
+.lt-topic{
+  margin-top:.5em;
+  font-family:var(--font-sans); font-weight:400;
+  font-size:2.9em; line-height:1.14; letter-spacing:-.02em;
+  color:var(--paper);
+}
+.lt-meta{
+  margin-top:.9em;
+  font-family:var(--font-mono); font-size:1.05em;
+  letter-spacing:.12em; color:var(--muted);
+}
+.lt-spectral{
+  margin-top:1.15em; height:.25em; border-radius:.125em;
+  background:var(--spectral);
+  transform-origin:left center;
+}
+.lt[data-pos="br"] .lt-spectral{transform-origin:right center}
+
+/* export mode: stage pinned top-left, unscaled, no chrome */
+body.exporting{grid-template-columns:1fr; background:transparent}
+body.exporting #panel{display:none}
+body.exporting #viewport{padding:0; background:transparent; place-items:start}
+body.exporting #stage{position:fixed; left:0; top:0; transform:none !important; background:transparent !important}
+body.exporting #guides{display:none}
+
+/* ============================================================
+   CONTROL PANEL
+   ============================================================ */
+#panel{
+  background:var(--ui-panel); border-left:1px solid var(--ui-line);
+  overflow-y:auto; overflow-x:hidden; padding:22px 22px 48px;
+  font-size:13px; color:var(--ui-text);
+}
+#panel h1{
+  font-size:15px;font-weight:500;letter-spacing:-.2px;margin:0 0 3px;color:var(--ui-text);
+}
+#panel .sub{font:400 11px/1.5 var(--font-mono);letter-spacing:1.6px;text-transform:uppercase;color:var(--ui-dim);margin-bottom:22px}
+.grp{border-top:1px solid var(--ui-line2); padding:16px 0 4px}
+.grp:first-of-type{border-top:0;padding-top:0}
+.grp > label.lbl{
+  display:block;font:600 10px/1 var(--font-mono);letter-spacing:2.2px;
+  text-transform:uppercase;color:var(--ui-dim);margin:0 0 9px;
+}
+.grp > label.lbl + .lbl{margin-top:14px}
+.seg{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.seg button{
+  flex:1 1 auto;min-width:0;padding:9px 10px;border-radius:7px;cursor:pointer;
+  border:1px solid var(--ui-line); background:var(--ui-field); color:var(--ui-body);
+  font:500 12px var(--font-sans); transition:.14s;white-space:nowrap;
+}
+.seg button:hover{border-color:rgba(242,237,228,.35);color:var(--ui-text)}
+.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.fld{margin-bottom:12px}
+.fld.solo{margin-bottom:8px}
+.fhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}
+.fld label{display:block;font:500 10.5px var(--font-mono);letter-spacing:1.3px;text-transform:uppercase;color:var(--ui-dim);margin:0}
+/* on/off switch per content row */
+.tog{
+  position:relative;width:32px;height:18px;flex:none;padding:0;cursor:pointer;
+  border-radius:999px;border:1px solid var(--ui-line);background:var(--ui-field);
+  transition:background .15s,border-color .15s;
+}
+.tog::after{
+  content:'';position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;
+  background:var(--ui-dim);transition:left .15s,background .15s;
+}
+.tog[aria-pressed="true"]{background:var(--green);border-color:var(--green)}
+.tog[aria-pressed="true"]::after{left:16px;background:var(--green-ink)}
+.fld.off label{opacity:.45}
+.fld.off input[type=text], .fld.off textarea{opacity:.38}
+.fld input[type=text], .fld textarea{
+  width:100%;padding:9px 11px;border-radius:7px;border:1px solid var(--ui-line);
+  background:var(--ui-field);color:var(--ui-text);font:400 13px/1.45 var(--font-sans);
+  resize:vertical;
+}
+.fld textarea{min-height:60px}
+.fld input[type=text]:focus, .fld textarea:focus{outline:0;border-color:var(--accent)}
+.row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.row span.k{font:500 10.5px var(--font-mono);letter-spacing:1.2px;text-transform:uppercase;color:var(--ui-dim);width:66px;flex:none}
+.row input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:3px}
+.row output{font:600 11px var(--font-mono);color:var(--ui-text);width:50px;text-align:right;flex:none}
+.swatches{display:flex;gap:7px;flex-wrap:wrap}
+.swatches button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
+.swatches button.pair{width:38px;height:32px;border-radius:7px}
+.swatches button[aria-pressed="true"]{border-color:var(--ui-text)}
+.cta{
+  width:100%;margin-top:6px;padding:12px 18px;border:0;border-radius:999px;cursor:pointer;
+  background:var(--accent);color:var(--accent-ink);font:600 13px var(--font-sans);
+}
+.ghost{
+  width:100%;margin-top:8px;padding:11px 18px;border:1px solid var(--ui-line);
+  border-radius:8px;background:var(--ui-field);color:var(--ui-body);cursor:pointer;font:500 12.5px var(--font-sans);
+}
+.ghost:hover{color:var(--ui-text);border-color:rgba(242,237,228,.35)}
+.hint{font:400 11.5px/1.6 var(--font-sans);color:var(--ui-dim);margin:10px 0 0}
+.hint code{font:400 10.5px var(--font-mono);color:var(--green);background:rgba(48,242,132,.10);padding:1px 5px;border-radius:4px}
+#scrub{width:100%;accent-color:var(--accent);margin-top:12px}
+.tl{display:flex;justify-content:space-between;font:500 10px var(--font-mono);color:var(--ui-dim);margin-top:3px}
+</style>
+<script>window.__BAKED={"variant":"topic","style":"panel","position":"bl","eyebrow":"The three walls","topic":"Scale, correctness, and\\nthe cost of being wrong","meta":"MODERNE.IO/PLATFORM","__loop":1.5}</script>
+</head>
+<body>
+
+<div id="viewport">
+  <div id="stage" data-bg="checker" data-theme="dark">
+    <div id="graphic"></div>
+    <div id="guides">
+      <i class="action"></i><i class="title"></i>
+      <b>TITLE SAFE 80%</b>
+    </div>
+  </div>
+</div>
+
+<aside id="panel">
+  <h1>Moderne · Lower Thirds</h1>
+  <div class="sub">1920 × 1080 · alpha-ready</div>
+
+  <div class="grp">
+    <label class="lbl">Graphic</label>
+    <div class="seg" data-bind="variant">
+      <button data-v="name">Name / title</button>
+      <button data-v="topic">Topic / callout</button>
+    </div>
+    <label class="lbl">Treatment</label>
+    <div class="seg" data-bind="style">
+      <button data-v="panel">Panel</button>
+      <button data-v="bare">Bare</button>
+    </div>
+    <label class="lbl">Theme</label>
+    <div class="seg" data-bind="theme">
+      <button data-v="dark">Dark</button>
+      <button data-v="light">Light</button>
+    </div>
+    <p class="hint" style="margin:-4px 0 14px">Dark = paper-white type, for dark or busy footage. Light = midnight type, for bright footage. The preview backdrop follows your choice.</p>
+    <label class="lbl">Position</label>
+    <div class="seg" data-bind="position">
+      <button data-v="bl">Lower left</button>
+      <button data-v="br">Lower right</button>
+      <button data-v="tl">Upper left</button>
+    </div>
+  </div>
+
+  <div class="grp" id="fields">
+    <label class="lbl">Content</label>
+  </div>
+
+  <div class="grp">
+    <label class="lbl">Accent · strand spectrum</label>
+    <div class="swatches" id="swatches"></div>
+    <p class="hint">Each chip is a bright / deep pair. Dark theme uses the bright half, light theme the deep half.</p>
+  </div>
+
+  <div class="grp">
+    <label class="lbl">Motion</label>
+    <div class="seg" data-bind="easing">
+      <button data-v="moderne">Moderne</button>
+      <button data-v="snappy">Snappy</button>
+      <button data-v="smooth">Smooth</button>
+      <button data-v="mechanical">Mechanical</button>
+    </div>
+
+    <label class="lbl">Scale &amp; timing</label>
+    <div class="row"><span class="k">Scale</span><input id="gs" type="range" min="60" max="180" step="5" value="100"><output id="gsOut">100%</output></div>
+    <div class="row"><span class="k">Hold</span><input id="hold" type="range" min="0" max="8000" step="100" value="3400"><output id="holdOut">3.4s</output></div>
+    <div class="row"><span class="k">Speed</span><input id="speed" type="range" min="50" max="200" step="5" value="100"><output id="speedOut">1.00×</output></div>
+    <p class="hint">Speed retimes the in and out animations and is baked into the render — Hold stays exactly the seconds you set.</p>
+  </div>
+
+  <div class="grp">
+    <label class="lbl">Background</label>
+    <div class="seg" data-bind="bg">
+      <button data-v="checker">Transparent</button>
+      <button data-v="chroma">Chroma key</button>
+      <button data-v="backdrop">Preview footage</button>
+    </div>
+    <div class="swatches" id="chromas"></div>
+    <p class="hint">Exports are always true alpha. Chroma is only here so you can eyeball the graphic against a key colour before you shoot.</p>
+  </div>
+
+  <div class="grp">
+    <label class="lbl">Playback</label>
+    <button class="cta" id="play">▶ Play</button>
+    <button class="ghost" id="guideBtn">Toggle safe-area guides</button>
+    <input id="scrub" type="range" min="0" max="1000" step="1" value="0">
+    <div class="tl"><span id="tNow">0.00s</span><span id="tTot">0.00s</span></div>
+    <button class="ghost" id="copy">Copy export command</button>
+    <p class="hint">Render with alpha: <code>node export/render.mjs --preset=name</code></p>
+  </div>
+</aside>
+
+<script>
+(() => {
+'use strict';
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const DEFAULTS = {
+  variant:'name', style:'panel', theme:'dark', position:'bl',
+  accent:'#30F284', bg:'checker', chroma:'#FF00FF',
+  easing:'moderne', gs:1, hold:3400, speed:1, hide:'',
+  name:'Johnny Appleseed',
+  role:'Head of Engineering',
+  org:'Moderne',
+  eyebrow:'The three walls',
+  topic:'Scale, correctness, and\nthe cost of being wrong',
+  meta:'MODERNE.IO/PLATFORM'
+};
+
+/* [key, label, multiline?] */
+/* [key, label, opts] — every row gets an on/off switch. `multi` gives it a
+   textarea, `toggleOnly` is a switch with no text field (pure design element). */
+const FIELDS = {
+  name:[
+    ['name','Name'],
+    ['role','Role'],
+    ['org','Org / handle (accent)'],
+    ['rule','Accent rule',{toggleOnly:true}]
+  ],
+  topic:[
+    ['eyebrow','Eyebrow label'],
+    ['topic','Headline — one line per line',{multi:true}],
+    ['meta','Meta line'],
+    ['spectral','Spectrum bar',{toggleOnly:true}],
+    ['rule','Accent rule',{toggleOnly:true}]
+  ]
+};
+
+/* Switched-off rows live in a comma-separated `hide` string so they survive
+   URL params, the CLI and batch files as one value. Turning a row off keeps
+   its text — it just stops rendering. */
+const hideSet = () => new Set(String(cfg.hide || '').split(',').map(s => s.trim()).filter(Boolean));
+
+/* Strand spectrum — [name, bright, deep, ink-on-bright].
+   Bright runs on the dark theme, deep on the light theme. */
+const SPECTRUM = [
+  ['Green',  '#30F284','#1D5937','#04220F'],
+  ['Teal',   '#25D0C0','#0E4A45','#04231F'],
+  ['Blue',   '#3E7BF6','#16306B','#FFFFFF'],
+  ['Violet', '#9D5BE8','#3F1340','#FFFFFF'],
+  ['Magenta','#E6399B','#7A1E52','#FFFFFF']
+];
+const CHROMAS = [
+  ['Magenta (recommended)','#FF00FF'], ['Green screen','#00B140'],
+  ['Blue screen','#0047BB'], ['Orange','#FF6A00']
+];
+
+const cfg = {...DEFAULTS};
+
+/* ============================================================
+   MARKUP
+   ============================================================ */
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const maskLine = (cls, html) => `<span class="mask"><span class="ink ${cls}">${html}</span></span>`;
+
+function markup(c){
+  const hidden = new Set(String(c.hide || '').split(',').map(s => s.trim()).filter(Boolean));
+  /* a row renders only if its switch is on AND it has something to say */
+  const has = k => !hidden.has(k) && String(c[k] ?? '').trim().length > 0;
+
+  /* with every row switched off there is nothing to wrap, so the panel is
+     dropped too. data-rule tells the CSS to close the panel's open edge
+     when the accent rule isn't there to cap it. */
+  const rule = !hidden.has('rule');
+  const frame = inner => `
+    <div class="lt" data-style="${c.style}" data-pos="${c.position}" data-rule="${rule ? 'on' : 'off'}">
+      ${rule ? `<div class="lt-rule"></div>` : ''}
+      ${inner.trim() ? `<div class="lt-panel">${inner}</div>` : ''}
+    </div>`;
+
+  if (c.variant === 'name'){
+    const role = [
+      has('role') ? `<span>${esc(c.role)}</span>` : '',
+      (has('role') && has('org')) ? `<span class="sep">/</span>` : '',
+      has('org')  ? `<span class="org">${esc(c.org)}</span>` : ''
+    ].join('');
+    return frame(`
+      ${has('name') ? `<div class="lt-name">${maskLine('l1', esc(c.name))}</div>` : ''}
+      ${role ? `<div class="lt-role">${maskLine('l2', role)}</div>` : ''}`);
+  }
+
+  const lines = has('topic')
+    ? String(c.topic).split(/\\n|\n/).filter(s => s.trim().length)
+        .map((l,i) => maskLine('l'+(i+2), esc(l))).join('')
+    : '';
+  const eyebrow = has('eyebrow')
+    ? `<div class="lt-eyebrow">${maskLine('l1', `<span class="chipwrap"><span class="lt-chip"></span></span>`)}<span class="ebtxt">${maskLine('l1b', esc(c.eyebrow))}</span></div>`
+    : '';
+  const meta = has('meta') ? `<div class="lt-meta">${maskLine('lm', esc(c.meta))}</div>` : '';
+  // a spectrum bar with no copy above it is just a stray line — needs company
+  const body = eyebrow + (lines ? `<div class="lt-topic">${lines}</div>` : '') + meta;
+  return frame(body + (body && !hidden.has('spectral') ? `<div class="lt-spectral"></div>` : ''));
+}
+
+/* ============================================================
+   TIMELINE  —  WAAPI, all paused, driven by an explicit clock.
+   Same code path for on-screen preview and headless export, so
+   what you scrub is exactly what renders.
+   ============================================================ */
+/* Motion presets. Each sets the in/out curves, a global duration multiplier
+   (k) and the per-line stagger, so the whole feel changes from one control.
+   `speed` divides k on top, and — unlike k — it is baked into the export. */
+const EASINGS = {
+  moderne:   {label:'Moderne',    in:'cubic-bezier(.16,1,.3,1)',    out:'cubic-bezier(.7,0,.84,0)',  k:1,    stag:80,  ostag:55},
+  snappy:    {label:'Snappy',     in:'cubic-bezier(.22,1.15,.36,1)',out:'cubic-bezier(.55,0,1,.45)', k:0.72, stag:52,  ostag:36},
+  smooth:    {label:'Smooth',     in:'cubic-bezier(.33,1,.68,1)',   out:'cubic-bezier(.32,0,.67,0)', k:1.35, stag:112, ostag:74},
+  mechanical:{label:'Mechanical', in:'cubic-bezier(.83,0,.17,1)',   out:'cubic-bezier(.83,0,.17,1)', k:0.95, stag:70,  ostag:70}
+};
+
+let anims = [], DURATION = 0;
+
+/* fill matters here. IN animations fill 'both' so they hold their start
+   state before the delay and their end state through the hold. OUT
+   animations fill 'forwards' ONLY — a backwards fill would win the
+   composite order (later animation, same property) and stomp the IN
+   animation's start state, leaving the graphic fully drawn at t=0. */
+function add(el, kf, at, dur, ease, fill='both'){
+  if (!el) return;
+  const a = el.animate(kf, {duration:dur, delay:at, easing:ease, fill});
+  a.pause();
+  anims.push(a);
+  DURATION = Math.max(DURATION, at + dur);
+}
+const out = (el, kf, at, dur, ease) => add(el, kf, at, dur, ease, 'forwards');
+
+function build(root, c){
+  anims = []; DURATION = 0;
+  const q  = s => root.querySelector(s);
+  const qa = s => [...root.querySelectorAll(s)];
+  const wipeIn  = [{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}];
+  const wipeInR = [{clipPath:'inset(0 0 0 100%)'},{clipPath:'inset(0 0 0 0)'}];
+  const right = c.position === 'br';
+
+  const E = EASINGS[c.easing] || EASINGS.moderne;
+  /* One factor scales every animation offset and duration. Hold is left
+     alone on purpose — you set a dwell in seconds, speed retimes the
+     motion around it rather than moving the goalposts. */
+  const k = E.k / (c.speed || 1);
+  const D = ms => Math.max(1, ms * k);
+
+  /* ---------- IN ---------- */
+  add(q('.lt-rule'), [{transform:'scaleY(0)'},{transform:'scaleY(1)'}], 0, D(440), E.in);
+  add(q('.lt-panel'), right ? wipeInR : wipeIn, D(100), D(620), E.in);
+
+  const lines = qa('.ink');
+  lines.forEach((el, i) => {
+    add(el, [{transform:'translateY(118%)', opacity:0},{transform:'translateY(0)', opacity:1}],
+        D(300 + i*E.stag), D(520), E.in);
+  });
+
+  const spec = q('.lt-spectral');
+  if (spec) add(spec, [{transform:'scaleX(0)'},{transform:'scaleX(1)'}],
+                D(380 + lines.length*E.stag), D(700), E.in);
+
+  const IN_END = DURATION;
+  const OUT_AT = IN_END + c.hold;
+
+  /* ---------- OUT ---------- */
+  const rev = [...lines].reverse();
+  rev.forEach((el, i) => {
+    out(el, [{transform:'translateY(0)', opacity:1},{transform:'translateY(-118%)', opacity:0}],
+        OUT_AT + D(i*E.ostag), D(300), E.out);
+  });
+  if (spec) out(spec, [{transform:'scaleX(1)'},{transform:'scaleX(0)'}], OUT_AT, D(320), E.out);
+
+  const wipeOut  = [{clipPath:'inset(0 0 0 0)'},{clipPath:'inset(0 0 0 100%)'}];
+  const wipeOutR = [{clipPath:'inset(0 0 0 0)'},{clipPath:'inset(0 100% 0 0)'}];
+  out(q('.lt-panel'), right ? wipeOutR : wipeOut, OUT_AT + D(180), D(420), E.out);
+  out(q('.lt-rule'), [{transform:'scaleY(1)'},{transform:'scaleY(0)'}], OUT_AT + D(380), D(300), E.out);
+}
+
+/* ============================================================
+   RENDER + SEEK
+   ============================================================ */
+const stage   = document.getElementById('stage');
+const holder  = document.getElementById('graphic');
+let   playhead = 0, rafId = null, playing = false, t0 = 0, loopTimer = null;
+
+function render(){
+  stage.dataset.theme = cfg.theme;          // theme the canvas, never the UI
+  const strand = SPECTRUM.find(s => s[1] === cfg.accent) || SPECTRUM[0];
+  document.documentElement.style.setProperty('--accent', strand[1]);
+  document.documentElement.style.setProperty('--accent-deep', strand[2]);
+  document.documentElement.style.setProperty('--accent-ink', strand[3]);
+  stage.style.setProperty('--gs', cfg.gs);
+  stage.dataset.bg = cfg.bg;
+  stage.style.setProperty('--chroma', cfg.chroma);
+  holder.innerHTML = markup(cfg);
+  build(holder, cfg);
+  seek(Math.min(playhead, DURATION));
+  document.getElementById('scrub').max = Math.round(DURATION);
+  document.getElementById('tTot').textContent = (DURATION/1000).toFixed(2) + 's';
+}
+
+function seek(t){
+  playhead = Math.max(0, Math.min(t, DURATION));
+  for (const a of anims) a.currentTime = playhead;
+  const s = document.getElementById('scrub');
+  if (s) { s.value = Math.round(playhead); document.getElementById('tNow').textContent = (playhead/1000).toFixed(2)+'s'; }
+}
+
+function play(){
+  stop();
+  if (loopTimer){ clearTimeout(loopTimer); loopTimer = null; }
+  playing = true; t0 = performance.now();
+  document.getElementById('play').textContent = '■ Stop';
+  const tick = now => {
+    if (!playing) return;
+    const t = now - t0;   // speed is baked into the timeline, not the clock
+    if (t >= DURATION){
+      seek(DURATION); stop();
+      if (EMBED && LOOP >= 0) loopTimer = setTimeout(() => { seek(0); play(); }, LOOP * 1000);
+      return;
+    }
+    seek(t);
+    rafId = requestAnimationFrame(tick);
+  };
+  rafId = requestAnimationFrame(tick);
+}
+function stop(){
+  playing = false;
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = null;
+  document.getElementById('play').textContent = '▶ Play';
+}
+
+/* ============================================================
+   FIT THE STAGE TO THE VIEWPORT
+   ============================================================ */
+function fit(){
+  if (document.body.classList.contains('exporting')) return;
+  const vp = document.getElementById('viewport');
+  const pad = vp.clientWidth < 700 ? 20 : 64;
+  const s = Math.min((vp.clientWidth - pad)/1920, (vp.clientHeight - pad)/1080);
+  stage.style.transform = `translate(-50%,-50%) scale(${Math.max(s, 0.05)})`;
+}
+addEventListener('resize', fit);
+if (window.ResizeObserver) new ResizeObserver(fit).observe(document.getElementById('viewport'));
+
+/* ============================================================
+   CONTROLS
+   ============================================================ */
+function segs(){
+  document.querySelectorAll('.seg[data-bind]').forEach(seg => {
+    const key = seg.dataset.bind;
+    seg.querySelectorAll('button').forEach(b => {
+      b.setAttribute('aria-pressed', String(cfg[key] === b.dataset.v));
+      b.onclick = () => {
+        cfg[key] = b.dataset.v;
+        if (key === 'variant') buildFields();
+        segs(); playhead = 0; render(); play();
+      };
+    });
+  });
+}
+
+function buildFields(){
+  const box = document.getElementById('fields');
+  box.innerHTML = '<label class="lbl">Content</label>';
+  const hidden = hideSet();
+
+  FIELDS[cfg.variant].forEach(([k, label, o = {}]) => {
+    const off = hidden.has(k);
+    const d = document.createElement('div');
+    d.className = 'fld' + (off ? ' off' : '') + (o.toggleOnly ? ' solo' : '');
+
+    const head = document.createElement('div'); head.className = 'fhead';
+    const lab  = document.createElement('label'); lab.textContent = label;
+
+    const tog = document.createElement('button');
+    tog.className = 'tog';
+    tog.setAttribute('aria-pressed', String(!off));
+    tog.title = off ? `Show ${label}` : `Hide ${label}`;
+    tog.onclick = () => {
+      const s = hideSet();
+      s.has(k) ? s.delete(k) : s.add(k);
+      cfg.hide = [...s].join(',');
+      buildFields(); playhead = 0; render(); play();
+    };
+
+    head.append(lab, tog);
+    d.append(head);
+
+    if (!o.toggleOnly){
+      // built as a node, not an HTML string, so quotes and newlines survive intact
+      const inp = document.createElement(o.multi ? 'textarea' : 'input');
+      if (!o.multi) inp.type = 'text';
+      inp.value = String(cfg[k]).replace(/\\n/g, '\n');
+      inp.oninput = e => { cfg[k] = e.target.value; render(); };
+      d.append(inp);
+    }
+    box.appendChild(d);
+  });
+
+  const p = document.createElement('p');
+  p.className = 'hint';
+  p.textContent = 'Switch a row off to drop it from the graphic — the text stays put for when you want it back.';
+  box.appendChild(p);
+}
+
+function swatches(){
+  const box = document.getElementById('swatches'); box.innerHTML = '';
+  // two-tone chip so the bright/deep pairing is visible at a glance
+  SPECTRUM.forEach(([n, bright, deep]) => {
+    const b = document.createElement('button');
+    b.className = 'pair';
+    b.style.background = `linear-gradient(180deg,${bright} 0 55%,${deep} 55% 100%)`;
+    b.title = `${n} · ${bright} bright / ${deep} deep`;
+    b.setAttribute('aria-pressed', String(cfg.accent === bright));
+    b.onclick = () => { cfg.accent = bright; swatches(); render(); };
+    box.appendChild(b);
+  });
+  const cb = document.getElementById('chromas'); cb.innerHTML = '';
+  CHROMAS.forEach(([n, hex]) => {
+    const b = document.createElement('button');
+    b.style.background = hex; b.title = n;
+    b.setAttribute('aria-pressed', String(cfg.chroma === hex));
+    b.onclick = () => { cfg.chroma = hex; cfg.bg = 'chroma'; segs(); swatches(); render(); };
+    cb.appendChild(b);
+  });
+}
+
+const bind = (id, outId, fmt, apply) => {
+  const el = document.getElementById(id), out = document.getElementById(outId);
+  const upd = () => { const v = +el.value; out.textContent = fmt(v); apply(v); };
+  el.oninput = upd; upd();
+};
+
+/* ============================================================
+   URL PARAMS  (?variant=topic&eyebrow=...&accent=%2325D0C0)
+   ============================================================ */
+const qp = new URLSearchParams(location.search);
+qp.forEach((v, k) => {
+  if (!(k in cfg)) return;
+  cfg[k] = (typeof DEFAULTS[k] === 'number') ? parseFloat(v) : v;
+});
+
+/* ============================================================
+   EMBED MODE
+   ============================================================
+   Two entry points, one behaviour: chrome hidden, transparent stage
+   pinned at 0,0 in 1920x1080, autoplay, then loop after a beat.
+   - ?embed=1&loop=2   live URL, e.g. an OBS browser source
+   - window.__BAKED    written into standalone .html exports by
+                       `node export/render.mjs --html`               */
+if (window.__BAKED){
+  const {__loop, ...baked} = window.__BAKED;
+  Object.assign(cfg, baked);
+}
+const EMBED = qp.get('embed') === '1' || !!window.__BAKED;
+const LOOP  = window.__BAKED?.__loop ?? (qp.has('loop') ? parseFloat(qp.get('loop')) : 1.5);
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+buildFields(); segs(); swatches();
+bind('gs','gsOut', v => v + '%', v => { cfg.gs = v/100; render(); });
+bind('hold','holdOut', v => (v/1000).toFixed(1) + 's', v => { cfg.hold = v; render(); });
+bind('speed','speedOut', v => (v/100).toFixed(2) + '×', v => { cfg.speed = v/100; render(); });
+
+document.getElementById('play').onclick = () => playing ? stop() : (playhead = 0, play());
+document.getElementById('scrub').oninput = e => { stop(); seek(+e.target.value); };
+document.getElementById('guideBtn').onclick = () => document.getElementById('guides').classList.toggle('on');
+document.getElementById('copy').onclick = e => {
+  const q = Object.entries(cfg)
+    .filter(([k, v]) => v !== DEFAULTS[k] && k !== 'bg' && k !== 'chroma')
+    .map(([k, v]) => `--${k}=${JSON.stringify(String(v))}`).join(' ');
+  navigator.clipboard?.writeText(`node export/render.mjs ${q}`.trim());
+  e.target.textContent = 'Copied ✓';
+  setTimeout(() => e.target.textContent = 'Copy export command', 1400);
+};
+
+/* ---- public API used by the headless exporter ---- */
+window.LT = {
+  setConfig(patch){ Object.assign(cfg, patch); buildFields(); segs(); swatches(); render(); },
+  exportMode(){ stop(); document.body.classList.add('exporting'); stage.style.transform = 'none'; },
+  seek(t){ stop(); seek(t); },
+  duration(){ return DURATION; },
+  ready(){ return document.fonts.ready; }
+};
+
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
+  if (EMBED) window.LT.exportMode();
+  render(); fit(); play();
+});
+render(); fit();
+if (EMBED) window.LT.exportMode();
+})();
+</script>
+</body>
+</html>
