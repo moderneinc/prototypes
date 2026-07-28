@@ -29,11 +29,12 @@ jobs:
 
       - name: Commit and push if changed
         run: |
-          if git diff --quiet README.md; then
+          FILES="README.md moderne-marketing-kit.html"
+          if git diff --quiet $FILES; then
             echo "Dates already current"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "README: refresh Added / Last changed dates" README.md
+          git commit -m "chore: refresh git-derived dates (README + badges)" $FILES
           git push
