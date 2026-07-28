@@ -6,7 +6,7 @@ Reference implementations: `morpheus.html` (full app prototype) and `morpheus-de
 
 ## Typography
 
-- Sans: **Geist** (400/500/600/700) · Mono: **Geist Mono** (400/500) — Google Fonts.
+- Display: **Poppins** (400/500/600) — hero and section headlines, marketing display moments only. Sans: **Geist** (400/500/600/700) — all app UI, body, and long-form text. Mono: **Geist Mono** (400/500) — Google Fonts.
 - **Whole-number type scale only — never fractional px** (12.5px etc. are banned): 10 (mono overlines, beta tags) · 11 (status pills, meta) · 12 (labels, tabs) · 13 (small body, buttons, controls) · 14 (body) · 15/600 (card titles) · 18/400 (page titles) · 28+ (display).
 - Overlines are Geist Mono, uppercase, ~0.1em letter-spacing, muted.
 
