@@ -3,356 +3,177 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Commit results — redesign (prototype)</title>
+<title>Commit results — timeline (prototype)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
-   MORPHEUS TOKENS (verbatim from morpheus.html)
+   Palette — copied from the live app (neo-design / Morpheus light)
    ============================================================ */
-[data-theme="dark"] {
-  --bg:#100C0A; --field:#100C0A; --surface:#171722; --surface2:#1E1E2C;
-  --line:rgba(228,232,250,.10); --line2:rgba(228,232,250,.06); --line-strong:rgba(228,232,250,.22);
-  --text:#E9EAF2; --muted:#9598AC;
-  --accent:#3E7BF6; --accent-deep:#3E7BF6; --accent-tint:rgba(62,123,246,.16); --accent-brd:rgba(62,123,246,.40);
-  --primary-bg:#3E7BF6; --primary-fg:#FFFFFF;
-  --violet:#9D5BE8; --green:#30F284; --green-hi:#30F284;
-  --su-t:rgba(48,242,132,.10); --su-b:rgba(48,242,132,.40);
-  --er:#FA826F; --er-t:rgba(252,71,50,.12); --er-b:rgba(252,71,50,.42);
-  --wa:#E8BA4C; --qu:#9D5BE8; --qu-t:rgba(157,91,232,.16); --qu-b:rgba(157,91,232,.45);
-  --ca:#9598AC; --ca-t:rgba(228,232,250,.06); --ca-b:rgba(228,232,250,.22);
-  --link-line:rgba(228,232,250,.22); --teal-mid:#25D0C0;
-  --card:#131319; --card-head:#1B1B26; --row-hover:#202030;
-  --teal:#25D0C0; --magenta:#E6399B;
-  --glow-v:rgba(157,91,232,.20); --glow-b:rgba(62,123,246,.18); --brand-violet:#9D5BE8;
-  --panel-shadow:-1px 0 0 var(--line), 0 -1px 0 var(--line), -12px 0 28px -6px rgba(0,0,0,.55);
-  --shadow-xs:0 1px 2px rgba(0,0,0,.5);
+:root {
+  --chrome:#f2f0ea; --panel:#fbfaf6; --card:#fbfaf6;
+  --line:rgba(35,35,66,.12); --line-strong:rgba(35,35,66,.5); --hairline:rgba(35,35,66,.08);
+  --text:#343a40; --ink:#232342; --muted:#62627a; --faint:#8a8a99;
+  --accent:#1055e2; --link:#0046b5; --track:#edebe2;
+  --success:#237341; --active:#7048c8; --error:#d43c2a; --warning:#b07210;
+  /* dataviz categorical (bars) */
+  --commit:#3e5be8; --approve:#25d0c0; --merge:#30f284; --close:#ff6f61;
+  --commit-b:#2b40a2; --approve-b:#1a9286; --merge-b:#22a95c; --close-b:#b24e44;
 }
-[data-theme="light"] {
-  --bg:#F6F7FA; --field:#FFFFFF; --surface:#ECEEF3; --surface2:#E3E7EF;
-  --line:rgba(27,34,48,.12); --line2:rgba(27,34,48,.08); --line-strong:rgba(27,34,48,.22);
-  --text:#1B2230; --muted:#6A7180;
-  --accent:#1245AE; --accent-deep:#16306B; --accent-tint:rgba(62,123,246,.10); --accent-brd:rgba(62,123,246,.30);
-  --primary-bg:#3E7BF6; --primary-fg:#FFFFFF;
-  --violet:#9D5BE8; --green:#30F284; --green-hi:#1D5937;
-  --su-t:rgba(48,242,132,.14); --su-b:rgba(29,89,55,.32);
-  --er:#C9291C; --er-t:#FBEFED; --er-b:#F0B4AC;
-  --wa:#B68B12; --qu:#9D5BE8; --qu-t:rgba(157,91,232,.10); --qu-b:rgba(157,91,232,.35);
-  --ca:#6A7180; --ca-t:#F0F1F5; --ca-b:rgba(27,34,48,.22);
-  --link-line:rgba(27,34,48,.22); --teal-mid:#16A89B;
-  --card:#FFFFFF; --card-head:#ECEEF3; --row-hover:#ECEEF3;
-  --teal:#0E4A45; --magenta:#E6399B;
-  --glow-v:rgba(230,57,155,.16); --glow-b:rgba(157,91,232,.13); --brand-violet:#9D5BE8;
-  --panel-shadow:-12px 0 28px -6px rgba(176,141,152,.20), 0 -5px 24px -4px rgba(176,141,152,.10);
-  --shadow-xs:0 1px 2px rgba(16,24,40,.08);
-}
-body.skin-morpheus [data-theme="light"] {
-  --bg:#F2F0EA; --field:#FBFAF6; --card:#FBFAF6; --card-head:#F2EFE7;
-  --surface:#EDEBE2; --surface2:#E4E1D6; --row-hover:#F4F2EB;
-  --line:rgba(35,35,66,.12); --line2:rgba(35,35,66,.08); --line-strong:rgba(35,35,66,.50);
-  --text:#232342; --muted:#62627A;
-  --su-t:rgba(48,242,132,.15); --su-b:rgba(29,89,55,.65); --green-hi:#1D5937;
-}
-body.skin-morpheus [data-theme="dark"] {
-  --bg:#141419; --field:#222229; --card:#26262E; --card-head:#2D2D36;
-  --surface:#2A2A32; --surface2:#33333D; --row-hover:#2E2E38;
-  --line:rgba(240,240,246,.12); --line2:rgba(240,240,246,.08); --line-strong:rgba(240,240,246,.38);
-  --text:#F1F0EA; --muted:#9C9CA8;
-  --su-t:rgba(48,242,132,.13); --su-b:rgba(48,242,132,.55); --green-hi:#30F284;
-}
+* { box-sizing:border-box; }
+html, body { height:100%; }
+body { margin:0; font-family:'Geist', system-ui, -apple-system, sans-serif; font-size:14px; color:var(--text); background:var(--chrome); -webkit-font-smoothing:antialiased; }
+button { font:inherit; cursor:pointer; }
+a { color:var(--link); text-decoration:none; }
+a:hover { text-decoration:underline; }
+.mono { font-family:'Geist Mono', ui-monospace, monospace; }
 
-* { box-sizing: border-box; }
-html, body { height: 100%; }
-body { margin: 0; font-size: 14px; -webkit-font-smoothing: antialiased; font-family: 'Geist', system-ui, -apple-system, sans-serif; }
-.theme { height: 100%; background: var(--bg); color: var(--text); }
-button { font: inherit; cursor: pointer; }
+/* ---------- App shell ---------- */
+.app { height:100%; display:grid; grid-template-columns:88px 1fr; grid-template-rows:64px 1fr; grid-template-areas:"nav topbar" "nav main"; overflow:hidden; }
+.rail { grid-area:nav; display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 6px 18px; background:var(--chrome); overflow-y:auto; }
+.rail::-webkit-scrollbar { width:0; }
+.rail-home { display:flex; flex-direction:column; align-items:center; gap:5px; margin:2px 0 6px; }
+.home-mark { width:34px; height:34px; color:var(--text); }
+.vbadge { display:inline-flex; align-items:center; justify-content:center; height:16px; padding:0 7px; border-radius:999px; background:#30f284; color:#1d5937; font-size:10px; font-weight:700; }
+.nav-item { width:100%; padding:7px 2px; display:flex; flex-direction:column; align-items:center; gap:3px; border:none; background:transparent; color:var(--text); border-radius:12px; }
+.nav-ic { display:flex; align-items:center; justify-content:center; width:40px; height:32px; border-radius:10px; border:1px solid transparent; }
+.nav-item:hover .nav-ic { background:rgba(0,0,0,.04); }
+.nav-item.active .nav-ic { background:rgba(0,0,0,.05); }
+.nav-item svg { width:20px; height:20px; color:var(--text); }
+.nav-lb { font-size:10px; font-weight:500; line-height:1.1; }
+.nav-beta { font-size:9px; color:var(--muted); margin-top:-2px; }
 
-/* ============================================================
-   App shell — 98px icon rail · 65px global nav · rounded panel
-   (verbatim from morpheus.html)
-   ============================================================ */
-.app { height: 100%; display: grid; grid-template-columns: 98px 1fr; grid-template-rows: 65px 1fr; grid-template-areas: "nav topbar" "nav main"; background: var(--bg); overflow: hidden; }
+.topbar { grid-area:topbar; display:flex; align-items:center; gap:12px; padding:12px 22px; background:var(--chrome); }
+.org { display:flex; align-items:center; gap:8px; padding:8px 14px; border:1px solid var(--line-strong); border-radius:10px; background:var(--panel); font-weight:500; color:var(--ink); }
+.org svg { width:17px; height:17px; color:var(--muted); }
+.org svg.chev { width:14px; height:14px; }
+.spacer { flex:1; }
+.search { display:flex; align-items:center; gap:10px; width:280px; height:40px; padding:0 14px; border:1px solid var(--line-strong); border-radius:10px; background:var(--panel); color:var(--muted); }
+.search svg { width:16px; height:16px; }
+.search span { flex:1; }
+.search kbd { font-family:inherit; font-size:10px; background:var(--chrome); border:1px solid var(--line); border-radius:4px; padding:2px 5px; }
+.tb-ic { width:38px; height:38px; border-radius:999px; border:none; background:transparent; color:var(--text); display:flex; align-items:center; justify-content:center; }
+.tb-ic:hover { background:rgba(0,0,0,.04); }
+.tb-ic svg { width:19px; height:19px; }
+.avatar { width:34px; height:34px; border-radius:999px; background:#e05d38; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; }
 
-.left-nav { grid-area: nav; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 8px 24px; background: var(--bg); z-index: 10; overflow-y: auto; }
-.left-nav::-webkit-scrollbar { width: 0; }
-.left-nav-top { display: flex; flex-direction: column; gap: 4px; width: 100%; }
-.nav-home-stack { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 2px; padding: 4px 0; }
-.nav-item-home { padding: 0 4px; }
-.nav-item-home .nav-icon-container { padding: 4px; }
-.home-mark { width: 40px; height: 40px; color: #041834; display: block; }
-[data-theme="dark"] .home-mark { color: #E9EAF2; }
-.nav-version-badge { display: inline-flex; align-items: center; justify-content: center; height: 18px; padding: 0 8px; border-radius: 999px; background: linear-gradient(135deg, #3E7BF6, #9D5BE8); color: #fff; font-size: 11px; font-weight: 600; line-height: 1; }
-.nav-item { width: 100%; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; border-radius: 12px; background: transparent; border: none; color: var(--text); }
-.nav-icon-container { display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 12px; border: 1px solid transparent; background: transparent; transition: background-color .15s, border-color .15s; }
-.nav-item:hover .nav-icon-container, .nav-item.active .nav-icon-container { background: var(--accent-tint); border-color: var(--accent-brd); }
-.nav-item svg { width: 22px; height: 22px; color: var(--text); }
-.nav-label { font-size: 10px; font-weight: 500; line-height: 1.2; color: var(--text); }
-.nav-item.active .nav-label { color: var(--accent-deep); font-weight: 600; }
-.nav-beta { font-size: 10px; color: var(--muted); margin-top: -2px; }
-.nav-item.active svg { color: var(--accent-deep); }
-.nav-tenant { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 4px 0; }
-.tenant-logo { width: 46px; height: 46px; border-radius: 12px; background: #16306B; color: #fff; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 11px; font-weight: 600; line-height: 1.15; letter-spacing: .01em; }
+.main { grid-area:main; background:var(--panel); border-top-left-radius:16px; box-shadow:-12px 0 28px -6px rgba(176,141,152,.16); overflow:hidden; display:flex; flex-direction:column; }
+.content { flex:1; overflow-y:auto; padding:22px 34px 60px; }
+.content::-webkit-scrollbar { width:10px; }
+.content::-webkit-scrollbar-thumb { background:var(--line-strong); border-radius:999px; border:3px solid var(--panel); }
 
-.global-nav { grid-area: topbar; height: 65px; display: flex; align-items: center; gap: 12px; padding: 12px 20px; position: relative; background: var(--bg); }
-.global-nav::before { content: ''; position: absolute; left: 50%; top: 70%; transform: translate(-50%,-50%); width: 1000px; max-width: 90%; height: 65px; background: radial-gradient(ellipse 55% 100% at 38% 50%, var(--glow-v) 0%, transparent 70%), radial-gradient(ellipse 55% 100% at 64% 50%, var(--glow-b) 0%, transparent 70%); filter: blur(20px); z-index: 0; pointer-events: none; }
-.global-nav > * { position: relative; z-index: 1; }
-.org-selector { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); padding: 10px 16px; border-radius: 10px; background: var(--field); border: 1px solid var(--line-strong); white-space: nowrap; }
-.org-selector:hover { background: var(--surface); }
-.org-selector .org-name { font-weight: 500; }
-.org-selector svg { width: 18px; height: 18px; color: var(--muted); }
-.org-selector svg.chev { width: 15px; height: 15px; }
-.nav-spacer { flex: 1; }
-.search-input { height: 40px; border-radius: 10px; border: 1px solid var(--line-strong); padding: 10px 16px; font-size: 14px; color: var(--muted); background: var(--field); display: flex; align-items: center; gap: 12px; width: 280px; cursor: text; }
-.search-input:hover { background: var(--surface); }
-.search-input svg { width: 16px; height: 16px; }
-.search-input > span:first-of-type { flex: 1; }
-.search-input kbd { font-size: 10px; background: var(--surface2); padding: 2px 6px; border-radius: 4px; color: var(--muted); border: 1px solid var(--line); min-width: 18px; text-align: center; font-family: inherit; }
-.nav-actions { display: flex; align-items: center; gap: 4px; }
-.nav-action-btn { width: 40px; height: 40px; border-radius: 999px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; color: var(--text); }
-.nav-action-btn:hover { background: var(--surface); }
-.nav-action-btn svg { width: 20px; height: 20px; }
-.avatar { width: 34px; height: 34px; border-radius: 999px; background: #30F284; color: #1D5937; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
-body.skin-morpheus [data-theme="dark"] .home-mark { color: #F1F0EA; }
-body.skin-morpheus .nav-version-badge { background: #30F284; color: #1D5937; }
-body.skin-morpheus .tenant-logo { background: #232342; color: #FBFAF6; }
-body.skin-morpheus [data-theme="dark"] .tenant-logo { background: #F1F0EA; color: #17171C; }
-body.skin-morpheus [data-theme="light"] .avatar { background: #232342; color: #FBFAF6; }
+/* ---------- Lede ---------- */
+.crumb { font-size:13px; color:var(--muted); margin-bottom:14px; }
+.crumb a { color:var(--link); }
+.crumb .sep { margin:0 6px; opacity:.6; }
+.lede { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.lede h1 { margin:0 0 6px; font-size:18px; font-weight:500; color:var(--text); letter-spacing:-.005em; }
+.meta { font-size:14px; color:var(--muted); }
+.meta a { color:var(--ink); }
+.meta .sep { margin:0 7px; opacity:.6; }
+.bell { width:38px; height:38px; border-radius:10px; border:1px solid var(--line-strong); background:var(--panel); color:var(--text); display:flex; align-items:center; justify-content:center; flex:none; }
+.bell svg { width:18px; height:18px; }
 
-.main-area { position: relative; grid-area: main; display: flex; flex-direction: column; overflow: hidden; min-height: 0; z-index: 11; background: var(--field); border-top-left-radius: 16px; box-shadow: var(--panel-shadow); }
-body.skin-morpheus [data-theme="dark"] .main-area { background: #1B1B21; }
-.content { flex: 1; min-height: 0; overflow-y: auto; }
-.content::-webkit-scrollbar { width: 10px; }
-.content::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 999px; border: 3px solid var(--field); }
+/* ---------- Section headings ---------- */
+.section { margin-top:30px; }
+.sec-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.sec-title { display:flex; align-items:center; gap:8px; }
+.sec-title h2 { margin:0; font-size:16px; font-weight:500; color:var(--text); }
+.info-ic { display:inline-flex; color:var(--muted); }
+.info-ic svg { width:15px; height:15px; }
+.tip { position:relative; display:inline-flex; }
+.tip .bubble { position:absolute; top:calc(100% + 8px); left:50%; transform:translateX(-50%); width:300px; padding:10px 12px; background:#232342; color:#fff; border-radius:8px; font-size:12px; line-height:1.5; box-shadow:0 8px 24px rgba(0,0,0,.22); opacity:0; visibility:hidden; transition:opacity .12s; z-index:40; }
+.tip .bubble b { display:block; margin-bottom:3px; font-weight:600; }
+.tip:hover .bubble { opacity:1; visibility:visible; }
 
-/* ============================================================
-   COMMIT RESULTS — scoped under .cr, tokens mapped to Morpheus
-   ============================================================ */
-.cr {
-  --font-sans: 'Geist', system-ui, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, monospace;
-  --paper: var(--text);
-  --body: color-mix(in srgb, var(--text) 74%, transparent);
-  --green-ink: #04220F;
-  --green-text: var(--green-hi);
-  --flag: var(--er);
-  --accent: var(--green);
-  --accent-ink: #04220F;
-  --glow: color-mix(in srgb, var(--green) 15%, transparent);
-  --blue-vis: #3E7BF6;
-  --teal-vis: var(--teal-mid);
-  --violet-vis: #B48BF0;
-  --lime: #C7E84B;
-  --seg-idle: color-mix(in srgb, var(--text) 18%, transparent);
-  --control-border: var(--line-strong);
-  --control-border-selected: var(--accent);
-  --control-glyph: var(--accent);
-  max-width: none; margin: 0; padding: 20px 28px 72px;
-  font-family: var(--font-sans);
-}
-[data-theme="light"] .cr { --violet-vis: #7E43CF; --lime: #8A9B1E; }
-/* light mode: match the strip + activity surfaces to the repositories card fill */
-[data-theme="light"] .cr .strip,
-[data-theme="light"] .cr .rail-card { background: var(--card); }
-[data-theme="light"] .cr .rail-head { background: var(--card-head); }
-.cr .mono { font-family: var(--font-mono); }
-.cr ::selection { background: var(--accent); color: var(--accent-ink); }
+.pill-btn { display:inline-flex; align-items:center; gap:6px; padding:2px 8px; border:1px solid rgba(35,35,66,.12); border-radius:999px; background:transparent; color:var(--text); font-size:12px; font-weight:500; }
+.pill-btn:hover { background:rgba(0,0,0,.03); }
+.readout { font-size:12px; color:var(--muted); }
 
-.cr .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; gap: 16px; flex-wrap: wrap; }
-.cr .crumb { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); }
-.cr .crumb b { color: var(--body); font-weight: 500; }
-.cr .topbar-actions { display: flex; gap: 10px; align-items: center; }
-.cr .phase-switch { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; }
-.cr .phase-switch button { background: transparent; color: var(--muted); border: 0; padding: 8px 13px; font: 500 12.5px var(--font-sans); cursor: pointer; }
-.cr .phase-switch button.on { background: var(--surface2); color: var(--text); }
-.cr .theme-toggle { background: transparent; color: var(--body); border: 1px solid var(--line-strong); border-radius: 8px; padding: 8px 14px; font: 500 13px var(--font-sans); cursor: pointer; }
-.cr .theme-toggle:hover { color: var(--text); }
+.sync { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); }
+.sync .refresh { display:inline-flex; align-items:center; gap:6px; padding:2px 4px; border:none; background:transparent; color:var(--ink); font-weight:600; }
+.sync .refresh:hover { text-decoration:underline; }
+.sync .refresh svg { width:14px; height:14px; }
+.sync.busy { color:var(--warning); }
+.spin { animation:spin .8s linear infinite; display:inline-flex; }
+@keyframes spin { to { transform:rotate(360deg); } }
 
-.cr .job-title { font-size: 27px; line-height: 1.15; font-weight: 500; letter-spacing: -.5px; margin: 0 0 6px; color: var(--text); }
-.cr .job-sub { font-size: 14.5px; color: var(--body); margin-bottom: 8px; }
-.cr .job-meta { display: flex; align-items: center; gap: 14px; font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); margin-bottom: 18px; flex-wrap: wrap; }
-.cr .pill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line-strong); border-radius: 999px; padding: 4px 12px; font: 500 12.5px var(--font-sans); color: var(--text); }
-.cr .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue-vis); }
-.cr .llink { color: var(--teal-vis); text-decoration: none; }
-.cr .llink:hover { text-decoration: underline; }
-.cr .job-meta .lfail { color: var(--flag); }
+/* ---------- Timeline card ---------- */
+.tl-card { background:var(--card); border:1px solid rgba(0,0,0,.12); border-radius:4px; padding:14px 14px 12px; }
+.tl-row { display:grid; grid-template-columns:200px 1fr; align-items:center; height:48px; }
+.tl-row.dim { opacity:.42; }
+.tl-label { padding-right:14px; text-align:right; min-width:0; }
+.tl-label .lb { font-size:13px; font-weight:500; line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tl-label .sub { font-family:'Geist Mono', monospace; font-size:11px; line-height:1.4; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tl-track { position:relative; height:100%; }
+.tl-base { position:absolute; left:0; right:0; top:50%; height:1px; background:var(--hairline); }
+.bar { position:absolute; top:50%; transform:translateY(-50%); height:14px; border-radius:8px; border:1.5px solid transparent; cursor:pointer; }
+.bar:focus-visible { outline:none; box-shadow:0 0 0 2px var(--accent); }
+.bar.sel { box-shadow:0 0 0 2px var(--accent); }
+.bar.commit { background:var(--commit); border-color:var(--commit-b); }
+.bar.approve { background:var(--approve); border-color:var(--approve-b); }
+.bar.merge { background:var(--merge); border-color:var(--merge-b); }
+.bar.close { background:var(--close); border-color:var(--close-b); }
+.bar.running { background:transparent; border-color:var(--active); animation:pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.5;} }
+.tl-rows { position:relative; }
+.cursor-line { position:absolute; top:0; bottom:0; width:2px; background:var(--accent); pointer-events:none; z-index:3; }
+.cursor-grip { position:absolute; top:-6px; width:12px; height:12px; border-radius:3px; background:var(--accent); cursor:ew-resize; touch-action:none; z-index:4; }
+.tl-axis { display:grid; grid-template-columns:200px 1fr; margin-top:6px; }
+.tl-axis .ticks { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
+.tl-scrub { display:grid; grid-template-columns:200px 1fr; margin-top:8px; }
+.tl-scrub input[type=range]{ width:100%; margin:0; -webkit-appearance:none; appearance:none; height:4px; border-radius:999px; background:var(--track); cursor:pointer; }
+.tl-scrub input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:50%; background:var(--accent); cursor:ew-resize; }
+.tl-scrub input[type=range]::-moz-range-thumb{ width:14px; height:14px; border:none; border-radius:50%; background:var(--accent); cursor:ew-resize; }
 
-/* commit status strip */
-.cr .strip { background: var(--surface); border: 1px solid var(--line2); border-radius: 12px; padding: 15px 18px; margin-bottom: 16px; }
-.cr .segbar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--surface2); gap: 2px; }
-.cr .seg { min-width: 5px; cursor: pointer; opacity: .92; }
-.cr .seg:hover { opacity: 1; }
-.cr .seg.dim { opacity: .28; }
-.cr .seg.active { opacity: 1; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.55); }
-[data-theme="light"] .cr .seg.active { box-shadow: inset 0 0 0 1.5px rgba(27,34,48,.55); }
-.cr .fill-succeeded { background: var(--green); } .cr .fill-failed { background: var(--flag); }
-.cr .fill-running { background: var(--blue-vis); } .cr .fill-queued { background: var(--seg-idle); }
-.cr .fill-created { background: var(--teal-vis); } .cr .fill-nopr { background: var(--seg-idle); }
-.cr .fill-open { background: var(--teal-vis); } .cr .fill-merged { background: var(--violet-vis); }
-.cr .fill-closed { background: var(--flag); } .cr .fill-err { background: var(--lime); }
-.cr .bar-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); margin: 14px 0 8px; }
-.cr .bar-head2 { display: flex; align-items: baseline; gap: 12px; margin: 14px 0 8px; }
-.cr .bar-head2 .bar-title { margin: 0; }
-.cr .sync-inline { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
-.cr .legend { display: flex; gap: 5px 8px; flex-wrap: wrap; margin-top: 9px; align-items: center; }
-.cr .chip { display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--body); padding: 4px 11px; font: 500 12.5px var(--font-sans); cursor: pointer; }
-.cr .chip .cdot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
-.cr .chip .count { font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); }
-.cr .chip:hover { border-color: var(--line-strong); }
-.cr .chip.active { border-color: var(--accent); color: var(--text); background: var(--glow); }
-.cr .chip.active .count { color: var(--green-text); }
-.cr .cdot-succeeded { background: var(--green); } .cr .cdot-failed { background: var(--flag); }
-.cr .cdot-running { background: var(--blue-vis); } .cr .cdot-queued { background: var(--seg-idle); }
-.cr .cdot-created { background: var(--teal-vis); } .cr .cdot-nopr { background: var(--seg-idle); }
-.cr .cdot-open { background: var(--teal-vis); } .cr .cdot-merged { background: var(--violet-vis); }
-.cr .cdot-closed { background: var(--flag); } .cr .cdot-err { background: var(--lime); }
-.cr .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal-vis); display: inline-block; animation: cr-pulse 1.6s ease-in-out infinite; flex: none; margin-top: 5px; }
-@keyframes cr-pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
-.cr .live-line { display: flex; align-items: flex-start; gap: 10px; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.55; color: var(--muted); margin-top: 10px; }
-.cr .live-line .lw { color: var(--body); }
-.cr .sweep-warn { display: flex; gap: 9px; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.55; color: var(--flag); margin-top: 9px; }
-body[data-phase="a"] .cr .phase-b-only { display: none !important; }
-body[data-phase="b"] .cr .phase-a-only { display: none !important; }
+/* ---------- Repositories toolbar + table ---------- */
+.toolbar { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-bottom:none; border-top-left-radius:12px; border-top-right-radius:12px; background:var(--card); }
+.tb-search { display:flex; align-items:center; gap:8px; width:280px; height:36px; padding:0 12px; border:1px solid var(--line-strong); border-radius:8px; background:var(--panel); color:var(--muted); }
+.tb-search svg { width:15px; height:15px; }
+.tbtn { display:inline-flex; align-items:center; gap:6px; height:36px; padding:0 15px; border:1px solid var(--line-strong); border-radius:999px; background:transparent; color:var(--ink); font-size:13px; font-weight:500; }
+.tbtn:hover:not(:disabled){ background:rgba(0,0,0,.03); }
+.tbtn svg { width:15px; height:15px; }
+.tbtn:disabled { opacity:.4; cursor:not-allowed; }
 
-/* layout */
-.cr .split { display: flex; gap: 16px; align-items: flex-start; }
-.cr .rail { flex: 0 0 300px; }
-.cr .main { flex: 1 1 auto; min-width: 0; }
-
-/* activity rail */
-.cr .rail-card { background: var(--surface); border: 1px solid var(--line2); border-radius: 12px; overflow: hidden; }
-.cr .rail-head { background: var(--surface2); border-bottom: 1px solid var(--line); padding: 10px 14px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--muted); }
-.cr .arow { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line2); cursor: pointer; }
-.cr .arow:last-child { border-bottom: 0; }
-.cr .arow:hover { background: var(--surface2); }
-.cr .arow.active { background: var(--glow); box-shadow: inset 2px 0 0 var(--accent); }
-.cr .abadge { width: 16px; height: 16px; border-radius: 50%; flex: none; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
-.cr .abadge.ok { background: var(--green); color: var(--green-ink); }
-.cr .abadge.bad { background: var(--flag); color: #fff; }
-.cr .abadge.spin { background: transparent; border: 2px solid var(--blue-vis); border-top-color: transparent; animation: cr-spin 1.1s linear infinite; }
-@keyframes cr-spin { to { transform: rotate(360deg); } }
-.cr .aname { font: 500 13px var(--font-sans); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cr .asub { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); display: block; margin-top: 1px; }
-.cr .acount { margin-left: auto; font-family: var(--font-mono); font-size: 11.5px; color: var(--teal-vis); white-space: nowrap; }
-.cr .arow .fail { color: var(--flag); }
-
-/* toolbar (scoped to the repositories panel) */
-.cr .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-.cr .search { background: var(--field); border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 14px; color: var(--text); font-family: var(--font-mono); font-size: 12.5px; flex: 1; min-width: 200px; }
-.cr .search::placeholder { color: var(--muted); }
-.cr .tbtn { background: transparent; color: var(--body); border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 16px; font: 500 13px var(--font-sans); cursor: pointer; white-space: nowrap; }
-.cr .tbtn:hover { color: var(--text); }
-.cr .tbtn.disabled { opacity: .4; cursor: default; }
-.cr .tbtn.primary { border-color: var(--accent); color: var(--green-text); }
-.cr .refresh { color: var(--green-text); cursor: pointer; }
-.cr .refresh:hover { text-decoration: underline; }
-
-/* repo datagrid — Morpheus repositories-page table (rp-table / cl-cb) */
-.cr .cl-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-.cr .rp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.cr .rp-table thead th { text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--card-head); padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-.cr .rp-table tbody td { padding: 12px; border-bottom: 1px solid var(--line2); color: var(--text); vertical-align: middle; }
-.cr .rp-table tbody tr:last-child td { border-bottom: none; }
-.cr .rp-table tbody tr { cursor: pointer; }
-.cr .rp-table tbody tr:hover td { background: var(--row-hover); }
-.cr .rp-table tbody tr.hidden { display: none; }
-.cr .rp-table tbody tr.dimmed td { opacity: .55; }
-.cr .rp-table th.sortable { cursor: pointer; user-select: none; }
-.cr .rp-table th.sortable:hover { color: var(--text); }
-.cr .sortic { display: inline-flex; vertical-align: middle; margin-left: 4px; color: var(--muted); opacity: .45; transition: opacity .15s, transform .15s; }
-.cr .sortic svg { width: 12px; height: 12px; display: block; }
-.cr .rp-table th.sortable:hover .sortic { opacity: .85; }
-.cr .rp-table th.sort-asc .sortic, .cr .rp-table th.sort-desc .sortic { opacity: 1; color: var(--green-text); }
-.cr .rp-table th.sort-asc .sortic { transform: rotate(180deg); }
-.cr .cl-c { text-align: center !important; }
-.cr .cl-cbcol { width: 44px; }
-.cr .cl-cb { width: 15px; height: 15px; box-sizing: border-box; border: 1px solid var(--control-border); border-radius: 4px; background: var(--field); display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; color: transparent; cursor: pointer; }
-.cr .cl-cb svg { width: 10px; height: 10px; stroke-width: 3; }
-.cr .cl-cb.on { border-color: var(--control-border-selected); color: var(--control-glyph); }
-.cr .rowact { display: inline-flex; gap: 12px; align-items: center; color: var(--muted); font-size: 15px; }
-.cr .rowlink { color: var(--teal-vis); text-decoration: none; line-height: 1; display: inline-flex; }
-.cr .rowlink svg { width: 15px; height: 15px; display: block; }
-.cr .rowlink:hover { color: var(--text); }
-.cr .rowlink.dis { color: var(--muted); opacity: .34; cursor: default; pointer-events: none; }
-.cr .ra { cursor: pointer; }
-.cr .ra:hover { color: var(--text); }
-/* origin provider logos */
-.cr .origin { display: inline-flex; align-items: center; }
-.cr .origin svg { width: 17px; height: 17px; display: block; }
-.cr .origin--gh { color: var(--text); }
-.cr .origin--gl { color: #FC6D26; }
-.cr .origin--az { color: #4A9EEA; }
-/* collapsible Organization column */
-.cr .colbtn { background: transparent; border: 0; color: var(--muted); cursor: pointer; padding: 0; margin-right: 4px; display: inline-flex; align-items: center; vertical-align: middle; }
-.cr .colbtn:hover { color: var(--text); }
-.cr .colbtn svg { width: 13px; height: 13px; transition: transform .15s; }
-.cr .rp-table.org-collapsed th.orgcol { width: 34px; }
-.cr .rp-table.org-collapsed th.orgcol .orgtext { display: none; }
-.cr .rp-table.org-collapsed th.orgcol .colbtn svg { transform: rotate(-90deg); }
-.cr .rp-table.org-collapsed td.orgcell .orgval { display: none; }
-.cr td.orgcell .orgval::before { content: none; }
-.cr .status { display: inline-flex; align-items: center; gap: 7px; font: 500 12.5px var(--font-sans); color: var(--text); white-space: nowrap; }
-.cr .status.subtle { color: var(--muted); }
-.cr .status .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
-.cr .dot-succeeded { background: var(--green); } .cr .dot-failed { background: var(--flag); }
-.cr .dot-running { background: var(--blue-vis); } .cr .dot-queued { background: var(--seg-idle); }
-.cr .dot-open { background: var(--teal-vis); } .cr .dot-merged { background: var(--violet-vis); }
-.cr .dot-closed { background: var(--flag); } .cr .dot-nopr { background: var(--seg-idle); }
-.cr .dot-err { background: var(--lime); }
-.cr .repo-link { font-family: var(--font-mono); font-size: 12.5px; color: var(--teal-vis); font-weight: 500; }
-.cr .rp-branch { font-family: var(--font-mono); font-size: 12px; color: var(--muted); max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cr .rp-table th.branchcol { max-width: 190px; }
-.cr .rp-when { color: var(--muted); white-space: nowrap; }
-.cr .empty-row td { text-align: center !important; padding: 40px 16px; color: var(--muted); font-size: 13.5px; cursor: default; }
-.cr .empty-row td:hover { background: transparent; }
-.cr .empty-row .clear { color: var(--green-text); cursor: pointer; }
-.cr .table-foot { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
-
-/* per-row PR actions menu */
-.cr .rmenu { position: fixed; z-index: 70; width: 300px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 10px; padding: 8px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
-.cr .rmenu-title { font-family: var(--font-mono); font-size: 11px; color: var(--muted); padding: 6px 12px 8px; border-bottom: 1px solid var(--line2); margin-bottom: 4px; }
-.cr .aitem { padding: 9px 12px; border-radius: 8px; cursor: pointer; }
-.cr .aitem:hover { background: var(--surface2); }
-.cr .aitem.disabled { opacity: .45; cursor: default; }
-.cr .aitem.disabled:hover { background: transparent; }
-.cr .aitem b { display: block; font: 500 13px var(--font-sans); color: var(--text); margin-bottom: 2px; }
-.cr .aitem span { font: 400 11.5px/1.45 var(--font-sans); color: var(--muted); display: block; }
-/* toolbar bulk-actions dropdown */
-.cr .actions-dd { position: relative; display: inline-flex; }
-.cr .actions-btn { display: inline-flex; align-items: center; gap: 5px; }
-.cr .actions-btn .chev-sm { width: 12px; height: 12px; }
-.cr .actions-menu { position: absolute; top: calc(100% + 6px); left: 0; width: 288px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 10px; padding: 8px; display: none; z-index: 40; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
-.cr .actions-menu.open { display: block; }
-
-/* detail drawer */
-.cr .backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 55; }
-.cr .backdrop.show { opacity: 1; pointer-events: auto; }
-.cr .drawer { position: fixed; top: 0; right: -580px; width: 560px; max-width: 94vw; height: 100vh; background: var(--surface); border-left: 1px solid var(--line-strong); z-index: 60; transition: right .25s ease; overflow-y: auto; padding: 20px 24px 28px; }
-.cr .drawer.open { right: 0; }
-.cr .drawer-top { display: flex; justify-content: flex-end; margin-bottom: 8px; }
-.cr .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--line-strong); border-radius: 8px; padding: 8px 14px; font: 500 12.5px var(--font-sans); cursor: pointer; }
-.cr .btn-outline .arrow { color: var(--accent); }
-.cr .pane-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 4px; flex-wrap: wrap; }
-.cr .pane-title { font-family: var(--font-mono); font-size: 15px; color: var(--text); font-weight: 500; }
-.cr .pane-meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 16px; }
-.cr .sect { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); margin: 18px 0 9px; }
-.cr .commit-card { background: var(--surface2); border: 1px solid var(--line2); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.cr .commit-card .mono-sm { font-family: var(--font-mono); font-size: 12px; color: var(--body); }
-.cr .btn-ghost-sm { background: transparent; border: 1px solid var(--line); border-radius: 6px; color: var(--body); padding: 4px 10px; font: 500 11.5px var(--font-sans); cursor: pointer; }
-.cr .btn-ghost-sm:hover { border-color: var(--line-strong); }
-.cr .pane-empty { color: var(--muted); font-size: 13.5px; text-align: center; padding: 100px 30px; }
-
-@media (max-width: 900px) {
-  .cr .split { flex-direction: column; }
-  .cr .rail { flex: 1 1 auto; width: 100%; }
-}
+table.grid { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-bottom:none; }
+.grid th { text-align:left; font-size:12px; font-weight:600; color:var(--muted); padding:12px 14px; border-bottom:1px solid var(--line); white-space:nowrap; }
+.grid td { padding:13px 14px; border-bottom:1px solid var(--hairline); font-size:14px; color:var(--text); vertical-align:middle; }
+.grid tr:hover td { background:rgba(0,0,0,.015); }
+.grid .col-ck { width:38px; }
+.grid .col-act { width:74px; }
+.chk { width:16px; height:16px; border:1.5px solid var(--line-strong); border-radius:4px; background:var(--panel); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+.chk.on { background:var(--accent); border-color:var(--accent); }
+.chk.on svg { width:11px; height:11px; color:#fff; }
+.chk svg { display:none; }
+.actcell { display:flex; align-items:center; gap:6px; color:var(--muted); }
+.actcell .aic { display:inline-flex; padding:3px; border-radius:6px; }
+.actcell .aic:hover { background:rgba(0,0,0,.05); color:var(--text); }
+.actcell svg { width:16px; height:16px; }
+.st { display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
+.st svg { width:15px; height:15px; }
+.st .dot { width:9px; height:9px; border-radius:50%; background:currentColor; }
+.st.success { color:var(--success); }
+.st.active { color:var(--active); }
+.st.error { color:var(--error); }
+.st.neutral { color:#706960; }
+.st .lbl { color:var(--text); }
+.st.success .lbl, .st.error .lbl { color:var(--text); }
+.repo-cell { display:flex; align-items:center; gap:8px; }
+.repo-cell .i { color:var(--muted); display:inline-flex; }
+.repo-cell .i svg { width:14px; height:14px; }
+.origin svg { width:17px; height:17px; color:var(--text); }
+.foot { display:flex; align-items:center; justify-content:flex-end; gap:16px; padding:10px 14px; border:1px solid var(--line); border-top:none; border-bottom-left-radius:12px; border-bottom-right-radius:12px; background:var(--card); font-size:12px; color:var(--muted); }
+.foot .pg { display:inline-flex; gap:2px; }
+.foot .pg button { width:26px; height:26px; border:1px solid var(--line-strong); border-radius:6px; background:var(--panel); color:var(--text); display:flex; align-items:center; justify-content:center; }
+.foot .pg button:disabled { opacity:.4; }
+.foot .pg svg { width:13px; height:13px; }
 </style>
 </head>
-<body class="skin-morpheus" data-phase="a">
-
-<!-- icon sprite (shell chrome) -->
+<body>
+<!-- icon sprite -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-moderne-flat" viewBox="0 0 47 48" fill="none"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+  <symbol id="i-moderne" viewBox="0 0 47 48" fill="none"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
   <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5 10.1 7.6z"/><path d="M19 14l.7 1.8L21.5 16.5l-1.8.7L19 19l-.7-1.8L16.5 16.5l1.8-.7z"/></symbol>
   <symbol id="i-pie" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 118.1 2.8"/><path d="M22 12A10 10 0 0012 2v10z"/></symbol>
   <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></symbol>
@@ -366,578 +187,360 @@ body[data-phase="b"] .cr .phase-a-only { display: none !important; }
   <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
   <symbol id="i-chevd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
-  <symbol id="i-logo-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
-  <symbol id="i-logo-gitlab" viewBox="0 0 24 24" fill="currentColor"><path d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8698.8698 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8574.8574 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.0287.0207 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.462-1.8633 5.0047-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-  <symbol id="i-logo-azure" viewBox="0 0 24 24" fill="currentColor"><path d="M0 8.877L2.247 5.91l8.405-3.416V.022l7.37 5.393L2.966 8.338v8.225L0 15.707zm24-4.45v14.651l-5.753 4.9-9.303-3.057V24l-5.978-7.416 15.057 1.798V5.415z"/></symbol>
-  <symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></symbol>
+  <symbol id="i-chevl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="i-chevr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></symbol>
+  <symbol id="i-minus-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0114.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0020.5 15"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-plus-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="i-arrow-circle" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12s4.48 10 10 10 10-4.48 10-10M4 12c0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8-8-3.58-8-8m12 0-4 4-1.41-1.41L12.17 13H8v-2h4.17l-1.59-1.59L12 8z"/></symbol>
+  <symbol id="i-kebab" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
+  <symbol id="i-gitlab" viewBox="0 0 24 24" fill="currentColor"><path d="m23.6 9.6-.03-.09L20.3.98a.85.85 0 0 0-.34-.4.87.87 0 0 0-1 .05.87.87 0 0 0-.29.44l-2.2 6.75H7.54L5.33 1.07A.87.87 0 0 0 5.04.63.87.87 0 0 0 4.04.58a.86.86 0 0 0-.34.4L.43 9.5l-.03.09a6.07 6.07 0 0 0 2.01 7.01l.01.01.03.02 4.98 3.73 2.46 1.86 1.5 1.13a1 1 0 0 0 1.22 0l1.5-1.13 2.46-1.86 5-3.75.01-.01a6.07 6.07 0 0 0 2.01-7z"/></symbol>
+  <symbol id="i-azure" viewBox="0 0 24 24" fill="currentColor"><path d="M0 8.877L2.247 5.91l8.405-3.416V.022l7.37 5.393L2.966 8.338v8.225L0 15.707zm24-4.45v14.651l-5.753 4.9-9.303-3.057V24l-5.978-7.416 15.057 1.798V5.415z"/></symbol>
+  <symbol id="i-git-pr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6"/><path d="M18 15V9a3 3 0 00-3-3h-3"/><circle cx="18" cy="18" r="3"/><path d="M14 8l-2-2 2-2"/></symbol>
+  <symbol id="i-git-merge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6"/><circle cx="18" cy="7" r="3"/><path d="M18 10a9 9 0 01-9 8"/></symbol>
+  <symbol id="i-git-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6"/><circle cx="18" cy="18" r="3"/><path d="M18 15V9M15.5 6.5l5-5M20.5 6.5l-5-5"/></symbol>
 </svg>
 
-<div class="theme" data-theme="dark" id="themeRoot">
 <div class="app">
-
-  <!-- LEFT ICON RAIL -->
-  <nav class="left-nav" aria-label="Platform">
-    <div class="left-nav-top">
-      <div class="nav-home-stack">
-        <div class="nav-item nav-item-home" title="Home"><span class="nav-icon-container"><svg class="home-mark"><use href="#i-moderne-flat"/></svg></span></div>
-        <span class="nav-version-badge">v3</span>
-      </div>
-      <button class="nav-item" title="Moddy"><span class="nav-icon-container"><svg><use href="#i-sparkles"/></svg></span><span class="nav-label">Moddy</span><span class="nav-beta">Beta</span></button>
-      <button class="nav-item" title="DevCenter"><span class="nav-icon-container"><svg><use href="#i-pie"/></svg></span><span class="nav-label">DevCenter</span></button>
-      <button class="nav-item" title="Marketplace"><span class="nav-icon-container"><svg><use href="#i-globe"/></svg></span><span class="nav-label">Marketplace</span></button>
-      <button class="nav-item" title="Builder"><span class="nav-icon-container"><svg><use href="#i-blocks"/></svg></span><span class="nav-label">Builder</span></button>
-      <button class="nav-item active" title="Activity"><span class="nav-icon-container"><svg><use href="#i-history"/></svg></span><span class="nav-label">Activity</span></button>
-      <button class="nav-item" title="Changelog"><span class="nav-icon-container"><svg><use href="#i-activity"/></svg></span><span class="nav-label">Changelog</span><span class="nav-beta">Beta</span></button>
-      <button class="nav-item" title="Repositories"><span class="nav-icon-container"><svg><use href="#i-repo"/></svg></span><span class="nav-label">Repositories</span></button>
-      <button class="nav-item" title="Deploy"><span class="nav-icon-container"><svg><use href="#i-package"/></svg></span><span class="nav-label">Deploy</span></button>
+  <!-- LEFT RAIL -->
+  <nav class="rail" aria-label="Platform">
+    <div class="rail-home">
+      <svg class="home-mark"><use href="#i-moderne"/></svg>
+      <span class="vbadge">v2</span>
     </div>
-    <div class="nav-tenant" title="Acme Bank — organization"><div class="tenant-logo">Acme<br>Bank</div></div>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-sparkles"/></svg></span><span class="nav-lb">Moddy</span><span class="nav-beta">Beta</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-pie"/></svg></span><span class="nav-lb">DevCenter</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-globe"/></svg></span><span class="nav-lb">Marketplace</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-blocks"/></svg></span><span class="nav-lb">Builder</span></button>
+    <button class="nav-item active"><span class="nav-ic"><svg><use href="#i-history"/></svg></span><span class="nav-lb">Activity</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-activity"/></svg></span><span class="nav-lb">Changelog</span><span class="nav-beta">Beta</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-repo"/></svg></span><span class="nav-lb">Repositories</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-package"/></svg></span><span class="nav-lb">Deploy</span></button>
   </nav>
 
-  <!-- GLOBAL NAV -->
-  <header class="global-nav">
-    <button class="org-selector"><svg><use href="#i-people"/></svg><span class="org-name">Netflix + Spring</span><svg class="chev"><use href="#i-chevd"/></svg></button>
-    <div class="nav-spacer"></div>
-    <div class="search-input"><svg><use href="#i-search"/></svg><span>Search recipes</span><span class="search-input-keys"><kbd>⌘</kbd><kbd>K</kbd></span></div>
-    <div class="nav-actions">
-      <button class="nav-action-btn" title="Admin menu"><svg><use href="#i-gear"/></svg></button>
-      <button class="nav-action-btn" title="Help &amp; resources"><svg><use href="#i-help"/></svg></button>
-      <div class="avatar">L</div>
-    </div>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <button class="org"><svg><use href="#i-people"/></svg><span>Moderne + OpenRewrite</span><svg class="chev"><use href="#i-chevd"/></svg></button>
+    <div class="spacer"></div>
+    <div class="search"><svg><use href="#i-search"/></svg><span>Search recipes</span><span><kbd>⌘</kbd> <kbd>K</kbd></span></div>
+    <button class="tb-ic"><svg><use href="#i-gear"/></svg></button>
+    <button class="tb-ic"><svg><use href="#i-help"/></svg></button>
+    <div class="avatar">A</div>
   </header>
 
-  <!-- MAIN PANEL -->
-  <div class="main-area">
+  <!-- MAIN -->
+  <div class="main">
     <div class="content">
-      <div class="cr">
+      <div class="crumb"><a href="#">Recent activity</a><span class="sep">›</span>preview</div>
 
-        <div class="topbar">
-          <div class="crumb"><a class="llink" href="#" style="color:var(--muted)">Activity</a> <span style="opacity:.5">/</span> <b>Commit job #4187</b></div>
-          <div class="topbar-actions">
-            <span class="phase-switch">
-              <button id="phaseA" class="on" onclick="setPhase('a')">Live sync</button>
-              <button id="phaseB" onclick="setPhase('b')">PR statuses available</button>
+      <div class="lede">
+        <div>
+          <h1>Fix vulnerable Maven/Gradle dependencies</h1>
+          <div class="meta"><span>50 repositories</span><span class="sep">·</span><span>Pull request</span><span class="sep">·</span><span>Started 9 days ago</span><span class="sep">·</span><a href="#">Go to recipe results</a></div>
+        </div>
+        <button class="bell"><svg><use href="#i-bell"/></svg></button>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="section">
+        <div class="sec-head">
+          <div class="sec-title"><h2>Timeline</h2></div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="readout" id="readout" style="display:none"></span>
+            <button class="pill-btn" id="currentBtn">Current</button>
+          </div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-rows" id="tlRows"></div>
+          <div class="tl-axis"><div></div><div class="ticks"><span>started 8 days ago</span><span>4 days ago</span><span>now</span></div></div>
+          <div class="tl-scrub"><div></div><div id="scrubTrack"><input type="range" id="scrub" min="0" max="1000" value="1000" aria-label="Timeline position"></div></div>
+        </div>
+      </div>
+
+      <!-- REPOSITORIES -->
+      <div class="section">
+        <div class="sec-head">
+          <div class="sec-title">
+            <h2>Repositories</h2>
+            <span class="tip"><span class="info-ic"><svg><use href="#i-info"/></svg></span>
+              <span class="bubble"><b>Furthest-along status</b>When a specific time is selected, the repositories table below shows each repository's furthest-along status at the point the timeline is set to.</span>
             </span>
-            <button class="theme-toggle" onclick="toggleTheme()">Light / dark</button>
+          </div>
+          <div class="sync" id="syncLine">
+            <span id="syncText">Live states synced less than a minute ago</span>
+            <button class="refresh" id="refreshBtn"><svg><use href="#i-refresh"/></svg> Refresh</button>
           </div>
         </div>
 
-        <h1 class="job-title">Upgrade to Spring Boot 3.4</h1>
-        <div class="job-sub">Commit job for Moderne + OpenRewrite</div>
-        <div class="job-meta">
-          <span class="pill"><span class="dot"></span>Running</span>
-          <span>20,000 repositories</span><span>·</span>
-          <span>strategy: pull request</span><span>·</span>
-          <span>started 41 min ago</span><span>·</span>
-          <span><a class="llink" href="#">Go to recipe results →</a></span>
+        <div class="toolbar">
+          <div class="tb-search"><svg><use href="#i-search"/></svg><span>Search repositories…</span></div>
+          <div class="spacer"></div>
+          <button class="tbtn act-btn" disabled><svg><use href="#i-git-pr"/></svg> Approve</button>
+          <button class="tbtn act-btn" disabled><svg><use href="#i-git-merge"/></svg> Merge</button>
+          <button class="tbtn act-btn" disabled><svg><use href="#i-git-close"/></svg> Close</button>
+          <button class="tbtn primary"><svg><use href="#i-download"/></svg> Export</button>
         </div>
 
-        <div class="strip">
-          <div class="bar-head2" style="margin-top:2px">
-            <span class="bar-title">Commit status</span>
-            <span class="sync-inline">est. 18 min remaining</span>
-          </div>
-          <div class="segbar">
-            <div class="seg fill-succeeded" data-filter="commit:succeeded" style="flex-grow:12127" title="Succeeded — 12,127"></div>
-            <div class="seg fill-failed" data-filter="commit:failed" style="flex-grow:312" title="Failed — 312"></div>
-            <div class="seg fill-running" data-filter="commit:running" style="flex-grow:1204" title="Running — 1,204"></div>
-            <div class="seg fill-queued" data-filter="commit:queued" style="flex-grow:6357" title="Queued — 6,357"></div>
-          </div>
-          <div class="legend">
-            <button class="chip" data-filter="commit:succeeded"><span class="cdot cdot-succeeded"></span>Succeeded <span class="count">12,127</span></button>
-            <button class="chip" data-filter="commit:failed"><span class="cdot cdot-failed"></span>Failed <span class="count">312</span></button>
-            <button class="chip" data-filter="commit:running"><span class="cdot cdot-running"></span>Running <span class="count">1,204</span></button>
-            <button class="chip" data-filter="commit:queued"><span class="cdot cdot-queued"></span>Queued <span class="count">6,357</span></button>
-          </div>
-
-          <div class="bar-head2">
-            <span class="bar-title">PR status</span>
-            <span class="sync-inline" id="syncLine">synced <span class="syncage">2 min ago</span> · <span class="refresh" onclick="refreshSync()" title="Re-checks pull request statuses with your source control. Large jobs can take several minutes; Approve / Merge / Close eligibility updates as results come in.">⟳ Refresh</span></span>
-          </div>
-
-          <!-- Live sync look: existence bar + explanation -->
-          <div class="phase-a-only">
-            <div class="segbar">
-              <div class="seg fill-created" data-filter="prx:created" style="flex-grow:12127" title="PR created — 12,127"></div>
-              <div class="seg fill-nopr" data-filter="prx:nopr" style="flex-grow:7873" title="No PR yet — 7,873"></div>
-            </div>
-            <div class="legend">
-              <button class="chip" data-filter="prx:created"><span class="cdot cdot-created"></span>PR created <span class="count">12,127</span></button>
-              <button class="chip" data-filter="prx:nopr"><span class="cdot cdot-nopr"></span>No PR yet <span class="count">7,873</span></button>
-            </div>
-          </div>
-
-          <!-- PR statuses available look: full breakdown, filterable -->
-          <div class="phase-b-only">
-            <div class="segbar">
-              <div class="seg fill-open" data-filter="pr:open" style="flex-grow:4102" title="Open — 4,102"></div>
-              <div class="seg fill-merged" data-filter="pr:merged" style="flex-grow:7318" title="Merged — 7,318"></div>
-              <div class="seg fill-closed" data-filter="pr:closed" style="flex-grow:224" title="Closed — 224"></div>
-              <div class="seg fill-err" data-filter="pr:err" style="flex-grow:483" title="Couldn't check — 483"></div>
-              <div class="seg fill-nopr" data-filter="pr:nopr" style="flex-grow:7873" title="No PR yet — 7,873"></div>
-            </div>
-            <div class="legend">
-              <button class="chip" data-filter="pr:open"><span class="cdot cdot-open"></span>Open <span class="count">4,102</span></button>
-              <button class="chip" data-filter="pr:merged"><span class="cdot cdot-merged"></span>Merged <span class="count">7,318</span></button>
-              <button class="chip" data-filter="pr:closed"><span class="cdot cdot-closed"></span>Closed <span class="count">224</span></button>
-              <button class="chip" data-filter="pr:err"><span class="cdot cdot-err"></span>Couldn't check <span class="count">483</span></button>
-              <button class="chip" data-filter="pr:nopr"><span class="cdot cdot-nopr"></span>No PR yet <span class="count">7,873</span></button>
-            </div>
-          </div>
-
-          <div class="sweep-warn" id="sweepWarn" style="display:none">
-            <span>⚠</span>
-            <span>Status check in progress — <span id="sweepCount">0</span> of 12,127 checked. Filtering or sorting by PR status shows incomplete results until the check finishes.</span>
-          </div>
+        <table class="grid">
+          <thead>
+            <tr>
+              <th class="col-ck"><span class="chk" id="ckAll" onclick="toggleAll()"><svg><use href="#i-check"/></svg></span></th>
+              <th class="col-act">Actions</th>
+              <th>Status</th>
+              <th>Organization</th>
+              <th>Repository</th>
+              <th>Origin</th>
+              <th>Base branch</th>
+              <th>Updated at</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="foot">
+          <span>1 – 10 of 50</span>
+          <span class="pg"><button disabled><svg><use href="#i-chevl"/></svg></button><button><svg><use href="#i-chevr"/></svg></button></span>
         </div>
-
-        <div class="split">
-
-          <!-- LEFT: activity rail -->
-          <div class="rail">
-            <div class="rail-card">
-              <div class="rail-head">Activity</div>
-              <div class="arow active" onclick="selectActivity(null, this)">
-                <span class="aname">All repositories</span>
-                <span class="acount">20,000</span>
-              </div>
-              <div class="arow" onclick="selectActivity('merge-now', this)">
-                <span class="abadge spin"></span>
-                <span class="aname">Merge<span class="asub">kyle@moderne.io · 4 min ago · 240/312 · <span class="fail">3 failed</span></span></span>
-                <span class="acount">312</span>
-              </div>
-              <div class="arow" onclick="selectActivity('merge-7h', this)">
-                <span class="abadge ok">✓</span>
-                <span class="aname">Merge<span class="asub">jonathan@moderne.io · 7 hours ago · 100%</span></span>
-                <span class="acount">312</span>
-              </div>
-              <div class="arow" onclick="selectActivity('appr-nate', this)">
-                <span class="abadge ok">✓</span>
-                <span class="aname">Approval<span class="asub">nate@moderne.io · 7 days ago · 100%</span></span>
-                <span class="acount">1,204</span>
-              </div>
-              <div class="arow" onclick="selectActivity('close-kyle', this)">
-                <span class="abadge ok">✓</span>
-                <span class="aname">Close<span class="asub">kyle@moderne.io · 7 days ago · 100%</span></span>
-                <span class="acount">89</span>
-              </div>
-              <div class="arow" onclick="selectActivity('appr-0', this)">
-                <span class="abadge bad">✕</span>
-                <span class="aname">Approval<span class="asub">kyle@moderne.io · 7 days ago · 0%</span></span>
-                <span class="acount">312</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- RIGHT: repositories datagrid (Morpheus rp-table); toolbar scoped to this panel -->
-          <div class="main">
-            <div class="toolbar">
-              <input class="search" id="repoSearch" placeholder="Search repositories…">
-              <div class="actions-dd">
-                <button class="tbtn actions-btn disabled" id="btnActions" onclick="toggleActionsMenu(event)" title="Bulk actions on the selected repositories' pull requests."><span id="actionsLabel">Actions</span> <svg class="chev-sm"><use href="#i-chevd"/></svg></button>
-                <div class="actions-menu" id="actionsMenu" onclick="event.stopPropagation()"></div>
-              </div>
-              <button class="tbtn primary" title="Exports the job's full repository list.">Export</button>
-            </div>
-            <div class="cl-card">
-              <table class="rp-table org-collapsed">
-                <thead>
-                  <tr>
-                    <th class="cl-cbcol cl-c"><span class="cl-cb" onclick="toggleAll(this)"><svg><use href="#i-check"/></svg></span></th>
-                    <th>Actions</th>
-                    <th class="sortable" data-sort="commit" onclick="sortBy('commit')">Commit status <span class="sortic"><svg><use href="#i-chevd"/></svg></span></th>
-                    <th class="sortable" data-sort="pr" onclick="sortBy('pr')" title="Sorted and filtered by the last-synced status — see the sync age by the PR status bar.">PR status <span class="sortic"><svg><use href="#i-chevd"/></svg></span></th>
-                    <th class="orgcol"><span class="colbtn" onclick="toggleOrg(event)" title="Expand / collapse organization column"><svg><use href="#i-chevd"/></svg></span><span class="orgtext">Organization</span></th>
-                    <th class="sortable sort-asc" data-sort="repo" onclick="sortBy('repo')">Repository <span class="sortic"><svg><use href="#i-chevd"/></svg></span></th>
-                    <th class="sortable" data-sort="origin" onclick="sortBy('origin')">Origin <span class="sortic"><svg><use href="#i-chevd"/></svg></span></th>
-                    <th class="sortable branchcol" data-sort="branch" onclick="sortBy('branch')">Base branch <span class="sortic"><svg><use href="#i-chevd"/></svg></span></th>
-                    <th class="sortable" data-sort="updated" onclick="sortBy('updated')">Updated at <span class="sortic"><svg><use href="#i-chevd"/></svg></span></th>
-                  </tr>
-                </thead>
-                <tbody id="rows">
-                  <tr data-repo="modernesaas" data-commit="succeeded" data-prx="created" data-pr="open" data-prurl="https://github.com/moderneinc/moderne-saas/pull/1742" data-acts="merge-now appr-nate appr-0" onclick="selectRepo(this)">
-                    <td class="cl-c" onclick="event.stopPropagation()"><span class="cl-cb" onclick="this.classList.toggle('on');updateToolbar()"><svg><use href="#i-check"/></svg></span></td>
-                    <td onclick="event.stopPropagation()"><span class="rowact"><a class="rowlink" href="https://github.com/moderneinc/moderne-saas/pull/1742" target="_blank" rel="noopener" title="Open pull request #1742 in GitHub"><svg><use href="#i-external"/></svg></a><span class="ra" title="PR actions" onclick="openRowMenu(event, this.closest('tr'))">⋮</span></span></td>
-                    <td><span class="status"><span class="dot dot-succeeded"></span>Completed</span></td>
-                    <td><span class="status"><span class="dot dot-open"></span>Open</span></td>
-                    <td class="orgcell"><span class="orgval">moderneinc</span></td>
-                    <td><span class="repo-link">moderne-saas</span></td>
-                    <td><span class="origin origin--gh" title="github.com"><svg><use href="#i-logo-github"/></svg></span></td>
-                    <td class="rp-branch" title="main">main</td>
-                    <td class="rp-when">11 min ago</td>
-                  </tr>
-                  <tr data-repo="recipeexec" data-commit="failed" data-prx="nopr" data-pr="nopr" data-acts="appr-0" onclick="selectRepo(this)">
-                    <td class="cl-c" onclick="event.stopPropagation()"><span class="cl-cb" onclick="this.classList.toggle('on');updateToolbar()"><svg><use href="#i-check"/></svg></span></td>
-                    <td onclick="event.stopPropagation()"><span class="rowact"><span class="rowlink dis" title="No pull request — commit has not succeeded"><svg><use href="#i-external"/></svg></span><span class="ra" title="PR actions" onclick="openRowMenu(event, this.closest('tr'))">⋮</span></span></td>
-                    <td><span class="status"><span class="dot dot-failed"></span>Failed</span></td>
-                    <td><span class="status subtle"><span class="dot dot-nopr"></span>No PR</span></td>
-                    <td class="orgcell"><span class="orgval">moderneinc</span></td>
-                    <td><span class="repo-link">moderne-recipe-execution</span></td>
-                    <td><span class="origin origin--gh" title="github.com"><svg><use href="#i-logo-github"/></svg></span></td>
-                    <td class="rp-branch" title="main">main</td>
-                    <td class="rp-when">2 min ago</td>
-                  </tr>
-                  <tr data-repo="astwrite" data-commit="succeeded" data-prx="created" data-pr="merged" data-prurl="https://dev.azure.com/moderneinc/_git/moderne-ast-write/pullrequest/318" data-acts="merge-7h appr-nate" onclick="selectRepo(this)">
-                    <td class="cl-c" onclick="event.stopPropagation()"><span class="cl-cb" onclick="this.classList.toggle('on');updateToolbar()"><svg><use href="#i-check"/></svg></span></td>
-                    <td onclick="event.stopPropagation()"><span class="rowact"><a class="rowlink" href="https://dev.azure.com/moderneinc/_git/moderne-ast-write/pullrequest/318" target="_blank" rel="noopener" title="Open pull request in Azure DevOps"><svg><use href="#i-external"/></svg></a><span class="ra" title="PR actions" onclick="openRowMenu(event, this.closest('tr'))">⋮</span></span></td>
-                    <td><span class="status"><span class="dot dot-succeeded"></span>Completed</span></td>
-                    <td><span class="status"><span class="dot dot-merged"></span>Merged</span></td>
-                    <td class="orgcell"><span class="orgval">moderneinc</span></td>
-                    <td><span class="repo-link">moderne-ast-write</span></td>
-                    <td><span class="origin origin--az" title="dev.azure.com"><svg><use href="#i-logo-azure"/></svg></span></td>
-                    <td class="rp-branch" title="develop">develop</td>
-                    <td class="rp-when">14 min ago</td>
-                  </tr>
-                  <tr data-repo="artifactstorage" data-commit="queued" data-prx="nopr" data-pr="nopr" data-acts="" class="dimmed" onclick="selectRepo(this)">
-                    <td class="cl-c" onclick="event.stopPropagation()"><span class="cl-cb" onclick="this.classList.toggle('on');updateToolbar()"><svg><use href="#i-check"/></svg></span></td>
-                    <td onclick="event.stopPropagation()"><span class="rowact"><span class="rowlink dis" title="No pull request yet — commit queued"><svg><use href="#i-external"/></svg></span><span class="ra" title="PR actions" onclick="openRowMenu(event, this.closest('tr'))">⋮</span></span></td>
-                    <td><span class="status"><span class="dot dot-queued"></span>Queued</span></td>
-                    <td><span class="status subtle"><span class="dot dot-nopr"></span>No PR</span></td>
-                    <td class="orgcell"><span class="orgval">moderneinc</span></td>
-                    <td><span class="repo-link">moderne-artifact-storage</span></td>
-                    <td><span class="origin origin--gl" title="gitlab.acme.internal"><svg><use href="#i-logo-gitlab"/></svg></span></td>
-                    <td class="rp-branch" title="release/2026.07-platform-hardening-spring-boot-3.4-migration">release/2026.07-platform-hardening-spring-boot-3.4-migration</td>
-                    <td class="rp-when">—</td>
-                  </tr>
-                  <tr data-repo="rewritespring" data-commit="succeeded" data-prx="created" data-pr="open" data-prurl="https://github.com/openrewrite/rewrite-spring/pull/482" data-acts="merge-now appr-nate appr-0" onclick="selectRepo(this)">
-                    <td class="cl-c" onclick="event.stopPropagation()"><span class="cl-cb" onclick="this.classList.toggle('on');updateToolbar()"><svg><use href="#i-check"/></svg></span></td>
-                    <td onclick="event.stopPropagation()"><span class="rowact"><a class="rowlink" href="https://github.com/openrewrite/rewrite-spring/pull/482" target="_blank" rel="noopener" title="Open pull request #482 in GitHub"><svg><use href="#i-external"/></svg></a><span class="ra" title="PR actions" onclick="openRowMenu(event, this.closest('tr'))">⋮</span></span></td>
-                    <td><span class="status"><span class="dot dot-succeeded"></span>Completed</span></td>
-                    <td><span class="status"><span class="dot dot-open"></span>Open</span></td>
-                    <td class="orgcell"><span class="orgval">openrewrite</span></td>
-                    <td><span class="repo-link">rewrite-spring</span></td>
-                    <td><span class="origin origin--gh" title="github.com"><svg><use href="#i-logo-github"/></svg></span></td>
-                    <td class="rp-branch" title="main">main</td>
-                    <td class="rp-when">18 min ago</td>
-                  </tr>
-                  <tr data-repo="rewritetesting" data-commit="succeeded" data-prx="created" data-pr="closed" data-prurl="https://github.com/openrewrite/rewrite-testing-frameworks/pull/377" data-acts="merge-7h close-kyle appr-nate" onclick="selectRepo(this)">
-                    <td class="cl-c" onclick="event.stopPropagation()"><span class="cl-cb" onclick="this.classList.toggle('on');updateToolbar()"><svg><use href="#i-check"/></svg></span></td>
-                    <td onclick="event.stopPropagation()"><span class="rowact"><a class="rowlink" href="https://github.com/openrewrite/rewrite-testing-frameworks/pull/377" target="_blank" rel="noopener" title="Open pull request #377 in GitHub"><svg><use href="#i-external"/></svg></a><span class="ra" title="PR actions" onclick="openRowMenu(event, this.closest('tr'))">⋮</span></span></td>
-                    <td><span class="status"><span class="dot dot-succeeded"></span>Completed</span></td>
-                    <td><span class="status"><span class="dot dot-closed"></span>Closed</span></td>
-                    <td class="orgcell"><span class="orgval">openrewrite</span></td>
-                    <td><span class="repo-link">rewrite-testing-frameworks</span></td>
-                    <td><span class="origin origin--gh" title="github.com"><svg><use href="#i-logo-github"/></svg></span></td>
-                    <td class="rp-branch" title="master">master</td>
-                    <td class="rp-when">22 min ago</td>
-                  </tr>
-                  <tr data-repo="rewritekotlin" data-commit="running" data-prx="nopr" data-pr="nopr" data-acts="" onclick="selectRepo(this)">
-                    <td class="cl-c" onclick="event.stopPropagation()"><span class="cl-cb" onclick="this.classList.toggle('on');updateToolbar()"><svg><use href="#i-check"/></svg></span></td>
-                    <td onclick="event.stopPropagation()"><span class="rowact"><span class="rowlink dis" title="No pull request yet — commit in progress"><svg><use href="#i-external"/></svg></span><span class="ra" title="PR actions" onclick="openRowMenu(event, this.closest('tr'))">⋮</span></span></td>
-                    <td><span class="status"><span class="dot dot-running"></span>Processing</span></td>
-                    <td><span class="status subtle"><span class="dot dot-nopr"></span>No PR</span></td>
-                    <td class="orgcell"><span class="orgval">openrewrite</span></td>
-                    <td><span class="repo-link">rewrite-kotlin</span></td>
-                    <td><span class="origin origin--gh" title="github.com"><svg><use href="#i-logo-github"/></svg></span></td>
-                    <td class="rp-branch" title="main">main</td>
-                    <td class="rp-when">just now</td>
-                  </tr>
-                  <tr data-repo="modernecli" data-commit="succeeded" data-prx="created" data-pr="open" data-prurl="https://github.com/moderneinc/moderne-cli/pull/903" data-acts="merge-now appr-nate" onclick="selectRepo(this)">
-                    <td class="cl-c" onclick="event.stopPropagation()"><span class="cl-cb" onclick="this.classList.toggle('on');updateToolbar()"><svg><use href="#i-check"/></svg></span></td>
-                    <td onclick="event.stopPropagation()"><span class="rowact"><a class="rowlink" href="https://github.com/moderneinc/moderne-cli/pull/903" target="_blank" rel="noopener" title="Open pull request #903 in GitHub"><svg><use href="#i-external"/></svg></a><span class="ra" title="PR actions" onclick="openRowMenu(event, this.closest('tr'))">⋮</span></span></td>
-                    <td><span class="status"><span class="dot dot-succeeded"></span>Completed</span></td>
-                    <td><span class="status"><span class="dot dot-open"></span>Open</span></td>
-                    <td class="orgcell"><span class="orgval">moderneinc</span></td>
-                    <td><span class="repo-link">moderne-cli</span></td>
-                    <td><span class="origin origin--gh" title="github.com"><svg><use href="#i-logo-github"/></svg></span></td>
-                    <td class="rp-branch" title="main">main</td>
-                    <td class="rp-when">25 min ago</td>
-                  </tr>
-                  <tr data-repo="rewritemigrate" data-commit="succeeded" data-prx="created" data-pr="merged" data-prurl="https://github.com/openrewrite/rewrite-migrate-java/pull/611" data-acts="merge-7h appr-nate" onclick="selectRepo(this)">
-                    <td class="cl-c" onclick="event.stopPropagation()"><span class="cl-cb" onclick="this.classList.toggle('on');updateToolbar()"><svg><use href="#i-check"/></svg></span></td>
-                    <td onclick="event.stopPropagation()"><span class="rowact"><a class="rowlink" href="https://github.com/openrewrite/rewrite-migrate-java/pull/611" target="_blank" rel="noopener" title="Open pull request #611 in GitHub"><svg><use href="#i-external"/></svg></a><span class="ra" title="PR actions" onclick="openRowMenu(event, this.closest('tr'))">⋮</span></span></td>
-                    <td><span class="status"><span class="dot dot-succeeded"></span>Completed</span></td>
-                    <td><span class="status"><span class="dot dot-merged"></span>Merged</span></td>
-                    <td class="orgcell"><span class="orgval">openrewrite</span></td>
-                    <td><span class="repo-link">rewrite-migrate-java</span></td>
-                    <td><span class="origin origin--gh" title="github.com"><svg><use href="#i-logo-github"/></svg></span></td>
-                    <td class="rp-branch" title="main">main</td>
-                    <td class="rp-when">28 min ago</td>
-                  </tr>
-                  <tr data-repo="modernegateway" data-commit="succeeded" data-prx="created" data-pr="err" data-prurl="https://gitlab.acme.internal/moderneinc/moderne-gateway/-/merge_requests/54" data-acts="" onclick="selectRepo(this)">
-                    <td class="cl-c" onclick="event.stopPropagation()"><span class="cl-cb" onclick="this.classList.toggle('on');updateToolbar()"><svg><use href="#i-check"/></svg></span></td>
-                    <td onclick="event.stopPropagation()"><span class="rowact"><a class="rowlink" href="https://gitlab.acme.internal/moderneinc/moderne-gateway/-/merge_requests/54" target="_blank" rel="noopener" title="Open merge request in GitLab"><svg><use href="#i-external"/></svg></a><span class="ra" title="PR actions" onclick="openRowMenu(event, this.closest('tr'))">⋮</span></span></td>
-                    <td><span class="status"><span class="dot dot-succeeded"></span>Completed</span></td>
-                    <td><span class="status subtle"><span class="dot dot-err"></span>Couldn't check</span></td>
-                    <td class="orgcell"><span class="orgval">moderneinc</span></td>
-                    <td><span class="repo-link">moderne-gateway</span></td>
-                    <td><span class="origin origin--gl" title="gitlab.acme.internal"><svg><use href="#i-logo-gitlab"/></svg></span></td>
-                    <td class="rp-branch" title="main">main</td>
-                    <td class="rp-when">30 min ago</td>
-                  </tr>
-                  <tr class="empty-row hidden" id="emptyRow">
-                    <td colspan="9">No repositories match. <span class="clear" onclick="clearAll()">Clear filters</span></td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="table-foot">
-                <span id="footNote">1 – 10 of 20,000 (mock data)</span>
-                <span>Next →</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Per-row PR actions menu -->
-        <div class="rmenu" id="rowMenu" onclick="event.stopPropagation()"></div>
-
-        <!-- Repo detail drawer -->
-        <div class="backdrop" id="backdrop" onclick="closeDrawer()"></div>
-        <div class="drawer" id="drawer">
-          <div class="drawer-top"><button class="btn-outline" onclick="closeDrawer()">✕ Close</button></div>
-          <div class="pane" id="pane"></div>
-        </div>
-
       </div>
     </div>
   </div>
-
-</div><!-- /app -->
-</div><!-- /theme -->
+</div>
 
 <script>
-  var active = { commit: [], prx: [], pr: [] };
-  var activeAct = null;
+// ============================================================
+//  Timeline model — mirrors SAMPLE_TIMELINE (times in days from origin)
+// ============================================================
+const NOW = 8.125;                 // right edge of the axis, in days from origin
+const t = (d, h = 9) => d + (h - 9) / 24;
+const JOBS = [
+  { id:'commit',        kind:'commit',  label:'Commit',            sub:'nate@moderne.io · 50 repos', start:t(0,9),  end:t(1,6) },
+  { id:'approve',       kind:'approve', label:'Approval',          sub:'nate@moderne.io · 37 repos', start:t(1,9),  end:t(3,12) },
+  { id:'close',         kind:'close',   label:'Close stale',       sub:'automation · 4 repos',       start:t(2,12), end:t(4,9) },
+  { id:'merge-1',       kind:'merge',   label:'Merge (first wave)',sub:'nate@moderne.io · 20 repos', start:t(2,12), end:t(5,12) },
+  { id:'approve-retry', kind:'approve', label:'Approval (retry)',  sub:'nate@moderne.io · 5 repos',  start:t(3,9),  end:t(4,9) },
+  { id:'merge-2',       kind:'merge',   label:'Merge (final wave)',sub:'nate@moderne.io · 13 repos', start:t(5,9),  end:null }, // running
+];
+const conclusion = j => j.end == null ? NOW : j.end;
+const SNAP = 0.035;
+const snapTargets = [...new Set(JOBS.map(j => conclusion(j) / NOW))].sort((a,b)=>a-b);
+const clamp01 = n => Math.min(1, Math.max(0, n));
+const THUMB = 14, MIN_BAR = 22, LABEL_W = 200;
+const xFor = (f, W) => THUMB/2 + clamp01(f) * Math.max(0, W - THUMB);
 
-  // Single source of truth for the job's counts (all sum to 20,000).
-  var COUNTS = {
-    total: 20000,
-    activity: { 'merge-now': 312, 'merge-7h': 312, 'appr-nate': 1204, 'close-kyle': 89, 'appr-0': 312 },
-    commit: { succeeded: 12127, failed: 312, running: 1204, queued: 6357 },
-    prx: { created: 12127, nopr: 7873 },
-    pr: { open: 4102, merged: 7318, closed: 224, err: 483, nopr: 7873 }
+// ============================================================
+//  Repository model — mirrors REPO_SPECS / phaseAt (time-travel)
+// ============================================================
+const HAND = [
+  ['moderne','moderne-cli','github'], ['openrewrite','rewrite','github'],
+  ['openrewrite','rewrite-spring','github'], ['openrewrite','rewrite-testing-frameworks','github'],
+  ['spring-projects','spring-boot','github'], ['spring-projects','spring-framework','github'],
+  ['apache','commons-lang','gitlab'], ['google','guava','github'],
+  ['micrometer-metrics','micrometer','github'], ['reactor','reactor-core','azure'],
+];
+const POOL_ORG = ['netflix','square','apache','eclipse','ff4j','jackson','hibernate','google','openrewrite','spring-projects'];
+const POOL_NAME = ['netty','okhttp','gson','junit5','mockito','logback','slf4j','tomcat','jetty','maven-core','commons-io','httpclient','kafka','curator','zookeeper','assertj','testcontainers','feign','eureka','archaius','conductor','graphql-java','webflux','r2dbc','lettuce','spock','servo','spectator','dgs-framework','ribbon'];
+const outcomeFor = i => (i % 17 === 7) ? 'failed' : (i % 13 === 9) ? 'closed' : (i % 5 === 3) ? 'noChanges' : 'merged';
+
+const REPOS = Array.from({ length: 50 }, (_, i) => {
+  const meta = i < 10 ? HAND[i] : [POOL_ORG[i % POOL_ORG.length], POOL_NAME[(i * 7) % POOL_NAME.length], ['github','gitlab','azure'][i % 3]];
+  const f = i / 50;
+  const committed = 0.2 + f * 0.9;
+  const approveStart = 1.4 + f * 2.0;
+  const mergeStart = 2.6 + f * 4.8;
+  const closeStart = 2.6 + f * 1.2;
+  return {
+    org: meta[0], name: meta[1], scm: meta[2], outcome: outcomeFor(i),
+    committed, approveStart, approveEnd: approveStart + 0.3,
+    mergeStart, mergeEnd: mergeStart + 0.4, closeStart, closeEnd: closeStart + 0.3,
   };
-  function fmtN(n) { return n.toLocaleString('en-US'); }
-  function filteredTotal() {
-    var dims = [];
-    if (activeAct && COUNTS.activity[activeAct] != null) dims.push(COUNTS.activity[activeAct]);
-    if (active.commit.length) dims.push(active.commit.reduce(function (s, k) { return s + (COUNTS.commit[k] || 0); }, 0));
-    if (active.prx.length) dims.push(active.prx.reduce(function (s, k) { return s + (COUNTS.prx[k] || 0); }, 0));
-    if (active.pr.length) dims.push(active.pr.reduce(function (s, k) { return s + (COUNTS.pr[k] || 0); }, 0));
-    if (!dims.length) return COUNTS.total;
-    return Math.min.apply(null, dims); // combined filters narrow to the smallest constraint
+});
+const LEAD = 0.3;
+function phaseAt(s, T) {
+  if (T < s.committed - LEAD) return 'queued';
+  if (T < s.committed) return 'committing';
+  if (s.outcome === 'noChanges') return 'noChanges';
+  if (s.outcome === 'failed') return 'failed';
+  if (s.outcome === 'closed') {
+    if (T < s.closeStart) return 'committed';
+    if (T < s.closeEnd) return 'closing';
+    return 'closed';
   }
+  if (T < s.approveStart) return 'committed';
+  if (T < s.approveEnd) return 'approving';
+  if (T < s.mergeStart) return 'approved';
+  if (T < s.mergeEnd) return 'merging';
+  return 'merged';
+}
+const PHASE = {
+  queued:     { label:'Queued',     icon:'i-clock',        cls:'neutral' },
+  committing: { label:'Committing', icon:'dot',            cls:'active'  },
+  committed:  { label:'Committed',  icon:'i-check-circle', cls:'neutral' },
+  approving:  { label:'Approving',  icon:'dot',            cls:'active'  },
+  approved:   { label:'Approved',   icon:'i-check-circle', cls:'success' },
+  merging:    { label:'Merging',    icon:'dot',            cls:'active'  },
+  merged:     { label:'Merged',     icon:'i-check-circle', cls:'success' },
+  closing:    { label:'Closing',    icon:'dot',            cls:'active'  },
+  closed:     { label:'Closed',     icon:'i-check-circle', cls:'neutral' },
+  noChanges:  { label:'No changes', icon:'i-minus-circle', cls:'neutral' },
+  failed:     { label:'Failed',     icon:'i-x-circle',     cls:'error'   },
+};
+const SCM_ICON = { github:'i-github', gitlab:'i-gitlab', azure:'i-azure' };
+const statusHtml = ph => {
+  const p = PHASE[ph];
+  const g = p.icon === 'dot' ? '<span class="dot"></span>' : `<svg><use href="#${p.icon}"/></svg>`;
+  return `<span class="st ${p.cls}">${g}<span class="lbl">${p.label}</span></span>`;
+};
 
-  function setPhase(p) {
-    document.body.setAttribute('data-phase', p);
-    document.getElementById('phaseA').classList.toggle('on', p === 'a');
-    document.getElementById('phaseB').classList.toggle('on', p === 'b');
-    active.prx = []; active.pr = [];
-    renderControls(); renderRows();
-  }
+// ============================================================
+//  State + rendering
+// ============================================================
+let cursorF = 1;         // 0..1 along the axis
+let selectedId = null;
 
-  var DETAILS = {
-    modernesaas: {
-      title: 'moderneinc/moderne-saas @ main',
-      meta: 'github.com · commit attempt 3 · succeeded 11 min ago',
-      commit: 'branch <b>moderne/upgrade-spring-boot-3.4</b> · "refactor: upgrade to Spring Boot 3.4" · attempt 3 of 3',
-      pr: 'Pull request <b>#1742</b> · Open as of <span class="syncage">2 min ago</span> — tracked in the Changelog'
-    },
-    rewritespring: {
-      title: 'openrewrite/rewrite-spring @ main',
-      meta: 'github.com · commit attempt 2 · succeeded 18 min ago',
-      commit: 'branch <b>moderne/upgrade-spring-boot-3.4</b> · "refactor: upgrade to Spring Boot 3.4" · attempt 2 of 2',
-      pr: 'Pull request <b>#482</b> · Open as of <span class="syncage">2 min ago</span> — tracked in the Changelog'
-    },
-    recipeexec: {
-      title: 'moderneinc/moderne-recipe-execution @ main',
-      meta: 'github.com · commit attempt 1 · failed 2 min ago',
-      commit: 'attempt 1 failed: <b>push rejected — branch protection requires signed commits</b>',
-      pr: null
-    }
-  };
+const rowsEl = document.getElementById('tlRows');
+const scrub = document.getElementById('scrub');
+const scrubTrack = document.getElementById('scrubTrack');
+const readoutEl = document.getElementById('readout');
+const gridRows = document.getElementById('rows');
 
-  function selectRepo(row) {
-    var d = DETAILS[row.getAttribute('data-repo')];
-    var pane = document.getElementById('pane');
-    if (!d) {
-      pane.innerHTML = '<div class="pane-empty">No detail fixture for this repository in the mock — the pattern matches the examples.</div>';
-    } else {
-      pane.innerHTML = '<div class="pane-head"><span class="pane-title">' + d.title + '</span>' +
-        '<span><button class="btn-outline">Retry commit <span class="arrow">→</span></button></span></div>' +
-        '<div class="pane-meta">' + d.meta + '</div>' +
-        '<div class="sect">Commit</div><div class="commit-card"><span class="mono-sm">' + d.commit + '</span></div>' +
-        '<div class="sect">Pull request</div>' +
-        (d.pr
-          ? '<div class="commit-card"><span class="mono-sm">' + d.pr + '</span><span style="margin-left:auto"><button class="btn-ghost-sm">View in Changelog →</button><button class="btn-ghost-sm" style="margin-left:6px">Open PR ↗</button></span></div>'
-          : '<div class="pane-meta">No pull request — the commit has not succeeded on this repository.</div>');
-    }
-    document.getElementById('drawer').classList.add('open');
-    document.getElementById('backdrop').classList.add('show');
-  }
-  function closeDrawer() {
-    document.getElementById('drawer').classList.remove('open');
-    document.getElementById('backdrop').classList.remove('show');
-  }
+function snap(f) {
+  let best = f, bd = SNAP;
+  for (const tgt of snapTargets) { const d = Math.abs(tgt - f); if (d <= bd) { best = tgt; bd = d; } }
+  return best;
+}
+function daysAgo(T) { const d = Math.round(NOW - T); return d <= 0 ? 'today' : d >= 14 ? `${Math.round(d/7)} weeks ago` : `${d} day${d===1?'':'s'} ago`; }
+function readout(T) { return Math.abs(NOW - T) < 1 ? 'now' : daysAgo(T); }
 
-  function selectActivity(id, el) {
-    activeAct = id;
-    document.querySelectorAll('.arow').forEach(function (a) { a.classList.remove('active'); });
-    el.classList.add('active');
-    renderRows();
-  }
+// build timeline rows once
+rowsEl.innerHTML = JOBS.map(j => `
+  <div class="tl-row" data-id="${j.id}">
+    <div class="tl-label"><div class="lb">${j.label}</div><div class="sub">${j.sub}</div></div>
+    <div class="tl-track"><div class="tl-base"></div>
+      <button class="bar ${j.kind}${j.end==null?' running':''}" data-id="${j.id}" title="${j.label} · ${j.sub}"></button>
+    </div>
+  </div>`).join('');
+const cursorLine = document.createElement('div'); cursorLine.className = 'cursor-line';
+const cursorGrip = document.createElement('div'); cursorGrip.className = 'cursor-grip';
+rowsEl.append(cursorLine, cursorGrip);
 
-  function renderControls() {
-    document.querySelectorAll('[data-filter]').forEach(function (el) {
-      var parts = el.getAttribute('data-filter').split(':');
-      var isActive = active[parts[0]].indexOf(parts[1]) !== -1;
-      el.classList.toggle('active', isActive);
-      if (el.classList.contains('seg')) el.classList.toggle('dim', active[parts[0]].length > 0 && !isActive);
-    });
-  }
-  function renderRows() {
-    var q = document.getElementById('repoSearch').value.trim().toLowerCase();
-    var shown = 0;
-    document.querySelectorAll('#rows tr[data-repo]').forEach(function (r) {
-      var okC = !active.commit.length || active.commit.indexOf(r.getAttribute('data-commit')) !== -1;
-      var okX = !active.prx.length || active.prx.indexOf(r.getAttribute('data-prx')) !== -1;
-      var okP = !active.pr.length || active.pr.indexOf(r.getAttribute('data-pr')) !== -1;
-      var okA = !activeAct || (' ' + r.getAttribute('data-acts') + ' ').indexOf(' ' + activeAct + ' ') !== -1;
-      var okQ = !q || r.textContent.toLowerCase().indexOf(q) !== -1;
-      var ok = okC && okX && okP && okA && okQ;
-      r.classList.toggle('hidden', !ok);
-      if (ok) shown++;
-    });
-    document.getElementById('emptyRow').classList.toggle('hidden', shown > 0);
-    var total = filteredTotal();
-    document.getElementById('footNote').textContent = (shown === 0)
-      ? '0 of ' + fmtN(total) + ' (mock data)'
-      : '1 – ' + shown + ' of ' + fmtN(total) + ' (mock data)';
-  }
-  document.querySelectorAll('[data-filter]').forEach(function (el) {
-    el.addEventListener('click', function () {
-      var parts = el.getAttribute('data-filter').split(':');
-      var arr = active[parts[0]], i = arr.indexOf(parts[1]);
-      if (i === -1) arr.push(parts[1]); else arr.splice(i, 1);
-      renderControls(); renderRows();
-    });
+// build table rows once
+gridRows.innerHTML = REPOS.slice(0, 10).map((r, i) => `
+  <tr data-idx="${i}">
+    <td><span class="chk" onclick="toggleRow(${i})"><svg><use href="#i-check"/></svg></span></td>
+    <td><div class="actcell"><span class="aic" title="View pull request"><svg><use href="#i-arrow-circle"/></svg></span><span class="aic"><svg><use href="#i-kebab"/></svg></span></div></td>
+    <td class="stcell"></td>
+    <td>${r.org}</td>
+    <td><div class="repo-cell"><span class="i"><svg><use href="#i-info"/></svg></span><a href="#">${r.name}</a></div></td>
+    <td><span class="origin"><svg><use href="#${SCM_ICON[r.scm]}"/></svg></span></td>
+    <td class="mono">main</td>
+    <td>9 days ago</td>
+  </tr>`).join('');
+
+function render() {
+  const W = rowsEl.querySelector('.tl-track').clientWidth;
+  const T = cursorF * NOW;
+  // bars
+  JOBS.forEach(j => {
+    const bar = rowsEl.querySelector(`.bar[data-id="${j.id}"]`);
+    const sF = j.start / NOW, eF = conclusion(j) / NOW;
+    const left = xFor(sF, W), width = Math.max(MIN_BAR, xFor(eF, W) - left);
+    bar.style.left = left + 'px'; bar.style.width = width + 'px';
+    bar.classList.toggle('sel', selectedId === j.id);
+    const row = rowsEl.querySelector(`.tl-row[data-id="${j.id}"]`);
+    row.classList.toggle('dim', selectedId !== null && selectedId !== j.id);
   });
-  document.getElementById('repoSearch').addEventListener('input', renderRows);
-  function clearAll() {
-    active.commit = []; active.prx = []; active.pr = [];
-    activeAct = null;
-    document.getElementById('repoSearch').value = '';
-    document.querySelectorAll('.arow').forEach(function (a, i) { a.classList.toggle('active', i === 0); });
-    renderControls(); renderRows();
-  }
-  function toggleAll(el) {
-    el.classList.toggle('on');
-    var on = el.classList.contains('on');
-    document.querySelectorAll('#rows .cl-cb').forEach(function (c) { c.classList.toggle('on', on); });
-    updateToolbar();
-  }
-  function updateToolbar() {
-    var n = document.querySelectorAll('#rows .cl-cb.on').length;
-    var b = document.getElementById('btnActions');
-    b.classList.toggle('disabled', n === 0);
-    document.getElementById('actionsLabel').textContent = 'Actions' + (n > 0 ? ' (' + n + ')' : '');
-    if (n === 0) document.getElementById('actionsMenu').classList.remove('open');
-  }
-  function toggleActionsMenu(e) {
-    e.stopPropagation();
-    var b = document.getElementById('btnActions');
-    if (b.classList.contains('disabled')) return;
-    var m = document.getElementById('actionsMenu');
-    if (m.classList.contains('open')) { m.classList.remove('open'); return; }
-    function item(label, sub) {
-      return '<div class="aitem"><b>' + label + '</b><span>' + sub + '</span></div>';
-    }
-    m.innerHTML =
-      item('Approve', 'Approve the selected pull requests.') +
-      item('Merge', 'Merge the selected pull requests.') +
-      item('Close', 'Close the selected pull requests.');
-    m.classList.add('open');
-  }
-  function openRowMenu(e, tr) {
-    e.stopPropagation();
-    var m = document.getElementById('rowMenu');
-    var name = tr.querySelector('.repo-link').textContent;
-    function item(label, sub) {
-      return '<div class="aitem"><b>' + label + '</b><span>' + sub + '</span></div>';
-    }
-    m.innerHTML = '<div class="rmenu-title">' + name + '</div>' +
-      item('Approve', 'Approve this pull request.') +
-      item('Merge', 'Merge this pull request.') +
-      item('Close', 'Close this pull request.');
-    m.style.display = 'block';
-    m.style.left = Math.min(e.clientX, window.innerWidth - 310) + 'px';
-    m.style.top = Math.min(e.clientY + 8, window.innerHeight - 200) + 'px';
-  }
-  document.addEventListener('click', function () {
-    document.getElementById('rowMenu').style.display = 'none';
-    document.getElementById('actionsMenu').classList.remove('open');
+  // cursor — offset by the label column since the line spans the full row width
+  const cx = LABEL_W + xFor(cursorF, W);
+  cursorLine.style.left = cx + 'px';
+  cursorGrip.style.left = (cx - 6) + 'px';
+  // slider + readout
+  scrub.value = Math.round(cursorF * 1000);
+  const r = readout(T);
+  readoutEl.textContent = r; readoutEl.style.display = r === 'now' ? 'none' : '';
+  // table time-travel
+  REPOS.slice(0, 10).forEach((rp, i) => {
+    gridRows.querySelector(`tr[data-idx="${i}"] .stcell`).innerHTML = statusHtml(phaseAt(rp, T));
   });
-  var sweepBusy = false;
-  function refreshSync() {
-    if (sweepBusy) return;
-    sweepBusy = true;
-    var line = document.getElementById('syncLine');
-    var warn = document.getElementById('sweepWarn');
-    warn.style.display = '';
-    var steps = [[1500,'1,480'],[9000,'4,820'],[17000,'8,640'],[25000,'11,610'],[30000,'12,050']];
-    steps.forEach(function (s) {
-      setTimeout(function () {
-        line.textContent = 'Checking PR statuses — ' + s[1] + ' of 12,127…';
-        document.getElementById('sweepCount').textContent = s[1];
-      }, s[0]);
-    });
-    setTimeout(function () {
-      sweepBusy = false;
-      warn.style.display = 'none';
-      line.innerHTML = 'synced <span class="syncage">just now</span> · <span class="refresh" onclick="refreshSync()" title="Re-checks pull request statuses with your source control. Large jobs can take several minutes; Approve / Merge / Close eligibility updates as results come in.">⟳ Refresh</span>';
-      document.querySelectorAll('.syncage').forEach(function (s) { s.textContent = 'just now'; });
-    }, 32000);
-  }
-  function toggleOrg(e) {
-    e.stopPropagation();
-    document.querySelector('.rp-table').classList.toggle('org-collapsed');
-  }
-  // ---- column sort ----
-  var sortState = { key: 'repo', dir: 1 };
-  function parseMins(t) {
-    if (t === 'just now') return 0;
-    if (t === '—') return 1e9;
-    var m = t.match(/(\d+)\s*min/); if (m) return +m[1];
-    var h = t.match(/(\d+)\s*h/); if (h) return +h[1] * 60;
-    return 1e9;
-  }
-  function sortVal(r, k) {
-    if (k === 'repo') return r.querySelector('.repo-link').textContent.trim().toLowerCase();
-    if (k === 'origin') { var o = r.querySelector('.origin'); return o ? (o.getAttribute('title') || '') : ''; }
-    if (k === 'branch') return r.querySelector('.rp-branch').textContent.trim().toLowerCase();
-    if (k === 'updated') return parseMins(r.querySelector('.rp-when').textContent.trim());
-    if (k === 'commit') return r.children[2].textContent.trim().toLowerCase();
-    if (k === 'pr') return r.children[3].textContent.trim().toLowerCase();
-    return '';
-  }
-  function applySort() {
-    var tbody = document.getElementById('rows');
-    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr[data-repo]'));
-    var k = sortState.key, dir = sortState.dir;
-    rows.sort(function (a, b) {
-      var va = sortVal(a, k), vb = sortVal(b, k);
-      if (va < vb) return -dir;
-      if (va > vb) return dir;
-      return 0;
-    });
-    var anchor = document.getElementById('emptyRow');
-    rows.forEach(function (r) { tbody.insertBefore(r, anchor); });
-    document.querySelectorAll('.rp-table th.sortable').forEach(function (th) {
-      th.classList.remove('sort-asc', 'sort-desc');
-      if (th.getAttribute('data-sort') === k) th.classList.add(dir === 1 ? 'sort-asc' : 'sort-desc');
-    });
-  }
-  function sortBy(key) {
-    if (sortState.key === key) sortState.dir *= -1; else { sortState.key = key; sortState.dir = 1; }
-    applySort();
-  }
-  function toggleTheme() {
-    var h = document.getElementById('themeRoot');
-    h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-  }
+}
 
-  applySort(); renderControls(); renderRows();
+function setCursor(f, clearSel = true) {
+  cursorF = clamp01(snap(f));
+  if (clearSel) selectedId = null;
+  render();
+}
+
+// interactions
+scrub.addEventListener('input', () => setCursor(scrub.value / 1000));
+document.getElementById('currentBtn').addEventListener('click', () => setCursor(1));
+rowsEl.querySelectorAll('.bar').forEach(bar => bar.addEventListener('click', () => {
+  const id = bar.dataset.id;
+  const j = JOBS.find(x => x.id === id);
+  if (selectedId === id) { selectedId = null; render(); return; }
+  selectedId = id; cursorF = clamp01(conclusion(j) / NOW); render();
+}));
+// drag the cursor grip
+let dragging = false;
+const fracFromX = clientX => {
+  const track = rowsEl.querySelector('.tl-track').getBoundingClientRect();
+  return clamp01((clientX - track.left - THUMB/2) / Math.max(1, track.width - THUMB));
+};
+cursorGrip.addEventListener('pointerdown', e => { dragging = true; cursorGrip.setPointerCapture(e.pointerId); e.preventDefault(); });
+cursorGrip.addEventListener('pointermove', e => { if (dragging) setCursor(fracFromX(e.clientX)); });
+cursorGrip.addEventListener('pointerup', () => { dragging = false; });
+window.addEventListener('resize', render);
+
+// checkboxes → enable bulk actions
+const selected = new Set();
+function syncActions() {
+  const on = selected.size > 0;
+  document.querySelectorAll('.act-btn').forEach(b => b.disabled = !on);
+  const all = document.getElementById('ckAll');
+  all.classList.toggle('on', selected.size === 10);
+}
+function toggleRow(i) {
+  const ck = gridRows.querySelector(`tr[data-idx="${i}"] .chk`);
+  if (selected.has(i)) { selected.delete(i); ck.classList.remove('on'); }
+  else { selected.add(i); ck.classList.add('on'); }
+  syncActions();
+}
+function toggleAll() {
+  const turnOn = selected.size < 10;
+  selected.clear();
+  gridRows.querySelectorAll('.chk').forEach((ck, i) => { ck.classList.toggle('on', turnOn); if (turnOn) selected.add(i); });
+  syncActions();
+}
+
+// refresh sweep — two mutually-exclusive states (idle / in progress)
+const syncLine = document.getElementById('syncLine');
+let refreshing = false;
+const IDLE_HTML = '<span id="syncText">Live states synced less than a minute ago</span><button class="refresh" id="refreshBtn"><svg><use href="#i-refresh"/></svg> Refresh</button>';
+syncLine.addEventListener('click', e => {
+  if (!e.target.closest('#refreshBtn') || refreshing) return;
+  refreshing = true;
+  const TOTAL = 50, DUR = 2500, start = performance.now();
+  syncLine.classList.add('busy');
+  syncLine.innerHTML = `<span class="spin"><svg width="13" height="13"><use href="#i-refresh"/></svg></span><span id="sweepText">Status check in progress — 0 of ${TOTAL} checked</span>`;
+  const iv = setInterval(() => {
+    const done = Math.min(TOTAL, Math.round((performance.now() - start) / DUR * TOTAL));
+    const el = document.getElementById('sweepText');
+    if (el) el.textContent = `Status check in progress — ${done} of ${TOTAL} checked`;
+  }, 100);
+  setTimeout(() => {
+    clearInterval(iv); refreshing = false;
+    syncLine.classList.remove('busy');
+    syncLine.innerHTML = IDLE_HTML;
+  }, DUR);
+});
+
+render();
+requestAnimationFrame(render); // re-measure after layout settles
 </script>
 </body>
 </html>
