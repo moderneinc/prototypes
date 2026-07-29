@@ -80,6 +80,13 @@ a:hover { text-decoration:underline; }
 .sec-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
 .sec-title { display:flex; align-items:center; gap:8px; }
 .sec-title h2 { margin:0; font-size:16px; font-weight:500; color:var(--text); }
+.tl-section .sec-title { cursor:pointer; user-select:none; margin-left:-4px; }
+.collapse-btn { border:none; background:transparent; padding:2px; color:var(--muted); display:inline-flex; align-items:center; }
+.collapse-btn .chev { width:18px; height:18px; transition:transform .2s ease; }
+.tl-section.collapsed .collapse-btn .chev { transform:rotate(-90deg); }
+.tl-wrap { overflow:hidden; transition:max-height .28s ease, opacity .18s ease; max-height:640px; opacity:1; }
+.tl-section.collapsed .tl-wrap { max-height:0; opacity:0; }
+.tl-section.collapsed .tl-controls { display:none; }
 .info-ic { display:inline-flex; color:var(--muted); }
 .info-ic svg { width:15px; height:15px; }
 .tip { position:relative; display:inline-flex; }
@@ -250,18 +257,23 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
       </div>
 
       <!-- TIMELINE -->
-      <div class="section">
+      <div class="section tl-section" id="tlSection">
         <div class="sec-head">
-          <div class="sec-title"><h2>Timeline</h2></div>
-          <div style="display:flex;align-items:center;gap:10px">
+          <div class="sec-title" id="tlTitle">
+            <button class="collapse-btn" id="tlToggle" aria-label="Collapse timeline"><svg class="chev"><use href="#i-chevd"/></svg></button>
+            <h2>Timeline</h2>
+          </div>
+          <div class="tl-controls" style="display:flex;align-items:center;gap:10px">
             <span class="readout" id="readout" style="display:none"></span>
             <button class="pill-btn" id="currentBtn">Current</button>
           </div>
         </div>
+        <div class="tl-wrap">
         <div class="tl-card">
           <div class="tl-rows" id="tlRows"></div>
           <div class="tl-axis"><div></div><div class="ticks"><span>started 8 days ago</span><span>4 days ago</span><span>now</span></div></div>
           <div class="tl-scrub"><div></div><div id="scrubTrack"><input type="range" id="scrub" min="0" max="1000" value="1000" aria-label="Timeline position"></div></div>
+        </div>
         </div>
       </div>
 
@@ -478,7 +490,15 @@ function setCursor(f, clearSel = true) {
 
 // interactions
 scrub.addEventListener('input', () => setCursor(scrub.value / 1000));
-document.getElementById('currentBtn').addEventListener('click', () => setCursor(1));
+document.getElementById('currentBtn').addEventListener('click', e => { e.stopPropagation(); setCursor(1); });
+
+// collapse / expand the timeline card
+const tlSection = document.getElementById('tlSection');
+document.getElementById('tlTitle').addEventListener('click', () => {
+  const collapsed = tlSection.classList.toggle('collapsed');
+  document.getElementById('tlToggle').setAttribute('aria-label', collapsed ? 'Expand timeline' : 'Collapse timeline');
+  if (!collapsed) requestAnimationFrame(render);
+});
 rowsEl.querySelectorAll('.bar').forEach(bar => bar.addEventListener('click', () => {
   const id = bar.dataset.id;
   const j = JOBS.find(x => x.id === id);
