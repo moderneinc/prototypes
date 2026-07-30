@@ -51,6 +51,7 @@ body {
   --accent-tint: rgba(62,123,246,.16);
   --accent-brd:  rgba(62,123,246,.40);
   --primary-bg:  #3E7BF6; --primary-fg: #FFFFFF;
+  --tip-bg:      #F1F0EA; --tip-fg: #17171C;   /* hover tooltip: inverted on dark */
 
   --violet:      #9D5BE8;                      /* Violet bright: recipe run */
   --green:       #30F284;                      /* Green bright: dots / connectors */
@@ -93,6 +94,7 @@ body {
   --accent-tint: rgba(62,123,246,.10);
   --accent-brd:  rgba(62,123,246,.30);
   --primary-bg:  #3E7BF6; --primary-fg: #FFFFFF;
+  --tip-bg:      #232342; --tip-fg: #FBFAF6;   /* hover tooltip: ink on light */
 
   --violet:      #9D5BE8;                      /* Violet bright: recipe run */
   --green:       #30F284;                      /* Green bright: dots / connectors */
@@ -1026,6 +1028,9 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .bl-rail button:hover { background: var(--surface); color: var(--text); }
 .bl-rail button.on { color: var(--accent); background: var(--accent-tint); }
 .bl-rail svg { width: 15px; height: 15px; }
+.bl-graph circle.bl-node { cursor: pointer; }
+.bl-tip { position: absolute; z-index: 6; pointer-events: none; background: var(--tip-bg, #232342); color: var(--tip-fg, #FBFAF6); font-size: 12px; font-weight: 600; line-height: 1.4; padding: 8px 13px; border-radius: 8px; max-width: 180px; text-align: center; box-shadow: 0 6px 18px rgba(0,0,0,.28); opacity: 0; transition: opacity .12s ease; transform: translate(-50%, calc(-100% - 14px)); }
+.bl-tip.on { opacity: 1; }
 .bl-nodelabel { position: absolute; left: 46%; top: 54%; display: flex; align-items: center; gap: 8px; }
 .bl-nodelabel .lbl { background: var(--primary-bg); color: var(--primary-fg); font-size: 12px; font-weight: 600; padding: 8px 15px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
 .bl-nodelabel .menu { width: 34px; height: 34px; border-radius: 999px; border: none; background: var(--primary-bg); color: var(--primary-fg); display: flex; align-items: center; justify-content: center; font-size: 15px; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
@@ -3456,23 +3461,51 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
     links.forEach(function (l) {
       edges += '<line x1="' + hubs[l[0]].x + '" y1="' + hubs[l[0]].y + '" x2="' + hubs[l[1]].x + '" y2="' + hubs[l[1]].y + '" stroke="var(--line-strong)"/>';
     });
+    var names = [
+      'Change XML attribute', 'Migrate to DataNucleus 5.2', 'Upgrade Gradle or Maven dependency versions',
+      'DataNucleus 5.2 package moves', 'Change Maven plugin configuration', 'Remove unused imports',
+      'Update Spring annotations', 'Change property key', 'Add Maven plugin', 'Rename package',
+      'Change method invocation', 'DataNucleus 5.2 property migrations'
+    ];
+    var ni = 0;
+    function nodeAttrs() { return ' class="bl-node" data-name="' + names[ni++ % names.length] + '"'; }
     hubs.forEach(function (h) {
       for (var k = 0; k < h.n; k++) {
         var a = rnd() * Math.PI * 2, r = 34 + rnd() * 44;
         var x = h.x + r * Math.cos(a), y = h.y + r * Math.sin(a);
         edges += '<line x1="' + h.x + '" y1="' + h.y + '" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="var(--line-strong)"/>';
-        dots += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="4.2" fill="var(--accent)"/>';
+        dots += '<circle' + nodeAttrs() + ' cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="4.2" fill="var(--accent)"/>';
       }
       if (h.sel) {
         sel += '<circle cx="' + h.x + '" cy="' + h.y + '" r="22" fill="var(--ch-p1)" opacity="0.25"/><circle cx="' + h.x + '" cy="' + h.y + '" r="11" fill="var(--ch-p1)"/>';
       } else {
-        dots += '<circle cx="' + h.x + '" cy="' + h.y + '" r="6" fill="var(--accent)"/>';
+        dots += '<circle' + nodeAttrs() + ' cx="' + h.x + '" cy="' + h.y + '" r="6" fill="var(--accent)"/>';
       }
     });
     return '<svg viewBox="0 0 600 660" preserveAspectRatio="xMidYMid meet">' + edges + sel + dots + '</svg>';
   }
   var blSvg = builderGraph();
   document.querySelectorAll('.layer .bl-graph').forEach(function (el) { el.innerHTML = blSvg; });
+
+  // node-name tooltip on hover — replaces a persistent "None selected" label;
+  // ink bubble on light, inverted cream bubble on dark (via --tip-bg/--tip-fg)
+  document.querySelectorAll('.layer .bl-canvas').forEach(function (canvas) {
+    var tip = document.createElement('div');
+    tip.className = 'bl-tip';
+    canvas.appendChild(tip);
+    canvas.querySelectorAll('circle.bl-node').forEach(function (node) {
+      node.addEventListener('mouseenter', function () {
+        tip.textContent = node.getAttribute('data-name');
+        tip.classList.add('on');
+      });
+      node.addEventListener('mousemove', function (e) {
+        var r = canvas.getBoundingClientRect();
+        tip.style.left = (e.clientX - r.left) + 'px';
+        tip.style.top = (e.clientY - r.top) + 'px';
+      });
+      node.addEventListener('mouseleave', function () { tip.classList.remove('on'); });
+    });
+  });
 
   // ---- keep the two scroll containers mirrored ----
   var contents = document.querySelectorAll('.layer .content');
