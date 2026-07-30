@@ -17,9 +17,13 @@
   --text:#343a40; --ink:#232342; --muted:#62627a; --faint:#8a8a99;
   --accent:#1055e2; --link:#0046b5; --track:#edebe2;
   --success:#237341; --active:#7048c8; --error:#d43c2a; --warning:#b07210;
-  /* dataviz categorical (bars) */
-  --commit:#3e5be8; --approve:#25d0c0; --merge:#30f284; --close:#ff6f61;
-  --commit-b:#2b40a2; --approve-b:#1a9286; --merge-b:#22a95c; --close-b:#b24e44;
+  /* dataviz — Moderne Changelog state palette (dev.moderne.io/changelog) */
+  /* Changelog state hues, softened toward the DevCenter parliament-chart tone */
+  --commit:#5b6bd0; --commit-b:#3d49a8;   /* Commit — blue */
+  --draft:#8a867d;  --draft-b:#666259;    /* Draft — warm gray */
+  --approve:#57b06e;--approve-b:#3c8a50;  /* Open / Approved — green */
+  --merge:#9a5cb5;  --merge-b:#744088;    /* Merged — purple */
+  --close:#e8604f;  --close-b:#bf4436;    /* Closed — coral-red */
 }
 * { box-sizing:border-box; }
 html, body { height:100%; }
@@ -84,7 +88,7 @@ a:hover { text-decoration:underline; }
 .collapse-btn { border:none; background:transparent; padding:2px; color:var(--muted); display:inline-flex; align-items:center; }
 .collapse-btn .chev { width:18px; height:18px; transition:transform .2s ease; }
 .tl-section.collapsed .collapse-btn .chev { transform:rotate(-90deg); }
-.tl-wrap { overflow:hidden; transition:max-height .28s ease, opacity .18s ease; max-height:720px; opacity:1; }
+.tl-wrap { overflow:hidden; transition:max-height .28s ease, opacity .18s ease; max-height:420px; opacity:1; }
 .tl-section.collapsed .tl-wrap { max-height:0; opacity:0; }
 .tl-section.collapsed .tl-controls { display:none; }
 .info-ic { display:inline-flex; color:var(--muted); }
@@ -98,65 +102,90 @@ a:hover { text-decoration:underline; }
 .pill-btn:hover { background:rgba(0,0,0,.03); }
 .readout { font-size:12px; color:var(--muted); }
 
-.sync { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); }
-.sync .refresh { display:inline-flex; align-items:center; gap:6px; padding:2px 4px; border:none; background:transparent; color:var(--ink); font-weight:600; }
-.sync .refresh:hover { text-decoration:underline; }
+.sync { display:flex; align-items:center; gap:12px; font-size:12px; color:var(--muted); }
+.sync .refresh { display:inline-flex; align-items:center; gap:7px; height:34px; padding:0 16px; border:none; border-radius:999px; background:var(--ink); color:#fff; font-size:13px; font-weight:600; }
+.sync .refresh:hover:not(:disabled) { background:#35356b; }
+.sync .refresh:disabled { cursor:default; opacity:.75; }
 .sync .refresh svg { width:14px; height:14px; }
 .sync.busy { color:var(--warning); }
 .spin { animation:spin .8s linear infinite; display:inline-flex; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
-/* ---------- Timeline card ---------- */
-.tl-card { background:var(--card); border:1px solid rgba(0,0,0,.12); border-radius:4px; padding:10px 14px 8px; }
-.tl-row { display:grid; grid-template-columns:200px 1fr; align-items:center; height:30px; }
-.tl-row.dim { opacity:.32; }
-.tl-label { padding-right:14px; text-align:right; min-width:0; }
-.tl-label .lb { font-size:12px; font-weight:500; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.tl-label .sub { font-family:'Geist Mono', monospace; font-size:10px; line-height:1.2; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-/* fast hover tooltip for timeline bars */
-#barTip { position:fixed; z-index:60; transform:translate(-50%,-100%); background:#232342; color:#fff; padding:7px 10px; border-radius:8px; font-size:12px; line-height:1.45; box-shadow:0 8px 24px rgba(0,0,0,.22); pointer-events:none; opacity:0; transition:opacity .08s; white-space:nowrap; }
-#barTip.on { opacity:1; }
-#barTip b { font-weight:600; }
-#barTip .tf { color:#ff9e91; }
-/* legend */
-.tl-legend { display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; margin:0 2px 10px; font-size:11px; color:var(--muted); }
+/* ---------- Progress card (burndown + axis + lanes on one time scale) ---------- */
+.tl-card { background:var(--card); border:1px solid rgba(0,0,0,.12); border-radius:4px; padding:10px 14px 10px; }
+.tl-legend { display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; margin:0 2px 8px; font-size:11px; color:var(--muted); }
 .tl-legend .lg { display:inline-flex; align-items:center; gap:6px; }
 .tl-legend .sw { width:20px; height:10px; border-radius:5px; border:1.5px solid transparent; }
-.tl-legend .sw.commit{ background:var(--commit); border-color:var(--commit-b); }
-.tl-legend .sw.approve{ background:var(--approve); border-color:var(--approve-b); }
-.tl-legend .sw.merge{ background:var(--merge); border-color:var(--merge-b); }
-.tl-legend .sw.close{ background:var(--close); border-color:var(--close-b); }
-.tl-legend .sw.open{ background:transparent; border-color:var(--active); }
+.tl-legend .lg svg { width:14px; height:14px; }
+.tl-legend .lg.commit svg { color:var(--commit); }
+.tl-legend .lg.draft  svg { color:var(--draft); }
+.tl-legend .lg.open   svg { color:var(--approve); }
+.tl-legend .lg.closed svg { color:var(--close); }
+.tl-legend .lg.merged svg { color:var(--merge); }
+.tl-legend .sw.outline { background:transparent; border-color:var(--active); }
 /* view toggle */
 .seg { display:inline-flex; border:1px solid var(--line-strong); border-radius:999px; overflow:hidden; }
 .seg button { border:none; background:transparent; padding:3px 12px; font-size:12px; font-weight:500; color:var(--muted); }
 .seg button.on { background:var(--ink); color:#fff; }
-.tl-track { position:relative; height:100%; }
-.tl-base { position:absolute; left:0; right:0; top:50%; height:1px; background:var(--hairline); }
-/* bar = the actioned envelope (outline); .bar-fill = the succeeded portion (solid) */
-.bar { position:absolute; top:50%; transform:translateY(-50%); height:11px; border-radius:7px; border:1.5px solid transparent; background:transparent; cursor:pointer; padding:0; overflow:hidden; }
+
+.combo { position:relative; cursor:crosshair; }
+/* burnup — stacked step-area of changeset states (Sourcegraph-style) */
+.bd-plot { position:relative; height:110px; }
+.bd-plot svg { display:block; overflow:visible; }
+.bd-band { stroke:rgba(251,250,246,.7); stroke-width:.5; }
+.bd-band.commit { fill:var(--commit); }   /* Commit — blue */
+.bd-band.draft  { fill:var(--draft); }    /* Draft — gray */
+.bd-band.open   { fill:var(--approve); }  /* Open — green */
+.bd-band.closed { fill:var(--close); }    /* Closed — red */
+.bd-band.merged { fill:var(--merge); }    /* Merged — purple */
+.bd-total { stroke:var(--line-strong); stroke-width:1; stroke-dasharray:3 3; opacity:.5; }
+.bd-tag { position:absolute; font-size:10px; line-height:1; color:var(--muted); white-space:nowrap; pointer-events:none; background:rgba(251,250,246,.85); padding:2px 4px; border-radius:4px; z-index:4; }
+.bd-tag b { font-weight:600; color:var(--text); }
+/* shared x-axis BETWEEN the burndown and the lanes */
+.tl-axis { position:relative; height:18px; margin:2px 0 4px; border-top:1px solid var(--hairline); }
+.tl-axis .tk { position:absolute; top:3px; transform:translateX(-50%); font-size:10px; color:var(--muted); white-space:nowrap; }
+.tl-axis .tk.edge-l { transform:none; }
+.tl-axis .tk.edge-r { transform:translateX(-100%); }
+.tl-axis .tkm { position:absolute; top:-3px; width:1px; height:5px; background:var(--line-strong); opacity:.5; }
+/* lanes — video-editor style tracks, labels live ON the bars */
+.tl-lanes { position:relative; }
+.lane { position:relative; height:28px; }
+.lane + .lane { border-top:1px dashed var(--hairline); }
+.bar { position:absolute; top:50%; transform:translateY(-50%); height:20px; border-radius:6px; border:1.5px solid transparent; background:transparent; cursor:pointer; padding:0; }
 .bar:focus-visible { outline:none; box-shadow:0 0 0 2px var(--accent); }
 .bar.sel { box-shadow:0 0 0 2px var(--accent); }
+.bar.dim { opacity:.3; }
 .bar.commit  { border-color:var(--commit-b); }
+.bar.draft   { border-style:dashed; border-color:var(--draft-b); }
 .bar.approve { border-color:var(--approve-b); }
 .bar.merge   { border-color:var(--merge-b); }
 .bar.close   { border-color:var(--close-b); }
-.bar.running { border-color:var(--active); animation:pulse 1.4s ease-in-out infinite; }
-.bar-fill { position:absolute; left:0; top:0; bottom:0; width:100%; border-radius:inherit; }
+.bar.running { border-color:var(--active); }
+.bar-fill { position:absolute; left:0; top:0; bottom:0; border-radius:4px; overflow:hidden; }
 .bar.commit  .bar-fill { background:var(--commit); }
+.bar.draft   .bar-fill { background:var(--draft); }
 .bar.approve .bar-fill { background:var(--approve); }
 .bar.merge   .bar-fill { background:var(--merge); }
 .bar.close   .bar-fill { background:var(--close); }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.5;} }
-.tl-rows { position:relative; }
-.cursor-line { position:absolute; top:0; bottom:0; width:2px; background:var(--accent); pointer-events:none; z-index:3; }
-.cursor-grip { position:absolute; top:-6px; width:12px; height:12px; border-radius:3px; background:var(--accent); cursor:ew-resize; touch-action:none; z-index:4; }
-.tl-axis { display:grid; grid-template-columns:200px 1fr; margin-top:6px; }
-.tl-axis .ticks { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); }
-.tl-scrub { display:grid; grid-template-columns:200px 1fr; margin-top:8px; }
-.tl-scrub input[type=range]{ width:100%; margin:0; -webkit-appearance:none; appearance:none; height:4px; border-radius:999px; background:var(--track); cursor:pointer; }
-.tl-scrub input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:50%; background:var(--accent); cursor:ew-resize; }
-.tl-scrub input[type=range]::-moz-range-thumb{ width:14px; height:14px; border:none; border-radius:50%; background:var(--accent); cursor:ew-resize; }
+.blb { position:absolute; top:50%; transform:translateY(-50%); left:7px; display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; white-space:nowrap; pointer-events:none; }
+.blb svg { width:12px; height:12px; }
+.bar.commit .blb { color:#fff; }
+.bar.draft .blb { color:#fff; text-shadow:0 1px 2px rgba(35,35,66,.55); }
+.bar.approve .blb { color:#073a34; }
+.bar.merge .blb { color:#fff; }
+.bar.close .blb { color:#fff; }
+.bar.out .blb { left:calc(100% + 7px); color:var(--text); }
+/* playhead — a plain line, no grips or dots; drag anywhere on the combo */
+.cursor-line { position:absolute; top:0; bottom:0; width:2px; background:var(--accent); pointer-events:none; z-index:6; }
+.cursor-grip { position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:22px; height:20px; border-radius:6px; background:var(--accent); box-shadow:0 1px 4px rgba(35,35,66,.4); cursor:ew-resize; pointer-events:auto; display:flex; align-items:center; justify-content:center; gap:2px; touch-action:none; }
+.cursor-grip:hover { filter:brightness(1.08); }
+.cursor-grip i { width:2px; height:9px; background:rgba(255,255,255,.9); border-radius:1px; }
+/* widen the grab target along the whole line without blocking bar clicks elsewhere */
+.cursor-hit { position:absolute; top:0; bottom:0; left:-7px; width:16px; cursor:ew-resize; pointer-events:auto; touch-action:none; background:transparent; }
+#barTip { position:fixed; z-index:60; transform:translate(-50%,-100%); background:#232342; color:#fff; padding:7px 10px; border-radius:8px; font-size:12px; line-height:1.45; box-shadow:0 8px 24px rgba(0,0,0,.22); pointer-events:none; opacity:0; transition:opacity .08s; white-space:nowrap; }
+#barTip.on { opacity:1; }
+#barTip b { font-weight:600; }
+#barTip .tf { color:#ff9e91; }
 
 /* ---------- Repositories toolbar + table ---------- */
 .toolbar { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-bottom:none; border-top-left-radius:12px; border-top-right-radius:12px; background:var(--card); }
@@ -184,12 +213,14 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
 .st { display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
 .st svg { width:15px; height:15px; }
 .st .spinner { width:12px; height:12px; border-radius:50%; border:2px solid var(--track); border-top-color:currentColor; animation:spin .7s linear infinite; }
-.st.success { color:var(--success); }
-.st.active { color:var(--active); }
-.st.error { color:var(--error); }
-.st.neutral { color:#706960; }
+.st.commit   { color:var(--commit); }    /* Commit — blue */
+.st.draft    { color:var(--draft); }     /* Draft — gray */
+.st.open     { color:var(--approve); }   /* Open — green */
+.st.merged   { color:var(--merge); }     /* Merged — purple */
+.st.closed   { color:var(--close); }     /* Closed — red */
+.st.neutral  { color:#706960; }
 .st .lbl { color:var(--text); }
-.st.success .lbl, .st.error .lbl { color:var(--text); }
+.asof { font-size:13px; color:var(--muted); white-space:nowrap; }
 .repo-cell { display:flex; align-items:center; gap:8px; }
 .repo-cell .i { color:var(--muted); display:inline-flex; }
 .repo-cell .i svg { width:14px; height:14px; }
@@ -199,19 +230,6 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
 .foot .pg button { width:26px; height:26px; border:1px solid var(--line-strong); border-radius:6px; background:var(--panel); color:var(--text); display:flex; align-items:center; justify-content:center; }
 .foot .pg button:disabled { opacity:.4; }
 .foot .pg svg { width:13px; height:13px; }
-
-/* ---------- Burndown strip (fused into the timeline card) ---------- */
-.combo { position:relative; }                 /* hosts the single shared playhead */
-.bd-row { display:grid; grid-template-columns:200px 1fr; }
-.bd-ylabel { position:relative; }
-.bd-ylabel span { position:absolute; right:14px; font-size:10px; color:var(--muted); transform:translateY(-50%); white-space:nowrap; }
-.bd-plot { position:relative; height:96px; }
-.bd-plot svg { display:block; overflow:visible; }
-.bd-area { fill:var(--accent); opacity:.09; }
-.bd-line { fill:none; stroke:var(--accent); stroke-width:2; stroke-linejoin:round; }
-.bd-total { stroke:var(--line-strong); stroke-width:1; stroke-dasharray:3 3; opacity:.55; }
-.bd-dot { position:absolute; width:9px; height:9px; border-radius:50%; background:var(--accent); border:2px solid var(--card); box-shadow:0 0 0 1px var(--accent); transform:translate(-50%,-50%); pointer-events:none; z-index:5; }
-.bd-divider { height:1px; background:var(--hairline); margin:0 0 10px 200px; }
 
 /* ---------- Repositories filter chip ---------- */
 .filt-chip { display:none; align-items:center; gap:6px; height:36px; padding:0 4px 0 12px; border:1px solid var(--accent); border-radius:999px; background:rgba(16,85,226,.06); color:var(--ink); font-size:13px; font-weight:500; }
@@ -250,15 +268,16 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
   <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
   <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0114.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0020.5 15"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></symbol>
-  <symbol id="i-plus-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></symbol>
   <symbol id="i-arrow-circle" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12s4.48 10 10 10 10-4.48 10-10M4 12c0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8-8-3.58-8-8m12 0-4 4-1.41-1.41L12.17 13H8v-2h4.17l-1.59-1.59L12 8z"/></symbol>
   <symbol id="i-kebab" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></symbol>
   <symbol id="i-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
   <symbol id="i-gitlab" viewBox="0 0 24 24" fill="currentColor"><path d="m23.6 9.6-.03-.09L20.3.98a.85.85 0 0 0-.34-.4.87.87 0 0 0-1 .05.87.87 0 0 0-.29.44l-2.2 6.75H7.54L5.33 1.07A.87.87 0 0 0 5.04.63.87.87 0 0 0 4.04.58a.86.86 0 0 0-.34.4L.43 9.5l-.03.09a6.07 6.07 0 0 0 2.01 7.01l.01.01.03.02 4.98 3.73 2.46 1.86 1.5 1.13a1 1 0 0 0 1.22 0l1.5-1.13 2.46-1.86 5-3.75.01-.01a6.07 6.07 0 0 0 2.01-7z"/></symbol>
   <symbol id="i-azure" viewBox="0 0 24 24" fill="currentColor"><path d="M0 8.877L2.247 5.91l8.405-3.416V.022l7.37 5.393L2.966 8.338v8.225L0 15.707zm24-4.45v14.651l-5.753 4.9-9.303-3.057V24l-5.978-7.416 15.057 1.798V5.415z"/></symbol>
-  <symbol id="i-git-pr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6"/><path d="M18 15V9a3 3 0 00-3-3h-3"/><circle cx="18" cy="18" r="3"/><path d="M14 8l-2-2 2-2"/></symbol>
-  <symbol id="i-git-merge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6"/><circle cx="18" cy="7" r="3"/><path d="M18 10a9 9 0 01-9 8"/></symbol>
-  <symbol id="i-git-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 9v6"/><circle cx="18" cy="18" r="3"/><path d="M18 15V9M15.5 6.5l5-5M20.5 6.5l-5-5"/></symbol>
+  <symbol id="i-git-commit" viewBox="0 0 24 24" fill="currentColor"><path d="M16.944 11h4.306a.75.75 0 0 1 0 1.5h-4.306a5.001 5.001 0 0 1-9.888 0H2.75a.75.75 0 0 1 0-1.5h4.306a5.001 5.001 0 0 1 9.888 0Zm-1.444.75a3.5 3.5 0 1 0-7 0 3.5 3.5 0 0 0 7 0Z"/></symbol>
+  <symbol id="i-git-draft" viewBox="0 0 24 24" fill="currentColor"><path d="M4.75 1.5a3.25 3.25 0 0 1 .745 6.414A.827.827 0 0 1 5.5 8v8a.827.827 0 0 1-.005.086A3.25 3.25 0 0 1 4.75 22.5a3.25 3.25 0 0 1-.745-6.414A.827.827 0 0 1 4 16V8c0-.029.002-.057.005-.086A3.25 3.25 0 0 1 4.75 1.5ZM16 19.25a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0ZM3 4.75a1.75 1.75 0 1 0 3.501-.001A1.75 1.75 0 0 0 3 4.75Zm0 14.5a1.75 1.75 0 1 0 3.501-.001A1.75 1.75 0 0 0 3 19.25Zm16.25-1.75a1.75 1.75 0 1 0 .001 3.501 1.75 1.75 0 0 0-.001-3.501Zm0-11.5a1.75 1.75 0 1 0 0-3.5 1.75 1.75 0 0 0 0 3.5ZM21 11.25a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Z"/></symbol>
+  <symbol id="i-git-pr" viewBox="0 0 24 24" fill="currentColor"><path d="M16 19.25a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm-14.5 0a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm0-14.5a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0ZM4.75 3a1.75 1.75 0 1 0 .001 3.501A1.75 1.75 0 0 0 4.75 3Zm0 14.5a1.75 1.75 0 1 0 .001 3.501A1.75 1.75 0 0 0 4.75 17.5Zm14.5 0a1.75 1.75 0 1 0 .001 3.501 1.75 1.75 0 0 0-.001-3.501Z"/><path d="M13.405 1.72a.75.75 0 0 1 0 1.06L12.185 4h4.065A3.75 3.75 0 0 1 20 7.75v8.75a.75.75 0 0 1-1.5 0V7.75a2.25 2.25 0 0 0-2.25-2.25h-4.064l1.22 1.22a.75.75 0 0 1-1.061 1.06l-2.5-2.5a.75.75 0 0 1 0-1.06l2.5-2.5a.75.75 0 0 1 1.06 0ZM4.75 7.25A.75.75 0 0 1 5.5 8v8A.75.75 0 0 1 4 16V8a.75.75 0 0 1 .75-.75Z"/></symbol>
+  <symbol id="i-git-merge" viewBox="0 0 24 24" fill="currentColor"><path d="M15 13.25a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm-12.5 6a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm0-14.5a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0ZM5.75 6.5a1.75 1.75 0 1 0-.001-3.501A1.75 1.75 0 0 0 5.75 6.5Zm0 14.5a1.75 1.75 0 1 0-.001-3.501A1.75 1.75 0 0 0 5.75 21Zm12.5-6a1.75 1.75 0 1 0-.001-3.501A1.75 1.75 0 0 0 18.25 15Z"/><path d="M6.5 7.25c0 2.9 2.35 5.25 5.25 5.25h4.5V14h-4.5A6.75 6.75 0 0 1 5 7.25Z"/><path d="M5.75 16.75A.75.75 0 0 1 5 16V8a.75.75 0 0 1 1.5 0v8a.75.75 0 0 1-.75.75Z"/></symbol>
+  <symbol id="i-git-close" viewBox="0 0 24 24" fill="currentColor"><path d="M22.266 2.711a.75.75 0 1 0-1.061-1.06l-1.983 1.983-1.984-1.983a.75.75 0 1 0-1.06 1.06l1.983 1.983-1.983 1.984a.75.75 0 0 0 1.06 1.06l1.984-1.983 1.983 1.983a.75.75 0 0 0 1.06-1.06l-1.983-1.984 1.984-1.983ZM4.75 1.5a3.25 3.25 0 0 1 .745 6.414A.827.827 0 0 1 5.5 8v8a.827.827 0 0 1-.005.086A3.25 3.25 0 0 1 4.75 22.5a3.25 3.25 0 0 1-.745-6.414A.827.827 0 0 1 4 16V8c0-.029.002-.057.005-.086A3.25 3.25 0 0 1 4.75 1.5ZM16 19.25a3.252 3.252 0 0 1 2.5-3.163V9.625a.75.75 0 0 1 1.5 0v6.462a3.252 3.252 0 0 1-.75 6.413A3.25 3.25 0 0 1 16 19.25ZM3 4.75a1.75 1.75 0 1 0 3.501-.001A1.75 1.75 0 0 0 3 4.75Zm0 14.5a1.75 1.75 0 1 0 3.501-.001A1.75 1.75 0 0 0 3 19.25Zm16.25-1.75a1.75 1.75 0 1 0 .001 3.501 1.75 1.75 0 0 0-.001-3.501Z"/></symbol>
 </svg>
 
 <div class="app">
@@ -296,50 +315,41 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
       <div class="lede">
         <div>
           <h1>Fix vulnerable Maven/Gradle dependencies</h1>
-          <div class="meta"><span>200 repositories</span><span class="sep">·</span><span>Pull request</span><span class="sep">·</span><span>Started 9 days ago</span><span class="sep">·</span><a href="#">Go to recipe results</a></div>
+          <div class="meta"><span>1,000 repositories</span><span class="sep">·</span><span>Pull request</span><span class="sep">·</span><span>Started 9 days ago</span><span class="sep">·</span><a href="#">Go to recipe results</a></div>
         </div>
         <button class="bell"><svg><use href="#i-bell"/></svg></button>
       </div>
 
-      <!-- PROGRESS: burndown + gantt fused into one component on a single time axis -->
+      <!-- PROGRESS: burndown + shared axis + lane-packed timeline -->
       <div class="section tl-section" id="tlSection">
         <div class="sec-head">
           <div class="sec-title" id="tlTitle">
             <button class="collapse-btn" id="tlToggle" aria-label="Collapse"><svg class="chev"><use href="#i-chevd"/></svg></button>
             <h2>Progress</h2>
             <span class="tip"><span class="info-ic"><svg><use href="#i-info"/></svg></span>
-              <span class="bubble"><b>Burndown + timeline</b>The area shows repositories not yet in a terminal state over time; the bars below are the jobs that burn it down. One playhead ties them together — drag it or click a bar.</span>
+              <span class="bubble"><b>Burnup + timeline</b>The stacked area is every changeset by pull-request state over time — draft, open, closed and merged — summing to the changeset total. The tracks below are the jobs that move repositories between those states. Drag anywhere to move the playhead — it snaps to events. Click a bar to filter the table; ⌘-click adds more.</span>
             </span>
           </div>
           <div class="tl-controls" style="display:flex;align-items:center;gap:10px">
             <span class="readout" id="readout"></span>
-            <div class="seg" id="viewSeg">
-              <button class="on" data-v="time">Time</button>
-              <button data-v="commits" title="Stepped burndown — drops as each job completes">Commits</button>
-            </div>
-            <button class="pill-btn" id="currentBtn">Current</button>
+            <button class="pill-btn" id="currentBtn">Latest</button>
           </div>
         </div>
         <div class="tl-wrap">
         <div class="tl-card">
           <div class="tl-legend">
-            <span class="lg"><span class="sw commit"></span>Commit</span>
-            <span class="lg"><span class="sw approve"></span>Approval</span>
-            <span class="lg"><span class="sw merge"></span>Merge</span>
-            <span class="lg"><span class="sw close"></span>Close</span>
-            <span class="lg" style="margin-left:auto"><span class="sw open"></span>Outline = actioned</span>
-            <span class="lg"><span class="sw merge"></span>Fill = succeeded</span>
+            <span class="lg commit"><svg><use href="#i-git-commit"/></svg>Commit</span>
+            <span class="lg draft"><svg><use href="#i-git-draft"/></svg>Draft</span>
+            <span class="lg open"><svg><use href="#i-git-pr"/></svg>Open</span>
+            <span class="lg closed"><svg><use href="#i-git-close"/></svg>Closed</span>
+            <span class="lg merged"><svg><use href="#i-git-merge"/></svg>Merged</span>
+            <span class="lg" style="margin-left:auto"><span class="sw outline"></span>Bars: outline = actioned · fill = succeeded</span>
           </div>
           <div class="combo" id="combo">
-            <div class="bd-row">
-              <div class="bd-ylabel" id="bdYlabel"></div>
-              <div class="bd-plot" id="bdPlot"></div>
-            </div>
-            <div class="bd-divider"></div>
-            <div class="tl-rows" id="tlRows"></div>
+            <div class="bd-plot" id="bdPlot"></div>
+            <div class="tl-axis" id="tlAxis"></div>
+            <div class="tl-lanes" id="tlLanes"></div>
           </div>
-          <div class="tl-axis"><div></div><div class="ticks"><span>started 8 days ago</span><span>4 days ago</span><span>now</span></div></div>
-          <div class="tl-scrub"><div></div><div id="scrubTrack"><input type="range" id="scrub" min="0" max="1000" value="1000" aria-label="Timeline position"></div></div>
         </div>
         </div>
       </div>
@@ -350,12 +360,12 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
           <div class="sec-title">
             <h2>Repositories</h2>
             <span class="tip"><span class="info-ic"><svg><use href="#i-info"/></svg></span>
-              <span class="bubble"><b>Furthest-along status</b>When a specific time is selected, the repositories table below shows each repository's furthest-along status at the point the timeline is set to.</span>
+              <span class="bubble"><b>Statuses are as of the last refresh</b>“Now” on this page means the last time repository statuses were fetched from your SCM. Set the playhead to a past time to see each repository’s furthest-along status at that moment; non-terminal rows read “Open as of &lt;time&gt;”.</span>
             </span>
           </div>
           <div class="sync" id="syncLine">
-            <span id="syncText">Live states synced less than a minute ago</span>
-            <button class="refresh" id="refreshBtn"><svg><use href="#i-refresh"/></svg> Refresh</button>
+            <span id="syncText">Statuses as of last refresh · 3 min ago</span>
+            <button class="refresh" id="refreshBtn" title="Fetch current PR statuses from the SCM"><svg><use href="#i-refresh"/></svg> Refresh statuses</button>
           </div>
         </div>
 
@@ -379,13 +389,13 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
               <th>Repository</th>
               <th>Origin</th>
               <th>Base branch</th>
-              <th>Updated at</th>
+              <th>State as of</th>
             </tr>
           </thead>
           <tbody id="rows"></tbody>
         </table>
         <div class="foot">
-          <span>1 – 10 of 200</span>
+          <span>1 – 10 of 1,000</span>
           <span class="pg"><button disabled><svg><use href="#i-chevl"/></svg></button><button><svg><use href="#i-chevr"/></svg></button></span>
         </div>
       </div>
@@ -395,32 +405,46 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
 
 <script>
 // ============================================================
-//  Timeline model — mirrors SAMPLE_TIMELINE (times in days from origin)
+//  Timeline model — times in days from origin. NOW = last refresh.
 // ============================================================
-const NOW = 8.125;                 // right edge of the axis, in days from origin
-const t = (d, h = 9) => d + (h - 9) / 24;
+const NOW = 8.125;
 const JOBS = [
-  { id:'commit',        kind:'commit',  label:'Commit',                actor:'natedanner', start:t(0,9),  end:t(1,6)  },
-  { id:'approve',       kind:'approve', label:'Approval',              actor:'natedanner', start:t(1,9),  end:t(3,0)  },
-  { id:'approve-final', kind:'approve', label:'Approval (final batch)',actor:'natedanner', start:t(1,15), end:t(3,12) },
-  { id:'close-2',       kind:'close',   label:'Close (no changes)',    actor:'automation', start:t(2,0),  end:t(3,12) },
-  { id:'merge-1',       kind:'merge',   label:'Merge (first wave)',    actor:'natedanner', start:t(2,12), end:t(4,6)  },
-  { id:'approve-retry', kind:'approve', label:'Approval (retry)',      actor:'natedanner', start:t(3,9),  end:t(4,9)  },
-  { id:'merge-2',       kind:'merge',   label:'Merge (second wave)',   actor:'natedanner', start:t(3,12), end:t(5,12) },
-  { id:'rebase',        kind:'merge',   label:'Rebase & retry',        actor:'automation', start:t(4,0),  end:t(5,18) },
-  { id:'close',         kind:'close',   label:'Close stale',           actor:'natedanner', start:t(4,12), end:t(6,0)  },
-  { id:'merge-3',       kind:'merge',   label:'Merge (final wave)',    actor:'natedanner', start:t(5,12), end:null    }, // running
+  { id:'commit',        kind:'commit',  label:'Commit',              actor:'natedanner', start:0.0,  end:1.25 },
+  { id:'draft-pr',      kind:'draft',   label:'Draft PRs',           actor:'natedanner', start:0.35, end:1.7  },
+  { id:'approve',       kind:'approve', label:'Approval',            actor:'natedanner', start:1.8,  end:3.5  },
+  { id:'merge-1',       kind:'merge',   label:'Merge (first wave)',  actor:'natedanner', start:2.7,  end:4.2  },
+  { id:'approve-final', kind:'approve', label:'Approval (final)',    actor:'natedanner', start:3.7,  end:4.4  },
+  { id:'approve-retry', kind:'approve', label:'Approval (retry)',    actor:'automation', start:3.9,  end:4.6  },
+  { id:'merge-2',       kind:'merge',   label:'Merge (second wave)', actor:'natedanner', start:4.5,  end:5.6  },
+  { id:'close-stale',   kind:'close',   label:'Close',               actor:'natedanner', start:5.25, end:6.5  },
+  { id:'merge-3',       kind:'merge',   label:'Merge (final wave)',  actor:'natedanner', start:5.8,  end:null }, // running
 ];
 const conclusion = j => j.end == null ? NOW : j.end;
-const SNAP = 0.035;
-// snap to every event edge — each job's start and its conclusion
-const snapTargets = [...new Set(JOBS.flatMap(j => [j.start / NOW, conclusion(j) / NOW]))].sort((a,b)=>a-b);
 const clamp01 = n => Math.min(1, Math.max(0, n));
-const THUMB = 14, MIN_BAR = 22, LABEL_W = 200;
-const xFor = (f, W) => THUMB/2 + clamp01(f) * Math.max(0, W - THUMB);
+const MIN_BAR = 26;
+const fmt = n => n.toLocaleString('en-US');
+
+// One lane per action, in lifecycle order. Each row is a distinct action; an action
+// only splits into a second row where its own bars actually overlap in time (~2 spots).
+const KIND_ORDER = ['commit','draft','approve','merge','close'];
+const LANE_GAP = 0.12; // breathing room, in days
+{
+  let laneCursor = 0;
+  KIND_ORDER.forEach(kind => {
+    const subEnds = []; // end time of each sub-row within this action
+    JOBS.filter(j => j.kind === kind).sort((a,b)=>a.start-b.start).forEach(j => {
+      let s = subEnds.findIndex(e => e + LANE_GAP <= j.start);
+      if (s === -1) { s = subEnds.length; subEnds.push(0); }
+      subEnds[s] = conclusion(j);
+      j.lane = laneCursor + s;
+    });
+    laneCursor += Math.max(1, subEnds.length);
+  });
+  JOBS.nLanes = laneCursor;
+}
 
 // ============================================================
-//  Repository model — mirrors REPO_SPECS / phaseAt (time-travel)
+//  Repository model — 1,000 repos, statuses time-travel with the playhead
 // ============================================================
 const HAND = [
   ['moderne','moderne-cli','github'], ['openrewrite','rewrite','github'],
@@ -431,19 +455,21 @@ const HAND = [
 ];
 const POOL_ORG = ['netflix','square','apache','eclipse','ff4j','jackson','hibernate','google','openrewrite','spring-projects'];
 const POOL_NAME = ['netty','okhttp','gson','junit5','mockito','logback','slf4j','tomcat','jetty','maven-core','commons-io','httpclient','kafka','curator','zookeeper','assertj','testcontainers','feign','eureka','archaius','conductor','graphql-java','webflux','r2dbc','lettuce','spock','servo','spectator','dgs-framework','ribbon'];
-const outcomeFor = i => (i % 17 === 7) ? 'failed' : (i % 13 === 9) ? 'closed' : (i % 5 === 3) ? 'noChanges' : 'merged';
+const outcomeFor = i => (i % 17 === 7) ? 'failed' : (i % 13 === 9) ? 'closed' : (i % 5 === 3) ? 'noChanges' : (i % 11 === 4) ? 'commit' : 'merged';
 
-const N_REPOS = 200;
+const N_REPOS = 1000;
 const REPOS = Array.from({ length: N_REPOS }, (_, i) => {
-  const meta = i < 10 ? HAND[i] : [POOL_ORG[i % POOL_ORG.length], POOL_NAME[(i * 7) % POOL_NAME.length], ['github','gitlab','azure'][i % 3]];
-  const f = i / N_REPOS;   // 0..1 spread across the fleet, independent of fleet size
-  const committed = 0.2 + f * 0.9;
-  const approveStart = 1.4 + f * 2.0;
-  const mergeStart = 2.6 + f * 4.8;
-  const closeStart = 2.6 + f * 1.2;
+  const meta = i < 10 ? HAND[i] : [POOL_ORG[i % POOL_ORG.length], POOL_NAME[(i * 7) % POOL_NAME.length] + '-' + (1 + (i % 40)), ['github','gitlab','azure'][i % 3]];
+  const f = ((i * 37) % N_REPOS) / N_REPOS;   // shuffled 0..1 spread across the fleet
+  const committed = 0.2 + f * 1.0;
+  const draftAt = committed + 0.15, readyAt = committed + 0.45;
+  const approveStart = 1.9 + f * 2.3;
+  const mergeStart = 2.8 + f * 5.6;           // tail runs past "now" → merge-3 still running
+  const closeStart = 4.8 + f * 1.2;
   return {
     org: meta[0], name: meta[1], scm: meta[2], outcome: outcomeFor(i),
-    committed, approveStart, approveEnd: approveStart + 0.3,
+    committed, draftAt, readyAt,
+    approveStart, approveEnd: approveStart + 0.3,
     mergeStart, mergeEnd: mergeStart + 0.4, closeStart, closeEnd: closeStart + 0.3,
   };
 });
@@ -452,114 +478,187 @@ function phaseAt(s, T) {
   if (T < s.committed - LEAD) return 'queued';
   if (T < s.committed) return 'committing';
   if (s.outcome === 'noChanges') return 'noChanges';
-  if (s.outcome === 'failed') return 'failed';
+  if (s.outcome === 'commit') return 'commit';     // committed directly — no PR, terminal
+  if (T < s.draftAt) return 'committed';
+  if (T < s.readyAt) return 'draftPr';
   if (s.outcome === 'closed') {
-    if (T < s.closeStart) return 'committed';
+    if (T < s.closeStart) return 'prOpen';
     if (T < s.closeEnd) return 'closing';
     return 'closed';
   }
-  if (T < s.approveStart) return 'committed';
+  if (T < s.approveStart) return 'prOpen';
   if (T < s.approveEnd) return 'approving';
   if (T < s.mergeStart) return 'approved';
   if (T < s.mergeEnd) return 'merging';
-  return 'merged';
+  return s.outcome === 'failed' ? 'failed' : 'merged';
 }
-const PHASE = {
-  queued:     { label:'Queued',     icon:'i-clock',        cls:'neutral' },
-  committing: { label:'Committing', icon:'dot',            cls:'active'  },
-  committed:  { label:'Committed',  icon:'i-check-circle', cls:'neutral' },
-  approving:  { label:'Approving',  icon:'dot',            cls:'active'  },
-  approved:   { label:'Approved',   icon:'i-check-circle', cls:'success' },
-  merging:    { label:'Merging',    icon:'dot',            cls:'active'  },
-  merged:     { label:'Merged',     icon:'i-check-circle', cls:'success' },
-  closing:    { label:'Closing',    icon:'dot',            cls:'active'  },
-  closed:     { label:'Closed',     icon:'i-check-circle', cls:'neutral' },
-  noChanges:  { label:'No changes', icon:'i-minus-circle', cls:'neutral' },
-  failed:     { label:'Failed',     icon:'i-x-circle',     cls:'error'   },
+// the moment a repo entered the phase it is in at time T (for "State as of")
+function enteredAt(s, T) {
+  if (s.outcome === 'commit' || s.outcome === 'noChanges') return s.committed;
+  const bounds = [s.committed - LEAD, s.committed, s.draftAt, s.readyAt,
+    s.outcome === 'closed' ? s.closeStart : s.approveStart,
+    s.outcome === 'closed' ? s.closeEnd : s.approveEnd, s.mergeStart, s.mergeEnd];
+  let last = 0;
+  for (const b of bounds) if (b <= T) last = Math.max(last, b);
+  return last;
+}
+// Repository status shows only Changelog PR states: Draft · Open · Merged · Closed.
+// Every lifecycle phase collapses to one of these (or to "no PR yet" before a changeset exists).
+const TYPE_STATE = {
+  queued:null, committing:null, committed:null, noChanges:null,
+  commit:'commit',
+  draftPr:'draft',
+  prOpen:'open', approving:'open', approved:'open', merging:'open', closing:'open',
+  merged:'merged', closed:'closed', failed:'closed',
 };
+const CL_STATE = {
+  commit: { label:'Commit', icon:'i-git-commit', cls:'commit' },
+  draft:  { label:'Draft',  icon:'i-git-draft',  cls:'draft'  },
+  open:   { label:'Open',   icon:'i-git-pr',     cls:'open'   },
+  merged: { label:'Merged', icon:'i-git-merge',  cls:'merged' },
+  closed: { label:'Closed', icon:'i-git-close',  cls:'closed' },
+};
+const TERMINAL = new Set(['commit','merged','closed','failed','noChanges']);
 const SCM_ICON = { github:'i-github', gitlab:'i-gitlab', azure:'i-azure' };
 const statusHtml = ph => {
-  const p = PHASE[ph];
-  const g = p.icon === 'dot' ? '<span class="spinner"></span>' : `<svg><use href="#${p.icon}"/></svg>`;
-  return `<span class="st ${p.cls}">${g}<span class="lbl">${p.label}</span></span>`;
+  const key = TYPE_STATE[ph];
+  if (!key) return `<span class="st neutral"><span class="lbl" style="color:var(--faint)">—</span></span>`;
+  const s = CL_STATE[key];
+  return `<span class="st ${s.cls}"><svg><use href="#${s.icon}"/></svg><span class="lbl">${s.label}</span></span>`;
 };
 
-// ============================================================
-//  State + rendering
-// ============================================================
-let cursorF = 1;                       // 0..1 along the axis
-let selectedJobs = new Set();          // individual jobs (bars) used to filter the repo table
-let view = 'time';                     // 'time' = smooth burndown, 'commits' = stepped-per-job burndown
-
-// terminal = repo is done; everything else still counts as "in flight" for the burndown
-const TERMINAL = new Set(['merged','closed','failed','noChanges']);
-const bdCount = T => REPOS.reduce((n, r) => n + (TERMINAL.has(phaseAt(r, T)) ? 0 : 1), 0);
-
-// Which specific jobs (bars) each repo took part in — lets every bar filter independently,
-// so "Merge (first wave)" and "Merge (final wave)" resolve to different repo sets.
+// which jobs each repo took part in
 const jobsFor = i => {
-  const r = REPOS[i], jobs = ['commit'];         // every repo got a commit
-  if (r.outcome === 'closed') jobs.push('close');
-  else if (r.outcome === 'noChanges') jobs.push('close-2');
+  const r = REPOS[i], jobs = ['commit'];
+  if (r.outcome === 'commit' || r.outcome === 'noChanges') return jobs;   // committed directly — no PR
+  jobs.push('draft-pr');
+  if (r.outcome === 'closed') jobs.push('close-stale');
   else if (r.outcome === 'merged') {
-    jobs.push(i % 4 === 0 ? 'approve-final' : 'approve');   // most in the main approval, some in the final batch
+    jobs.push(i % 4 === 0 ? 'approve-final' : 'approve');
     if (i % 7 === 5) jobs.push('approve-retry');
-    jobs.push(['merge-1', 'merge-2', 'merge-3'][i % 3]);    // split the merged repos across the three waves
-    if (i % 4 === 2) jobs.push('rebase');                   // a slice needed a rebase
+    jobs.push(['merge-1','merge-2','merge-3'][i % 3]);
   } else if (r.outcome === 'failed') {
-    jobs.push('approve');                                   // approved, then the merge errored out
-    jobs.push(['merge-1', 'merge-2', 'merge-3'][i % 3]);
+    jobs.push('approve');
+    jobs.push(['merge-1','merge-2','merge-3'][i % 3]);
   }
   return jobs;
 };
 const REPO_JOBS = REPOS.map((_, i) => new Set(jobsFor(i)));
 const jobLabel = id => JOBS.find(j => j.id === id).label;
-// a repo "succeeded" at a job unless a merge errored out on it
 const succeededAt = (i, j) => !(j.kind === 'merge' && REPOS[i].outcome === 'failed');
-// derive each job's actioned/succeeded counts from real membership so numbers stay honest at any scale
 JOBS.forEach(j => {
   const members = REPO_JOBS.map((s, i) => s.has(j.id) ? i : -1).filter(i => i >= 0);
   j.actioned = members.length;
   j.succeeded = members.filter(i => succeededAt(i, j)).length;
   j.failed = j.actioned - j.succeeded;
-  j.sub = `${j.actor} · ${j.actioned} repos`;
 });
 
-const rowsEl = document.getElementById('tlRows');
-const scrub = document.getElementById('scrub');
-const scrubTrack = document.getElementById('scrubTrack');
-const readoutEl = document.getElementById('readout');
-const gridRows = document.getElementById('rows');
-const bdPlot = document.getElementById('bdPlot');
-const bdYlabel = document.getElementById('bdYlabel');
-const filtChip = document.getElementById('filtChip');
-const filtLabel = document.getElementById('filtLabel');
-let bdW = 0, bdH = 96, bdYFor = () => 0;   // set by renderBurndown()
-let bdDotEl;                               // set by renderBurndown()
+// ============================================================
+//  Burnup — stacked by Changelog changeset state (Sourcegraph-style).
+//  Bands (bottom→top): draft · open&awaiting-review · open&changes-requested
+//  · open&approved · closed · merged. Every band is a real Changelog state
+//  (PR type × review decision). Pre-PR / no-change repos aren't changesets yet.
+// ============================================================
+function bandAt(i, T) {
+  switch (phaseAt(REPOS[i], T)) {
+    case 'commit':    return 'commit';   // direct commit, no PR (terminal)
+    case 'draftPr':   return 'draft';
+    case 'prOpen':
+    case 'approving':
+    case 'approved':
+    case 'merging':
+    case 'closing':   return 'open';
+    case 'merged':    return 'merged';
+    case 'closed':
+    case 'failed':    return 'closed';
+    default:          return null;      // queued/committing/committed/noChanges — not a changeset yet
+  }
+}
+const BANDS = ['commit','draft','open','closed','merged'];   // stack order, bottom→top — Changelog states
+const BAND_ICON  = { commit:'i-git-commit', draft:'i-git-draft', open:'i-git-pr', closed:'i-git-close', merged:'i-git-merge' };
+const bandLabel  = { commit:'Commit', draft:'Draft', open:'Open', closed:'Closed', merged:'Merged' };
+function bandCounts(T) {
+  const c = { commit:0, draft:0, open:0, closed:0, merged:0 };
+  for (let i = 0; i < REPOS.length; i++) { const b = bandAt(i, T); if (b) c[b]++; }
+  return c;
+}
 
-function snap(f) {
-  let best = f, bd = SNAP;
-  for (const tgt of snapTargets) { const d = Math.abs(tgt - f); if (d <= bd) { best = tgt; bd = d; } }
+// ============================================================
+//  Time ↔ x mapping. 'time' = linear. 'commits' = event-ordered
+//  (each job start/conclusion equally spaced; dead time removed).
+// ============================================================
+let view = 'time';
+let warp = [[0,0],[NOW,1]];
+function buildWarp() {
+  if (view === 'commits') {
+    const ev = [...new Set(JOBS.flatMap(j => [j.start, conclusion(j)]))].filter(t => t > 0 && t < NOW).sort((a,b)=>a-b);
+    const ts = [0, ...ev, NOW];
+    warp = ts.map((t, i) => [t, i / (ts.length - 1)]);
+  } else {
+    warp = [[0,0],[NOW,1]];
+  }
+}
+function tf(T) { // time → fraction 0..1
+  for (let i = 1; i < warp.length; i++) if (T <= warp[i][0]) {
+    const [t0,f0] = warp[i-1], [t1,f1] = warp[i];
+    return f0 + (T - t0) / Math.max(1e-9, t1 - t0) * (f1 - f0);
+  }
+  return 1;
+}
+function ft(f) { // fraction → time
+  for (let i = 1; i < warp.length; i++) if (f <= warp[i][1]) {
+    const [t0,f0] = warp[i-1], [t1,f1] = warp[i];
+    return t0 + (f - f0) / Math.max(1e-9, f1 - f0) * (t1 - t0);
+  }
+  return NOW;
+}
+const SNAP = 0.02;
+const snapTimes = [...new Set(JOBS.flatMap(j => [j.start, conclusion(j)]))].sort((a,b)=>a-b);
+function snapT(T) {
+  let best = T, bd = SNAP * NOW;
+  for (const t of snapTimes) { const d = Math.abs(t - T); if (d <= bd) { best = t; bd = d; } }
   return best;
 }
-function daysAgo(T) { const d = Math.round(NOW - T); return d <= 0 ? 'today' : d >= 14 ? `${Math.round(d/7)} weeks ago` : `${d} day${d===1?'':'s'} ago`; }
-function readout(T) { return Math.abs(NOW - T) < 1 ? 'now' : daysAgo(T); }
 
-// build timeline rows once
-rowsEl.innerHTML = JOBS.map(j => `
-  <div class="tl-row" data-id="${j.id}">
-    <div class="tl-label"><div class="lb">${j.label}</div><div class="sub">${j.sub}</div></div>
-    <div class="tl-track"><div class="tl-base"></div>
-      <button class="bar ${j.kind}${j.end==null?' running':''}" data-id="${j.id}"><span class="bar-fill" style="width:${(100 * j.succeeded / Math.max(1, j.actioned)).toFixed(1)}%"></span></button>
-    </div>
-  </div>`).join('');
-// one shared playhead spanning the burndown strip + the gantt rows
-const comboEl = document.getElementById('combo');
+// ============================================================
+//  State + rendering
+// ============================================================
+let cursorT = NOW;               // playhead position, in days (source of truth)
+let selectedJobs = new Set();    // bars used to filter the repo table
+let refreshAgoMin = 3;           // minutes since last status refresh
+
+const combo = document.getElementById('combo');
+const bdPlot = document.getElementById('bdPlot');
+const axisEl = document.getElementById('tlAxis');
+const lanesEl = document.getElementById('tlLanes');
+const readoutEl = document.getElementById('readout');
+const gridRows = document.getElementById('rows');
+const filtChip = document.getElementById('filtChip');
+const filtLabel = document.getElementById('filtLabel');
+let W = 0, bdH = 86, bdYFor = () => 0;
+const xFor = f => clamp01(f) * W;
+
+function daysAgo(T) { const d = NOW - T; if (d < 0.08) return refreshAgoMin < 1 ? 'moments ago' : `${refreshAgoMin} min ago`; if (d < 1) return `${Math.round(d*24)}h ago`; return `${d.toFixed(d < 3 ? 1 : 0).replace(/\.0$/,'')}d ago`; }
+function readout(T) { return NOW - T < 0.08 ? 'last refresh' : daysAgo(T); }
+
+// lanes built once
+lanesEl.style.height = (JOBS.nLanes * 28) + 'px';
+lanesEl.innerHTML = Array.from({ length: JOBS.nLanes }, (_, l) => `<div class="lane" data-lane="${l}"></div>`).join('');
+JOBS.forEach(j => {
+  const lane = lanesEl.querySelector(`.lane[data-lane="${j.lane}"]`);
+  const btn = document.createElement('button');
+  btn.className = `bar ${j.kind}${j.end == null ? ' running' : ''}`;
+  btn.dataset.id = j.id;
+  const ICON = { commit:'i-git-commit', draft:'i-git-draft', approve:'i-check-circle', merge:'i-git-merge', close:'i-git-close' };
+  btn.innerHTML = `<span class="bar-fill" style="width:${(100 * j.succeeded / Math.max(1, j.actioned)).toFixed(1)}%"></span>` +
+    `<span class="blb"><svg><use href="#${ICON[j.kind]}"/></svg>${j.label.replace(/\s*\([^)]*\)/g, '')}</span>`;
+  lane.appendChild(btn);
+});
 const cursorLine = document.createElement('div'); cursorLine.className = 'cursor-line';
-const cursorGrip = document.createElement('div'); cursorGrip.className = 'cursor-grip';
-comboEl.append(cursorLine, cursorGrip);
+cursorLine.innerHTML = '<div class="cursor-hit"></div><div class="cursor-grip"><i></i><i></i></div>';
+combo.appendChild(cursorLine);
 
-// The table pages through whichever repos match the active job filter (first 10 of them).
+// table
 let pageIdx = [];
 const visibleIndices = () => {
   const all = REPOS.map((_, i) => i);
@@ -578,145 +677,172 @@ function buildTable() {
       <td><div class="repo-cell"><span class="i"><svg><use href="#i-info"/></svg></span><a href="#">${r.name}</a></div></td>
       <td><span class="origin"><svg><use href="#${SCM_ICON[r.scm]}"/></svg></span></td>
       <td class="mono">main</td>
-      <td>9 days ago</td>
+      <td class="asofcell"></td>
     </tr>`;
   }).join('');
   filtChip.classList.toggle('on', filtering);
   if (filtering) filtLabel.textContent = [...selectedJobs].map(jobLabel).join(', ');
   document.querySelector('.foot span').textContent =
-    total === 0 ? 'No repositories' : `1 – ${Math.min(10, total)} of ${total}${filtering ? ' · filtered' : ''}`;
+    total === 0 ? 'No repositories' : `1 – ${Math.min(10, total)} of ${fmt(total)}${filtering ? ' · filtered' : ''}`;
   syncActions();
 }
 
-// Build the burndown chart. Shares the timeline's x mapping (xFor) so a repo
-// finishing at time t sits directly under the timeline event at t.
-function renderBurndown() {
-  const TOTAL = REPOS.length, PAD = 10;
-  bdW = bdPlot.clientWidth; bdH = bdPlot.clientHeight;
-  // pad the top only so the zero baseline rests right on the divider above the first job
-  bdYFor = v => PAD + (1 - v / TOTAL) * (bdH - PAD);
-  const base = bdYFor(0);
-  const yTotal = bdYFor(TOTAL).toFixed(1);
-  const totalLine = `<line class="bd-total" x1="${xFor(0, bdW).toFixed(1)}" y1="${yTotal}" x2="${xFor(1, bdW).toFixed(1)}" y2="${yTotal}"/>`;
-
-  let inner;
+// axis ticks live BETWEEN the burndown and the lanes
+function renderAxis() {
+  let ticks;
   if (view === 'commits') {
-    // stepped burndown — remaining holds flat between commits, dropping as each job completes
-    const cuts = [...new Set(JOBS.map(conclusion))].sort((a, b) => a - b);
-    const pts = [0, ...cuts, NOW].map(T => [xFor(T / NOW, bdW), bdYFor(bdCount(T))]);
-    let line = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
-    let area = `M${pts[0][0].toFixed(1)} ${base.toFixed(1)} L${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
-    for (let i = 1; i < pts.length; i++) {
-      const step = ` L${pts[i][0].toFixed(1)} ${pts[i-1][1].toFixed(1)} L${pts[i][0].toFixed(1)} ${pts[i][1].toFixed(1)}`;
-      line += step; area += step;
-    }
-    area += ` L${pts[pts.length-1][0].toFixed(1)} ${base.toFixed(1)} Z`;
-    inner = `<path class="bd-area" d="${area}"/>${totalLine}<path class="bd-line" d="${line}"/>`;
+    ticks = warp.map(([t, f]) => [f, t === 0 ? 'started 8d ago' : t >= NOW ? `last refresh · ${refreshAgoMin} min ago` : `${t.toFixed(1)}d`]);
   } else {
-    // continuous area + line over time
-    const SAMPLES = 90, pts = [];
-    for (let i = 0; i <= SAMPLES; i++) { const f = i / SAMPLES; pts.push([xFor(f, bdW), bdYFor(bdCount(f * NOW))]); }
-    const line = pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
-    const area = `M${pts[0][0].toFixed(1)} ${base.toFixed(1)} ${pts.map(p => `L${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ')} L${pts[pts.length-1][0].toFixed(1)} ${base.toFixed(1)} Z`;
-    inner = `<path class="bd-area" d="${area}"/>${totalLine}<path class="bd-line" d="${line}"/>`;
+    ticks = [[0,'started 8d ago'],[.25,'6d ago'],[.5,'4d ago'],[.75,'2d ago'],[1,`last refresh · ${refreshAgoMin} min ago`]];
   }
+  // drop middle labels that would collide with an already-kept neighbour (keep first & last)
+  const MIN_PX = 78, kept = [];
+  ticks.forEach(([f, lb], i) => {
+    const x = xFor(f), last = i === ticks.length - 1;
+    if (last) { while (kept.length && kept[kept.length-1].keepLabel && x - kept[kept.length-1].x < 110 && kept[kept.length-1].i !== 0) kept[kept.length-1].keepLabel = false; }
+    const prev = [...kept].reverse().find(k => k.keepLabel);
+    kept.push({ i, x, lb, f, keepLabel: i === 0 || last || !prev || x - prev.x >= MIN_PX });
+  });
+  axisEl.innerHTML = kept.map(k => {
+    const edge = k.f < .02 ? ' edge-l' : k.f > .98 ? ' edge-r' : '';
+    return `<div class="tkm" style="left:${k.x.toFixed(1)}px"></div>` +
+      (k.keepLabel ? `<div class="tk${edge}" style="left:${k.x.toFixed(1)}px">${k.lb}</div>` : '');
+  }).join('');
+}
 
-  bdPlot.innerHTML = `<svg width="${bdW}" height="${bdH}">${inner}</svg><div class="bd-dot"></div>`;
-  bdDotEl = bdPlot.querySelector('.bd-dot');
-  // y-axis reference marks — the top one is "the whole" (all repos)
-  bdYlabel.style.height = bdH + 'px';
-  bdYlabel.innerHTML = [[TOTAL, `${TOTAL} total`], [Math.round(TOTAL/2), Math.round(TOTAL/2)], [0, 0]]
-    .map(([v, lab]) => `<span style="top:${bdYFor(v).toFixed(1)}px">${lab}</span>`).join('');
+// burnup — stacked step-area of changeset states, scaled to the total changeset count
+const bdScale = REPOS.filter(r => r.outcome !== 'noChanges').length;
+function renderBurndown() {
+  const PAD = 12;
+  W = bdPlot.clientWidth; bdH = bdPlot.clientHeight;
+  bdYFor = v => PAD + (1 - v / bdScale) * (bdH - PAD);
+  const base = bdYFor(0);
+  // sample the stack across the width; each sample is the cumulative height per band
+  const S = 160, xs = [], stacks = [];
+  for (let k = 0; k <= S; k++) {
+    const f = k / S, c = bandCounts(ft(f));
+    xs.push(xFor(f));
+    let cum = 0; const up = {};
+    BANDS.forEach(b => { cum += c[b]; up[b] = cum; });
+    stacks.push(up);
+  }
+  // for each band, a filled step-area between its lower and upper cumulative edges
+  const bandPath = (b, bi) => {
+    const lower = bi === 0 ? null : BANDS[bi - 1];
+    // top edge left→right (stepped)
+    let d = `M${xs[0].toFixed(1)} ${bdYFor(stacks[0][b]).toFixed(1)}`;
+    for (let k = 1; k <= S; k++) d += ` H${xs[k].toFixed(1)} V${bdYFor(stacks[k][b]).toFixed(1)}`;
+    // bottom edge right→left (stepped) — either the previous band's top or the baseline
+    for (let k = S; k >= 0; k--) {
+      const y = lower ? bdYFor(stacks[k][lower]) : base;
+      if (k === S) d += ` L${xs[k].toFixed(1)} ${y.toFixed(1)}`;
+      else d += ` V${y.toFixed(1)} H${xs[k].toFixed(1)}`;
+    }
+    return d + ' Z';
+  };
+  const yT = bdYFor(bdScale).toFixed(1);
+  bdPlot.innerHTML =
+    `<svg width="${W}" height="${bdH}">` +
+    `<line class="bd-total" x1="0" y1="${yT}" x2="${W}" y2="${yT}"/>` +
+    BANDS.map((b, bi) => `<path class="bd-band ${b}" d="${bandPath(b, bi)}"/>`).join('') +
+    `</svg>` +
+    `<div class="bd-tag" style="left:2px; top:${(bdYFor(bdScale)-11).toFixed(1)}px">changesets — <b>${fmt(bdScale)}</b></div>`;
 }
 
 function render() {
-  const W = rowsEl.querySelector('.tl-track').clientWidth;
-  const T = cursorF * NOW;
+  const T = cursorT, f = tf(T);
   const filtering = selectedJobs.size > 0;
-  // bars — selected jobs stay lit, the rest dim
+  // bars
   JOBS.forEach(j => {
-    const bar = rowsEl.querySelector(`.bar[data-id="${j.id}"]`);
-    const sF = j.start / NOW, eF = conclusion(j) / NOW;
-    const left = xFor(sF, W), width = Math.max(MIN_BAR, xFor(eF, W) - left);
+    const bar = lanesEl.querySelector(`.bar[data-id="${j.id}"]`);
+    const left = xFor(tf(j.start)), width = Math.max(MIN_BAR, xFor(tf(conclusion(j))) - left);
     bar.style.left = left + 'px'; bar.style.width = width + 'px';
     const on = selectedJobs.has(j.id);
     bar.classList.toggle('sel', on);
-    rowsEl.querySelector(`.tl-row[data-id="${j.id}"]`).classList.toggle('dim', filtering && !on);
+    bar.classList.toggle('dim', filtering && !on);
+    // label rides inside if it fits, otherwise to the right of the bar
+    const blb = bar.querySelector('.blb');
+    bar.classList.toggle('out', blb.scrollWidth + 16 > width);
   });
-  // shared playhead — offset by the label column since it spans the full width
-  const cx = LABEL_W + xFor(cursorF, W);
-  cursorLine.style.left = cx + 'px';
-  cursorGrip.style.left = (cx - 6) + 'px';
-  // slider
-  scrub.value = Math.round(cursorF * 1000);
-  const r = readout(T);
-  // table time-travel — repaint the current page's statuses at the cursor time
+  // playhead
+  cursorLine.style.left = (xFor(f) - 1) + 'px';
+  // readout — Changelog changeset counts at the cursor time
+  const c = bandCounts(T);
+  readoutEl.textContent =
+    `${c.commit ? fmt(c.commit) + ' commit · ' : ''}${fmt(c.draft)} draft · ${fmt(c.open)} open · ${fmt(c.merged)} merged · ${fmt(c.closed)} closed · ${readout(T)}`;
+  // table time-travel — status + "state as of" at the cursor time
   pageIdx.forEach(i => {
-    const cell = gridRows.querySelector(`tr[data-idx="${i}"] .stcell`);
-    if (cell) cell.innerHTML = statusHtml(phaseAt(REPOS[i], T));
+    const row = gridRows.querySelector(`tr[data-idx="${i}"]`);
+    if (!row) return;
+    const ph = phaseAt(REPOS[i], T);
+    const key = TYPE_STATE[ph];
+    row.querySelector('.stcell').innerHTML = statusHtml(ph);
+    const since = enteredAt(REPOS[i], T);
+    row.querySelector('.asofcell').innerHTML =
+      key === null ? `<span class="asof">no pull request</span>`
+      : (key === 'commit' || key === 'merged' || key === 'closed') ? `<span class="asof">${key === 'commit' ? 'committed' : CL_STATE[key].label.toLowerCase()} ${daysAgo(since)}</span>`
+      : `<span class="asof">${CL_STATE[key].label.toLowerCase()} as of ${readout(T)}</span>`;
   });
-  // burndown value marker on the shared playhead + header readout
-  const remaining = bdCount(T);
-  bdDotEl.style.left = xFor(cursorF, bdW) + 'px';
-  bdDotEl.style.top = bdYFor(remaining) + 'px';
-  readoutEl.textContent = `${remaining} of ${REPOS.length} in progress · ${r}`;
 }
 
-function setCursor(f) {
-  cursorF = clamp01(snap(f));   // snaps to the nearest event edge
+function setCursorT(T, doSnap = true) {
+  cursorT = Math.min(NOW, Math.max(0, doSnap ? snapT(T) : T));
   render();
 }
 
-// interactions
-scrub.addEventListener('input', () => setCursor(scrub.value / 1000));
-document.getElementById('currentBtn').addEventListener('click', e => { e.stopPropagation(); setCursor(1); });
-
-// view toggle — Time = continuous burndown curve, Commits = per-job burndown bars
-document.getElementById('viewSeg').addEventListener('click', e => {
-  const btn = e.target.closest('button'); if (!btn) return;
-  e.stopPropagation();
-  view = btn.dataset.v;
-  document.querySelectorAll('#viewSeg button').forEach(b => b.classList.toggle('on', b === btn));
-  renderBurndown(); render();
+// scrub anywhere on the combo (Camtasia-style) — except on the bars themselves
+let scrubbing = false;
+const fracFromX = clientX => {
+  const r = combo.getBoundingClientRect();
+  return clamp01((clientX - r.left) / Math.max(1, r.width));
+};
+combo.addEventListener('pointerdown', e => {
+  if (e.target.closest('.bar')) return;
+  scrubbing = true; combo.setPointerCapture(e.pointerId);
+  setCursorT(ft(fracFromX(e.clientX)));
 });
-
-// clear the span filter
-document.getElementById('filtClear').addEventListener('click', () => { selectedJobs.clear(); buildTable(); render(); });
-
-// Cmd/Ctrl+Z clears the timeline bar selection (undo the filter)
+combo.addEventListener('pointermove', e => { if (scrubbing) setCursorT(ft(fracFromX(e.clientX))); });
+combo.addEventListener('pointerup', () => { scrubbing = false; });
+// keyboard: step the playhead between events
 window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    const dir = e.key === 'ArrowRight' ? 1 : -1;
+    const opts = dir > 0 ? snapTimes.filter(t => t > cursorT + 1e-6) : snapTimes.filter(t => t < cursorT - 1e-6).reverse();
+    if (opts.length) { setCursorT(opts[0], false); e.preventDefault(); }
+  }
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && selectedJobs.size) {
     e.preventDefault(); selectedJobs.clear(); buildTable(); render();
   }
 });
 
-// collapse / expand the timeline card
+document.getElementById('currentBtn').addEventListener('click', e => { e.stopPropagation(); setCursorT(NOW, false); });
+
+document.getElementById('filtClear').addEventListener('click', () => { selectedJobs.clear(); buildTable(); render(); });
+
+// collapse / expand
 const tlSection = document.getElementById('tlSection');
 document.getElementById('tlTitle').addEventListener('click', () => {
   const collapsed = tlSection.classList.toggle('collapsed');
   document.getElementById('tlToggle').setAttribute('aria-label', collapsed ? 'Expand timeline' : 'Collapse timeline');
-  if (!collapsed) requestAnimationFrame(render);
+  if (!collapsed) requestAnimationFrame(() => { renderBurndown(); renderAxis(); render(); });
 });
-// click a bar to filter the repositories below to that specific job; ⌘/Ctrl-click adds more
-rowsEl.querySelectorAll('.bar').forEach(bar => bar.addEventListener('click', e => {
+
+// click a bar → filter table; ⌘/Ctrl-click adds more
+lanesEl.querySelectorAll('.bar').forEach(bar => bar.addEventListener('click', e => {
   const id = bar.dataset.id;
   const multi = e.metaKey || e.ctrlKey;
-  if (multi) {
-    selectedJobs.has(id) ? selectedJobs.delete(id) : selectedJobs.add(id);
-  } else if (selectedJobs.size === 1 && selectedJobs.has(id)) {
-    selectedJobs.clear();                        // clicking the sole selection clears it
-  } else {
-    selectedJobs = new Set([id]);
-  }
+  if (multi) selectedJobs.has(id) ? selectedJobs.delete(id) : selectedJobs.add(id);
+  else if (selectedJobs.size === 1 && selectedJobs.has(id)) selectedJobs.clear();
+  else selectedJobs = new Set([id]);
   buildTable(); render();
 }));
-// fast custom tooltip on bars — actioned vs succeeded, no browser hover delay
+// bar tooltip — actioned vs succeeded
 const barTip = document.createElement('div'); barTip.id = 'barTip'; document.body.appendChild(barTip);
-rowsEl.querySelectorAll('.bar').forEach(bar => {
+lanesEl.querySelectorAll('.bar').forEach(bar => {
   const j = JOBS.find(x => x.id === bar.dataset.id);
   bar.addEventListener('mouseenter', () => {
-    barTip.innerHTML = `<b>${j.label}</b><br>${j.succeeded} of ${j.actioned} succeeded` +
-      (j.failed ? ` · <span class="tf">${j.failed} failed</span>` : '');
+    barTip.innerHTML = `<b>${j.label.replace(/\s*\([^)]*\)/g, '')}</b> · ${j.actor}<br>${fmt(j.succeeded)} of ${fmt(j.actioned)} succeeded` +
+      (j.failed ? ` · <span class="tf">${fmt(j.failed)} failed</span>` : '');
     const r = bar.getBoundingClientRect();
     barTip.style.left = (r.left + r.width / 2) + 'px';
     barTip.style.top = (r.top - 8) + 'px';
@@ -724,16 +850,7 @@ rowsEl.querySelectorAll('.bar').forEach(bar => {
   });
   bar.addEventListener('mouseleave', () => barTip.classList.remove('on'));
 });
-// drag the cursor grip
-let dragging = false;
-const fracFromX = clientX => {
-  const track = rowsEl.querySelector('.tl-track').getBoundingClientRect();
-  return clamp01((clientX - track.left - THUMB/2) / Math.max(1, track.width - THUMB));
-};
-cursorGrip.addEventListener('pointerdown', e => { dragging = true; cursorGrip.setPointerCapture(e.pointerId); e.preventDefault(); });
-cursorGrip.addEventListener('pointermove', e => { if (dragging) setCursor(fracFromX(e.clientX)); });
-cursorGrip.addEventListener('pointerup', () => { dragging = false; });
-window.addEventListener('resize', () => { renderBurndown(); render(); });
+window.addEventListener('resize', () => { renderBurndown(); renderAxis(); render(); });
 
 // checkboxes → enable bulk actions
 const selected = new Set();
@@ -750,38 +867,44 @@ function toggleRow(i) {
   syncActions();
 }
 function toggleAll() {
-  const turnOn = pageIdx.some(i => !selected.has(i));   // select the whole page, or clear it
+  const turnOn = pageIdx.some(i => !selected.has(i));
   pageIdx.forEach(i => turnOn ? selected.add(i) : selected.delete(i));
   gridRows.querySelectorAll('.chk').forEach(ck => ck.classList.toggle('on', turnOn));
   syncActions();
 }
 
-// refresh sweep — two mutually-exclusive states (idle / in progress)
+// refresh — "now" on this page means the last time statuses were fetched
 const syncLine = document.getElementById('syncLine');
 let refreshing = false;
-const IDLE_HTML = '<span id="syncText">Live states synced less than a minute ago</span><button class="refresh" id="refreshBtn"><svg><use href="#i-refresh"/></svg> Refresh</button>';
+function idleSyncHtml() {
+  return `<span id="syncText">Statuses as of last refresh · ${refreshAgoMin < 1 ? 'moments ago' : refreshAgoMin + ' min ago'}</span><button class="refresh" id="refreshBtn" title="Fetch current PR statuses from the SCM"><svg><use href="#i-refresh"/></svg> Refresh statuses</button>`;
+}
 syncLine.addEventListener('click', e => {
   if (!e.target.closest('#refreshBtn') || refreshing) return;
   refreshing = true;
   const TOTAL = REPOS.length, DUR = 2500, start = performance.now();
   syncLine.classList.add('busy');
-  syncLine.innerHTML = `<span class="spin"><svg width="13" height="13"><use href="#i-refresh"/></svg></span><span id="sweepText">Status check in progress — 0 of ${TOTAL} checked</span>`;
+  syncLine.innerHTML = `<span id="sweepText">Checking ${fmt(TOTAL)} repositories — 0 checked</span><button class="refresh" disabled><span class="spin"><svg width="14" height="14"><use href="#i-refresh"/></svg></span> Refreshing…</button>`;
   const iv = setInterval(() => {
     const done = Math.min(TOTAL, Math.round((performance.now() - start) / DUR * TOTAL));
     const el = document.getElementById('sweepText');
-    if (el) el.textContent = `Status check in progress — ${done} of ${TOTAL} checked`;
+    if (el) el.textContent = `Checking ${fmt(TOTAL)} repositories — ${fmt(done)} checked`;
   }, 100);
   setTimeout(() => {
     clearInterval(iv); refreshing = false;
+    refreshAgoMin = 0;
     syncLine.classList.remove('busy');
-    syncLine.innerHTML = IDLE_HTML;
+    syncLine.innerHTML = idleSyncHtml();
+    renderAxis(); render();      // the right edge of the axis IS the refresh moment
   }, DUR);
 });
 
+buildWarp();
 buildTable();
 renderBurndown();
+renderAxis();
 render();
-requestAnimationFrame(() => { renderBurndown(); render(); }); // re-measure after layout settles
+requestAnimationFrame(() => { renderBurndown(); renderAxis(); render(); }); // re-measure after layout settles
 </script>
 </body>
 </html>
