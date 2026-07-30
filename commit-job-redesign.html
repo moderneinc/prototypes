@@ -113,6 +113,11 @@ a:hover { text-decoration:underline; }
 .tl-label { padding-right:14px; text-align:right; min-width:0; }
 .tl-label .lb { font-size:12px; font-weight:500; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .tl-label .sub { font-family:'Geist Mono', monospace; font-size:10px; line-height:1.2; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+/* fast hover tooltip for timeline bars */
+#barTip { position:fixed; z-index:60; transform:translate(-50%,-100%); background:#232342; color:#fff; padding:7px 10px; border-radius:8px; font-size:12px; line-height:1.45; box-shadow:0 8px 24px rgba(0,0,0,.22); pointer-events:none; opacity:0; transition:opacity .08s; white-space:nowrap; }
+#barTip.on { opacity:1; }
+#barTip b { font-weight:600; }
+#barTip .tf { color:#ff9e91; }
 /* legend */
 .tl-legend { display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; margin:0 2px 10px; font-size:11px; color:var(--muted); }
 .tl-legend .lg { display:inline-flex; align-items:center; gap:6px; }
@@ -128,14 +133,20 @@ a:hover { text-decoration:underline; }
 .seg button.on { background:var(--ink); color:#fff; }
 .tl-track { position:relative; height:100%; }
 .tl-base { position:absolute; left:0; right:0; top:50%; height:1px; background:var(--hairline); }
-.bar { position:absolute; top:50%; transform:translateY(-50%); height:11px; border-radius:7px; border:1.5px solid transparent; cursor:pointer; }
+/* bar = the actioned envelope (outline); .bar-fill = the succeeded portion (solid) */
+.bar { position:absolute; top:50%; transform:translateY(-50%); height:11px; border-radius:7px; border:1.5px solid transparent; background:transparent; cursor:pointer; padding:0; overflow:hidden; }
 .bar:focus-visible { outline:none; box-shadow:0 0 0 2px var(--accent); }
 .bar.sel { box-shadow:0 0 0 2px var(--accent); }
-.bar.commit { background:var(--commit); border-color:var(--commit-b); }
-.bar.approve { background:var(--approve); border-color:var(--approve-b); }
-.bar.merge { background:var(--merge); border-color:var(--merge-b); }
-.bar.close { background:var(--close); border-color:var(--close-b); }
-.bar.running { background:transparent; border-color:var(--active); animation:pulse 1.4s ease-in-out infinite; }
+.bar.commit  { border-color:var(--commit-b); }
+.bar.approve { border-color:var(--approve-b); }
+.bar.merge   { border-color:var(--merge-b); }
+.bar.close   { border-color:var(--close-b); }
+.bar.running { border-color:var(--active); animation:pulse 1.4s ease-in-out infinite; }
+.bar-fill { position:absolute; left:0; top:0; bottom:0; width:100%; border-radius:inherit; }
+.bar.commit  .bar-fill { background:var(--commit); }
+.bar.approve .bar-fill { background:var(--approve); }
+.bar.merge   .bar-fill { background:var(--merge); }
+.bar.close   .bar-fill { background:var(--close); }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.5;} }
 .tl-rows { position:relative; }
 .cursor-line { position:absolute; top:0; bottom:0; width:2px; background:var(--accent); pointer-events:none; z-index:3; }
@@ -316,8 +327,8 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
             <span class="lg"><span class="sw approve"></span>Approval</span>
             <span class="lg"><span class="sw merge"></span>Merge</span>
             <span class="lg"><span class="sw close"></span>Close</span>
-            <span class="lg" style="margin-left:auto"><span class="sw open"></span>Outline = actioned / running</span>
-            <span class="lg"><span class="sw merge"></span>Solid = completed</span>
+            <span class="lg" style="margin-left:auto"><span class="sw open"></span>Outline = actioned</span>
+            <span class="lg"><span class="sw merge"></span>Fill = succeeded</span>
           </div>
           <div class="combo" id="combo">
             <div class="bd-row">
@@ -495,14 +506,24 @@ const jobsFor = i => {
     if (i % 7 === 5) jobs.push('approve-retry');
     jobs.push(['merge-1', 'merge-2', 'merge-3'][i % 3]);    // split the merged repos across the three waves
     if (i % 4 === 2) jobs.push('rebase');                   // a slice needed a rebase
+  } else if (r.outcome === 'failed') {
+    jobs.push('approve');                                   // approved, then the merge errored out
+    jobs.push(['merge-1', 'merge-2', 'merge-3'][i % 3]);
   }
-  // failed repos stopped at commit
   return jobs;
 };
 const REPO_JOBS = REPOS.map((_, i) => new Set(jobsFor(i)));
 const jobLabel = id => JOBS.find(j => j.id === id).label;
-// derive each job's "· N repos" caption from real membership so counts stay honest at any scale
-JOBS.forEach(j => { j.sub = `${j.actor} · ${REPO_JOBS.filter(s => s.has(j.id)).length} repos`; });
+// a repo "succeeded" at a job unless a merge errored out on it
+const succeededAt = (i, j) => !(j.kind === 'merge' && REPOS[i].outcome === 'failed');
+// derive each job's actioned/succeeded counts from real membership so numbers stay honest at any scale
+JOBS.forEach(j => {
+  const members = REPO_JOBS.map((s, i) => s.has(j.id) ? i : -1).filter(i => i >= 0);
+  j.actioned = members.length;
+  j.succeeded = members.filter(i => succeededAt(i, j)).length;
+  j.failed = j.actioned - j.succeeded;
+  j.sub = `${j.actor} · ${j.actioned} repos`;
+});
 
 const rowsEl = document.getElementById('tlRows');
 const scrub = document.getElementById('scrub');
@@ -529,7 +550,7 @@ rowsEl.innerHTML = JOBS.map(j => `
   <div class="tl-row" data-id="${j.id}">
     <div class="tl-label"><div class="lb">${j.label}</div><div class="sub">${j.sub}</div></div>
     <div class="tl-track"><div class="tl-base"></div>
-      <button class="bar ${j.kind}${j.end==null?' running':''}" data-id="${j.id}" title="${j.label} · ${j.sub}"></button>
+      <button class="bar ${j.kind}${j.end==null?' running':''}" data-id="${j.id}"><span class="bar-fill" style="width:${(100 * j.succeeded / Math.max(1, j.actioned)).toFixed(1)}%"></span></button>
     </div>
   </div>`).join('');
 // one shared playhead spanning the burndown strip + the gantt rows
@@ -689,6 +710,20 @@ rowsEl.querySelectorAll('.bar').forEach(bar => bar.addEventListener('click', e =
   }
   buildTable(); render();
 }));
+// fast custom tooltip on bars — actioned vs succeeded, no browser hover delay
+const barTip = document.createElement('div'); barTip.id = 'barTip'; document.body.appendChild(barTip);
+rowsEl.querySelectorAll('.bar').forEach(bar => {
+  const j = JOBS.find(x => x.id === bar.dataset.id);
+  bar.addEventListener('mouseenter', () => {
+    barTip.innerHTML = `<b>${j.label}</b><br>${j.succeeded} of ${j.actioned} succeeded` +
+      (j.failed ? ` · <span class="tf">${j.failed} failed</span>` : '');
+    const r = bar.getBoundingClientRect();
+    barTip.style.left = (r.left + r.width / 2) + 'px';
+    barTip.style.top = (r.top - 8) + 'px';
+    barTip.classList.add('on');
+  });
+  bar.addEventListener('mouseleave', () => barTip.classList.remove('on'));
+});
 // drag the cursor grip
 let dragging = false;
 const fracFromX = clientX => {
