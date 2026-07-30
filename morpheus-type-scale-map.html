@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morpheus type scale — consolidation map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --font-display: 'Poppins', 'Geist', system-ui, sans-serif;
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --green: #30F284;
+}
+[data-theme="light"] {
+  --bg: #F2F0EA; --card: #FBFAF6; --surface: #EDEBE2; --surface2: #E4E1D6;
+  --line: rgba(35,35,66,.12); --line-strong: rgba(35,35,66,.50);
+  --text: #232342; --muted: #62627A; --accent: #1245AE;
+  --bar-old: #C9A3A9; --bar-new: #3E7BF6;
+}
+[data-theme="dark"] {
+  --bg: #141419; --card: #26262E; --surface: #2A2A32; --surface2: #33333D;
+  --line: rgba(240,240,246,.12); --line-strong: rgba(240,240,246,.38);
+  --text: #F1F0EA; --muted: #9C9CA8; --accent: #7FA9F9;
+  --bar-old: #7A5560; --bar-new: #3E7BF6;
+}
+body { font-family: var(--font-sans); font-size: 14px; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; transition: background .2s; }
+main { max-width: 1060px; margin: 0 auto; padding: 40px 36px 90px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+h1 { font-family: var(--font-display); font-size: 28px; font-weight: 600; letter-spacing: -.02em; }
+.sub { color: var(--muted); margin-top: 6px; max-width: 700px; line-height: 1.55; }
+.bar { height: 4px; width: 64px; background: var(--green); border-radius: 2px; margin-bottom: 16px; }
+.mode-btn { width: 34px; height: 34px; border-radius: 4px; border: 1px solid var(--line-strong); background: var(--card); color: var(--text); cursor: pointer; font-size: 15px; }
+h2 { font-family: var(--font-display); font-size: 18px; font-weight: 600; margin: 44px 0 6px; }
+.h2sub { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+
+.histo { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.hcard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; }
+.hcard .hd { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.hcard .n { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.hrow { display: grid; grid-template-columns: 44px 1fr 34px; align-items: center; gap: 10px; margin: 5px 0; }
+.hrow .sz { font-family: var(--font-mono); font-size: 11px; color: var(--text); text-align: right; }
+.hrow .sz.off { color: #C9291C; font-weight: 600; }
+[data-theme="dark"] .hrow .sz.off { color: #FA826F; }
+.hrow .track { height: 14px; background: var(--surface); border-radius: 3px; overflow: hidden; }
+.hrow .fill { height: 100%; border-radius: 3px; }
+.hrow .ct { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+.map { display: flex; flex-direction: column; gap: 10px; }
+.mrow { display: grid; grid-template-columns: 150px 1fr; gap: 18px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 20px; }
+.mrow .from-to { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
+.mrow .old { font-family: var(--font-mono); font-size: 13px; color: #C9291C; text-decoration: line-through; text-decoration-thickness: 1px; }
+[data-theme="dark"] .mrow .old { color: #FA826F; }
+.mrow .arr { color: var(--muted); }
+.mrow .new { font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--accent); }
+.mrow .who { font-size: 13px; color: var(--muted); line-height: 1.55; }
+.mrow .who code { font-family: var(--font-mono); font-size: 12px; background: var(--surface); border-radius: 4px; padding: 1px 5px; color: var(--text); }
+.mrow .why { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); display: block; margin-top: 4px; }
+
+.scale { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.srow { display: flex; align-items: baseline; gap: 20px; padding: 14px 24px; border-bottom: 1px solid var(--line); }
+.srow:last-child { border-bottom: none; }
+.srow .m { font-family: var(--font-mono); font-size: 11px; color: var(--muted); width: 96px; flex: none; }
+.srow .demo { color: var(--text); }
+.badge { display: inline-block; font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; background: var(--green); color: #1D5937; border-radius: 999px; padding: 2px 8px; margin-left: 10px; vertical-align: 2px; }
+footer { margin-top: 48px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div>
+      <div class="bar"></div>
+      <h1>Type scale consolidation — morpheus.html</h1>
+      <p class="sub">Response to the design-channel audit: the mock rendered <b>14 unique sizes</b> with the 14px body token in 4th place. Every off-scale size is now mapped onto the 8-step Morpheus scale, and genuine body copy moved from the 13px small-body token up to 14px body. Shipped in prototypes PR #262 — drag it live in the <a href="morpheus-type-compare.html">side-by-side compare</a>.</p>
+    </div>
+    <button class="mode-btn" id="modeBtn" aria-label="Toggle theme">◐</button>
+  </div>
+
+  <h2>Usage, before → after</h2>
+  <div class="h2sub">declaration counts · red = off-scale</div>
+  <div class="histo">
+    <div class="hcard">
+      <div class="hd">Before</div><div class="n">14 unique sizes · body 4th</div>
+      <div id="before"></div>
+    </div>
+    <div class="hcard">
+      <div class="hd">After</div><div class="n">8 unique sizes — the Morpheus scale exactly</div>
+      <div id="after"></div>
+    </div>
+  </div>
+
+  <h2>The mapping</h2>
+  <div class="h2sub">every off-scale size → its Morpheus token, by role</div>
+  <div class="map">
+    <div class="mrow"><span class="from-to"><span class="old">8px · 9px</span><span class="arr">→</span><span class="new">10px</span></span><span class="who"><code>.bl-java</code> chip · <code>.swatch .swlbl</code> · <code>.wg</code> WCAG badge · <code>.tree-head</code><span class="why">mono overline / badge tier</span></span></div>
+    <div class="mrow"><span class="from-to"><span class="old">16px · 17px</span><span class="arr">→</span><span class="new">15px</span></span><span class="who"><code>.repo-detail-title</code> · <code>.vz-titlerow h3</code> · <code>.dc-denom</code> · <code>.cfg-dethead h3</code><span class="why">card-title tier · 15 / 600</span></span></div>
+    <div class="mrow"><span class="from-to"><span class="old">19px</span><span class="arr">→</span><span class="new">18px</span></span><span class="who"><code>.login-inner h1</code> · <code>.nr-head h2</code><span class="why">page-title tier · 18 / 400</span></span></div>
+    <div class="mrow"><span class="from-to"><span class="old">21px</span><span class="arr">→</span><span class="new">18px</span></span><span class="who"><code>.moddy-hero h1</code><span class="why">mono rounds down</span></span></div>
+    <div class="mrow"><span class="from-to"><span class="old">25px</span><span class="arr">→</span><span class="new">28px</span></span><span class="who"><code>.dc-num</code> DevCenter stat numbers<span class="why">display tier</span></span></div>
+    <div class="mrow"><span class="from-to"><span class="old">13px</span><span class="arr">→</span><span class="new">14px</span></span><span class="who"><b>Body-copy promotion (8 styles):</b> <code>.pagehead .sub</code> · <code>.catrow .d</code> · <code>.dc-owinfo p</code> · <code>.dt-desc</code> · <code>.vz-desc</code> · <code>.vz-sub</code> · <code>.mkr-row .rdsc</code> · <code>.cfg-sub</code><span class="why">prose &amp; descriptions belong on the body token — controls stay 13</span></span></div>
+  </div>
+
+  <h2>The scale that remains</h2>
+  <div class="h2sub">10 · 11 · 12 · 13 · 14 · 15 · 18 · 28 — whole numbers only</div>
+  <div class="scale">
+    <div class="srow"><span class="m">10 mono</span><span class="demo" style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Overlines · beta tags · badges</span></div>
+    <div class="srow"><span class="m">11</span><span class="demo" style="font-size:11px;">Status pills, count chips, meta</span></div>
+    <div class="srow"><span class="m">12</span><span class="demo" style="font-size:12px;">Labels, tabs, table heads</span></div>
+    <div class="srow"><span class="m">13</span><span class="demo" style="font-size:13px;">Small body — controls, buttons, table rows</span></div>
+    <div class="srow"><span class="m">14 / 400</span><span class="demo" style="font-size:14px;">Body — descriptions, prose, anything that reads in sentences<span class="badge">the workhorse</span></span></div>
+    <div class="srow"><span class="m">15 / 600</span><span class="demo" style="font-size:15px;font-weight:600;">Card titles</span></div>
+    <div class="srow"><span class="m">18 / 400</span><span class="demo" style="font-size:18px;">Page titles</span></div>
+    <div class="srow"><span class="m">28 display</span><span class="demo" style="font-family:var(--font-display);font-size:28px;font-weight:500;">Display moments</span></div>
+  </div>
+
+  <footer>data from morpheus.html @ PR #262 · see it applied: <a href="morpheus-type-compare.html" style="color:var(--accent);">morpheus-type-compare.html</a></footer>
+</main>
+<script>
+var BEFORE = [[13,69],[12,50],[11,41],[14,39],[10,16],[15,7],[18,5],[9,3],[19,2],[17,2],[16,2],[8,1],[25,1],[21,1]];
+var AFTER  = [[13,61],[12,50],[14,47],[11,41],[10,20],[15,11],[18,8],[28,1]];
+var SCALE  = [10,11,12,13,14,15,18,28];
+function render(id, data, color) {
+  var max = 69, host = document.getElementById(id);
+  data.forEach(function (d) {
+    var off = SCALE.indexOf(d[0]) < 0;
+    var row = document.createElement('div'); row.className = 'hrow';
+    row.innerHTML = '<span class="sz' + (off ? ' off' : '') + '">' + d[0] + 'px</span>' +
+      '<span class="track"><span class="fill" style="width:' + (d[1] / max * 100).toFixed(1) + '%;background:' + (off ? 'var(--bar-old)' : color) + ';"></span></span>' +
+      '<span class="ct">' + d[1] + '</span>';
+    host.appendChild(row);
+  });
+}
+render('before', BEFORE, 'var(--bar-new)');
+render('after', AFTER, 'var(--bar-new)');
+var btn = document.getElementById('modeBtn'), root = document.documentElement;
+btn.addEventListener('click', function () {
+  root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+</script>
+</body>
+</html>
