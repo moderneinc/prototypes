@@ -84,7 +84,7 @@ a:hover { text-decoration:underline; }
 .collapse-btn { border:none; background:transparent; padding:2px; color:var(--muted); display:inline-flex; align-items:center; }
 .collapse-btn .chev { width:18px; height:18px; transition:transform .2s ease; }
 .tl-section.collapsed .collapse-btn .chev { transform:rotate(-90deg); }
-.tl-wrap { overflow:hidden; transition:max-height .28s ease, opacity .18s ease; max-height:640px; opacity:1; }
+.tl-wrap { overflow:hidden; transition:max-height .28s ease, opacity .18s ease; max-height:720px; opacity:1; }
 .tl-section.collapsed .tl-wrap { max-height:0; opacity:0; }
 .tl-section.collapsed .tl-controls { display:none; }
 .info-ic { display:inline-flex; color:var(--muted); }
@@ -107,15 +107,28 @@ a:hover { text-decoration:underline; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
 /* ---------- Timeline card ---------- */
-.tl-card { background:var(--card); border:1px solid rgba(0,0,0,.12); border-radius:4px; padding:14px 14px 12px; }
-.tl-row { display:grid; grid-template-columns:200px 1fr; align-items:center; height:48px; }
-.tl-row.dim { opacity:.42; }
+.tl-card { background:var(--card); border:1px solid rgba(0,0,0,.12); border-radius:4px; padding:10px 14px 8px; }
+.tl-row { display:grid; grid-template-columns:200px 1fr; align-items:center; height:30px; }
+.tl-row.dim { opacity:.32; }
 .tl-label { padding-right:14px; text-align:right; min-width:0; }
-.tl-label .lb { font-size:13px; font-weight:500; line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.tl-label .sub { font-family:'Geist Mono', monospace; font-size:11px; line-height:1.4; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tl-label .lb { font-size:12px; font-weight:500; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tl-label .sub { font-family:'Geist Mono', monospace; font-size:10px; line-height:1.2; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+/* legend */
+.tl-legend { display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; margin:0 2px 10px; font-size:11px; color:var(--muted); }
+.tl-legend .lg { display:inline-flex; align-items:center; gap:6px; }
+.tl-legend .sw { width:20px; height:10px; border-radius:5px; border:1.5px solid transparent; }
+.tl-legend .sw.commit{ background:var(--commit); border-color:var(--commit-b); }
+.tl-legend .sw.approve{ background:var(--approve); border-color:var(--approve-b); }
+.tl-legend .sw.merge{ background:var(--merge); border-color:var(--merge-b); }
+.tl-legend .sw.close{ background:var(--close); border-color:var(--close-b); }
+.tl-legend .sw.open{ background:transparent; border-color:var(--active); }
+/* view toggle */
+.seg { display:inline-flex; border:1px solid var(--line-strong); border-radius:999px; overflow:hidden; }
+.seg button { border:none; background:transparent; padding:3px 12px; font-size:12px; font-weight:500; color:var(--muted); }
+.seg button.on { background:var(--ink); color:#fff; }
 .tl-track { position:relative; height:100%; }
 .tl-base { position:absolute; left:0; right:0; top:50%; height:1px; background:var(--hairline); }
-.bar { position:absolute; top:50%; transform:translateY(-50%); height:14px; border-radius:8px; border:1.5px solid transparent; cursor:pointer; }
+.bar { position:absolute; top:50%; transform:translateY(-50%); height:11px; border-radius:7px; border:1.5px solid transparent; cursor:pointer; }
 .bar:focus-visible { outline:none; box-shadow:0 0 0 2px var(--accent); }
 .bar.sel { box-shadow:0 0 0 2px var(--accent); }
 .bar.commit { background:var(--commit); border-color:var(--commit-b); }
@@ -159,7 +172,7 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
 .actcell svg { width:16px; height:16px; }
 .st { display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
 .st svg { width:15px; height:15px; }
-.st .dot { width:9px; height:9px; border-radius:50%; background:currentColor; }
+.st .spinner { width:12px; height:12px; border-radius:50%; border:2px solid var(--track); border-top-color:currentColor; animation:spin .7s linear infinite; }
 .st.success { color:var(--success); }
 .st.active { color:var(--active); }
 .st.error { color:var(--error); }
@@ -175,6 +188,27 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
 .foot .pg button { width:26px; height:26px; border:1px solid var(--line-strong); border-radius:6px; background:var(--panel); color:var(--text); display:flex; align-items:center; justify-content:center; }
 .foot .pg button:disabled { opacity:.4; }
 .foot .pg svg { width:13px; height:13px; }
+
+/* ---------- Burndown strip (fused into the timeline card) ---------- */
+.combo { position:relative; }                 /* hosts the single shared playhead */
+.bd-row { display:grid; grid-template-columns:200px 1fr; }
+.bd-ylabel { position:relative; }
+.bd-ylabel span { position:absolute; right:14px; font-size:10px; color:var(--muted); transform:translateY(-50%); white-space:nowrap; }
+.bd-plot { position:relative; height:96px; }
+.bd-plot svg { display:block; overflow:visible; }
+.bd-area { fill:var(--accent); opacity:.09; }
+.bd-line { fill:none; stroke:var(--accent); stroke-width:2; stroke-linejoin:round; }
+.bd-total { stroke:var(--line-strong); stroke-width:1; stroke-dasharray:3 3; opacity:.55; }
+.bd-dot { position:absolute; width:9px; height:9px; border-radius:50%; background:var(--accent); border:2px solid var(--card); box-shadow:0 0 0 1px var(--accent); transform:translate(-50%,-50%); pointer-events:none; z-index:5; }
+.bd-divider { height:1px; background:var(--hairline); margin:0 0 10px 200px; }
+
+/* ---------- Repositories filter chip ---------- */
+.filt-chip { display:none; align-items:center; gap:6px; height:36px; padding:0 4px 0 12px; border:1px solid var(--accent); border-radius:999px; background:rgba(16,85,226,.06); color:var(--ink); font-size:13px; font-weight:500; }
+.filt-chip.on { display:inline-flex; }
+.filt-chip .fk { text-transform:capitalize; }
+.filt-chip button { border:none; background:transparent; color:var(--muted); display:inline-flex; padding:4px; border-radius:50%; }
+.filt-chip button:hover { background:rgba(0,0,0,.06); color:var(--text); }
+.filt-chip svg { width:14px; height:14px; }
 </style>
 </head>
 <body>
@@ -251,26 +285,48 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
       <div class="lede">
         <div>
           <h1>Fix vulnerable Maven/Gradle dependencies</h1>
-          <div class="meta"><span>50 repositories</span><span class="sep">·</span><span>Pull request</span><span class="sep">·</span><span>Started 9 days ago</span><span class="sep">·</span><a href="#">Go to recipe results</a></div>
+          <div class="meta"><span>200 repositories</span><span class="sep">·</span><span>Pull request</span><span class="sep">·</span><span>Started 9 days ago</span><span class="sep">·</span><a href="#">Go to recipe results</a></div>
         </div>
         <button class="bell"><svg><use href="#i-bell"/></svg></button>
       </div>
 
-      <!-- TIMELINE -->
+      <!-- PROGRESS: burndown + gantt fused into one component on a single time axis -->
       <div class="section tl-section" id="tlSection">
         <div class="sec-head">
           <div class="sec-title" id="tlTitle">
-            <button class="collapse-btn" id="tlToggle" aria-label="Collapse timeline"><svg class="chev"><use href="#i-chevd"/></svg></button>
-            <h2>Timeline</h2>
+            <button class="collapse-btn" id="tlToggle" aria-label="Collapse"><svg class="chev"><use href="#i-chevd"/></svg></button>
+            <h2>Progress</h2>
+            <span class="tip"><span class="info-ic"><svg><use href="#i-info"/></svg></span>
+              <span class="bubble"><b>Burndown + timeline</b>The area shows repositories not yet in a terminal state over time; the bars below are the jobs that burn it down. One playhead ties them together — drag it or click a bar.</span>
+            </span>
           </div>
           <div class="tl-controls" style="display:flex;align-items:center;gap:10px">
-            <span class="readout" id="readout" style="display:none"></span>
+            <span class="readout" id="readout"></span>
+            <div class="seg" id="viewSeg">
+              <button class="on" data-v="time">Time</button>
+              <button data-v="commits" title="Stepped burndown — drops as each job completes">Commits</button>
+            </div>
             <button class="pill-btn" id="currentBtn">Current</button>
           </div>
         </div>
         <div class="tl-wrap">
         <div class="tl-card">
-          <div class="tl-rows" id="tlRows"></div>
+          <div class="tl-legend">
+            <span class="lg"><span class="sw commit"></span>Commit</span>
+            <span class="lg"><span class="sw approve"></span>Approval</span>
+            <span class="lg"><span class="sw merge"></span>Merge</span>
+            <span class="lg"><span class="sw close"></span>Close</span>
+            <span class="lg" style="margin-left:auto"><span class="sw open"></span>Outline = actioned / running</span>
+            <span class="lg"><span class="sw merge"></span>Solid = completed</span>
+          </div>
+          <div class="combo" id="combo">
+            <div class="bd-row">
+              <div class="bd-ylabel" id="bdYlabel"></div>
+              <div class="bd-plot" id="bdPlot"></div>
+            </div>
+            <div class="bd-divider"></div>
+            <div class="tl-rows" id="tlRows"></div>
+          </div>
           <div class="tl-axis"><div></div><div class="ticks"><span>started 8 days ago</span><span>4 days ago</span><span>now</span></div></div>
           <div class="tl-scrub"><div></div><div id="scrubTrack"><input type="range" id="scrub" min="0" max="1000" value="1000" aria-label="Timeline position"></div></div>
         </div>
@@ -294,6 +350,7 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
 
         <div class="toolbar">
           <div class="tb-search"><svg><use href="#i-search"/></svg><span>Search repositories…</span></div>
+          <span class="filt-chip" id="filtChip">Timeline: <span class="fk" id="filtLabel"></span><button id="filtClear" title="Clear filter"><svg><use href="#i-x-circle"/></svg></button></span>
           <div class="spacer"></div>
           <button class="tbtn act-btn" disabled><svg><use href="#i-git-pr"/></svg> Approve</button>
           <button class="tbtn act-btn" disabled><svg><use href="#i-git-merge"/></svg> Merge</button>
@@ -317,7 +374,7 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
           <tbody id="rows"></tbody>
         </table>
         <div class="foot">
-          <span>1 – 10 of 50</span>
+          <span>1 – 10 of 200</span>
           <span class="pg"><button disabled><svg><use href="#i-chevl"/></svg></button><button><svg><use href="#i-chevr"/></svg></button></span>
         </div>
       </div>
@@ -332,16 +389,21 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
 const NOW = 8.125;                 // right edge of the axis, in days from origin
 const t = (d, h = 9) => d + (h - 9) / 24;
 const JOBS = [
-  { id:'commit',        kind:'commit',  label:'Commit',            sub:'natedanner · 50 repos', start:t(0,9),  end:t(1,6) },
-  { id:'approve',       kind:'approve', label:'Approval',          sub:'natedanner · 37 repos', start:t(1,9),  end:t(3,12) },
-  { id:'close',         kind:'close',   label:'Close stale',       sub:'automation · 4 repos',       start:t(2,12), end:t(4,9) },
-  { id:'merge-1',       kind:'merge',   label:'Merge (first wave)',sub:'natedanner · 20 repos', start:t(2,12), end:t(5,12) },
-  { id:'approve-retry', kind:'approve', label:'Approval (retry)',  sub:'natedanner · 5 repos',  start:t(3,9),  end:t(4,9) },
-  { id:'merge-2',       kind:'merge',   label:'Merge (final wave)',sub:'natedanner · 13 repos', start:t(5,9),  end:null }, // running
+  { id:'commit',        kind:'commit',  label:'Commit',                actor:'natedanner', start:t(0,9),  end:t(1,6)  },
+  { id:'approve',       kind:'approve', label:'Approval',              actor:'natedanner', start:t(1,9),  end:t(3,0)  },
+  { id:'approve-final', kind:'approve', label:'Approval (final batch)',actor:'natedanner', start:t(1,15), end:t(3,12) },
+  { id:'close-2',       kind:'close',   label:'Close (no changes)',    actor:'automation', start:t(2,0),  end:t(3,12) },
+  { id:'merge-1',       kind:'merge',   label:'Merge (first wave)',    actor:'natedanner', start:t(2,12), end:t(4,6)  },
+  { id:'approve-retry', kind:'approve', label:'Approval (retry)',      actor:'natedanner', start:t(3,9),  end:t(4,9)  },
+  { id:'merge-2',       kind:'merge',   label:'Merge (second wave)',   actor:'natedanner', start:t(3,12), end:t(5,12) },
+  { id:'rebase',        kind:'merge',   label:'Rebase & retry',        actor:'automation', start:t(4,0),  end:t(5,18) },
+  { id:'close',         kind:'close',   label:'Close stale',           actor:'natedanner', start:t(4,12), end:t(6,0)  },
+  { id:'merge-3',       kind:'merge',   label:'Merge (final wave)',    actor:'natedanner', start:t(5,12), end:null    }, // running
 ];
 const conclusion = j => j.end == null ? NOW : j.end;
 const SNAP = 0.035;
-const snapTargets = [...new Set(JOBS.map(j => conclusion(j) / NOW))].sort((a,b)=>a-b);
+// snap to every event edge — each job's start and its conclusion
+const snapTargets = [...new Set(JOBS.flatMap(j => [j.start / NOW, conclusion(j) / NOW]))].sort((a,b)=>a-b);
 const clamp01 = n => Math.min(1, Math.max(0, n));
 const THUMB = 14, MIN_BAR = 22, LABEL_W = 200;
 const xFor = (f, W) => THUMB/2 + clamp01(f) * Math.max(0, W - THUMB);
@@ -360,9 +422,10 @@ const POOL_ORG = ['netflix','square','apache','eclipse','ff4j','jackson','hibern
 const POOL_NAME = ['netty','okhttp','gson','junit5','mockito','logback','slf4j','tomcat','jetty','maven-core','commons-io','httpclient','kafka','curator','zookeeper','assertj','testcontainers','feign','eureka','archaius','conductor','graphql-java','webflux','r2dbc','lettuce','spock','servo','spectator','dgs-framework','ribbon'];
 const outcomeFor = i => (i % 17 === 7) ? 'failed' : (i % 13 === 9) ? 'closed' : (i % 5 === 3) ? 'noChanges' : 'merged';
 
-const REPOS = Array.from({ length: 50 }, (_, i) => {
+const N_REPOS = 200;
+const REPOS = Array.from({ length: N_REPOS }, (_, i) => {
   const meta = i < 10 ? HAND[i] : [POOL_ORG[i % POOL_ORG.length], POOL_NAME[(i * 7) % POOL_NAME.length], ['github','gitlab','azure'][i % 3]];
-  const f = i / 50;
+  const f = i / N_REPOS;   // 0..1 spread across the fleet, independent of fleet size
   const committed = 0.2 + f * 0.9;
   const approveStart = 1.4 + f * 2.0;
   const mergeStart = 2.6 + f * 4.8;
@@ -406,21 +469,52 @@ const PHASE = {
 const SCM_ICON = { github:'i-github', gitlab:'i-gitlab', azure:'i-azure' };
 const statusHtml = ph => {
   const p = PHASE[ph];
-  const g = p.icon === 'dot' ? '<span class="dot"></span>' : `<svg><use href="#${p.icon}"/></svg>`;
+  const g = p.icon === 'dot' ? '<span class="spinner"></span>' : `<svg><use href="#${p.icon}"/></svg>`;
   return `<span class="st ${p.cls}">${g}<span class="lbl">${p.label}</span></span>`;
 };
 
 // ============================================================
 //  State + rendering
 // ============================================================
-let cursorF = 1;         // 0..1 along the axis
-let selectedId = null;
+let cursorF = 1;                       // 0..1 along the axis
+let selectedJobs = new Set();          // individual jobs (bars) used to filter the repo table
+let view = 'time';                     // 'time' = smooth burndown, 'commits' = stepped-per-job burndown
+
+// terminal = repo is done; everything else still counts as "in flight" for the burndown
+const TERMINAL = new Set(['merged','closed','failed','noChanges']);
+const bdCount = T => REPOS.reduce((n, r) => n + (TERMINAL.has(phaseAt(r, T)) ? 0 : 1), 0);
+
+// Which specific jobs (bars) each repo took part in — lets every bar filter independently,
+// so "Merge (first wave)" and "Merge (final wave)" resolve to different repo sets.
+const jobsFor = i => {
+  const r = REPOS[i], jobs = ['commit'];         // every repo got a commit
+  if (r.outcome === 'closed') jobs.push('close');
+  else if (r.outcome === 'noChanges') jobs.push('close-2');
+  else if (r.outcome === 'merged') {
+    jobs.push(i % 4 === 0 ? 'approve-final' : 'approve');   // most in the main approval, some in the final batch
+    if (i % 7 === 5) jobs.push('approve-retry');
+    jobs.push(['merge-1', 'merge-2', 'merge-3'][i % 3]);    // split the merged repos across the three waves
+    if (i % 4 === 2) jobs.push('rebase');                   // a slice needed a rebase
+  }
+  // failed repos stopped at commit
+  return jobs;
+};
+const REPO_JOBS = REPOS.map((_, i) => new Set(jobsFor(i)));
+const jobLabel = id => JOBS.find(j => j.id === id).label;
+// derive each job's "· N repos" caption from real membership so counts stay honest at any scale
+JOBS.forEach(j => { j.sub = `${j.actor} · ${REPO_JOBS.filter(s => s.has(j.id)).length} repos`; });
 
 const rowsEl = document.getElementById('tlRows');
 const scrub = document.getElementById('scrub');
 const scrubTrack = document.getElementById('scrubTrack');
 const readoutEl = document.getElementById('readout');
 const gridRows = document.getElementById('rows');
+const bdPlot = document.getElementById('bdPlot');
+const bdYlabel = document.getElementById('bdYlabel');
+const filtChip = document.getElementById('filtChip');
+const filtLabel = document.getElementById('filtLabel');
+let bdW = 0, bdH = 96, bdYFor = () => 0;   // set by renderBurndown()
+let bdDotEl;                               // set by renderBurndown()
 
 function snap(f) {
   let best = f, bd = SNAP;
@@ -438,59 +532,142 @@ rowsEl.innerHTML = JOBS.map(j => `
       <button class="bar ${j.kind}${j.end==null?' running':''}" data-id="${j.id}" title="${j.label} · ${j.sub}"></button>
     </div>
   </div>`).join('');
+// one shared playhead spanning the burndown strip + the gantt rows
+const comboEl = document.getElementById('combo');
 const cursorLine = document.createElement('div'); cursorLine.className = 'cursor-line';
 const cursorGrip = document.createElement('div'); cursorGrip.className = 'cursor-grip';
-rowsEl.append(cursorLine, cursorGrip);
+comboEl.append(cursorLine, cursorGrip);
 
-// build table rows once
-gridRows.innerHTML = REPOS.slice(0, 10).map((r, i) => `
-  <tr data-idx="${i}">
-    <td><span class="chk" onclick="toggleRow(${i})"><svg><use href="#i-check"/></svg></span></td>
-    <td><div class="actcell"><span class="aic" title="View pull request"><svg><use href="#i-arrow-circle"/></svg></span><span class="aic"><svg><use href="#i-kebab"/></svg></span></div></td>
-    <td class="stcell"></td>
-    <td>${r.org}</td>
-    <td><div class="repo-cell"><span class="i"><svg><use href="#i-info"/></svg></span><a href="#">${r.name}</a></div></td>
-    <td><span class="origin"><svg><use href="#${SCM_ICON[r.scm]}"/></svg></span></td>
-    <td class="mono">main</td>
-    <td>9 days ago</td>
-  </tr>`).join('');
+// The table pages through whichever repos match the active job filter (first 10 of them).
+let pageIdx = [];
+const visibleIndices = () => {
+  const all = REPOS.map((_, i) => i);
+  return selectedJobs.size ? all.filter(i => [...selectedJobs].some(id => REPO_JOBS[i].has(id))) : all;
+};
+function buildTable() {
+  const visible = visibleIndices(), total = visible.length, filtering = selectedJobs.size > 0;
+  pageIdx = visible.slice(0, 10);
+  gridRows.innerHTML = pageIdx.map(i => {
+    const r = REPOS[i];
+    return `<tr data-idx="${i}">
+      <td><span class="chk${selected.has(i) ? ' on' : ''}" onclick="toggleRow(${i})"><svg><use href="#i-check"/></svg></span></td>
+      <td><div class="actcell"><span class="aic" title="View pull request"><svg><use href="#i-arrow-circle"/></svg></span><span class="aic"><svg><use href="#i-kebab"/></svg></span></div></td>
+      <td class="stcell"></td>
+      <td>${r.org}</td>
+      <td><div class="repo-cell"><span class="i"><svg><use href="#i-info"/></svg></span><a href="#">${r.name}</a></div></td>
+      <td><span class="origin"><svg><use href="#${SCM_ICON[r.scm]}"/></svg></span></td>
+      <td class="mono">main</td>
+      <td>9 days ago</td>
+    </tr>`;
+  }).join('');
+  filtChip.classList.toggle('on', filtering);
+  if (filtering) filtLabel.textContent = [...selectedJobs].map(jobLabel).join(', ');
+  document.querySelector('.foot span').textContent =
+    total === 0 ? 'No repositories' : `1 – ${Math.min(10, total)} of ${total}${filtering ? ' · filtered' : ''}`;
+  syncActions();
+}
+
+// Build the burndown chart. Shares the timeline's x mapping (xFor) so a repo
+// finishing at time t sits directly under the timeline event at t.
+function renderBurndown() {
+  const TOTAL = REPOS.length, PAD = 10;
+  bdW = bdPlot.clientWidth; bdH = bdPlot.clientHeight;
+  // pad the top only so the zero baseline rests right on the divider above the first job
+  bdYFor = v => PAD + (1 - v / TOTAL) * (bdH - PAD);
+  const base = bdYFor(0);
+  const yTotal = bdYFor(TOTAL).toFixed(1);
+  const totalLine = `<line class="bd-total" x1="${xFor(0, bdW).toFixed(1)}" y1="${yTotal}" x2="${xFor(1, bdW).toFixed(1)}" y2="${yTotal}"/>`;
+
+  let inner;
+  if (view === 'commits') {
+    // stepped burndown — remaining holds flat between commits, dropping as each job completes
+    const cuts = [...new Set(JOBS.map(conclusion))].sort((a, b) => a - b);
+    const pts = [0, ...cuts, NOW].map(T => [xFor(T / NOW, bdW), bdYFor(bdCount(T))]);
+    let line = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+    let area = `M${pts[0][0].toFixed(1)} ${base.toFixed(1)} L${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+    for (let i = 1; i < pts.length; i++) {
+      const step = ` L${pts[i][0].toFixed(1)} ${pts[i-1][1].toFixed(1)} L${pts[i][0].toFixed(1)} ${pts[i][1].toFixed(1)}`;
+      line += step; area += step;
+    }
+    area += ` L${pts[pts.length-1][0].toFixed(1)} ${base.toFixed(1)} Z`;
+    inner = `<path class="bd-area" d="${area}"/>${totalLine}<path class="bd-line" d="${line}"/>`;
+  } else {
+    // continuous area + line over time
+    const SAMPLES = 90, pts = [];
+    for (let i = 0; i <= SAMPLES; i++) { const f = i / SAMPLES; pts.push([xFor(f, bdW), bdYFor(bdCount(f * NOW))]); }
+    const line = pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+    const area = `M${pts[0][0].toFixed(1)} ${base.toFixed(1)} ${pts.map(p => `L${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ')} L${pts[pts.length-1][0].toFixed(1)} ${base.toFixed(1)} Z`;
+    inner = `<path class="bd-area" d="${area}"/>${totalLine}<path class="bd-line" d="${line}"/>`;
+  }
+
+  bdPlot.innerHTML = `<svg width="${bdW}" height="${bdH}">${inner}</svg><div class="bd-dot"></div>`;
+  bdDotEl = bdPlot.querySelector('.bd-dot');
+  // y-axis reference marks — the top one is "the whole" (all repos)
+  bdYlabel.style.height = bdH + 'px';
+  bdYlabel.innerHTML = [[TOTAL, `${TOTAL} total`], [Math.round(TOTAL/2), Math.round(TOTAL/2)], [0, 0]]
+    .map(([v, lab]) => `<span style="top:${bdYFor(v).toFixed(1)}px">${lab}</span>`).join('');
+}
 
 function render() {
   const W = rowsEl.querySelector('.tl-track').clientWidth;
   const T = cursorF * NOW;
-  // bars
+  const filtering = selectedJobs.size > 0;
+  // bars — selected jobs stay lit, the rest dim
   JOBS.forEach(j => {
     const bar = rowsEl.querySelector(`.bar[data-id="${j.id}"]`);
     const sF = j.start / NOW, eF = conclusion(j) / NOW;
     const left = xFor(sF, W), width = Math.max(MIN_BAR, xFor(eF, W) - left);
     bar.style.left = left + 'px'; bar.style.width = width + 'px';
-    bar.classList.toggle('sel', selectedId === j.id);
-    const row = rowsEl.querySelector(`.tl-row[data-id="${j.id}"]`);
-    row.classList.toggle('dim', selectedId !== null && selectedId !== j.id);
+    const on = selectedJobs.has(j.id);
+    bar.classList.toggle('sel', on);
+    rowsEl.querySelector(`.tl-row[data-id="${j.id}"]`).classList.toggle('dim', filtering && !on);
   });
-  // cursor — offset by the label column since the line spans the full row width
+  // shared playhead — offset by the label column since it spans the full width
   const cx = LABEL_W + xFor(cursorF, W);
   cursorLine.style.left = cx + 'px';
   cursorGrip.style.left = (cx - 6) + 'px';
-  // slider + readout
+  // slider
   scrub.value = Math.round(cursorF * 1000);
   const r = readout(T);
-  readoutEl.textContent = r; readoutEl.style.display = r === 'now' ? 'none' : '';
-  // table time-travel
-  REPOS.slice(0, 10).forEach((rp, i) => {
-    gridRows.querySelector(`tr[data-idx="${i}"] .stcell`).innerHTML = statusHtml(phaseAt(rp, T));
+  // table time-travel — repaint the current page's statuses at the cursor time
+  pageIdx.forEach(i => {
+    const cell = gridRows.querySelector(`tr[data-idx="${i}"] .stcell`);
+    if (cell) cell.innerHTML = statusHtml(phaseAt(REPOS[i], T));
   });
+  // burndown value marker on the shared playhead + header readout
+  const remaining = bdCount(T);
+  bdDotEl.style.left = xFor(cursorF, bdW) + 'px';
+  bdDotEl.style.top = bdYFor(remaining) + 'px';
+  readoutEl.textContent = `${remaining} of ${REPOS.length} in progress · ${r}`;
 }
 
-function setCursor(f, clearSel = true) {
-  cursorF = clamp01(snap(f));
-  if (clearSel) selectedId = null;
+function setCursor(f) {
+  cursorF = clamp01(snap(f));   // snaps to the nearest event edge
   render();
 }
 
 // interactions
 scrub.addEventListener('input', () => setCursor(scrub.value / 1000));
 document.getElementById('currentBtn').addEventListener('click', e => { e.stopPropagation(); setCursor(1); });
+
+// view toggle — Time = continuous burndown curve, Commits = per-job burndown bars
+document.getElementById('viewSeg').addEventListener('click', e => {
+  const btn = e.target.closest('button'); if (!btn) return;
+  e.stopPropagation();
+  view = btn.dataset.v;
+  document.querySelectorAll('#viewSeg button').forEach(b => b.classList.toggle('on', b === btn));
+  renderBurndown(); render();
+});
+
+// clear the span filter
+document.getElementById('filtClear').addEventListener('click', () => { selectedJobs.clear(); buildTable(); render(); });
+
+// Cmd/Ctrl+Z clears the timeline bar selection (undo the filter)
+window.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && selectedJobs.size) {
+    e.preventDefault(); selectedJobs.clear(); buildTable(); render();
+  }
+});
 
 // collapse / expand the timeline card
 const tlSection = document.getElementById('tlSection');
@@ -499,11 +676,18 @@ document.getElementById('tlTitle').addEventListener('click', () => {
   document.getElementById('tlToggle').setAttribute('aria-label', collapsed ? 'Expand timeline' : 'Collapse timeline');
   if (!collapsed) requestAnimationFrame(render);
 });
-rowsEl.querySelectorAll('.bar').forEach(bar => bar.addEventListener('click', () => {
+// click a bar to filter the repositories below to that specific job; ⌘/Ctrl-click adds more
+rowsEl.querySelectorAll('.bar').forEach(bar => bar.addEventListener('click', e => {
   const id = bar.dataset.id;
-  const j = JOBS.find(x => x.id === id);
-  if (selectedId === id) { selectedId = null; render(); return; }
-  selectedId = id; cursorF = clamp01(conclusion(j) / NOW); render();
+  const multi = e.metaKey || e.ctrlKey;
+  if (multi) {
+    selectedJobs.has(id) ? selectedJobs.delete(id) : selectedJobs.add(id);
+  } else if (selectedJobs.size === 1 && selectedJobs.has(id)) {
+    selectedJobs.clear();                        // clicking the sole selection clears it
+  } else {
+    selectedJobs = new Set([id]);
+  }
+  buildTable(); render();
 }));
 // drag the cursor grip
 let dragging = false;
@@ -514,7 +698,7 @@ const fracFromX = clientX => {
 cursorGrip.addEventListener('pointerdown', e => { dragging = true; cursorGrip.setPointerCapture(e.pointerId); e.preventDefault(); });
 cursorGrip.addEventListener('pointermove', e => { if (dragging) setCursor(fracFromX(e.clientX)); });
 cursorGrip.addEventListener('pointerup', () => { dragging = false; });
-window.addEventListener('resize', render);
+window.addEventListener('resize', () => { renderBurndown(); render(); });
 
 // checkboxes → enable bulk actions
 const selected = new Set();
@@ -522,7 +706,7 @@ function syncActions() {
   const on = selected.size > 0;
   document.querySelectorAll('.act-btn').forEach(b => b.disabled = !on);
   const all = document.getElementById('ckAll');
-  all.classList.toggle('on', selected.size === 10);
+  all.classList.toggle('on', pageIdx.length > 0 && pageIdx.every(i => selected.has(i)));
 }
 function toggleRow(i) {
   const ck = gridRows.querySelector(`tr[data-idx="${i}"] .chk`);
@@ -531,9 +715,9 @@ function toggleRow(i) {
   syncActions();
 }
 function toggleAll() {
-  const turnOn = selected.size < 10;
-  selected.clear();
-  gridRows.querySelectorAll('.chk').forEach((ck, i) => { ck.classList.toggle('on', turnOn); if (turnOn) selected.add(i); });
+  const turnOn = pageIdx.some(i => !selected.has(i));   // select the whole page, or clear it
+  pageIdx.forEach(i => turnOn ? selected.add(i) : selected.delete(i));
+  gridRows.querySelectorAll('.chk').forEach(ck => ck.classList.toggle('on', turnOn));
   syncActions();
 }
 
@@ -544,7 +728,7 @@ const IDLE_HTML = '<span id="syncText">Live states synced less than a minute ago
 syncLine.addEventListener('click', e => {
   if (!e.target.closest('#refreshBtn') || refreshing) return;
   refreshing = true;
-  const TOTAL = 50, DUR = 2500, start = performance.now();
+  const TOTAL = REPOS.length, DUR = 2500, start = performance.now();
   syncLine.classList.add('busy');
   syncLine.innerHTML = `<span class="spin"><svg width="13" height="13"><use href="#i-refresh"/></svg></span><span id="sweepText">Status check in progress — 0 of ${TOTAL} checked</span>`;
   const iv = setInterval(() => {
@@ -559,8 +743,10 @@ syncLine.addEventListener('click', e => {
   }, DUR);
 });
 
+buildTable();
+renderBurndown();
 render();
-requestAnimationFrame(render); // re-measure after layout settles
+requestAnimationFrame(() => { renderBurndown(); render(); }); // re-measure after layout settles
 </script>
 </body>
 </html>
