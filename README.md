@@ -24,7 +24,7 @@ Product UX for the Moderne platform — results, Moddy, visualizations, statuses
 
 | File | What it explores | Added | Last changed |
 | --- | --- | --- | --- |
-| [`day-zero-revised.html`](https://moderneinc.github.io/prototypes/day-zero-revised.html) | Revised day-zero tour variant | 2026-04-29 | 2026-06-02 |
+| [`day-zero-revised.html`](https://moderneinc.github.io/prototypes/day-zero-revised.html) | Revised day-zero tour variant | 2026-04-29 | 2026-07-31 |
 | [`moddy-help.html`](https://moderneinc.github.io/prototypes/moddy-help.html) | Moddy first-contact "by role" states | 2026-05-27 | 2026-05-27 |
 | [`moddy-trigrep-revised.html`](https://moderneinc.github.io/prototypes/moddy-trigrep-revised.html) | Revised Moddy refine-search results | 2026-05-28 | 2026-06-03 |
 | [`results.html`](https://moderneinc.github.io/prototypes/results.html) | Recipe run Results tab | 2026-06-08 | 2026-07-13 |
