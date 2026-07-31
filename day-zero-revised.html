@@ -3014,7 +3014,7 @@ body {
 .joyride-tooltip__footer {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-4);
 }
 
 .joyride-tooltip__btn-next {
@@ -3035,6 +3035,12 @@ body {
   background: var(--brand-digital-blue-700);
 }
 
+.joyride-tooltip__btn-finish {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .joyride-tooltip__btn-skip {
   font-family: var(--font-body);
   font-size: var(--brand-font-size-200);
@@ -3042,11 +3048,30 @@ body {
   color: var(--content-caption);
   background: none;
   border: none;
-  padding: 7px var(--space-3);
+  padding: 7px 0;
   cursor: pointer;
 }
 
 .joyride-tooltip__btn-skip:hover {
+  color: var(--content-body);
+}
+
+.joyride-tooltip__btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 7px 0;
+  border: none;
+  font-family: var(--font-body);
+  font-size: var(--brand-font-size-200);
+  line-height: var(--brand-line-height-200);
+  background: none;
+  color: var(--content-caption);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.joyride-tooltip__btn-back:hover {
   color: var(--content-body);
 }
 
@@ -3329,6 +3354,7 @@ const icons = {
 
   chevronDown: (s) => html`<${Icon} size=${s || 16} strokeWidth=${2}><path d="M6 9l6 6 6-6"/></${Icon}>`,
   chevronRight: (s) => html`<${Icon} size=${s || 16} strokeWidth=${2}><path d="M9 18l6-6-6-6"/></${Icon}>`,
+  chevronLeft: (s) => html`<${Icon} size=${s || 16} strokeWidth=${2}><path d="M15 18l-6-6 6-6"/></${Icon}>`,
 
   x: (s) => html`<${Icon} size=${s || 18}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></${Icon}>`,
 
@@ -3837,7 +3863,7 @@ function RecipeDetailPage({ onDryRunClick }) {
         </div>
 
         <!-- Recipe list card -->
-        <div className="recipe-card">
+        <div className="recipe-card recipe-list-card">
           <div className="recipe-section-title">Recipe list</div>
           <table className="recipe-table">
             <thead>
@@ -4358,26 +4384,7 @@ function EmptyState() {
 function CustomTooltip({ continuous, index, step, backProps, closeProps, primaryProps, skipProps, tooltipProps, size }) {
   const isLast = index === size - 1;
   const requiresAction = step.data?.requiresAction;
-  const isNextSteps = step.data?.isNextSteps;
   const hl = getHighLevelStep(index);
-
-  if (isNextSteps) {
-    return html`
-      <div ...${tooltipProps} className="neo-joyride-tooltip joyride-tooltip joyride-tooltip--next-steps">
-        ${step.title ? html`<div className="joyride-tooltip__title">${step.title}</div>` : null}
-        <div className="joyride-tooltip__content" dangerouslySetInnerHTML=${{ __html: step.content }}></div>
-        <div className="joyride-tooltip__footer">
-          <button ...${primaryProps} className="joyride-tooltip__btn-next">Done</button>
-          <button ...${skipProps} className="joyride-tooltip__btn-skip">Restart tour</button>
-          <div className="joyride-tooltip__dots">
-            ${Array.from({ length: highLevelSteps.length }, (_, i) => html`
-              <div key=${i} className="joyride-tooltip__dot done"></div>
-            `)}
-          </div>
-        </div>
-      </div>
-    `;
-  }
 
   const isWide = step.data?.wide;
   return html`
@@ -4386,10 +4393,17 @@ function CustomTooltip({ continuous, index, step, backProps, closeProps, primary
       ${step.title ? html`<div className="joyride-tooltip__title">${step.title}</div>` : null}
       <div className="joyride-tooltip__content" dangerouslySetInnerHTML=${{ __html: step.content }}></div>
       <div className="joyride-tooltip__footer">
-        ${requiresAction ? null : html`
-          <button ...${primaryProps} className="joyride-tooltip__btn-next">${isLast ? 'Got it!' : 'Next'}</button>
+        ${index > 0 ? html`
+          <button ...${backProps} className="joyride-tooltip__btn-back">${icons.chevronLeft(14)} Back</button>
+        ` : null}
+        ${isLast ? html`
+          <button ...${primaryProps} className="joyride-tooltip__btn-next joyride-tooltip__btn-finish">${icons.check(13)} <span>Finish</span></button>
+        ` : html`
+          ${requiresAction ? null : html`
+            <button ...${primaryProps} className="joyride-tooltip__btn-next">Next</button>
+          `}
+          <button ...${skipProps} className="joyride-tooltip__btn-skip">Skip tour</button>
         `}
-        <button ...${skipProps} className="joyride-tooltip__btn-skip">${isLast ? 'Restart tour' : 'Skip tour'}</button>
         <div className="joyride-tooltip__dots">
           ${Array.from({ length: hl.total }, (_, i) => html`
             <div key=${i} className=${'joyride-tooltip__dot' + (i + 1 === hl.number ? ' active' : '') + (i + 1 < hl.number ? ' done' : '')}></div>
@@ -4415,8 +4429,8 @@ const tourSteps = [
   },
   {
     target: '.org-dropdown',
-    title: 'Search and select your organization',
-    content: 'Use the <strong>search bar</strong> to find your organization. Type part of your org name to filter the list, then <strong>click your organization</strong> to select it.<br><br>Your organization determines which repositories you can run recipes on.',
+    title: 'Choose an organization',
+    content: 'Each organization is a group of repositories you can run recipes against.<br><br><strong>Select an organization</strong> to continue \u2014 we recommend <strong>Default</strong> to start.<br><br>You can switch anytime from this same selector.',
     placement: 'right',
     disableBeacon: true,
     spotlightClicks: true,
@@ -4424,8 +4438,8 @@ const tourSteps = [
   },
   {
     target: '.search-input',
-    title: 'Search for a recipe',
-    content: 'There are over <strong>5,000 recipes</strong> available in the Moderne Platform. The search bar is the quickest, most powerful way to find the recipe you are looking for.<br><br><strong>Click the search bar</strong> to find a recipe.',
+    title: 'Find a recipe',
+    content: 'A <strong>recipe</strong> is an automated change you run across your repositories \u2014 there are <strong>thousands</strong> to choose from, from simple cleanups to large-scale migrations.<br><br>The fastest way to find one is search. <strong>Click the search bar</strong> to begin.',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
@@ -4434,7 +4448,7 @@ const tourSteps = [
   {
     target: '.search-dd-input-field',
     title: 'Search for the recipe',
-    content: 'Let\'s start by running the <strong>common static analysis</strong> recipe. To do so, type <strong>common static</strong>.',
+    content: 'Let\'s run <strong>Common static analysis issues</strong>. Type <strong>"common static"</strong> to find it.',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
@@ -4443,54 +4457,57 @@ const tourSteps = [
   {
     target: '.search-dd-result-target',
     title: 'Select the recipe',
-    content: 'This recipe fixes a significant amount of static analysis issues while ensuring your code continues to work as expected.<br><br><strong>Click it</strong> to see the details.',
+    content: 'Select <strong>"Common static analysis issues"</strong> to view its details.<br><br>It fixes a broad set of static analysis issues while keeping your code working.',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
     data: { requiresAction: true },
+  },
+  {
+    target: '.recipe-card',
+    title: 'The recipe details page',
+    content: 'This is the page for the recipe you selected. It explains what the recipe does, lists the repositories it will run against, and (if a composite recipe) the smaller recipes it\'s built from.',
+    placement: 'bottom-start',
+    disableBeacon: true,
+  },
+  {
+    target: '.recipe-list-card .recipe-section-title',
+    title: 'What the recipe will run',
+    content: 'Common static analysis issues is a <strong>composite recipe</strong>. That means it bundles many smaller recipes, with each recipe fixing one kind of issue. This list shows every recipe that will run across your repositories.',
+    placement: 'bottom-start',
+    disableBeacon: true,
   },
   {
     target: '.dry-run-btn',
-    title: 'Try a dry run first \u2014 nothing changes until you say so',
-    content: '<strong>Nothing is modified until you review and approve.</strong> It\'s completely safe to experiment.<br><br>You might be asked for additional GitHub permissions after you click this button.<br><br><strong>Click Dry Run</strong> to continue.',
+    title: 'Try a dry run',
+    content: 'A dry run shows what the recipe would change <strong>without modifying anything</strong>, so it is completely safe to experiment.<br><br><strong>Click Dry run</strong> to start. (You may be asked for additional permissions.)',
     placement: 'bottom',
     disableBeacon: true,
     spotlightClicks: true,
     data: { requiresAction: true },
   },
   {
-    target: '.content-wrapper',
-    title: 'Review the changes',
-    content: 'The recipe results page shows a summary of the recipe status, a list of all of the repositories where results were found, and a code block section that shows some of the changes that were made by the recipe. Click any repository to see the <strong>file-by-file diff</strong> of what the recipe would change.',
-    placement: 'bottom',
+    target: '.results-progress-row',
+    title: 'Your dry run is processing',
+    content: 'This bar tracks progress as the recipe runs across your repositories. A <strong>dry run</strong> previews changes without modifying anything \u2014 results stream in below as each repository finishes.',
+    placement: 'bottom-start',
     disableBeacon: true,
-    disableOverlay: true,
-    floaterProps: { hideArrow: true },
+  },
+  {
+    target: '.results-tabs-row',
+    title: 'Explore the run',
+    content: '<strong>Results</strong> lets you review generated code diffs and apply them by creating pull requests or committing changes.<br><br><strong>Repository status</strong> shows the progress and details for each repository in the run.<br><br><strong>Data tables</strong> provides structured outputs from the recipe that you can view or download (CSV, Excel).<br><br><strong>Visualizations</strong> lets you run pre-built Jupyter notebooks to create charts and insights from recipe data.',
+    placement: 'bottom-start',
+    disableBeacon: true,
     data: { wide: true },
   },
   {
-    target: '.why-change-btn',
-    title: 'See why a line changed',
-    content: 'Want to know which recipe modified a specific line? <strong>Click "Why did this change?"</strong> to open the recipe drawer.',
-    placement: 'bottom',
+    target: '.results-tree',
+    title: 'Your results show up here',
+    content: 'Every repository the recipe ran on, grouped by organization. Those with changes show a <strong>result count</strong> on the right. Open one to see what the recipe would change.<br><br>If the run is still finishing, wait a moment for counts to appear.',
+    placement: 'right',
     disableBeacon: true,
-    spotlightClicks: true,
-    data: { requiresAction: true },
-  },
-  {
-    target: '.results-recipe-drawer',
-    title: 'Why did this change?',
-    content: 'The drawer shows exactly which <strong>recipes triggered each change</strong>, so you always know why a line was modified.',
-    placement: 'left-start',
-    disableBeacon: true,
-  },
-  {
-    target: '.content-wrapper',
-    title: 'You\'re all set!',
-    content: '<div class="next-steps-content"><p>You\'ve completed the getting started tour! When you\'re ready, you can <strong>commit your changes</strong> to create pull requests using the Commit button below. Here are some more things to explore:</p><div class="next-steps-links"><a href="https://docs.moderne.io/user-documentation/moderne-platform/getting-started/visualizations" target="_blank" class="next-step-link"><span class="next-step-icon next-step-icon-viz"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F42FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><div><strong>Visualizations</strong><span>See interactive charts and graphs of your recipe results</span></div></a><span class="next-step-link"><span class="next-step-icon next-step-icon-dev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span><div><strong>DevCenter</strong><span>Your dashboard for tracking upgrades, migrations, and security fixes</span></div></span><a href="https://docs.moderne.io/user-documentation/moderne-platform/getting-started/recipe-builder" target="_blank" class="next-step-link"><span class="next-step-icon next-step-icon-builder"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E65100" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span><div><strong>Builder</strong><span>Create custom recipes by combining existing ones</span></div></a></div></div>',
-    placement: 'center',
-    disableBeacon: true,
-    data: { isNextSteps: true },
+    data: { isFinal: true },
   },
 ];
 
@@ -4500,8 +4517,8 @@ const tourSteps = [
 const highLevelSteps = [
   { label: 'Select your organization', range: [0, 1] },
   { label: 'Find a recipe', range: [2, 4] },
-  { label: 'Run the recipe', range: [5, 5] },
-  { label: 'Review and commit', range: [6, 9] },
+  { label: 'Run the recipe', range: [5, 7] },
+  { label: 'Review the results', range: [8, 10] },
 ];
 
 function getHighLevelStep(stepIndex) {
@@ -4524,10 +4541,11 @@ const stepToView = {
   3: 'marketplace',
   4: 'marketplace',
   5: 'recipe',
-  6: 'results-review',
-  7: 'results-review',
-  8: 'results-drawer',
+  6: 'recipe',
+  7: 'recipe',
+  8: 'results-review',
   9: 'results-review',
+  10: 'results-review',
 };
 
 const stepToSidebar = {
@@ -4537,10 +4555,11 @@ const stepToSidebar = {
   3: 'marketplace',
   4: 'marketplace',
   5: 'marketplace',
-  6: 'activity',
-  7: 'activity',
+  6: 'marketplace',
+  7: 'marketplace',
   8: 'activity',
   9: 'activity',
+  10: 'activity',
 };
 
 // ============================================================
@@ -4707,6 +4726,23 @@ function App() {
     });
   }, []);
 
+  // Navigate to an arbitrary step, restoring the UI state the user saw there.
+  // Used by the Back button so returning to a step re-opens the dropdown/panel
+  // its spotlight targets, instead of landing on a blank screen.
+  const goToStep = useCallback((idx) => {
+    // Panels
+    setShowOrgDropdown(idx === 1);
+    setShowSearchDropdown(idx === 3 || idx === 4);
+    // Search query the user had typed by that step
+    setSearchQuery(idx >= 4 ? 'common static' : '');
+    // Org is chosen from step 2 onward
+    setOrgSelected(idx >= 2);
+    // Underlying page view
+    const view = stepToView[idx];
+    if (view) setCurrentView(view);
+    setStepIndex(idx);
+  }, []);
+
   const handleJoyrideCallback = useCallback((data) => {
     const { action, index, status, type } = data;
 
@@ -4735,6 +4771,14 @@ function App() {
         setShowOrgDropdown(false);
         setShowSearchDropdown(false);
       }
+      return;
+    }
+
+    // Back button: works from any step (including requiresAction steps),
+    // restoring the UI state the user saw at the target step.
+    if (type === 'step:after' && action === 'prev') {
+      const prevIndex = index - 1;
+      if (prevIndex >= 0) goToStep(prevIndex);
       return;
     }
 
@@ -4817,7 +4861,7 @@ function App() {
   }, [runTour, stepIndex, advanceTour]);
 
   const handleDryRunClick = useCallback(() => {
-    if (runTour && stepIndex === 5) {
+    if (runTour && stepIndex === 7) {
       advanceTour();
     }
   }, [runTour, stepIndex, advanceTour]);
