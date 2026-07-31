@@ -18,7 +18,7 @@
   --accent:#1055e2; --link:#0046b5; --track:#edebe2;
   --success:#237341; --active:#7048c8; --error:#d43c2a; --warning:#b07210;
   /* Changelog state colors, lighter/softened tone */
-  --commit:#6675d8; --commit-b:#3d49a8;   /* Commit — blue (light enough for black label, 5.1:1) */
+  --commit:#5b6bd0; --commit-b:#3d49a8;   /* Commit — blue */
   --open:#57b06e;                         /* Open (PR) — green */
   --draft:#8a867d;  --draft-b:#666259;    /* Draft — gray */
   --approve:#57b06e;--approve-b:#3c8a50;  /* Open / Approved — green */
@@ -171,9 +171,12 @@ a:hover { text-decoration:underline; }
 .bar.close   .bar-fill { background:var(--close); }
 .blb { position:absolute; top:50%; transform:translateY(-50%); left:7px; display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; white-space:nowrap; pointer-events:none; }
 .blb svg { width:12px; height:12px; }
-/* all bar labels are black — each fill is light enough to meet WCAG AA (>=4.5:1)
-   commit 5.1:1 · draft 5.8:1 · approve 7.8:1 · merge 4.6:1 · close 6.2:1 */
-.blb { color:#000; }
+/* bar labels: black or white, whichever meets WCAG AA (>=4.5:1) on the fill */
+.bar.commit .blb  { color:#fff; }   /* on #5b6bd0 → 4.7:1 */
+.bar.draft .blb   { color:#000; }   /* on #dedbd0 → high */
+.bar.approve .blb { color:#000; }   /* on #57b06e → 7.8:1 */
+.bar.merge .blb   { color:#fff; }   /* on #9a5cb5 → 4.6:1 */
+.bar.close .blb   { color:#000; }   /* on #e8604f → 6.2:1 */
 .bar.out .blb { left:calc(100% + 7px); color:var(--text); }
 /* playhead — a plain line, no grips or dots; drag anywhere on the combo */
 .cursor-line { position:absolute; top:0; bottom:0; width:2px; background:var(--link); pointer-events:none; z-index:6; }
