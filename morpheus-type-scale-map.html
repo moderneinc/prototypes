@@ -61,7 +61,9 @@ h2 { font-family: var(--font-display); font-size: 18px; font-weight: 600; margin
 .mrow .why { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); display: block; margin-top: 4px; }
 
 .scale { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-.srow { display: grid; grid-template-columns: 140px 100px 90px 1fr; align-items: baseline; gap: 18px; padding: 14px 24px; border-bottom: 1px solid var(--line); }
+.srow { display: grid; grid-template-columns: 110px 190px 90px 80px 1fr; align-items: baseline; gap: 18px; padding: 14px 24px; border-bottom: 1px solid var(--line); }
+.srow .tok { font-family: var(--font-mono); font-size: 11px; color: var(--accent); line-height: 1.6; }
+.srow .tok .fig { display: block; color: var(--muted); }
 .srow:last-child { border-bottom: none; }
 .srow.shead { background: var(--surface); padding: 11px 24px; }
 .srow.shead span { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
@@ -110,15 +112,15 @@ footer { margin-top: 48px; font-family: var(--font-mono); font-size: 11px; color
   <h2>The scale that remains</h2>
   <div class="h2sub">10 · 11 · 12 · 13 · 14 · 15 · 18 · 28 — whole numbers only · tracking &amp; leading per tier</div>
   <div class="scale">
-    <div class="srow shead"><span>Tier</span><span>Tracking</span><span>Leading</span><span>Specimen</span></div>
-    <div class="srow"><span class="m">10 · mono</span><span class="v">+0.10em</span><span class="v">1.4</span><span class="demo" style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;line-height:1.4;text-transform:uppercase;color:var(--muted);">Overlines · beta tags · badges</span></div>
-    <div class="srow"><span class="m">11</span><span class="v">0</span><span class="v">1.4</span><span class="demo" style="font-size:11px;line-height:1.4;">Status pills, count chips, meta</span></div>
-    <div class="srow"><span class="m">12</span><span class="v">0</span><span class="v">1.4</span><span class="demo" style="font-size:12px;line-height:1.4;">Labels, tabs, table heads</span></div>
-    <div class="srow"><span class="m">13</span><span class="v">0</span><span class="v">1.5</span><span class="demo" style="font-size:13px;line-height:1.5;">Small body — controls, buttons, table rows</span></div>
-    <div class="srow"><span class="m">14 / 400</span><span class="v">0</span><span class="v">1.55</span><span class="demo" style="font-size:14px;line-height:1.55;">Body — descriptions, prose, anything that reads in sentences<span class="badge">the workhorse</span></span></div>
-    <div class="srow"><span class="m">15 / 600</span><span class="v">−0.01em</span><span class="v">1.3</span><span class="demo" style="font-size:15px;font-weight:600;letter-spacing:-.01em;line-height:1.3;">Card titles</span></div>
-    <div class="srow"><span class="m">18 / 400</span><span class="v">−0.01em</span><span class="v">1.25</span><span class="demo" style="font-size:18px;letter-spacing:-.01em;line-height:1.25;">Page titles</span></div>
-    <div class="srow"><span class="m">28 · display</span><span class="v">−0.02em</span><span class="v">1.1</span><span class="demo" style="font-family:var(--font-display);font-size:28px;font-weight:500;letter-spacing:-.02em;line-height:1.1;">Display moments</span></div>
+    <div class="srow shead"><span>Tier</span><span>Token — CSS · Figma</span><span>Tracking</span><span>Leading</span><span>Specimen</span></div>
+    <div class="srow"><span class="m">10 · mono</span><span class="tok">--text-overline: 10px<span class="fig">Overline/*</span></span><span class="v">+0.10em</span><span class="v">1.4</span><span class="demo" style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;line-height:1.4;text-transform:uppercase;color:var(--muted);">Overlines · beta tags · badges</span></div>
+    <div class="srow"><span class="m">11</span><span class="tok">--text-pill: 11px<span class="fig">Pill/*</span></span><span class="v">0</span><span class="v">1.4</span><span class="demo" style="font-size:11px;line-height:1.4;">Status pills, count chips, meta</span></div>
+    <div class="srow"><span class="m">12</span><span class="tok">--text-label: 12px<span class="fig">Label/*</span></span><span class="v">0</span><span class="v">1.4</span><span class="demo" style="font-size:12px;line-height:1.4;">Labels, tabs, table heads</span></div>
+    <div class="srow"><span class="m">13</span><span class="tok">--text-body-sm: 13px<span class="fig">Body small/*</span></span><span class="v">0</span><span class="v">1.5</span><span class="demo" style="font-size:13px;line-height:1.5;">Small body — controls, buttons, table rows</span></div>
+    <div class="srow"><span class="m">14 / 400</span><span class="tok">--text-body: 14px<span class="fig">Body/*</span></span><span class="v">0</span><span class="v">1.55</span><span class="demo" style="font-size:14px;line-height:1.55;">Body — descriptions, prose, anything that reads in sentences<span class="badge">the workhorse</span></span></div>
+    <div class="srow"><span class="m">15 / 600</span><span class="tok">--text-card: 15px<span class="fig">Card title/*</span></span><span class="v">−0.01em</span><span class="v">1.3</span><span class="demo" style="font-size:15px;font-weight:600;letter-spacing:-.01em;line-height:1.3;">Card titles</span></div>
+    <div class="srow"><span class="m">18 / 400</span><span class="tok">--text-title: 18px<span class="fig">Page title/*</span></span><span class="v">−0.01em</span><span class="v">1.25</span><span class="demo" style="font-size:18px;letter-spacing:-.01em;line-height:1.25;">Page titles</span></div>
+    <div class="srow"><span class="m">28 · display</span><span class="tok">--text-display: 28px<span class="fig">Display/*</span></span><span class="v">−0.02em</span><span class="v">1.1</span><span class="demo" style="font-family:var(--font-display);font-size:28px;font-weight:500;letter-spacing:-.02em;line-height:1.1;">Display moments</span></div>
   </div>
 
   <footer>data from morpheus.html @ PR #262 · see it applied: <a href="morpheus-type-compare.html" style="color:var(--accent);">morpheus-type-compare.html</a></footer>
