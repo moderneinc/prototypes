@@ -76,6 +76,9 @@ a:hover { text-decoration:underline; }
 .lede h1 { margin:0 0 6px; font-size:18px; font-weight:500; color:var(--text); letter-spacing:-.005em; }
 .meta { font-size:14px; color:var(--muted); }
 .meta a { color:var(--ink); }
+.tgt-branch { display:inline-flex; align-items:center; gap:5px; }
+.tgt-branch svg { width:14px; height:14px; color:var(--muted); }
+.tgt-branch .mono { color:var(--ink); font-weight:500; }
 .meta .sep { display:inline-block; width:1px; height:11px; margin:0 11px; background:var(--line-strong); opacity:.5; vertical-align:-1px; }
 .bell { width:38px; height:38px; border-radius:10px; border:1px solid var(--line-strong); background:var(--panel); color:var(--text); display:flex; align-items:center; justify-content:center; flex:none; }
 .bell svg { width:18px; height:18px; }
@@ -293,6 +296,8 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
   <symbol id="i-git-pr" viewBox="0 0 24 24" fill="currentColor"><path d="M16 19.25a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm-14.5 0a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm0-14.5a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0ZM4.75 3a1.75 1.75 0 1 0 .001 3.501A1.75 1.75 0 0 0 4.75 3Zm0 14.5a1.75 1.75 0 1 0 .001 3.501A1.75 1.75 0 0 0 4.75 17.5Zm14.5 0a1.75 1.75 0 1 0 .001 3.501 1.75 1.75 0 0 0-.001-3.501Z"/><path d="M13.405 1.72a.75.75 0 0 1 0 1.06L12.185 4h4.065A3.75 3.75 0 0 1 20 7.75v8.75a.75.75 0 0 1-1.5 0V7.75a2.25 2.25 0 0 0-2.25-2.25h-4.064l1.22 1.22a.75.75 0 0 1-1.061 1.06l-2.5-2.5a.75.75 0 0 1 0-1.06l2.5-2.5a.75.75 0 0 1 1.06 0ZM4.75 7.25A.75.75 0 0 1 5.5 8v8A.75.75 0 0 1 4 16V8a.75.75 0 0 1 .75-.75Z"/></symbol>
   <symbol id="i-git-merge" viewBox="0 0 24 24" fill="currentColor"><path d="M15 13.25a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm-12.5 6a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm0-14.5a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0ZM5.75 6.5a1.75 1.75 0 1 0-.001-3.501A1.75 1.75 0 0 0 5.75 6.5Zm0 14.5a1.75 1.75 0 1 0-.001-3.501A1.75 1.75 0 0 0 5.75 21Zm12.5-6a1.75 1.75 0 1 0-.001-3.501A1.75 1.75 0 0 0 18.25 15Z"/><path d="M6.5 7.25c0 2.9 2.35 5.25 5.25 5.25h4.5V14h-4.5A6.75 6.75 0 0 1 5 7.25Z"/><path d="M5.75 16.75A.75.75 0 0 1 5 16V8a.75.75 0 0 1 1.5 0v8a.75.75 0 0 1-.75.75Z"/></symbol>
   <symbol id="i-git-close" viewBox="0 0 24 24" fill="currentColor"><path d="M22.266 2.711a.75.75 0 1 0-1.061-1.06l-1.983 1.983-1.984-1.983a.75.75 0 1 0-1.06 1.06l1.983 1.983-1.983 1.984a.75.75 0 0 0 1.06 1.06l1.984-1.983 1.983 1.983a.75.75 0 0 0 1.06-1.06l-1.983-1.984 1.984-1.983ZM4.75 1.5a3.25 3.25 0 0 1 .745 6.414A.827.827 0 0 1 5.5 8v8a.827.827 0 0 1-.005.086A3.25 3.25 0 0 1 4.75 22.5a3.25 3.25 0 0 1-.745-6.414A.827.827 0 0 1 4 16V8c0-.029.002-.057.005-.086A3.25 3.25 0 0 1 4.75 1.5ZM16 19.25a3.252 3.252 0 0 1 2.5-3.163V9.625a.75.75 0 0 1 1.5 0v6.462a3.252 3.252 0 0 1-.75 6.413A3.25 3.25 0 0 1 16 19.25ZM3 4.75a1.75 1.75 0 1 0 3.501-.001A1.75 1.75 0 0 0 3 4.75Zm0 14.5a1.75 1.75 0 1 0 3.501-.001A1.75 1.75 0 0 0 3 19.25Zm16.25-1.75a1.75 1.75 0 1 0 .001 3.501 1.75 1.75 0 0 0-.001-3.501Z"/></symbol>
+  <symbol id="i-git-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+  <symbol id="i-graphql" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"><path d="M12 3 19.79 7.5 19.79 16.5 12 21 4.21 16.5 4.21 7.5Z"/><path d="M12 3 19.79 16.5 4.21 16.5Z"/></g><g fill="currentColor"><circle cx="12" cy="3" r="1.7"/><circle cx="19.79" cy="7.5" r="1.7"/><circle cx="19.79" cy="16.5" r="1.7"/><circle cx="12" cy="21" r="1.7"/><circle cx="4.21" cy="16.5" r="1.7"/><circle cx="4.21" cy="7.5" r="1.7"/></g></symbol>
 </svg>
 
 <div class="app">
@@ -330,9 +335,9 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
       <div class="lede">
         <div>
           <h1>Fix vulnerable Maven/Gradle dependencies</h1>
-          <div class="meta"><span>1,000 repositories</span><span class="sep"></span><span>Pull request</span><span class="sep"></span><span>Started 9 days ago</span><span class="sep"></span><a href="#">Go to recipe results</a></div>
+          <div class="meta"><span>1,000 repositories</span><span class="sep"></span><span class="tgt-branch"><svg><use href="#i-git-branch"/></svg>Pull request into <span class="mono">main</span></span><span class="sep"></span><span>Started 9 days ago</span><span class="sep"></span><a href="#">Go to recipe results</a></div>
         </div>
-        <button class="bell"><svg><use href="#i-bell"/></svg></button>
+        <button class="bell" title="Query these results with GraphQL"><svg><use href="#i-graphql"/></svg></button>
       </div>
 
       <!-- PROGRESS: burndown + shared axis + lane-packed timeline -->
@@ -395,7 +400,6 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
               <th>Organization</th>
               <th>Repository</th>
               <th>Origin</th>
-              <th>Base branch</th>
               <th>State as of</th>
             </tr>
           </thead>
@@ -433,21 +437,17 @@ const fmt = n => n.toLocaleString('en-US');
 
 // One lane per action, in lifecycle order. Each row is a distinct action; an action
 // only splits into a second row where its own bars actually overlap in time (~2 spots).
-const KIND_ORDER = ['commit','draft','approve','merge','close'];
+// Bin-pack the bars into as few rows as possible (greedy first-fit by start time).
 const LANE_GAP = 0.12; // breathing room, in days
 {
-  let laneCursor = 0;
-  KIND_ORDER.forEach(kind => {
-    const subEnds = []; // end time of each sub-row within this action
-    JOBS.filter(j => j.kind === kind).sort((a,b)=>a.start-b.start).forEach(j => {
-      let s = subEnds.findIndex(e => e + LANE_GAP <= j.start);
-      if (s === -1) { s = subEnds.length; subEnds.push(0); }
-      subEnds[s] = conclusion(j);
-      j.lane = laneCursor + s;
-    });
-    laneCursor += Math.max(1, subEnds.length);
+  const laneEnds = [];
+  JOBS.slice().sort((a, b) => a.start - b.start).forEach(j => {
+    let lane = laneEnds.findIndex(e => e + LANE_GAP <= j.start);
+    if (lane === -1) { lane = laneEnds.length; laneEnds.push(0); }
+    laneEnds[lane] = conclusion(j);
+    j.lane = lane;
   });
-  JOBS.nLanes = laneCursor;
+  JOBS.nLanes = laneEnds.length;
 }
 
 // ============================================================
@@ -464,8 +464,7 @@ const POOL_ORG = ['netflix','square','apache','eclipse','ff4j','jackson','hibern
 const POOL_NAME = ['netty','okhttp','gson','junit5','mockito','logback','slf4j','tomcat','jetty','maven-core','commons-io','httpclient','kafka','curator','zookeeper','assertj','testcontainers','feign','eureka','archaius','conductor','graphql-java','webflux','r2dbc','lettuce','spock','servo','spectator','dgs-framework','ribbon'];
 const outcomeFor = i => (i % 17 === 7) ? 'failed' : (i % 23 === 11) ? 'failedMerge' : (i % 13 === 9) ? 'closed' : 'merged';
 
-const BRANCHES = ['main', 'master', 'develop', 'trunk', 'release/2024.1',
-  'release/spring-boot-3.2.x', 'integration/next-platform-migration', 'maintenance/1.x'];
+const TARGET_BRANCH = 'main';   // the campaign targets one branch across all repos → shown in the header
 const N_REPOS = 1000;
 const REPOS = Array.from({ length: N_REPOS }, (_, i) => {
   const meta = i < 10 ? HAND[i] : [POOL_ORG[i % POOL_ORG.length], POOL_NAME[(i * 7) % POOL_NAME.length] + '-' + (1 + (i % 40)), ['github','gitlab','azure'][i % 3]];
@@ -477,7 +476,6 @@ const REPOS = Array.from({ length: N_REPOS }, (_, i) => {
   const closeStart = 4.8 + f * 1.2;
   return {
     org: meta[0], name: meta[1], scm: meta[2], outcome: outcomeFor(i),
-    base: i < 3 ? 'main' : BRANCHES[(i * 3) % BRANCHES.length],
     committed, draftAt, readyAt,
     approveStart, approveEnd: approveStart + 0.3,
     mergeStart, mergeEnd: mergeStart + 0.4, closeStart, closeEnd: closeStart + 0.3,
@@ -688,7 +686,6 @@ function buildTable() {
       <td>${r.org}</td>
       <td><div class="repo-cell"><span class="i"><svg><use href="#i-info"/></svg></span><a href="#">${r.name}</a></div></td>
       <td><span class="origin"><svg><use href="#${SCM_ICON[r.scm]}"/></svg></span></td>
-      <td class="mono branch" title="${r.base}">${r.base}</td>
       <td class="asofcell"></td>
     </tr>`;
   }).join('');
