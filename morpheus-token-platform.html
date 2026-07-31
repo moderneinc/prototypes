@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morpheus — token platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* chrome vars are driven from the live Morpheus tokens at runtime (Dark defaults below) */
+    --bg:#141419; --surface:#1B1B21; --surface-2:#2A2A32; --line:#F0F0F61F;
+    --text:#F1F0EA; --muted:#9C9CA8; --faint:#6E6E78;
+    --accent:#7FA9F9; --accent-soft:#7FA9F929;
+    --shadow:0 18px 46px rgba(0,0,0,.5);
+    --font:"Geist",system-ui,sans-serif;
+    --mono:"Geist Mono",ui-monospace,monospace;
+    --checker:conic-gradient(#c9c9c9 90deg,#f0f0f0 90deg 180deg,#c9c9c9 180deg 270deg,#f0f0f0 270deg);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;transition:background .25s,color .25s}
+  button{font-family:inherit;color:inherit;cursor:pointer}
+
+  .appbar{display:flex;align-items:center;gap:14px;padding:11px 18px;border-bottom:1px solid var(--line);background:var(--surface);flex-shrink:0}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+  .brand .sym{width:22px;height:22px;border:2px solid var(--text);border-radius:5px;position:relative;flex-shrink:0}
+  .brand .sym::before{content:"";position:absolute;inset:4px 4px auto auto;width:6px;height:6px;border:2px solid var(--text);border-bottom:none;border-left:none}
+  .brand .sym::after{content:"";position:absolute;left:4px;bottom:4px;width:6px;height:6px;background:var(--text);opacity:.55}
+  .brand small{color:var(--muted);font-weight:500;font-family:var(--mono);font-size:11px;letter-spacing:.04em}
+  .brand .logo{height:17px;width:auto;display:block;color:var(--text)}
+  .live{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--muted);padding:3px 8px;border:1px solid var(--line);border-radius:20px}
+  .live .d{width:6px;height:6px;border-radius:50%;background:#30F284}
+  .spacer{flex:1}
+  .search{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:0 10px;height:34px;min-width:210px}
+  .search svg{flex-shrink:0;color:var(--muted)}
+  .search input{background:none;border:none;outline:none;color:var(--text);font-family:var(--font);font-size:13px;width:100%}
+  .search input::placeholder{color:var(--faint)}
+  .seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:2px;gap:2px}
+  .seg button{background:none;border:none;color:var(--muted);border-radius:7px;padding:6px 10px;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+  .seg button.on{background:var(--surface-2);color:var(--text)}
+  .seg .mi{width:13px;height:13px}
+
+  .body{display:flex;flex:1;min-height:0}
+  .rail{width:238px;flex-shrink:0;border-right:1px solid var(--line);background:var(--surface);overflow-y:auto;padding:12px 10px}
+  .rail .rhead{padding:4px 8px 10px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .setrow{display:flex;align-items:center;gap:9px;width:100%;background:none;border:none;padding:8px;border-radius:8px;font-size:13px;color:var(--text);text-align:left}
+  .setrow:hover{background:var(--surface-2)}
+  .setrow.active{background:var(--accent-soft)}
+  .setrow.active .setname{font-weight:600}
+  .setrow .setname{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .setrow .cnt{font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+  .dotk{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+  .railgroup{margin:8px 0 2px;padding:10px 8px 2px;border-top:1px solid var(--line);font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+
+  .main{flex:1;min-width:0;overflow-y:auto;padding:20px 26px 90px}
+  .crumbs{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:5px}
+  .crumbs b{color:var(--text);font-weight:600}
+  .modechip{margin-left:6px;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:20px;background:var(--accent-soft);color:var(--accent)}
+  .maintitle{font-size:21px;font-weight:600;letter-spacing:-.02em}
+  .mainsub{font-size:12.5px;color:var(--muted);margin:3px 0 22px}
+
+  .group{margin-bottom:24px}
+  .group>h3{font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:2px;cursor:pointer;user-select:none}
+  .group>h3 .chev{color:var(--muted);transition:transform .15s}
+  .group.collapsed .chev{transform:rotate(-90deg)}
+  .group.collapsed .grpbody{display:none}
+  .group>h3 .gcount{font-family:var(--mono);font-size:10px;color:var(--faint);font-weight:500}
+  .grpbody{padding-top:13px}
+
+  .ramp{margin-bottom:16px}
+  .ramp .rname{font-size:12.5px;font-weight:500;margin-bottom:7px;display:flex;align-items:center;gap:8px}
+  .ramp .rname .rpath{font-family:var(--mono);font-size:10.5px;color:var(--faint);font-weight:400}
+  .swatches{display:flex;gap:5px;flex-wrap:wrap}
+  .sw{width:54px;cursor:pointer}
+  .sw .chip{height:46px;border-radius:8px;border:1px solid rgba(127,127,127,.16);transition:transform .1s}
+  .sw:hover .chip{transform:translateY(-2px)}
+  .sw.active .chip{outline:2px solid var(--accent);outline-offset:2px}
+  .sw .step{margin-top:5px;text-align:center;font-family:var(--mono);font-size:9.5px;color:var(--muted)}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .card{cursor:pointer;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+  .card:hover{border-color:var(--muted)}
+  .card.active{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+  .card .cc{height:52px;border-bottom:1px solid var(--line)}
+  .card .ci{padding:7px 9px 8px}
+  .card .cn{font-size:11.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .card .ch{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:1px}
+
+  .rows{display:flex;flex-direction:column;gap:2px;max-width:660px}
+  .trow{display:flex;align-items:center;gap:14px;padding:9px 12px;border-radius:9px;cursor:pointer}
+  .trow:hover{background:var(--surface-2)}
+  .trow.active{background:var(--accent-soft)}
+  .trow .prev{flex-shrink:0;display:flex;align-items:center;width:80px}
+  .trow .tk{flex:1;min-width:0}
+  .trow .tk .tn{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .trow .tk .tp{font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+  .trow .tv{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap;text-align:right}
+  .trow .tv .al{color:var(--accent);font-size:10.5px}
+  .spx{height:14px;background:var(--accent);border-radius:3px;opacity:.85}
+  .radbox{width:38px;height:24px;border:1.6px solid var(--accent);background:var(--accent-soft)}
+  .shadowbox{width:56px;height:34px;border-radius:8px;background:var(--surface)}
+  .typespec{white-space:nowrap;overflow:hidden;max-width:340px;text-overflow:ellipsis}
+
+  .codeview{display:none;background:#0c0a09;border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-family:var(--mono);font-size:12px;line-height:1.65;color:#cfc8bd;overflow:auto;white-space:pre;max-width:940px}
+  .codeview .k{color:#8fb8ff}.codeview .s{color:#7ee0a8}.codeview .d2{color:#e6a55b}
+  .codeview .sw-inline{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:5px;border:1px solid rgba(127,127,127,.3)}
+  body.code .maincols{display:none}
+  body.code .codeview{display:block}
+  .empty{color:var(--muted);font-size:14px;padding:56px 0;text-align:center}
+
+  .inspector{width:0;flex-shrink:0;border-left:1px solid var(--line);background:var(--surface);overflow:hidden;transition:width .18s ease}
+  .inspector.open{width:332px}
+  .insp-in{width:332px;height:100%;overflow-y:auto}
+  .insp-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+  .insp-head .t{font-size:12px;font-weight:600;font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .insp-head .x{width:26px;height:26px;border-radius:7px;border:none;background:var(--surface-2);color:var(--muted);display:flex;align-items:center;justify-content:center}
+  .insp-preview{height:132px;display:flex;align-items:flex-end;padding:12px;border-bottom:1px solid var(--line)}
+  .insp-preview .pv{font-family:var(--mono);font-size:11px;font-weight:500;background:rgba(0,0,0,.4);color:#fff;padding:3px 8px;border-radius:6px}
+  .insp-name{padding:15px 16px 3px}
+  .insp-name .nm{font-size:16px;font-weight:600;word-break:break-word}
+  .insp-name .pth{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px;word-break:break-all}
+  .insp-fields{padding:9px 16px 26px}
+  .fld{padding:11px 0;border-bottom:1px solid var(--line)}
+  .fld:last-child{border-bottom:none}
+  .fld .fl{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:5px}
+  .fld .fv{display:flex;align-items:center;gap:8px;font-size:13px;font-family:var(--mono);word-break:break-all}
+  .fld .fv .copy{margin-left:auto;flex-shrink:0;width:26px;height:26px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--muted);display:flex;align-items:center;justify-content:center}
+  .fld .fv .copy:hover{color:var(--text)}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:20px;background:var(--surface-2);color:var(--muted)}
+  .cdot{width:18px;height:18px;border-radius:5px;border:1px solid rgba(127,127,127,.22);flex-shrink:0}
+  .matchrow{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--text)}
+  .modes2{display:flex;flex-direction:column;gap:8px;width:100%}
+  .mv{display:flex;align-items:center;gap:9px;font-size:12px}
+  .mv.cur{font-weight:600}
+  .mv .ml{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);width:38px}
+  .mv .mval{font-family:var(--mono);color:var(--text)}
+  .mv .star{color:var(--accent);font-size:9px}
+  .chainline{font-family:var(--mono);font-size:11.5px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .chainline .lnk{color:var(--accent);cursor:pointer}
+  .chainline .lnk:hover{text-decoration:underline}
+  .chainline .arw{color:var(--faint)}
+  .badge.cond{display:inline-block;margin-left:6px;font-size:9px;letter-spacing:.03em;padding:1px 7px;border-radius:20px;background:var(--accent-soft);color:var(--accent);text-transform:none}
+  .card{position:relative}
+  .card.aliased .cn::before{content:"↳ ";color:var(--accent);font-weight:400}
+  .card .condflag{position:absolute;top:5px;right:6px;font-size:10px;z-index:2;filter:saturate(1.4)}
+  .tagline{display:flex;align-items:center;gap:10px;padding:9px 18px;border-bottom:1px solid var(--line);background:var(--surface);font-size:12.5px;color:var(--muted)}
+  .tagline .tl-mark{width:4px;height:15px;border-radius:2px;background:var(--accent);flex-shrink:0}
+  .tagline b{color:var(--text);font-weight:600}
+  .tagline i{color:var(--faint);font-style:italic}
+
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);font-size:12.5px;font-weight:500;padding:9px 16px;border-radius:9px;opacity:0;pointer-events:none;transition:.2s;z-index:100}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* view visibility */
+  body:not(.view-tokens) .tokonly{display:none}
+  body:not(.view-tokens) .rail,body:not(.view-tokens) .inspector{display:none}
+  .appnav button{font-weight:600}
+
+  /* platform export bar */
+  .platbar{display:none;gap:4px;align-items:center;margin:0 0 8px}
+  body.code .platbar{display:flex}
+  .platbar button{background:var(--surface);border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:6px 11px;font-family:var(--mono);font-size:11.5px;font-weight:600}
+  .platbar button.on{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+  .platbar .platnote{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+
+  /* calculation readout */
+  .calc{display:flex;align-items:center;gap:7px}
+  .calc .op2,.dval .op2{color:var(--faint)}
+  .calc b{color:var(--text)}
+
+  /* ===== panels (Sync / History) ===== */
+  .panel{max-width:1060px;margin:0 auto}
+  .phead{margin-bottom:6px}
+  .phead .kick{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:9px}
+  .phead h1{font-size:23px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+  .phead p{font-size:14px;color:var(--muted);margin-top:8px;max-width:720px;line-height:1.6}
+  .demoflag{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;color:var(--faint);border:1px solid var(--line);border-radius:20px;padding:3px 9px;vertical-align:middle;white-space:nowrap}
+  .seclabel{font-size:12px;font-weight:600;margin:26px 0 12px;display:flex;align-items:center;gap:12px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
+  .seclabel .ln{flex:1;height:1px;background:var(--line)}
+  .lanes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+  .lane{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:16px 18px}
+  .lane .lh{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .lane .lh .ic{width:32px;height:32px;border-radius:9px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--accent);font-family:var(--mono);font-size:14px;font-weight:600;flex-shrink:0}
+  .lane .lh .tt{font-size:14px;font-weight:600}
+  .lane .lh .tt small{display:block;color:var(--muted);font-weight:400;font-size:11px;font-family:var(--mono);margin-top:2px}
+  .lane .arrow{margin-left:auto;color:var(--faint);font-size:16px}
+  .kv{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px}
+  .kv:first-of-type{margin-top:10px}
+  .kv .k2{color:var(--muted)}
+  .kv .v2{font-family:var(--mono);font-size:11.5px;text-align:right;word-break:break-word}
+  .statuspill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:20px}
+  .statuspill.ok{background:rgba(48,174,106,.15);color:#2fae6a}
+  .statuspill.warn{background:rgba(255,168,61,.18);color:#b9791a}
+  .statuspill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .laneact{margin-top:14px;display:flex;gap:8px}
+  .btn{font-size:12.5px;font-weight:600;padding:8px 13px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--text);display:inline-flex;align-items:center;gap:7px}
+  .btn.pri{background:var(--accent);color:var(--accent-fg,#fff);border-color:transparent}
+  .btn:hover{filter:brightness(1.04)}
+  .pipe{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+  .stage{flex:1;padding:13px 14px;border-right:1px solid var(--line)}
+  .stage:last-child{border-right:none}
+  .stage .sn{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+  .stage .sn .tick{color:#2fae6a}
+  .stage .sm{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:5px}
+  .pipemeta{display:flex;align-items:center;gap:14px;margin-top:11px;font-family:var(--mono);font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+  .feed,.card2{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+  .frow{display:flex;align-items:center;gap:12px;padding:11px 15px;border-top:1px solid var(--line);font-size:12.5px}
+  .frow:first-child{border-top:none}
+  .frow .fic{width:26px;height:26px;border-radius:7px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0;font-family:var(--mono);font-size:11px}
+  .frow .fmain{flex:1;min-width:0}
+  .frow .fa{font-weight:500}
+  .frow .fsrc{color:var(--muted);font-family:var(--mono);font-size:11px;margin-top:1px}
+  .frow .ft{color:var(--faint);font-family:var(--mono);font-size:11px;white-space:nowrap}
+  .brow{display:flex;align-items:center;gap:12px;padding:12px 15px;border-top:1px solid var(--line)}
+  .brow:first-child{border-top:none}
+  .branchname{font-family:var(--mono);font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+  .badge2{font-family:var(--mono);font-size:9.5px;padding:2px 7px;border-radius:20px;background:var(--surface-2);color:var(--muted);text-transform:none;letter-spacing:0}
+  .badge2.prot{background:rgba(255,168,61,.18);color:#b9791a}
+  .ab{font-family:var(--mono);font-size:11.5px}.ab .up{color:#2fae6a}.ab .dn{color:#cf6b5c}
+  .diffrow{display:flex;align-items:center;gap:11px;padding:10px 14px;border-top:1px solid var(--line);font-size:12.5px}
+  .diffrow:first-child{border-top:none}
+  .diffrow .op{width:14px;text-align:center;font-family:var(--mono);font-weight:700;flex-shrink:0}
+  .op.add{color:#2fae6a}.op.mod{color:#b9791a}.op.ren{color:var(--accent)}
+  .diffrow .dp{font-family:var(--mono);font-size:12px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .diffrow .dval{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted);flex-shrink:0}
+  .vrow{display:flex;align-items:center;gap:13px;padding:12px 15px;border-top:1px solid var(--line)}
+  .vrow:first-child{border-top:none}
+  .vtag{font-family:var(--mono);font-size:12px;font-weight:600;background:var(--surface-2);padding:4px 9px;border-radius:7px;flex-shrink:0}
+  .vrow .vd{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:2px}
+  .ptable{width:100%;border-collapse:collapse;font-size:12.5px}
+  .ptable th{text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);font-weight:500;padding:9px 14px;border-bottom:1px solid var(--line)}
+  .ptable td{padding:10px 14px;border-bottom:1px solid var(--line)}
+  .ptable tr:last-child td{border-bottom:none}
+  .who{display:flex;align-items:center;gap:9px;font-weight:500}
+  .av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0}
+
+  @media(max-width:960px){.rail{width:196px}.inspector.open,.insp-in{width:290px}}
+  @media(max-width:820px){.lanes{grid-template-columns:1fr}.pipe{flex-direction:column}.stage{border-right:none;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body class="view-tokens">
+
+<header class="appbar">
+  <div class="brand"><svg class="logo" viewBox="0 0 763 93" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Morpheus"><path d="M729.319 38.87C744.269 43.42 762.079 50.05 762.079 65.52C762.079 81.77 747.519 92.43 723.989 92.43C697.599 92.43 686.029 75.14 686.029 62.79H701.109C701.109 67.73 705.139 78 724.639 78C741.929 78 746.869 71.89 746.869 66.56C746.869 58.63 740.239 56.29 718.919 50.44C702.669 45.89 688.369 39.26 688.369 24.31C688.369 9.23 705.139 0 723.859 0C751.679 0 760.649 18.98 760.649 28.08H745.439C745.439 23.79 741.149 13.91 725.029 13.91C711.119 13.91 703.579 18.2 703.579 24.31C703.579 33.15 712.549 33.93 729.319 38.87Z"/><path d="M655.126 1.42999H668.906V60.06C668.906 77.48 655.776 91 634.456 91C613.006 91 600.006 77.61 600.006 60.06V1.42999H613.786V60.71C613.786 70.46 621.326 78 634.456 78C647.456 78 655.126 70.07 655.126 60.71V1.42999Z"/><path d="M533.651 78H583.441V91H519.871V1.42999H582.141V14.56H533.651V39.39H579.281V52.52H533.651V78Z"/><path d="M488.497 1.42999H502.277V91H488.497V52.52H445.077V91H431.297V1.42999H445.077V39.39H488.497V1.42999Z"/><path d="M385.481 1.42999C396.921 1.42999 414.861 8.44999 414.861 28.99C414.861 49.53 395.491 57.98 384.051 57.98H355.581V91H341.801V1.42999H385.481ZM384.051 44.85C389.901 44.85 399.651 40.04 399.651 28.99C399.651 17.94 391.591 14.56 385.481 14.56H355.581V44.85H384.051Z"/><path d="M325.365 28.99C325.365 45.63 312.755 54.34 301.835 57.07L322.765 91H306.255L286.495 57.98H266.085V91H252.305V1.42999H295.985C307.425 1.42999 325.365 8.44999 325.365 28.99ZM266.085 14.56V44.85H294.555C300.405 44.85 310.155 40.04 310.155 28.99C310.155 17.94 302.095 14.56 295.985 14.56H266.085Z"/><path d="M190.469 0C216.859 0 234.539 20.8 234.539 46.28C234.539 71.76 216.989 92.43 190.469 92.43C164.079 92.43 146.529 71.76 146.529 46.28C146.529 20.8 164.079 0 190.469 0ZM190.469 78.26C205.809 78.26 219.719 67.6 219.719 46.28C219.719 24.83 205.809 14.17 190.469 14.17C175.259 14.17 161.349 24.83 161.349 46.28C161.349 67.6 175.259 78.26 190.469 78.26Z"/><path d="M104.26 0.649994C120.51 0.649994 128.83 11.05 128.83 29.25L128.7 91H114.92L115.05 30.29C115.05 17.42 108.94 14.56 102.83 14.56C93.34 14.56 88.53 21.71 78.39 38.09C80.86 42.25 82.94 45.63 84.63 48.36C90.09 57.46 92.43 61.23 92.43 69.68C92.43 81.77 82.55 91.65 70.46 91.65C58.24 91.65 48.36 81.77 48.36 69.68C48.36 60.45 50.83 56.55 57.98 44.98C59.28 42.77 60.71 40.56 62.4 37.83C59.15 32.11 54.21 23.53 49.79 15.73L15.08 91H0L41.34 1.43H57.59C61.36 8.06 66.56 17.16 70.72 24.44C79.56 10.92 88.92 0.649994 104.26 0.649994ZM78.65 69.68C78.65 65.26 78.13 64.09 72.8 55.51C72.02 54.21 71.24 52.91 70.33 51.35C70.07 51.61 69.94 51.87 69.68 52.26C62.79 63.31 62.14 64.48 62.14 69.68C62.14 74.23 65.91 77.87 70.46 77.87C75.01 77.87 78.65 74.23 78.65 69.68Z"/></svg><small>token platform</small></div>
+  <div class="seg appnav" id="navseg">
+    <button data-nav="tokens" class="on">Tokens</button>
+    <button data-nav="sync">Sync</button>
+    <button data-nav="history">History</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="search tokonly">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input id="search" placeholder="Search 400+ tokens…" autocomplete="off">
+  </div>
+  <div class="seg" id="modeseg">
+    <button data-mode="Light" title="Light mode"><svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>Light</button>
+    <button data-mode="Dark" class="on" title="Dark mode"><svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>Dark</button>
+  </div>
+  <div class="seg tokonly" id="viewseg">
+    <button data-view="list" class="on" title="Token view"><svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
+    <button data-view="code" title="JSON view"><svg class="mi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3-4 9 4 9M16 3l4 9-4 9"/></svg></button>
+  </div>
+</header>
+
+<div class="tagline"><span class="tl-mark"></span><span><b>Define token relationships, inheritance, and conditions</b> before syncing to any tool. <i>Because systems deserve more than flat styles.</i></span></div>
+
+<div class="body">
+  <aside class="rail" id="rail"></aside>
+  <main class="main" id="main"></main>
+  <aside class="inspector" id="inspector"><div class="insp-in" id="inspIn"></div></aside>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   MORPHEUS TOKEN PLATFORM — TOKENS  (live from Figma "Neo · Moderne Design System" via MCP)
+   File: fQTkGSFbYyE7LiHuQJsENC · collection "Color" (Light + Dark)
+   • Color primitives (base ramps)        → real, single value
+   • Semantic colors (294, Light + Dark)  → real, both modes  → SEM: path:[Light,Dark]
+   • Shadows                              → real (Figma effects → CSS)
+   • Spacing / Border radius / Height     → real
+   • Padding / Typography                 → indicative
+   ============================================================ */
+
+const PRIM = {
+  "Cream":        {50:"#fbfaf6",100:"#f4f2eb",200:"#f2f0ea",300:"#f2efe7",400:"#edebe2",500:"#e4e1d6",600:"#dedbd0",700:"#918c7c",800:"#5f5b4f",900:"#33312b"},
+  "Warm Grey":    {50:"#faf8f3",100:"#f6f1e8",200:"#f1ece0",300:"#dcd3c3",400:"#c9bfa6",500:"#9c927e",600:"#7b7263",700:"#564e41",800:"#38332a",900:"#15120f"},
+  "Grey":         {50:"#f9fafb",100:"#f3f4f6",200:"#e5e7eb",300:"#d1d5db",400:"#9ca3af",500:"#6b7280",600:"#4b5563",700:"#374151",800:"#1f2937",900:"#111827"},
+  "Ink":          {50:"#f1f1f6",100:"#d9d9e4",200:"#b4b4c4",300:"#8a8a9e",400:"#62627a",500:"#4a4a66",600:"#62627a",700:"#2c2c50",800:"#232342",900:"#17171c"},
+  "Digital Blue": {50:"#f2f3ff",100:"#dce0ff",200:"#b6bfff",300:"#8d99ff",400:"#626eff",500:"#2f42ff",600:"#2637e6",700:"#1e2ec2",800:"#131e7a",900:"#000855"},
+  "Periwinkle":   {300:"#8ca0f5",500:"#3e5be8"},
+  "Digital Green":{50:"#f3fff5",100:"#cfffd7",200:"#acffb9",300:"#88fe9b",400:"#72e184",500:"#5ec46f",600:"#4ca75a",700:"#3b8948",800:"#2c6c36",900:"#1e4f26"},
+  "Teal Green":   {50:"#eefffa",100:"#c9fff1",200:"#a4ffe7",300:"#7fffde",400:"#54eec6",500:"#3bcca6",600:"#27aa88",700:"#17886b",800:"#0b664e",900:"#034433"},
+  "Gold":         {50:"#fef9e8",100:"#fbf1d2",200:"#f7e3a5",300:"#f4d479",400:"#ffd34d",500:"#ecb81f",600:"#bd9319",700:"#8e6e13",800:"#806a00",900:"#2f2506"},
+  "Orange":       {50:"#fff8e5",100:"#ffebb7",200:"#ffde8a",300:"#ffd15c",400:"#ff8f52",500:"#ffb800",600:"#d69b00",700:"#856000",800:"#a34e14",900:"#5c4200"},
+  "Red":          {50:"#fbefed",100:"#ffc6cd",200:"#f0b4ac",300:"#fa826f",400:"#ed4a5d",500:"#cb3446",600:"#c9291c",700:"#871421",800:"#650914",900:"#43020a"},
+  "Violet":       {50:"#f6eefb",100:"#ebd5f1",200:"#d6ace3",300:"#c282d5",400:"#ad59c7",500:"#9d5be8",600:"#7a2694",700:"#5c1c6f",800:"#3d134a",900:"#1f0925"}
+};
+
+/* Semantic : path -> [Light, Dark] */
+const SEM = {
+"surfaces/white":["#FBFAF6","#26262E"],"surfaces/black":["#17171C","#17171C"],"surfaces/page":["#F2F0EA","#141419"],"surfaces/card":["#FBFAF6","#26262E"],"surfaces/card-header":["#F2EFE7","#2D2D36"],"surfaces/tab-active":["#FBFAF6","#FBFAF6"],"surfaces/tab-secondary-background":["#DFDDD1","#2D2D35"],"surfaces/list-hover":["#F4F2EB","#2E2E38"],"surfaces/tooltip":["#4B5563","#F1F0EA"],"surfaces/scrim":["#1F293733","#00000080"],"surfaces/highlight-background":["#3E7BF61A","#3E7BF61A"],"surfaces/active-highlight":["#B6BFFF66","#3E7BF61A"],"surfaces/shadow-neutral":["#1F29371A","#00000099"],"surfaces/shadow-primary":["#2F42FF1A","#10188066"],"surfaces/snackbar-brand":["#131E7A","#131E7A"],"surfaces/snackbar-dark mode":["#FBEFED","#F1F0EA"],"surfaces/snackbar-light mode":["#EAF6EC","#33333D"],"surfaces/toggle-knob":["#FBFAF6","#8C8C96"],
+"surfaces/data-grid/background":["#FBFAF6","#26262E"],"surfaces/data-grid/default":["#FBFAF6","#26262E"],"surfaces/data-grid/header":["#F2EFE7","#2D2D36"],"surfaces/data-grid/hover":["#F4F2EB","#2E2E38"],"surfaces/data-grid/selected":["#3E7BF61A","#3E7BF61A"],"surfaces/data-grid/selected-hover":["#3E7BF61A","#3E7BF61A"],"surfaces/data-grid/disabled":["#EDEBE2","#1B1B21"],"surfaces/data-grid/border":["#2323421F","#F0F0F61F"],"surfaces/data-grid/border-strong":["#23234280","#F0F0F661"],"surfaces/data-grid/stripe":["#F4F2EB","#222229"],"surfaces/data-grid/focused":["#3E7BF61A","#3E7BF61A"],"surfaces/data-grid/pinned":["#F2F0EA","#2A2A32"],
+"surface/canvas-chrome":["#F2F0EA","#141419"],"surface/canvas-content":["#FBFAF6","#1B1B21"],"surface/field":["#FBFAF6","#222229"],"surface/sunken":["#EDEBE2","#2A2A32"],"surface/sunken-2":["#E4E1D6","#33333D"],"surface/row-hover":["#F4F2EB","#2E2E38"],"surface/scrim":["#23234224","#0F0F1473"],"surface/tooltip":["#2D2D36","#2D2D36"],"surface/card-frosted":["#FBFAF6C7","#26262EC7"],
+"text/primary":["#232342","#F1F0EA"],"text/muted":["#62627A","#9C9CA8"],"text/link":["#0046B5","#73AAFF"],"text/tab-active":["#16306B","#1055E2"],"text/on-primary":["#FBFAF6","#17171C"],"text/code-primary":["#1B2230","#E9EAF2"],"text/code-secondary":["#62627A","#9598AC"],"text/input-placeholder":["#62627A","#62627A"],
+"typography/body":["#232342","#F1F0EA"],"typography/body-secondary":["#62627A","#9C9CA8"],"typography/page-header":["#232342","#232342"],"typography/section-header":["#62627A","#62627A"],"typography/legal":["#9CA3AF","#9C9CA8"],"typography/error":["#C9291C","#FA826F"],"typography/success":["#1D5937","#30F284"],"typography/warning":["#935B00","#FFA83D"],"typography/button/primary":["#FBFAF6","#FBFAF6"],"typography/button/secondary":["#232342","#232342"],"typography/button/disabled":["#6B7280","#9C9CA8"],"typography/code/primary":["#232342","#F1F0EA"],"typography/code/secondary":["#62627A","#9C9CA8"],"typography/input/default":["#232342","#F1F0EA"],"typography/input/label":["#232342","#F1F0EA"],"typography/input/helper":["#62627A","#9C9CA8"],"typography/input/placeholder":["#6B7280","#9C9CA8"],"typography/tab/active":["#1055E2","#1055E2"],"typography/tab/inactive":["#232342","#232342"],"typography/tab/disabled":["#6B7280","#6B7280"],"typography/link/primary":["#0046B5","#73AAFF"],"typography/link/default":["#0046B5","#73AAFF"],"typography/link/disabled":["#B6BFFF","#75757F"],"typography/link/white":["#FFFFFF","#F9FAFB"],"typography/link-default":["#0046B5","#73AAFF"],"typography/link-hover":["#2637E6","#F2F3FF"],"typography/link-white":["#FFFFFF","#FFFFFF"],"typography/link-white-hover":["#FFFFFF","#FFFFFF"],"typography/navigation/default":["#232342","#F1F0EA"],"typography/navigation/search/highlight-text":["#1055E2","#1055E2"],"typography/navigation/search/highlight-background":["#2F42FF00","#3E7BF629"],"typography/navigation/search/highlight-background-active":["#DCE0FF","#3E7BF659"],"typography/navigation/search/input-background":["#F2F3FF","#222229"],"typography/search-input-background":["#FFFFFF","#222229"],"typography/tooltip/default":["#FFFFFF","#232342"],"typography/tooltip/secondary":["#62627A","#62627A"],
+"buttons/primary/default":["#232342","#F1F0EA"],"buttons/primary/hover":["#2C2C50","#FBFAF6"],"buttons/primary/pressed":["#2C2C50","#FBFAF6"],"buttons/primary/disabled":["#F3F4F6","#2D2D36"],"buttons/secondary/default":["#232342","#F1F0EA"],"buttons/secondary/default-background":["#FBFAF6","#222229"],"buttons/secondary/default-border":["#23234280","#F0F0F661"],"buttons/secondary/hover-background":["#EDEBE2","#2A2A32"],"buttons/secondary/pressed-background":["#E4E1D6","#33333D"],"buttons/secondary/disabled-background":["#F4F2EB","#222229"],"buttons/tertiary/default":["#232342","#F1F0EA"],"buttons/tertiary/hover":["#232342","#F1F0EA"],"buttons/tertiary/pressed":["#232342","#F1F0EA"],"buttons/tertiary/disabled":["#6B7280","#9C9CA8"],"buttons/destructive":["#C9291C","#FA826F"],"buttons/navigation/active":["#3E7BF61A","#3E7BF61A"],"buttons/navigation/active-border":["#1055E2","#1055E2"],"buttons/navigation/default-border":["#3E7BF64D","#3E7BF64D"],"buttons/navigation/hover-background":["#3E7BF61A","#3E7BF61A"],"buttons/navigation/pressed-background":["#3E7BF61A","#3E7BF61A"],
+"button/primary-bg":["#232342","#F1F0EA"],"button/primary-fg":["#FBFAF6","#17171C"],"button/primary-bg-hover":["#2C2C50","#FBFAF6"],"button/destructive-bg":["#C9291C","#FA826F"],"button/destructive-bg-hover":["#A63325","#F0B4AC"],
+"icons/default":["#232342","#F1F0EA"],"icons/active":["#0046B5","#73AAFF"],"icons/hover":["#1055E2","#1055E2"],"icons/hover-background":["#3E7BF61A","#3E7BF61A"],"icons/hover-border":["#3E7BF64D","#3E7BF64D"],"icons/pressed":["#0046B5","#73AAFF"],"icons/pressed-background":["#3E7BF61A","#3E7BF61A"],"icons/disabled":["#23234214","#F0F0F614"],"icons/placeholder":["#62627A","#9C9CA8"],"icons/utility":["#62627A","#9C9CA8"],"icons/inverse":["#F1F0EA","#232342"],
+"border/primary":["#2323421F","#F0F0F61F"],"border/secondary":["#2323421F","#F0F0F61F"],"border/subtle":["#23234214","#F0F0F614"],"border/strong":["#23234280","#F0F0F661"],"border/hairline":["#2323421F","#F0F0F61F"],"border/focus":["#1055E2","#1055E2"],"border/overlay":["#FFFFFF01","#F0F0F614"],
+"input/background":["#FBFAF6","#222229"],"input/hover-background":["#F2F0EA","#222229"],"input/disabled-background":["#F9FAFB","#222229"],"input/checkbox":["#0046B5","#73AAFF"],"input/radio":["#0046B5","#73AAFF"],
+"control/border":["#23234280","#F0F0F661"],"control/border-selected":["#1055E2","#1055E2"],"control/glyph":["#1055E2","#1055E2"],"control/checked-bg":["#1055E2","#1055E2"],"control/checked-fg":["#FFFFFF","#0B1220"],
+"link/default":["#1055E2","#1055E2"],"link/hover":["#1055E2","#1055E2"],"link/tint":["#3E7BF61A","#3E7BF61A"],"link/tint-border":["#3E7BF64D","#3E7BF64D"],
+"accent/default":["#1055E2","#7FA9F9"],"accent/deep":["#16306B","#7FA9F9"],"accent/tint":["#3E7BF61A","#7FA9F929"],"accent/border":["#3E7BF64D","#7FA9F966"],"accent/primary-fg":["#FFFFFF","#FFFFFF"],"accent/glow":["#9D5BE821","#3E7BF62E"],"accent/glow-secondary":["#E6399B29","#9D5BE833"],"brand":["#1055E2","#1055E2"],
+"status/success/default":["#237341","#37C36E"],"status/success/dark":["#1D5937","#1D5937"],"status/success/light":["#EEF9F2","#192F26"],"status/success/border":["#BFE2C8","#264D33"],"status/success/transparent":["#1D59378C","#37C36E73"],"status/error/default":["#D43C2A","#EB4B2D"],"status/error/dark":["#C9291C","#C9291C"],"status/error/light":["#FBEFED","#2E1B1B"],"status/error/border":["#F0B4AC","#612921"],"status/error/transparent":["#C9291C80","#EB4B2D6B"],"status/warning/default":["#B07210","#F0A028"],"status/warning/dark":["#B68B12","#B68B12"],"status/warning/light":["#FFF1E0","#34281D"],"status/warning/border":["#E6D9A8","#59451A"],"status/warning/transparent":["#935B0073","#F0A02873"],"status/info/default":["#2668B5","#468EE4"],"status/info/dark":["#1A4B8C","#69AAF0"],"status/info/light":["#E8F0FA","#1A2435"],"status/info/border":["#C7D7F6","#263B61"],"status/info/transparent":["#1A4B8C80","#4187E16B"],"status/neutral/default":["#706960","#9B9487"],"status/neutral/dark":["#4A453E","#ACA598"],"status/neutral/light":["#F0EFED","#242326"],"status/neutral/border":["#D1CFCB","#423D38"],"status/neutral/transparent":["#4A453E73","#9B948761"],"status/active/default":["#7048C8","#825AE1"],"status/active/dark":["#5530A8","#9B73F0"],"status/active/light":["#EDE8F8","#231D34"],"status/active/border":["#C9BBEA","#402E66"],"status/active/transparent":["#5530A880","#7D55DC73"],"status/queued/default":["#9472D4","#A07DEB"],"status/queued/dark":["#7858C0","#B99BF2"],"status/queued/light":["#F0ECF9","#28223A"],"status/queued/border":["#D2C6ED","#4D3B6B"],"status/queued/transparent":["#7858C080","#916EE673"],"status/canceled/default":["#7A6E5C","#948876"],"status/canceled/dark":["#5C5040","#A59B8A"],"status/canceled/light":["#F2EFEA","#232224"],"status/canceled/border":["#D5CEC3","#474033"],"status/canceled/transparent":["#5C504073","#94887659"],
+"status/success-text":["#1D5937","#30F284"],"status/success-tint":["#30F28426","#30F28421"],"status/success-border":["#1D5937A6","#30F2848C"],"status/error-text":["#C9291C","#FA826F"],"status/error-tint":["#FBEFED","#FC47321F"],"status/error-border":["#F0B4AC","#FC47326B"],"status/warning-text":["#B68B12","#E8BA4C"],"status/warning-tint":["#FFA83D29","#FFA83D1F"],"status/warning-border":["#935B0073","#FFA83D80"],"status/queued-tint":["#9D5BE81A","#9D5BE829"],"status/queued-border":["#9D5BE859","#9D5BE873"],
+"role/violet-tint":["#9D5BE81A","#9D5BE829"],"role/violet-text":["#9D5BE8","#9D5BE8"],"role/violet-border":["#9D5BE859","#9D5BE873"],"role/magenta-tint":["#E6399B24","#E6399B24"],"role/magenta-text":["#E6399B","#E6399B"],"role/magenta-border":["#E6399B66","#E6399B66"],"role/teal-tint":["#0E4A4529","#25D0C029"],"role/teal-text":["#0E4A45","#25D0C0"],"role/teal-border":["#0E4A456B","#25D0C06B"],
+"toast/success-text":["#1D5937","#4ADE80"],"toast/success-bg":["#EAF6EC","#0F2015"],"toast/success-border":["#BFE2C8","#1E3A28"],"toast/warning-text":["#8F6C0C","#E3B341"],"toast/warning-bg":["#FAF4E1","#211D0C"],"toast/warning-border":["#E6D9A8","#3A3316"],"toast/error-text":["#C9291C","#F76A62"],"toast/error-bg":["#FBEFED","#2A1012"],"toast/error-border":["#F0B4AC","#4A1D1E"],"toast/info-text":["#1055E2","#1055E2"],"toast/info-bg":["#EEF3FC","#101A2E"],"toast/info-border":["#C7D7F6","#1E3A6B"],
+"data/green":["#30F284","#30F284"],"data/yellow":["#FFD34D","#FFD34D"],"data/orange-1":["#FFA83D","#FFA83D"],"data/orange-2":["#FF8F52","#FF8F52"],"data/orange-3":["#FF6F61","#FF6F61"],"data/red-1":["#FA826F","#FA826F"],"data/red-2":["#C9291C","#C9291C"],"data/red-3":["#A63325","#A63325"],"data/periwinkle":["#3E5BE8","#8CA0F5"],"data/teal":["#25D0C0","#25D0C0"],"data/lilac":["#B39DEB","#B39DEB"],"data/coral":["#FF6F61","#FF6F61"],
+"dataviz/categorical/coral":["#FF6F61","#FF6F61"],"dataviz/categorical/orange":["#FF8F52","#FF8F52"],"dataviz/categorical/tangerine":["#FFA83D","#FFA83D"],"dataviz/categorical/gold":["#FFD34D","#FFD34D"],"dataviz/categorical/green":["#30F284","#30F284"],"dataviz/categorical/periwinkle":["#3E5BE8","#8CA0F5"],"dataviz/categorical/teal":["#25D0C0","#25D0C0"],"dataviz/categorical/lilac":["#B39DEB","#B39DEB"],"dataviz/categorical/magenta":["#E6399B","#E6399B"],"dataviz/categorical/lime":["#C7E84B","#C7E84B"],"dataviz/boundary/coral":["#A63325","#A63325"],"dataviz/boundary/orange":["#A34E14","#A34E14"],"dataviz/boundary/tangerine":["#935B00","#935B00"],"dataviz/boundary/gold":["#806A00","#806A00"],"dataviz/boundary/green":["#1D5937","#1D5937"],"dataviz/boundary/periwinkle":["#16306B","#16306B"],"dataviz/boundary/teal":["#0E4A45","#0E4A45"],"dataviz/boundary/lilac":["#3F1340","#3F1340"],"dataviz/boundary/magenta":["#7A1E52","#7A1E52"],"dataviz/boundary/lime":["#4F5A12","#4F5A12"],"dataviz/boundary/na":["#82806F","#75757F"],"dataviz/na":["#DEDBD0","#75757F"],"dataviz/grid":["#2323421F","#F0F0F61F"],
+"illustration/panel":["#FBFAF6","#26262E"],"illustration/stroke":["#23234280","#F0F0F661"],"illustration/stroke-muted":["#62627A","#9C9CA8"],"illustration/inset":["#EDEBE2","#2A2A32"],"illustration/accent":["#3E5BE8","#8CA0F5"],"illustration/positive":["#1D5937","#30F284"],
+"progress/track":["#3E7BF61A","#3E7BF61A"],"progress/fill":["#1055E2","#1055E2"],"progress/label":["#1055E2","#1055E2"],"skeleton/background":["#E4E1D6","#33333D"],"skeleton/wave":["#FFFFFF80","#FFFFFF14"],
+"activity/recipe-run":["#9D5BE8","#9D5BE8"],"activity/commit-job":["#1055E2","#1055E2"],"activity/visualization":["#27AA88","#25D0C0"],
+"avatar/user-default-bg":["#232342","#30F284"],"avatar/user-default-text":["#FBFAF6","#1D5937"],"avatar/initials/background1":["#9D5BE81A","#9D5BE829"],"avatar/initials/background2":["#30F2841A","#30F28429"],"avatar/initials/background3":["#FFA83D1A","#FFA83D29"],"avatar/initials/background4":["#E6399B24","#E6399B24"],"avatar/initials/background5":["#9D5BE81A","#9D5BE829"],"avatar/initials/background6":["#0E4A4529","#25D0C029"],"avatar/initials/background7":["#3E7BF61A","#3E7BF629"],"avatar/initials/text1":["#9D5BE8","#9D5BE8"],"avatar/initials/text2":["#1D5937","#30F284"],"avatar/initials/text3":["#935B00","#FFA83D"],"avatar/initials/text4":["#E6399B","#E6399B"],"avatar/initials/text5":["#7A1E52","#9D5BE8"],"avatar/initials/text6":["#0E4A45","#25D0C0"],"avatar/initials/text7":["#1055E2","#3E7BF6"],"avatar/initials/border1":["#9D5BE859","#9D5BE873"],"avatar/initials/border2":["#30F28459","#30F2846B"],"avatar/initials/border3":["#FFA83D59","#FFA83D6B"],"avatar/initials/border4":["#E6399B66","#E6399B66"],"avatar/initials/border5":["#9D5BE859","#9D5BE873"],"avatar/initials/border6":["#0E4A456B","#25D0C06B"],"avatar/initials/border7":["#3E7BF659","#3E7BF666"],
+"tab/secondary-background":["#E5E7EB","#2D2D36"],"code/background":["#EDEBE2","#2A2A32"]
+};
+
+/* Relationships (inheritance) : semantic path -> [Light alias target, Dark alias target]
+   null = raw value in that mode. When the two targets differ, the token is a
+   *conditional* alias (it inherits from different tokens depending on mode).
+   Straight from Figma's per-mode aliasTo — the authoring graph beneath the flat hexes. */
+const ALIAS = {
+"typography/page-header":["typography/body","typography/body"],"typography/button/primary":["surfaces/white","surfaces/white"],"typography/button/secondary":["typography/body","typography/body"],"typography/section-header":["typography/body-secondary","typography/body-secondary"],"typography/tab/inactive":["typography/body","typography/body"],"typography/tab/active":["accent/default","accent/default"],"typography/tab/disabled":["typography/button/disabled","typography/button/disabled"],"typography/tooltip/secondary":["typography/body-secondary","typography/body-secondary"],
+"typography/input/placeholder":["base/Grey/500",null],"typography/link/disabled":["base/Digital Blue/200",null],"typography/legal":["base/Grey/400",null],"typography/tooltip/default":["base/White",null],"typography/search-input-background":["base/White",null],"typography/navigation/search/input-background":["base/Digital Blue/50",null],"typography/navigation/search/highlight-background-active":["base/Digital Blue/100",null],"typography/navigation/search/highlight-text":["accent/default","accent/default"],
+"typography/link/white":["base/White","base/Grey/50"],"typography/link-hover":["base/Digital Blue/600","base/Digital Blue/50"],"typography/link-white":["base/White","base/White"],"typography/link-white-hover":["base/White","base/White"],
+"status/success/dark":["status/success-text","status/success-text"],"status/warning/dark":["status/warning-text","status/warning-text"],"status/error/dark":["status/error-text","status/error-text"],
+"icons/hover":["accent/default","accent/default"],"icons/hover-background":["accent/tint","accent/tint"],"icons/hover-border":["accent/border","accent/border"],"icons/pressed-background":["accent/tint","accent/tint"],
+"buttons/primary/disabled":["base/Grey/100",null],"buttons/tertiary/disabled":["base/Grey/500",null],"buttons/navigation/active":["link/tint","accent/tint"],"buttons/navigation/hover-background":["link/tint","accent/tint"],"buttons/navigation/pressed-background":["link/tint","accent/tint"],"buttons/navigation/active-border":["accent/default","accent/default"],"buttons/navigation/default-border":["accent/border","accent/border"],
+"surfaces/tab-active":["surfaces/white","surfaces/white"],"surfaces/data-grid/background":["surfaces/white",null],"surfaces/data-grid/default":["surfaces/white",null],"surfaces/data-grid/selected":["accent/tint","accent/tint"],"surfaces/data-grid/selected-hover":["accent/tint","accent/tint"],"surfaces/data-grid/focused":["accent/tint","accent/tint"],"surfaces/tooltip":["base/Grey/600",null],"surfaces/highlight-background":["accent/tint","accent/tint"],"surfaces/snackbar-brand":["base/Digital Blue/800","base/Digital Blue/800"],
+"input/disabled-background":["base/Grey/50",null],"tab/secondary-background":["base/Grey/200",null],"activity/commit-job":["accent/default","accent/default"],"activity/visualization":["base/Teal Green/600",null],"brand":["accent/default","accent/default"],
+"border/focus":["accent/default","accent/default"],"link/default":["accent/default","accent/default"],"link/hover":["accent/default","accent/default"],"link/tint":["accent/tint","accent/tint"],"link/tint-border":["accent/border","accent/border"],
+"control/border-selected":["accent/default","accent/default"],"control/glyph":["accent/default","accent/default"],"control/checked-bg":["accent/default","accent/default"],
+"progress/track":["accent/tint","accent/tint"],"progress/fill":["accent/default","accent/default"],"progress/label":["accent/default","accent/default"],"toast/info-text":["accent/default","accent/default"],
+"text/tab-active":["accent/deep","accent/default"],"text/input-placeholder":["text/muted","text/muted"]
+};
+
+/* Shadows */
+const SHADOWS = {
+"neutral/small":"Effect(type: DROP_SHADOW, color: #10182814, offset: (0, 1), radius: 2, spread: 0)",
+"neutral/regular":"Effect(type: DROP_SHADOW, color: #10182814, offset: (0, 2), radius: 4, spread: 0)",
+"neutral/medium":"Effect(type: DROP_SHADOW, color: #1018281A, offset: (0, 8), radius: 16, spread: 0)",
+"neutral/large":"Effect(type: DROP_SHADOW, color: #1018281A, offset: (0, 4), radius: 6, spread: 0); Effect(type: DROP_SHADOW, color: #1018281F, offset: (0, 16), radius: 44, spread: 0)",
+"hard line/small":"Effect(type: DROP_SHADOW, color: #10182814, offset: (0, 1), radius: 2, spread: 0); Effect(type: DROP_SHADOW, color: #1018281F, offset: (0, 1), radius: 2, spread: 0)",
+"hard line/regular":"Effect(type: DROP_SHADOW, color: #10182814, offset: (0, 2), radius: 4, spread: 0); Effect(type: DROP_SHADOW, color: #1018281F, offset: (0, 1), radius: 2, spread: 0)",
+"hard line/medium":"Effect(type: DROP_SHADOW, color: #1018281A, offset: (0, 8), radius: 16, spread: 0); Effect(type: DROP_SHADOW, color: #1018281F, offset: (0, 1), radius: 2, spread: 0)",
+"hard line/large":"Effect(type: DROP_SHADOW, color: #1018281F, offset: (0, 16), radius: 44, spread: 0); Effect(type: DROP_SHADOW, color: #1018281F, offset: (0, 1), radius: 2, spread: 0)",
+"primary/small":"Effect(type: DROP_SHADOW, color: #2f42ff1a, offset: (0, 1), radius: 3, spread: 0)",
+"primary/regular":"Effect(type: DROP_SHADOW, color: #2f42ff1a, offset: (0, 4), radius: 8, spread: 0)",
+"primary/medium":"Effect(type: DROP_SHADOW, color: #2f42ff1a, offset: (0, 8), radius: 15, spread: 0)",
+"primary/large":"Effect(type: DROP_SHADOW, color: #2f42ff1a, offset: (0, 8), radius: 24, spread: 0)",
+"semantic/modal":"Effect(type: DROP_SHADOW, color: #00000059, offset: (0, 24), radius: 64, spread: 0)",
+"semantic/dropdown":"Effect(type: DROP_SHADOW, color: #0A0A1933, offset: (0, 16), radius: 44, spread: 0)",
+"semantic/drawer":"Effect(type: DROP_SHADOW, color: #B08D9833, offset: (-12, 0), radius: 28, spread: -6); Effect(type: DROP_SHADOW, color: #B08D981A, offset: (0, -5), radius: 24, spread: -4)",
+"semantic/card":"Effect(type: DROP_SHADOW, color: #10182814, offset: (0, 1), radius: 2, spread: 0)"
+};
+
+const SPACING = [["1-4",2],["1-2",4],["3-4",6],["1",8],["1 1-4",10],["1 1-2",12],["1 3-4",14],["2",16],["2 1-4",18],["2 1-2",20],["2 3-4",22],["3",24],["3 1-4",26],["3 1-2",28],["3 3-4",30],["4",32],["5",40],["5 1-4",42],["5 1-2",44],["6",48],["7",56],["8",64],["10",80]];
+const RADIUS  = [["XXS",2],["XS",4],["button",4],["S",8],["input",10],["M",12],["card",12],["L",20],["XL",30],["Full",999]];
+const HEIGHT  = [["button/small",32],["button/default",40],["button/large",48],["input/dense",32],["input/default",40],["table/header-standard",38],["table/row-standard",42],["table/header-compact",44],["table/row-compact",48],["table/header-comfortable",52],["table/row-comfortable",56]];
+const PADDING = [["card",16,"spacing/2"],["button-horizontal",16,"spacing/2"],["button-vertical",8,"spacing/1"],["input-horizontal",12,"spacing/1 1-2"],["input-vertical",8,"spacing/1"],["text containers",12,"spacing/1 1-2"],["datagrid-cell-vertical",8,"spacing/1"]];
+const TYPO = [
+  {path:"Titles/Page header",size:36,weight:600,family:"Geist",lh:1.1},
+  {path:"Titles/Page subheader",size:24,weight:600,family:"Geist",lh:1.2},
+  {path:"Titles/Section header",size:16,weight:500,family:"Geist",lh:1.5},
+  {path:"Titles/Code header",size:14,weight:600,family:"Geist Mono",lh:1.4},
+  {path:"Titles/Moddy header",size:20,weight:600,family:"Geist",lh:1.3},
+  {path:"Body/regular",size:14,weight:400,family:"Geist",lh:1.5},
+  {path:"Body/small/regular",size:13,weight:400,family:"Geist",lh:1.5},
+  {path:"Body/xs/regular",size:12,weight:400,family:"Geist",lh:1.5},
+  {path:"Body/code/small",size:13,weight:400,family:"Geist Mono",lh:1.5}
+];
+
+const SETS = [
+  {id:'primitives', name:'Color primitives', kind:'ramps',  count:Object.values(PRIM).reduce((a,f)=>a+Object.keys(f).length,0), group:'Color', dot:'#2f42ff'},
+  {id:'semantic',   name:'Semantic colors',  kind:'colorgrid', count:Object.keys(SEM).length, group:'Color', dot:'#237341', modal:true},
+  {id:'spacing',    name:'Spacing',          kind:'spacing', count:SPACING.length, group:'Sizing', dot:'#ecb81f'},
+  {id:'padding',    name:'Padding',          kind:'padding', count:PADDING.length, group:'Sizing', dot:'#ecb81f'},
+  {id:'radius',     name:'Border radius',    kind:'radius',  count:RADIUS.length, group:'Sizing', dot:'#ff8f52'},
+  {id:'height',     name:'Height',           kind:'height',  count:HEIGHT.length, group:'Sizing', dot:'#ff8f52'},
+  {id:'shadows',    name:'Shadows',          kind:'shadows', count:Object.keys(SHADOWS).length, group:'Effects', dot:'#9d5be8'},
+  {id:'typography', name:'Typography',       kind:'typo',    count:TYPO.length, group:'Type', dot:'#cb3446'}
+];
+
+/* ============ STATE ============ */
+const state = { active:'primitives', mode:'Dark', search:'', selected:null, view:'tokens', platform:'JSON' };
+const PLATFORMS=['JSON','CSS','Tailwind','Swift','Kotlin'];
+const MI = ()=> state.mode==='Light'?0:1;   // mode index into SEM arrays
+
+/* reverse map hex -> primitive path */
+const HEX2PRIM = {};
+for(const fam in PRIM) for(const step in PRIM[fam]){ const h=PRIM[fam][step].toLowerCase(); if(!(h in HEX2PRIM)) HEX2PRIM[h]=`base/${fam}/${step}`; }
+
+/* flat lookup for inspector */
+const LOOKUP = {};
+for(const fam in PRIM) for(const step in PRIM[fam]) LOOKUP[`base/${fam}/${step}`]={kind:'prim',hex:PRIM[fam][step]};
+LOOKUP['base/White']={kind:'prim',hex:'#FFFFFF'}; HEX2PRIM['#ffffff']='base/White';
+for(const p in SEM) LOOKUP[p]={kind:'sem',L:SEM[p][0],D:SEM[p][1]};
+for(const n in SHADOWS) LOOKUP['shadow/'+n]={kind:'shadow',raw:SHADOWS[n]};
+SPACING.forEach(([n,v])=>LOOKUP['spacing/'+n]={kind:'scalar',value:v+'px',type:'spacing'});
+RADIUS.forEach(([n,v])=>LOOKUP['radius/'+n]={kind:'scalar',value:(v===999?'999px':v+'px'),type:'borderRadius'});
+HEIGHT.forEach(([n,v])=>LOOKUP['height/'+n]={kind:'scalar',value:v+'px',type:'sizing'});
+PADDING.forEach(([n,v,al])=>LOOKUP['padding/'+n]={kind:'scalar',value:v+'px',type:'spacing',alias:al});
+TYPO.forEach(t=>LOOKUP['type/'+t.path]={kind:'typo',spec:t});
+
+/* ============ HELPERS ============ */
+const $=s=>document.querySelector(s);
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escA(s){return esc(s).replace(/"/g,'&quot;');}
+function match(p){return !state.search||p.toLowerCase().includes(state.search.toLowerCase());}
+function chipStyle(hex){return `background:linear-gradient(${hex},${hex}),var(--checker);background-size:100% 100%,12px 12px`;}
+function semHex(path){return SEM[path][MI()];}
+function aliasTarget(path,i){return ALIAS[path]?(ALIAS[path][i]||null):null;}
+function isAliased(path){return !!aliasTarget(path,MI());}
+function condAlias(path){return ALIAS[path] ? (ALIAS[path][0]||null)!==(ALIAS[path][1]||null) : false;}
+function chainOf(path,i){const chain=[];let cur=path;const seen=new Set();while(true){const t=aliasTarget(cur,i);if(!t||seen.has(cur))break;seen.add(cur);chain.push(t);cur=t;}return chain;}
+function toRgba(h){h=h.replace('#','');if(h.length===3||h.length===4)h=h.split('').map(c=>c+c).join('');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16),a=h.length===8?parseInt(h.slice(6,8),16)/255:1;return `rgba(${r}, ${g}, ${b}, ${+a.toFixed(3)})`;}
+function effToCss(str){return str.split(';').map(part=>{const m=part.match(/color:\s*([^,]+),\s*offset:\s*\(([-\d.]+),\s*([-\d.]+)\),\s*radius:\s*([-\d.]+),\s*spread:\s*([-\d.]+)/i);if(!m)return '';let col=m[1].trim();if(col.startsWith('#'))col=toRgba(col);return `${m[2]}px ${m[3]}px ${m[4]}px ${m[5]}px ${col}`;}).filter(Boolean).join(', ');}
+
+/* drive the app chrome from the live Morpheus tokens (dogfood) */
+const CHROME={'--bg':'surface/canvas-chrome','--surface':'surface/canvas-content','--surface-2':'surface/sunken','--line':'border/hairline','--text':'text/primary','--muted':'text/muted','--faint':'text/muted','--accent':'accent/default','--accent-soft':'accent/tint','--accent-fg':'accent/primary-fg'};
+function applyMode(){
+  const i=MI(); const r=document.documentElement.style;
+  for(const v in CHROME) r.setProperty(v, SEM[CHROME[v]][i]);
+}
+
+/* ============ RAIL ============ */
+const rail=$('#rail');
+function renderRail(){
+  let html=`<div class="rhead">Collections · ${SETS.length}</div>`, lastG=null;
+  SETS.forEach(s=>{ if(s.group!==lastG){html+=`<div class="railgroup">${s.group}</div>`;lastG=s.group;}
+    html+=`<button class="setrow ${s.id===state.active?'active':''}" data-set="${s.id}"><span class="dotk" style="background:${s.dot}"></span><span class="setname">${s.name}</span><span class="cnt">${s.count}</span></button>`; });
+  rail.innerHTML=html;
+}
+
+/* ============ MAIN ============ */
+const main=$('#main');
+const SUB={primitives:'12 base color ramps · 50 → 900 · mode-independent',semantic:'UI roles · Light & Dark · ↳ = inherits · ⚡ = conditional alias',spacing:'Base-8 spacing scale',padding:'Component padding · aliases the spacing scale',radius:'Corner radii',height:'Component sizing',shadows:'Elevation & focus effects → CSS box-shadow',typography:'Type ramp specimens · sizes indicative'};
+function renderMain(){
+  const set=SETS.find(s=>s.id===state.active);
+  let html=`<div class="crumbs"><b>Morpheus</b> / <span>${set.group}</span> / <b>${set.name}</b>${set.modal?`<span class="modechip">${state.mode}</span>`:''}</div>`;
+  html+=`<div class="maintitle">${set.name}</div><div class="mainsub">${set.count} tokens · ${SUB[set.id]}</div>`;
+  const inner=({ramps:renderRamps,colorgrid:renderColorGrid,spacing:()=>renderScalar('spacing'),padding:renderPadding,radius:()=>renderScalar('radius'),height:()=>renderScalar('height'),shadows:renderShadows,typo:renderTypo})[set.kind]();
+  html+=`<div class="maincols">${inner||`<div class="empty">No tokens match “${esc(state.search)}”.</div>`}</div>`;
+  html+=`<div class="platbar">${PLATFORMS.map(p=>`<button data-plat="${p}" class="${p===state.platform?'on':''}">${p}</button>`).join('')}<span class="platnote">export · scales across tools & platforms</span></div>`;
+  html+=`<pre class="codeview">${renderExport(set)}</pre>`;
+  main.innerHTML=html;
+}
+function grp(t,c,inner){return `<div class="group"><h3><svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>${esc(t)}<span class="gcount">${c}</span></h3><div class="grpbody">${inner}</div></div>`;}
+
+function renderRamps(){
+  let out='';
+  for(const fam in PRIM){
+    const steps=Object.keys(PRIM[fam]).filter(st=>match(`base/${fam}/${st}`)||match(fam));
+    if(!steps.length)continue;
+    let sw='';
+    steps.forEach(st=>{const p=`base/${fam}/${st}`,hex=PRIM[fam][st];sw+=`<div class="sw ${state.selected===p?'active':''}" data-tok="${escA(p)}"><div class="chip" style="${chipStyle(hex)}"></div><div class="step">${st}</div></div>`;});
+    out+=`<div class="ramp"><div class="rname">${fam} <span class="rpath">base/${fam}</span></div><div class="swatches">${sw}</div></div>`;
+  }
+  return out;
+}
+function renderColorGrid(){
+  const groups={};
+  Object.keys(SEM).filter(match).forEach(p=>{const g=p.split('/')[0];(groups[g]=groups[g]||[]).push(p);});
+  let out='';
+  Object.keys(groups).forEach(g=>{
+    let cards='';
+    groups[g].forEach(p=>{const hex=semHex(p),label=p.split('/').slice(1).join('/')||p,al=isAliased(p),cond=condAlias(p);const sub=al?('↳ '+esc(aliasTarget(p,MI()))):hex.toUpperCase();cards+=`<div class="card ${state.selected===p?'active':''} ${al?'aliased':''}" data-tok="${escA(p)}" title="${hex.toUpperCase()}${al?' · inherits '+escA(aliasTarget(p,MI())):''}">${cond?'<span class="condflag" title="conditional — differs by mode">⚡</span>':''}<div class="cc" style="${chipStyle(hex)}"></div><div class="ci"><div class="cn">${esc(label)}</div><div class="ch">${sub}</div></div></div>`;});
+    out+=grp(g,groups[g].length,`<div class="cards">${cards}</div>`);
+  });
+  return out;
+}
+function renderScalar(kind){
+  const src=kind==='spacing'?SPACING:kind==='radius'?RADIUS:HEIGHT;
+  const rows=src.filter(([n])=>match(kind+'/'+n));
+  if(!rows.length)return '';
+  let out='';
+  rows.forEach(([n,v])=>{const p=kind+'/'+n;let prev,val;
+    if(kind==='spacing'){prev=`<span class="spx" style="width:${Math.max(2,Math.min(80,v))}px"></span>`;val=v+'px';}
+    else if(kind==='radius'){const r=v===999?12:Math.min(12,v);prev=`<span class="radbox" style="border-radius:${r}px 0 0 0"></span>`;val=(v===999?'999px':v+'px');}
+    else{prev=`<span class="spx" style="width:${Math.max(2,Math.min(80,v))}px;height:${Math.max(6,Math.min(20,v/3))}px"></span>`;val=v+'px';}
+    out+=`<div class="trow ${state.selected===p?'active':''}" data-tok="${escA(p)}"><span class="prev">${prev}</span><span class="tk"><span class="tn">${esc(n)}</span><span class="tp">${p}</span></span><span class="tv">${val}</span></div>`;});
+  return `<div class="rows">${out}</div>`;
+}
+function renderPadding(){
+  const rows=PADDING.filter(([n])=>match('padding/'+n));
+  if(!rows.length)return '';
+  let out='';
+  rows.forEach(([n,v,al])=>{const p='padding/'+n;out+=`<div class="trow ${state.selected===p?'active':''}" data-tok="${escA(p)}"><span class="prev"><span class="spx" style="width:${Math.max(2,Math.min(80,v))}px"></span></span><span class="tk"><span class="tn">${esc(n)}</span><span class="tp">${p}</span></span><span class="tv"><span class="al">→ ${esc(al)}</span> ${v}px</span></div>`;});
+  return `<div class="rows">${out}</div>`;
+}
+function renderShadows(){
+  const names=Object.keys(SHADOWS).filter(n=>match('shadow/'+n));
+  if(!names.length)return '';
+  const groups={};names.forEach(n=>{const g=n.split('/')[0];(groups[g]=groups[g]||[]).push(n);});
+  let out='';
+  Object.keys(groups).forEach(g=>{let rows='';groups[g].forEach(n=>{const p='shadow/'+n,css=effToCss(SHADOWS[n]);rows+=`<div class="trow ${state.selected===p?'active':''}" data-tok="${escA(p)}"><span class="prev"><span class="shadowbox" style="box-shadow:${css}"></span></span><span class="tk"><span class="tn">${esc(n.split('/').slice(1).join('/'))}</span><span class="tp">${p}</span></span></div>`;});out+=grp(g,groups[g].length,`<div class="rows">${rows}</div>`);});
+  return out;
+}
+function renderTypo(){
+  const groups={};TYPO.filter(t=>match('type/'+t.path)).forEach(t=>{const g=t.path.split('/')[0];(groups[g]=groups[g]||[]).push(t);});
+  let out='';
+  Object.keys(groups).forEach(g=>{let rows='';groups[g].forEach(t=>{const p='type/'+t.path;rows+=`<div class="trow ${state.selected===p?'active':''}" data-tok="${escA(p)}"><span class="tk"><span class="typespec" style="font-family:'${t.family}',sans-serif;font-size:${Math.min(30,t.size)}px;font-weight:${t.weight};line-height:${t.lh}">${esc(t.path.split('/').slice(1).join(' '))||g}</span><span class="tp" style="margin-top:4px">${p} · ${t.size}px / ${t.lh} · ${t.weight} · ${t.family}</span></span></div>`;});out+=grp(g,groups[g].length,`<div class="rows" style="max-width:720px">${rows}</div>`);});
+  return out;
+}
+
+/* ---- multi-platform export (scales across tools & platforms) ---- */
+function renderExport(set){
+  if(state.platform==='JSON') return exportJSON(set);
+  const rows=flattenSet(set);
+  if(state.platform==='CSS')     return esc(exportCSS(rows,set));
+  if(state.platform==='Tailwind')return esc(exportTailwind(rows,set));
+  if(state.platform==='Swift')   return esc(exportSwift(rows,set));
+  if(state.platform==='Kotlin')  return esc(exportKotlin(rows,set));
+  return '';
+}
+function flattenSet(set){
+  const out=[];
+  if(set.kind==='ramps'){for(const f in PRIM)for(const s in PRIM[f])out.push({name:`color/base/${f}/${s}`,color:true,light:PRIM[f][s],dark:PRIM[f][s]});}
+  else if(set.kind==='colorgrid'){for(const p in SEM)out.push({name:'color/'+p,color:true,light:SEM[p][0],dark:SEM[p][1],ref:ALIAS[p]});}
+  else if(set.kind==='shadows'){for(const n in SHADOWS)out.push({name:'shadow/'+n,value:effToCss(SHADOWS[n])});}
+  else if(set.kind==='spacing'){SPACING.forEach(([n,v])=>out.push({name:'spacing/'+n,value:v+'px',num:v}));}
+  else if(set.kind==='radius'){RADIUS.forEach(([n,v])=>out.push({name:'radius/'+n,value:(v===999?'999px':v+'px'),num:v}));}
+  else if(set.kind==='height'){HEIGHT.forEach(([n,v])=>out.push({name:'height/'+n,value:v+'px',num:v}));}
+  else if(set.kind==='padding'){PADDING.forEach(([n,v,al])=>out.push({name:'padding/'+n,value:v+'px',num:v}));}
+  else if(set.kind==='typo'){TYPO.forEach(t=>out.push({name:'type/'+t.path,value:`${t.size}px/${t.lh} ${t.weight} ${t.family}`}));}
+  return out;
+}
+const kebab=n=>n.replace(/[\/ ]+/g,'-').toLowerCase();
+const camel=n=>{const p=n.replace(/[^a-z0-9]+/gi,' ').trim().split(' ');return p.map((w,i)=>i?w.charAt(0).toUpperCase()+w.slice(1):w.toLowerCase()).join('');};
+const pascal=n=>{const c=camel(n);return c.charAt(0).toUpperCase()+c.slice(1);};
+function hexToArgb(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');let a='FF',rgb=h.slice(0,6);if(h.length===8){rgb=h.slice(0,6);a=h.slice(6,8);}return '0x'+(a+rgb).toUpperCase();}
+function exportCSS(rows,set){
+  const dual=set.kind==='colorgrid';
+  let light=rows.map(r=>`  --${kebab(r.name)}: ${r.color?r.light:r.value};`).join('\n');
+  let out=`/* Morpheus ·  · CSS custom properties */\n:root {\n${light}\n}`;
+  if(dual){ out+=`\n\n[data-theme="dark"] {\n`+rows.map(r=>`  --${kebab(r.name)}: ${r.dark};`).join('\n')+`\n}`; }
+  return out;
+}
+function exportTailwind(rows,set){
+  const body=rows.map(r=>`      '${kebab(r.name)}': '${r.color?r.light:(r.num!==undefined?r.num+'px':r.value)}',`).join('\n');
+  const key=set.kind==='spacing'||set.kind==='radius'||set.kind==='height'||set.kind==='padding'?'spacing':(rows[0]&&rows[0].color?'colors':'extend');
+  return `// tailwind.config.js · Morpheus ${set.name}\nmodule.exports = {\n  theme: {\n    extend: {\n      ${key}: {\n${body}\n      }\n    }\n  }\n}${set.kind==='colorgrid'?'\n// Dark mode resolves via [data-theme="dark"] CSS vars.':''}`;
+}
+function exportSwift(rows,set){
+  const b=rows.filter(r=>r.color).map(r=>`    static let ${camel(r.name.replace('color/',''))} = Color(hex: "${r.light}")${r.dark!==r.light?`  // dark: ${r.dark}`:''}`).join('\n');
+  if(!b) return `// Morpheus ${set.name}\nenum MorpheusTokens {\n`+rows.map(r=>`    static let ${camel(r.name)} = "${r.value}"`).join('\n')+`\n}`;
+  return `// Morpheus ${set.name} · SwiftUI\nimport SwiftUI\nenum MorpheusColor {\n${b}\n}`;
+}
+function exportKotlin(rows,set){
+  const b=rows.filter(r=>r.color).map(r=>`    val ${pascal(r.name.replace('color/',''))} = Color(${hexToArgb(r.light)})${r.dark!==r.light?`  // dark ${hexToArgb(r.dark)}`:''}`).join('\n');
+  if(!b) return `// Morpheus ${set.name}\nobject MorpheusTokens {\n`+rows.map(r=>`    const val ${pascal(r.name)} = "${r.value}"`).join('\n')+`\n}`;
+  return `// Morpheus ${set.name} · Compose\nimport androidx.compose.ui.graphics.Color\nobject MorpheusColor {\n${b}\n}`;
+}
+
+/* JSON code view */
+function exportJSON(set){
+  let obj={};
+  if(set.kind==='ramps'){obj={base:{}};for(const f in PRIM){obj.base[f]={};for(const s in PRIM[f])obj.base[f][s]={value:PRIM[f][s],type:'color'};}}
+  else if(set.kind==='colorgrid'){const ref=(p,i)=>{const t=aliasTarget(p,i);return t?'{'+t.replace(/[\/ ]/g,'.')+'}':SEM[p][i];};for(const p in SEM)setDeep(obj,p,{type:'color',value:{Light:ref(p,0),Dark:ref(p,1)}});}
+  else if(set.kind==='shadows'){for(const n in SHADOWS)setDeep(obj,n,{value:effToCss(SHADOWS[n]),type:'boxShadow'});}
+  else if(set.kind==='spacing'){SPACING.forEach(([n,v])=>obj[n]={value:v+'px',type:'spacing'});}
+  else if(set.kind==='radius'){RADIUS.forEach(([n,v])=>obj[n]={value:(v===999?'999px':v+'px'),type:'borderRadius'});}
+  else if(set.kind==='height'){HEIGHT.forEach(([n,v])=>setDeep(obj,n,{value:v+'px',type:'sizing'}));}
+  else if(set.kind==='padding'){PADDING.forEach(([n,v,al])=>obj[n]={value:'{'+al.replace(/[\/ ]/g,'.')+'}',type:'spacing'});}
+  else if(set.kind==='typo'){TYPO.forEach(t=>setDeep(obj,t.path,{value:{fontSize:t.size+'px',lineHeight:String(t.lh),fontWeight:String(t.weight),fontFamily:t.family},type:'typography'}));}
+  return colorize(JSON.stringify(obj,null,2));
+}
+function setDeep(obj,path,val){const ks=path.split('/');let o=obj;ks.forEach((k,i)=>{if(i===ks.length-1)o[k]=val;else o=o[k]=o[k]||{};});}
+function colorize(s){return esc(s).replace(/"([^"]+)":/g,'"<span class="k">$1</span>":').replace(/: "(#[0-9A-Fa-f]{3,8})"/g,(m,h)=>`: "<span class="sw-inline" style="${chipStyle(h)}"></span><span class="s">${h}</span>"`).replace(/"(Light|Dark)"/g,'"<span class="d2">$1</span>"').replace(/: "(\{[^"]+\})"/g,': "<span class="d2">$1</span>"').replace(/: "([^#][^"]*)"/g,': "<span class="s">$1</span>"');}
+
+/* ============ INSPECTOR ============ */
+const inspector=$('#inspector'),inspIn=$('#inspIn');
+function openInspector(path){
+  const leaf=LOOKUP[path];if(!leaf)return;state.selected=path;
+  const name=path.split('/').pop(),cssVar='--'+path.replace(/[\/ ]+/g,'-').toLowerCase();
+  let preview,fields='';
+  if(leaf.kind==='prim'||leaf.kind==='sem'){
+    const hex=leaf.kind==='prim'?leaf.hex:(state.mode==='Light'?leaf.L:leaf.D);
+    preview=`<div class="insp-preview" style="${chipStyle(hex)}"><span class="pv">${hex.toUpperCase()}</span></div>`;
+    fields+=field('Type',`<span class="pill"><span class="cdot" style="width:12px;height:12px;${chipStyle(hex)}"></span>color</span>`);
+    if(leaf.kind==='sem'){
+      fields+=inheritanceField(path);
+      fields+=field('Conditions · mode',`<div class="modes2">
+        <div class="mv ${state.mode==='Light'?'cur':''}"><span class="ml">Light</span><span class="cdot" style="width:16px;height:16px;${chipStyle(leaf.L)}"></span><span class="mval">${leaf.L.toUpperCase()}</span>${state.mode==='Light'?'<span class="star">●</span>':''}</div>
+        <div class="mv ${state.mode==='Dark'?'cur':''}"><span class="ml">Dark</span><span class="cdot" style="width:16px;height:16px;${chipStyle(leaf.D)}"></span><span class="mval">${leaf.D.toUpperCase()}</span>${state.mode==='Dark'?'<span class="star">●</span>':''}</div></div>`);
+    }
+    fields+=field(leaf.kind==='sem'?state.mode+' hex':'Hex',`${hex.toUpperCase()}${copy(hex)}`);
+    fields+=field('RGBA',`${toRgba(hex)}${copy(toRgba(hex))}`);
+    if(/^#([0-9a-f]{8})$/i.test(hex)){const base='#'+hex.slice(1,7).toUpperCase(),a=Math.round(parseInt(hex.slice(7,9),16)/255*100);fields+=field('Calculation',`<span class="calc"><span class="cdot" style="width:14px;height:14px;background:${base}"></span>${base} <span class="op2">×</span> alpha <b>${a}%</b></span>`);}
+    const mp=HEX2PRIM[hex.toLowerCase()];
+    if(mp&&mp!==path)fields+=field('Resolves to primitive',`<span class="matchrow"><span class="cdot" style="width:16px;height:16px;${chipStyle(hex)}"></span>${mp}</span>`);
+  } else if(leaf.kind==='shadow'){
+    const css=effToCss(leaf.raw);
+    preview=`<div class="insp-preview" style="background:var(--bg);align-items:center;justify-content:center"><div style="width:120px;height:60px;border-radius:12px;background:var(--surface);box-shadow:${css}"></div></div>`;
+    fields+=field('Type',`<span class="pill">boxShadow</span>`)+field('CSS',`${esc(css)}${copy(css)}`)+field('Figma',esc(leaf.raw));
+  } else if(leaf.kind==='typo'){
+    const t=leaf.spec;
+    preview=`<div class="insp-preview" style="background:var(--bg);align-items:center"><span style="font-family:'${t.family}',sans-serif;font-size:${Math.min(34,t.size)}px;font-weight:${t.weight};line-height:${t.lh}">Ag</span></div>`;
+    fields+=field('Type',`<span class="pill">typography</span>`)+field('Font size',`${t.size}px${copy(t.size+'px')}`)+field('Line height',String(t.lh))+field('Weight',String(t.weight))+field('Family',t.family);
+  } else {
+    preview=`<div class="insp-preview" style="background:var(--bg);align-items:center;justify-content:center"><span style="font-family:var(--mono);font-size:26px;font-weight:600">${esc(leaf.value)}</span></div>`;
+    fields+=field('Type',`<span class="pill">${leaf.type}</span>`);
+    if(leaf.alias)fields+=field('Alias of',`<span class="matchrow">→ ${esc(leaf.alias)}</span>`);
+    fields+=field('Value',`${esc(leaf.value)}${copy(String(leaf.value))}`);
+  }
+  fields+=field('CSS variable',`${cssVar}${copy(cssVar)}`)+field('Token path',`${path}${copy(path)}`);
+  inspIn.innerHTML=`<div class="insp-head"><span class="t">Inspect</span><button class="x" id="inspClose"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>${preview}<div class="insp-name"><div class="nm">${esc(name)}</div><div class="pth">${esc(path)}</div></div><div class="insp-fields">${fields}</div>`;
+  inspector.classList.add('open');
+  $('#inspClose').onclick=closeInspector;
+  renderMain();
+}
+function closeInspector(){inspector.classList.remove('open');state.selected=null;renderMain();}
+function field(l,b){return `<div class="fld"><div class="fl">${l}</div><div class="fv">${b}</div></div>`;}
+function chainLine(path,i){
+  const ch=chainOf(path,i); const hex=SEM[path][i];
+  const parts=ch.map(t=>`<span class="lnk" data-tok="${escA(t)}">${esc(t)}</span>`);
+  const body=parts.length?parts.join('<span class="arw">→</span>')+`<span class="arw">→</span>`:'';
+  return `<span class="chainline">${body}<span class="cdot" style="width:13px;height:13px;${chipStyle(hex)}"></span><span class="lnk" style="color:var(--muted)">${hex.toUpperCase()}</span></span>`;
+}
+function inheritanceField(path){
+  if(!ALIAS[path]) return field('Inheritance',`<span class="pill">defined value · no alias</span>`);
+  if(condAlias(path)){
+    return field(`Inheritance <span class="badge cond">conditional</span>`,`<div class="modes2"><div class="mv"><span class="ml">Light</span>${chainLine(path,0)}</div><div class="mv"><span class="ml">Dark</span>${chainLine(path,1)}</div></div>`);
+  }
+  return field('Inheritance',chainLine(path,MI()));
+}
+function copy(v){return `<button class="copy" data-copy="${escA(v)}" title="Copy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>`;}
+
+/* ============================================================
+   SYNC + HISTORY  (source-of-truth surface)
+   The Figma pull is real (today). Pipeline / branches / history
+   below are illustrative — representative of the platform concept.
+   ============================================================ */
+const nSem=Object.keys(SEM).length, nPrim=SETS[0].count;
+const PIPE=[['Pull from Figma',nSem+' vars','✓'],['Validate','0 errors · 3 warnings','✓'],['Transform','CSS · iOS · Android · JSON','✓'],['Publish','@morpheus/tokens@2.4.1','✓'],['Deploy','Storybook + docs','✓']];
+const FEED=[
+ {ic:'F',a:'Pulled '+nSem+' variables + '+nPrim+' primitives from Figma',src:'you · MCP bridge',t:'just now',real:true},
+ {ic:'⚙',a:'CI #248 published @morpheus/tokens@2.4.1',src:'pipeline · main',t:'2 h ago'},
+ {ic:'<>',a:'front-end: surface/card-frosted → alpha 0.78',src:'a.rivera · feat/frosted',t:'yesterday'},
+ {ic:'F',a:'Renamed link/primary → link/default (11 refs)',src:'design · Figma',t:'2 d ago'},
+ {ic:'⚙',a:'CI #247 failed · contrast check on status/warning/dark',src:'pipeline · main',t:'3 d ago',warn:true}
+];
+const BRANCHES=[
+ {name:'main',prot:true,ahead:0,behind:0,by:'source of truth',last:'v2.4.1 · 2 h ago'},
+ {name:'feat/dark-mode-contrast',ahead:12,behind:0,by:'j.okafor',last:'raise dark status contrast · 5 h ago'},
+ {name:'brand/arrow-theme',ahead:40,behind:6,by:'design',last:'Arrow brand overrides · 1 d ago'}
+];
+const CHANGES=[
+ {op:'+',cls:'add',path:'role/teal-* · role/violet-* · role/magenta-*',note:'9 role tokens added'},
+ {op:'+',cls:'add',path:'accent/glow · accent/glow-secondary',note:'2 added'},
+ {op:'~',cls:'mod',path:'accent/default · Dark',from:'#1055E2',to:'#7FA9F9'},
+ {op:'~',cls:'mod',path:'surface/canvas-content · Dark',from:'#141419',to:'#1B1B21'},
+ {op:'→',cls:'ren',path:'link/primary → link/default',note:'renamed · 11 refs updated'}
+];
+const VERSIONS=[
+ {tag:'v2.4.1',d:'Jul 31, 2026',note:'Dark-mode roles + accent glow · '+nSem+' color tokens'},
+ {tag:'v2.4.0',d:'Jul 18, 2026',note:'Re-theme: accent/* + role/* layer'},
+ {tag:'v2.3.0',d:'Jun 30, 2026',note:'Semantic Dark mode introduced'}
+];
+const ROLES=[
+ {who:'Lindsay Auchinachie',role:'Owner',scope:'Design-system lead · manage modes & branches',av:'#9d5be8'},
+ {who:'Design',role:'Editor',scope:'Figma variables (source)',av:'#e6399b'},
+ {who:'Front-end',role:'Editor',scope:'code values · CI publish',av:'#3e5be8'},
+ {who:'Product',role:'Reviewer',scope:'required approval on main',av:'#27aa88'},
+ {who:'Organisation',role:'Viewer',scope:'read · consume tokens',av:'#6b7280'}
+];
+function pill(status){const ok=status!=='warn';return `<span class="statuspill ${ok?'ok':'warn'}"><span class="dot"></span>${ok?'in sync':'action needed'}</span>`;}
+function demoflag(){return `<span class="demoflag">◭ illustrative · pipeline &amp; history are representative</span>`;}
+function laneIcon(t){return `<span class="ic">${t}</span>`;}
+function renderSync(){
+  const figKv=[['Source','Morpheus · Moderne Design System'],['File','fQTkGSFbYyE7LiHuQJsENC'],['Pulled',nSem+' semantic · '+nPrim+' primitives · 16 shadows'],['Last sync','just now · Jul 31, 2026'],['By','you · MCP bridge']];
+  const codeKv=[['Repo','moderne/morpheus-tokens'],['Branch','main'],['Artifacts','tokens.css · .json · .swift · .xml'],['Last build','2 h ago · Jul 31, 2026'],['By','style-dictionary · CI']];
+  const lane=(icon,title,sub,dir,kv,st,btn)=>`<div class="lane">
+    <div class="lh">${laneIcon(icon)}<div class="tt">${title}<small>${sub}</small></div><span class="arrow">${dir}</span></div>
+    ${pill(st)}
+    ${kv.map(([k,v])=>`<div class="kv"><span class="k2">${k}</span><span class="v2">${esc(v)}</span></div>`).join('')}
+    <div class="laneact"><button class="btn pri" data-demo="${btn}">${btn}</button></div></div>`;
+  const stages=PIPE.map(([n,m,tk])=>`<div class="stage"><div class="sn"><span class="tick">${tk}</span>${esc(n)}</div><div class="sm">${esc(m)}</div></div>`).join('');
+  const feed=FEED.map(f=>`<div class="frow"><span class="fic">${esc(f.ic)}</span><div class="fmain"><div class="fa">${esc(f.a)} ${f.real?'<span class="badge cond">real</span>':''}${f.warn?'<span class="badge cond" style="background:rgba(255,168,61,.16);color:#b9791a">failed</span>':''}</div><div class="fsrc">${esc(f.src)}</div></div><span class="ft">${f.t}</span></div>`).join('');
+  return `<div class="panel">
+    <div class="phead"><div class="kick">Sync &amp; pipeline</div><h1>One source of truth, synced both ways ${demoflag()}</h1>
+    <p>Define structure, relationships, and calculations once — then let it scale across brands, tools, and platforms. Design edits flow in from Figma; value edits flow back from the front end; CI keeps every consumer in step.</p></div>
+    <div class="lanes">
+      ${lane('◈','Figma → Tokens','design source of truth','→',figKv,'ok','Sync from Figma')}
+      ${lane('&lt;/&gt;','Front-end → Tokens','code &amp; CI publish','⇄',codeKv,'ok','Sync from code')}
+    </div>
+    <div class="seclabel">CI/CD pipeline<span class="ln"></span></div>
+    <div class="pipe">${stages}</div>
+    <div class="pipemeta"><span class="statuspill ok"><span class="dot"></span>passing</span><span>run #248</span><span>branch main</span><span>4.2s</span><span>2 h ago</span><button class="btn" data-demo="Run pipeline" style="margin-left:auto">▷ Run pipeline</button></div>
+    <div class="seclabel">Recent activity<span class="ln"></span></div>
+    <div class="feed">${feed}</div>
+  </div>`;
+}
+function renderHistory(){
+  const branches=BRANCHES.map(b=>`<div class="brow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M6 8.5v7M8.5 6.5h5A2.5 2.5 0 0 1 16 9v1"/></svg>
+    <div style="flex:1;min-width:0"><div class="branchname">${esc(b.name)} ${b.prot?'<span class="badge2 prot">protected</span>':''}</div><div class="fsrc">${esc(b.by)} · ${esc(b.last)}</div></div>
+    <span class="ab"><span class="up">↑${b.ahead}</span> <span class="dn">↓${b.behind}</span></span></div>`).join('');
+  const diffs=CHANGES.map(c=>`<div class="diffrow"><span class="op ${c.cls}">${c.op}</span><span class="dp">${esc(c.path)}</span>${c.from?`<span class="dval"><span class="cdot" style="width:13px;height:13px;background:${c.from}"></span>${c.from}<span class="op2">→</span><span class="cdot" style="width:13px;height:13px;background:${c.to}"></span>${c.to}</span>`:`<span class="dval">${esc(c.note||'')}</span>`}</div>`).join('');
+  const versions=VERSIONS.map(v=>`<div class="vrow"><span class="vtag">${v.tag}</span><div class="vmeta"><div style="font-size:12.5px">${esc(v.note)}</div><div class="vd">${v.d}</div></div></div>`).join('');
+  const perms=ROLES.map(r=>`<tr><td><div class="who"><span class="av" style="background:${r.av}">${esc(r.who[0])}</span>${esc(r.who)}</div></td><td><span class="badge2">${esc(r.role)}</span></td><td class="fsrc">${esc(r.scope)}</td></tr>`).join('');
+  return `<div class="panel">
+    <div class="phead"><div class="kick">Collaboration, branching &amp; governance</div><h1>Track changes. Manage permissions. Version confidently. ${demoflag()}</h1>
+    <p>Make this the source of truth that finally has history — every change reviewed, versioned, and attributable, with brand and theme work isolated on branches until it's ready to merge.</p></div>
+    <div class="seclabel">Branches<span class="ln"></span></div>
+    <div class="card2">${branches}</div>
+    <div class="seclabel">Changes · since v2.4.0<span class="ln"></span></div>
+    <div class="card2">${diffs}</div>
+    <div class="seclabel">Versions<span class="ln"></span></div>
+    <div class="card2">${versions}</div>
+    <div class="seclabel">Permissions &amp; governance<span class="ln"></span></div>
+    <div class="card2"><table class="ptable"><thead><tr><th>Member</th><th>Role</th><th>Scope</th></tr></thead><tbody>${perms}</tbody></table></div>
+  </div>`;
+}
+function renderView(){
+  document.body.classList.remove('view-tokens','view-sync','view-history');
+  document.body.classList.add('view-'+state.view);
+  if(state.view!=='tokens'){closeInspector();document.body.classList.remove('code');}
+  if(state.view==='tokens'){renderRail();renderMain();syncSeg('viewseg','code');}
+  else if(state.view==='sync'){main.innerHTML=renderSync();}
+  else{main.innerHTML=renderHistory();}
+}
+
+/* ============ EVENTS ============ */
+rail.addEventListener('click',e=>{const r=e.target.closest('[data-set]');if(r){state.active=r.dataset.set;document.body.classList.remove('code');syncSeg('viewseg','code');renderRail();renderMain();}});
+main.addEventListener('click',e=>{
+  const pl=e.target.closest('[data-plat]');if(pl){state.platform=pl.dataset.plat;renderMain();return;}
+  const dm=e.target.closest('[data-demo]');if(dm){toast(dm.dataset.demo+' — prototype action');return;}
+  const h=e.target.closest('.group>h3');if(h){h.parentElement.classList.toggle('collapsed');return;}
+  const t=e.target.closest('[data-tok]');if(t)openInspector(t.dataset.tok);
+});
+$('#navseg').addEventListener('click',e=>{const b=e.target.closest('[data-nav]');if(!b)return;state.view=b.dataset.nav;$('#navseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));renderView();});
+inspIn.addEventListener('click',e=>{const l=e.target.closest('.lnk[data-tok]');if(l){const tk=l.dataset.tok;if(LOOKUP[tk])openInspector(tk);}});
+document.addEventListener('click',e=>{const c=e.target.closest('[data-copy]');if(c){navigator.clipboard&&navigator.clipboard.writeText(c.dataset.copy);toast('Copied '+c.dataset.copy);}});
+$('#search').addEventListener('input',e=>{state.search=e.target.value;renderMain();});
+
+const modeseg=$('#modeseg');
+modeseg.addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(!b)return;state.mode=b.dataset.mode;modeseg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));applyMode();renderRail();renderMain();if(state.selected)openInspector(state.selected);});
+
+const viewseg=$('#viewseg');
+function syncSeg(id,codeVal){const el=$('#'+id);el.querySelectorAll('button').forEach(b=>b.classList.toggle('on',(b.dataset.view===codeVal)===document.body.classList.contains('code')));}
+viewseg.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(!b)return;document.body.classList.toggle('code',b.dataset.view==='code');syncSeg('viewseg','code');});
+
+let toastT;const toastEl=$('#toast');
+function toast(m){toastEl.textContent=m;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),1500);}
+
+/* init */
+const mp=new URLSearchParams(location.search).get('mode');
+if(mp==='Light'||mp==='Dark'){state.mode=mp;modeseg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.mode===mp));}
+applyMode();renderView();
+</script>
+</body>
+</html>
