@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neo type ramp — consumption audit in moderne-ui</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --font-display: 'Poppins', 'Geist', system-ui, sans-serif;
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --green: #30F284;
+}
+[data-theme="light"] {
+  --bg: #F2F0EA; --card: #FBFAF6; --surface: #EDEBE2; --surface2: #E4E1D6;
+  --line: rgba(35,35,66,.12); --line-strong: rgba(35,35,66,.50);
+  --text: #232342; --muted: #62627A; --accent: #1245AE;
+  --dead: #C9291C; --warn: #B68B12; --ok: #1D5937;
+}
+[data-theme="dark"] {
+  --bg: #141419; --card: #26262E; --surface: #2A2A32; --surface2: #33333D;
+  --line: rgba(240,240,246,.12); --line-strong: rgba(240,240,246,.38);
+  --text: #F1F0EA; --muted: #9C9CA8; --accent: #7FA9F9;
+  --dead: #FA826F; --warn: #E8BA4C; --ok: #4ADE80;
+}
+body { font-family: var(--font-sans); font-size: 14px; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; transition: background .2s; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+main { max-width: 1060px; margin: 0 auto; padding: 40px 36px 90px; }
+.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+h1 { font-family: var(--font-display); font-size: 28px; font-weight: 600; letter-spacing: -.02em; line-height: 1.2; }
+.sub { color: var(--muted); margin-top: 8px; max-width: 720px; line-height: 1.55; }
+.bar { height: 4px; width: 64px; background: var(--green); border-radius: 2px; margin-bottom: 16px; }
+.mode-btn { width: 34px; height: 34px; border-radius: 4px; border: 1px solid var(--line-strong); background: var(--card); color: var(--text); cursor: pointer; font-size: 15px; flex: none; }
+h2 { font-family: var(--font-display); font-size: 18px; font-weight: 600; margin: 46px 0 6px; }
+.h2sub { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+code, .mono { font-family: var(--font-mono); }
+p code, li code { font-size: 12px; background: var(--surface); border-radius: 4px; padding: 1px 5px; }
+
+.paths { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.path { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+.path .n { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.path h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.path p { font-size: 13px; line-height: 1.55; color: var(--muted); }
+.path code { font-size: 11px; }
+
+.tbl { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.trow { display: grid; grid-template-columns: 170px 60px 120px 1fr 120px; align-items: center; gap: 16px; padding: 12px 22px; border-bottom: 1px solid var(--line); }
+.trow:last-child { border-bottom: none; }
+.trow.thead { background: var(--surface); padding: 10px 22px; }
+.trow.thead span { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.trow .tok { font-family: var(--font-mono); font-size: 12px; color: var(--text); }
+.trow .val, .trow .slot { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.trow .slot.none { color: var(--warn); }
+.usage { display: flex; align-items: center; gap: 10px; }
+.usage .track { flex: 1; height: 12px; background: var(--surface); border-radius: 3px; overflow: hidden; }
+.usage .fill { height: 100%; border-radius: 3px; background: var(--accent); }
+.usage .ct { font-family: var(--font-mono); font-size: 11px; color: var(--muted); width: 150px; flex: none; }
+.verdict { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 3px 10px; text-align: center; justify-self: start; }
+.verdict.dead { color: var(--dead); border: 1px solid var(--dead); }
+.verdict.side { color: var(--warn); border: 1px solid var(--warn); }
+.verdict.live { color: var(--ok); border: 1px solid var(--ok); }
+.verdict.hero { background: var(--green); color: #1D5937; border: none; }
+
+.finding { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; margin-bottom: 12px; display: grid; grid-template-columns: 34px 1fr; gap: 14px; }
+.finding .num { font-family: var(--font-mono); font-size: 15px; font-weight: 500; color: var(--accent); padding-top: 1px; }
+.finding h3 { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+.finding p { font-size: 13px; line-height: 1.6; color: var(--muted); }
+
+.todo { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.todo li { list-style: none; display: flex; gap: 12px; align-items: baseline; padding: 13px 22px; border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.55; }
+.todo li:last-child { border-bottom: none; }
+.todo .pri { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; color: var(--muted); flex: none; width: 24px; }
+
+footer { margin-top: 48px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.8; }
+@media (max-width: 800px) { .paths { grid-template-columns: 1fr; } .trow { grid-template-columns: 130px 44px 90px 1fr 90px; gap: 8px; padding: 12px 14px; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div>
+      <div class="bar"></div>
+      <h1>Where the type tokens actually go</h1>
+      <p class="sub">Every Neo <code>Font size</code> token, traced from the design system into <code>moderne-ui</code>: which ones real pixels depend on, through which code path, and which are shipped but unreachable. Counts are <b>code sites</b> (grep of <code>components/ pages/ helpers/</code>, tests and stories excluded) — one site may render hundreds of elements.</p>
+    </div>
+    <button class="mode-btn" id="modeBtn" aria-label="Toggle theme">◐</button>
+  </div>
+
+  <h2>The three paths from token to pixels</h2>
+  <div class="h2sub">a token only reaches the screen through one of these</div>
+  <div class="paths">
+    <div class="path"><div class="n">Path 1 · The proper route</div><h3>Typography variant</h3><p>The theme maps a token to a MUI variant (<code>fontSize.sm → bodySm</code>); components write <code>&lt;Typography variant="bodySm"&gt;</code>. Change the token, every consumer follows.</p></div>
+    <div class="path"><div class="n">Path 2 · The side door</div><h3>Direct import</h3><p>A component imports the token and jams it into <code>sx</code>: <code>fontSize: typography.fontSize.xs</code>. Same value, but it bypasses the theme — invisible to variant-level changes and audits.</p></div>
+    <div class="path"><div class="n">Path 3 · Theme default</div><h3>Component default</h3><p>The theme assigns a variant to a component class — every <code>DialogTitle</code> renders <code>h4</code> (20px) without any component asking. 34 dialogs get their size this way.</p></div>
+  </div>
+
+  <h2>Token-by-token consumption</h2>
+  <div class="h2sub">Neo Font size ramp · moderne-ui · 2026-07-31</div>
+  <div class="tbl">
+    <div class="trow thead"><span>Token</span><span>px</span><span>Theme slot</span><span>Code sites (variant + direct)</span><span>Verdict</span></div>
+    <div class="trow"><span class="tok">Font size/h1</span><span class="val">28</span><span class="slot">h1</span><span class="usage"><span class="track"><span class="fill" style="width:0%"></span></span><span class="ct">0</span></span><span class="verdict dead">dead</span></div>
+    <div class="trow"><span class="tok">Font size/h2</span><span class="val">24</span><span class="slot">h2</span><span class="usage"><span class="track"><span class="fill" style="width:0%"></span></span><span class="ct">0</span></span><span class="verdict dead">dead</span></div>
+    <div class="trow"><span class="tok">Font size/h3</span><span class="val">24</span><span class="slot">h3</span><span class="usage"><span class="track"><span class="fill" style="width:6%"></span></span><span class="ct">10 variant</span></span><span class="verdict live">light</span></div>
+    <div class="trow"><span class="tok">Font size/h4</span><span class="val">20</span><span class="slot">h4</span><span class="usage"><span class="track"><span class="fill" style="width:22%"></span></span><span class="ct">2 + 34 dialogs</span></span><span class="verdict live">live</span></div>
+    <div class="trow"><span class="tok">Font size/h5</span><span class="val">18</span><span class="slot none">not mapped</span><span class="usage"><span class="track"><span class="fill" style="width:7%"></span></span><span class="ct">12 direct</span></span><span class="verdict side">side door</span></div>
+    <div class="trow"><span class="tok">Font size/h6</span><span class="val">16</span><span class="slot none">not mapped</span><span class="usage"><span class="track"><span class="fill" style="width:5%"></span></span><span class="ct">8 direct</span></span><span class="verdict side">side door</span></div>
+    <div class="trow"><span class="tok">Font size/default</span><span class="val">16</span><span class="slot">body</span><span class="usage"><span class="track"><span class="fill" style="width:52%"></span></span><span class="ct">51 variant + 34 direct</span></span><span class="verdict live">live</span></div>
+    <div class="trow"><span class="tok">Font size/sm</span><span class="val">14</span><span class="slot">bodySm</span><span class="usage"><span class="track"><span class="fill" style="width:100%"></span></span><span class="ct">88 variant + 74 direct</span></span><span class="verdict hero">workhorse</span></div>
+    <div class="trow"><span class="tok">Font size/xs</span><span class="val">12</span><span class="slot none">not mapped</span><span class="usage"><span class="track"><span class="fill" style="width:52%"></span></span><span class="ct">84 direct</span></span><span class="verdict side">side door</span></div>
+    <div class="trow"><span class="tok">Font size/xxs</span><span class="val">10</span><span class="slot none">not mapped</span><span class="usage"><span class="track"><span class="fill" style="width:8%"></span></span><span class="ct">13 direct</span></span><span class="verdict side">side door</span></div>
+    <div class="trow"><span class="tok">Font size/caption</span><span class="val">13</span><span class="slot none">not mapped</span><span class="usage"><span class="track"><span class="fill" style="width:2%"></span></span><span class="ct">4 direct</span></span><span class="verdict dead">nearly dead</span></div>
+  </div>
+
+  <h2>The findings that matter</h2>
+  <div class="h2sub">beyond the table</div>
+  <div class="finding"><span class="num">1</span><div><h3>The app's biggest text pathway isn't tokenized at all</h3><p>355 of 426 <code>&lt;Typography&gt;</code> usages have <b>no variant</b> and fall through to <code>body1</code> — which the theme hardcodes as a literal <code>'1rem'</code> (marked deprecated), not any Neo token. The most common text in the app bypasses the design system entirely.</p></div></div>
+  <div class="finding"><span class="num">2</span><div><h3>Name collision on <code>caption</code></h3><p>81 usages of <code>variant="caption"</code> render MUI's <i>default</i> caption (0.75rem / 12px) — not Neo's <code>Font size/caption</code> (13px), which has only 4 real consumers. Developers writing <code>variant="caption"</code> almost certainly believe they're on the design system. Same story, smaller: <code>overline</code> (4), <code>subtitle1</code> (7), <code>subtitle2</code> (3) — all un-themed MUI defaults.</p></div></div>
+  <div class="finding"><span class="num">3</span><div><h3>12px is big but homeless</h3><p><code>fontSize.xs</code> is the third-most-consumed size (84 sites) yet has no variant — every use is a manual <code>sx</code> import. That's exactly the pattern that produces drift.</p></div></div>
+  <div class="finding"><span class="num">4</span><div><h3>h1 and h2 are shipped but unreachable</h3><p>Both sync from Figma, build into the npm package, occupy theme slots — and no code path can ever render them. (In Figma, <code>h2</code> is now an explicit alias of <code>h3</code>, by decision, 2026-07-31.)</p></div></div>
+  <div class="finding"><span class="num">5</span><div><h3>The app already agrees with Morpheus about body copy</h3><p>By code-site count the dominant rendered size is <b>14px</b> (~162 sites) over 16px (~85 tokenized + 355 hardcoded). Morpheus's 14px body token doesn't fight the app's reality — it matches it. The <a href="morpheus-type-scale-map.html">consolidated Morpheus scale</a> mostly formalizes what's already true.</p></div></div>
+
+  <h2>What this suggests, in order of value</h2>
+  <div class="h2sub">cheap cleanups before / alongside the Morpheus type migration</div>
+  <ul class="todo">
+    <li><span class="pri">01</span><span>Theme (or lint-ban) <code>caption</code> / <code>overline</code> / <code>subtitle1</code> / <code>subtitle2</code> so the 95 collision sites stop rendering un-tokenized MUI defaults.</span></li>
+    <li><span class="pri">02</span><span>Add an <code>xs</code>-mapped variant so the 84 manual 12px imports have a proper home.</span></li>
+    <li><span class="pri">03</span><span>Sweep the 355 no-variant <code>&lt;Typography&gt;</code> usages onto <code>body</code> / <code>bodySm</code> — decide per case, then remove the deprecated <code>body1</code> literal.</span></li>
+    <li><span class="pri">04</span><span>Tell the Neo owners <code>h1</code> / <code>h2</code> are dead app-side — candidates for pruning or repurposing in the ramp.</span></li>
+    <li><span class="pri">05</span><span>When the Morpheus type migration lands, map its tiers to variants first — the side-door counts above are the exact list of call sites that a variant-level migration would miss.</span></li>
+  </ul>
+
+  <footer>
+    method: grep over components/ pages/ helpers/ (*.tsx/*.ts), tests &amp; stories excluded · counts are code sites, not rendered elements · moderne-ui @ feat/dark-mode, 2026-07-31<br>
+    companions: <a href="morpheus-type-scale-map.html">Morpheus type scale map</a> · <a href="morpheus-type-compare.html">old vs new type, applied</a>
+  </footer>
+</main>
+<script>
+document.getElementById('modeBtn').addEventListener('click', function () {
+  var r = document.documentElement;
+  r.setAttribute('data-theme', r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+</script>
+</body>
+</html>
