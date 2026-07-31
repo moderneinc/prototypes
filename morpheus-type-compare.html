@@ -184,6 +184,12 @@ body {
 .compare.mode-dark .seam,  .compare.mode-dark .handle,  .compare.mode-dark .corner { display: none; }
 .compare.mode-dark .layer--light { visibility: hidden; }
 
+/* Compare slider removed — collapse to a single, undivided view */
+.compare .seam, .compare .handle, .compare .corner { display: none !important; }
+.compare .layer--light { display: none !important; }
+/* Remove the demo control bar, its reopen button, and the divider hint */
+.mode-switch, .ms-reopen, .hint { display: none !important; }
+
 /* primary color variants (demo control): strand bright / deep pairs */
 .compare.primary-violet .layer[data-theme="dark"] {
   --accent: #9D5BE8; --accent-deep: #9D5BE8;
@@ -341,7 +347,7 @@ body {
 /* ============================================================
    App shell — 98px icon rail · 65px global nav · rounded panel
    ============================================================ */
-.app { height: 100%; display: grid; grid-template-columns: 98px 1fr; grid-template-rows: 65px 1fr; grid-template-areas: "nav topbar" "nav main"; background: var(--bg); overflow: hidden; }
+.app { height: 100%; display: grid; grid-template-columns: 98px minmax(0, 1fr); grid-template-rows: auto 65px 1fr; grid-template-areas: "ruler ruler" "nav topbar" "nav main"; background: var(--bg); overflow: hidden; }
 button { font: inherit; cursor: pointer; }  /* element-level so component font sizes win */
 .mono { font-family: var(--font-mono); }
 
@@ -388,8 +394,8 @@ button { font: inherit; cursor: pointer; }  /* element-level so component font s
 .avatar { width: 34px; height: 34px; border-radius: 999px; background: var(--brand-violet); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
 
 /* ---- main panel ---- */
-.main-area { position: relative; grid-area: main; display: flex; flex-direction: column; overflow: hidden; min-height: 0; z-index: 11; background: var(--field); border-top-left-radius: 20px; box-shadow: var(--panel-shadow); }
-.content { flex: 1; min-height: 0; overflow-y: auto; }
+.main-area { position: relative; grid-area: main; display: flex; flex-direction: column; overflow: hidden; min-height: 0; min-width: 0; z-index: 11; background: var(--field); border-top-left-radius: 20px; box-shadow: var(--panel-shadow); }
+.content { flex: 1; min-height: 0; min-width: 0; overflow-y: auto; }
 .content::-webkit-scrollbar { width: 10px; }
 .content::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 999px; border: 3px solid var(--field); }
 .page { display: none; padding: 13px 22px 60px; }
@@ -834,7 +840,19 @@ body.skin-morpheus [data-theme="dark"] .main-area { background: #1B1B21; }
 }
 .dc-help { width: 15px; height: 15px; color: var(--muted); flex: none; }
 .dc-updated { display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
-.dc-toolbar { display: inline-flex; align-items: center; gap: 8px; padding: 4px 8px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--field); }
+.dc-clock { display: none; width: 14px; height: 14px; color: var(--muted); flex: none; }
+/* Compact state: "Last updated…" collapses to a clock icon with a hover tooltip. */
+.dc-toolbar .dc-updated.dcu-compact { position: relative; width: 24px; height: 24px; padding: 0; justify-content: center; }
+.dc-toolbar .dc-updated.dcu-compact .dc-updated-txt { display: none; }
+.dc-toolbar .dc-updated.dcu-compact .dc-clock { display: block; width: 13px; height: 13px; }
+.dc-toolbar .dc-updated.dcu-compact:hover .dc-updated-txt {
+  display: block; position: absolute; top: calc(100% + 7px); left: 0; transform: none;
+  background: #12151E; color: #fff; padding: 5px 9px; border-radius: 7px; white-space: nowrap;
+  font-size: 11px; z-index: 60; box-shadow: 0 8px 22px rgba(10,10,25,.3); pointer-events: none; }
+.dc-toolbar .dc-updated.dcu-compact:hover .dc-updated-txt::after {
+  content: ""; position: absolute; bottom: 100%; left: 12px; transform: translateX(-50%);
+  border: 5px solid transparent; border-bottom-color: #12151E; }
+.dc-toolbar { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; row-gap: 8px; padding: 4px 8px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--field); }
 .dc-toolbar .pill-btn { padding: 5px 11px; font-size: 12px; }
 .dc-toolbar .round-btn { width: 28px; height: 28px; }
 .dc-toolbar .round-btn svg { width: 15px; height: 15px; }
@@ -850,6 +868,54 @@ body.skin-morpheus [data-theme="dark"] .main-area { background: #1B1B21; }
 .dc-knob { position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 999px; background: var(--card); box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: left .15s; }
 .dc-toggle.on .dc-track { background: var(--primary-bg); border-color: transparent; }
 .dc-toggle.on .dc-knob { left: 16px; background: var(--primary-fg); }
+
+/* --- Responsive DevCenter header toolbar --- */
+/* Group the flat toolbar into a status zone and a controls zone so it can
+   reflow as two blocks instead of every item wrapping on its own. */
+.dc-tb-status, .dc-tb-controls { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.dc-tb-controls { flex-wrap: wrap; row-gap: 8px; }
+.dc-tb-status .dc-updated, .dc-tb-status .dc-updating { flex: none; }
+.dc-toolbar .dc-toggle { white-space: nowrap; flex: none; }   /* "Timeline view" never breaks to two lines */
+
+/* The pagehead becomes the query container; its width tracks the content area.
+   When it narrows, the whole toolbar drops below the title (flex-wrap) and the
+   two zones reflow at the breakpoints below. */
+.page[data-page="devcenter"] .pagehead { flex-wrap: wrap; row-gap: 10px; container-type: inline-size; container-name: dchead; }
+.page[data-page="devcenter"] .pagehead .actions { flex-wrap: wrap; }
+
+/* Toolbar on its own full-width row: status grows left, controls pinned right. */
+@container dchead (max-width: 760px) {
+  .page[data-page="devcenter"] .pagehead .actions { width: 100%; }
+  .dc-toolbar { width: 100%; }
+  .dc-tb-status { flex: 1 1 auto; }
+  .dc-tb-controls { margin-left: auto; }
+}
+
+/* Tight: drop the zone separator. Status (now just the clock + help) and the
+   controls stay together on one row — the compact clock frees enough room. */
+@container dchead (max-width: 560px) {
+  .dc-toolbar .dc-tb-sep { display: none; }
+}
+
+/* Once the toolbar controls wrap, shorten the toggle label "Timeline view" -> "Timeline". */
+@container dchead (max-width: 720px) {
+  .dc-toggle .tgl-word { display: none; }
+}
+
+/* Once all six elements no longer fit on one line, flatten the status + controls
+   groups so the clock, help, toggle, Customize and GraphQL icon share one row and
+   the Run button drops to a full-width row below. */
+@container dchead (max-width: 460px) {
+  .dc-tb-status, .dc-tb-controls { display: contents; }
+  .dc-tb-controls .dc-tb-div { display: none; }
+  .dc-tb-controls .pill-btn--primary { flex: 1 1 100%; order: 9; justify-content: center; }
+}
+
+/* The page is the query container for the body-reflow rules further down (the
+   grid overrides must come AFTER the base .dc-stats/.dc-camps definitions to win
+   the cascade, so they live just below those). */
+.page[data-page="devcenter"] { container-type: inline-size; container-name: dcpage; }
+
 .dc-sec { display: flex; align-items: center; margin: 24px 0 10px; }
 .dc-sec h2 { margin: 0; font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -.005em; }
 .dc-sec .pill-btn { margin-left: auto; color: var(--muted); }
@@ -879,6 +945,54 @@ body.skin-morpheus [data-theme="dark"] .main-area { background: #1B1B21; }
 .dc-dot--ghost { background: var(--ch-ghost-f); border: 1px dashed var(--ch-ghost-s); }
 .dc-campfoot { display: flex; justify-content: flex-end; padding-top: 12px; margin-top: auto; }
 .dc-owasp { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1.1fr) auto minmax(0, 1fr); gap: 26px; align-items: center; }
+
+/* --- Responsive DevCenter body: cards reflow 3 -> 2 -> 1 (keyed to the page
+   container declared above). Placed after the base grids so it wins the cascade. */
+@container dcpage (max-width: 720px) {
+  .dc-stats, .dc-camps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container dcpage (max-width: 520px) {
+  .dc-stats, .dc-camps { grid-template-columns: 1fr; }
+}
+
+/* OWASP: when the row gets tight, keep the numbered list on the left but stack
+   the rose chart above the detail card in the right column. */
+@container dcpage (max-width: 1080px) {
+  .dc-owasp {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-areas: "list rose" "list card";
+    align-items: start;
+    row-gap: 20px;
+  }
+  .dc-owleft { grid-area: list; }
+  .dc-rose   { grid-area: rose; }
+  .dc-owinfo { grid-area: card; }
+  body.tlview .dc-owbar { grid-column: 2; grid-row: 1 / 3; }   /* timeline-mode bar fills the right column */
+}
+/* Narrowest: everything in one column. */
+@container dcpage (max-width: 620px) {
+  .dc-owasp { grid-template-columns: 1fr; grid-template-areas: "list" "rose" "card"; }
+  body.tlview .dc-owbar { grid-column: 1; grid-row: auto; }
+}
+
+/* --- DevCenter breakpoint ruler (design aid): live width needle + active band ---
+   Full-width bar in the app's top grid row, above the nav rail and topbar. */
+.dc-ruler { grid-area: ruler; z-index: 40; display: flex; align-items: center; gap: 18px;
+  padding: 14px 20px 16px; background: #12151E; border-bottom: 1px solid #000;
+  font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,.55); }
+.dcr-label { flex: none; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.6); }
+.dcr-track { position: relative; flex: 1 1 320px; height: 22px; }
+.dcr-track::before { content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 2px; background: rgba(255,255,255,.16); border-radius: 2px; }
+.dcr-band { position: absolute; top: 4px; height: 14px; background: rgba(255,255,255,.10); border-radius: 4px; transition: left .12s, width .12s; }
+.dcr-fill { position: absolute; left: 0; top: 10px; height: 2px; background: rgba(255,255,255,.32); border-radius: 2px; transition: width .12s; }
+.dcr-tick { position: absolute; top: 4px; height: 14px; transform: translateX(-50%); }
+.dcr-tick::before { content: ""; position: absolute; left: 50%; top: 0; width: 2px; height: 14px; transform: translateX(-50%); border-radius: 2px; background: var(--tk, rgba(255,255,255,.35)); opacity: .5; transition: opacity .12s; }
+.dcr-tick .dcr-tw { position: absolute; left: 50%; top: -14px; transform: translateX(-50%); font-size: 10px; color: rgba(255,255,255,.4); white-space: nowrap; }
+.dcr-tick.sys-toolbar { --tk: #5B8DEF; } .dcr-tick.sys-cards { --tk: #35C06E; } .dcr-tick.sys-owasp { --tk: #B085F5; }
+.dcr-tick.passed::before { opacity: 1; }
+.dcr-tick.passed .dcr-tw { color: #fff; font-weight: 600; }
+.dcr-needle { position: absolute; top: -2px; height: 26px; width: 0; border-left: 2px solid #fff; transform: translateX(-50%); transition: left .12s; }
+.dcr-cur { position: absolute; left: 50%; bottom: -15px; transform: translateX(-50%); background: #fff; color: #12151E; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 999px; white-space: nowrap; }
 .dc-owleft { align-self: stretch; }
 .dc-owleft { display: flex; flex-direction: column; min-height: 100%; }
 .dc-owlist { list-style: none; margin: 0; padding: 0; }
@@ -1347,6 +1461,14 @@ body.dc-empty .dc-hide-empty, body.dc-empty .dc-toolbar .dc-updated, body.dc-emp
 body.dc-empty .dc-updating { display: inline-flex; }
 body.dc-empty .dc-spinbtn { display: inline-flex; }
 
+/* Running state — triggered by clicking "Run DevCenter recipe". Unlike dc-empty,
+   the existing dashboard data stays visible; the toolbar shows the live progress
+   bar and the Run button becomes a spinner. */
+body.dc-running .dc-updating { display: inline-flex; }
+body.dc-running .dc-run { display: none; }
+body.dc-running .dc-spinbtn { display: inline-flex; }
+body.dc-running .dc-updating .fill { transition: width .35s ease; }
+
 /* ---- Configure DevCenter (Customize sub-view) ---- */
 .dc-config[hidden] { display: none !important; }
 .page[data-page="devcenter"].configuring > :not(.dc-config) { display: none !important; }
@@ -1557,6 +1679,15 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
 
 <template id="app-tpl">
 <div class="app">
+  <!-- BREAKPOINT RULER (spans full width, above nav + topbar) -->
+  <div class="dc-ruler" aria-hidden="true">
+    <span class="dcr-label">Breakpoints</span>
+    <span class="dcr-track">
+      <span class="dcr-band"></span>
+      <span class="dcr-fill"></span>
+      <span class="dcr-needle"><span class="dcr-cur">—</span></span>
+    </span>
+  </div>
   <!-- LEFT ICON RAIL -->
   <nav class="left-nav" aria-label="Platform">
     <div class="left-nav-top">
@@ -2371,16 +2502,20 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
           </div>
           <div class="actions">
             <div class="dc-toolbar">
-              <span class="dc-updating"><span class="lbl">Updating data</span><span class="track"><span class="fill"></span></span><span class="pct">0% Running</span></span>
-              <span class="dc-updated">Last updated 12 days ago</span>
-              <svg class="dc-help"><use href="#i-help"/></svg>
-              <span class="dc-tb-div dc-hide-empty"></span>
-              <span class="dc-toggle dc-hide-empty" data-tgl="timeline"><span class="dc-track"><span class="dc-knob"></span></span> Timeline view</span>
-              <span class="dc-tb-div"></span>
-              <button class="pill-btn dc-customize">Customize</button>
-              <button class="pill-btn pill-btn--primary dc-hide-empty">Run DevCenter recipe</button>
-              <button class="dc-spinbtn" title="DevCenter recipe running"><span class="spin"></span></button>
-              <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
+              <span class="dc-tb-status">
+                <span class="dc-updating"><span class="lbl">Updating data</span><span class="track"><span class="fill"></span></span><span class="pct">0% Running</span></span>
+                <span class="dc-updated"><svg class="dc-clock"><use href="#i-clock"/></svg><span class="dc-updated-txt">Last updated 12 days ago</span></span>
+                <svg class="dc-help"><use href="#i-help"/></svg>
+              </span>
+              <span class="dc-tb-div dc-tb-sep dc-hide-empty"></span>
+              <span class="dc-tb-controls">
+                <span class="dc-toggle dc-hide-empty" data-tgl="timeline"><span class="dc-track"><span class="dc-knob"></span></span> Timeline<span class="tgl-word">&nbsp;view</span></span>
+                <span class="dc-tb-div"></span>
+                <button class="pill-btn dc-customize">Customize</button>
+                <button class="pill-btn pill-btn--primary dc-hide-empty dc-run">Run DevCenter recipe</button>
+                <button class="dc-spinbtn" title="DevCenter recipe running"><span class="spin"></span></button>
+                <button class="round-btn" title="API examples"><svg><use href="#i-gql"/></svg></button>
+              </span>
             </div>
           </div>
         </div>
@@ -3179,6 +3314,38 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
     document.querySelectorAll('.layer .dc-config').forEach(function (c) { c.hidden = !on; });
   }
 
+  // ---- Dev Center: simulate a recipe run (progress + spinner), synced across layers ----
+  var dcRunTimer = null;
+  function dcSetProgress(pct, label) {
+    document.querySelectorAll('.layer .dc-updating .fill').forEach(function (f) { f.style.width = pct + '%'; });
+    document.querySelectorAll('.layer .dc-updating .pct').forEach(function (t) { t.textContent = label; });
+  }
+  function runDevCenter() {
+    if (document.body.classList.contains('dc-running')) return;
+    document.body.classList.add('dc-running');
+    if (window.__dcResponsive) window.__dcResponsive();
+    var pct = 0;
+    dcSetProgress(0, '0% Running');
+    clearInterval(dcRunTimer);
+    dcRunTimer = setInterval(function () {
+      pct += Math.max(3, Math.round((100 - pct) * 0.08));   // ease-out: fast then settle
+      if (pct >= 100) {
+        dcSetProgress(100, 'Summarizing…');
+        clearInterval(dcRunTimer);
+        setTimeout(finishDevCenter, 1400);
+      } else {
+        dcSetProgress(pct, pct + '% Running');
+      }
+    }, 450);
+  }
+  function finishDevCenter() {
+    clearInterval(dcRunTimer);
+    document.body.classList.remove('dc-running');
+    if (window.__dcResponsive) window.__dcResponsive();
+    dcSetProgress(4, '0% Running');   // reset for next run
+    document.querySelectorAll('.layer .dc-updated-txt').forEach(function (u) { u.textContent = 'Last updated less than a minute ago'; });
+  }
+
   // ---- Moddy active chat state ----
   function setModdyChat(on) {
     document.querySelectorAll('.layer .page[data-page="moddy"]').forEach(function (p) { p.classList.toggle('chatting', on); });
@@ -3248,6 +3415,8 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
     if (e.target.closest('.mc-new')) { setModdyChat(false); return; }
     if (e.target.closest('.moddy-input')) { setModdyChat(true); return; }
     if (e.target.closest('.login-sso')) { location.hash = 'marketplace'; setScreen('marketplace'); return; }
+    if (e.target.closest('.dc-run')) { runDevCenter(); return; }
+    if (e.target.closest('.dc-spinbtn')) { finishDevCenter(); return; }   // click spinner to stop
     if (e.target.closest('.dc-customize')) { setDcConfig(true); return; }
     if (e.target.closest('.cfg-back') || e.target.closest('.cfg-save')) { setDcConfig(false); return; }
     var mk = e.target.closest('[data-mkt]');
@@ -3702,6 +3871,73 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
   }
   // primary is fixed: Blue AAA (7:1 link pairing)
   setPrimary('blue-aaa');
+
+  // ---- DevCenter breakpoint ruler (design aid) ----
+  (function initDcRuler() {
+    var BPS = [
+      { w: 460, sys: 'toolbar' }, { w: 520, sys: 'cards' }, { w: 560, sys: 'toolbar' },
+      { w: 620, sys: 'owasp' }, { w: 720, sys: 'cards' }, { w: 760, sys: 'toolbar' },
+      { w: 1080, sys: 'owasp' }
+    ];
+    var MIN = 360, MAX = 1120;
+    function pos(w) { return (Math.max(MIN, Math.min(MAX, w)) - MIN) / (MAX - MIN) * 100; }
+
+    // build ticks into every ruler instance (one per compare layer)
+    document.querySelectorAll('.layer .dc-ruler .dcr-track').forEach(function (track) {
+      var needle = track.querySelector('.dcr-needle');
+      BPS.forEach(function (b) {
+        var t = document.createElement('span');
+        t.className = 'dcr-tick sys-' + b.sys;
+        t.style.left = pos(b.w) + '%';
+        t.dataset.w = b.w;
+        t.innerHTML = '<span class="dcr-tw">' + b.w + '</span>';
+        track.insertBefore(t, needle);
+      });
+    });
+
+    // Container width = the DevCenter page content-box = visible content area minus
+    // the page's horizontal padding (22px each side). Measured off .content so it
+    // stays accurate regardless of which page is showing.
+    var PAGE_PAD = 44;
+    function containerWidth() {
+      var cw = 0;
+      document.querySelectorAll('.layer .content').forEach(function (c) { cw = Math.max(cw, c.clientWidth); });
+      return Math.round(cw - PAGE_PAD);
+    }
+
+    function update() {
+      var w = containerWidth();
+      if (w <= 0) return;
+      // Collapse "Last updated…" to a clock icon when the toolbar is tight
+      // (own-row breakpoint), or earlier while a run is in progress since the
+      // progress bar competes for room in the status zone.
+      var running = document.body.classList.contains('dc-running');
+      var compact = w <= 760 || (running && w <= 960);
+      document.querySelectorAll('.layer .dc-updated').forEach(function (u) { u.classList.toggle('dcu-compact', compact); });
+      var p = pos(w);
+      // active band = span between the breakpoint just below and just above the current width
+      var lo = MIN, hi = MAX;
+      BPS.forEach(function (b) { if (b.w <= w && b.w > lo) lo = b.w; if (b.w > w && b.w < hi) hi = b.w; });
+
+      document.querySelectorAll('.layer .dc-ruler').forEach(function (r) {
+        r.querySelector('.dcr-fill').style.width = p + '%';
+        r.querySelector('.dcr-needle').style.left = p + '%';
+        r.querySelector('.dcr-cur').textContent = w;
+        var band = r.querySelector('.dcr-band');
+        band.style.left = pos(lo) + '%';
+        band.style.width = (pos(hi) - pos(lo)) + '%';
+        r.querySelectorAll('.dcr-tick').forEach(function (t) { t.classList.toggle('passed', w >= +t.dataset.w); });
+      });
+    }
+
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(update);
+      document.querySelectorAll('.layer .content').forEach(function (c) { ro.observe(c); });
+    }
+    window.addEventListener('resize', update);
+    window.__dcResponsive = update;   // let run/finish re-evaluate the compact state
+    update();
+  })();
 })();
 </script>
 </body>
