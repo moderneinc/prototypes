@@ -17,13 +17,14 @@
   --text:#343a40; --ink:#232342; --muted:#62627a; --faint:#8a8a99;
   --accent:#1055e2; --link:#0046b5; --track:#edebe2;
   --success:#237341; --active:#7048c8; --error:#d43c2a; --warning:#b07210;
-  /* dataviz — Moderne Changelog state palette (dev.moderne.io/changelog) */
-  /* Changelog state hues, softened toward the DevCenter parliament-chart tone */
-  --commit:#5b6bd0; --commit-b:#3d49a8;   /* Commit — blue */
-  --draft:#8a867d;  --draft-b:#666259;    /* Draft — warm gray */
+  /* Changelog state colors, lighter/softened tone */
+  --commit:#6675d8; --commit-b:#3d49a8;   /* Commit — blue (light enough for black label, 5.1:1) */
+  --open:#57b06e;                         /* Open (PR) — green */
+  --draft:#8a867d;  --draft-b:#666259;    /* Draft — gray */
   --approve:#57b06e;--approve-b:#3c8a50;  /* Open / Approved — green */
   --merge:#9a5cb5;  --merge-b:#744088;    /* Merged — purple */
-  --close:#e8604f;  --close-b:#bf4436;    /* Closed — coral-red */
+  --close:#e8604f;  --close-b:#bf4436;    /* Closed — red */
+  --fail:#e8604f;   --fail-b:#bf4436;     /* Failed — red (same as Changelog closed/failed) */
 }
 * { box-sizing:border-box; }
 html, body { height:100%; }
@@ -75,7 +76,7 @@ a:hover { text-decoration:underline; }
 .lede h1 { margin:0 0 6px; font-size:18px; font-weight:500; color:var(--text); letter-spacing:-.005em; }
 .meta { font-size:14px; color:var(--muted); }
 .meta a { color:var(--ink); }
-.meta .sep { margin:0 7px; opacity:.6; }
+.meta .sep { display:inline-block; width:1px; height:11px; margin:0 11px; background:var(--line-strong); opacity:.5; vertical-align:-1px; }
 .bell { width:38px; height:38px; border-radius:10px; border:1px solid var(--line-strong); background:var(--panel); color:var(--text); display:flex; align-items:center; justify-content:center; flex:none; }
 .bell svg { width:18px; height:18px; }
 
@@ -113,31 +114,30 @@ a:hover { text-decoration:underline; }
 
 /* ---------- Progress card (burndown + axis + lanes on one time scale) ---------- */
 .tl-card { background:var(--card); border:1px solid rgba(0,0,0,.12); border-radius:4px; padding:10px 14px 10px; }
-.tl-legend { display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; margin:0 2px 8px; font-size:11px; color:var(--muted); }
-.tl-legend .lg { display:inline-flex; align-items:center; gap:6px; }
-.tl-legend .sw { width:20px; height:10px; border-radius:5px; border:1.5px solid transparent; }
-.tl-legend .lg svg { width:14px; height:14px; }
+.tl-legend { display:flex; flex-wrap:wrap; align-items:center; gap:6px 18px; margin:0 2px 8px; font-size:12px; color:var(--muted); }
+.tl-legend .lg { display:inline-flex; align-items:baseline; gap:6px; }
+.tl-legend .lg svg { width:14px; height:14px; align-self:center; }
+.tl-legend .lg b { font-weight:700; font-size:14px; color:var(--text); font-variant-numeric:tabular-nums; }
 .tl-legend .lg.commit svg { color:var(--commit); }
 .tl-legend .lg.draft  svg { color:var(--draft); }
 .tl-legend .lg.open   svg { color:var(--approve); }
 .tl-legend .lg.closed svg { color:var(--close); }
 .tl-legend .lg.merged svg { color:var(--merge); }
-.tl-legend .sw.outline { background:transparent; border-color:var(--active); }
+.tl-legend .lg.failc svg, .tl-legend .lg.failm svg { color:var(--fail); }
+.tl-legend .ro-time { margin-left:auto; color:var(--muted); font-weight:500; }
 /* view toggle */
 .seg { display:inline-flex; border:1px solid var(--line-strong); border-radius:999px; overflow:hidden; }
 .seg button { border:none; background:transparent; padding:3px 12px; font-size:12px; font-weight:500; color:var(--muted); }
 .seg button.on { background:var(--ink); color:#fff; }
 
 .combo { position:relative; cursor:crosshair; }
-/* burnup — stacked step-area of changeset states (Sourcegraph-style) */
-.bd-plot { position:relative; height:110px; }
+/* burndown — terminal states: Merged/Closed areas + Failed hash-mark line */
+.bd-plot { position:relative; height:74px; }
 .bd-plot svg { display:block; overflow:visible; }
 .bd-band { stroke:rgba(251,250,246,.7); stroke-width:.5; }
-.bd-band.commit { fill:var(--commit); }   /* Commit — blue */
-.bd-band.draft  { fill:var(--draft); }    /* Draft — gray */
-.bd-band.open   { fill:var(--approve); }  /* Open — green */
 .bd-band.closed { fill:var(--close); }    /* Closed — red */
 .bd-band.merged { fill:var(--merge); }    /* Merged — purple */
+.bd-fail { fill:none; stroke:var(--fail); stroke-width:1.6; stroke-dasharray:2 3; }  /* Failed to commit */
 .bd-total { stroke:var(--line-strong); stroke-width:1; stroke-dasharray:3 3; opacity:.5; }
 .bd-tag { position:absolute; font-size:10px; line-height:1; color:var(--muted); white-space:nowrap; pointer-events:none; background:rgba(251,250,246,.85); padding:2px 4px; border-radius:4px; z-index:4; }
 .bd-tag b { font-weight:600; color:var(--text); }
@@ -160,24 +160,24 @@ a:hover { text-decoration:underline; }
 .bar.approve { border-color:var(--approve-b); }
 .bar.merge   { border-color:var(--merge-b); }
 .bar.close   { border-color:var(--close-b); }
-.bar.running { border-color:var(--active); }
+.bar.running { border-color:var(--active); animation:pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.6;} }
 .bar-fill { position:absolute; left:0; top:0; bottom:0; border-radius:4px; overflow:hidden; }
+.bar-fail { position:absolute; top:0; bottom:0; background:var(--fail); border-radius:0 4px 4px 0; }
 .bar.commit  .bar-fill { background:var(--commit); }
-.bar.draft   .bar-fill { background:var(--draft); }
+.bar.draft   .bar-fill { background:#dedbd0; }   /* light warm gray — matches DevCenter N/A / No LST */
 .bar.approve .bar-fill { background:var(--approve); }
 .bar.merge   .bar-fill { background:var(--merge); }
 .bar.close   .bar-fill { background:var(--close); }
 .blb { position:absolute; top:50%; transform:translateY(-50%); left:7px; display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; white-space:nowrap; pointer-events:none; }
 .blb svg { width:12px; height:12px; }
-.bar.commit .blb { color:#fff; }
-.bar.draft .blb { color:#fff; text-shadow:0 1px 2px rgba(35,35,66,.55); }
-.bar.approve .blb { color:#073a34; }
-.bar.merge .blb { color:#fff; }
-.bar.close .blb { color:#fff; }
+/* all bar labels are black — each fill is light enough to meet WCAG AA (>=4.5:1)
+   commit 5.1:1 · draft 5.8:1 · approve 7.8:1 · merge 4.6:1 · close 6.2:1 */
+.blb { color:#000; }
 .bar.out .blb { left:calc(100% + 7px); color:var(--text); }
 /* playhead — a plain line, no grips or dots; drag anywhere on the combo */
-.cursor-line { position:absolute; top:0; bottom:0; width:2px; background:var(--accent); pointer-events:none; z-index:6; }
-.cursor-grip { position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:22px; height:20px; border-radius:6px; background:var(--accent); box-shadow:0 1px 4px rgba(35,35,66,.4); cursor:ew-resize; pointer-events:auto; display:flex; align-items:center; justify-content:center; gap:2px; touch-action:none; }
+.cursor-line { position:absolute; top:0; bottom:0; width:2px; background:var(--link); pointer-events:none; z-index:6; }
+.cursor-grip { position:absolute; top:-9px; left:50%; transform:translateX(-50%); width:22px; height:20px; border-radius:6px; background:var(--link); box-shadow:0 1px 4px rgba(35,35,66,.4); cursor:ew-resize; pointer-events:auto; display:flex; align-items:center; justify-content:center; gap:2px; touch-action:none; }
 .cursor-grip:hover { filter:brightness(1.08); }
 .cursor-grip i { width:2px; height:9px; background:rgba(255,255,255,.9); border-radius:1px; }
 /* widen the grab target along the whole line without blocking bar clicks elsewhere */
@@ -200,6 +200,17 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
 .grid th { text-align:left; font-size:12px; font-weight:600; color:var(--muted); padding:12px 14px; border-bottom:1px solid var(--line); white-space:nowrap; }
 .grid td { padding:13px 14px; border-bottom:1px solid var(--hairline); font-size:14px; color:var(--text); vertical-align:middle; }
 .grid tr:hover td { background:rgba(0,0,0,.015); }
+.grid td.branch { max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.grid th.col-status { position:relative; }
+.th-filter { display:inline-flex; align-items:center; gap:5px; border:none; background:transparent; font:inherit; font-size:12px; font-weight:600; color:var(--muted); cursor:pointer; padding:0; }
+.th-filter svg { width:13px; height:13px; }
+.th-filter.on { color:var(--accent); }
+.filter-menu { display:none; position:absolute; top:calc(100% + 4px); left:0; background:var(--card); border:1px solid var(--line-strong); border-radius:8px; box-shadow:0 10px 28px rgba(35,35,66,.16); padding:6px; z-index:30; }
+.filter-menu.open { display:block; }
+.filter-menu label { display:flex; align-items:center; gap:9px; padding:6px 9px; border-radius:6px; font-size:13px; cursor:pointer; white-space:nowrap; }
+.filter-menu label:hover { background:rgba(0,0,0,.045); }
+.filter-menu input { width:15px; height:15px; accent-color:var(--accent); }
+.filter-menu .st { pointer-events:none; }
 .grid .col-ck { width:38px; }
 .grid .col-act { width:74px; }
 .chk { width:16px; height:16px; border:1.5px solid var(--line-strong); border-radius:4px; background:var(--panel); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
@@ -215,9 +226,10 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
 .st .spinner { width:12px; height:12px; border-radius:50%; border:2px solid var(--track); border-top-color:currentColor; animation:spin .7s linear infinite; }
 .st.commit   { color:var(--commit); }    /* Commit — blue */
 .st.draft    { color:var(--draft); }     /* Draft — gray */
-.st.open     { color:var(--approve); }   /* Open — green */
+.st.open     { color:var(--open); }      /* Open → Info blue */
 .st.merged   { color:var(--merge); }     /* Merged — purple */
 .st.closed   { color:var(--close); }     /* Closed — red */
+.st.failed   { color:var(--fail); }      /* Failed to commit — deep red */
 .st.neutral  { color:#706960; }
 .st .lbl { color:var(--text); }
 .asof { font-size:13px; color:var(--muted); white-space:nowrap; }
@@ -310,12 +322,12 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
   <!-- MAIN -->
   <div class="main">
     <div class="content">
-      <div class="crumb"><a href="#">Recent activity</a><span class="sep">›</span>preview</div>
+      <div class="crumb"><a href="#">Recent activity</a><span class="sep">›</span>Fix vulnerable Maven/Gradle dependencies</div>
 
       <div class="lede">
         <div>
           <h1>Fix vulnerable Maven/Gradle dependencies</h1>
-          <div class="meta"><span>1,000 repositories</span><span class="sep">·</span><span>Pull request</span><span class="sep">·</span><span>Started 9 days ago</span><span class="sep">·</span><a href="#">Go to recipe results</a></div>
+          <div class="meta"><span>1,000 repositories</span><span class="sep"></span><span>Pull request</span><span class="sep"></span><span>Started 9 days ago</span><span class="sep"></span><a href="#">Go to recipe results</a></div>
         </div>
         <button class="bell"><svg><use href="#i-bell"/></svg></button>
       </div>
@@ -327,24 +339,16 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
             <button class="collapse-btn" id="tlToggle" aria-label="Collapse"><svg class="chev"><use href="#i-chevd"/></svg></button>
             <h2>Progress</h2>
             <span class="tip"><span class="info-ic"><svg><use href="#i-info"/></svg></span>
-              <span class="bubble"><b>Burnup + timeline</b>The stacked area is every changeset by pull-request state over time — draft, open, closed and merged — summing to the changeset total. The tracks below are the jobs that move repositories between those states. Drag anywhere to move the playhead — it snaps to events. Click a bar to filter the table; ⌘-click adds more.</span>
+              <span class="bubble"><b>Burndown + timeline</b>Repositories burn down as each reaches a terminal state — the Merged and Closed areas fill in and the Failed-to-commit hash line tracks failures, while the gap up to the repo total is the work still in flight. The tracks below are the jobs that move repositories between states. Drag anywhere to move the playhead — it snaps to events. Click a bar to filter the table; ⌘-click adds more.</span>
             </span>
           </div>
           <div class="tl-controls" style="display:flex;align-items:center;gap:10px">
-            <span class="readout" id="readout"></span>
             <button class="pill-btn" id="currentBtn">Latest</button>
           </div>
         </div>
         <div class="tl-wrap">
         <div class="tl-card">
-          <div class="tl-legend">
-            <span class="lg commit"><svg><use href="#i-git-commit"/></svg>Commit</span>
-            <span class="lg draft"><svg><use href="#i-git-draft"/></svg>Draft</span>
-            <span class="lg open"><svg><use href="#i-git-pr"/></svg>Open</span>
-            <span class="lg closed"><svg><use href="#i-git-close"/></svg>Closed</span>
-            <span class="lg merged"><svg><use href="#i-git-merge"/></svg>Merged</span>
-            <span class="lg" style="margin-left:auto"><span class="sw outline"></span>Bars: outline = actioned · fill = succeeded</span>
-          </div>
+          <div class="tl-legend" id="tlLegend"></div>
           <div class="combo" id="combo">
             <div class="bd-plot" id="bdPlot"></div>
             <div class="tl-axis" id="tlAxis"></div>
@@ -363,14 +367,14 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
               <span class="bubble"><b>Statuses are as of the last refresh</b>“Now” on this page means the last time repository statuses were fetched from your SCM. Set the playhead to a past time to see each repository’s furthest-along status at that moment; non-terminal rows read “Open as of &lt;time&gt;”.</span>
             </span>
           </div>
-          <div class="sync" id="syncLine">
-            <span id="syncText">Statuses as of last refresh · 3 min ago</span>
-            <button class="refresh" id="refreshBtn" title="Fetch current PR statuses from the SCM"><svg><use href="#i-refresh"/></svg> Refresh statuses</button>
-          </div>
         </div>
 
         <div class="toolbar">
           <div class="tb-search"><svg><use href="#i-search"/></svg><span>Search repositories…</span></div>
+          <div class="sync" id="syncLine">
+            <button class="refresh" id="refreshBtn" title="Fetch current PR statuses from the SCM"><svg><use href="#i-refresh"/></svg> Refresh statuses</button>
+            <span id="syncText">refreshed 3 min ago</span>
+          </div>
           <span class="filt-chip" id="filtChip">Timeline: <span class="fk" id="filtLabel"></span><button id="filtClear" title="Clear filter"><svg><use href="#i-x-circle"/></svg></button></span>
           <div class="spacer"></div>
           <button class="tbtn act-btn" disabled><svg><use href="#i-git-pr"/></svg> Approve</button>
@@ -384,7 +388,7 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
             <tr>
               <th class="col-ck"><span class="chk" id="ckAll" onclick="toggleAll()"><svg><use href="#i-check"/></svg></span></th>
               <th class="col-act">Actions</th>
-              <th>Status</th>
+              <th class="col-status"><button class="th-filter" id="statusFilterBtn">Status <svg><use href="#i-chevd"/></svg></button><div class="filter-menu" id="statusMenu"></div></th>
               <th>Organization</th>
               <th>Repository</th>
               <th>Origin</th>
@@ -455,8 +459,10 @@ const HAND = [
 ];
 const POOL_ORG = ['netflix','square','apache','eclipse','ff4j','jackson','hibernate','google','openrewrite','spring-projects'];
 const POOL_NAME = ['netty','okhttp','gson','junit5','mockito','logback','slf4j','tomcat','jetty','maven-core','commons-io','httpclient','kafka','curator','zookeeper','assertj','testcontainers','feign','eureka','archaius','conductor','graphql-java','webflux','r2dbc','lettuce','spock','servo','spectator','dgs-framework','ribbon'];
-const outcomeFor = i => (i % 17 === 7) ? 'failed' : (i % 13 === 9) ? 'closed' : (i % 5 === 3) ? 'noChanges' : (i % 11 === 4) ? 'commit' : 'merged';
+const outcomeFor = i => (i % 17 === 7) ? 'failed' : (i % 23 === 11) ? 'failedMerge' : (i % 13 === 9) ? 'closed' : 'merged';
 
+const BRANCHES = ['main', 'master', 'develop', 'trunk', 'release/2024.1',
+  'release/spring-boot-3.2.x', 'integration/next-platform-migration', 'maintenance/1.x'];
 const N_REPOS = 1000;
 const REPOS = Array.from({ length: N_REPOS }, (_, i) => {
   const meta = i < 10 ? HAND[i] : [POOL_ORG[i % POOL_ORG.length], POOL_NAME[(i * 7) % POOL_NAME.length] + '-' + (1 + (i % 40)), ['github','gitlab','azure'][i % 3]];
@@ -468,6 +474,7 @@ const REPOS = Array.from({ length: N_REPOS }, (_, i) => {
   const closeStart = 4.8 + f * 1.2;
   return {
     org: meta[0], name: meta[1], scm: meta[2], outcome: outcomeFor(i),
+    base: i < 3 ? 'main' : BRANCHES[(i * 3) % BRANCHES.length],
     committed, draftAt, readyAt,
     approveStart, approveEnd: approveStart + 0.3,
     mergeStart, mergeEnd: mergeStart + 0.4, closeStart, closeEnd: closeStart + 0.3,
@@ -478,7 +485,7 @@ function phaseAt(s, T) {
   if (T < s.committed - LEAD) return 'queued';
   if (T < s.committed) return 'committing';
   if (s.outcome === 'noChanges') return 'noChanges';
-  if (s.outcome === 'commit') return 'commit';     // committed directly — no PR, terminal
+  if (s.outcome === 'failed') return 'failed';     // failed to commit — terminal, no PR
   if (T < s.draftAt) return 'committed';
   if (T < s.readyAt) return 'draftPr';
   if (s.outcome === 'closed') {
@@ -490,11 +497,11 @@ function phaseAt(s, T) {
   if (T < s.approveEnd) return 'approving';
   if (T < s.mergeStart) return 'approved';
   if (T < s.mergeEnd) return 'merging';
-  return s.outcome === 'failed' ? 'failed' : 'merged';
+  return s.outcome === 'failedMerge' ? 'failedMerge' : 'merged';
 }
 // the moment a repo entered the phase it is in at time T (for "State as of")
 function enteredAt(s, T) {
-  if (s.outcome === 'commit' || s.outcome === 'noChanges') return s.committed;
+  if (s.outcome === 'failed' || s.outcome === 'noChanges') return s.committed;
   const bounds = [s.committed - LEAD, s.committed, s.draftAt, s.readyAt,
     s.outcome === 'closed' ? s.closeStart : s.approveStart,
     s.outcome === 'closed' ? s.closeEnd : s.approveEnd, s.mergeStart, s.mergeEnd];
@@ -505,20 +512,21 @@ function enteredAt(s, T) {
 // Repository status shows only Changelog PR states: Draft · Open · Merged · Closed.
 // Every lifecycle phase collapses to one of these (or to "no PR yet" before a changeset exists).
 const TYPE_STATE = {
-  queued:null, committing:null, committed:null, noChanges:null,
-  commit:'commit',
+  queued:null, committing:null, committed:null,
+  failed:'failed', failedMerge:'failedMerge',
   draftPr:'draft',
   prOpen:'open', approving:'open', approved:'open', merging:'open', closing:'open',
-  merged:'merged', closed:'closed', failed:'closed',
+  merged:'merged', closed:'closed',
 };
 const CL_STATE = {
-  commit: { label:'Commit', icon:'i-git-commit', cls:'commit' },
-  draft:  { label:'Draft',  icon:'i-git-draft',  cls:'draft'  },
-  open:   { label:'Open',   icon:'i-git-pr',     cls:'open'   },
-  merged: { label:'Merged', icon:'i-git-merge',  cls:'merged' },
-  closed: { label:'Closed', icon:'i-git-close',  cls:'closed' },
+  draft:       { label:'Draft',            icon:'i-git-draft',  cls:'draft'  },
+  open:        { label:'Open',             icon:'i-git-pr',     cls:'open'   },
+  merged:      { label:'Merged',           icon:'i-git-merge',  cls:'merged' },
+  closed:      { label:'Closed',           icon:'i-git-close',  cls:'closed' },
+  failed:      { label:'Failed to commit', icon:'i-x-circle',   cls:'failed' },
+  failedMerge: { label:'Failed to merge',  icon:'i-x-circle',   cls:'failed' },
 };
-const TERMINAL = new Set(['commit','merged','closed','failed','noChanges']);
+const TERMINAL = new Set(['merged','closed','failed','failedMerge']);
 const SCM_ICON = { github:'i-github', gitlab:'i-gitlab', azure:'i-azure' };
 const statusHtml = ph => {
   const key = TYPE_STATE[ph];
@@ -530,58 +538,43 @@ const statusHtml = ph => {
 // which jobs each repo took part in
 const jobsFor = i => {
   const r = REPOS[i], jobs = ['commit'];
-  if (r.outcome === 'commit' || r.outcome === 'noChanges') return jobs;   // committed directly — no PR
+  if (r.outcome === 'failed' || r.outcome === 'noChanges') return jobs;   // failed to commit / no changes — no PR
   jobs.push('draft-pr');
   if (r.outcome === 'closed') jobs.push('close-stale');
-  else if (r.outcome === 'merged') {
+  else {   // merged
     jobs.push(i % 4 === 0 ? 'approve-final' : 'approve');
     if (i % 7 === 5) jobs.push('approve-retry');
-    jobs.push(['merge-1','merge-2','merge-3'][i % 3]);
-  } else if (r.outcome === 'failed') {
-    jobs.push('approve');
     jobs.push(['merge-1','merge-2','merge-3'][i % 3]);
   }
   return jobs;
 };
 const REPO_JOBS = REPOS.map((_, i) => new Set(jobsFor(i)));
-const jobLabel = id => JOBS.find(j => j.id === id).label;
-const succeededAt = (i, j) => !(j.kind === 'merge' && REPOS[i].outcome === 'failed');
+const jobLabel = id => JOBS.find(j => j.id === id).label.replace(/\s*\([^)]*\)/g, '');
+const succeededAt = (i, j) => !((j.kind === 'commit' && REPOS[i].outcome === 'failed') || (j.kind === 'merge' && REPOS[i].outcome === 'failedMerge'));
 JOBS.forEach(j => {
   const members = REPO_JOBS.map((s, i) => s.has(j.id) ? i : -1).filter(i => i >= 0);
   j.actioned = members.length;
   j.succeeded = members.filter(i => succeededAt(i, j)).length;
   j.failed = j.actioned - j.succeeded;
+  j.doneByNow = members.filter(i => TERMINAL.has(phaseAt(REPOS[i], NOW))).length;   // for the running bar's fill
 });
 
 // ============================================================
-//  Burnup — stacked by Changelog changeset state (Sourcegraph-style).
-//  Bands (bottom→top): draft · open&awaiting-review · open&changes-requested
-//  · open&approved · closed · merged. Every band is a real Changelog state
-//  (PR type × review decision). Pre-PR / no-change repos aren't changesets yet.
+//  Burndown — the remaining (in-flight) repos burn down as each reaches a
+//  terminal state. Only terminal states are drawn: Merged and Closed as
+//  stacked areas, Failed to commit as a hash-mark line.
 // ============================================================
-function bandAt(i, T) {
-  switch (phaseAt(REPOS[i], T)) {
-    case 'commit':    return 'commit';   // direct commit, no PR (terminal)
-    case 'draftPr':   return 'draft';
-    case 'prOpen':
-    case 'approving':
-    case 'approved':
-    case 'merging':
-    case 'closing':   return 'open';
-    case 'merged':    return 'merged';
-    case 'closed':
-    case 'failed':    return 'closed';
-    default:          return null;      // queued/committing/committed/noChanges — not a changeset yet
-  }
-}
-const BANDS = ['commit','draft','open','closed','merged'];   // stack order, bottom→top — Changelog states
-const BAND_ICON  = { commit:'i-git-commit', draft:'i-git-draft', open:'i-git-pr', closed:'i-git-close', merged:'i-git-merge' };
-const bandLabel  = { commit:'Commit', draft:'Draft', open:'Open', closed:'Closed', merged:'Merged' };
-function bandCounts(T) {
-  const c = { commit:0, draft:0, open:0, closed:0, merged:0 };
-  for (let i = 0; i < REPOS.length; i++) { const b = bandAt(i, T); if (b) c[b]++; }
-  return c;
-}
+const bdMerged = T => REPOS.reduce((n, r) => n + (phaseAt(r, T) === 'merged' ? 1 : 0), 0);
+const bdClosed = T => REPOS.reduce((n, r) => n + (phaseAt(r, T) === 'closed' ? 1 : 0), 0);
+const bdFailC  = T => REPOS.reduce((n, r) => n + (phaseAt(r, T) === 'failed' ? 1 : 0), 0);
+const bdFailM  = T => REPOS.reduce((n, r) => n + (phaseAt(r, T) === 'failedMerge' ? 1 : 0), 0);
+const bdFailed = T => bdFailC(T) + bdFailM(T);
+const BD_SERIES = [
+  { key:'merged', fn:bdMerged, icon:'i-git-merge', label:'Merged' },
+  { key:'closed', fn:bdClosed, icon:'i-git-close', label:'Closed' },
+  { key:'failc',  fn:bdFailC,  icon:'i-x-circle',  label:'Failed to commit' },
+  { key:'failm',  fn:bdFailM,  icon:'i-x-circle',  label:'Failed to merge' },
+];
 
 // ============================================================
 //  Time ↔ x mapping. 'time' = linear. 'commits' = event-ordered
@@ -631,7 +624,6 @@ const combo = document.getElementById('combo');
 const bdPlot = document.getElementById('bdPlot');
 const axisEl = document.getElementById('tlAxis');
 const lanesEl = document.getElementById('tlLanes');
-const readoutEl = document.getElementById('readout');
 const gridRows = document.getElementById('rows');
 const filtChip = document.getElementById('filtChip');
 const filtLabel = document.getElementById('filtLabel');
@@ -640,6 +632,12 @@ const xFor = f => clamp01(f) * W;
 
 function daysAgo(T) { const d = NOW - T; if (d < 0.08) return refreshAgoMin < 1 ? 'moments ago' : `${refreshAgoMin} min ago`; if (d < 1) return `${Math.round(d*24)}h ago`; return `${d.toFixed(d < 3 ? 1 : 0).replace(/\.0$/,'')}d ago`; }
 function readout(T) { return NOW - T < 0.08 ? 'last refresh' : daysAgo(T); }
+
+// combined legend + live counts — one line, icon + count + label per terminal state
+const legendEl = document.getElementById('tlLegend');
+legendEl.innerHTML = BD_SERIES.map(s => `<span class="lg ${s.key}"><svg><use href="#${s.icon}"/></svg><b data-k="${s.key}">0</b> ${s.label}</span>`).join('') + `<span class="ro-time" id="roTime"></span>`;
+const legNums = {}; BD_SERIES.forEach(s => legNums[s.key] = legendEl.querySelector(`b[data-k="${s.key}"]`));
+const roTimeEl = document.getElementById('roTime');
 
 // lanes built once
 lanesEl.style.height = (JOBS.nLanes * 28) + 'px';
@@ -650,7 +648,13 @@ JOBS.forEach(j => {
   btn.className = `bar ${j.kind}${j.end == null ? ' running' : ''}`;
   btn.dataset.id = j.id;
   const ICON = { commit:'i-git-commit', draft:'i-git-draft', approve:'i-check-circle', merge:'i-git-merge', close:'i-git-close' };
-  btn.innerHTML = `<span class="bar-fill" style="width:${(100 * j.succeeded / Math.max(1, j.actioned)).toFixed(1)}%"></span>` +
+  const running = j.end == null;
+  const succPct = 100 * j.succeeded / Math.max(1, j.actioned), failPct = 100 * j.failed / Math.max(1, j.actioned);
+  const fillPct = running ? 100 * j.doneByNow / Math.max(1, j.actioned) : succPct;   // running → incomplete progress fill
+  const hasFail = !running && j.failed > 0;
+  const squareRight = hasFail || running;   // running fill is cut off mid-progress → flat right edge
+  btn.innerHTML = `<span class="bar-fill" style="width:${fillPct.toFixed(1)}%${squareRight ? ';border-radius:4px 0 0 4px' : ''}"></span>` +
+    (hasFail ? `<span class="bar-fail" style="left:${succPct.toFixed(1)}%;width:${failPct.toFixed(1)}%"></span>` : '') +
     `<span class="blb"><svg><use href="#${ICON[j.kind]}"/></svg>${j.label.replace(/\s*\([^)]*\)/g, '')}</span>`;
   lane.appendChild(btn);
 });
@@ -660,12 +664,17 @@ combo.appendChild(cursorLine);
 
 // table
 let pageIdx = [];
+let statusFilter = new Set();    // Status-column filter (by each repo's current status)
+const statusOf = i => TYPE_STATE[phaseAt(REPOS[i], NOW)];
 const visibleIndices = () => {
-  const all = REPOS.map((_, i) => i);
-  return selectedJobs.size ? all.filter(i => [...selectedJobs].some(id => REPO_JOBS[i].has(id))) : all;
+  let all = REPOS.map((_, i) => i);
+  if (selectedJobs.size) all = all.filter(i => [...selectedJobs].some(id => REPO_JOBS[i].has(id)));
+  if (statusFilter.size) all = all.filter(i => statusFilter.has(statusOf(i)));
+  return all;
 };
 function buildTable() {
-  const visible = visibleIndices(), total = visible.length, filtering = selectedJobs.size > 0;
+  const visible = visibleIndices(), total = visible.length;
+  const jobFiltering = selectedJobs.size > 0, filtering = jobFiltering || statusFilter.size > 0;
   pageIdx = visible.slice(0, 10);
   gridRows.innerHTML = pageIdx.map(i => {
     const r = REPOS[i];
@@ -676,14 +685,14 @@ function buildTable() {
       <td>${r.org}</td>
       <td><div class="repo-cell"><span class="i"><svg><use href="#i-info"/></svg></span><a href="#">${r.name}</a></div></td>
       <td><span class="origin"><svg><use href="#${SCM_ICON[r.scm]}"/></svg></span></td>
-      <td class="mono">main</td>
+      <td class="mono branch" title="${r.base}">${r.base}</td>
       <td class="asofcell"></td>
     </tr>`;
   }).join('');
-  filtChip.classList.toggle('on', filtering);
-  if (filtering) filtLabel.textContent = [...selectedJobs].map(jobLabel).join(', ');
+  filtChip.classList.toggle('on', jobFiltering);
+  if (jobFiltering) filtLabel.textContent = [...selectedJobs].map(jobLabel).join(', ');
   document.querySelector('.foot span').textContent =
-    total === 0 ? 'No repositories' : `1 – ${Math.min(10, total)} of ${fmt(total)}${filtering ? ' · filtered' : ''}`;
+    total === 0 ? 'No repositories' : `1 – ${Math.min(10, total)} of ${fmt(total)}${filtering ? ' (filtered)' : ''}`;
   syncActions();
 }
 
@@ -691,9 +700,9 @@ function buildTable() {
 function renderAxis() {
   let ticks;
   if (view === 'commits') {
-    ticks = warp.map(([t, f]) => [f, t === 0 ? 'started 8d ago' : t >= NOW ? `last refresh · ${refreshAgoMin} min ago` : `${t.toFixed(1)}d`]);
+    ticks = warp.map(([t, f]) => [f, t === 0 ? 'started 8d ago' : t >= NOW ? `refreshed ${refreshAgoMin}m ago` : `${t.toFixed(1)}d`]);
   } else {
-    ticks = [[0,'started 8d ago'],[.25,'6d ago'],[.5,'4d ago'],[.75,'2d ago'],[1,`last refresh · ${refreshAgoMin} min ago`]];
+    ticks = [[0,'started 8d ago'],[.25,'6d ago'],[.5,'4d ago'],[.75,'2d ago'],[1,`refreshed ${refreshAgoMin}m ago`]];
   }
   // drop middle labels that would collide with an already-kept neighbour (keep first & last)
   const MIN_PX = 78, kept = [];
@@ -710,43 +719,47 @@ function renderAxis() {
   }).join('');
 }
 
-// burnup — stacked step-area of changeset states, scaled to the total changeset count
-const bdScale = REPOS.filter(r => r.outcome !== 'noChanges').length;
+// burndown — terminal areas + failed hash line, scaled to the whole fleet
+const bdScale = REPOS.length;
 function renderBurndown() {
-  const PAD = 12;
+  const PAD = 8;
   W = bdPlot.clientWidth; bdH = bdPlot.clientHeight;
   bdYFor = v => PAD + (1 - v / bdScale) * (bdH - PAD);
   const base = bdYFor(0);
-  // sample the stack across the width; each sample is the cumulative height per band
-  const S = 160, xs = [], stacks = [];
-  for (let k = 0; k <= S; k++) {
-    const f = k / S, c = bandCounts(ft(f));
-    xs.push(xFor(f));
-    let cum = 0; const up = {};
-    BANDS.forEach(b => { cum += c[b]; up[b] = cum; });
-    stacks.push(up);
-  }
-  // for each band, a filled step-area between its lower and upper cumulative edges
-  const bandPath = (b, bi) => {
-    const lower = bi === 0 ? null : BANDS[bi - 1];
-    // top edge left→right (stepped)
-    let d = `M${xs[0].toFixed(1)} ${bdYFor(stacks[0][b]).toFixed(1)}`;
-    for (let k = 1; k <= S; k++) d += ` H${xs[k].toFixed(1)} V${bdYFor(stacks[k][b]).toFixed(1)}`;
-    // bottom edge right→left (stepped) — either the previous band's top or the baseline
-    for (let k = S; k >= 0; k--) {
-      const y = lower ? bdYFor(stacks[k][lower]) : base;
-      if (k === S) d += ` L${xs[k].toFixed(1)} ${y.toFixed(1)}`;
-      else d += ` V${y.toFixed(1)} H${xs[k].toFixed(1)}`;
-    }
+  // discrete daily buckets → a true stepped burndown (each column = one day, flat at its end-of-day value)
+  const T = [];
+  for (let t = 0; t < NOW - 1e-9; t += 1) T.push(t);
+  T.push(NOW);                                   // column edges: 0,1,2,…,8,NOW  → 9 columns
+  const n = T.length - 1;
+  const X = T.map(t => xFor(tf(t)));
+  const at = fn => Array.from({ length: n }, (_, i) => fn(T[i + 1]));   // value per column = count at its end
+  const mg = at(bdMerged);
+  const cl = mg.map((m, i) => m + bdClosed(T[i + 1]));
+  const fl = cl.map((c, i) => c + bdFailed(T[i + 1]));
+  // filled staircase between a lower edge (const y, or per-column array) and a per-column upper array
+  const stair = (up, lo) => {
+    let d = `M${X[0].toFixed(1)} ${bdYFor(up[0]).toFixed(1)}`;
+    for (let i = 0; i < n; i++) { d += ` H${X[i + 1].toFixed(1)}`; if (i < n - 1) d += ` V${bdYFor(up[i + 1]).toFixed(1)}`; }
+    if (typeof lo === 'number') { d += ` V${lo.toFixed(1)} H${X[0].toFixed(1)} Z`; return d; }
+    d += ` V${bdYFor(lo[n - 1]).toFixed(1)}`;
+    for (let i = n - 1; i >= 0; i--) { d += ` H${X[i].toFixed(1)}`; if (i > 0) d += ` V${bdYFor(lo[i - 1]).toFixed(1)}`; }
     return d + ' Z';
+  };
+  // stepped open line (the failed "hash-mark" line)
+  const stairLine = up => {
+    let d = `M${X[0].toFixed(1)} ${bdYFor(up[0]).toFixed(1)}`;
+    for (let i = 0; i < n; i++) { d += ` H${X[i + 1].toFixed(1)}`; if (i < n - 1) d += ` V${bdYFor(up[i + 1]).toFixed(1)}`; }
+    return d;
   };
   const yT = bdYFor(bdScale).toFixed(1);
   bdPlot.innerHTML =
     `<svg width="${W}" height="${bdH}">` +
     `<line class="bd-total" x1="0" y1="${yT}" x2="${W}" y2="${yT}"/>` +
-    BANDS.map((b, bi) => `<path class="bd-band ${b}" d="${bandPath(b, bi)}"/>`).join('') +
+    `<path class="bd-band merged" d="${stair(mg, base)}"/>` +
+    `<path class="bd-band closed" d="${stair(cl, mg)}"/>` +
+    `<path class="bd-fail" d="${stairLine(fl)}"/>` +
     `</svg>` +
-    `<div class="bd-tag" style="left:2px; top:${(bdYFor(bdScale)-11).toFixed(1)}px">changesets — <b>${fmt(bdScale)}</b></div>`;
+    `<div class="bd-tag" style="left:2px; top:${(bdYFor(bdScale)-11).toFixed(1)}px">repos — <b>${fmt(bdScale)}</b></div>`;
 }
 
 function render() {
@@ -767,9 +780,8 @@ function render() {
   // playhead
   cursorLine.style.left = (xFor(f) - 1) + 'px';
   // readout — Changelog changeset counts at the cursor time
-  const c = bandCounts(T);
-  readoutEl.textContent =
-    `${c.commit ? fmt(c.commit) + ' commit · ' : ''}${fmt(c.draft)} draft · ${fmt(c.open)} open · ${fmt(c.merged)} merged · ${fmt(c.closed)} closed · ${readout(T)}`;
+  BD_SERIES.forEach(s => legNums[s.key].textContent = fmt(s.fn(T)));
+  roTimeEl.textContent = readout(T);
   // table time-travel — status + "state as of" at the cursor time
   pageIdx.forEach(i => {
     const row = gridRows.querySelector(`tr[data-idx="${i}"]`);
@@ -780,7 +792,7 @@ function render() {
     const since = enteredAt(REPOS[i], T);
     row.querySelector('.asofcell').innerHTML =
       key === null ? `<span class="asof">no pull request</span>`
-      : (key === 'commit' || key === 'merged' || key === 'closed') ? `<span class="asof">${key === 'commit' ? 'committed' : CL_STATE[key].label.toLowerCase()} ${daysAgo(since)}</span>`
+      : (key === 'merged' || key === 'closed' || key === 'failed') ? `<span class="asof">${key === 'failed' ? 'failed to commit' : CL_STATE[key].label.toLowerCase()} ${daysAgo(since)}</span>`
       : `<span class="asof">${CL_STATE[key].label.toLowerCase()} as of ${readout(T)}</span>`;
   });
 }
@@ -819,6 +831,23 @@ document.getElementById('currentBtn').addEventListener('click', e => { e.stopPro
 
 document.getElementById('filtClear').addEventListener('click', () => { selectedJobs.clear(); buildTable(); render(); });
 
+// Status column filter — a dropdown of statuses; filters rows by each repo's current status
+const STATUS_OPTS = [['open','Open'],['draft','Draft'],['merged','Merged'],['closed','Closed'],['failed','Failed to commit'],['failedMerge','Failed to merge']];
+const statusMenu = document.getElementById('statusMenu');
+const statusBtn = document.getElementById('statusFilterBtn');
+statusMenu.innerHTML = STATUS_OPTS.map(([k, lb]) => {
+  const s = CL_STATE[k];
+  return `<label><input type="checkbox" value="${k}"><span class="st ${s.cls}"><svg><use href="#${s.icon}"/></svg><span class="lbl">${lb}</span></span></label>`;
+}).join('');
+statusBtn.addEventListener('click', e => { e.stopPropagation(); statusMenu.classList.toggle('open'); });
+statusMenu.addEventListener('click', e => e.stopPropagation());
+statusMenu.addEventListener('change', () => {
+  statusFilter = new Set([...statusMenu.querySelectorAll('input:checked')].map(c => c.value));
+  statusBtn.classList.toggle('on', statusFilter.size > 0);
+  buildTable(); render();
+});
+document.addEventListener('click', () => statusMenu.classList.remove('open'));
+
 // collapse / expand
 const tlSection = document.getElementById('tlSection');
 document.getElementById('tlTitle').addEventListener('click', () => {
@@ -841,8 +870,8 @@ const barTip = document.createElement('div'); barTip.id = 'barTip'; document.bod
 lanesEl.querySelectorAll('.bar').forEach(bar => {
   const j = JOBS.find(x => x.id === bar.dataset.id);
   bar.addEventListener('mouseenter', () => {
-    barTip.innerHTML = `<b>${j.label.replace(/\s*\([^)]*\)/g, '')}</b> · ${j.actor}<br>${fmt(j.succeeded)} of ${fmt(j.actioned)} succeeded` +
-      (j.failed ? ` · <span class="tf">${fmt(j.failed)} failed</span>` : '');
+    barTip.innerHTML = `<b>${j.label.replace(/\s*\([^)]*\)/g, '')}</b> by ${j.actor}<br>${fmt(j.succeeded)} of ${fmt(j.actioned)} succeeded` +
+      (j.failed ? `, <span class="tf">${fmt(j.failed)} failed</span>` : '');
     const r = bar.getBoundingClientRect();
     barTip.style.left = (r.left + r.width / 2) + 'px';
     barTip.style.top = (r.top - 8) + 'px';
@@ -877,14 +906,14 @@ function toggleAll() {
 const syncLine = document.getElementById('syncLine');
 let refreshing = false;
 function idleSyncHtml() {
-  return `<span id="syncText">Statuses as of last refresh · ${refreshAgoMin < 1 ? 'moments ago' : refreshAgoMin + ' min ago'}</span><button class="refresh" id="refreshBtn" title="Fetch current PR statuses from the SCM"><svg><use href="#i-refresh"/></svg> Refresh statuses</button>`;
+  return `<button class="refresh" id="refreshBtn" title="Fetch current PR statuses from the SCM"><svg><use href="#i-refresh"/></svg> Refresh statuses</button><span id="syncText">refreshed ${refreshAgoMin < 1 ? 'moments ago' : refreshAgoMin + ' min ago'}</span>`;
 }
 syncLine.addEventListener('click', e => {
   if (!e.target.closest('#refreshBtn') || refreshing) return;
   refreshing = true;
   const TOTAL = REPOS.length, DUR = 2500, start = performance.now();
   syncLine.classList.add('busy');
-  syncLine.innerHTML = `<span id="sweepText">Checking ${fmt(TOTAL)} repositories — 0 checked</span><button class="refresh" disabled><span class="spin"><svg width="14" height="14"><use href="#i-refresh"/></svg></span> Refreshing…</button>`;
+  syncLine.innerHTML = `<button class="refresh" disabled><span class="spin"><svg width="14" height="14"><use href="#i-refresh"/></svg></span> Refreshing…</button><span id="sweepText">Checking ${fmt(TOTAL)} repositories — 0 checked</span>`;
   const iv = setInterval(() => {
     const done = Math.min(TOTAL, Math.round((performance.now() - start) / DUR * TOTAL));
     const el = document.getElementById('sweepText');
