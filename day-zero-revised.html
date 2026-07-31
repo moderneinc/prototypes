@@ -4396,12 +4396,7 @@ function CustomTooltip({ continuous, index, step, backProps, closeProps, primary
         ${index > 0 ? html`
           <button ...${backProps} className="joyride-tooltip__btn-back">${icons.chevronLeft(14)} Back</button>
         ` : null}
-        ${isLast ? html`
-          <button ...${primaryProps} className="joyride-tooltip__btn-next joyride-tooltip__btn-finish">${icons.check(13)} <span>Finish</span></button>
-        ` : html`
-          ${requiresAction ? null : html`
-            <button ...${primaryProps} className="joyride-tooltip__btn-next">Next</button>
-          `}
+        ${isLast ? null : html`
           <button ...${skipProps} className="joyride-tooltip__btn-skip">Skip tour</button>
         `}
         <div className="joyride-tooltip__dots">
@@ -4409,6 +4404,11 @@ function CustomTooltip({ continuous, index, step, backProps, closeProps, primary
             <div key=${i} className=${'joyride-tooltip__dot' + (i + 1 === hl.number ? ' active' : '') + (i + 1 < hl.number ? ' done' : '')}></div>
           `)}
         </div>
+        ${isLast ? html`
+          <button ...${primaryProps} className="joyride-tooltip__btn-next joyride-tooltip__btn-finish">${icons.check(13)} <span>Finish</span></button>
+        ` : requiresAction ? null : html`
+          <button ...${primaryProps} className="joyride-tooltip__btn-next">Next</button>
+        `}
       </div>
     </div>
   `;
