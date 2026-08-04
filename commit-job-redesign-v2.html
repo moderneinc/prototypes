@@ -1,0 +1,1308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Commit results — timeline (prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   Palette — copied from the live app (neo-design / Morpheus light)
+   ============================================================ */
+:root {
+  --chrome:#f2f0ea; --panel:#fbfaf6; --card:#fbfaf6;
+  --line:rgba(35,35,66,.12); --line-strong:rgba(35,35,66,.5); --hairline:rgba(35,35,66,.08);
+  --text:#343a40; --ink:#232342; --muted:#62627a; --faint:#8a8a99;
+  --accent:#1055e2; --link:#0046b5; --track:#edebe2;
+  --success:#237341; --active:#7048c8; --error:#d43c2a; --warning:#b07210;
+  /* Cool spectrum — bright primary on top, deep companion underneath */
+  --cobalt:#335eb7; --cobalt-d:#071f54;
+  --azure:#278bca;  --azure-d:#003c5e;
+  --teal:#00a9aa;   --teal-d:#005152;
+  --sea:#008262;    --sea-d:#002f21;
+  --green:#48a345;  --green-d:#124d12;
+  --mint:#30f284;   --mint-d:#1d5937;
+  /* SCM color convention: commit blue · draft gray · open green · merged purple · closed red */
+  --commit:#335eb7;  --commit-b:#071f54;    /* Commit — blue */
+  --open:#2da44e;                           /* Open (PR) — green */
+  --draft:#6e7781;   --draft-b:#57606a;     /* Draft — gray */
+  --approve:#1a7f37; --approve-b:#116329;   /* Approval — deep green */
+  --merge:#8250df;   --merge-b:#6639ba;     /* Merge — purple */
+  --close:#cf222e;   --close-b:#a40e26;     /* Close — red */
+  --fail:#d1242f;    --fail-b:#a12622;      /* Failed — red */
+}
+* { box-sizing:border-box; }
+html, body { height:100%; }
+body { margin:0; font-family:'Geist', system-ui, -apple-system, sans-serif; font-size:14px; color:var(--text); background:var(--chrome); -webkit-font-smoothing:antialiased; }
+button { font:inherit; cursor:pointer; }
+a { color:var(--link); text-decoration:none; }
+a:hover { text-decoration:underline; }
+.mono { font-family:'Geist Mono', ui-monospace, monospace; }
+
+/* ---------- App shell ---------- */
+.app { height:100%; display:grid; grid-template-columns:98px 1fr; grid-template-rows:64px 1fr; grid-template-areas:"nav topbar" "nav main"; overflow:hidden; }
+.rail { grid-area:nav; display:flex; flex-direction:column; gap:4px; padding:2px 8px 24px; background:var(--chrome); overflow-y:auto; }
+.rail::-webkit-scrollbar { width:0; }
+.rail-home { display:flex; flex-direction:column; align-items:center; gap:4px; margin-top:2px; padding:4px 0; }
+.rail-home .nav-ic { padding:4px; }
+.home-mark { width:28px; height:28px; color:#232342; display:block; }
+.vbadge { display:inline-flex; align-items:center; justify-content:center; height:18px; padding:0 8px; border-radius:4px; background:#30f284; color:#1d5937; font-size:11px; font-weight:600; line-height:1; }
+.nav-item { width:100%; padding:8px 4px; display:flex; flex-direction:column; align-items:center; gap:4px; border:none; background:transparent; color:var(--text); border-radius:4px; }
+.nav-ic { display:flex; align-items:center; justify-content:center; padding:8px; border-radius:4px; border:1px solid transparent; transition:background-color .15s, border-color .15s; }
+.nav-item:hover .nav-ic, .nav-item.active .nav-ic { background:rgba(35,35,66,.06); border-color:rgba(35,35,66,.08); }
+.nav-item svg { width:22px; height:22px; color:var(--text); }
+.nav-lb { font-size:10px; font-weight:500; line-height:1.2; }
+.nav-item.active .nav-lb { font-weight:600; }
+.nav-beta { font-size:10px; color:var(--muted); margin-top:-2px; }
+
+.topbar { grid-area:topbar; display:flex; align-items:center; gap:12px; padding:12px 22px; background:var(--chrome); }
+.org { display:flex; align-items:center; gap:8px; padding:8px 14px; border:1px solid var(--line-strong); border-radius:10px; background:var(--panel); font-weight:500; color:var(--ink); }
+.org svg { width:17px; height:17px; color:var(--muted); }
+.org svg.chev { width:14px; height:14px; }
+.spacer { flex:1; }
+.search { display:flex; align-items:center; gap:10px; width:280px; height:40px; padding:0 14px; border:1px solid var(--line-strong); border-radius:10px; background:var(--panel); color:var(--muted); }
+.search svg { width:16px; height:16px; }
+.search span { flex:1; }
+.search kbd { font-family:inherit; font-size:10px; background:var(--chrome); border:1px solid var(--line); border-radius:4px; padding:2px 5px; }
+.tb-ic { width:38px; height:38px; border-radius:4px; border:none; background:transparent; color:var(--text); display:flex; align-items:center; justify-content:center; }
+.tb-ic:hover { background:rgba(0,0,0,.04); }
+.tb-ic svg { width:19px; height:19px; }
+.avatar { width:34px; height:34px; border-radius:999px; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; }
+
+.main { grid-area:main; background:var(--panel); border-top-left-radius:16px; box-shadow:-12px 0 28px -6px rgba(176,141,152,.16); overflow:hidden; display:flex; flex-direction:column; }
+.content { flex:1; overflow-y:auto; padding:22px 34px 60px; }
+.content::-webkit-scrollbar { width:10px; }
+.content::-webkit-scrollbar-thumb { background:var(--line-strong); border-radius:999px; border:3px solid var(--panel); }
+
+/* ---------- Lede ---------- */
+.crumb { font-size:13px; color:var(--muted); margin-bottom:14px; }
+.crumb a { color:var(--link); }
+.crumb .sep { margin:0 6px; opacity:.6; }
+.lede { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.lede h1 { margin:0 0 6px; font-size:18px; font-weight:500; color:var(--text); letter-spacing:-.005em; }
+.meta { font-size:14px; color:var(--muted); display:flex; align-items:center; flex-wrap:wrap; }
+.meta a { color:var(--ink); }
+.tgt-branch .mono { color:var(--ink); font-weight:500; }
+.meta .sep { display:inline-block; width:1px; height:11px; margin:0 11px; background:var(--line-strong); opacity:.5; vertical-align:-1px; }
+.bell { width:38px; height:38px; border-radius:4px; border:1px solid var(--line-strong); background:var(--panel); color:var(--text); display:flex; align-items:center; justify-content:center; flex:none; }
+.bell svg { width:18px; height:18px; }
+
+/* ---------- Section headings ---------- */
+.section { margin-top:30px; }
+.sec-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.sec-title { display:flex; align-items:center; gap:8px; }
+.sec-title h2 { margin:0; font-size:16px; font-weight:500; color:var(--text); }
+.tl-section .sec-title { cursor:pointer; user-select:none; margin-left:-4px; }
+.collapse-btn { border:none; background:transparent; padding:2px; color:var(--muted); display:inline-flex; align-items:center; }
+.collapse-btn .chev { width:18px; height:18px; transition:transform .2s ease; }
+.tl-section.collapsed .collapse-btn .chev { transform:rotate(-90deg); }
+.tl-wrap { overflow:hidden; transition:max-height .28s ease, opacity .18s ease; max-height:560px; opacity:1; }
+.tl-section.collapsed .tl-wrap { max-height:0; opacity:0; }
+.tl-section.collapsed .tl-controls { display:none; }
+.info-ic { display:inline-flex; color:var(--muted); }
+.info-ic svg { width:15px; height:15px; }
+/* tooltip content lives in a hidden .bubble; it's shown via the fixed-position
+   #tipHost on <body>, so no ancestor overflow/stacking can ever hide it */
+.tip { position:relative; display:inline-flex; }
+.tip .bubble { display:none; }
+#tipHost { position:fixed; z-index:120; width:320px; padding:10px 12px; background:#232342; color:#fff; border-radius:8px; font-size:12px; line-height:1.5; box-shadow:0 8px 24px rgba(0,0,0,.22); opacity:0; visibility:hidden; transition:opacity .12s; pointer-events:none; }
+#tipHost.on { opacity:1; visibility:visible; }
+#tipHost b { display:block; margin-bottom:3px; font-weight:600; }
+
+.pill-btn { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border:1px solid var(--line-strong); border-radius:4px; background:var(--panel); color:var(--text); font-size:12px; font-weight:500; }
+.pill-btn:hover { background:rgba(0,0,0,.03); }
+.readout { font-size:12px; color:var(--muted); }
+
+.sync { display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted); }
+.sync .refresh { display:inline-flex; align-items:center; gap:7px; height:34px; padding:0 16px; border:none; border-radius:4px; background:var(--ink); color:#fff; font-size:13px; font-weight:600; }
+.sync .refresh:hover:not(:disabled) { background:#35356b; }
+.sync .refresh:disabled { cursor:default; opacity:.6; }
+.sync .refresh svg { width:14px; height:14px; }
+.spin { animation:spin .8s linear infinite; display:inline-flex; }
+@keyframes spin { to { transform:rotate(360deg); } }
+/* "last updated" pill — quiet mono badge that doubles as the refresh trigger */
+.upd-badge { display:inline-flex; align-items:center; gap:7px; height:28px; padding:0 12px; border:1px solid var(--line-strong); border-radius:999px; background:transparent; font-family:'Geist Mono', ui-monospace, monospace; font-size:11.5px; color:var(--muted); white-space:nowrap; cursor:pointer; }
+.upd-badge:hover:not(.busy) { background:rgba(0,0,0,.035); color:var(--ink); }
+.upd-badge svg { width:12px; height:12px; flex:none; }
+.upd-badge.busy { color:var(--ink); border-color:rgba(35,35,66,.5); cursor:default; }
+.upd-badge.busy svg { animation:spin .8s linear infinite; }
+
+/* confirmation dialog — same "do you really want to run this?" pattern as the recipe run gate */
+.modal-scrim { position:fixed; inset:0; background:rgba(35,35,66,.34); display:none; align-items:center; justify-content:center; z-index:120; padding:20px; }
+.modal-scrim.open { display:flex; }
+.modal { width:460px; max-width:100%; background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:0 24px 64px -12px rgba(35,35,66,.45); padding:22px 24px 18px; }
+.modal h3 { margin:0 0 10px; font-size:16px; font-weight:600; color:var(--ink); display:flex; gap:10px; align-items:flex-start; }
+.modal h3 svg { width:20px; height:20px; color:var(--warning); flex:none; margin-top:1px; }
+.modal p { margin:0 0 10px; font-size:13.5px; line-height:1.55; color:var(--text); }
+.modal p .mono { color:var(--ink); font-weight:600; }
+.modal .hint { font-size:12.5px; color:var(--muted); margin-bottom:0; }
+.modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+.btn-ghost { height:38px; padding:0 16px; border:1px solid var(--line-strong); border-radius:4px; background:transparent; color:var(--ink); font-size:13px; font-weight:600; }
+.btn-ghost:hover { background:rgba(0,0,0,.03); }
+.btn-solid { height:38px; padding:0 18px; border:none; border-radius:4px; background:var(--ink); color:#fff; font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:7px; }
+.btn-solid:hover { background:#35356b; }
+.btn-solid svg { width:15px; height:15px; }
+
+/* ---------- Progress card (burndown + axis + lanes on one time scale) ---------- */
+.tl-card { background:var(--card); border:1px solid rgba(0,0,0,.12); border-radius:4px; padding:10px 14px 10px; }
+.tl-legend { display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; font-size:12px; color:var(--muted); }
+.tl-legend .lg { display:inline-flex; align-items:baseline; gap:6px; }
+.tl-legend .lg svg { width:14px; height:14px; align-self:center; }
+.tl-legend .lg b { font-weight:700; font-size:14px; color:var(--text); font-variant-numeric:tabular-nums; }
+.tl-legend .lg.commit svg { color:var(--commit); }
+.tl-legend .lg.draft  svg { color:var(--draft); }
+.tl-legend .lg.open   svg { color:var(--approve); }
+.tl-legend .lg.closed svg { color:var(--close); }
+.tl-legend .lg.merged svg { color:var(--merge); }
+.tl-legend .lg.inflight svg { color:#3b82f6; }
+.tl-legend .lg.failc svg, .tl-legend .lg.failm svg { color:var(--fail); }
+.tl-head-left { display:flex; align-items:center; gap:12px; }
+.tl-head-left .hdiv { width:1px; height:18px; background:var(--line-strong); opacity:.5; }
+.ro-time { color:var(--muted); font-weight:500; font-size:12px; }
+/* view toggle */
+.seg { display:inline-flex; border:1px solid var(--line-strong); border-radius:4px; overflow:hidden; }
+.seg button { border:none; background:transparent; padding:3px 12px; font-size:12px; font-weight:500; color:var(--muted); }
+.seg button.on { background:var(--ink); color:#fff; }
+
+.combo { position:relative; cursor:crosshair; }
+/* full-height gridlines tie the burndown and the lanes to ONE shared axis */
+.tl-grid { position:absolute; inset:0; pointer-events:none; z-index:0; }
+.tl-grid .gl { position:absolute; top:0; bottom:0; width:1px; background:var(--hairline); }
+/* sync gap — 20px hatched strip right of Now: the unknown between the last sync and
+   the absolute latest. The refresh button rides the bottom of that edge. */
+.sync-gap { position:absolute; top:0; bottom:0; pointer-events:none; z-index:2; display:flex; align-items:flex-start; justify-content:center;
+  background:repeating-linear-gradient(45deg, rgba(35,35,66,.09) 0 4px, transparent 4px 8px); }
+.sync-gap span { margin-top:26px; font-size:10.5px; font-weight:600; color:var(--muted); background:rgba(251,250,246,.9); padding:3px 8px; border-radius:4px; white-space:nowrap; }
+.sync-edge { position:absolute; bottom:-2px; transform:translateX(-50%); height:24px; padding:0 12px; border-radius:999px; border:none; background:#3b82f6; color:#fff; display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; white-space:nowrap; z-index:7; cursor:pointer; box-shadow:0 1px 5px rgba(35,35,66,.35); }
+.sync-edge svg { width:12px; height:12px; flex:none; }
+.sync-edge:hover { background:#2563eb; }
+/* connectors — a DOTTED drop line from each burn-line check-point dot down to its action
+   bar. Hidden at rest; shown while its flag is hovered or selected. */
+.tl-links { position:absolute; inset:0; pointer-events:none; z-index:3; }
+.tl-links .lnk { position:absolute; width:3px; margin-left:-1px; opacity:0; transition:opacity .15s;
+  background-image:radial-gradient(circle, rgba(59,130,246,.75) 1.1px, transparent 1.3px);
+  background-size:3px 7px; background-repeat:repeat-y; background-position:center top; }
+.tl-links .lnk.show, .tl-links .lnk.sel { opacity:1; }
+.bd-plot, .tl-axis { position:relative; z-index:1; }
+/* lanes carry no stacking of their own: ordinary flags (z1) sit BEHIND the sync-gap
+   hatch (z2) — only platform-action flags (.local, z4) ride above it */
+.tl-lanes { position:relative; }
+/* burn-DOWN — remaining (in-flight) repos count down from a known total, drawn as a
+   step line with a marker at each real check point. No interpolation between samples. */
+.bd-plot { position:relative; height:78px; }
+.bd-plot svg { display:block; overflow:visible; }
+.bd-area { fill:rgba(51,94,183,.11); stroke:none; }
+/* stage bands sit light at rest; hovering one deepens it (half saturation) */
+.bd-band { fill-opacity:.17; transition:fill-opacity .15s ease; pointer-events:auto; }
+.bd-band:hover { fill-opacity:.5; }
+.bd-line { fill:none; stroke:#3b82f6; stroke-width:2; stroke-linejoin:miter; stroke-linecap:square; }   /* bright blue, sharp-cornered steps */
+.bd-total { stroke:var(--line-strong); stroke-width:1; stroke-dasharray:3 3; opacity:.5; }
+.bd-tag { position:absolute; font-size:10px; line-height:1; color:var(--muted); white-space:nowrap; pointer-events:none; background:rgba(251,250,246,.85); padding:2px 4px; border-radius:4px; z-index:4; }
+.bd-tag b { font-weight:600; color:var(--text); }
+.bd-now { position:absolute; font-size:10px; line-height:1.2; color:#2563eb; font-weight:600; white-space:nowrap; pointer-events:none; background:rgba(251,250,246,.9); padding:2px 5px; border-radius:5px; z-index:4; }
+.bd-now b { font-variant-numeric:tabular-nums; }
+/* shared x-axis BETWEEN the burndown and the lanes — given real weight so it reads as ONE axis */
+.tl-axis { position:relative; height:26px; margin:1px 0 3px; background:var(--track); border-top:1.5px solid var(--line-strong); border-bottom:1.5px solid var(--line-strong); }
+.tl-axis .tk { position:absolute; top:7px; transform:translateX(-50%); font-size:10.5px; font-weight:600; color:var(--text); white-space:nowrap; }
+.tl-axis .tk.edge-l { transform:none; }
+.tl-axis .tk.edge-r { transform:translateX(calc(-100% - 30px)); }   /* clear of the Now pill */
+.tl-axis .tkm { position:absolute; top:0; width:1.5px; height:6px; background:var(--line-strong); }
+.tl-axis .tkm.minor { width:1px; height:3px; opacity:.5; }
+.tl-axis-tag { position:absolute; top:6px; left:8px; font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); z-index:2; pointer-events:none; }
+/* scrub explainer — a blue info icon in the header controls; tooltip carries the how-to text */
+.eye-ic { display:inline-flex; color:#3b82f6; cursor:default; }
+.eye-ic svg { width:19px; height:19px; }
+/* lanes — video-editor style tracks; each run renders as a FLAG: a vertical start
+   line (pole) with a solid arrow banner extending right, pointed at the run's end.
+   Red tail on the banner = the failed portion. */
+.tl-lanes { position:relative; }
+.lane { position:relative; height:26px; }
+.lane + .lane { border-top:1px dashed var(--hairline); }
+.bar { position:absolute; top:50%; transform:translateY(-50%); height:24px; border-radius:0; border:none; background:transparent; cursor:pointer; padding:0; z-index:3; }   /* flags ride above the sync-gap hatch */
+/* selection — a crisp flat translucent rectangle (TradingView-style): sharp edges,
+   no glow, hairline border. Sits BEHIND the flag so the badge stays fully vivid. */
+.bar:focus-visible { outline:none; }
+.bar.sel::after, .bar:focus-visible::after { content:''; position:absolute; inset:-2px -4px; z-index:-1; background:rgba(59,130,246,.20); box-shadow:inset 0 0 0 1px rgba(59,130,246,.7); pointer-events:none; }
+.bar.dim { opacity:.3; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.62;} }
+.bar-pole  { position:absolute; left:0; top:0; bottom:0; width:2.5px; }
+.bar-arrow { position:absolute; left:2.5px; right:0; top:50%; transform:translateY(-50%); height:20px; overflow:hidden;
+  clip-path:polygon(0 50%, 9px 0, 100% 0, 100% 100%, 9px 100%);   /* tip points LEFT, at the start */
+  filter:drop-shadow(0 1px 2.5px rgba(35,35,66,.16)); }           /* very light lift off the canvas */
+.bar-fail  { position:absolute; top:0; bottom:0; background:var(--fail); }  /* failed tail */
+/* soft-tint banners (roadmap-bar style), OPAQUE over the panel so the sync-gap hatch
+   never bleeds through; full color on the start pole */
+.bar-arrow { background-color:var(--panel); }
+.bar.commit  .bar-arrow { background-image:linear-gradient(rgba(51,94,183,.15), rgba(51,94,183,.15)); }     .bar.commit  .bar-pole { background:var(--commit); }
+.bar.draft   .bar-arrow { background-image:linear-gradient(rgba(110,119,129,.15), rgba(110,119,129,.15)); } .bar.draft   .bar-pole { background:var(--draft); }
+.bar.approve .bar-arrow { background-image:linear-gradient(rgba(26,127,55,.14), rgba(26,127,55,.14)); }     .bar.approve .bar-pole { background:var(--approve); }
+.bar.merge   .bar-arrow { background-image:linear-gradient(rgba(130,80,223,.14), rgba(130,80,223,.14)); }   .bar.merge   .bar-pole { background:var(--merge); }
+/* platform action after last refresh — known to the platform → clean banner, above the hatch */
+.bar.local { z-index:4; }
+.bar.close   .bar-arrow { background-image:linear-gradient(rgba(207,34,46,.12), rgba(207,34,46,.12)); }     .bar.close   .bar-pole { background:var(--close); }
+/* bar labels are BADGES (opaque tinted pill + border + icon) so they read cleanly over
+   the segmented ticks instead of being obscured by them */
+.blb { position:absolute; top:50%; transform:translateY(-50%); left:16px; display:inline-flex; align-items:center; gap:5px; height:18px; padding:0 7px; border-radius:6px; border:1px solid transparent; font-size:11px; font-weight:600; white-space:nowrap; pointer-events:none; }   /* inline start clears the left-pointing tip */
+.blb svg { width:12px; height:12px; }   /* icon inherits the badge text color */
+.blb-run { font-weight:500; font-style:italic; opacity:.8; }
+/* badge-sheet recipe: light tint bg + SOLID mid-color outline + VIVID (not muted) text */
+.bar.commit  .blb { background:#e9effb; border-color:var(--commit);  color:#2c56b0; }
+.bar.draft   .blb { background:#f0f1f2; border-color:var(--draft);   color:#57606a; }
+.bar.approve .blb { background:#e2f5e7; border-color:var(--approve); color:#1a7f37; }
+.bar.merge   .blb { background:#f2ecfd; border-color:var(--merge);   color:#6639ba; }
+.bar.close   .blb { background:#ffebe9; border-color:var(--close);   color:#cf222e; }
+/* INLINE badges melt into the banner — one component, no chip outline. Badges shown
+   OUTSIDE a flag (.out) or on genie-hover keep their chip so they stay legible. */
+.bar:not(.out):not(.nolabel) .blb { background:transparent; border-color:transparent; }
+/* satellite runs in a cluster stay unlabeled at rest — on hover their badge genies
+   out to the right (springy iOS-style pop from the bar) */
+.bar.nolabel .blb { left:calc(100% + 6px); opacity:0; visibility:hidden; transform:translateY(-50%) scale(.35); transform-origin:left center; transition:opacity .15s ease, transform .24s cubic-bezier(.34,1.56,.64,1); }
+.bar.nolabel:hover .blb, .bar.nolabel:focus-visible .blb { opacity:1; visibility:visible; transform:translateY(-50%) scale(1); }
+.bar:hover { z-index:3; }   /* hovered bar (and its popped badge) rides above neighbours */
+.bar.out .blb { left:calc(100% + 6px); }
+.bar.out.out-left .blb { left:auto; right:calc(100% + 6px); }
+/* playhead — a line with a date lollipop riding ON the shared axis (its vertical
+   center is set from the axis position in JS) */
+.cursor-line { position:absolute; top:0; bottom:0; width:2px; background:#3b82f6; pointer-events:none; z-index:6; }
+.cursor-grip { position:absolute; left:50%; transform:translate(-50%,-50%); height:20px; padding:0 9px; border-radius:999px; background:#3b82f6; color:#fff; font-size:10px; font-weight:700; letter-spacing:.02em; white-space:nowrap; display:flex; align-items:center; box-shadow:0 1px 4px rgba(35,35,66,.4); cursor:ew-resize; pointer-events:auto; touch-action:none; }
+.cursor-grip:hover { filter:brightness(1.08); }
+/* widen the grab target along the whole line without blocking bar clicks elsewhere */
+.cursor-hit { position:absolute; top:0; bottom:0; left:-7px; width:16px; cursor:ew-resize; pointer-events:auto; touch-action:none; background:transparent; }
+#barTip { position:fixed; z-index:60; transform:translate(-50%,-100%); background:#232342; color:#fff; padding:7px 10px; border-radius:8px; font-size:12px; line-height:1.45; box-shadow:0 8px 24px rgba(0,0,0,.22); pointer-events:none; opacity:0; transition:opacity .08s; white-space:nowrap; }
+#barTip.on { opacity:1; }
+#barTip b { font-weight:600; }
+#barTip .tf { color:#ff9e91; }
+
+/* ---------- Repositories toolbar + table ---------- */
+.toolbar { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-bottom:none; border-top-left-radius:12px; border-top-right-radius:12px; background:var(--card); }
+.tb-label { display:inline-flex; align-items:center; gap:5px; padding:0 4px 0 2px; font-size:13px; font-weight:600; color:var(--muted); white-space:nowrap; }
+.tb-search { display:flex; align-items:center; gap:8px; width:140px; height:32px; padding:0 10px; border:1px solid var(--line); border-radius:6px; background:var(--panel); color:var(--muted); font-size:13px; transition:width .2s ease; }
+.tb-search span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+/* while a timeline filter is active, collapse search + updated pill to icon buttons */
+.toolbar.filtered .tb-search { width:36px; padding:0; justify-content:center; }
+.toolbar.filtered .tb-search span { display:none; }
+.toolbar.filtered .upd-badge { width:28px; padding:0; justify-content:center; }
+.toolbar.filtered .upd-badge #updText { display:none; }
+.tb-search svg { width:15px; height:15px; }
+.tbtn { display:inline-flex; align-items:center; gap:6px; height:36px; padding:0 15px; border:1px solid var(--line-strong); border-radius:4px; background:transparent; color:var(--ink); font-size:13px; font-weight:500; }
+.tbtn:hover:not(:disabled){ background:rgba(0,0,0,.03); }
+.tbtn svg { width:15px; height:15px; }
+.tbtn:disabled { opacity:.4; cursor:not-allowed; }
+
+table.grid { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-bottom:none; }
+.grid th { text-align:left; font-size:12px; font-weight:600; color:var(--muted); padding:12px 14px; background:#f2efe7; border-bottom:1px solid var(--line); white-space:nowrap; }   /* warm header band */
+.grid td { padding:13px 14px; border-bottom:1px solid var(--hairline); font-size:14px; color:var(--text); vertical-align:middle; }
+.grid tr:hover td { background:rgba(0,0,0,.015); }
+.grid td.branch { max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.grid th.col-status { position:relative; }
+.th-filter { display:inline-flex; align-items:center; gap:4px; border:none; background:transparent; font:inherit; font-size:12px; font-weight:600; color:var(--muted); cursor:pointer; padding:0; }
+.th-filter svg { width:12px; height:12px; opacity:.7; }
+.th-filter.on svg { opacity:1; color:var(--accent); }
+.filter-menu { display:none; position:absolute; top:calc(100% + 4px); left:0; background:var(--card); border:1px solid var(--line-strong); border-radius:8px; box-shadow:0 10px 28px rgba(35,35,66,.16); padding:6px; z-index:30; }
+.filter-menu.open { display:block; }
+.filter-menu label { display:flex; align-items:center; gap:9px; padding:6px 9px; border-radius:6px; font-size:13px; cursor:pointer; white-space:nowrap; }
+.filter-menu label:hover { background:rgba(0,0,0,.045); }
+.filter-menu input { width:15px; height:15px; accent-color:var(--accent); }
+.filter-menu .st { pointer-events:none; }
+.grid .col-ck { width:38px; }
+.grid .col-act { width:150px; }
+.chk { width:16px; height:16px; border:1.5px solid var(--line-strong); border-radius:4px; background:var(--panel); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+.chk.on { background:var(--accent); border-color:var(--accent); }
+.chk.on svg { width:11px; height:11px; color:#fff; }
+.chk svg { display:none; }
+.actcell { display:flex; align-items:center; gap:5px; color:var(--muted); }
+.actcell .aic { display:inline-flex; align-items:center; padding:4px; border-radius:6px; border:none; background:transparent; color:var(--link); cursor:pointer; }
+.actcell .aic:hover { background:rgba(16,85,226,.08); color:var(--link); }
+.actcell svg { width:16px; height:16px; }
+.actcell .aic:disabled { color:var(--faint); opacity:.4; cursor:default; }
+.actcell .aic:disabled:hover { background:transparent; }
+/* status — plain colored icon + label, Changelog style (no chips) */
+.st { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:500; white-space:nowrap; }
+.st svg { width:15px; height:15px; }
+/* Material-style DETERMINATE circular progress: the arc fills the circle 0→360°
+   from 12 o'clock, then repeats — no rotation */
+.mspin { width:15px; height:15px; transform:rotate(-90deg); }
+.mspin circle { fill:none; stroke:currentColor; stroke-width:2.8; stroke-linecap:round;
+  animation:mspin-fill 6s linear infinite; }
+@keyframes mspin-fill { 0% { stroke-dasharray:0 57; } 100% { stroke-dasharray:57 57; } }
+.st.commit   { color:var(--commit); }
+.st.draft    { color:var(--draft); }
+.st.open     { color:var(--open); }
+.st.approved { color:var(--approve); }
+.st.merging  { color:var(--merge); }
+.st.merged   { color:var(--merge); }
+.st.closed   { color:var(--close); }
+.st.failed   { color:#d1242f; }
+.st.neutral  { color:#706960; font-weight:400; }
+.st .lbl { color:var(--text); }
+/* table cells stack the icon ABOVE the label — fixed width so every row's icon
+   and label share the same vertical axis regardless of label length */
+.stcell .st { flex-direction:column; gap:3px; width:100px; }
+.stcell .st .lbl { font-size:11px; line-height:1.2; }
+.asof { font-size:13px; color:var(--muted); white-space:nowrap; }
+.repo-cell { display:flex; align-items:center; gap:8px; }
+.repo-cell .i { color:var(--muted); display:inline-flex; }
+.repo-cell .i svg { width:14px; height:14px; }
+.origin svg { width:17px; height:17px; color:var(--text); }
+.foot { display:flex; align-items:center; justify-content:flex-end; gap:16px; padding:10px 14px; border:1px solid var(--line); border-top:none; border-bottom-left-radius:12px; border-bottom-right-radius:12px; background:var(--card); font-size:12px; color:var(--muted); }
+.foot .pg { display:inline-flex; gap:2px; }
+.foot .pg button { width:26px; height:26px; border:1px solid var(--line-strong); border-radius:6px; background:var(--panel); color:var(--text); display:flex; align-items:center; justify-content:center; }
+.foot .pg button:disabled { opacity:.4; }
+.foot .pg svg { width:13px; height:13px; }
+
+/* ---------- Repositories filter chip ---------- */
+.filt-chip { display:none; align-items:center; gap:6px; height:36px; padding:0 4px 0 12px; border:1px solid var(--accent); border-radius:4px; background:rgba(16,85,226,.06); color:var(--ink); font-size:13px; font-weight:500; }
+.filt-chip.on { display:inline-flex; }
+.filt-chip .fk { text-transform:capitalize; }
+.filt-chip button { border:none; background:transparent; color:var(--muted); display:inline-flex; padding:4px; border-radius:50%; }
+.filt-chip button:hover { background:rgba(0,0,0,.06); color:var(--text); }
+.filt-chip svg { width:14px; height:14px; }
+</style>
+</head>
+<body>
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-moderne" viewBox="0 0 47 48" fill="none"><path d="M46.2205 0.092c-.4435-.1841-.9528-.0834-1.2933.2587L24.4951 20.8816C23.1532 9.1456 13.2189 0 1.1874 0 .8727 0 .5723.1265.3491.3508.1259.575 0 .8769 0 1.1932v44.7963C0 46.5273.5322 47.1856 1.1845 47.1856H45.7627c.6552 0 1.1874-.5348 1.1874-1.1932V1.1932c0-.483-.289-.9171-.7325-1.1012zM44.5781 4.0711v18.3257H26.3406L44.5781 4.0711zM44.5781 33.5951H24.661v-8.8149h19.9171v8.8149zM2.3748 43.1087V24.7831h18.2376L11.4936 33.9459 2.3748 43.1087zM2.3748 2.4179c10.6925.598 19.2877 9.2347 19.8828 19.9789H2.3748V2.4179zM13.1703 35.6335l9.1188-9.1628v18.3257H4.0515l9.1188-9.1629zM24.6639 44.7964v-8.815h19.9171v8.815H24.6639z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5 10.1 7.6z"/><path d="M19 14l.7 1.8L21.5 16.5l-1.8.7L19 19l-.7-1.8L16.5 16.5l1.8-.7z"/></symbol>
+  <symbol id="i-pie" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15.9A10 10 0 118.1 2.8"/><path d="M22 12A10 10 0 0012 2v10z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></symbol>
+  <symbol id="i-blocks" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/></symbol>
+  <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 106 5.3L3 8"/><path d="M12 7v5l4 2"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+  <symbol id="i-repo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><circle cx="12" cy="13" r="2"/><path d="M14 13h3"/><path d="M7 13h3"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4L7.5 4.2M21 16V8a2 2 0 00-1-1.7l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.7l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-chevd" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-chevl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="i-chevr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></symbol>
+  <symbol id="i-minus-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0114.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0020.5 15"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-arrow-circle" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12s4.48 10 10 10 10-4.48 10-10M4 12c0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8-8-3.58-8-8m12 0-4 4-1.41-1.41L12.17 13H8v-2h4.17l-1.59-1.59L12 8z"/></symbol>
+  <symbol id="i-kebab" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
+  <symbol id="i-gitlab" viewBox="0 0 24 24" fill="currentColor"><path d="m23.6 9.6-.03-.09L20.3.98a.85.85 0 0 0-.34-.4.87.87 0 0 0-1 .05.87.87 0 0 0-.29.44l-2.2 6.75H7.54L5.33 1.07A.87.87 0 0 0 5.04.63.87.87 0 0 0 4.04.58a.86.86 0 0 0-.34.4L.43 9.5l-.03.09a6.07 6.07 0 0 0 2.01 7.01l.01.01.03.02 4.98 3.73 2.46 1.86 1.5 1.13a1 1 0 0 0 1.22 0l1.5-1.13 2.46-1.86 5-3.75.01-.01a6.07 6.07 0 0 0 2.01-7z"/></symbol>
+  <symbol id="i-azure" viewBox="0 0 24 24" fill="currentColor"><path d="M0 8.877L2.247 5.91l8.405-3.416V.022l7.37 5.393L2.966 8.338v8.225L0 15.707zm24-4.45v14.651l-5.753 4.9-9.303-3.057V24l-5.978-7.416 15.057 1.798V5.415z"/></symbol>
+  <symbol id="i-git-commit" viewBox="0 0 24 24" fill="currentColor"><path d="M16.944 11h4.306a.75.75 0 0 1 0 1.5h-4.306a5.001 5.001 0 0 1-9.888 0H2.75a.75.75 0 0 1 0-1.5h4.306a5.001 5.001 0 0 1 9.888 0Zm-1.444.75a3.5 3.5 0 1 0-7 0 3.5 3.5 0 0 0 7 0Z"/></symbol>
+  <symbol id="i-git-draft" viewBox="0 0 24 24" fill="currentColor"><path d="M4.75 1.5a3.25 3.25 0 0 1 .745 6.414A.827.827 0 0 1 5.5 8v8a.827.827 0 0 1-.005.086A3.25 3.25 0 0 1 4.75 22.5a3.25 3.25 0 0 1-.745-6.414A.827.827 0 0 1 4 16V8c0-.029.002-.057.005-.086A3.25 3.25 0 0 1 4.75 1.5ZM16 19.25a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0ZM3 4.75a1.75 1.75 0 1 0 3.501-.001A1.75 1.75 0 0 0 3 4.75Zm0 14.5a1.75 1.75 0 1 0 3.501-.001A1.75 1.75 0 0 0 3 19.25Zm16.25-1.75a1.75 1.75 0 1 0 .001 3.501 1.75 1.75 0 0 0-.001-3.501Zm0-11.5a1.75 1.75 0 1 0 0-3.5 1.75 1.75 0 0 0 0 3.5ZM21 11.25a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Z"/></symbol>
+  <symbol id="i-git-pr" viewBox="0 0 24 24" fill="currentColor"><path d="M16 19.25a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm-14.5 0a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm0-14.5a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0ZM4.75 3a1.75 1.75 0 1 0 .001 3.501A1.75 1.75 0 0 0 4.75 3Zm0 14.5a1.75 1.75 0 1 0 .001 3.501A1.75 1.75 0 0 0 4.75 17.5Zm14.5 0a1.75 1.75 0 1 0 .001 3.501 1.75 1.75 0 0 0-.001-3.501Z"/><path d="M13.405 1.72a.75.75 0 0 1 0 1.06L12.185 4h4.065A3.75 3.75 0 0 1 20 7.75v8.75a.75.75 0 0 1-1.5 0V7.75a2.25 2.25 0 0 0-2.25-2.25h-4.064l1.22 1.22a.75.75 0 0 1-1.061 1.06l-2.5-2.5a.75.75 0 0 1 0-1.06l2.5-2.5a.75.75 0 0 1 1.06 0ZM4.75 7.25A.75.75 0 0 1 5.5 8v8A.75.75 0 0 1 4 16V8a.75.75 0 0 1 .75-.75Z"/></symbol>
+  <symbol id="i-git-merge" viewBox="0 0 24 24" fill="currentColor"><path d="M15 13.25a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm-12.5 6a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0Zm0-14.5a3.25 3.25 0 1 1 6.5 0 3.25 3.25 0 0 1-6.5 0ZM5.75 6.5a1.75 1.75 0 1 0-.001-3.501A1.75 1.75 0 0 0 5.75 6.5Zm0 14.5a1.75 1.75 0 1 0-.001-3.501A1.75 1.75 0 0 0 5.75 21Zm12.5-6a1.75 1.75 0 1 0-.001-3.501A1.75 1.75 0 0 0 18.25 15Z"/><path d="M6.5 7.25c0 2.9 2.35 5.25 5.25 5.25h4.5V14h-4.5A6.75 6.75 0 0 1 5 7.25Z"/><path d="M5.75 16.75A.75.75 0 0 1 5 16V8a.75.75 0 0 1 1.5 0v8a.75.75 0 0 1-.75.75Z"/></symbol>
+  <symbol id="i-git-close" viewBox="0 0 24 24" fill="currentColor"><path d="M22.266 2.711a.75.75 0 1 0-1.061-1.06l-1.983 1.983-1.984-1.983a.75.75 0 1 0-1.06 1.06l1.983 1.983-1.983 1.984a.75.75 0 0 0 1.06 1.06l1.984-1.983 1.983 1.983a.75.75 0 0 0 1.06-1.06l-1.983-1.984 1.984-1.983ZM4.75 1.5a3.25 3.25 0 0 1 .745 6.414A.827.827 0 0 1 5.5 8v8a.827.827 0 0 1-.005.086A3.25 3.25 0 0 1 4.75 22.5a3.25 3.25 0 0 1-.745-6.414A.827.827 0 0 1 4 16V8c0-.029.002-.057.005-.086A3.25 3.25 0 0 1 4.75 1.5ZM16 19.25a3.252 3.252 0 0 1 2.5-3.163V9.625a.75.75 0 0 1 1.5 0v6.462a3.252 3.252 0 0 1-.75 6.413A3.25 3.25 0 0 1 16 19.25ZM3 4.75a1.75 1.75 0 1 0 3.501-.001A1.75 1.75 0 0 0 3 4.75Zm0 14.5a1.75 1.75 0 1 0 3.501-.001A1.75 1.75 0 0 0 3 19.25Zm16.25-1.75a1.75 1.75 0 1 0 .001 3.501 1.75 1.75 0 0 0-.001-3.501Z"/></symbol>
+  <symbol id="i-git-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+  <symbol id="i-graphql" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"><path d="M12 3 19.79 7.5 19.79 16.5 12 21 4.21 16.5 4.21 7.5Z"/><path d="M12 3 19.79 16.5 4.21 16.5Z"/></g><g fill="currentColor"><circle cx="12" cy="3" r="1.7"/><circle cx="19.79" cy="7.5" r="1.7"/><circle cx="19.79" cy="16.5" r="1.7"/><circle cx="12" cy="21" r="1.7"/><circle cx="4.21" cy="16.5" r="1.7"/><circle cx="4.21" cy="7.5" r="1.7"/></g></symbol>
+</svg>
+
+<div class="app">
+  <!-- LEFT RAIL -->
+  <nav class="rail" aria-label="Platform">
+    <div class="rail-home">
+      <span class="nav-ic"><svg class="home-mark"><use href="#i-moderne"/></svg></span>
+      <span class="vbadge">v2</span>
+    </div>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-sparkles"/></svg></span><span class="nav-lb">Moddy</span><span class="nav-beta">Beta</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-pie"/></svg></span><span class="nav-lb">DevCenter</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-globe"/></svg></span><span class="nav-lb">Marketplace</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-blocks"/></svg></span><span class="nav-lb">Builder</span></button>
+    <button class="nav-item active"><span class="nav-ic"><svg><use href="#i-history"/></svg></span><span class="nav-lb">Activity</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-activity"/></svg></span><span class="nav-lb">Changelog</span><span class="nav-beta">Beta</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-repo"/></svg></span><span class="nav-lb">Repositories</span></button>
+    <button class="nav-item"><span class="nav-ic"><svg><use href="#i-package"/></svg></span><span class="nav-lb">Deploy</span></button>
+  </nav>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <button class="org"><svg><use href="#i-people"/></svg><span>Moderne + OpenRewrite</span><svg class="chev"><use href="#i-chevd"/></svg></button>
+    <div class="spacer"></div>
+    <div class="search"><svg><use href="#i-search"/></svg><span>Search recipes</span><span><kbd>⌘</kbd> <kbd>K</kbd></span></div>
+    <button class="tb-ic"><svg><use href="#i-gear"/></svg></button>
+    <button class="tb-ic"><svg><use href="#i-help"/></svg></button>
+    <div class="avatar">A</div>
+  </header>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="content">
+      <div class="crumb"><a href="#">Recent activity</a><span class="sep">›</span>Fix vulnerable Maven/Gradle dependencies</div>
+
+      <div class="lede">
+        <div>
+          <h1>Fix vulnerable Maven/Gradle dependencies</h1>
+          <div class="meta"><span>1,000 repositories</span><span class="sep"></span><span class="tgt-branch">Pull request into <span class="mono">main</span></span><span class="sep"></span><span>Started 9 days ago</span><span class="sep"></span><a href="#">Go to recipe results</a></div>
+        </div>
+        <button class="bell" title="Query these results with GraphQL"><svg><use href="#i-graphql"/></svg></button>
+      </div>
+
+      <!-- PROGRESS: burndown + shared axis + lane-packed timeline -->
+      <div class="section tl-section" id="tlSection">
+        <div class="sec-head">
+          <div class="tl-head-left">
+          <div class="sec-title" id="tlTitle">
+            <button class="collapse-btn" id="tlToggle" aria-label="Collapse"><svg class="chev"><use href="#i-chevd"/></svg></button>
+            <h2>Progress</h2>
+            <span class="tip"><span class="info-ic"><svg><use href="#i-info"/></svg></span>
+              <span class="bubble"><b>Burn-down + shared timeline</b>The participant set is fixed, so the line starts at the full repo total and counts <i>down</i> as each repo reaches a terminal state (merged, closed, or failed). It's a step chart — each dot is a real check point, and the line stays flat between them because there's no data in the gaps. The action lanes below share the same timeline axis. Drag anywhere to move the playhead — it snaps to events. Click flags to filter the table (clicks add up); click empty timeline to clear.</span>
+            </span>
+          </div>
+          <span class="hdiv"></span>
+          <div class="tl-legend" id="tlLegend"></div>
+          </div>
+          <div class="tl-controls" style="display:flex;align-items:center;gap:12px">
+            <span class="tip"><span class="eye-ic"><svg><use href="#i-info"/></svg></span>
+              <span class="bubble"><b>Drag the playhead to rewind</b>The table below shows where every repository stood at the playhead's time — drag left to step back through the run, or hit Now to jump to the latest check (“refreshed 3 days ago”). Statuses are only as fresh as the last refresh, not live from your SCM.</span>
+            </span>
+            <span class="ro-time" id="roTime"></span>
+            <button class="pill-btn" id="currentBtn" title="Jump the playhead to the last refresh">Now</button>
+          </div>
+        </div>
+        <div class="tl-wrap">
+        <div class="tl-card">
+          <div class="combo" id="combo">
+            <div class="tl-grid" id="tlGrid"></div>
+            <div class="bd-plot" id="bdPlot"></div>
+            <div class="tl-axis" id="tlAxis"></div>
+            <div class="tl-lanes" id="tlLanes"></div>
+            <div class="tl-links" id="tlLinks"></div>
+            <!-- the sync gap: statuses are only as fresh as the last sync — hatched
+                 strip marks the unknown between "now" and the absolute latest -->
+            <div class="sync-gap" id="syncGap"><span>3 days since status refresh</span></div>
+            <button class="sync-edge" id="syncEdge" title="Sync now to get the absolute latest"><svg><use href="#i-refresh"/></svg><span>Sync now</span></button>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <!-- REPOSITORIES -->
+      <div class="section">
+        <div class="toolbar">
+          <span class="tb-label">Repositories
+            <span class="tip"><span class="info-ic"><svg><use href="#i-info"/></svg></span>
+              <span class="bubble"><b>Statuses are as of the last refresh</b>“Now” on this page means the last time repository statuses were fetched from your SCM. Set the playhead to a past time to see each repository’s furthest-along status at that moment; non-terminal rows read “Open as of &lt;time&gt;”.</span>
+            </span>
+          </span>
+          <div class="tb-search"><svg><use href="#i-search"/></svg><span>Search repositories…</span></div>
+          <div class="sync" id="syncLine">
+            <button class="upd-badge" id="updBadge" title="Refresh statuses from your SCM (asks first)"><svg><use href="#i-refresh"/></svg><span id="updText">Last updated 3 days ago</span></button>
+          </div>
+          <span class="filt-chip" id="filtChip">Timeline: <span class="fk" id="filtLabel"></span><button id="filtClear" title="Clear filter"><svg><use href="#i-x-circle"/></svg></button></span>
+          <div class="spacer"></div>
+          <button class="tbtn act-btn" disabled><svg><use href="#i-git-pr"/></svg> Approve</button>
+          <button class="tbtn act-btn" disabled><svg><use href="#i-git-merge"/></svg> Merge</button>
+          <button class="tbtn act-btn" disabled><svg><use href="#i-git-close"/></svg> Close</button>
+          <button class="tbtn primary"><svg><use href="#i-download"/></svg> Export</button>
+        </div>
+
+        <table class="grid">
+          <thead>
+            <tr>
+              <th class="col-ck"><span class="chk" id="ckAll" onclick="toggleAll()"><svg><use href="#i-check"/></svg></span></th>
+              <th class="col-act">Actions</th>
+              <th class="col-status"><button class="th-filter" id="statusFilterBtn">Status <svg><use href="#i-chevd"/></svg></button><div class="filter-menu" id="statusMenu"></div></th>
+              <th>Organization</th>
+              <th>Repository</th>
+              <th>Origin</th>
+              <th>Updated at</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="foot">
+          <span>1 – 10 of 1,000</span>
+          <span class="pg"><button disabled><svg><use href="#i-chevl"/></svg></button><button><svg><use href="#i-chevr"/></svg></button></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Refresh confirmation — gated for large sets, same pattern as the recipe-run dialog -->
+<div class="modal-scrim" id="refreshModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rmTitle">
+    <h3 id="rmTitle"><svg><use href="#i-refresh"/></svg> Refresh statuses for <span id="rmCount">1,000</span> repositories?</h3>
+    <p>This queries your SCM for the current pull-request status of every repository in this run. For a set this large it takes a little while and counts against your SCM's API rate limits.</p>
+    <p class="hint">While it runs, the refresh button is disabled for everyone viewing this run, so a second person can't kick off a duplicate refresh at the same time.</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="rmCancel">Cancel</button>
+      <button class="btn-solid" id="rmConfirm"><svg><use href="#i-refresh"/></svg> Refresh statuses</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  Timeline model — times in days from origin. NOW = last refresh.
+// ============================================================
+// Time model: data is known up to the LAST REFRESH (Aug 3). Wall-clock "now" is Aug 6 —
+// the 3 days between are the hatched unknown, because there hasn't been a refresh.
+const REFRESH_T = 8.125;        // last status fetch (Aug 3)
+const NOW = REFRESH_T + 3;      // wall-clock now (Aug 6) — right edge of the graph
+// ONE lane, fine-grained time — each entry is a discrete RUN with a real clock time
+// (day fraction: 0.375 = 9:00 AM), so several runs of the same action can land in one
+// day, spaced apart. Consecutive same-kind runs form a group; the group's last bar
+// carries the label, satellites stay unlabeled (hover for details).
+const JOBS = [
+  { id:'commit-1',  kind:'commit',  label:'Commit',    actor:'natedanner', start:0.375, end:0.43  }, // Jul 27, 9:00 AM
+  { id:'commit-2',  kind:'commit',  label:'Commit',    actor:'natedanner', start:0.583, end:0.63  }, // 2:00 PM
+  { id:'commit-3',  kind:'commit',  label:'Commit',    actor:'natedanner', start:0.75,  end:0.8   }, // 6:00 PM
+  { id:'commit-4',  kind:'commit',  label:'Commit',    actor:'automation', start:0.917, end:0.96  }, // 10:00 PM
+  { id:'draft-pr',  kind:'draft',   label:'Draft PRs', actor:'natedanner', start:1.583, end:1.771 }, // Jul 28, 2:00 PM
+  { id:'approve-1', kind:'approve', label:'Approval',  actor:'natedanner', start:2.417, end:2.542 }, // Jul 29, 10:00 AM
+  { id:'approve-2', kind:'approve', label:'Approval',  actor:'natedanner', start:2.625, end:2.73  }, // 3:00 PM
+  { id:'merge-1',   kind:'merge',   label:'Merge',     actor:'natedanner', start:4.458, end:4.56  }, // Jul 31, 11:00 AM
+  { id:'merge-2',   kind:'merge',   label:'Merge',     actor:'natedanner', start:4.646, end:4.73  }, // 3:30 PM
+  { id:'close',     kind:'close',   label:'Close',     actor:'natedanner', start:5.417, end:5.54  }, // Aug 1, 10:00 AM
+  { id:'merge-3',   kind:'merge',   label:'Merge',     actor:'natedanner', start:8.0,   end:null, hint:1 }, // just started — running (row below the unsynced merge)
+  // parallel work — these overlap runs above, so the packer drops them to a second track
+  { id:'draft-2',   kind:'draft',   label:'Draft PRs', actor:'automation', start:2.458, end:2.583 }, // Jul 29, 11:00 AM — drafting while approvals run
+  { id:'close-p',   kind:'close',   label:'Close',     actor:'natedanner', start:4.646, end:4.75  }, // Jul 31, 3:30 PM — closing during a merge wave
+  { id:'merge-p',   kind:'merge',   label:'Merge',     actor:'automation', start:5.417, end:5.52  }, // Aug 1, 10:00 AM — merging while closes run
+  // platform action AFTER the last refresh — the platform knows it happened, but the
+  // VCS (source of truth) hasn't been re-synced, so it lives in the hatched zone
+  { id:'merge-local', kind:'merge', label:'Merge', actor:'lindsay', start:9.4, end:9.5, local:true }, // Aug 4, ~10 AM — awaiting VCS sync
+];
+// the last run of each consecutive same-kind group carries the group's label
+JOBS.forEach((j, i) => { const nx = JOBS[i + 1]; j.tail = !nx || nx.kind !== j.kind; });
+const conclusion = j => j.end == null ? REFRESH_T : j.end;   // running runs are only known up to the last refresh
+const clamp01 = n => Math.min(1, Math.max(0, n));
+const MIN_BAR = 24;   /* wide enough for the flag shape (pole + banner + arrow tip) to read */
+const fmt = n => n.toLocaleString('en-US');
+
+// One lane per action, in lifecycle order. Each row is a distinct action; an action
+// only splits into a second row where its own bars actually overlap in time (~2 spots).
+// Bin-pack the bars into as few rows as possible (greedy first-fit by start time).
+const LANE_GAP = 0.02; // breathing room, in days (~30 min at this granularity)
+{
+  const laneEnds = [];
+  JOBS.slice().sort((a, b) => a.start - b.start).forEach(j => {
+    let lane = laneEnds.findIndex(e => e + LANE_GAP <= j.start);
+    if (lane === -1) { lane = laneEnds.length; laneEnds.push(0); }
+    laneEnds[lane] = conclusion(j);
+    j.lane = lane;
+  });
+  JOBS.nLanes = laneEnds.length;
+}
+
+// ============================================================
+//  Repository model — 1,000 repos, statuses time-travel with the playhead
+// ============================================================
+const HAND = [
+  ['moderne','moderne-cli','github'], ['openrewrite','rewrite','github'],
+  ['openrewrite','rewrite-spring','github'], ['openrewrite','rewrite-testing-frameworks','github'],
+  ['spring-projects','spring-boot','github'], ['spring-projects','spring-framework','github'],
+  ['apache','commons-lang','gitlab'], ['google','guava','github'],
+  ['micrometer-metrics','micrometer','github'], ['reactor','reactor-core','azure'],
+];
+const POOL_ORG = ['netflix','square','apache','eclipse','ff4j','jackson','hibernate','google','openrewrite','spring-projects'];
+const POOL_NAME = ['netty','okhttp','gson','junit5','mockito','logback','slf4j','tomcat','jetty','maven-core','commons-io','httpclient','kafka','curator','zookeeper','assertj','testcontainers','feign','eureka','archaius','conductor','graphql-java','webflux','r2dbc','lettuce','spock','servo','spectator','dgs-framework','ribbon'];
+const outcomeFor = i => (i % 17 === 7) ? 'failed' : (i % 23 === 11) ? 'failedMerge' : (i % 13 === 9) ? 'closed' : 'merged';
+
+const TARGET_BRANCH = 'main';   // the campaign targets one branch across all repos → shown in the header
+const N_REPOS = 1000;
+const REPOS = Array.from({ length: N_REPOS }, (_, i) => {
+  const meta = i < 10 ? HAND[i] : [POOL_ORG[i % POOL_ORG.length], POOL_NAME[(i * 7) % POOL_NAME.length] + '-' + (1 + (i % 40)), ['github','gitlab','azure'][i % 3]];
+  const f = ((i * 37) % N_REPOS) / N_REPOS;   // shuffled 0..1 spread across the fleet
+  const committed = 0.2 + f * 1.0;
+  const draftAt = committed + 0.15, readyAt = committed + 0.45;
+  const approveStart = 1.9 + f * 2.3;
+  const mergeStart = 2.8 + f * 5.6;           // tail runs past "now" → final merge wave still running
+  const closeStart = 4.8 + f * 1.2;
+  return {
+    org: meta[0], name: meta[1], scm: meta[2], outcome: outcomeFor(i),
+    committed, draftAt, readyAt,
+    approveStart, approveEnd: approveStart + 0.3,
+    mergeStart, mergeEnd: mergeStart + 0.4, closeStart, closeEnd: closeStart + 0.3,
+  };
+});
+const LEAD = 0.3;
+function phaseAt(s, T) {
+  if (T < s.committed - LEAD) return 'queued';
+  if (T < s.committed) return 'committing';
+  if (s.outcome === 'noChanges') return 'noChanges';
+  if (s.outcome === 'failed') return 'failed';     // failed to commit — terminal, no PR
+  if (T < s.draftAt) return 'committed';
+  if (T < s.readyAt) return 'draftPr';
+  if (s.outcome === 'closed') {
+    if (T < s.closeStart) return 'prOpen';
+    if (T < s.closeEnd) return 'closing';
+    return 'closed';
+  }
+  if (T < s.approveStart) return 'prOpen';
+  if (T < s.approveEnd) return 'approving';
+  if (T < s.mergeStart) return 'approved';
+  if (T < s.mergeEnd) return 'merging';
+  return s.outcome === 'failedMerge' ? 'failedMerge' : 'merged';
+}
+// the moment a repo entered the phase it is in at time T (for "State as of")
+function enteredAt(s, T) {
+  if (s.outcome === 'failed' || s.outcome === 'noChanges') return s.committed;
+  const bounds = [s.committed - LEAD, s.committed, s.draftAt, s.readyAt,
+    s.outcome === 'closed' ? s.closeStart : s.approveStart,
+    s.outcome === 'closed' ? s.closeEnd : s.approveEnd, s.mergeStart, s.mergeEnd];
+  let last = 0;
+  for (const b of bounds) if (b <= T) last = Math.max(last, b);
+  return last;
+}
+// Repository status shows only Changelog PR states: Draft · Open · Merged · Closed.
+// Every lifecycle phase collapses to one of these (or to "no PR yet" before a changeset exists).
+// Unified state machine: commit → PR open → approval(s) → merge (terminal) OR close.
+// Every lifecycle phase collapses to one visible status; "approved" is its own state
+// so the table can say "approved as of X" rather than lumping it into Open.
+const TYPE_STATE = {
+  queued:null, committing:null, committed:'commit',
+  failed:'failed', failedMerge:'failedMerge',
+  draftPr:'draft',
+  prOpen:'open', approving:'open', closing:'open',
+  approved:'approved', merging:'merging',
+  merged:'merged', closed:'closed',
+};
+const CL_STATE = {
+  commit:      { label:'Commit',           icon:'i-git-commit',   cls:'commit'   },
+  draft:       { label:'Draft',            icon:'i-git-draft',    cls:'draft'    },
+  open:        { label:'Open',             icon:'i-git-pr',       cls:'open'     },
+  approved:    { label:'Approved',         icon:'i-check-circle', cls:'approved' },
+  merging:     { label:'Merging',          icon:'i-git-merge',    cls:'merging', spin:true },   // run in progress
+  merged:      { label:'Merged',           icon:'i-git-merge',    cls:'merged'   },
+  closed:      { label:'Closed',           icon:'i-git-close',    cls:'closed'   },
+  failed:      { label:'Failed to commit', icon:'i-x-circle',     cls:'failed'   },
+  failedMerge: { label:'Failed to merge',  icon:'i-x-circle',     cls:'failed'   },
+};
+const TERMINAL = new Set(['merged','closed','failed','failedMerge']);
+const SCM_ICON = { github:'i-github', gitlab:'i-gitlab', azure:'i-azure' };
+const statusHtml = ph => {
+  const key = TYPE_STATE[ph];
+  if (!key) return `<span class="st neutral"><span class="lbl" style="color:var(--faint)">—</span></span>`;
+  const s = CL_STATE[key];
+  return `<span class="st ${s.cls}">${s.spin ? '<svg class="mspin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>' : `<svg><use href="#${s.icon}"/></svg>`}<span class="lbl">${s.label}</span></span>`;
+};
+
+// which jobs each repo took part in
+const jobsFor = i => {
+  const r = REPOS[i], jobs = [['commit-1','commit-2','commit-3','commit-4'][i % 4]];
+  if (r.outcome === 'failed' || r.outcome === 'noChanges') return jobs;   // failed to commit / no changes — no PR
+  jobs.push(i % 13 === 2 ? 'draft-2' : 'draft-pr');
+  if (r.outcome === 'closed') { jobs.push(i % 3 === 0 ? 'close-p' : 'close'); return jobs; }
+  jobs.push(i % 13 === 2 || i % 5 === 0 ? 'approve-2' : 'approve-1');   // draft-2 repos approve in wave 2 (keeps stage order)
+  if (i % 29 === 0) jobs.push('merge-3');            // final wave — still running
+  else if (i % 31 === 5) jobs.push('merge-local');   // merged via the platform AFTER the last refresh
+  else jobs.push(['merge-1','merge-2','merge-p'][i % 3]);
+  return jobs;
+};
+const REPO_JOBS = REPOS.map((_, i) => new Set(jobsFor(i)));
+// Align each repository's stage times to the RUNS it took part in, so selecting a run
+// shows its repos in the matching state at that run's conclusion (a Merge run's repos
+// read "Merged" there, a Commit run's read "Commit", etc.).
+REPOS.forEach((r, i) => {
+  const ids = REPO_JOBS[i];
+  const f = ((i * 61) % 997) / 997;                       // deterministic spread within each run
+  const jb = pref => { const id = [...ids].find(x => x.startsWith(pref)); return id && JOBS.find(x => x.id === id); };
+  const place = j => j.start + 0.008 + f * Math.max(0.005, conclusion(j) - j.start - 0.03);
+  r.committed = place(jb('commit'));
+  if (r.outcome === 'failed') return;                     // failed to commit — done at the commit run
+  r.draftAt = place(jb('draft'));
+  if (r.outcome === 'closed') {
+    const xj = jb('close'), t = place(xj);
+    r.readyAt = t - 0.02; r.closeStart = t; r.closeEnd = Math.min(t + 0.025, conclusion(xj) - 0.003);
+    return;
+  }
+  const aj = jb('approve'), a = place(aj);
+  r.readyAt = a - 0.02; r.approveStart = a; r.approveEnd = Math.min(a + 0.025, conclusion(aj) - 0.003);
+  const mj = jb('merge'), m = place(mj);
+  r.mergeStart = m;
+  r.mergeEnd = mj.end == null ? NOW + 1 : Math.min(m + 0.025, conclusion(mj) - 0.003);   // running run → still merging at wall-clock Now
+});
+const jobLabel = id => JOBS.find(j => j.id === id).label.replace(/\s*\([^)]*\)/g, '');
+const succeededAt = (i, j) => !((j.kind === 'commit' && REPOS[i].outcome === 'failed') || (j.kind === 'merge' && REPOS[i].outcome === 'failedMerge'));
+JOBS.forEach(j => {
+  const members = REPO_JOBS.map((s, i) => s.has(j.id) ? i : -1).filter(i => i >= 0);
+  j.actioned = members.length;
+  j.succeeded = members.filter(i => succeededAt(i, j)).length;
+  j.failed = j.actioned - j.succeeded;
+  j.doneByNow = members.filter(i => TERMINAL.has(phaseAt(REPOS[i], NOW))).length;   // for the running bar's fill
+});
+
+// ============================================================
+//  Burn-DOWN — the participant set is fixed, so we start at the known repo total
+//  and count DOWN the in-flight repos as each reaches a terminal state (merged,
+//  closed, or failed). Drawn as a STEP chart: the line only changes at real check
+//  points, and stays flat between them — no interpolation, because there's no data
+//  in the gaps unless background polling (Changelog + GitHub App) is installed.
+// ============================================================
+const bdMerged = T => REPOS.reduce((n, r) => n + (phaseAt(r, T) === 'merged' ? 1 : 0), 0);
+const bdClosed = T => REPOS.reduce((n, r) => n + (phaseAt(r, T) === 'closed' ? 1 : 0), 0);
+const bdFailC  = T => REPOS.reduce((n, r) => n + (phaseAt(r, T) === 'failed' ? 1 : 0), 0);
+const bdFailM  = T => REPOS.reduce((n, r) => n + (phaseAt(r, T) === 'failedMerge' ? 1 : 0), 0);
+const bdFailed = T => bdFailC(T) + bdFailM(T);
+const bdRemaining = T => N_REPOS - (bdMerged(T) + bdClosed(T) + bdFailed(T));  // in-flight
+// Real check points where statuses were actually sampled (sparse — no continuous polling).
+// Each check point coincides with an action's start, so every dot on the burn line sits
+// directly above its bar and a connector ties the two together.
+// burn-down samples come only from VCS-known data — nothing past the last refresh
+const SAMPLES = [0, ...JOBS.map(j => j.start).filter(t => t <= REFRESH_T), REFRESH_T].sort((a, b) => a - b);
+const BD_SERIES = [
+  { key:'merged', fn:bdMerged, icon:'i-git-merge', label:'Merged' },
+  { key:'closed', fn:bdClosed, icon:'i-git-close', label:'Closed' },
+  { key:'failc',  fn:bdFailC,  icon:'i-x-circle',  label:'Failed to commit' },
+  { key:'failm',  fn:bdFailM,  icon:'i-x-circle',  label:'Failed to merge' },
+];
+
+// ============================================================
+//  Time ↔ x mapping. 'time' = linear. 'commits' = event-ordered
+//  (each job start/conclusion equally spaced; dead time removed).
+// ============================================================
+let view = 'time';
+let warp = [[0,0],[NOW,1]];
+function buildWarp() {
+  if (view === 'commits') {
+    const ev = [...new Set(JOBS.flatMap(j => [j.start, conclusion(j)]))].filter(t => t > 0 && t < NOW).sort((a,b)=>a-b);
+    const ts = [0, ...ev, NOW];
+    warp = ts.map((t, i) => [t, i / (ts.length - 1)]);
+  } else {
+    warp = [[0,0],[NOW,1]];
+  }
+}
+function tf(T) { // time → fraction 0..1
+  for (let i = 1; i < warp.length; i++) if (T <= warp[i][0]) {
+    const [t0,f0] = warp[i-1], [t1,f1] = warp[i];
+    return f0 + (T - t0) / Math.max(1e-9, t1 - t0) * (f1 - f0);
+  }
+  return 1;
+}
+function ft(f) { // fraction → time
+  for (let i = 1; i < warp.length; i++) if (f <= warp[i][1]) {
+    const [t0,f0] = warp[i-1], [t1,f1] = warp[i];
+    return t0 + (f - f0) / Math.max(1e-9, f1 - f0) * (t1 - t0);
+  }
+  return NOW;
+}
+const SNAP = 0.02;
+const snapTimes = [...new Set(JOBS.flatMap(j => [j.start, conclusion(j)]))].sort((a,b)=>a-b);
+function snapT(T) {
+  let best = T, bd = SNAP * NOW;
+  for (const t of snapTimes) { const d = Math.abs(t - T); if (d <= bd) { best = t; bd = d; } }
+  return best;
+}
+
+// ============================================================
+//  State + rendering
+// ============================================================
+let cursorT = NOW;               // playhead position, in days (source of truth)
+let selectedJobs = new Set();    // bars used to filter the repo table
+let refreshAgoMin = 3;           // minutes since last status refresh
+
+const combo = document.getElementById('combo');
+const gridEl = document.getElementById('tlGrid');
+const linksEl = document.getElementById('tlLinks');
+const bdPlot = document.getElementById('bdPlot');
+const axisEl = document.getElementById('tlAxis');
+const lanesEl = document.getElementById('tlLanes');
+const gridRows = document.getElementById('rows');
+const filtChip = document.getElementById('filtChip');
+const filtLabel = document.getElementById('filtLabel');
+let W = 0, bdH = 86, bdYFor = () => 0;
+const FUTURE = 12;   // small inset so the Now pill isn't clipped at the card edge
+const xFor = f => clamp01(f) * Math.max(0, W - FUTURE);
+
+// the demo's stale-sync story: the last refresh was 3 DAYS ago (until you refresh)
+const refreshedAgoTxt = () => refreshAgoMin < 1 ? 'just now' : '3 days ago';
+function daysAgo(T) { const d = NOW - T; if (d < 0.08) return refreshAgoMin < 1 ? 'moments ago' : '3 days ago'; if (d < 1) return `${Math.round(d*24)}h ago`; return `${d.toFixed(d < 3 ? 1 : 0).replace(/\.0$/,'')}d ago`; }
+function readout(T) { return T >= REFRESH_T - 0.04 ? 'last refresh' : daysAgo(T); }
+
+// combined legend + live counts — one line, icon + count + label per terminal state
+const legendEl = document.getElementById('tlLegend');
+legendEl.innerHTML =
+  `<span class="lg inflight"><svg><use href="#i-clock"/></svg><b data-k="inflight">0</b> In flight</span>` +
+  BD_SERIES.map(s => `<span class="lg ${s.key}"><svg><use href="#${s.icon}"/></svg><b data-k="${s.key}">0</b> ${s.label}</span>`).join('');
+const legNums = { inflight: legendEl.querySelector('b[data-k="inflight"]') };
+BD_SERIES.forEach(s => legNums[s.key] = legendEl.querySelector(`b[data-k="${s.key}"]`));
+const roTimeEl = document.getElementById('roTime');
+
+// lanes built once
+lanesEl.style.height = (JOBS.nLanes * 26) + 'px';
+lanesEl.innerHTML = Array.from({ length: JOBS.nLanes }, (_, l) => `<div class="lane" data-lane="${l}"></div>`).join('');
+JOBS.forEach(j => {
+  const lane = lanesEl.querySelector(`.lane[data-lane="${j.lane}"]`);
+  const btn = document.createElement('button');
+  btn.className = `bar ${j.kind}${j.end == null ? ' running' : ''}`;
+  btn.dataset.id = j.id;
+  const ICON = { commit:'i-git-commit', draft:'i-git-draft', approve:'i-check-circle', merge:'i-git-merge', close:'i-git-close' };
+  const running = j.end == null;
+  if (j.local) btn.classList.add('local');   // platform action after last refresh — provisional
+  // flag shape: start pole + arrow banner + badge. Failure detail lives in the
+  // tooltip and the table — no failure marks on the flags themselves.
+  btn.innerHTML = `<span class="bar-pole"></span><span class="bar-arrow"></span>` +
+    `<span class="blb"><svg><use href="#${ICON[j.kind]}"/></svg>${j.label.replace(/\s*\([^)]*\)/g, '')}${running ? '<span class="blb-run">· running</span>' : ''}${j.local ? '<span class="blb-run">· unsynced</span>' : ''}</span>`;
+  lane.appendChild(btn);
+});
+const cursorLine = document.createElement('div'); cursorLine.className = 'cursor-line';
+cursorLine.innerHTML = '<div class="cursor-hit"></div><div class="cursor-grip" id="cursorGrip"></div>';
+combo.appendChild(cursorLine);
+const cursorGrip = cursorLine.querySelector('#cursorGrip');
+// the lollipop shows day + clock time at the playhead (fine-grained, like the axis)
+function gripLabel(T) {
+  if (NOW - T < 0.05) return 'Now';
+  return `${dateFor(T)} · ${timeFor(T)}`;
+}
+
+// table
+let pageIdx = [];
+let statusFilter = new Set();    // Status-column filter (by each repo's current status)
+const statusOf = i => TYPE_STATE[phaseAt(REPOS[i], NOW)];
+const visibleIndices = () => {
+  let all = REPOS.map((_, i) => i);
+  if (selectedJobs.size) all = all.filter(i => [...selectedJobs].some(id => REPO_JOBS[i].has(id)));
+  if (statusFilter.size) all = all.filter(i => statusFilter.has(statusOf(i)));
+  return all;
+};
+function buildTable() {
+  const visible = visibleIndices(), total = visible.length;
+  const jobFiltering = selectedJobs.size > 0, filtering = jobFiltering || statusFilter.size > 0;
+  pageIdx = visible.slice(0, 10);
+  gridRows.innerHTML = pageIdx.map(i => {
+    const r = REPOS[i];
+    return `<tr data-idx="${i}">
+      <td><span class="chk${selected.has(i) ? ' on' : ''}" onclick="toggleRow(${i})"><svg><use href="#i-check"/></svg></span></td>
+      <td><div class="actcell"></div></td>
+      <td class="stcell"></td>
+      <td>${r.org}</td>
+      <td><div class="repo-cell"><span class="i"><svg><use href="#i-info"/></svg></span><a href="#">${r.name}</a></div></td>
+      <td><span class="origin"><svg><use href="#${SCM_ICON[r.scm]}"/></svg></span></td>
+      <td class="asofcell"></td>
+    </tr>`;
+  }).join('');
+  filtChip.classList.toggle('on', jobFiltering);
+  document.querySelector('.toolbar').classList.toggle('filtered', jobFiltering);
+  if (jobFiltering) filtLabel.textContent = [...new Set([...selectedJobs].map(jobLabel))].join(', ');
+  document.querySelector('.foot span').textContent =
+    total === 0 ? 'No repositories' : `1 – ${Math.min(10, total)} of ${fmt(total)}${filtering ? ' (filtered)' : ''}`;
+  syncActions();
+}
+
+// axis ticks live BETWEEN the burndown and the lanes
+const dateFor = T => new Date(Date.now() + (T - NOW + 2) * 86400000).toLocaleDateString('en-US', { month:'short', day:'numeric' });   // wall-now anchored to Aug 6
+const timeFor = T => { const h = Math.round((T % 1) * 24) % 24; return `${((h + 11) % 12) + 1} ${h < 12 ? 'AM' : 'PM'}`; };
+function renderAxis() {
+  let ticks;
+  if (view === 'commits') {
+    ticks = warp.map(([t, f]) => [f, t === 0 ? `started ${dateFor(0)}` : t >= NOW ? `refreshed ${refreshedAgoTxt()}` : dateFor(t)]);
+  } else {
+    // one labeled tick per DAY (skipping any that would sit under the Now pill), with the
+    // "refreshed" label pinned at the last-refresh boundary where the hatch begins
+    ticks = [];
+    for (let t = 0; t <= Math.floor(NOW); t++) {
+      if (tf(t) > 0.96) continue;                        // would sit under the Now pill
+      if (Math.abs(t - REFRESH_T) < 0.85) continue;      // leave room for the "refreshed" label
+      ticks.push([tf(t), t === 0 ? `started ${dateFor(0)}` : dateFor(t)]);
+    }
+    ticks.push([tf(REFRESH_T), `refreshed ${refreshedAgoTxt()}`]);
+    ticks.sort((a, b) => a[0] - b[0]);
+  }
+  // drop middle labels that would collide with an already-kept neighbour (keep first & last)
+  const MIN_PX = 78, kept = [];
+  ticks.forEach(([f, lb], i) => {
+    const x = xFor(f), last = i === ticks.length - 1;
+    if (last) { for (let k = kept.length - 1; k > 0 && x - kept[k].x < 90; k--) kept[k].keepLabel = false; }   // clear labels crowding the last one
+    const prev = [...kept].reverse().find(k => k.keepLabel);
+    kept.push({ i, x, lb, f, keepLabel: i === 0 || last || !prev || x - prev.x >= MIN_PX });
+  });
+  axisEl.innerHTML = kept.map(k => {
+    const edge = k.f < .02 ? ' edge-l' : k.f > .98 ? ' edge-r' : '';
+    return `<div class="tkm" style="left:${k.x.toFixed(1)}px"></div>` +
+      (k.keepLabel ? `<div class="tk${edge}" style="left:${k.x.toFixed(1)}px">${k.lb}</div>` : '');
+  }).join('');
+  // minor ticks every 6 hours give the axis sub-day resolution
+  if (view === 'time') {
+    let minors = '';
+    for (let t = 0.25; t < NOW; t += 0.25) {
+      if (Math.abs(t - Math.round(t)) < 1e-9) continue;   // skip the day marks
+      minors += `<div class="tkm minor" style="left:${xFor(tf(t)).toFixed(1)}px"></div>`;
+    }
+    axisEl.innerHTML += minors;
+  }
+  // full-height gridlines at each DAY tick tie the burndown (above) and the lanes (below) together
+  gridEl.innerHTML = kept.map(k => `<div class="gl" style="left:${k.x.toFixed(1)}px"></div>`).join('');
+  // hatched sync gap spans last-refresh → Now; the refresh button hugs the refresh edge
+  const gapL = xFor(tf(REFRESH_T));
+  const gap = document.getElementById('syncGap');
+  gap.style.left = gapL + 'px';
+  gap.style.width = Math.max(0, xFor(1) - gapL) + 'px';
+  document.getElementById('syncEdge').style.left = gapL + 'px';
+}
+
+// Every flag shows its full badge; flags are packed into rows by PIXEL extent
+// (badge width included), so overlapping flags stack/stagger instead of clipping.
+function layoutFlags() {
+  const rowEnds = [];
+  JOBS.slice().sort((a, b) => a.start - b.start).forEach(j => {
+    const bar = lanesEl.querySelector(`.bar[data-id="${j.id}"]`);
+    const blb = bar.querySelector('.blb');
+    const left = xFor(tf(j.start));
+    const needed = blb.scrollWidth + 22;
+    const edge = left + needed > W;                          // no room → mini flag, badge outside-left
+    const width = edge ? MIN_BAR : needed;
+    const x0 = edge ? left - (blb.scrollWidth + 14) : left;  // extent includes an outside badge
+    const x1 = left + width;
+    let row;
+    if (j.hint != null) { row = j.hint; while (rowEnds.length <= row) rowEnds.push(0); }   // pinned lane
+    else { row = rowEnds.findIndex(e => e + 8 <= x0); if (row === -1) { row = rowEnds.length; rowEnds.push(0); } }
+    rowEnds[row] = Math.max(rowEnds[row], x1);
+    j.lane = row; j._px = [left, x1]; j._w = width; j._edge = edge;
+  });
+  JOBS.nLanes = rowEnds.length;
+}
+
+// stage-band groups (shared by the chart and its hover tooltip)
+const BAND_GROUPS = [
+  { name:'Commits',           phases:['queued','committing','committed'], color:'#2563eb' },  // blue
+  { name:'Draft PRs',         phases:['draftPr'],                         color:'#6e7781' },  // gray
+  { name:'Open / in approval',phases:['prOpen','approving','approved'],   color:'#16a34a' },  // green
+  { name:'Merging',           phases:['merging'],                         color:'#8b5cf6' },  // purple
+  { name:'Closing',           phases:['closing'],                         color:'#ef4444' },  // red
+];
+
+// burn-down — remaining in-flight repos as a STEP line, one marker per real check point
+const bdScale = REPOS.length;
+function renderBurndown() {
+  const PAD = 8;
+  W = bdPlot.clientWidth; bdH = bdPlot.clientHeight;
+  layoutFlags();   // rows must be known before connectors are drawn
+  bdYFor = v => PAD + (1 - v / bdScale) * (bdH - PAD);
+  const base = bdYFor(0);
+  // sample only at real check points; a repo, once terminal, stays terminal → monotonic burn-down
+  const S = SAMPLES.filter(t => t <= NOW + 1e-9);
+  const X = S.map(t => xFor(tf(t)));
+  const V = S.map(bdRemaining);            // remaining (in-flight) at each check point
+  const Y = V.map(bdYFor);
+  // step path — hold the sampled value flat until the next check point, then a vertical drop
+  let line = `M${X[0].toFixed(1)} ${Y[0].toFixed(1)}`;
+  for (let i = 1; i < S.length; i++) line += ` H${X[i].toFixed(1)} V${Y[i].toFixed(1)}`;
+  // the line STOPS at Now — the space to its right is the future, where there's no data yet
+  // stacked stage BANDS under the line — the in-flight population split by lifecycle
+  // stage, in the same hues as the flags. The bands sum exactly to the burn-down line.
+  const counts = S.map(t => { const m = {}; REPOS.forEach(r => { const p = phaseAt(r, t); m[p] = (m[p] || 0) + 1; }); return m; });
+  // stepped boundary: hold each sampled value flat until the next check point
+  const seg = arr => { const pts = [[X[0], arr[0]]]; for (let i = 1; i < S.length; i++) { pts.push([X[i], arr[i - 1]]); pts.push([X[i], arr[i]]); } return pts; };
+  let cum = S.map(() => 0), bands = '';
+  BAND_GROUPS.forEach((g, gi) => {
+    const lo = cum.slice();
+    cum = cum.map((c, i) => c + g.phases.reduce((n, p) => n + (counts[i][p] || 0), 0));
+    const pts = [...seg(cum), ...seg(lo).reverse()];
+    bands += `<path class="bd-band" data-g="${gi}" d="M${pts.map(([x, v]) => `${x.toFixed(1)} ${bdYFor(v).toFixed(1)}`).join(' L')} Z" fill="${g.color}"/>`;
+  });
+  const yT = bdYFor(bdScale).toFixed(1);
+  const remNow = V[V.length - 1];
+  bdPlot.innerHTML =
+    `<svg width="${W}" height="${bdH}">` +
+    `<line class="bd-total" x1="0" y1="${yT}" x2="${W}" y2="${yT}"/>` +
+    bands +
+    `<path class="bd-line" d="${line}"/>` +
+    `</svg>` +
+    `<div class="bd-tag" style="left:2px; top:${(bdYFor(bdScale)-11).toFixed(1)}px">total — <b>${fmt(bdScale)}</b></div>` +
+    `<div class="bd-now" style="right:${(W - X[X.length - 1] + 8).toFixed(1)}px; top:${Math.min(bdH-16, Math.max(2, bdYFor(remNow)-18)).toFixed(1)}px"><b>${fmt(remNow)}</b> in flight</div>`;
+  // dashed connectors: each check-point dot drops a line down to the bar it kicked off
+  const plotTop = bdPlot.offsetTop, lanesTop = lanesEl.offsetTop;
+  linksEl.innerHTML = S.map((t, i) => {
+    const j = JOBS.find(j => Math.abs(j.start - t) < 0.01);
+    if (!j) return '';
+    const y1 = plotTop + Y[i], y2 = lanesTop + j.lane * 26 + 1;   // dot → top edge of the bar
+    return `<div class="lnk" data-for="${j.id}" style="left:${X[i].toFixed(1)}px; top:${y1.toFixed(1)}px; height:${Math.max(0, y2 - y1).toFixed(1)}px"></div>`;
+  }).join('');
+}
+
+function render() {
+  // The VCS is the source of truth up to the last refresh — but actions taken THROUGH
+  // the platform since then are also known, so statuses evaluate at the full cursor time.
+  const T = cursorT, f = tf(T);
+  const filtering = selectedJobs.size > 0;
+  // lane rows grow/shrink to fit the pixel-packed layout
+  let laneDivs = [...lanesEl.querySelectorAll('.lane')];
+  while (laneDivs.length < JOBS.nLanes) {
+    const d = document.createElement('div'); d.className = 'lane'; d.dataset.lane = laneDivs.length;
+    lanesEl.appendChild(d); laneDivs.push(d);
+  }
+  while (laneDivs.length > JOBS.nLanes) {
+    const d = laneDivs.pop();
+    [...d.querySelectorAll('.bar')].forEach(b => laneDivs[0].appendChild(b));
+    d.remove();
+  }
+  lanesEl.style.height = (JOBS.nLanes * 26) + 'px';
+  // bars — close-cropped to the badge; position (the pole) is the only time signal
+  JOBS.forEach(j => {
+    const bar = lanesEl.querySelector(`.bar[data-id="${j.id}"]`);
+    laneDivs[j.lane].appendChild(bar);
+    bar.style.left = j._px[0] + 'px'; bar.style.width = j._w + 'px';
+    const on = selectedJobs.has(j.id);
+    bar.classList.toggle('sel', on);
+    bar.classList.toggle('dim', filtering && !on);
+    linksEl.querySelector(`.lnk[data-for="${j.id}"]`)?.classList.toggle('sel', on);
+    // right-edge flags keep their badge OUTSIDE, to the left, so it stays on the card
+    bar.classList.toggle('out', j._edge);
+    bar.classList.toggle('out-left', j._edge);
+  });
+  // playhead — line + date lollipop, vertically centered on the shared axis
+  cursorLine.style.left = (xFor(f) - 1) + 'px';
+  cursorGrip.textContent = gripLabel(T);
+  cursorGrip.style.top = (axisEl.offsetTop + axisEl.offsetHeight / 2) + 'px';
+  // readout — live counts at the cursor time (in-flight leads, terminal states follow)
+  legNums.inflight.textContent = fmt(bdRemaining(T));
+  BD_SERIES.forEach(s => legNums[s.key].textContent = fmt(s.fn(T)));
+  roTimeEl.textContent = NOW - T < 0.08 ? '' : daysAgo(T);   // quiet at Now; shows "2d ago" while scrubbed back
+  // table time-travel — status + "state as of" at the cursor time
+  pageIdx.forEach(i => {
+    const row = gridRows.querySelector(`tr[data-idx="${i}"]`);
+    if (!row) return;
+    const ph = phaseAt(REPOS[i], T);
+    const key = TYPE_STATE[ph];
+    row.querySelector('.stcell').innerHTML = statusHtml(ph);
+    const since = enteredAt(REPOS[i], T);
+    // Every state carries an "as of" timestamp so it can't be mistaken for live VCS state.
+    // Platform actions after the last refresh are known but not yet VCS-verified.
+    const isTerm = TERMINAL.has(ph);
+    row.querySelector('.asofcell').innerHTML =
+      key === null ? `<span class="asof">no pull request</span>`
+      : isTerm ? (since > REFRESH_T + 0.01
+          ? `<span class="asof">${CL_STATE[key].label.toLowerCase()} via platform · awaiting VCS sync</span>`
+          : `<span class="asof">${CL_STATE[key].label.toLowerCase()} ${daysAgo(since)}</span>`)
+      : `<span class="asof">${CL_STATE[key].label.toLowerCase()} as of ${readout(Math.min(T, REFRESH_T))}</span>`;
+    // row actions — always all present, enabled/disabled by the repo's current status
+    const hasPR = key !== null && key !== 'failed' && key !== 'commit';   // pre-PR states → no PR yet
+    const actBtn = (cls, title, icon, enabled) =>
+      `<button class="aic ${cls}" title="${title}"${enabled ? '' : ' disabled'}><svg><use href="#${icon}"/></svg></button>`;
+    row.querySelector('.actcell').innerHTML =
+      actBtn('view-pr', 'View pull request', 'i-external', hasPR) +
+      actBtn('', 'Approve', 'i-check-circle', key === 'open') +
+      actBtn('', 'Merge', 'i-git-merge', key === 'open' || key === 'approved') +
+      actBtn('', 'Close', 'i-git-close', key === 'open' || key === 'approved' || key === 'draft');
+  });
+}
+
+function setCursorT(T, doSnap = true) {
+  cursorT = Math.min(NOW, Math.max(0, doSnap ? snapT(T) : T));
+  render();
+}
+
+// scrub anywhere on the combo (Camtasia-style) — except on the bars themselves
+let scrubbing = false;
+const fracFromX = clientX => {
+  const r = combo.getBoundingClientRect();
+  return clamp01((clientX - r.left) / Math.max(1, r.width - FUTURE));   // pointer in the future zone → Now
+};
+combo.addEventListener('pointerdown', e => {
+  if (e.target.closest('.bar')) return;
+  // clicking off the flags clears the timeline filter
+  if (selectedJobs.size) { selectedJobs.clear(); buildTable(); }
+  scrubbing = true; combo.setPointerCapture(e.pointerId);
+  setCursorT(ft(fracFromX(e.clientX)));
+});
+combo.addEventListener('pointermove', e => { if (scrubbing) setCursorT(ft(fracFromX(e.clientX))); });
+combo.addEventListener('pointerup', () => { scrubbing = false; });
+// keyboard: step the playhead between events
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    const dir = e.key === 'ArrowRight' ? 1 : -1;
+    const opts = dir > 0 ? snapTimes.filter(t => t > cursorT + 1e-6) : snapTimes.filter(t => t < cursorT - 1e-6).reverse();
+    if (opts.length) { setCursorT(opts[0], false); e.preventDefault(); }
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && selectedJobs.size) {
+    e.preventDefault(); selectedJobs.clear(); buildTable(); render();
+  }
+});
+
+document.getElementById('currentBtn').addEventListener('click', e => { e.stopPropagation(); setCursorT(NOW, false); });
+
+document.getElementById('filtClear').addEventListener('click', () => { selectedJobs.clear(); buildTable(); render(); });
+
+// Status column filter — a dropdown of statuses; filters rows by each repo's current status
+const STATUS_OPTS = [['open','Open'],['approved','Approved'],['merging','Merging'],['draft','Draft'],['merged','Merged'],['closed','Closed'],['failed','Failed to commit'],['failedMerge','Failed to merge']];
+const statusMenu = document.getElementById('statusMenu');
+const statusBtn = document.getElementById('statusFilterBtn');
+statusMenu.innerHTML = STATUS_OPTS.map(([k, lb]) => {
+  const s = CL_STATE[k];
+  return `<label><input type="checkbox" value="${k}"><span class="st ${s.cls}"><svg><use href="#${s.icon}"/></svg><span class="lbl">${lb}</span></span></label>`;
+}).join('');
+statusBtn.addEventListener('click', e => { e.stopPropagation(); statusMenu.classList.toggle('open'); });
+statusMenu.addEventListener('click', e => e.stopPropagation());
+statusMenu.addEventListener('change', () => {
+  statusFilter = new Set([...statusMenu.querySelectorAll('input:checked')].map(c => c.value));
+  statusBtn.classList.toggle('on', statusFilter.size > 0);
+  buildTable(); render();
+});
+document.addEventListener('click', () => statusMenu.classList.remove('open'));
+
+// collapse / expand
+const tlSection = document.getElementById('tlSection');
+document.getElementById('tlTitle').addEventListener('click', () => {
+  const collapsed = tlSection.classList.toggle('collapsed');
+  document.getElementById('tlToggle').setAttribute('aria-label', collapsed ? 'Expand timeline' : 'Collapse timeline');
+  if (!collapsed) requestAnimationFrame(() => { renderBurndown(); renderAxis(); render(); });
+});
+
+// click a flag → toggle it in the filter (plain clicks multi-select); click off to clear.
+// Selecting a run also jumps the playhead to that run's conclusion, so the table shows
+// where its repositories stood AT that moment (Commit run → "Commit" statuses, etc.).
+lanesEl.querySelectorAll('.bar').forEach(bar => bar.addEventListener('click', () => {
+  const id = bar.dataset.id;
+  if (selectedJobs.has(id)) selectedJobs.delete(id);
+  else {
+    selectedJobs.add(id);
+    const j = JOBS.find(x => x.id === id);
+    cursorT = Math.min(NOW, conclusion(j));
+  }
+  buildTable(); render();
+}));
+// bar tooltip — actioned vs succeeded
+const barTip = document.createElement('div'); barTip.id = 'barTip'; document.body.appendChild(barTip);
+lanesEl.querySelectorAll('.bar').forEach(bar => {
+  const j = JOBS.find(x => x.id === bar.dataset.id);
+  bar.addEventListener('mouseenter', () => {
+    barTip.innerHTML = `<b>${j.label.replace(/\s*\([^)]*\)/g, '')}</b> by ${j.actor} · ${dateFor(j.start)}, ${timeFor(j.start)}` +
+      `${j.end == null ? ' · running' : ''}<br>${fmt(j.succeeded)} of ${fmt(j.actioned)} succeeded` +
+      (j.failed ? `, <span class="tf">${fmt(j.failed)} failed</span>` : '') +
+      (j.local ? `<br>run via the platform AFTER the last refresh — the VCS hasn't been re-synced yet` : '');
+    const r = bar.getBoundingClientRect();
+    barTip.style.left = (r.left + r.width / 2) + 'px';
+    barTip.style.top = (r.top - 8) + 'px';
+    barTip.classList.add('on');
+    linksEl.querySelector(`.lnk[data-for="${j.id}"]`)?.classList.add('show');
+  });
+  bar.addEventListener('mouseleave', () => {
+    barTip.classList.remove('on');
+    linksEl.querySelector(`.lnk[data-for="${j.id}"]`)?.classList.remove('show');
+  });
+});
+// band hover — tooltip with the stage's repo count at the hovered instant
+bdPlot.addEventListener('mousemove', e => {
+  const p = e.target.closest && e.target.closest('.bd-band');
+  if (!p) { barTip.classList.remove('on'); return; }
+  const g = BAND_GROUPS[+p.dataset.g];
+  const T = Math.min(ft(fracFromX(e.clientX)), REFRESH_T);
+  const n = REPOS.reduce((a, r) => a + (g.phases.includes(phaseAt(r, T)) ? 1 : 0), 0);
+  barTip.innerHTML = `<b>${g.name}</b> — ${fmt(n)} repositories<br>${dateFor(T)}, ${timeFor(T)}`;
+  barTip.style.left = e.clientX + 'px';
+  barTip.style.top = (e.clientY - 12) + 'px';
+  barTip.classList.add('on');
+});
+bdPlot.addEventListener('mouseleave', () => barTip.classList.remove('on'));
+
+window.addEventListener('resize', () => { renderBurndown(); renderAxis(); render(); });
+
+// checkboxes → enable bulk actions
+const selected = new Set();
+function syncActions() {
+  const on = selected.size > 0;
+  document.querySelectorAll('.act-btn').forEach(b => b.disabled = !on);
+  const all = document.getElementById('ckAll');
+  all.classList.toggle('on', pageIdx.length > 0 && pageIdx.every(i => selected.has(i)));
+}
+function toggleRow(i) {
+  const ck = gridRows.querySelector(`tr[data-idx="${i}"] .chk`);
+  if (selected.has(i)) { selected.delete(i); ck.classList.remove('on'); }
+  else { selected.add(i); ck.classList.add('on'); }
+  syncActions();
+}
+function toggleAll() {
+  const turnOn = pageIdx.some(i => !selected.has(i));
+  pageIdx.forEach(i => turnOn ? selected.add(i) : selected.delete(i));
+  gridRows.querySelectorAll('.chk').forEach(ck => ck.classList.toggle('on', turnOn));
+  syncActions();
+}
+
+// refresh — "now" on this page means the last status fetch. Small sets refresh on their
+// own; large sets gate behind a confirmation so a heavy SCM sweep isn't started by accident.
+// The PR-status column still fills in from a separate secondary request (unchanged) — this
+// refresh just re-triggers that fetch and stamps a new "as of" time.
+const AUTO_REFRESH_MAX = 5;               // ~5 repos → refresh silently, no button
+const REFRESH_CONFIRM_THRESHOLD = 150;    // 150+ repos → confirm first
+const updBadge = document.getElementById('updBadge');
+const updText = document.getElementById('updText');
+const refreshBtn = document.getElementById('refreshBtn');
+const refreshModal = document.getElementById('refreshModal');
+document.getElementById('rmCount').textContent = fmt(N_REPOS);
+let refreshing = false;
+const updLabel = () => `Last updated ${refreshedAgoTxt()}`;
+
+function startRefresh() {
+  if (refreshing) return;
+  refreshing = true;
+  const TOTAL = REPOS.length, DUR = 2500, start = performance.now();
+  updBadge.classList.add('busy');
+  // disable the button while the sweep runs so a second person can't trigger a duplicate
+  if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.innerHTML = `<span class="spin"><svg width="14" height="14"><use href="#i-refresh"/></svg></span> Refreshing…`; }
+  updText.textContent = `Checking 0 of ${fmt(TOTAL)}…`;
+  const iv = setInterval(() => {
+    const done = Math.min(TOTAL, Math.round((performance.now() - start) / DUR * TOTAL));
+    updText.textContent = `Checking ${fmt(done)} of ${fmt(TOTAL)}…`;
+  }, 100);
+  setTimeout(() => {
+    clearInterval(iv); refreshing = false; refreshAgoMin = 0;
+    updBadge.classList.remove('busy');
+    if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.innerHTML = `<svg><use href="#i-refresh"/></svg> Refresh statuses`; }
+    updText.textContent = updLabel();
+    document.querySelector('#syncGap span').textContent = 'refreshed just now';
+    renderAxis(); render();      // the right edge of the axis IS the refresh moment
+  }, DUR);
+}
+function requestRefresh() {
+  if (refreshing) return;
+  if (N_REPOS >= REFRESH_CONFIRM_THRESHOLD) refreshModal.classList.add('open');
+  else startRefresh();
+}
+if (refreshBtn) refreshBtn.addEventListener('click', requestRefresh);
+updBadge.addEventListener('click', requestRefresh);   // the pill itself is the refresh trigger
+// the refresh button on the now/future edge — sync to get the absolute latest
+const syncEdgeBtn = document.getElementById('syncEdge');
+syncEdgeBtn.addEventListener('pointerdown', e => e.stopPropagation());   // don't start a scrub
+syncEdgeBtn.addEventListener('click', e => { e.stopPropagation(); requestRefresh(); });
+
+// confirmation dialog wiring
+function closeRefreshModal() { refreshModal.classList.remove('open'); }
+document.getElementById('rmCancel').addEventListener('click', closeRefreshModal);
+document.getElementById('rmConfirm').addEventListener('click', () => { closeRefreshModal(); startRefresh(); });
+refreshModal.addEventListener('click', e => { if (e.target === refreshModal) closeRefreshModal(); });
+window.addEventListener('keydown', e => { if (e.key === 'Escape' && refreshModal.classList.contains('open')) closeRefreshModal(); });
+
+// Small sets skip the button entirely and auto-refresh in the background.
+if (N_REPOS <= AUTO_REFRESH_MAX) {
+  if (refreshBtn) refreshBtn.style.display = 'none';
+  updBadge.title = 'Auto-refreshing';
+  setInterval(() => { if (!refreshing) startRefresh(); }, 15000);
+}
+
+// info tooltips — shown from a body-level position:fixed host (same pattern as the bar
+// tooltip) so no ancestor overflow:hidden or stacking context can ever hide them
+const tipHost = document.createElement('div'); tipHost.id = 'tipHost'; document.body.appendChild(tipHost);
+document.querySelectorAll('.tip').forEach(tip => {
+  const bubble = tip.querySelector('.bubble');
+  if (!bubble) return;
+  tip.addEventListener('mouseenter', () => {
+    tipHost.innerHTML = bubble.innerHTML;
+    const r = tip.getBoundingClientRect(), TW = 320, pad = 12;
+    tipHost.style.left = Math.min(Math.max(r.left + r.width / 2 - TW / 2, pad), innerWidth - TW - pad) + 'px';
+    tipHost.classList.add('on');
+    const h = tipHost.offsetHeight;
+    let y = r.bottom + 8;                                   // below by default…
+    if (y + h > innerHeight - pad) y = r.top - h - 8;       // …flip above if it would clip
+    tipHost.style.top = y + 'px';
+  });
+  tip.addEventListener('mouseleave', () => tipHost.classList.remove('on'));
+});
+
+buildWarp();
+buildTable();
+renderBurndown();
+renderAxis();
+render();
+requestAnimationFrame(() => { renderBurndown(); renderAxis(); render(); }); // re-measure after layout settles
+</script>
+</body>
+</html>
