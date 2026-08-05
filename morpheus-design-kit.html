@@ -22,16 +22,11 @@ body { font-family: var(--font-sans); background: #F2F0EA; color: #232342; -webk
 a { color: inherit; }
 
 /* ============================================================
-   MORPHEUS TOKENS
-   Values come from @moderneinc/design-system-tokens@6.0.0, vendored at
-   assets/design-system-tokens/semantic-colors.css. The aliases below are
-   indirections ONLY -- an alias must never define a literal value.
+   MORPHEUS TOKENS — aliases into design-system-tokens@6.0.0
+   (assets/design-system-tokens/semantic-colors.css). Never put a literal here.
 
-   Both scopes share one block on purpose: the vendored sheet sets --mod-*
-   under :root (light) and [data-theme="dark"], and that bare attribute
-   selector matches these .mo-scope divs. So one alias resolves to the light
-   or dark value automatically, per scope. Dark values are no longer
-   maintained here.
+   One block covers both scopes: the vendored sheet's [data-theme="dark"]
+   also matches these .mo-scope divs, so each alias resolves per scope.
    ============================================================ */
 .mo-scope[data-theme="light"],
 .mo-scope[data-theme="dark"] {
@@ -84,11 +79,8 @@ a { color: inherit; }
   --control-glyph: var(--accent);
 }
 
-/* --- Not yet tokenized -------------------------------------------------
-   These diverge from design-system-tokens@6.0.0 and are kept as literals so
-   this change stays visually inert. Each needs a decision before it can be
-   aliased; see the PR description for the value comparison.
-   --------------------------------------------------------------------- */
+/* Not yet tokenized — diverge from @6.0.0, kept literal so nothing shifts
+   visually. Each needs a design decision; comparison in PR 285. */
 .mo-scope[data-theme="light"] {
   --muted: #62627A;
   --accent: #1245AE;

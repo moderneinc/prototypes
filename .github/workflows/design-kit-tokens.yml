@@ -1,20 +1,19 @@
 name: Design kit token drift
 
-# The design kit consumes colour values from the vendored design-system token
-# sheet. This guards the one way that can silently regress: someone pastes a raw
-# colour literal (hex or rgba) into the page instead of using a token alias.
+# Two ways the kit can drift from the design system, one job each:
+# a raw colour literal pasted into the page, or a hand-edited vendored sheet.
 on:
   pull_request:
     paths:
       - morpheus-design-kit.html
-      - scripts/check-color-literals.sh
-      - scripts/color-literal-baseline.txt
+      - assets/design-system-tokens/**
+      - scripts/**
   push:
     branches: [gh-pages]
     paths:
       - morpheus-design-kit.html
-      - scripts/check-color-literals.sh
-      - scripts/color-literal-baseline.txt
+      - assets/design-system-tokens/**
+      - scripts/**
 
 permissions:
   contents: read
@@ -24,5 +23,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check colour literal count against baseline
-        run: ./scripts/check-color-literals.sh
+      - run: ./scripts/check-color-literals.sh
+
+  vendored-sheet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Re-vendor from the pinned version
+        run: ./scripts/vendor-tokens.sh
+      - name: Fail if the committed sheet differs
+        run: |
+          if ! git diff --exit-code -- assets/design-system-tokens/; then
+            echo "::error::Vendored token sheet does not match the pinned package."
+            echo "Run scripts/vendor-tokens.sh and commit, or correct scripts/tokens-version.txt."
+            exit 1
+          fi

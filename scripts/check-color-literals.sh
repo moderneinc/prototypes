@@ -2,25 +2,12 @@
 #
 # Colour-literal ratchet for morpheus-design-kit.html.
 #
-# The kit gets its colour values from the vendored design-system token sheet
-# (assets/design-system-tokens/semantic-colors.css) through the alias block near
-# the top of the file. Colour literals written directly into the page bypass
-# that, and are how the kit silently drifted from the design system before.
+# Colours belong in the vendored token sheet, not in the page. Zero literals
+# isn't reachable yet, so the count is pinned to a baseline instead.
 #
-# Both spellings count -- hex (#RGB / #RRGGBB / #RRGGBBAA) and functional
-# rgb()/rgba(). Counting only hex would leave an obvious hole: the kit's
-# hairlines and tints are all rgba(), so half the palette could be re-hardcoded
-# without tripping the check.
-#
-# A "zero literals" gate cannot pass today: conversion is incremental and
-# literals remain in component rules, in swatch label text, and in the tracked
-# "Not yet tokenized" block. So this is a ratchet against a recorded baseline.
-#
-#   * count went UP   -> a literal was added. Use a var(--mod-*) alias instead.
-#   * count went DOWN -> good, you tokenised something. Lower the baseline.
-#
-# Exact match is required rather than "no worse". A stale, too-high baseline
-# would silently allow literals to creep back in up to the old number.
+# Exact match, not "no worse": a stale high baseline lets literals creep back.
+# Counts rgb()/rgba() as well as hex — the kit's tints and hairlines are rgba(),
+# so a hex-only check would miss half the palette.
 
 set -euo pipefail
 
@@ -42,32 +29,23 @@ count=$(( hex + func ))
 baseline="$(tr -d '[:space:]' < "$BASELINE_FILE")"
 
 if [[ "$count" == "$baseline" ]]; then
-  echo "OK: $count colour literals in $FILE ($hex hex + $func rgb/rgba), matches baseline"
+  echo "OK: $count colour literals ($hex hex + $func rgb/rgba), matches baseline"
   exit 0
 fi
 
 if (( count > baseline )); then
   cat >&2 <<EOF
 FAIL: $FILE gained colour literals ($baseline -> $count).
-      ($hex hex + $func rgb/rgba)
 
-Colour values belong in the design system, not in this page. Use an existing
-alias (--bg, --text, --card, ...) or add one pointing at a --mod-* token from
-assets/design-system-tokens/semantic-colors.css.
-
-If the value genuinely has no token yet, put it in the "Not yet tokenized"
-block so it stays visible, and raise the baseline in $BASELINE_FILE
-deliberately as part of that change.
+Use an existing alias (--bg, --text, --card, ...) or add one pointing at a
+--mod-* token. If the value has no token yet, add it to the "Not yet tokenized"
+block and raise the baseline in $BASELINE_FILE as part of that change.
 EOF
   exit 1
 fi
 
 cat >&2 <<EOF
-FAIL: $FILE has fewer colour literals ($baseline -> $count) -- good, but the
-baseline is now stale and would allow them to creep back.
-
-Update it:
-
-  echo $count > $BASELINE_FILE
+FAIL: fewer colour literals ($baseline -> $count) — good, but the baseline is
+now stale. Update it:  echo $count > $BASELINE_FILE
 EOF
 exit 1
