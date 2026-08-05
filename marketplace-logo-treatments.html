@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketplace logos — three treatments, decided visually</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --font-display: 'Poppins', 'Geist', system-ui, sans-serif;
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  /* Morpheus dark tokens — this page is dark-only because the debate is about the dark UI */
+  --bg: #141419; --card: #26262E; --surface: #2A2A32; --surface2: #33333D;
+  --line: rgba(240,240,246,.12); --line-strong: rgba(240,240,246,.38);
+  --text: #F1F0EA; --muted: #9C9CA8; --accent: #7FA9F9; --green: #30F284;
+  --bad: #FA826F; --warn: #E8BA4C; --ok: #4ADE80;
+}
+body { font-family: var(--font-sans); font-size: 14px; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+main { max-width: 1240px; margin: 0 auto; padding: 44px 36px 90px; }
+.bar { height: 4px; width: 64px; background: var(--green); border-radius: 2px; margin-bottom: 18px; }
+h1 { font-family: var(--font-display); font-size: 28px; font-weight: 600; letter-spacing: -0.56px; line-height: 1.15; }
+.sub { color: var(--muted); margin-top: 10px; max-width: 760px; line-height: 1.6; font-size: 14px; }
+h2 { font-family: var(--font-display); font-size: 18px; font-weight: 600; margin: 48px 0 6px; }
+.h2sub { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+code { font-family: var(--font-mono); font-size: 12px; background: var(--surface); border-radius: 4px; padding: 1px 5px; }
+
+/* ===== comparison ===== */
+.compare { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; align-items: start; }
+.col { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.col-head { padding: 14px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 10px; position: sticky; top: 0; background: var(--card); z-index: 2; }
+.col-head h3 { font-size: 14px; font-weight: 600; }
+.col-head .note { font-family: var(--font-mono); font-size: 10px; color: var(--muted); display: block; margin-top: 2px; letter-spacing: .04em; }
+.pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+.pill.bad { color: var(--bad); border: 1px solid var(--bad); }
+.pill.warn { color: var(--warn); border: 1px solid var(--warn); }
+.pill.rec { background: var(--green); color: #1D5937; }
+
+.rowcard { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+.rowcard:last-child { border-bottom: none; }
+.rowcard .txt { min-width: 0; flex: 1; }
+.rowcard .name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rowcard .desc { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rowcard .case { font-family: var(--font-mono); font-size: 9px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); flex: none; text-align: right; line-height: 1.5; }
+
+/* treatment 1 — raw on dark */
+.t-raw .logo { width: 48px; height: 48px; flex: none; display: flex; align-items: center; justify-content: center; }
+.t-raw .logo svg { max-width: 100%; max-height: 100%; }
+
+/* treatment 2 — white plates, hugging each logo's own box (deliberately ad hoc) */
+.t-plate .logo { flex: none; background: #FFFFFF; display: flex; align-items: center; justify-content: center; }
+.t-plate .p1 { padding: 2px; border-radius: 3px; }   /* every plate slightly different — the point */
+.t-plate .p2 { padding: 7px 14px; border-radius: 6px; }
+.t-plate .p3 { padding: 4px; border-radius: 0; }
+.t-plate .p4 { padding: 10px; border-radius: 24px; }
+.t-plate .logo svg { width: 34px; height: 34px; }
+.t-plate .p2 svg { width: 60px; height: 22px; }
+
+/* treatment 3 — the LogoTile component */
+.tile { flex: none; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; }
+.tile svg { width: 29px; height: 29px; max-width: 29px; max-height: 29px; }
+.tile .wide { width: 34px; height: auto; }
+.auto-invert { filter: invert(1) hue-rotate(180deg); }
+
+/* ===== spec ===== */
+.spec { display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: start; }
+.anatomy { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 28px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.anat-tile { position: relative; width: 144px; height: 144px; background: var(--surface2); border: 1px solid var(--line-strong); border-radius: 30px; display: flex; align-items: center; justify-content: center; }
+.anat-content { width: 62%; height: 62%; border: 1px dashed var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.anat-content svg { width: 76%; height: 76%; color: #6DB33F; }
+.anat-lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: .05em; text-align: center; line-height: 1.7; }
+.anat-lbl b { color: var(--accent); font-weight: 500; }
+.spec-tbl { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.spec-row { display: grid; grid-template-columns: 170px 1fr; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.55; }
+.spec-row:last-child { border-bottom: none; }
+.spec-row .k { font-family: var(--font-mono); font-size: 11px; color: var(--accent); padding-top: 2px; }
+.spec-row .v { color: var(--text); }
+.spec-row .v .m { color: var(--muted); }
+
+.rules { margin-top: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.rules li { list-style: none; display: flex; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.55; }
+.rules li:last-child { border-bottom: none; }
+.rules .n { font-family: var(--font-mono); font-size: 11px; color: var(--muted); flex: none; width: 20px; padding-top: 1px; }
+
+footer { margin-top: 48px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); line-height: 1.8; }
+footer a { color: var(--accent); text-decoration: none; }
+@media (max-width: 980px) { .compare { grid-template-columns: 1fr; } .spec { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="bar"></div>
+  <h1>Marketplace logos on a dark UI —<br>three treatments, decided visually</h1>
+  <p class="sub">Third-party recipe logos arrive inconsistent: transparent PNGs, all-black marks that vanish on dark, no padding, baked-in shadows, wild bounding boxes. Below, the same ten hard cases rendered three ways on the real dark recipe-card surface — the do-nothing case, the white-plates proposal, and the standardized <b>LogoTile</b>. Scan any row across all three columns.</p>
+
+  <h2>The same ten logos, three ways</h2>
+  <div class="h2sub">each row is one hard case · verdicts per column</div>
+  <div class="compare">
+
+    <!-- ============ 1 · RAW ============ -->
+    <div class="col t-raw">
+      <div class="col-head"><div><h3>1 · Raw on dark</h3><span class="note">logos placed directly on the card</span></div><span class="pill bad">breaks</span></div>
+      <div id="col-raw"></div>
+    </div>
+
+    <!-- ============ 2 · WHITE PLATES ============ -->
+    <div class="col t-plate">
+      <div class="col-head"><div><h3>2 · White plates</h3><span class="note">each logo on its own white patch</span></div><span class="pill warn">safe but loud</span></div>
+      <div id="col-plate"></div>
+    </div>
+
+    <!-- ============ 3 · LOGOTILE ============ -->
+    <div class="col t-tile">
+      <div class="col-head"><div><h3>3 · LogoTile</h3><span class="note">one standardized chip quarantines the mess</span></div><span class="pill rec">recommended</span></div>
+      <div id="col-tile"></div>
+    </div>
+  </div>
+
+  <h2>LogoTile — the component spec</h2>
+  <div class="h2sub">option 3, defined precisely enough to build</div>
+  <div class="spec">
+    <div class="anatomy">
+      <div class="anat-tile"><div class="anat-content"><svg viewBox="0 0 24 24" fill="currentColor"><use href="#l-spring"/></svg></div></div>
+      <div class="anat-lbl">tile <b>1em = size</b> · radius <b>10px</b> @48<br>dashed = <b>62% content box</b><br>logo <b>contain + centered</b> inside it</div>
+    </div>
+    <div>
+      <div class="spec-tbl">
+        <div class="spec-row"><span class="k">sizes</span><span class="v">32 <span class="m">(dense list rows)</span> · 48 <span class="m">(marketplace cards — shown above)</span> · 64 <span class="m">(recipe detail header — shipped in morpheus.html)</span></span></div>
+        <div class="spec-row"><span class="k">radius</span><span class="v">10px at 48 <span class="m">(the --radius-input tier; scale proportionally: 8 @32, 10 @64)</span></span></div>
+        <div class="spec-row"><span class="k">background</span><span class="v"><code>--surface2</code> <span class="m">— one neutral for every logo, both themes (#33333D-range dark / warm gray light). Never hardcoded, never per-logo.</span></span></div>
+        <div class="spec-row"><span class="k">border</span><span class="v">1px <code>--line</code> hairline <span class="m">— separates the tile from the card without adding a second visual voice</span></span></div>
+        <div class="spec-row"><span class="k">content box</span><span class="v">62% of tile per axis <span class="m">(≈30px inside 48)</span> — the inner-padding ratio every logo respects, so optical size is uniform regardless of each mark's own bounding box</span></div>
+        <div class="spec-row"><span class="k">fit</span><span class="v"><code>object-fit: contain</code>, centered on both axes, aspect preserved. Wordmarks fill the content-box width and stay vertically centered. Rasters never upscale past intrinsic size.</span></div>
+      </div>
+      <ul class="rules">
+        <li><span class="n">R1</span><span><b>Monochrome-dark marks auto-invert.</b> If a mark is effectively single-color and dark (luminance below threshold), render it inverted on the dark tile — see Corvid and HexKit in column 3. Colored marks are left alone.</span></li>
+        <li><span class="n">R2</span><span><b>Baked-in backgrounds are tolerated, not fixed.</b> A logo that ships its own colored plate (Forge) sits inside the tile — the inconsistency is quarantined to 30px instead of shouting from the card. Prefer a transparent variant when the vendor offers one.</span></li>
+        <li><span class="n">R3</span><span><b>Baked shadows and off-center bounding boxes are neutralized by geometry.</b> The 62% content box + contain centering re-centers lopsided artwork; a baked shadow reads as part of the mark instead of a smudge on a white plate.</span></li>
+        <li><span class="n">R4</span><span><b>No exceptions.</b> No per-logo tile colors, no size overrides, no white plates for "just this one." The moment one logo escapes the tile, the card is back to arbitrating every vendor's brand kit.</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    dark-only on purpose — the debate is about the dark UI; the tile tokens flip cleanly in light mode.<br>
+    companion: the 64px LogoTile is already live on the <a href="morpheus.html#marketplace">recipe detail header</a> · Morpheus tokens throughout
+  </footer>
+</main>
+
+<!-- ===== logo library (inline, self-contained) ===== -->
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="l-spring" viewBox="0 0 24 24"><path fill="#6DB33F" d="m23.693 10.7058-4.73-8.1844c-.4094-.7106-1.4166-1.2942-2.2402-1.2942H7.2725c-.819 0-1.8308.5836-2.2402 1.2942L.307 10.7058c-.4095.7106-.4095 1.873 0 2.5837l4.7252 8.189c.4094.7107 1.4166 1.2943 2.2402 1.2943h9.455c.819 0 1.826-.5836 2.2402-1.2942l4.7252-8.189c.4095-.7107.4095-1.8732 0-2.5838zM10.9763 5.7547c0-.5365.4377-.9742.9742-.9742s.9742.4377.9742.9742v5.8217c0 .5366-.4377.9742-.9742.9742s-.9742-.4376-.9742-.9742zm.9742 12.4294c-3.6427 0-6.6077-2.965-6.6077-6.6077.0047-2.0896.993-4.0521 2.6685-5.304a.8657.8657 0 0 1 1.2142.1788.8657.8657 0 0 1-.1788 1.2143c-2.1602 1.6048-2.612 4.6592-1.0072 6.8194 1.6049 2.1603 4.6593 2.612 6.8195 1.0072 1.2378-.9177 1.9673-2.372 1.9673-3.9157a4.8972 4.8972 0 0 0-1.9861-3.925c-.386-.2824-.466-.8284-.1836-1.2143.2824-.386.8283-.466 1.2143-.1835 1.6895 1.2471 2.6826 3.2238 2.6873 5.3228 0 3.6474-2.965 6.6077-6.6077 6.6077z"/></symbol>
+  <symbol id="l-corvid" viewBox="0 0 24 24"><path fill="#0A0A0A" d="M12 2C7 2 3 6 3 11c0 3.9 2.5 7.2 6 8.5V22l3-2 3 2v-2.5c3.5-1.3 6-4.6 6-8.5 0-5-4-9-9-9zm-3.5 8a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm7 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/></symbol>
+  <symbol id="l-polaris" viewBox="0 0 24 24"><path fill="#FFFFFF" d="M12 1l2.2 6.8L21 10l-6.8 2.2L12 19l-2.2-6.8L3 10l6.8-2.2L12 1zm7 13l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"/></symbol>
+  <symbol id="l-hollow" viewBox="0 0 24 24"><path fill="#8B93A8" fill-rule="evenodd" d="M12 2l9 5v10l-9 5-9-5V7l9-5zm0 3.3L6 8.6v6.8l6 3.3 6-3.3V8.6l-6-3.3zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></symbol>
+  <symbol id="l-crest" viewBox="0 0 24 24"><path fill="#B34725" d="M12 1l1.2 3.1L16 2.6l-.5 3.3 3.3-.5-1.5 2.8 3.1 1.2-2.6 2 2.6 2-3.1 1.2 1.5 2.8-3.3-.5.5 3.3-2.8-1.5L12 23l-1.2-3.1-2.8 1.5.5-3.3-3.3.5 1.5-2.8L3.6 14l2.6-2-2.6-2 3.1-1.2-1.5-2.8 3.3.5-.5-3.3 2.8 1.5L12 1z"/><circle cx="12" cy="12" r="4.6" fill="#E8BA4C"/><path fill="#B34725" d="M12 9.2l.9 1.8 2 .3-1.4 1.4.3 2-1.8-.9-1.8.9.3-2-1.4-1.4 2-.3.9-1.8z"/><circle cx="12" cy="12" r="6.8" fill="none" stroke="#7A2F17" stroke-width=".6" stroke-dasharray="1 1.2"/></symbol>
+  <symbol id="l-wordmark" viewBox="0 0 120 24"><text x="0" y="17" font-family="Arial Black, Arial, sans-serif" font-size="15" font-weight="900" letter-spacing="0.5" fill="#4B71F0">REWRITE</text><rect x="98" y="6" width="12" height="12" rx="2" fill="#4B71F0"/><path d="M101 12h6M104 9v6" stroke="#fff" stroke-width="1.6"/></symbol>
+  <symbol id="l-forge" viewBox="0 0 24 24"><rect x="1" y="1" width="22" height="22" rx="5" fill="#E56A2C"/><path fill="#FFF" d="M7 16.5 12 5l5 11.5h-2.6L12 10.5l-2.4 6H7z"/></symbol>
+  <symbol id="l-hexkit" viewBox="0 0 24 24"><path fill="none" stroke="#111111" stroke-width="1.6" d="M12 2.5l8.2 4.75v9.5L12 21.5l-8.2-4.75v-9.5L12 2.5z"/><path fill="none" stroke="#111111" stroke-width="1.2" d="M12 7l4.3 2.5v5L12 17l-4.3-2.5v-5L12 7z"/></symbol>
+  <symbol id="l-orbit" viewBox="0 0 24 24"><ellipse cx="12" cy="15.5" rx="8" ry="2.6" fill="#000" opacity=".28"/><circle cx="12" cy="10" r="6.4" fill="#3BAF8E"/><circle cx="10" cy="8" r="1.8" fill="#CFF5E9"/><ellipse cx="12" cy="10" rx="9.4" ry="3" fill="none" stroke="#3BAF8E" stroke-width="1"/></symbol>
+  <symbol id="l-skew" viewBox="0 0 24 24"><g transform="translate(11,11)"><path fill="#8656D6" d="M0 0h9v9a9 9 0 0 1-9-9z"/><circle cx="3" cy="3" r="1.6" fill="#E5D9FA"/></g></symbol>
+</defs></svg>
+
+<script>
+var LOGOS = [
+  { id: 'l-spring',   name: 'Migrate to Spring Boot 3.5',      desc: 'Upgrade to 3.5 and adopt best practices', case: 'colored ·\ntransparent', wide: false, mono: false },
+  { id: 'l-corvid',   name: 'Corvid CI hardening',             desc: 'Pin actions, drop stale workflows',       case: 'all-black',   wide: false, mono: true },
+  { id: 'l-polaris',  name: 'Polaris platform defaults',        desc: 'Apply org platform conventions',          case: 'all-white',   wide: false, mono: false },
+  { id: 'l-hollow',   name: 'HollowCube schema sync',           desc: 'Regenerate models from schema',           case: 'negative\nspace', wide: false, mono: false },
+  { id: 'l-crest',    name: 'Crest security baseline',          desc: 'CVE sweep with policy gates',             case: 'busy detail', wide: false, mono: false },
+  { id: 'l-wordmark', name: 'REWRITE recipe pack',              desc: 'Core refactoring collection',             case: 'wordmark',    wide: true,  mono: false },
+  { id: 'l-forge',    name: 'Forge build migration',            desc: 'Convert legacy build scripts',            case: 'own\nbackground', wide: false, mono: false },
+  { id: 'l-hexkit',   name: 'HexKit modularization',            desc: 'Split monolith into hex modules',         case: 'black\noutline', wide: false, mono: true },
+  { id: 'l-orbit',    name: 'Orbit dependency alignment',       desc: 'Align versions across repos',             case: 'baked\nshadow', wide: false, mono: false },
+  { id: 'l-skew',     name: 'Skew import cleanup',              desc: 'Normalize import ordering',               case: 'off-center\nbbox', wide: false, mono: false }
+];
+
+function svgFor(l) { return '<svg viewBox="' + (l.wide ? '0 0 120 24' : '0 0 24 24') + '"' + (l.wide ? ' class="wide"' : '') + '><use href="#' + l.id + '"/></svg>'; }
+
+function render(colId, logoWrap) {
+  var host = document.getElementById(colId);
+  LOGOS.forEach(function (l, i) {
+    var row = document.createElement('div');
+    row.className = 'rowcard';
+    row.innerHTML = logoWrap(l, i) +
+      '<span class="txt"><span class="name">' + l.name + '</span><span class="desc">' + l.desc + '</span></span>' +
+      '<span class="case">' + l.case.replace('\n', '<br>') + '</span>';
+    host.appendChild(row);
+  });
+}
+
+render('col-raw', function (l) { return '<span class="logo">' + svgFor(l) + '</span>'; });
+render('col-plate', function (l, i) { return '<span class="logo p' + (l.wide ? 2 : (i % 4) + 1) + '">' + svgFor(l) + '</span>'; });
+render('col-tile', function (l) { return '<span class="tile' + (l.mono ? ' auto-invert-host' : '') + '">' + (l.mono ? svgFor(l).replace('<svg ', '<svg class="auto-invert" ') : svgFor(l)) + '</span>'; });
+</script>
+</body>
+</html>
