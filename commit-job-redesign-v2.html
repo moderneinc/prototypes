@@ -13,25 +13,18 @@
    ============================================================ */
 :root {
   --chrome:#f2f0ea; --panel:#fbfaf6; --card:#fbfaf6;
+  --blue:#3e7bf6;   /* Morpheus brand blue — chart chrome (line, playhead, selection) */
   --line:rgba(35,35,66,.12); --line-strong:rgba(35,35,66,.5); --hairline:rgba(35,35,66,.08);
-  --text:#343a40; --ink:#232342; --muted:#62627a; --faint:#8a8a99;
-  --accent:#1055e2; --link:#0046b5; --track:#edebe2;
-  --success:#237341; --active:#7048c8; --error:#d43c2a; --warning:#b07210;
-  /* Cool spectrum — bright primary on top, deep companion underneath */
-  --cobalt:#335eb7; --cobalt-d:#071f54;
-  --azure:#278bca;  --azure-d:#003c5e;
-  --teal:#00a9aa;   --teal-d:#005152;
-  --sea:#008262;    --sea-d:#002f21;
-  --green:#48a345;  --green-d:#124d12;
-  --mint:#30f284;   --mint-d:#1d5937;
+  --text:#232342; --ink:#232342;   /* Morpheus ink for all text */ --muted:#62627a; --faint:#8a8a99;
+  --accent:#1055e2; --link:#0046b5; --track:#edebe2; --warning:#b07210;
   /* SCM color convention: commit blue · draft gray · open green · merged purple · closed red */
-  --commit:#335eb7;  --commit-b:#071f54;    /* Commit — blue */
-  --open:#2da44e;                           /* Open (PR) — green */
-  --draft:#6e7781;   --draft-b:#57606a;     /* Draft — gray */
-  --approve:#1a7f37; --approve-b:#116329;   /* Approval — deep green */
-  --merge:#8250df;   --merge-b:#6639ba;     /* Merge — purple */
-  --close:#cf222e;   --close-b:#a40e26;     /* Close — red */
-  --fail:#d1242f;    --fail-b:#a12622;      /* Failed — red */
+  --commit:#335eb7;  /* Commit — blue */
+  --open:#2da44e;    /* Open (PR) — green */
+  --draft:#6e7781;   /* Draft — gray */
+  --approve:#1a7f37; /* Approval — deep green */
+  --merge:#8250df;   /* Merge — purple */
+  --close:#cf222e;   /* Close — red */
+  --fail:#d1242f;    /* Failed — red */
 }
 * { box-sizing:border-box; }
 html, body { height:100%; }
@@ -156,7 +149,7 @@ a:hover { text-decoration:underline; }
 .tl-legend .lg.open   svg { color:var(--approve); }
 .tl-legend .lg.closed svg { color:var(--close); }
 .tl-legend .lg.merged svg { color:var(--merge); }
-.tl-legend .lg.inflight svg { color:#3b82f6; }
+.tl-legend .lg.inflight svg { color:var(--blue); }
 .tl-legend .lg.failc svg, .tl-legend .lg.failm svg { color:var(--fail); }
 .tl-head-left { display:flex; align-items:center; gap:12px; }
 .tl-head-left .hdiv { width:1px; height:18px; background:var(--line-strong); opacity:.5; }
@@ -183,7 +176,7 @@ a:hover { text-decoration:underline; }
    bar. Hidden at rest; shown while its flag is hovered or selected. */
 .tl-links { position:absolute; inset:0; pointer-events:none; z-index:3; }
 .tl-links .lnk { position:absolute; width:3px; margin-left:-1px; opacity:0; transition:opacity .15s;
-  background-image:radial-gradient(circle, rgba(59,130,246,.75) 1.1px, transparent 1.3px);
+  background-image:radial-gradient(circle, rgba(62,123,246,.75) 1.1px, transparent 1.3px);
   background-size:3px 7px; background-repeat:repeat-y; background-position:center top; }
 .tl-links .lnk.show, .tl-links .lnk.sel { opacity:1; }
 .bd-plot, .tl-axis { position:relative; z-index:1; }
@@ -198,11 +191,11 @@ a:hover { text-decoration:underline; }
 /* stage bands sit light at rest; hovering one deepens it (half saturation) */
 .bd-band { fill-opacity:.17; transition:fill-opacity .15s ease; pointer-events:auto; }
 .bd-band:hover { fill-opacity:.5; }
-.bd-line { fill:none; stroke:#3b82f6; stroke-width:2; stroke-linejoin:miter; stroke-linecap:square; }   /* bright blue, sharp-cornered steps */
+.bd-line { fill:none; stroke:var(--blue); stroke-width:2; stroke-linejoin:miter; stroke-linecap:square; }   /* bright blue, sharp-cornered steps */
 .bd-total { stroke:var(--line-strong); stroke-width:1; stroke-dasharray:3 3; opacity:.5; }
 .bd-tag { position:absolute; font-size:10px; line-height:1; color:var(--muted); white-space:nowrap; pointer-events:none; background:rgba(251,250,246,.85); padding:2px 4px; border-radius:4px; z-index:4; }
 .bd-tag b { font-weight:600; color:var(--text); }
-.bd-now { position:absolute; font-size:10px; line-height:1.2; color:#2563eb; font-weight:600; white-space:nowrap; pointer-events:none; background:rgba(251,250,246,.9); padding:2px 5px; border-radius:5px; z-index:4; }
+.bd-now { position:absolute; font-size:10px; line-height:1.2; color:var(--blue); font-weight:600; white-space:nowrap; pointer-events:none; background:rgba(251,250,246,.9); padding:2px 5px; border-radius:5px; z-index:4; }
 .bd-now b { font-variant-numeric:tabular-nums; }
 /* shared x-axis BETWEEN the burndown and the lanes — given real weight so it reads as ONE axis */
 .tl-axis { position:relative; height:26px; margin:1px 0 3px; background:var(--track); border-top:1.5px solid var(--line-strong); border-bottom:1.5px solid var(--line-strong); }
@@ -213,7 +206,7 @@ a:hover { text-decoration:underline; }
 .tl-axis .tkm.minor { width:1px; height:3px; opacity:.5; }
 .tl-axis-tag { position:absolute; top:6px; left:8px; font-size:10px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); z-index:2; pointer-events:none; }
 /* scrub explainer — a blue info icon in the header controls; tooltip carries the how-to text */
-.eye-ic { display:inline-flex; color:#3b82f6; cursor:default; }
+.eye-ic { display:inline-flex; color:var(--blue); cursor:default; }
 .eye-ic svg { width:19px; height:19px; }
 /* lanes — video-editor style tracks; each run renders as a FLAG: a vertical start
    line (pole) with a solid arrow banner extending right, pointed at the run's end.
@@ -225,7 +218,7 @@ a:hover { text-decoration:underline; }
 /* selection — a crisp flat translucent rectangle (TradingView-style): sharp edges,
    no glow, hairline border. Sits BEHIND the flag so the badge stays fully vivid. */
 .bar:focus-visible { outline:none; }
-.bar.sel::after, .bar:focus-visible::after { content:''; position:absolute; inset:-2px -4px; z-index:-1; background:rgba(59,130,246,.20); box-shadow:inset 0 0 0 1px rgba(59,130,246,.7); pointer-events:none; }
+.bar.sel::after, .bar:focus-visible::after { content:''; position:absolute; inset:-2px -4px; z-index:-1; background:rgba(62,123,246,.20); box-shadow:inset 0 0 0 1px rgba(62,123,246,.7); pointer-events:none; }
 .bar.dim { opacity:.3; }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.62;} }
 .bar-pole  { position:absolute; left:0; top:0; bottom:0; width:2.5px; }
@@ -266,8 +259,8 @@ a:hover { text-decoration:underline; }
 .bar.out.out-left .blb { left:auto; right:calc(100% + 6px); }
 /* playhead — a line with a date lollipop riding ON the shared axis (its vertical
    center is set from the axis position in JS) */
-.cursor-line { position:absolute; top:0; bottom:0; width:2px; background:#3b82f6; pointer-events:none; z-index:6; }
-.cursor-grip { position:absolute; left:50%; transform:translate(-50%,-50%); height:20px; padding:0 9px; border-radius:999px; background:#3b82f6; color:#fff; font-size:10px; font-weight:700; letter-spacing:.02em; white-space:nowrap; display:flex; align-items:center; box-shadow:0 1px 4px rgba(35,35,66,.4); cursor:ew-resize; pointer-events:auto; touch-action:none; }
+.cursor-line { position:absolute; top:0; bottom:0; width:2px; background:var(--blue); pointer-events:none; z-index:6; }
+.cursor-grip { position:absolute; left:50%; transform:translate(-50%,-50%); height:20px; padding:0 9px; border-radius:999px; background:var(--blue); color:#fff; font-size:10px; font-weight:700; letter-spacing:.02em; white-space:nowrap; display:flex; align-items:center; box-shadow:0 1px 4px rgba(35,35,66,.4); cursor:ew-resize; pointer-events:auto; touch-action:none; }
 .cursor-grip:hover { filter:brightness(1.08); }
 /* widen the grab target along the whole line without blocking bar clicks elsewhere */
 .cursor-hit { position:absolute; top:0; bottom:0; left:-7px; width:16px; cursor:ew-resize; pointer-events:auto; touch-action:none; background:transparent; }
