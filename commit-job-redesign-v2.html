@@ -93,7 +93,7 @@ a:hover { text-decoration:underline; }
 .tl-section.collapsed .collapse-btn .chev { transform:rotate(-90deg); }
 .tl-wrap { overflow:hidden; transition:max-height .28s ease, opacity .18s ease; max-height:560px; opacity:1; }
 .tl-section.collapsed .tl-wrap { max-height:0; opacity:0; }
-/* controls stay visible when collapsed — the Timeline view switch re-opens it */
+.tl-section.collapsed .tl-controls { display:none; }
 .info-ic { display:inline-flex; color:var(--muted); }
 .info-ic svg { width:15px; height:15px; }
 /* tooltip content lives in a hidden .bubble; it's shown via the fixed-position
@@ -175,13 +175,6 @@ a:hover { text-decoration:underline; }
 /* Now — solid ink primary (DevCenter "Run recipe" treatment) */
 .pill-btn.primary { background:var(--ink); border-color:var(--ink); color:#fff; height:30px; padding:0 14px; font-size:13px; font-weight:600; }
 .pill-btn.primary:hover { background:#35356b; }
-/* Timeline view — ink toggle switch */
-.tswitch { display:inline-flex; align-items:center; gap:8px; border:none; background:transparent; padding:0; font-size:13px; font-weight:500; color:var(--text); cursor:pointer; white-space:nowrap; }
-.tswitch .knobtrack { position:relative; width:36px; height:20px; border-radius:999px; background:var(--ink); transition:background .15s; flex:none; }
-.tswitch .knob { position:absolute; top:2px; left:18px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .15s; }
-.tswitch[aria-checked="false"] .knobtrack { background:#c6c2b6; }
-.tswitch[aria-checked="false"] .knob { left:2px; }
-.tl-controls .hdiv { width:1px; height:18px; background:var(--line-strong); opacity:.5; }
 /* connectors — a DOTTED drop line from each burn-line check-point dot down to its action
    bar. Hidden at rest; shown while its flag is hovered or selected. */
 .tl-links { position:absolute; inset:0; pointer-events:none; z-index:3; }
@@ -461,12 +454,9 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
           <div class="tl-legend" id="tlLegend"></div>
           </div>
           <div class="tl-controls" style="display:flex;align-items:center;gap:12px">
-            <button class="upd-badge" id="updBadge" title="Refresh statuses from your SCM (asks first)"><svg><use href="#i-refresh"/></svg><span id="updText">Last updated 3 days ago</span></button>
             <span class="tip"><span class="eye-ic"><svg><use href="#i-info"/></svg></span>
               <span class="bubble"><b>Drag the playhead to rewind</b>The table below shows where every repository stood at the playhead's time — drag left to step back through the run, or hit Now to jump to the latest check (“refreshed 3 days ago”). Statuses are only as fresh as the last refresh, not live from your SCM.</span>
             </span>
-            <span class="hdiv"></span>
-            <button class="tswitch" id="tlSwitch" role="switch" aria-checked="true"><span class="knobtrack"><span class="knob"></span></span>Timeline view</button>
             <span class="ro-time" id="roTime"></span>
             <button class="sync-edge" id="syncEdge" title="Sync now to get the absolute latest"><svg><use href="#i-refresh"/></svg><span>Sync</span></button>
             <button class="pill-btn primary" id="currentBtn" title="Jump the playhead to the last refresh">Now</button>
@@ -497,6 +487,7 @@ table.grid { width:100%; border-collapse:collapse; background:var(--card); borde
             </span>
           </span>
           <div class="tb-search"><svg><use href="#i-search"/></svg><span>Search repositories…</span></div>
+          <button class="upd-badge" id="updBadge" title="Refresh statuses from your SCM (asks first)"><svg><use href="#i-refresh"/></svg><span id="updText">Last updated 3 days ago</span></button>
           <span class="filt-chip" id="filtChip">Timeline: <span class="fk" id="filtLabel"></span><button id="filtClear" title="Clear filter"><svg><use href="#i-x-circle"/></svg></button></span>
           <div class="spacer"></div>
           <button class="tbtn act-btn" disabled><svg><use href="#i-git-pr"/></svg> Approve</button>
@@ -1140,17 +1131,13 @@ statusMenu.addEventListener('change', () => {
 });
 document.addEventListener('click', () => statusMenu.classList.remove('open'));
 
-// collapse / expand — driven by the section title chevron AND the Timeline view switch
+// collapse / expand
 const tlSection = document.getElementById('tlSection');
-const tlSwitch = document.getElementById('tlSwitch');
-function setTimelineCollapsed(collapsed) {
-  tlSection.classList.toggle('collapsed', collapsed);
-  tlSwitch.setAttribute('aria-checked', String(!collapsed));
+document.getElementById('tlTitle').addEventListener('click', () => {
+  const collapsed = tlSection.classList.toggle('collapsed');
   document.getElementById('tlToggle').setAttribute('aria-label', collapsed ? 'Expand timeline' : 'Collapse timeline');
   if (!collapsed) requestAnimationFrame(() => { renderBurndown(); renderAxis(); render(); });
-}
-document.getElementById('tlTitle').addEventListener('click', () => setTimelineCollapsed(!tlSection.classList.contains('collapsed')));
-tlSwitch.addEventListener('click', () => setTimelineCollapsed(!tlSection.classList.contains('collapsed')));
+});
 
 // click a flag → toggle it in the filter (plain clicks multi-select); click off to clear.
 // Selecting a run also jumps the playhead to that run's conclusion, so the table shows
