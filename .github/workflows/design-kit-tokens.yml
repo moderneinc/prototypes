@@ -1,0 +1,28 @@
+name: Design kit token drift
+
+# The design kit consumes colour values from the vendored design-system token
+# sheet. This guards the one way that can silently regress: someone pastes a raw
+# colour literal (hex or rgba) into the page instead of using a token alias.
+on:
+  pull_request:
+    paths:
+      - morpheus-design-kit.html
+      - scripts/check-color-literals.sh
+      - scripts/color-literal-baseline.txt
+  push:
+    branches: [gh-pages]
+    paths:
+      - morpheus-design-kit.html
+      - scripts/check-color-literals.sh
+      - scripts/color-literal-baseline.txt
+
+permissions:
+  contents: read
+
+jobs:
+  color-literals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check colour literal count against baseline
+        run: ./scripts/check-color-literals.sh

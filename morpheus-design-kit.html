@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600&family=Geist:wght@200;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/design-system-tokens/semantic-colors.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -21,59 +22,95 @@ body { font-family: var(--font-sans); background: #F2F0EA; color: #232342; -webk
 a { color: inherit; }
 
 /* ============================================================
-   MORPHEUS TOKENS — final resolved values from morpheus.html
-   ([data-theme] base ✚ v2 explorations ✚ body.skin-morpheus)
+   MORPHEUS TOKENS
+   Values come from @moderneinc/design-system-tokens@6.0.0, vendored at
+   assets/design-system-tokens/semantic-colors.css. The aliases below are
+   indirections ONLY -- an alias must never define a literal value.
+
+   Both scopes share one block on purpose: the vendored sheet sets --mod-*
+   under :root (light) and [data-theme="dark"], and that bare attribute
+   selector matches these .mo-scope divs. So one alias resolves to the light
+   or dark value automatically, per scope. Dark values are no longer
+   maintained here.
    ============================================================ */
+.mo-scope[data-theme="light"],
+.mo-scope[data-theme="dark"] {
+  --bg: var(--mod-surface-canvas-chrome);
+  --field: var(--mod-surface-field);
+  --card: var(--mod-surfaces-card);
+  --card-head: var(--mod-surfaces-card-header);
+  --surface: var(--mod-surface-sunken);
+  --surface2: var(--mod-surface-sunken2);
+  --row-hover: var(--mod-surface-row-hover);
+  --line: var(--mod-border-hairline);
+  --line2: var(--mod-border-subtle);
+  --line-strong: var(--mod-border-strong);
+  --text: var(--mod-text-primary);
+  --primary-fg: var(--mod-accent-primary-fg);
+  --btn-primary-bg: var(--mod-button-primary-bg);
+  --btn-primary-fg: var(--mod-button-primary-fg);
+  --violet: var(--mod-role-violet-text);
+  --green: var(--mod-dataviz-categorical-green);
+  --green-hi: var(--mod-status-success-text);
+  --su-t: var(--mod-status-success-tint);
+  --su-b: var(--mod-status-success-border);
+  --er: var(--mod-status-error-text);
+  --er-t: var(--mod-status-error-tint);
+  --er-b: var(--mod-status-error-border);
+  --wa: var(--mod-status-warning-text);
+  --qu: var(--mod-role-violet-text);
+  --qu-t: var(--mod-status-queued-tint);
+  --qu-b: var(--mod-status-queued-border);
+  --teal: var(--mod-role-teal-text);
+  --magenta: var(--mod-role-magenta-text);
+  --toast-fg: var(--mod-toast-error-text);
+  --toast-bg: var(--mod-toast-error-bg);
+  --toast-bd: var(--mod-toast-error-border);
+  --toast-su-fg: var(--mod-toast-success-text);
+  --toast-su-bg: var(--mod-toast-success-bg);
+  --toast-su-bd: var(--mod-toast-success-border);
+  --toast-wa-fg: var(--mod-toast-warning-text);
+  --toast-wa-bg: var(--mod-toast-warning-bg);
+  --toast-wa-bd: var(--mod-toast-warning-border);
+  --toast-in-fg: var(--mod-toast-info-text);
+  --toast-in-bg: var(--mod-toast-info-bg);
+  --toast-in-bd: var(--mod-toast-info-border);
+  --ava-bg: var(--mod-avatar-user-default-bg);
+  --ava-fg: var(--mod-avatar-user-default-text);
+  --tenant-bg: var(--mod-button-primary-bg);
+  --tenant-fg: var(--mod-button-primary-fg);
+  --control-border: var(--mod-control-border);
+  --control-border-selected: var(--accent);
+  --control-glyph: var(--accent);
+}
+
+/* --- Not yet tokenized -------------------------------------------------
+   These diverge from design-system-tokens@6.0.0 and are kept as literals so
+   this change stays visually inert. Each needs a decision before it can be
+   aliased; see the PR description for the value comparison.
+   --------------------------------------------------------------------- */
 .mo-scope[data-theme="light"] {
-  --bg: #F2F0EA; --field: #FBFAF6;
-  --card: #FBFAF6; --card-head: #F2EFE7;
-  --surface: #EDEBE2; --surface2: #E4E1D6; --row-hover: #F4F2EB;
-  --line: rgba(35,35,66,.12); --line2: rgba(35,35,66,.08); --line-strong: rgba(35,35,66,.50);
-  --text: #232342; --muted: #62627A;
-  --accent: #1245AE; --accent-deep: #16306B;
-  --accent-tint: rgba(62,123,246,.10); --accent-brd: rgba(62,123,246,.30);
-  --primary-bg: #3E7BF6; --primary-fg: #FFFFFF;
-  --btn-primary-bg: #232342; --btn-primary-fg: #FBFAF6;
-  --violet: #9D5BE8; --green: #30F284; --green-hi: #1D5937;
-  --su-t: rgba(48,242,132,.15); --su-b: rgba(29,89,55,.65);
-  --er: #C9291C; --er-t: #FBEFED; --er-b: #F0B4AC;
-  --wa: #B68B12;
-  --qu: #9D5BE8; --qu-t: rgba(157,91,232,.10); --qu-b: rgba(157,91,232,.35);
-  --ca: #6A7180; --ca-t: #F0F1F5; --ca-b: rgba(27,34,48,.22);
-  --teal: #0E4A45; --magenta: #E6399B;
-  --toast-fg: #C9291C; --toast-bg: #FBEFED; --toast-bd: #F0B4AC;
-  --toast-su-fg: #1D5937; --toast-su-bg: #EAF6EC; --toast-su-bd: #BFE2C8;
-  --toast-wa-fg: #8F6C0C; --toast-wa-bg: #FAF4E1; --toast-wa-bd: #E6D9A8;
-  --toast-in-fg: #1055E2; --toast-in-bg: #EEF3FC; --toast-in-bd: #C7D7F6;
-  --ava-bg: #232342; --ava-fg: #FBFAF6;
-  --tenant-bg: #232342; --tenant-fg: #FBFAF6;
-  --control-border: var(--line-strong); --control-border-selected: var(--accent); --control-glyph: var(--accent);
+  --muted: #62627A;
+  --accent: #1245AE;
+  --accent-deep: #16306B;
+  --accent-tint: rgba(62,123,246,.10);
+  --accent-brd: rgba(62,123,246,.30);
+  --primary-bg: #3E7BF6;
+  --ca: #6A7180;
+  --ca-t: #F0F1F5;
+  --ca-b: rgba(27,34,48,.22);
   --shadow-xs: 0 1px 2px rgba(16,24,40,.08);
 }
 .mo-scope[data-theme="dark"] {
-  --bg: #141419; --field: #222229;
-  --card: #26262E; --card-head: #2D2D36;
-  --surface: #2A2A32; --surface2: #33333D; --row-hover: #2E2E38;
-  --line: rgba(240,240,246,.12); --line2: rgba(240,240,246,.08); --line-strong: rgba(240,240,246,.38);
-  --text: #F1F0EA; --muted: #9C9CA8;
-  --accent: #3E7BF6; --accent-deep: #3E7BF6;
-  --accent-tint: rgba(62,123,246,.16); --accent-brd: rgba(62,123,246,.40);
-  --primary-bg: #3E7BF6; --primary-fg: #FFFFFF;
-  --btn-primary-bg: #F1F0EA; --btn-primary-fg: #17171C;
-  --violet: #9D5BE8; --green: #30F284; --green-hi: #30F284;
-  --su-t: rgba(48,242,132,.13); --su-b: rgba(48,242,132,.55);
-  --er: #FA826F; --er-t: rgba(252,71,50,.12); --er-b: rgba(252,71,50,.42);
-  --wa: #E8BA4C;
-  --qu: #9D5BE8; --qu-t: rgba(157,91,232,.16); --qu-b: rgba(157,91,232,.45);
-  --ca: #9598AC; --ca-t: rgba(228,232,250,.06); --ca-b: rgba(228,232,250,.22);
-  --teal: #25D0C0; --magenta: #E6399B;
-  --toast-fg: #F76A62; --toast-bg: #2A1012; --toast-bd: #4A1D1E;
-  --toast-su-fg: #4ADE80; --toast-su-bg: #0F2015; --toast-su-bd: #1E3A28;
-  --toast-wa-fg: #E3B341; --toast-wa-bg: #211D0C; --toast-wa-bd: #3A3316;
-  --toast-in-fg: #7FA9F9; --toast-in-bg: #101A2E; --toast-in-bd: #1E3A6B;
-  --ava-bg: #30F284; --ava-fg: #1D5937;
-  --tenant-bg: #F1F0EA; --tenant-fg: #17171C;
-  --control-border: var(--line-strong); --control-border-selected: var(--accent); --control-glyph: var(--accent);
+  --muted: #9C9CA8;
+  --accent: #3E7BF6;
+  --accent-deep: #3E7BF6;
+  --accent-tint: rgba(62,123,246,.16);
+  --accent-brd: rgba(62,123,246,.40);
+  --primary-bg: #3E7BF6;
+  --ca: #9598AC;
+  --ca-t: rgba(228,232,250,.06);
+  --ca-b: rgba(228,232,250,.22);
   --shadow-xs: 0 1px 2px rgba(0,0,0,.5);
 }
 
