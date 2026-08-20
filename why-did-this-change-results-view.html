@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>/* Apply the saved theme before first paint to avoid a flash */try{var t=localStorage.getItem('wdtc-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 <style>
 :root{
   /* ==== Morpheus theme (warm cream / ink-navy light skin) ====
@@ -37,7 +38,67 @@
   --shadow-xs:0 1px 2px rgba(35,35,66,.06);--shadow-sm:0 2px 4px rgba(35,35,66,.07);
   --shadow-md:0 8px 15px rgba(35,35,66,.09);--shadow-lg:0 4px 4px rgba(35,35,66,.06),0 8px 24px rgba(176,141,152,.16);
   --transition-fast:150ms ease;
+  color-scheme:light;
 }
+
+/* ==== Morpheus dark theme ====
+   Values are the authoritative @moderneinc/design-system-tokens dark set
+   (--mod-* semantic colours). Only the variable *values* flip; every
+   component reads through these tokens, so nothing else needs to change. */
+[data-theme="dark"]{
+  color-scheme:dark;
+  --brand-white:#F1F0EA;
+  /* accent — links / primary / active (light periwinkle on dark) */
+  --brand-digital-blue-100:rgba(127,169,249,.16);--brand-digital-blue-200:rgba(127,169,249,.28);--brand-digital-blue-300:rgba(127,169,249,.45);
+  --brand-digital-blue-400:#7FA9F9;--brand-digital-blue-500:#7FA9F9;--brand-digital-blue-600:#73AAFF;
+  --brand-digital-blue-700:#A9C5FB;--brand-digital-blue-800:#C2D5FC;
+  /* success — Morpheus mint (accent green stays constant across themes) */
+  --brand-green-100:#192F26;--brand-green-200:#264D33;--brand-green-500:#30F284;--brand-green-600:#37C36E;--brand-green-700:#30F284;--brand-green-800:#30F284;
+  /* error — coral */
+  --brand-red-100:#2E1B1B;--brand-red-500:#FA826F;--brand-red-600:#FA826F;--brand-red-700:#F0B4AC;
+  /* warning — amber */
+  --brand-orange-100:#34281D;--brand-orange-600:#F0A028;--brand-orange-700:#E8BA4C;--brand-orange-800:#E8BA4C;
+  /* neutral ramp — inverts: low steps = raised dark surfaces, high steps = light ink */
+  --brand-grey-100:#2A2A32;--brand-grey-200:#33333D;--brand-grey-300:#45454F;--brand-grey-400:#75757F;
+  --brand-grey-500:#9C9CA8;--brand-grey-600:#B9B9C6;--brand-grey-700:#CFCFD8;--brand-grey-800:#E2E1EA;--brand-grey-900:#F1F0EA;--brand-grey-1000:#F1F0EA;
+  --brand-violet-500:#B98BEF;
+  --surface-primary:#26262E;--surface-page:#141419;--surface-tertiary:var(--brand-grey-200);
+  --text-primary:#F1F0EA;--text-secondary:#B9B9C6;--text-tertiary:#9C9CA8;
+  --text-information:#73AAFF;
+  --border-primary:rgba(240,240,246,.12);--border-secondary:rgba(240,240,246,.22);
+  --shadow-xs:0 1px 2px rgba(0,0,0,.4);--shadow-sm:0 2px 4px rgba(0,0,0,.45);
+  --shadow-md:0 8px 15px rgba(0,0,0,.5);--shadow-lg:0 4px 4px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.55);
+}
+/* Recessed panels: match light where the panel sits *below* the cards on it */
+[data-theme="dark"] .results-right{background:#1E1E25;}
+[data-theme="dark"] .why-body{background:#1E1E25;}
+/* Left rounded-corner seam shadow — drop the warm rose glow for a neutral one */
+[data-theme="dark"] .main-area{box-shadow:-1px 0 0 var(--border-primary),0 -1px 0 var(--border-primary),0 -5px 24px -4px rgba(0,0,0,.45),-12px 0 28px -6px rgba(0,0,0,.55);}
+/* Primary (ink) buttons invert to a light fill on dark, per the button token */
+[data-theme="dark"] .dt-btn.primary,[data-theme="dark"] .commit-btn,[data-theme="dark"] .font-save{background:#F1F0EA;color:#17171C;}
+[data-theme="dark"] .dt-btn.primary:hover,[data-theme="dark"] .commit-btn:hover,[data-theme="dark"] .font-save:hover{background:#FBFAF6;}
+[data-theme="dark"] .commit-btn .pill{background:rgba(23,23,28,.14);}
+/* On-green badge keeps a dark ink even though green-800 is light in dark mode */
+[data-theme="dark"] .nav-version-badge{color:#04220F;}
+/* Building-blocks mark flips to light on dark (matches --logo-filter behaviour) */
+[data-theme="dark"] .nav-item-home svg path{fill:#F1F0EA;stroke:#F1F0EA;}
+/* Diff line colours use the design-system dark diff tokens */
+[data-theme="dark"] .diff-line.del{background:#4C1B1D;}
+[data-theme="dark"] .diff-line.del .diff-gutter{background:#2A1518;}
+[data-theme="dark"] .diff-line.add{background:#183C1F;}
+[data-theme="dark"] .diff-line.add .diff-gutter{background:#0F2117;}
+[data-theme="dark"] .diff-code .k{color:#C79BF2;}
+/* Moddy AI block — dark violet wash instead of the light lavender */
+[data-theme="dark"] .moddy-section{background:linear-gradient(180deg,rgba(157,91,232,.14) 0%,var(--surface-primary) 100%);}
+/* Floating demo bar stays a dark chip (grey-1000 flips to near-white) */
+[data-theme="dark"] .demo-bar{background:#2D2D36;border:1px solid var(--border-primary);}
+/* Checkboxes: lighter strokes so they read on the dark canvas */
+[data-theme="dark"] .ckbox{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239C9CA8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3C/svg%3E");}
+[data-theme="dark"] .ckbox:hover{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237FA9F9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3C/svg%3E");}
+[data-theme="dark"] .ckbox:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237FA9F9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E");}
+[data-theme="dark"] .ckbox:indeterminate{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237FA9F9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='M8 12h8'/%3E%3C/svg%3E");}
+[data-theme="dark"] .ckbox.diff-check:checked{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239598AC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E");}
+
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;}
 body{background:var(--surface-page);color:var(--text-primary);font-family:var(--font-body);-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.55;overflow:hidden;}
@@ -590,6 +651,10 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
 </div>
 
 <div class="demo-bar" role="group" aria-label="Demo controls">
+  <span class="demo-bar-label">Theme</span>
+  <button class="demo-btn" data-theme-set="light">Light</button>
+  <button class="demo-btn active" data-theme-set="dark">Dark</button>
+  <span class="demo-divider"></span>
   <span class="demo-bar-label">Mode</span>
   <button class="demo-btn active" data-aimode="ai">AI enhanced</button>
   <button class="demo-btn" data-aimode="noai">No AI</button>
@@ -1250,6 +1315,16 @@ document.getElementById('share-btn').addEventListener('click',function(){
   });
 });
 document.getElementById('api-explorer').addEventListener('click',()=>toast('Opening API explorer…'));
+
+/* Light / dark theme toggle — flips the design-system tokens via data-theme,
+   persisted to localStorage so the choice survives a reload. */
+function setTheme(mode){
+  document.documentElement.setAttribute('data-theme', mode);
+  document.querySelectorAll('.demo-btn[data-theme-set]').forEach(x=>x.classList.toggle('active', x.dataset.themeSet===mode));
+  try{ localStorage.setItem('wdtc-theme', mode); }catch(_){}
+}
+document.querySelectorAll('.demo-btn[data-theme-set]').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.themeSet)));
+(function(){ let saved; try{ saved=localStorage.getItem('wdtc-theme'); }catch(_){} if(saved) setTheme(saved); })();
 
 /* Demo button-style toggle (pill vs rounded rectangle) */
 document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(b=>b.addEventListener('click',()=>{
