@@ -1084,6 +1084,10 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .mp-plus { font-family: var(--font-mono); font-size: 11px; color: var(--muted); border: 1px solid var(--line-strong); border-radius: 999px; padding: 1px 7px; }
 .mp-email { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
 .mp-kbds { margin-left: auto; display: inline-flex; gap: 4px; }
+.mp-theme { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 5px 12px 8px; }
+.mp-theme-label { font-size: 14px; color: var(--text); }
+.mp-theme .seg-btn { justify-content: center; padding: 0 10px; }
+.mp-theme .seg-btn svg { width: 15px; height: 15px; }
 .kbd { font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 4px; padding: 2px 7px; }
 
 /* ============================================================
@@ -1483,6 +1487,7 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
   <symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3L4 7l4 4"/><path d="M4 7h16"/><path d="M16 21l4-4-4-4"/><path d="M20 17H4"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
   <filter id="cvd-deutan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.625 0.375 0 0 0  0.7 0.3 0 0 0  0 0.3 0.7 0 0  0 0 0 1 0"/></filter>
   <filter id="cvd-protan" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.567 0.433 0 0 0  0.558 0.442 0 0 0  0 0.242 0.758 0 0  0 0 0 1 0"/></filter>
   <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></symbol>
@@ -3010,6 +3015,14 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
     <div class="mp-sep"></div>
     <div class="mp-item">Account settings</div>
     <div class="mp-item">Command menu <span class="mp-kbds"><span class="kbd">shift</span><span class="kbd">?</span></span></div>
+    <div class="mp-theme">
+      <span class="mp-theme-label">Theme</span>
+      <div class="seg" data-theme-seg>
+        <button class="seg-btn" data-set-theme="light" title="Light" aria-label="Light theme"><svg><use href="#i-sun"/></svg></button>
+        <button class="seg-btn" data-set-theme="dark" title="Dark" aria-label="Dark theme"><svg><use href="#i-moon"/></svg></button>
+        <button class="seg-btn active" data-set-theme="system" title="System" aria-label="System theme"><svg><use href="#i-monitor"/></svg></button>
+      </div>
+    </div>
     <div class="mp-sep"></div>
     <div class="mp-item" data-nav="login">Sign out</div>
   </div>
@@ -3197,6 +3210,8 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
       setMenu(openMenu === which ? null : which);
       return;
     }
+    var ts = e.target.closest('[data-set-theme]');
+    if (ts) { applyThemeChoice(ts.getAttribute('data-set-theme')); return; }
     if (!e.target.closest('.menu-pop')) setMenu(null);
     var wx = e.target.closest('.wcag-x');
     if (wx) { setWcag(false); return; }
@@ -3565,6 +3580,19 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
       b.classList.toggle('active', b.getAttribute('data-mode') === mode);
     });
     if (hint) hint.style.opacity = '0';
+  }
+  // ---- account-menu theme selector (light / dark / system) ----
+  function syncThemeSeg(choice) {
+    document.querySelectorAll('.layer [data-theme-seg] .seg-btn').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-set-theme') === choice);
+    });
+  }
+  function applyThemeChoice(choice) {
+    var resolved = choice === 'system'
+      ? ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light')
+      : choice;
+    setMode(resolved);
+    syncThemeSeg(choice);
   }
   // ---- collapsible controls ----
   var reopenBtn = document.getElementById('msReopen');
