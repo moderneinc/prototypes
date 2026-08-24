@@ -471,6 +471,14 @@ a.linklike, .linklike { color: var(--accent); font-weight: 500; text-decoration:
 .tab.active { color: var(--accent); font-weight: 600; }
 .tab.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--accent); border-radius: 2px 2px 0 0; }
 .tab.dis { opacity: .45; cursor: not-allowed; }
+/* account settings page */
+.acct-tabs { margin-bottom: 24px; }
+.acct-h2 { margin: 4px 0 8px; font-size: 18px; font-weight: 400; color: var(--text); letter-spacing: -.01em; }
+.acct-sub { margin: 0 0 4px; font-size: 14px; color: var(--muted); max-width: 760px; }
+.acct-h3 { margin: 30px 0 12px; font-size: 15px; font-weight: 600; color: var(--text); }
+.rp-table th.ta-r, .rp-table td.ta-r { text-align: right; }
+.acct-act { color: var(--text); font-weight: 600; cursor: pointer; }
+.acct-act:hover { text-decoration: underline; }
 .tabs-spacer { flex: 1; }
 .tabs-actions { display: flex; gap: 4px; padding-bottom: 6px; }
 .icon-btn { width: 32px; height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: 1px solid transparent; color: var(--muted); }
@@ -1077,6 +1085,9 @@ body.tlview .dc-owbar { display: block; grid-column: 2 / 4; width: 100%; }
 .mp-user { padding: 10px 12px 6px; }
 .mp-name { font-size: 14px; font-weight: 600; color: var(--text); }
 .mp-provs { display: flex; align-items: center; gap: 8px; margin: 10px 0 8px; }
+.mp-prov[data-nav], .mp-plus[data-nav] { cursor: pointer; }
+.mp-prov[data-nav]:hover { border-color: var(--line-strong); }
+.mp-plus[data-nav]:hover { color: var(--text); }
 .mp-prov { position: relative; width: 29px; height: 29px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; color: var(--text); }
 .mp-prov svg { width: 15px; height: 15px; }
 .mp-prov .st { position: absolute; top: -2px; right: -2px; width: 9px; height: 9px; border-radius: 999px; border: 1.5px solid var(--card); }
@@ -2850,6 +2861,53 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
         </div>
       </section>
 
+      <!-- ============ ACCOUNT SETTINGS ============ -->
+      <section class="page" data-page="account">
+        <div class="pagehead"><h1>Account settings</h1></div>
+        <div class="tabs acct-tabs">
+          <button class="tab dis">Appearance</button>
+          <button class="tab dis">Access tokens</button>
+          <button class="tab active">SCM connections</button>
+          <button class="tab dis">User organizations</button>
+        </div>
+        <div class="acct-body">
+          <h2 class="acct-h2">SCM connections</h2>
+          <p class="acct-sub">Moderne uses OAuth tokens with various SCM providers, enabling you to view projects and apply recipe changes.</p>
+
+          <h3 class="acct-h3">Connected SCMs</h3>
+          <div class="cl-card">
+            <table class="rp-table">
+              <thead>
+                <tr><th>SCM</th><th>URL</th><th>Last created</th><th>Expires at</th><th class="ta-r">Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mp-prov"><svg><use href="#i-logo-github"/></svg><span class="st st--ok"></span></span></td>
+                  <td>github.com</td>
+                  <td class="rp-mono">2026-04-28 20:51:17 UTC</td>
+                  <td></td>
+                  <td class="ta-r"><span class="acct-act">Disconnect</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="acct-h3">Disconnected SCMs</h3>
+          <div class="cl-card">
+            <table class="rp-table">
+              <thead>
+                <tr><th>SCM</th><th class="ta-r">Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>gitlab.com</td><td class="ta-r"><span class="acct-act">Connect</span></td></tr>
+                <tr><td>bitbucket.org</td><td class="ta-r"><span class="acct-act">Connect</span></td></tr>
+                <tr><td>dev.azure.com</td><td class="ta-r"><span class="acct-act">Connect</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <!-- ============ BUILDER ============ -->
       <section class="page" data-page="builder">
         <button class="bl-picker"><svg><use href="#i-blocks"/></svg> new name spring thing <svg class="chev"><use href="#i-chevd"/></svg></button>
@@ -3008,16 +3066,16 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
     <div class="mp-user">
       <div class="mp-name">Lindsay Auchinachie</div>
       <div class="mp-provs">
-        <span class="mp-prov"><svg><use href="#i-logo-github"/></svg><span class="st st--ok"></span></span>
-        <span class="mp-prov"><svg><use href="#i-logo-bitbucket"/></svg><span class="st st--er"></span></span>
-        <span class="mp-prov"><svg><use href="#i-logo-gitlab"/></svg><span class="st st--ok"></span></span>
-        <span class="mp-prov"><svg><use href="#i-logo-azure"/></svg><span class="st st--er"></span></span>
-        <span class="mp-plus">+1</span>
+        <span class="mp-prov" data-nav="account"><svg><use href="#i-logo-github"/></svg><span class="st st--ok"></span></span>
+        <span class="mp-prov" data-nav="account"><svg><use href="#i-logo-bitbucket"/></svg><span class="st st--er"></span></span>
+        <span class="mp-prov" data-nav="account"><svg><use href="#i-logo-gitlab"/></svg><span class="st st--ok"></span></span>
+        <span class="mp-prov" data-nav="account"><svg><use href="#i-logo-azure"/></svg><span class="st st--er"></span></span>
+        <span class="mp-plus" data-nav="account">+1</span>
       </div>
       <div class="mp-email">lindsay@moderne.io</div>
     </div>
     <div class="mp-sep"></div>
-    <div class="mp-item">Account settings</div>
+    <div class="mp-item" data-nav="account">Account settings</div>
     <div class="mp-item">Command menu <span class="mp-kbds"><span class="kbd">shift</span><span class="kbd">?</span></span></div>
     <div class="mp-theme">
       <span class="mp-theme-label">Theme</span>
@@ -3268,6 +3326,7 @@ body.dc-empty .dc-spinbtn { display: inline-flex; }
     if (el) {
       var name = el.getAttribute('data-nav');
       if (name && name !== 'none') location.hash = name;
+      setMenu(null);
       setScreen(name);
     }
   });
