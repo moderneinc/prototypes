@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morpheus — icon downloads</title>
+<style>
+  :root {
+    --bg: #16161d; --card: #1e1e2b; --line: rgba(228,232,250,.12);
+    --text: #e9eaf2; --muted: #9598ac; --accent: #7fa9f9;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f1f1f1; --card: #fff; --line: rgba(27,34,48,.12);
+      --text: #1b2230; --muted: #6a7180; --accent: #1245ae; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    padding: 48px 24px; }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 24px; font-weight: 600; margin: 0 0 6px; }
+  p.sub { color: var(--muted); margin: 0 0 28px; font-size: 15px; }
+  .allbtn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    background: var(--accent); color: #fff; font-weight: 600; font-size: 14px;
+    padding: 10px 18px; border-radius: 999px; margin-bottom: 34px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px 14px 14px; text-align: center; }
+  .ico { height: 46px; display: flex; align-items: center; justify-content: center;
+    color: var(--text); margin-bottom: 14px; }
+  .ico svg { width: 38px; height: 38px; }
+  .name { font-size: 13px; color: var(--muted); margin-bottom: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; }
+  .dl { display: inline-block; text-decoration: none; font-size: 12px; font-weight: 600;
+    color: var(--accent); border: 1px solid var(--line); border-radius: 8px; padding: 6px 14px; }
+  .dl:hover { border-color: var(--accent); }
+  footer { color: var(--muted); font-size: 13px; margin-top: 34px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Morpheus icons</h1>
+  <p class="sub">SCM provider &amp; theme-mode icons used in the Morpheus prototype. All SVG, <code>currentColor</code>, 24&times;24 viewBox.</p>
+  <a class="allbtn" href="morpheus-icons.zip" download>&#8595;&nbsp; Download all (.zip)</a>
+  <div class="grid" id="grid"></div>
+  <footer>Provider marks from <a href="https://simpleicons.org" style="color:var(--accent)">Simple Icons</a>. Recolor via CSS <code>color</code>.</footer>
+</div>
+<script>
+  var ICONS = ['github', 'bitbucket', 'gitlab', 'azure-devops', 'theme-light', 'theme-dark', 'theme-system'];
+  var grid = document.getElementById('grid');
+  ICONS.forEach(function (n) {
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = '<div class="ico"></div><div class="name">' + n + '.svg</div>' +
+      '<a class="dl" href="' + n + '.svg" download>Download</a>';
+    grid.appendChild(card);
+    fetch(n + '.svg').then(function (r) { return r.text(); }).then(function (svg) {
+      card.querySelector('.ico').innerHTML = svg;
+    });
+  });
+</script>
+</body>
+</html>
