@@ -368,6 +368,14 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 .diff-code .a{color:var(--brand-digital-blue-600);}
 .diff-code .c{color:var(--text-tertiary);font-style:italic;}
 .dt-btn.icon{width:32px;padding:0;justify-content:center;}
+/* Large-diff placeholder — a quiet row, not a filled block with a heavy button */
+.diff-hunk.large-tag{color:var(--text-tertiary);font-family:var(--font-body);font-weight:500;}
+.diff-large{display:flex;align-items:center;gap:10px;padding:12px 14px;font-family:var(--font-body);}
+.diff-large .dl-ic{width:15px;height:15px;color:var(--text-information);flex-shrink:0;}
+.diff-large .dl-text{flex:1;min-width:0;font-size:12.5px;color:var(--text-tertiary);}
+.diff-large .dl-text b{color:var(--text-secondary);font-weight:600;font-variant-numeric:tabular-nums;}
+.diff-loadbtn{flex-shrink:0;height:28px;padding:0 13px;border-radius:var(--radius-md);background:transparent;border:1px solid var(--border-secondary);color:var(--text-secondary);font-size:12.5px;font-weight:600;transition:background var(--transition-fast),color var(--transition-fast),border-color var(--transition-fast);}
+.diff-loadbtn:hover{background:var(--brand-grey-100);color:var(--text-primary);border-color:var(--brand-digital-blue-300);}
 
 /* inline file filter (revealed from the diff menu) */
 .diff-filter{display:flex;align-items:center;position:relative;margin:-4px 0 14px;}
@@ -448,6 +456,22 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 .recipe-card-link{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:12.5px;font-weight:600;color:var(--brand-digital-blue-600);text-decoration:none;}
 .recipe-card-link:hover{text-decoration:underline;}
 .recipe-card-link svg{width:13px;height:13px;}
+/* ===== Recipe cascade tree (nested / composite recipes) ===== */
+.cascade-card{padding:13px 16px 14px;}
+ul.cascade,ul.cascade-sub{list-style:none;margin:0;padding:0;}
+/* simple ↳ arrow marks the nesting — no rails, no dots */
+ul.cascade-sub{padding-left:13px;}
+.crow{padding:5px 8px;border-radius:8px;border:1px solid transparent;}
+.cname{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--text-primary);}
+/* parents are name-only rows; only the leaf carries a description + link */
+.cnode:not(.leaf) > .crow .cname{font-size:13px;font-weight:500;color:var(--text-primary);}
+.cnest-ic{width:14px;height:14px;color:var(--text-tertiary);flex-shrink:0;}
+.cdesc{font-size:12.5px;color:var(--text-secondary);line-height:1.55;margin-top:4px;}
+.cnode .recipe-card-link{margin-top:8px;}
+.cnode.leaf > .crow{padding:9px 11px;background:var(--brand-digital-blue-100);}
+.ctag{flex-shrink:0;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:999px;line-height:1.6;}
+.ctag.run{background:var(--brand-grey-200);color:var(--text-tertiary);}
+.ctag.applied{background:var(--brand-digital-blue-200);color:var(--brand-digital-blue-700);}
 /* Moddy AI block (AI mode only) */
 .moddy-section{background:linear-gradient(180deg,#F3EFFB 0%,var(--surface-primary) 100%);border:1px solid var(--brand-digital-blue-200);border-radius:var(--radius-lg);padding:14px 16px;}
 .moddy-head{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--brand-digital-blue-700);margin-bottom:8px;}
@@ -740,17 +764,21 @@ const RECIPES={
     ai:'Bumped a build plugin to a version compatible with the new Java level so the build keeps working after the language upgrade.' },
   'setup-java':{ name:'Upgrade actions/setup-java java-version', desc:'Update the Java version used by actions/setup-java if it is below the expected version number.',
     ai:'Raised the Java version in the GitHub Actions <code>setup-java</code> step so CI builds against the same JDK as the migration target.' },
+  'junit6':{ name:'Move to JUnit 6', desc:'Migrates JUnit 4 and 5 tests to JUnit 6, upgrading the JUnit Platform and Jupiter dependencies and APIs.',
+    ai:'Part of the JUnit 6 upgrade nested inside the Java 21 migration.' },
+  'junit-jupiter':{ name:'Move to JUnit Jupiter', desc:'Replaces JUnit 4 (org.junit) annotations, assertions, and lifecycle hooks with their JUnit Jupiter (org.junit.jupiter) equivalents.',
+    ai:'This test was migrated from JUnit 4 to JUnit Jupiter. The <code>org.junit</code> annotations and assertions were rewritten to their <code>org.junit.jupiter</code> equivalents — a leaf step of the JUnit 6 upgrade, itself nested inside the Java 21 migration.' },
 };
 const RECIPE_ORDER=['java21','java17','plugins17','setup-java'];
 /* which recipe(s) produced a given file result (varied, incl. multi-recipe) */
 const RECIPE_SETS=[
   ['java21'],
-  ['java17'],
+  ['java21','junit6','junit-jupiter'],
   ['java21','java17'],
   ['java21'],
   ['java21','java17','plugins17'],
-  ['java17'],
-  ['plugins17'],
+  ['java21','junit6','junit-jupiter'],
+  ['java21','java17','plugins17'],
 ];
 
 /* synth file results for a repo */
@@ -762,7 +790,8 @@ function filesFor(r){
     const last=i===n-1;
     const c=last?remaining:Math.max(1,Math.round(remaining/(n-i)));
     remaining-=c;
-    out.push({path:names[i%names.length], count:c, recipes:RECIPE_SETS[i%RECIPE_SETS.length]});
+    // Some diffs are too large to render inline — show a lightweight "Load diff" affordance instead.
+    out.push({path:names[i%names.length], count:c, recipes:RECIPE_SETS[i%RECIPE_SETS.length], large:i!==0 && c>=24, bigLines:c*13+87});
   }
   return out;
 }
@@ -916,27 +945,39 @@ function recipeChipHTML(ids){
     <span class="rc-via">via</span> <span class="rc-name">${primary}</span>${extra>0?`<span class="rc-more">+${extra}</span>`:''}
   </button>`;
 }
+function hunkLinesHTML(i){
+  const hunk=HUNKS[i%HUNKS.length];
+  return hunk.lines.map(([t,o,n,code])=>`<div class="diff-line ${t}">
+        <span class="diff-gutter"><span class="n">${o??''}</span><span class="n">${n??''}</span></span>
+        <span class="diff-sign">${t==='del'?'-':t==='add'?'+':''}</span>
+        <span class="diff-code">${hl(code)}</span>
+      </div>`).join('');
+}
 function diffCardHTML(f,i){
   const hunk=HUNKS[i%HUNKS.length];
-  return `<div class="diff-file" data-file="${i}">
+  const meta = f.large
+    ? `<span class="diff-hunk large-tag">Large diff</span>`
+    : `<span class="diff-hunk">${hunk.header}</span>`;
+  const body = f.large
+    ? `<div class="diff-large">
+        <svg class="dl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span class="dl-text">Large diffs are not displayed by default.</span>
+        <button class="diff-loadbtn" data-file="${i}">Load diff</button>
+      </div>`
+    : hunkLinesHTML(i);
+  return `<div class="diff-file${f.large?' islarge':''}" data-file="${i}">
     <div class="diff-file-head">
       <input type="checkbox" class="ckbox diff-check" checked title="Include this file in the commit">
       <svg class="diff-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       <svg class="diff-fileicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       <span class="diff-file-path">${f.path}</span>
       ${recipeChipHTML(f.recipes)}
-      <span class="diff-hunk">${hunk.header}</span>
+      ${meta}
       <div class="diff-file-actions">
         <button class="diff-act" data-act="filemenu" aria-label="File options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
       </div>
     </div>
-    <div class="diff-body">
-      ${hunk.lines.map(([t,o,n,code])=>`<div class="diff-line ${t}">
-        <span class="diff-gutter"><span class="n">${o??''}</span><span class="n">${n??''}</span></span>
-        <span class="diff-sign">${t==='del'?'-':t==='add'?'+':''}</span>
-        <span class="diff-code">${hl(code)}</span>
-      </div>`).join('')}
-    </div>
+    <div class="diff-body">${body}</div>
   </div>`;
 }
 
@@ -1002,6 +1043,17 @@ function wireDiff(slot){
       c.classList.toggle('hide', q && !path.includes(q));
     });
   });
+  // Large diffs: reveal the hunks on demand
+  slot.querySelectorAll('.diff-loadbtn').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();
+    const card=b.closest('.diff-file');
+    const i=+card.dataset.file;
+    card.classList.remove('islarge');
+    card.querySelector('.diff-body').innerHTML=hunkLinesHTML(i);
+    const tag=card.querySelector('.diff-hunk');
+    if(tag){ tag.classList.remove('large-tag'); tag.textContent=HUNKS[i%HUNKS.length].header; }
+    applyDiffSettings(slot);
+  }));
   applyDiffSettings(slot);
 }
 
@@ -1199,21 +1251,44 @@ function toast(msg){
 }
 
 /* ===== "Why was this found?" side panel ===== */
+/* Render a recipe cascade (root run-recipe → nested steps → the leaf that made
+   the change). `path` is ordered top-level → leaf; the leaf is emphasized. */
+function recipeCascadeHTML(path, ext){
+  const node=(i)=>{
+    const rc=RECIPES[path[i]]; if(!rc) return '';
+    const isRoot=i===0, isLeaf=i===path.length-1;
+    const tag = isLeaf ? '<span class="ctag applied">Made this change</span>'
+              : isRoot ? '<span class="ctag run">Run recipe</span>' : '';
+    const link = isLeaf ? `<a class="recipe-card-link" href="#" onclick="return false">View recipe ${ext}</a>` : '';
+    const desc = isLeaf ? `<div class="cdesc">${rc.desc}</div>` : '';
+    // Read leaf → root: the recipe that made the change is on top, nesting down
+    // through its callers to the top-level run recipe at the bottom.
+    const child = isRoot ? '' : `<ul class="cascade-sub">${node(i-1)}</ul>`;
+    const arrow = isLeaf ? '' : `<svg class="cnest-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 10 20 15 15 20"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>`;
+    return `<li class="cnode${isRoot?' root':''}${isLeaf?' leaf':''}">
+      <div class="crow">
+        <div class="cname">${arrow}${rc.name}${tag}</div>
+        ${desc}
+        ${link}
+      </div>
+      ${child}
+    </li>`;
+  };
+  return `<div class="recipe-card cascade-card">
+    <ul class="cascade">${node(path.length-1)}</ul>
+  </div>`;
+}
 function openWhyPanel(ids, contextLabel){
   const spark=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/></svg>`;
   const ext=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>`;
   const body=document.getElementById('why-body');
   const moddy=`<div class="moddy-section">
       <div class="moddy-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 13l.75 2.25L22 16l-2.25.75L19 19l-.75-2.25L16 16l2.25-.75L19 13z"/></svg>Moddy AI<span class="moddy-badge">Beta</span></div>
-      <div class="moddy-explain">${RECIPES[ids[0]].ai}</div>
+      <div class="moddy-explain">${RECIPES[ids[ids.length-1]].ai}</div>
       <div class="moddy-thread" id="moddy-thread"></div>
     </div>`;
   body.innerHTML = (contextLabel?`<div class="why-context">${contextLabel}</div>`:'')
-    + ids.map(id=>{ const rc=RECIPES[id]; return `<div class="recipe-card">
-        <div class="recipe-card-name">${rc.name}</div>
-        <div class="recipe-card-desc">${rc.desc}</div>
-        <a class="recipe-card-link" href="#" onclick="return false">View recipe ${ext}</a>
-      </div>`; }).join('')
+    + recipeCascadeHTML(ids, ext)
     + moddy;
   document.getElementById('why-panel').classList.add('open');
   document.getElementById('why-scrim').classList.add('open');
