@@ -387,7 +387,6 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 .gh-item>svg{width:16px;height:16px;color:var(--text-secondary);flex-shrink:0;}
 .gh-item.danger{color:var(--brand-red-600);}
 .gh-item.danger>svg{color:var(--brand-red-600);}
-.gh-item.why-item>svg{color:var(--brand-violet-500);}
 .gh-divider{height:1px;background:var(--border-primary);margin:5px 0;}
 .tgl{width:30px;height:18px;border-radius:9px;background:var(--brand-grey-300);position:relative;flex-shrink:0;margin-left:auto;transition:background var(--transition-fast);}
 .tgl::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--surface-primary);box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform var(--transition-fast);}
@@ -478,8 +477,6 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 /* No-AI demo mode hides the Moddy AI explanation + chat (attribution stays) */
 body.no-ai .moddy-section,
 body.no-ai .why-foot{display:none;}
-/* The sparkle reads as "AI" — drop it from the diff menu in No AI mode */
-body.no-ai .gh-item.why-item>svg{display:none;}
 
 /* Demo button-style switcher */
 .demo-bar{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:95;display:inline-flex;align-items:center;gap:4px;padding:4px 4px 4px 14px;background:var(--brand-grey-1000);color:#fff;border-radius:var(--radius-full);box-shadow:var(--shadow-lg);font-size:12px;}
@@ -1017,8 +1014,6 @@ function openDiffToolsMenu(anchor, slot){
   const cards=[...slot.querySelectorAll('.diff-file')];
   const anyOpen=cards.some(c=>!c.classList.contains('collapsed'));
   const html=`
-    <button class="gh-item why-item" data-act="why"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/></svg>Why did this change?</button>
-    <div class="gh-divider"></div>
     <button class="gh-item noicon" data-act="collapse">${anyOpen?'Collapse all files':'Expand all files'}</button>
     <button class="gh-item noicon" data-act="filter">Filter files…</button>
     <div class="gh-divider"></div>
@@ -1026,7 +1021,6 @@ function openDiffToolsMenu(anchor, slot){
     <button class="gh-item noicon" data-act="settings">Settings<svg class="gh-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>`;
   openGhMenu(anchor, html, (item)=>{
     const a=item.dataset.act;
-    if(a==='why'){ const r=REPOS.find(x=>x.id===state.activeRepo); openWhyPanel(RECIPE_ORDER, r?`All results in <b>${r.name}</b>`:''); return true; }
     if(a==='collapse'){ collapseAll(slot); return true; }
     if(a==='filter'){ const f=document.getElementById('diff-filter'); f.hidden=false; f.querySelector('input').focus(); return true; }
     if(a==='repoinfo'){ openRepoInfoMenu(anchor, slot); return false; }
