@@ -478,6 +478,8 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 /* No-AI demo mode hides the Moddy AI explanation + chat (attribution stays) */
 body.no-ai .moddy-section,
 body.no-ai .why-foot{display:none;}
+/* The sparkle reads as "AI" — drop it from the diff menu in No AI mode */
+body.no-ai .gh-item.why-item>svg{display:none;}
 
 /* Demo button-style switcher */
 .demo-bar{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:95;display:inline-flex;align-items:center;gap:4px;padding:4px 4px 4px 14px;background:var(--brand-grey-1000);color:#fff;border-radius:var(--radius-full);box-shadow:var(--shadow-lg);font-size:12px;}
@@ -486,11 +488,11 @@ body.no-ai .why-foot{display:none;}
 .demo-btn:hover{background:rgba(255,255,255,.10);}
 .demo-btn.active{background:var(--brand-digital-blue-500);}
 .demo-divider{width:1px;height:18px;background:rgba(255,255,255,.18);margin:0 4px;}
-/* Rounded-rectangle variant toggled from the demo bar */
-body.btn-rounded .dt-btn,
-body.btn-rounded .dt-split,
-body.btn-rounded .commit-btn,
-body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
+/* Buttons use the rounded-rectangle style */
+.dt-btn,
+.dt-split,
+.commit-btn,
+.rd-toggle{border-radius:var(--radius-md);}
 
 /* toast */
 .toast-stack{position:fixed;right:24px;bottom:80px;display:flex;flex-direction:column;gap:8px;z-index:80;}
@@ -658,10 +660,6 @@ body.btn-rounded .rd-toggle{border-radius:var(--radius-md);}
   <span class="demo-bar-label">Mode</span>
   <button class="demo-btn active" data-aimode="ai">AI enhanced</button>
   <button class="demo-btn" data-aimode="noai">No AI</button>
-  <span class="demo-divider"></span>
-  <span class="demo-bar-label">Buttons</span>
-  <button class="demo-btn active" data-btnstyle="pill">Pill</button>
-  <button class="demo-btn" data-btnstyle="rounded">Rounded</button>
 </div>
 
 <!-- "Why was this found?" side panel -->
@@ -1325,13 +1323,6 @@ function setTheme(mode){
 }
 document.querySelectorAll('.demo-btn[data-theme-set]').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.themeSet)));
 (function(){ let saved; try{ saved=localStorage.getItem('wdtc-theme'); }catch(_){} if(saved) setTheme(saved); })();
-
-/* Demo button-style toggle (pill vs rounded rectangle) */
-document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('.demo-btn[data-btnstyle]').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  document.body.classList.toggle('btn-rounded',b.dataset.btnstyle==='rounded');
-}));
 
 render();
 </script>
