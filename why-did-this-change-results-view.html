@@ -396,7 +396,10 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 .gh-item.two-line{flex-direction:column;align-items:flex-start;gap:1px;}
 .gh-item .gi-title{font-size:13px;color:var(--text-primary);}
 .gh-item .gi-sub{font-size:11.5px;color:var(--text-tertiary);}
-.gh-menu.wide{min-width:320px;max-width:344px;max-height:min(560px,80vh);overflow-y:auto;}
+.gh-menu.wide{min-width:320px;max-width:344px;max-height:min(640px,88vh);overflow-y:auto;}
+/* If the menu still has to scroll on a short screen, keep a floor of space below
+   the last row so the bottom padding never gets clipped at the scroll end. */
+.gh-menu.wide::after{content:'';display:block;height:8px;}
 .set-back{font-weight:600;}
 .set-back>svg{transform:rotate(180deg);}
 .gh-hint{font-size:11.5px;color:var(--text-information);padding:0 10px 6px;line-height:1.4;}
