@@ -339,13 +339,21 @@ body.col-resizing{cursor:col-resize;user-select:none;}
 
 .diff-file{border:1px solid var(--border-primary);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px;background:var(--surface-primary);}
 .diff-file-head{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--brand-grey-100);border-bottom:1px solid var(--border-primary);font-family:var(--font-code);font-size:12px;cursor:pointer;}
-.diff-file.collapsed .diff-body{display:none;}
+.diff-file.collapsed .diff-body,.diff-file.collapsed .diff-hunkbar{display:none;}
 .diff-file.collapsed .diff-file-head{border-bottom:none;}
 .diff-chev{width:13px;height:13px;color:var(--text-tertiary);transition:transform var(--transition-fast);flex-shrink:0;}
 .diff-file.collapsed .diff-chev{transform:rotate(-90deg);}
 .diff-fileicon{width:14px;height:14px;color:var(--text-tertiary);flex-shrink:0;}
-.diff-file-path{color:var(--text-primary);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+/* file name truncates so the badge stays in line; the recipe name inside the
+   badge is itself capped to ~8 characters and ellipsis-truncated */
+.diff-file-path{flex:0 1 auto;min-width:0;color:var(--text-primary);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.diff-file-head .recipe-chip .rc-name{max-width:8ch;}
+/* hunk (truncation) header on its own row above the code */
+.diff-hunkbar{display:flex;align-items:center;gap:6px;padding:5px 10px;background:var(--brand-grey-100);border-bottom:1px solid var(--border-primary);font-family:var(--font-code);font-size:12px;}
 .diff-hunk{color:var(--text-tertiary);flex-shrink:0;}
+.hunk-copy{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:none;background:transparent;color:var(--text-tertiary);border-radius:4px;flex-shrink:0;}
+.hunk-copy:hover{background:var(--surface-primary);color:var(--text-secondary);}
+.hunk-copy svg{width:13px;height:13px;}
 .diff-file-actions{margin-left:auto;display:flex;align-items:center;gap:2px;flex-shrink:0;}
 .diff-act{width:26px;height:26px;border-radius:5px;border:1px solid transparent;background:transparent;color:var(--text-tertiary);display:inline-flex;align-items:center;justify-content:center;}
 .diff-act:hover{background:var(--surface-primary);border-color:var(--border-primary);color:var(--text-primary);}
@@ -579,7 +587,7 @@ body.no-ai .why-foot{display:none;}
   <div class="main-area">
     <div class="page-top">
       <div class="run-header">
-        <div class="run-title"><h1>Migrate to Java 21</h1></div>
+        <div class="run-title"><h1>Find and fix vulnerable Nuget dependencies</h1></div>
         <div class="run-subhead">Results for Acme International Financial Trust and Enterprise Risk Management Solutions Department of North American Operations</div>
         <div class="run-status-row">
           <span class="run-chip done"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="var(--brand-green-600)"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Completed</span>
@@ -756,7 +764,7 @@ function statusOf(r){ return r.error ? 'error' : (r.results>0 ? 'ok' : 'none'); 
 
 /* ===== Recipes that matched in this run ===== */
 const RECIPES={
-  'java21':{ name:'Migrate to Java 21', desc:'This recipe will apply changes commonly needed when migrating to Java 21. This recipe will also replace deprecated API with equivalents when there is a clear migration strategy. Build files will also be updated to use Java 21 as the target/source and plugins will be also be upgraded to versions that are compatible with Java 21.',
+  'java21':{ name:'Find and fix vulnerable Nuget dependencies', desc:'This recipe will apply changes commonly needed when migrating to Java 21. This recipe will also replace deprecated API with equivalents when there is a clear migration strategy. Build files will also be updated to use Java 21 as the target/source and plugins will be also be upgraded to versions that are compatible with Java 21.',
     ai:'This change is part of migrating the repository to Java 21. The recipe raised the source/target level, swapped deprecated APIs for their Java 21 equivalents, and aligned build plugins to compatible versions.' },
   'java17':{ name:'Migrate to Java 17', desc:'This recipe will apply changes commonly needed when migrating to Java 17. Specifically, for those applications that are built on Java 8, this recipe will update and add dependencies on J2EE libraries that are no longer directly bundled with the JDK. This recipe will also replace deprecated API with equivalents when there is a clear migration strategy. Build files will also be updated to use Java 17 as the target/source and plugins will be also be upgraded to versions that are compatible with Java 17.',
     ai:'Applied as a stepping-stone within the Java 21 migration. For modules still on Java 8 it adds the J2EE libraries no longer bundled with the JDK — this is where the <code>javax → jakarta</code> import change comes from — and replaces deprecated APIs.' },
@@ -784,7 +792,7 @@ const RECIPE_SETS=[
 /* synth file results for a repo */
 function filesFor(r){
   if(r.results===0) return [];
-  const names=['src/main/java/org/jetbrains/model/BaseEntity.java','src/main/java/org/jetbrains/owner/Owner.java','src/main/java/org/jetbrains/vet/VetController.java','src/main/java/org/jetbrains/system/CacheConfig.java','src/main/java/org/jetbrains/visit/Visit.java','src/main/java/org/jetbrains/web/Handler.java','src/main/java/org/jetbrains/repository/OwnerRepository.java'];
+  const names=['src/main/java/org/jetbrains/kotlin/idea/intentions/conventionNameCalls/ReplaceGetOrSetInspection.java','src/main/java/org/jetbrains/owner/Owner.java','src/main/java/org/jetbrains/vet/VetController.java','src/main/java/org/jetbrains/kotlin/resolve/calls/inference/ConstraintSystemCompletionContext.java','src/main/java/org/jetbrains/visit/Visit.java','src/main/java/org/jetbrains/web/Handler.java','src/main/java/org/jetbrains/repository/OwnerRepository.java'];
   const out=[]; let remaining=r.results; const n=Math.min(names.length, Math.max(1, Math.round(r.results/40)+1));
   for(let i=0;i<n;i++){
     const last=i===n-1;
@@ -953,11 +961,11 @@ function hunkLinesHTML(i){
         <span class="diff-code">${hl(code)}</span>
       </div>`).join('');
 }
+function hunkBarInner(i){
+  return `<span class="diff-hunk">${HUNKS[i%HUNKS.length].header}</span>
+    <button class="hunk-copy" title="Copy diff" onclick="event.stopPropagation();toast('Copied diff to clipboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>`;
+}
 function diffCardHTML(f,i){
-  const hunk=HUNKS[i%HUNKS.length];
-  const meta = f.large
-    ? `<span class="diff-hunk large-tag">Large diff</span>`
-    : `<span class="diff-hunk">${hunk.header}</span>`;
   const body = f.large
     ? `<div class="diff-large">
         <svg class="dl-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -965,6 +973,7 @@ function diffCardHTML(f,i){
         <button class="diff-loadbtn" data-file="${i}">Load diff</button>
       </div>`
     : hunkLinesHTML(i);
+  const hunkbar = f.large ? '' : `<div class="diff-hunkbar">${hunkBarInner(i)}</div>`;
   return `<div class="diff-file${f.large?' islarge':''}" data-file="${i}">
     <div class="diff-file-head">
       <input type="checkbox" class="ckbox diff-check" checked title="Include this file in the commit">
@@ -972,11 +981,11 @@ function diffCardHTML(f,i){
       <svg class="diff-fileicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
       <span class="diff-file-path">${f.path}</span>
       ${recipeChipHTML(f.recipes)}
-      ${meta}
       <div class="diff-file-actions">
         <button class="diff-act" data-act="filemenu" aria-label="File options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
       </div>
     </div>
+    ${hunkbar}
     <div class="diff-body">${body}</div>
   </div>`;
 }
@@ -1014,7 +1023,7 @@ function renderDetail(){
 
 let diffSettings={errors:false, header:true, ws:false, showWs:false, cssHl:false, disableStyled:false, disableLig:false};
 function applyDiffSettings(slot){
-  slot.querySelectorAll('.diff-hunk').forEach(h=>h.style.display=diffSettings.header?'':'none');
+  slot.querySelectorAll('.diff-hunkbar').forEach(h=>h.style.display=diffSettings.header?'':'none');
 }
 function wireDiff(slot){
   // file header: checkbox / menu / collapse
@@ -1043,15 +1052,20 @@ function wireDiff(slot){
       c.classList.toggle('hide', q && !path.includes(q));
     });
   });
-  // Large diffs: reveal the hunks on demand
+  // Large diffs: reveal the hunks (and the hunk header) on demand
   slot.querySelectorAll('.diff-loadbtn').forEach(b=>b.addEventListener('click',e=>{
     e.stopPropagation();
     const card=b.closest('.diff-file');
     const i=+card.dataset.file;
     card.classList.remove('islarge');
-    card.querySelector('.diff-body').innerHTML=hunkLinesHTML(i);
-    const tag=card.querySelector('.diff-hunk');
-    if(tag){ tag.classList.remove('large-tag'); tag.textContent=HUNKS[i%HUNKS.length].header; }
+    const body=card.querySelector('.diff-body');
+    body.innerHTML=hunkLinesHTML(i);
+    if(!card.querySelector('.diff-hunkbar')){
+      const bar=document.createElement('div');
+      bar.className='diff-hunkbar';
+      bar.innerHTML=hunkBarInner(i);
+      body.before(bar);
+    }
     applyDiffSettings(slot);
   }));
   applyDiffSettings(slot);
@@ -1312,7 +1326,7 @@ function chatBubble(role, html){
 function moddyReply(text){
   const t = text.toLowerCase();
   if(/\bwhy\b|why\?/.test(t)){
-    return `This file was rewritten by <b>Migrate to Java 21</b> — specifically its nested <b>Migrate to Java 17</b> step. The recipe's visitor detected <code>javax.persistence.*</code> imports that are no longer bundled with the JDK from Java 11 onward, and replaced them with their <code>jakarta.persistence.*</code> equivalents. This namespace move is required when targeting Java 17/21. It's a compile-time API relocation — no runtime behavior changes.`;
+    return `This file was rewritten by <b>Find and fix vulnerable Nuget dependencies</b> — specifically its nested <b>Migrate to Java 17</b> step. The recipe's visitor detected <code>javax.persistence.*</code> imports that are no longer bundled with the JDK from Java 11 onward, and replaced them with their <code>jakarta.persistence.*</code> equivalents. This namespace move is required when targeting Java 17/21. It's a compile-time API relocation — no runtime behavior changes.`;
   }
   if(/\bwhat else\b|more|other/.test(t)){
     return `I can help you understand this diff. The other changes here come from the same recipe set — build files were bumped to a Java 21 source/target level, and incompatible plugins were upgraded to versions that support it. Want me to walk through a specific hunk?`;
