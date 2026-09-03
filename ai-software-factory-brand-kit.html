@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Software Factory — Brand kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --font-sans: 'Geist', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+  /* AISFM brand */
+  --teal: #00B09D; --blue: #2F1CFA; --navy: #06193B; --white: #FFFBFB;
+}
+[data-theme="light"] {
+  --bg: #F2F0EA; --card: #F6F4EE; --surface: #ECE9E0; --surface2: #E2DED2;
+  --line: rgba(6,25,59,.14); --line-strong: rgba(6,25,59,.42);
+  --text: #06193B; --muted: #5A6273; --link: #1D4FD8;
+  --accent: var(--teal); --accent-fg: var(--white);
+  --tile: #FFFFFF;
+}
+[data-theme="dark"] {
+  --bg: #05122A; --card: #0A1B3A; --surface: #0E2148; --surface2: #163158;
+  --line: rgba(255,251,251,.12); --line-strong: rgba(255,251,251,.34);
+  --text: #EAF1FB; --muted: #93A4C4; --link: #7FA9F9;
+  --accent: var(--teal); --accent-fg: #04231F;
+  --tile: #0A1B3A;
+}
+body { font-family: var(--font-sans); font-size: 14px; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; transition: background .2s, color .2s; }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+button { font: inherit; cursor: pointer; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; max-width: 1120px; margin: 0 auto; padding: 22px 36px 0; }
+.brand { font-weight: 600; font-size: 15px; letter-spacing: -.01em; }
+.brand .m { font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 10px; }
+.top-actions { display: flex; align-items: center; gap: 10px; }
+.chip { display: inline-flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--line); color: var(--text); border-radius: 999px; padding: 8px 14px; font-size: 12px; font-weight: 600; text-decoration: none; }
+.chip:hover { background: var(--surface2); text-decoration: none; }
+.mode-btn { width: 34px; height: 34px; border-radius: 6px; border: 1px solid var(--line-strong); background: var(--card); color: var(--text); display: inline-flex; align-items: center; justify-content: center; }
+.mode-btn svg { width: 15px; height: 15px; }
+
+main { max-width: 1120px; margin: 0 auto; padding: 0 36px 90px; }
+.hero { padding: 52px 0 20px; }
+.hero .bar { display: flex; gap: 5px; margin-bottom: 26px; }
+.hero .bar i { height: 5px; border-radius: 2px; }
+.hero .bar i:nth-child(1){ width: 54px; background: var(--teal);} .hero .bar i:nth-child(2){ width: 26px; background: var(--blue);} .hero .bar i:nth-child(3){ width: 14px; background: var(--navy); border:1px solid var(--line);}
+h1 { font-size: 46px; font-weight: 700; letter-spacing: -.02em; line-height: 1.05; margin-top: 4px; }
+.hero p { font-size: 15px; line-height: 1.62; color: var(--muted); margin-top: 14px; max-width: 660px; }
+.hero-lockup { margin-top: 34px; }
+.hero-lockup img { width: 384px; max-width: 100%; height: auto; display: block; }
+
+.sec-head { display: flex; align-items: baseline; gap: 14px; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin: 52px 0 22px; }
+h2 { font-size: 24px; font-weight: 600; letter-spacing: -.01em; }
+.sec-head .m { font-size: 13px; color: var(--muted); margin-left: auto; font-weight: 500; }
+.note { font-size: 14px; line-height: 1.65; color: var(--muted); max-width: 680px; margin-bottom: 22px; }
+.note strong { color: var(--text); font-weight: 600; }
+
+/* ---- Live lockup (block system) ---- */
+.lk { display: inline-flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+.lk.right { align-items: flex-end; }
+.lk .af { background: var(--teal); color: var(--white); font-family: var(--font-sans); font-weight: 500; letter-spacing: .06em; padding: .2em .32em; white-space: nowrap; font-size: 1em; }
+.lk .mu { background: var(--blue); color: var(--white); font-family: var(--font-mono); font-weight: 400; letter-spacing: .02em; padding: .16em .34em .2em; white-space: nowrap; font-size: .6em; margin-top: .08em; }
+
+/* ---- Logo tiles ---- */
+.logo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.logo-tile { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); display: flex; flex-direction: column; }
+.logo-tile .stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 30px; min-height: 132px; }
+.logo-tile .stage img { width: 78%; max-width: 260px; height: auto; display: block; }
+.stage.on-dark { background: var(--navy); } .stage.on-light { background: #F4F2EC; }
+.logo-tile .stage.tall { min-height: 258px; padding: 30px 24px; }
+.logo-tile .stage img.vert { width: auto; max-width: 60%; max-height: 224px; }
+.logo-tile .cap { border-top: 1px solid var(--line); padding: 12px 16px; font-size: 12.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 10px; }
+
+/* ---- Color ---- */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+.swatch { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+.swatch .chip-color { height: 108px; border-bottom: 1px solid var(--line); display: flex; align-items: flex-end; padding: 12px; }
+.swatch .chip-color .tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 5px; }
+.swatch .info { padding: 13px 15px 15px; }
+.swatch .name { font-size: 14px; font-weight: 600; }
+.swatch .hex { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: .02em; margin-top: 4px; }
+.swatch .role { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.45; }
+
+/* ---- Typography specimens ---- */
+.type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.type-card { border: 1px solid var(--line); border-radius: 12px; padding: 24px; background: var(--card); }
+.type-card .label { font-size: 12.5px; font-weight: 500; color: var(--muted); margin-bottom: 16px; }
+.type-card .big { font-family: var(--font-display); font-weight: 500; font-size: 30px; letter-spacing: .04em; text-transform: uppercase; line-height: 1.1; }
+.type-card .big.small-track { letter-spacing: -.01em; text-transform: none; }
+.type-card .mono-big { font-family: var(--font-mono); font-size: 24px; letter-spacing: .01em; }
+.type-card .glyphs { font-family: var(--font-display); font-size: 15px; color: var(--muted); margin-top: 16px; letter-spacing: .02em; }
+.type-card .desc { font-size: 12.5px; color: var(--muted); margin-top: 16px; line-height: 1.55; }
+
+/* ---- Rules ---- */
+.rules { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.rule-col { border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; background: var(--card); }
+.rule-col h3 { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.rule-col.do h3 { color: var(--teal); } .rule-col.dont h3 { color: var(--blue); }
+.rule-col ul { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.rule-col li { font-size: 13.5px; line-height: 1.5; color: var(--muted); padding-left: 20px; position: relative; }
+.rule-col li::before { position: absolute; left: 0; top: -1px; font-family: var(--font-mono); font-weight: 700; }
+.rule-col.do li::before { content: "+"; color: var(--teal); } .rule-col.dont li::before { content: "\00d7"; color: var(--blue); }
+
+/* ---- Application (summit / meetups) ---- */
+.app-intro { display: flex; flex-wrap: wrap; gap: 14px 26px; align-items: baseline; margin-bottom: 20px; }
+.app-intro .lead { font-size: 15px; line-height: 1.62; color: var(--muted); max-width: 620px; }
+.badge { font-size: 12px; font-weight: 600; padding: 5px 13px; border-radius: 999px; color: var(--white); white-space: nowrap; }
+.badge.token { font-family: var(--font-mono); font-weight: 400; }
+.badge.teal { background: var(--teal); color: var(--white); } .badge.blue { background: var(--blue); }
+.samples { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+.sample { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+.sample .frame { display: block; background: var(--surface2); overflow: hidden; }
+.sample .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sample.wide { grid-column: 1 / -1; }
+.sample.wide .frame { aspect-ratio: 40 / 21; }
+.sample .frame.tall { aspect-ratio: 4 / 3; }
+.sample .cap { padding: 13px 16px 15px; }
+.sample .cap h4 { font-size: 13.5px; font-weight: 600; }
+.sample .cap p { font-size: 12.5px; color: var(--muted); margin-top: 5px; }
+
+/* ---- Buttons / resources ---- */
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; padding: 10px 17px; border-radius: 6px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); text-decoration: none; }
+.btn:hover { background: var(--surface); text-decoration: none; }
+.btn--primary { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
+.btn--primary:hover { filter: brightness(1.06); background: var(--accent); color: var(--accent-fg); }
+.btn svg { width: 14px; height: 14px; }
+
+footer { max-width: 1120px; margin: 0 auto; padding: 0 36px 44px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: .03em; line-height: 1.6; }
+
+@media (max-width: 680px) { h1 { font-size: 34px; } .hero-lockup .lk { font-size: 28px; } .rules { grid-template-columns: 1fr; } .topbar, main, footer { padding-left: 20px; padding-right: 20px; } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">Moderne<span class="m">Marketing kit</span></div>
+  <div class="top-actions">
+    <a class="chip" href="moderne-marketing-kit.html">← Marketing kit</a>
+    <button id="modeBtn" class="mode-btn" aria-label="Toggle theme"></button>
+  </div>
+</div>
+
+<main>
+  <section class="hero">
+    <div class="bar"><i></i><i></i><i></i></div>
+    <h1>AI Software Factory</h1>
+    <p>The event identity for the AI Software Factory Summit and the AI Software Factory Meetup series. This is the working brand reference — the logo lock-up, color, type, and the rules for putting them together. Two applications live here: the <strong>Summit</strong> (flagship, city-based) and the <strong>Meetups</strong> (partner-hosted, local).</p>
+    <div class="hero-lockup">
+      <img src="assets/aisfm/aisfm-logo-left.svg" alt="AI Software Factory meet up logo">
+    </div>
+    <div class="actions">
+      <a class="btn btn--primary" href="assets/aisfm/aisfm-logo-left.svg" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 4 5-4"/><path d="M5 21h14"/></svg>Download logo (SVG)</a>
+      <a class="btn" href="assets/aisfm/aisfm-logo-left.png" download>Left-align PNG</a>
+      <a class="btn" href="assets/aisfm/aisfm-logo-right.png" download>Right-align PNG</a>
+    </div>
+  </section>
+
+  <!-- SUMMIT LOGO -->
+  <div class="sec-head"><h2>Summit lock-up</h2><span class="m">Summit miami 2027</span></div>
+  <p class="note">The summit lock-up stacks three blocks — <strong>AI SOFTWARE FACTORY</strong> in teal, the <strong>summit&nbsp;miami</strong> qualifier in blue, and the <strong>2027</strong> year in navy. Two builds are approved: the left-align stack, and the vertical, where AI SOFTWARE FACTORY runs up the side. Text is always #FFFBFB white; keep one block-height of clear space and never recolor or rotate the blocks.</p>
+  <div class="logo-grid">
+    <div class="logo-tile">
+      <div class="stage on-dark"><img src="assets/aisfm/summit-left.png" alt="AI Software Factory Summit miami 2027 — left-align lock-up on navy"></div>
+      <div class="cap"><span>Left align</span><span>On navy</span></div>
+    </div>
+    <div class="logo-tile">
+      <div class="stage on-light"><img src="assets/aisfm/summit-left.png" alt="AI Software Factory Summit miami 2027 — left-align lock-up on light"></div>
+      <div class="cap"><span>Left align</span><span>On light</span></div>
+    </div>
+    <div class="logo-tile">
+      <div class="stage tall on-dark"><img class="vert" src="assets/aisfm/summit-vertical.svg" alt="AI Software Factory Summit miami 2027 — vertical lock-up on navy"></div>
+      <div class="cap"><span>Vertical</span><span>On navy</span></div>
+    </div>
+    <div class="logo-tile">
+      <div class="stage tall on-light"><img class="vert" src="assets/aisfm/summit-vertical.svg" alt="AI Software Factory Summit miami 2027 — vertical lock-up on light"></div>
+      <div class="cap"><span>Vertical</span><span>On light</span></div>
+    </div>
+  </div>
+  <div class="actions">
+    <a class="btn btn--primary" href="assets/aisfm/summit-vertical.svg" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 4 5-4"/><path d="M5 21h14"/></svg>Vertical (SVG)</a>
+    <a class="btn" href="assets/aisfm/summit-vertical.pdf" download>Vertical (PDF)</a>
+    <a class="btn" href="assets/aisfm/summit-left.png" download>Left-align (PNG)</a>
+    <a class="btn" href="assets/aisfm/summit-left.pdf" download>Left-align (PDF)</a>
+  </div>
+
+  <!-- MEETUP LOGO -->
+  <div class="sec-head"><h2>Meetup lock-up</h2><span class="m">The block system</span></div>
+  <p class="note">The meetup lock-up pairs <strong>AI SOFTWARE FACTORY</strong> in the teal block with the <strong>meet&nbsp;up</strong> qualifier in blue. Two alignments are approved — left-align and right-align. Text is always #FFFBFB white; keep one block-height of clear space and never recolor, outline, or rotate the blocks.</p>
+  <div class="logo-grid">
+    <div class="logo-tile">
+      <div class="stage on-dark"><img src="assets/aisfm/aisfm-logo-left.svg" alt="AI Software Factory meet up — left align lock-up"></div>
+      <div class="cap"><span>Left align</span><span>On navy</span></div>
+    </div>
+    <div class="logo-tile">
+      <div class="stage on-light"><img src="assets/aisfm/aisfm-logo-left.svg" alt="AI Software Factory meet up — left align lock-up on light"></div>
+      <div class="cap"><span>Left align</span><span>On light</span></div>
+    </div>
+    <div class="logo-tile">
+      <div class="stage on-dark"><img src="assets/aisfm/aisfm-logo-right.svg" alt="AI Software Factory meet up — right align lock-up"></div>
+      <div class="cap"><span>Right align</span><span>On navy</span></div>
+    </div>
+    <div class="logo-tile">
+      <div class="stage on-light"><img src="assets/aisfm/aisfm-logo-right.svg" alt="AI Software Factory meet up — right align lock-up on light"></div>
+      <div class="cap"><span>Right align</span><span>On light</span></div>
+    </div>
+  </div>
+
+  <!-- COLOR -->
+  <div class="sec-head"><h2>Color</h2><span class="m">Four core colors</span></div>
+  <p class="note">Four colors carry the whole system. <strong>Teal</strong> is the signature — it holds the AI SOFTWARE FACTORY block. <strong>Blue</strong> is the qualifier block and the one live accent. <strong>Navy</strong> is ink and dark canvas; <strong>white</strong> is every block's text.</p>
+  <div class="swatches">
+    <div class="swatch"><div class="chip-color" style="background:#00B09D"><span class="tag" style="background:rgba(255,251,251,.9);color:#06193B">Signature</span></div><div class="info"><div class="name">Factory Teal</div><div class="hex">#00B09D</div><div class="role">AI SOFTWARE FACTORY block · primary accent · CTAs</div></div></div>
+    <div class="swatch"><div class="chip-color" style="background:#2F1CFA"><span class="tag" style="background:rgba(255,251,251,.9);color:#06193B">Accent</span></div><div class="info"><div class="name">Signal Blue</div><div class="hex">#2F1CFA</div><div class="role">Qualifier block (meet up / summit) · highlights</div></div></div>
+    <div class="swatch"><div class="chip-color" style="background:#06193B"><span class="tag" style="background:rgba(255,251,251,.16);color:#FFFBFB">Ink</span></div><div class="info"><div class="name">Deep Navy</div><div class="hex">#06193B</div><div class="role">Text · dark canvas · the "2027" block</div></div></div>
+    <div class="swatch"><div class="chip-color" style="background:#FFFBFB;border-bottom:1px solid var(--line)"><span class="tag" style="background:#06193B;color:#FFFBFB">On color</span></div><div class="info"><div class="name">Paper White</div><div class="hex">#FFFBFB</div><div class="role">All block text · light surfaces</div></div></div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="sec-head"><h2>Typography</h2><span class="m">Space Grotesk · Space Mono</span></div>
+  <p class="note"><strong>Space Grotesk</strong> is the display face — it sets AI SOFTWARE FACTORY and headlines, uppercase with <strong>6% letter-spacing</strong>. <strong>Space Mono</strong> is the technical face — it sets the qualifier (<em>meet&nbsp;up</em>, <em>summit&nbsp;miami</em>), the year, dates, locations, and any label.</p>
+  <div class="type-grid">
+    <div class="type-card">
+      <div class="label">Display — Space Grotesk · 6% tracking</div>
+      <div class="big">AI Software Factory</div>
+      <div class="glyphs">AaBbCcGgQq &nbsp; 0123456789</div>
+      <div class="desc">Regular / Medium, uppercase, +6% letter-spacing. The AI SOFTWARE FACTORY wordmark and all headings.</div>
+    </div>
+    <div class="type-card">
+      <div class="label">Technical — Space Mono</div>
+      <div class="mono-big">summit miami · 2027</div>
+      <div class="glyphs" style="font-family:var(--font-mono)">meet&nbsp;&nbsp;up &nbsp; 09:00–14:00</div>
+      <div class="desc">Regular. The qualifier block, year, dates, venue, QR captions, and every systematic label.</div>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="sec-head"><h2>Using the brand</h2><span class="m">Do &amp; don't</span></div>
+  <div class="rules">
+    <div class="rule-col do">
+      <h3>Do</h3>
+      <ul>
+        <li>Keep the two-block stack: teal AI SOFTWARE FACTORY over the blue qualifier.</li>
+        <li>Set the wordmark in Space Grotesk at 6% tracking; the qualifier and year in Space Mono.</li>
+        <li>Use <span style="font-family:var(--font-mono)">summit&nbsp;[city]</span> for the summit and <span style="font-family:var(--font-mono)">meet&nbsp;up</span> for meetups.</li>
+        <li>Overlay the lock-up on full-bleed photography — palms/tropical for the summit, city skylines for meetups.</li>
+        <li>Co-brand with the Moderne mark (and partner logo) locked up separately with a “+”.</li>
+        <li>Keep all block text #FFFBFB white.</li>
+      </ul>
+    </div>
+    <div class="rule-col dont">
+      <h3>Don't</h3>
+      <ul>
+        <li>Recolor the blocks or swap teal/blue roles.</li>
+        <li>Set the wordmark type on a photo without its teal block behind it.</li>
+        <li>Stretch, rotate, outline, or add shadows to the lock-up.</li>
+        <li>Mix in other typefaces — only Space Grotesk and Space Mono.</li>
+        <li>Crowd the lock-up; always hold one block-height of clear space.</li>
+        <li>Use low-contrast tints of the palette for block fills.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SUMMIT -->
+  <div class="sec-head"><h2>Summit</h2><span class="m">Flagship, city-based</span></div>
+  <div class="app-intro">
+    <p class="lead">The flagship, city-based event. The lock-up gains a <strong style="color:var(--text)">summit&nbsp;[city]</strong> qualifier in the blue block and a <strong style="color:var(--text)">2027</strong> year block in navy, set over lush, high-key photography. Below is the sponsorship-prospectus cover for <em>summit miami</em>.</p>
+    <span class="badge token blue">summit&nbsp;miami</span><span class="badge token" style="background:var(--navy)">2027</span>
+  </div>
+  <div class="samples">
+    <div class="sample wide">
+      <span class="frame"><img src="assets/aisfm/sample-summit-prospectus.png" alt="AI Software Factory Summit — Miami 2027 sponsorship prospectus cover"></span>
+      <div class="cap"><h4>Sponsorship prospectus — cover</h4><p>Summit miami 2027 · Space Mono qualifier · Moderne × OpenRewrite lockup</p></div>
+    </div>
+  </div>
+
+  <!-- MEETUPS -->
+  <div class="sec-head"><h2>Meetups</h2><span class="m">Partner-hosted, local</span></div>
+  <div class="app-intro">
+    <p class="lead">Partner-hosted local events. The lock-up carries the <strong style="color:var(--text)">meet&nbsp;up</strong> qualifier and pairs with the host’s logo via a “+”, over a photo of the host city or venue, with date, time, address, and a registration QR set in Space Mono.</p>
+    <span class="badge token teal">meet&nbsp;&nbsp;up</span><span class="badge blue">Partner co-brand</span>
+  </div>
+  <div class="samples">
+    <div class="sample">
+      <span class="frame tall"><img src="assets/aisfm/sample-meetup-morganstanley.png" alt="AI Software Factory Meetup with Morgan Stanley — dark event graphic"></span>
+      <div class="cap"><h4>Meetup announcement — Morgan Stanley</h4><p>Moderne + Morgan Stanley · Canary Wharf, London · QR registration</p></div>
+    </div>
+    <div class="sample">
+      <span class="frame tall"><img src="assets/aisfm/sample-meetup-london.jpg" alt="AI Software Factory Meetup with Morgan Stanley — London skyline event graphic"></span>
+      <div class="cap"><h4>Meetup announcement — London skyline</h4><p>Morgan Stanley + Moderne · 6 Oct · 9:00 AM–2:00 PM</p></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a class="btn btn--primary" href="assets/aisfm/aisfm-logo-left.svg" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 4 5-4"/><path d="M5 21h14"/></svg>Download the logo</a>
+    <a class="btn" href="moderne-marketing-kit.html">← Back to the marketing kit</a>
+  </div>
+</main>
+
+<footer>Moderne · marketing kit · AI Software Factory brand kit — prototype.<br>Fonts: Space Grotesk + Space Mono. Colors: Factory Teal #00B09D · Signal Blue #2F1CFA · Deep Navy #06193B · Paper White #FFFBFB.</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById('modeBtn');
+  var sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  var moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+  function apply(theme) {
+    root.setAttribute('data-theme', theme);
+    btn.innerHTML = theme === 'dark' ? sun : moon;
+    try { localStorage.setItem('mkTheme', theme); } catch (e) {}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('mkTheme'); } catch (e) {}
+  apply(saved === 'light' ? 'light' : 'dark');
+  btn.addEventListener('click', function () {
+    apply(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+})();
+</script>
+</body>
+</html>
