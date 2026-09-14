@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>moderne.ai — style rules</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!--
+  Working draft. Rules and token values are read from website-moderne's
+  tokens.css / components.css rather than transcribed from memory, so where this
+  page and the codebase disagree, the codebase wins and this page is stale.
+-->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --font-sans:"Geist",ui-sans-serif,system-ui,sans-serif;
+  --font-mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+[data-theme="light"]{
+  --bg:#F2F0EA; --panel:#FBFAF6; --surface:#F2EFE7; --plate:#F7F5F0;
+  --text:#232342; --dim:#42425E; --muted:#55556B; --muted2:#63637A;
+  --green:#1D5937; --on-accent:#FBFAF6;
+  --line:rgba(35,35,66,.12); --hair:rgba(35,35,66,.066); --tick:rgba(35,35,66,.22);
+  --bad:#A3241A;
+}
+[data-theme="dark"]{
+  --bg:#0F1014; --panel:#16181D; --surface:#1B1E24; --plate:#1B1E24;
+  --text:#F2EFE7; --dim:#C6C2B9; --muted:#9A9AA6; --muted2:#83838F;
+  --green:#30F284; --on-accent:#0F1014;
+  --line:rgba(242,239,231,.14); --hair:rgba(242,239,231,.08); --tick:rgba(242,239,231,.22);
+  --bad:#FF8A7A;
+}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);
+  font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 40px}
+
+/* ---- chrome ---- */
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:24px;
+  padding:34px 0 0;border-bottom:1px solid var(--line)}
+.kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--muted)}
+.themer{font-family:var(--font-mono);font-size:12px;color:var(--muted);background:none;
+  border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer;color:inherit}
+h1{font-size:clamp(34px,3.6vw,52px);line-height:1.06;letter-spacing:-.03em;font-weight:600;
+  margin:40px 0 18px}
+.deck{font-size:19px;line-height:1.55;color:var(--dim);max-width:70ch;margin-bottom:46px}
+
+/* ---- sections ---- */
+section{padding:52px 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(24px,2.6vw,32px);line-height:1.1;letter-spacing:-.022em;font-weight:600;
+  margin-bottom:10px}
+.lede{color:var(--dim);max-width:72ch;margin-bottom:30px}
+h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:34px 0 10px}
+p{max-width:74ch;margin-bottom:14px;color:var(--dim)}
+p strong,li strong{color:var(--text);font-weight:600}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--surface);
+  padding:2px 6px;border-radius:4px;color:var(--text)}
+
+/* ---- ledger: the house list treatment, used here too ---- */
+.ledger{border-top:1px solid var(--line);margin:22px 0 8px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);
+  gap:6px 34px;padding:18px 0;border-bottom:1px solid var(--hair)}
+.row:last-child{border-bottom:0}
+.row dt{font-weight:600;color:var(--text);min-width:0}
+.row dd{color:var(--dim);min-width:0}
+.row dd code{background:none;padding:0}
+
+/* ---- do / don't ---- */
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:0 44px;margin-top:8px}
+.dd h4{font-family:var(--font-mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted2);padding-bottom:7px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.dd ul{list-style:none}
+.dd li{padding:13px 0;border-bottom:1px solid var(--hair);color:var(--dim)}
+.dd li:last-child{border-bottom:0}
+.dd .no h4{color:var(--bad)}
+
+/* ---- trap callouts ---- */
+.trap{background:var(--plate);border-radius:4px;padding:22px 26px;margin:18px 0}
+.trap h4{font-size:16.5px;font-weight:600;color:var(--text);margin-bottom:8px}
+.trap p{color:var(--dim);margin-bottom:0;max-width:none}
+.trap p + p{margin-top:10px}
+
+/* ---- swatches ---- */
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0;
+  border-top:1px solid var(--line);margin-top:20px}
+.sw div{padding:16px 18px 18px 0;border-right:1px solid var(--hair)}
+.sw div:last-child{border-right:0}
+.sw i{display:block;height:46px;border-radius:3px;margin-bottom:10px;border:1px solid var(--line)}
+.sw b{display:block;font-size:14.5px;font-weight:600}
+.sw span{font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+
+footer{padding:40px 0 70px;color:var(--muted);font-size:14.5px;border-top:1px solid var(--line)}
+@media (max-width:760px){
+  .wrap{padding:0 22px}
+  .dd{grid-template-columns:1fr;gap:0}
+  .dd .no{margin-top:26px}
+  .row{grid-template-columns:1fr;gap:4px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <span class="kicker">moderne.ai &middot; working draft</span>
+    <button class="themer" type="button" id="t">light / dark</button>
+  </div>
+
+  <h1>Website style rules</h1>
+  <p class="deck">What the marketing site settled on over two days of design passes: one flat,
+  token-driven system with no boxes, one heading scale and one body size. Written down so the next
+  change does not have to rediscover it. Token values here are read from <code>tokens.css</code>;
+  where this page and the codebase disagree, the codebase wins.</p>
+
+  <!-- ================= DO / DON'T ================= -->
+  <section id="dos">
+    <h2>Do's and don'ts</h2>
+    <p class="lede">Most of the work over these two days was removing things. The system is
+    subtractive: rules and type carry the structure, not containers.</p>
+
+    <div class="dd">
+      <div class="yes">
+        <h4>Do</h4>
+        <ul>
+          <li><strong>Use the flat ledger.</strong> One top rule over the group, hairline
+            separators between columns. This is the house treatment for stats, cards, rosters,
+            steps and feature lists.</li>
+          <li><strong>Let type and rules do the grouping.</strong> A heading plus a hairline is
+            enough; it does not also need a plate.</li>
+          <li><strong>Use supplied assets as they are.</strong> Treat an image like a photograph.</li>
+          <li><strong>Keep one content column.</strong> <code>--wrap-interior: 1000px</code> on
+            every interior page.</li>
+          <li><strong>Close sections with one plain statement.</strong> No button, no flourish.</li>
+          <li><strong>Measure before and after.</strong> Every claim in this document came from
+            reading the DOM, not from looking at it.</li>
+        </ul>
+      </div>
+      <div class="no">
+        <h4>Don't</h4>
+        <ul>
+          <li><strong>No boxes.</strong> No rounded-rectangle card with fill + border + radius.
+            If it has a plate, a 14px radius and a hover lift, it is the old style.</li>
+          <li><strong>No mono-caps eyebrows</strong> above a heading. The heading already says it.</li>
+          <li><strong>No dot separators.</strong> <code>01 &middot; Find</code> became
+            <code>01 Find</code>.</li>
+          <li><strong>No spectral gradient.</strong> Conic rings, animated borders and spectral
+            top-accents are all retired. The keyphrase highlight is reserved for the hero.</li>
+          <li><strong>Don't redraw a supplied asset</strong> as SVG, and don't re-author
+            hand-drawn marks. Crop or extend the original instead.</li>
+          <li><strong>Don't invent data.</strong> A figure carries the idea; the numbers live in
+            the article.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TYPOGRAPHY ================= -->
+  <section id="type">
+    <h2>Typography</h2>
+    <p class="lede">Two faces. Geist for everything readable, Geist Mono for technical naming and
+    small labels. There is no third display face on this site &mdash; <code>--font-display</code>
+    resolves to Geist.</p>
+
+    <h3>The scale</h3>
+    <dl class="ledger">
+      <div class="row"><dt><code>--h-display</code><br><code>clamp(38px,6vw,72px)</code></dt>
+        <dd>Hero headline and the closer's key line. Nothing else.</dd></div>
+      <div class="row"><dt><code>--h1</code><br><code>clamp(34px,3.6vw,52px)</code></dt>
+        <dd>Large section heading.</dd></div>
+      <div class="row"><dt><code>--h2</code><br><code>clamp(28px,3.4vw,44px)</code></dt>
+        <dd>A display moment, promo banners only. <strong>Not</strong> the section heading.</dd></div>
+      <div class="row"><dt><code>--h3</code><br><code>clamp(24px,2.6vw,32px)</code></dt>
+        <dd><strong>The</strong> standard section heading sitewide &mdash; this is
+          <code>.band-h</code>. If a page invents its own heading size, it is wrong.</dd></div>
+      <div class="row"><dt><code>--statement</code></dt>
+        <dd>Aliases <code>--h3</code>. Closers, CTA headlines, in-band leads.</dd></div>
+      <div class="row"><dt><code>--body: 17px</code></dt>
+        <dd>Body copy is <strong>always</strong> 17px. Several pages were running 14.5&ndash;15.5px
+          and have been moved onto the token.</dd></div>
+      <div class="row"><dt><code>--measure: 770px</code></dt>
+        <dd>Paragraph width. Code blocks in articles sit on the same prose measure &mdash; they used
+          to run the full column and jut ~210px past the paragraph explaining them.</dd></div>
+    </dl>
+
+    <h3>Mono is for labels, not for names</h3>
+    <p>Mono, uppercase and wide-tracked reads as a <em>label</em>. That is right for group headings
+    inside the nav panel, figure captions and technical identifiers. It is wrong for anything that
+    is a proper noun or prose:</p>
+    <dl class="ledger">
+      <div class="row"><dt>Company names</dt><dd>Geist, sentence case. "Acrew Capital", not
+        <code>ACREW CAPITAL</code> &mdash; a firm is a proper noun, not an eyebrow.</dd></div>
+      <div class="row"><dt>Job titles</dt><dd>Geist. A role is prose.</dd></div>
+      <div class="row"><dt>Recipe names</dt><dd>Show the recipe's <em>display title</em>, not its
+        fully-qualified id. <code>io.moderne.prethink.ExtractCodingConventions</code> became
+        "Extract coding conventions".</dd></div>
+      <div class="row"><dt>Captions and step labels</dt><dd>Mono, but lowercase sentence case
+        &mdash; "every repo, at once".</dd></div>
+    </dl>
+
+    <h3>Marks and breaks</h3>
+    <dl class="ledger">
+      <div class="row"><dt>&reg; and &trade;</dt>
+        <dd>Wrapped at runtime in <code>.tmk</code> by <code>lib/trademark</code>, sized
+          <code>max(9px,.58em)</code> with <code>line-height:0</code>. The floor matters: a flat
+          <code>.58em</code> put the trademark attribution in an 11.5px legal disclaimer at
+          <strong>6.67px</strong>, the one place it has to be legible.</dd></div>
+      <div class="row"><dt>Hyphenated compounds</dt>
+        <dd>Wrapped in <code>.nb</code> (nowrap) by <code>lib/nobreak</code>, up to 22 characters.
+          CSS cannot do this: <code>hyphens:none</code> and <code>word-break:keep-all</code> both
+          leave an explicit hyphen breakable. Verified in Chromium.</dd></div>
+      <div class="row"><dt>Orphans</dt>
+        <dd>Where a break must be deterministic, set it with <code>&lt;br/&gt;</code>. At any
+          max-width that fits line two, a word creeps up and strands the last one.</dd></div>
+      <div class="row"><dt>Excerpts and sentences</dt>
+        <dd>Close them. 14 of 114 blog excerpts ended with no full stop.</dd></div>
+    </dl>
+  </section>
+
+  <!-- ================= COLOR ================= -->
+  <section id="color">
+    <h2>Color</h2>
+    <p class="lede">Never hardcode. Every colour is a token, and the day/night values are mixed
+    through a single <code>--warm</code> dial, so a raw hex in a stylesheet cannot follow the
+    ground it sits on.</p>
+
+    <div class="sw">
+      <div><i style="background:#F2F0EA"></i><b>--bg</b><span>#F2F0EA</span></div>
+      <div><i style="background:#FBFAF6"></i><b>--panel</b><span>#FBFAF6</span></div>
+      <div><i style="background:#F2EFE7"></i><b>--surface</b><span>#F2EFE7</span></div>
+      <div><i style="background:#F4F2EC"></i><b>--fig-plate</b><span>#F4F2EC</span></div>
+      <div><i style="background:#232342"></i><b>--bone</b><span>#232342</span></div>
+      <div><i style="background:#1D5937"></i><b>--green</b><span>#1D5937</span></div>
+      <div><i style="background:#3E7BF6"></i><b>--shot-plate</b><span>#3E7BF6</span></div>
+    </div>
+
+    <h3>Green</h3>
+    <p>On light grounds the accent is the <strong>forest green <code>#1D5937</code></strong>, not
+    Digital Green <code>#30F284</code> &mdash; the bright green falls to about 1.5:1 on cream and is
+    unreadable. Green is also <strong>never the only signal</strong>: it is always paired with an
+    underline or an icon.</p>
+
+    <h3>Rules and hairlines</h3>
+    <dl class="ledger">
+      <div class="row"><dt><code>--line</code></dt><dd>12% ink. The standard rule &mdash; band
+        dividers, the top rule over a ledger.</dd></div>
+      <div class="row"><dt><code>--hair</code></dt><dd>55% of <code>--line</code>. For ruling large
+        grids, where a full-strength rule on every cell edge reads as a cage.</dd></div>
+      <div class="row"><dt><code>--tick</code></dt><dd>22% ink. Corner registration marks that frame
+        a plate without drawing a border around it.</dd></div>
+      <div class="row"><dt><code>--logo-filter</code></dt><dd>Normalises customer and OSS marks of
+        any ink to the current ground.</dd></div>
+    </dl>
+
+    <p><strong>One divider, not two.</strong> Two components that each own a top rule will sit
+    26&ndash;125px apart and read as a doubled line. Only one of them should draw it.</p>
+  </section>
+
+  <!-- ================= GRAPHS ================= -->
+  <section id="graphs">
+    <h2>Graphs and figures</h2>
+    <p class="lede">Figures are same-origin HTML documents in iframes under
+    <code>/embeds/</code>, auto-sized to their content. They are authored, not drawn, so they can be
+    re-rendered when the copy or the palette moves.</p>
+
+    <div class="trap">
+      <h4>SVG labels do not hold their size</h4>
+      <p>SVG text is in <em>user units</em> and scales with the container. A fixed
+      <code>13px</code> label against an 860-wide viewBox renders at 13.6px near 900 and
+      <strong>5.8px at an iframe width of 386</strong> &mdash; unreadable on a phone.</p>
+      <p>Step the user-unit size up as the scale falls. The value is
+      <code>13 &divide; (iframeWidth &divide; viewBoxWidth)</code> at each breakpoint. After fixing:
+      12.6&ndash;13.6px at 1440, 820, 600 and 430 alike.</p>
+    </div>
+
+    <dl class="ledger">
+      <div class="row"><dt>Plates behind charts</dt>
+        <dd><code>#F7F5F0</code> &mdash; lighter than the cream ground, deliberately <em>not</em>
+          white.</dd></div>
+      <div class="row"><dt>Figure captions</dt>
+        <dd>Mono, lowercase. More air above a chart heading than below it (34px / 12px), or it
+          floats between two plates instead of titling the one under it.</dd></div>
+      <div class="row"><dt>Term labels</dt>
+        <dd>At least 14.5px at <code>--body</code> colour. 12px at <code>--muted</code> made them
+          the faintest text in the figure, and they are what the table hangs off.</dd></div>
+      <div class="row"><dt>Don't imply numbers</dt>
+        <dd>A bar figure with an exponential spike reads as a data claim. If the article does not
+          state the number, the figure should not either.</dd></div>
+    </dl>
+
+    <div class="trap">
+      <h4>Measure the body, never documentElement</h4>
+      <p><code>documentElement.scrollHeight</code> is <strong>clamped to the iframe's own
+      viewport</strong>, so it can never report less than the height already set. One oversized
+      first measurement locks the frame tall permanently and the <code>ResizeObserver</code> can
+      only re-confirm the bad value &mdash; a one-way ratchet. That was the enormous white space
+      under an in-article diagram.</p>
+      <p><code>body.scrollHeight</code> is content-driven and shrinks back. Add a 1px tolerance
+      before writing the height, or the write resizes the frame, re-fires the observer, and the two
+      loop on sub-pixel deltas.</p>
+    </div>
+  </section>
+
+  <!-- ================= SCREENSHOTS ================= -->
+  <section id="shots">
+    <h2>Screenshots and images</h2>
+    <p class="lede">The standing rule: <strong>use the asset that was given to you.</strong> Do not
+    re-author it, do not trace it as SVG, do not "improve" a hand-drawn mark. Crop it, extend it,
+    or place it &mdash; but it stays the same artwork.</p>
+
+    <h3>Fixing a bad crop</h3>
+    <p>When a portrait is framed too tight for its plate, <strong>extend the image, don't crop it
+    harder.</strong> Pad sideways with matched background so the full subject fits the target ratio.</p>
+    <dl class="ledger">
+      <div class="row"><dt>Build the flank from the edge</dt>
+        <dd>Average the outer ~34 columns into one column, blur it hard <em>along its length</em>,
+          then tile outward. Any subject pixel touching the edge dissolves into backdrop tone
+          instead of streaking out as a hard band.</dd></div>
+      <div class="row"><dt>Freeze above the shoulder line</dt>
+        <dd>Below ~60% the edge is collar and shoulders, not backdrop. Sampling it paints a bright
+          block into the flank. Hold the last backdrop row down to the bottom.</dd></div>
+      <div class="row"><dt>Match the rendered size, not the file</dt>
+        <dd>If siblings are cropped 1.33&times; by the plate and you hand one subject a full frame,
+          it shrinks twice over. Measure headroom as a fraction of the <em>rendered</em> plate.</dd></div>
+      <div class="row"><dt>Keep the original</dt>
+        <dd>Derived files sit alongside as <code>-wide</code> / <code>-padded</code>, so framing can
+          be regenerated.</dd></div>
+    </dl>
+
+    <h3>Zoom</h3>
+    <p>Images use <code>initLightbox</code> via <code>.js-zoom</code>. <strong>Iframes cannot</strong>
+    &mdash; a click inside an iframe never reaches the parent document &mdash; so diagram embeds get
+    a transparent button laid over the frame. Zoom <em>re-lays the document out at 820px and pans</em>
+    rather than scaling the phone layout up; scaling only enlarges the same small labels.</p>
+  </section>
+
+  <!-- ================= CAROUSELS ================= -->
+  <section id="carousels">
+    <h2>Carousels</h2>
+    <dl class="ledger">
+      <div class="row"><dt>Constant-height track</dt>
+        <dd>Stack the slides and give the track a fixed height. A carousel that resizes per slide
+          pushes everything below it around &mdash; the "moving Subscribe button" was not a focus
+          bug, it was the carousel above changing height on rotation.</dd></div>
+      <div class="row"><dt>One nav pattern</dt>
+        <dd>Round prev / next, a live <code>n / total</code> count, right-aligned dash indicators.
+          The blog featured slider and the newsroom carousel share it.</dd></div>
+      <div class="row"><dt>Show few, then load more</dt>
+        <dd>Lists page rather than scroll forever. Newsroom archive shows 5.</dd></div>
+    </dl>
+  </section>
+
+  <!-- ================= THUMBNAILS ================= -->
+  <section id="thumbs">
+    <h2>Thumbnails</h2>
+    <p class="lede">Blog and social cards are <strong>authored as HTML and rendered</strong>, never
+    drawn in a raster editor. The source lives beside the embeds so a copy or palette change is a
+    re-render, not a redraw.</p>
+    <dl class="ledger">
+      <div class="row"><dt>Source of truth</dt>
+        <dd>An HTML file under <code>/embeds/</code> at the exact thumbnail frame, with a comment
+          saying so: <em>do not hand-edit the raster.</em></dd></div>
+      <div class="row"><dt>Render</dt>
+        <dd>Playwright at 1.5&ndash;2&times; the frame, then downsample. Type stays sharp.</dd></div>
+      <div class="row"><dt>Never repeat the title</dt>
+        <dd>The blog card and the post both print the headline directly beneath the image. Carrying
+          it inside says it twice.</dd></div>
+      <div class="row"><dt>Match the in-article figure</dt>
+        <dd>If the post contains a diagram, the thumbnail uses the same design, so the card and the
+          article read as one piece.</dd></div>
+      <div class="row"><dt>It is also the social card</dt>
+        <dd><code>og:image</code> and <code>twitter:image</code> point at the same file. Check the
+          share preview before merging.</dd></div>
+    </dl>
+  </section>
+
+  <!-- ================= PATTERNS ================= -->
+  <section id="patterns">
+    <h2>Shared patterns</h2>
+
+    <h3>The ledger</h3>
+    <p>One top rule over the group, a hairline between columns, no plate and no radius. The trap is
+    the gutter: <strong>the rule sits at a column's right edge</strong>, so the padding before it
+    needs matching space after it, or the next column's text butts straight against the line. Either
+    a <code>column-gap</code>, or <code>padding-left</code> on non-first columns &mdash; not both, or
+    the gutter doubles.</p>
+
+    <h3>Ruled grids</h3>
+    <p>Internal hairlines only: a cell rules the side facing a neighbour and never an outer edge, so
+    the wall gains structure without gaining a frame. Express it as <em>"top rule from row 2 on, left
+    rule from column 2 on"</em> &mdash; then no rule depends on knowing the final row, and a ragged
+    last row stays clean at any item count.</p>
+
+    <h3>Portrait plates</h3>
+    <p>4:3 (not 16:9 &mdash; the headshots are square and a wider plate crops past the chin),
+    greyscaled so unrelated studio backdrops stop fighting, name in Geist, role in mono, an
+    underlined text link. No circular avatars, no cards.</p>
+
+    <h3>Corner ticks</h3>
+    <p>Four small marks at the corners frame a quote without a box. Drawn as four background layers
+    &mdash; pseudo-elements only give you two.</p>
+  </section>
+
+  <!-- ================= TRAPS ================= -->
+  <section id="traps">
+    <h2>Engineering traps</h2>
+    <p class="lede">Each of these cost real time over the two days. They all look correct in the
+    stylesheet.</p>
+
+    <div class="trap">
+      <h4>A class reset cannot out-specify <code>:not(:nth-child(Nn+1))</code></h4>
+      <p>Restating a ruled grid per breakpoint with a plain class reset silently loses &mdash; it
+      renders correctly at one width and draws stray edge rules at the others. Give each column
+      count its own <strong>bounded media range</strong> instead of overriding the one above it.</p>
+    </div>
+
+    <div class="trap">
+      <h4>Equal specificity resolves by source order, and order differs in production</h4>
+      <p>Two rules at <code>(0,1,0)</code> are decided by which loads last &mdash; and the dev
+      server's per-file order is <em>not</em> the production bundle's. A hero paragraph rendered
+      white locally and dark slate on the deployed site. Scope to raise specificity rather than
+      relying on order. <strong>A local-only check will not catch this.</strong></p>
+    </div>
+
+    <div class="trap">
+      <h4>An element cannot be restyled by its own container query</h4>
+      <p>If the layout change alters the container's own <code>display</code>, the
+      <code>container-type</code> has to sit one level up.</p>
+    </div>
+
+    <div class="trap">
+      <h4>A negative <code>z-index</code> child paints over its parent's background</h4>
+      <p>Used as a "bar behind a button", it swallows the button's own fill. And a
+      <code>box-shadow</code> spread inherits the element's <code>border-radius</code>, so it paints
+      a rounded slab, not a bar. Both need a real wrapper.</p>
+    </div>
+
+    <div class="trap">
+      <h4>Flex columns do not collapse margins; inline-blocks inflate the line box</h4>
+      <p>A 1px <code>gap</code> on a flex column lands on top of negative margins and throws a
+      38px row pitch to 39. An <code>inline-block</code> child sits on a baseline and pushes a
+      44px row to 49 &mdash; make the row a flex container and the problem disappears.</p>
+    </div>
+
+    <div class="trap">
+      <h4>Behaviour and its styling must ship together</h4>
+      <p>A page called <code>initLightbox</code> but did not import the sheet that styles
+      <code>.lightbox</code>. The overlay was built and un-hidden on click, with no position, no
+      scrim and no sizing &mdash; so the image simply never appeared to zoom. If a helper is shared,
+      its CSS belongs in the shared sheet.</p>
+    </div>
+  </section>
+
+  <footer>
+    Working draft &mdash; not merged. Values read from <code>website-moderne</code>
+    <code>tokens.css</code> and <code>components.css</code>. Where this page and the codebase
+    disagree, the codebase wins.
+  </footer>
+</div>
+
+<script>
+  var b = document.documentElement, t = document.getElementById('t');
+  t.addEventListener('click', function () {
+    b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
+  });
+</script>
+</body>
+</html>
