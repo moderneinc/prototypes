@@ -1,0 +1,97 @@
+/* Moderne Gradient Fields — copy/paste presets
+   Use .mod-gradient with one family modifier.
+   Keep product UI neutral and place it inside .mod-chromatic-frame. */
+
+:root {
+  /* Primary brand colors */
+  --mod-digital-green: #30f284;
+  --mod-deep-green: #1d5937;
+  --mod-ink: #232342;
+  --mod-stone: #f2f0ea;
+  --mod-night: #100c0a;
+
+  /* Supporting complementary colors */
+  --mod-magenta: #e6399b;
+  --mod-magenta-deep: #7a1e52;
+  --mod-violet: #9d5be8;
+  --mod-violet-deep: #3f1340;
+  --mod-blue: #3e7bf6;
+  --mod-blue-deep: #16306b;
+  --mod-teal: #25d0c0;
+  --mod-teal-deep: #0e4a45;
+  --mod-green: var(--mod-digital-green);
+  --mod-lime: #c7e84b;
+  --mod-lime-deep: #4f5a12;
+
+  /* Composition-only atmospheric accents */
+  --mod-coral: #ff6b5b;
+  --mod-yellow: #ffd84d;
+  --mod-sky: #7edbff;
+  --mod-pale-cyan: #d7f7f7;
+  --mod-gradient-surface: var(--mod-stone);
+}
+
+[data-theme="dark"] {
+  --mod-gradient-surface: var(--mod-night);
+}
+
+.mod-gradient {
+  min-height: 12rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: var(--mod-gradient-surface);
+}
+
+.mod-gradient--cool {
+  background:
+    radial-gradient(circle at 14% 82%, var(--mod-teal), transparent 48%),
+    radial-gradient(circle at 92% 15%, var(--mod-violet), transparent 55%),
+    var(--mod-blue);
+}
+
+.mod-gradient--warm {
+  background:
+    radial-gradient(circle at 87% 28%, var(--mod-coral), transparent 47%),
+    radial-gradient(circle at 5% 90%, var(--mod-blue), transparent 55%),
+    var(--mod-magenta);
+}
+
+.mod-gradient--genome {
+  background:
+    radial-gradient(circle at 8% 20%, var(--mod-magenta), transparent 42%),
+    radial-gradient(circle at 90% 78%, var(--mod-green), transparent 43%),
+    radial-gradient(circle at 55% 5%, var(--mod-blue), transparent 48%),
+    var(--mod-teal);
+}
+
+.mod-gradient--fresh {
+  background:
+    radial-gradient(circle at 13% 15%, var(--mod-lime), transparent 42%),
+    radial-gradient(circle at 90% 92%, var(--mod-blue), transparent 46%),
+    var(--mod-teal);
+}
+
+.mod-gradient--mist {
+  background:
+    radial-gradient(circle at 76% 42%, rgba(157, 91, 232, 0.68), transparent 48%),
+    radial-gradient(circle at 5% 85%, rgba(62, 123, 246, 0.35), transparent 48%),
+    var(--mod-gradient-surface);
+}
+
+.mod-chromatic-frame {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 94% 10%, var(--mod-coral), transparent 38%),
+    radial-gradient(circle at 7% 90%, var(--mod-blue), transparent 46%),
+    radial-gradient(circle at 88% 92%, var(--mod-magenta), transparent 40%),
+    #b9ddf2;
+}
+
+.mod-chromatic-frame > img,
+.mod-chromatic-frame > video,
+.mod-chromatic-frame > .product-ui {
+  width: 100%;
+  display: block;
+  border-radius: 0.625rem;
+}
