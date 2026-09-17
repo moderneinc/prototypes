@@ -6,11 +6,11 @@
 <title>Moderne — Brand Guidelines</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --font-sans:"Geist", system-ui, sans-serif;
-    --font-mono:"IBM Plex Mono", ui-monospace, monospace;
+    --font-mono:"Geist", system-ui, sans-serif;
     --midnight:#041834;
   }
   html[data-theme="light"]{
@@ -59,6 +59,24 @@
   .variant-grid p{font-size:13px;line-height:1.55;color:var(--body);}
   .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 
+  .type-layout{display:grid;grid-template-columns:1.45fr 1fr;gap:28px;align-items:start;}
+  .type-scale{overflow:hidden;background:var(--surface);border:1px solid var(--line2);border-radius:12px;}
+  .type-row{min-height:76px;display:grid;grid-template-columns:108px 1fr;gap:18px;align-items:baseline;padding:18px 22px;border-bottom:1px solid var(--line2);}
+  .type-row:last-child{border-bottom:0;}
+  .type-spec{color:var(--muted);font-size:11px;line-height:1.5;}
+  .type-sample{color:var(--text);}
+  .type-cards{display:flex;flex-direction:column;gap:14px;}
+  .type-card{padding:22px 24px;background:var(--surface);border:1px solid var(--line2);border-radius:12px;}
+  .type-kicker{margin-bottom:13px;color:var(--muted);font-size:11px;font-weight:500;}
+  .type-aa{color:var(--text);font-size:44px;font-weight:500;line-height:.92;letter-spacing:-.5px;}
+  .type-detail{margin-top:12px;color:var(--muted);font-size:12px;line-height:1.5;}
+  .type-copy{margin-top:12px;color:var(--body);font-size:14px;line-height:1.6;}
+  .type-downloads{margin-top:24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .type-meta{color:var(--muted);font-size:12px;}
+  .type-download{display:inline-flex;align-items:center;gap:9px;padding:9px 16px;color:var(--text);background:transparent;border:1px solid var(--line-strong);border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap;}
+  .type-download:hover{background:var(--surface2);}
+  .type-release{color:var(--muted);font-size:12px;text-decoration:none;}
+
   table.spec{border-collapse:collapse;border:1px solid var(--line);border-radius:10px;overflow:hidden;display:inline-block;}
   table.spec th{font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;background:var(--surface2);padding:9px 20px;border-bottom:1px solid var(--line);}
   table.spec td{font-size:14px;padding:11px 20px;background:var(--surface);}
@@ -100,7 +118,8 @@
 
   footer{max-width:1000px;margin:0 auto;padding:60px 36px 40px;border-top:1px solid var(--line);margin-top:80px;font-size:12.5px;color:var(--muted);display:flex;gap:22px;}
   footer a{color:var(--muted);}
-  @media (max-width:900px){ .variant-grid{grid-template-columns:1fr;} .duo{grid-template-columns:1fr;} h1{font-size:38px;} }
+  @media (max-width:900px){ .variant-grid{grid-template-columns:1fr;} .duo,.type-layout{grid-template-columns:1fr;} h1{font-size:38px;} }
+  @media (max-width:560px){ .type-row{grid-template-columns:1fr;gap:7px}.type-downloads{align-items:flex-start;flex-direction:column}.type-card{padding:20px} }
 </style>
 </head>
 <body>
@@ -128,7 +147,7 @@
         <div class="show show--light"><img src="assets/brand-guidelines/moderne-logo-dark.svg" alt="Moderne full logo" style="height:34px;width:auto;"></div>
         <div>
           <h3>Full logo</h3>
-          <p>The primary logo — icon mark + wordmark. Use this as the default wherever space allows. The lockup sets the wordmark in Beausite, a modern humanist sans serif that keeps the logotype approachable.</p>
+          <p>The primary logo — icon mark + wordmark. Use this as the default wherever space allows. Always use the supplied lockup rather than recreating or typesetting the wordmark.</p>
         </div>
       </div>
       <div class="panel">
@@ -165,34 +184,27 @@
 
   <!-- ===== typography ===== -->
   <section>
-    <div class="sec-head"><h2>Typography</h2><span class="m">Beausite · Geist · IBM Plex Mono</span></div>
-    <p class="note" style="margin-bottom:22px;">Three typefaces support the brand. <strong>Beausite</strong> is the licensed display and text face that also sets the wordmark; <strong>Geist</strong> is the open-source fallback used on the web and in documents. <strong>IBM Plex Mono</strong> sets anything systematic — labels, code, recipe names, CVE IDs, and technical metadata.</p>
-    <div class="duo">
-      <div class="panel">
-        <div style="font-family:var(--font-sans);color:var(--text);">
-          <div style="font-size:56px;font-weight:400;line-height:1;letter-spacing:-1px;">Aa</div>
-          <div style="font-size:26px;font-weight:400;letter-spacing:-.4px;margin-top:14px;">The deterministic layer</div>
-          <div style="font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-top:10px;letter-spacing:.02em;">ABCDEFGHIJKLM · abcdefghijklm · 0123456789</div>
-        </div>
-        <div style="margin-top:16px;"><h3>Beausite — display &amp; text</h3><p class="note" style="font-size:13px;">Headlines and body copy. The licensed brand face; <strong>Geist</strong> (shown here) is the open fallback for web and docs. Weights 300–600.</p></div>
+    <div class="sec-head"><h2>Typography</h2><span class="m">Geist</span></div>
+    <div class="type-layout">
+      <div class="type-scale">
+        <div class="type-row"><div class="type-spec">66 / 1.02 / 500</div><div class="type-sample" style="font-size:44px;font-weight:500;line-height:1.04;letter-spacing:-1px;">Hero headline</div></div>
+        <div class="type-row"><div class="type-spec">34 / 400</div><div class="type-sample" style="font-size:30px;font-weight:400;line-height:1.1;letter-spacing:-.6px;">Section headline</div></div>
+        <div class="type-row"><div class="type-spec">21 / 400</div><div class="type-sample" style="font-size:21px;font-weight:400;line-height:1.25;letter-spacing:-.4px;">Card title</div></div>
+        <div class="type-row"><div class="type-spec">18.5 / 1.55</div><div class="type-sample" style="font-size:17px;font-weight:400;line-height:1.5;">Body copy — leading 155%</div></div>
+        <div class="type-row"><div class="type-spec">12 / 1.4 / 500</div><div class="type-sample" style="font-size:13px;font-weight:500;line-height:1.4;">Interface label</div></div>
       </div>
-      <div class="panel">
-        <div style="font-family:var(--font-mono);color:var(--text);">
-          <div style="font-size:56px;font-weight:500;line-height:1;">Aa</div>
-          <div style="font-size:22px;font-weight:400;margin-top:14px;">rewrite.recipe · CVE-2026-1337</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:12px;letter-spacing:.08em;text-transform:uppercase;">Labels · code · technical meta</div>
-        </div>
-        <div style="margin-top:16px;"><h3>IBM Plex Mono — technical</h3><p class="note" style="font-size:13px;">Recipe names, CVE IDs, code tokens, keyboard hints, and section labels. Weights 400–500.</p></div>
+      <div class="type-cards">
+        <div class="type-card"><div class="type-kicker">Headline · Geist</div><div class="type-aa" style="font-weight:400;letter-spacing:-1px;">Aa</div></div>
+        <div class="type-card"><div class="type-kicker">Body · Geist</div><div class="type-aa">Aa</div><div class="type-detail">Up to two sentences</div></div>
+        <div class="type-card"><div class="type-kicker">Long-form body · Geist</div><div class="type-aa">Aa</div><div class="type-copy">Geist carries every typographic role across the system. Use size, weight, and spacing to distinguish display moments from docs, articles, and long-form copy.</div></div>
+        <div class="type-card"><div class="type-kicker">Interface labels · Geist</div><div class="type-aa">Aa</div><div class="type-detail">Labels · 01 → 24 · CVE IDs</div></div>
       </div>
     </div>
-    <table class="spec" style="margin-top:22px;">
-      <tr><th>Role</th><th>Face</th><th>Size · weight · tracking</th></tr>
-      <tr><td>Display / H1</td><td>Beausite (Geist)</td><td class="mono">52px · 400 · -1.2px</td></tr>
-      <tr><td>Section / H2</td><td>Beausite (Geist)</td><td class="mono">28px · 400 · -0.6px</td></tr>
-      <tr><td>Body</td><td>Beausite (Geist)</td><td class="mono">16px · 400 · 1.65 line-height</td></tr>
-      <tr><td>Technical label</td><td>IBM Plex Mono</td><td class="mono">11px · 500 · UPPERCASE, +.08em</td></tr>
-    </table>
-    <p class="note" style="margin-top:20px;">Set headlines and body in the sans face. Reserve uppercase with wide tracking for mono technical labels — never for headlines. Monospace signals "this is systematic": use it for code, recipe names, CVE IDs, and metadata. Font files are in <a href="#downloads" style="color:inherit;text-decoration:underline;">Downloads</a>.</p>
+    <div class="type-downloads">
+      <span class="type-meta">Typeface · Geist v1.7.2</span>
+      <a class="type-download" href="https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 4 5-4"/><path d="M5 21h14"/></svg>Download Geist (.zip)</a>
+      <a class="type-release" href="https://github.com/vercel/geist-font/releases/tag/v1.7.2" target="_blank" rel="noopener">Release notes ↗</a>
+    </div>
   </section>
 
   <!-- ===== product lockups ===== -->
